@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""TcEx Framework Bin Command Base Module."""
+"""TcEx Framework InstallJson Object."""
 import json
 import os
+from collections import OrderedDict
 
 
 class InstallJson(object):
@@ -24,6 +25,23 @@ class InstallJson(object):
         if str(value).lower() in ['1', 'true']:
             bool_value = True
         return bool_value
+
+    @property
+    def contents(self):
+        """Return install.json contents."""
+        if self._contents is None:
+            with open(self.filename, 'r') as fh:
+                self._contents = json.load(fh, object_pairs_hook=OrderedDict)
+        return self._contents
+
+    @property
+    def config_params_dict(self):
+        """Return params as name/data dict."""
+        params = {}
+        for p in self.params:
+            if p.get('config'):
+                params.setdefault(p.get('name'), p)
+        return params
 
     @staticmethod
     def expand_valid_values(valid_values):
@@ -60,23 +78,6 @@ class InstallJson(object):
             valid_values.append('')
         return valid_values
 
-    @property
-    def contents(self):
-        """Return install.json contents."""
-        if self._contents is None:
-            with open(self.filename, 'r') as fh:
-                self._contents = json.load(fh)
-        return self._contents
-
-    @property
-    def config_params_dict(self):
-        """Return params as name/data dict."""
-        params = {}
-        for p in self.params:
-            if p.get('config'):
-                params.setdefault(p.get('name'), p)
-        return params
-
     def filter_params_dict(self, config=None, name=None, required=None, _type=None):
         """Return params as name/data dict."""
         params = {}
@@ -86,7 +87,7 @@ class InstallJson(object):
                     continue
 
             if name is not None:
-                if p.get('name') == name:
+                if p.get('name') != name:
                     continue
 
             if required is not None:
@@ -129,23 +130,23 @@ class InstallJson(object):
         args = {}
         for n, p in self.filter_params_dict(config, name, required, _type).items():
             if p.get('type').lower() == 'boolean':
-                args[p.get('name')] = self._to_bool(p.get('default', False))
+                args[n] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':
                 valid_values = '|'.join(self.expand_valid_values(p.get('validValues', [])))
-                args[p.get('name')] = '[{}]'.format(valid_values)
+                args[n] = '[{}]'.format(valid_values)
             elif p.get('type').lower() == 'multichoice':
-                args[p.get('name')] = p.get('validValues', [])
+                args[n] = p.get('validValues', [])
             elif p.get('type').lower() == 'keyvaluelist':
-                args[p.get('name')] = '<KeyValueList>'
-            elif p.get('name') in ['api_access_id', 'api_secret_key']:
+                args[n] = '<KeyValueList>'
+            elif n in ['api_access_id', 'api_secret_key']:
                 # leave these parameters set to the value defined in defaults
                 pass
             else:
                 types = '|'.join(p.get('playbookDataType', []))
                 if types:
-                    args[p.get('name')] = p.get('default', '<{}>'.format(types))
+                    args[n] = p.get('default', '<{}>'.format(types))
                 else:
-                    args[p.get('name')] = p.get('default', '')
+                    args[n] = p.get('default', '')
         return args
 
     @property
