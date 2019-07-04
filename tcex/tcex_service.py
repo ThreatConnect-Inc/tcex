@@ -245,6 +245,7 @@ class TcExService(object):
                 try:
                     if callback(config, **kwargs):
                         self.metric['hits'] += 1
+                        # time.sleep(1)
                         self.fire_event_publish(config_id, session_id)
                     else:
                         self.metric['misses'] += 1
@@ -264,6 +265,7 @@ class TcExService(object):
                 try:
                     if callback(method, headers, params, body, config):
                         self.metric['hits'] += 1
+                        # time.sleep(1)
                         self.fire_event_publish(config_id, session_id, request_key)
                     else:
                         self.metric['misses'] += 1
