@@ -70,7 +70,7 @@ class TestCase(object):
             'api_secret_key': os.getenv('API_SECRET_KEY'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
-            'tc_log_level': os.getenv('TC_LOG_LEVEL', 'debug'),
+            'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
             'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
             'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
             'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
@@ -541,10 +541,10 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
         try:
             # configure custom trigger message handler
             app.tcex.service.custom_trigger(
-                create_callback=app.create_config_callback,
-                delete_callback=app.delete_config_callback,
-                update_callback=app.update_config_callback,
-                shutdown_callback=app.shutdown_callback,
+                create_callback=app.create_config_callback,  # pylint: disable=no-member
+                delete_callback=app.delete_config_callback,  # pylint: disable=no-member
+                update_callback=app.update_config_callback,  # pylint: disable=no-member
+                shutdown_callback=app.shutdown_callback,  # pylint: disable=no-member
             )
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
