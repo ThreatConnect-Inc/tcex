@@ -68,12 +68,10 @@ class TcExLogger(object):
         tx_format += '(%(filename)s:%(funcName)s:%(lineno)d)'
         return logging.Formatter(tx_format)
 
-    def remove_handler_by_name(self, handler_name):
-        """Remove a file handler by name."""
-        for h in self._logger.handlers:
-            if h.get_name() == handler_name:
-                self._logger.removeHandler(h)
-                break
+    @property
+    def log(self):
+        """Return logger."""
+        return self._logger
 
     @property
     def logging_level(self):
@@ -85,10 +83,20 @@ class TcExLogger(object):
             level = logging.getLevelName(self.tcex.default_args.tc_log_level.upper())
         return level
 
-    @property
-    def log(self):
-        """Return logger."""
-        return self._logger
+    def remove_handler_by_name(self, handler_name):
+        """Remove a file handler by name."""
+        for h in self._logger.handlers:
+            if h.get_name() == handler_name:
+                self._logger.removeHandler(h)
+                break
+
+    def update_handler_level(self, level=None):
+        """Remove a file handler by name."""
+        updated_level = self.logging_level
+        if level is not None:
+            updated_level = logging.getLevelName(level.upper())
+        for h in self._logger.handlers:
+            h.setLevel(updated_level)
 
     #
     # handlers
@@ -181,23 +189,23 @@ class TcExLogger(object):
             app_runtime_level = self.tcex.install_json.get('runtimeLevel')
             app_version = self.tcex.install_json.get('programVersion')
 
-            self.log.info(u'App Name: {}'.format(app_name))
+            self.log.info('App Name: {}'.format(app_name))
             if app_features:
-                self.log.info(u'App Features: {}'.format(app_features))
-            self.log.info(u'App Minimum ThreatConnect Version: {}'.format(app_min_ver))
-            self.log.info(u'App Runtime Level: {}'.format(app_runtime_level))
-            self.log.info(u'App Version: {}'.format(app_version))
+                self.log.info('App Features: {}'.format(app_features))
+            self.log.info('App Minimum ThreatConnect Version: {}'.format(app_min_ver))
+            self.log.info('App Runtime Level: {}'.format(app_runtime_level))
+            self.log.info('App Version: {}'.format(app_version))
             if app_commit_hash is not None:
-                self.log.info(u'App Commit Hash: {}'.format(app_commit_hash))
+                self.log.info('App Commit Hash: {}'.format(app_commit_hash))
 
     def _log_platform(self):
         """Log the current Platform."""
-        self.log.info(u'Platform: {}'.format(platform.platform()))
+        self.log.info('Platform: {}'.format(platform.platform()))
 
     def _log_python_version(self):
         """Log the current Python version."""
         self.log.info(
-            u'Python Version: {}.{}.{}'.format(
+            'Python Version: {}.{}.{}'.format(
                 sys.version_info.major, sys.version_info.minor, sys.version_info.micro
             )
         )
@@ -206,14 +214,14 @@ class TcExLogger(object):
         """Log the proxy settings."""
         if self.tcex.default_args.tc_proxy_tc:
             self.log.info(
-                u'Proxy Server (TC): {}:{}.'.format(
+                'Proxy Server (TC): {}:{}.'.format(
                     self.tcex.default_args.tc_proxy_host, self.tcex.default_args.tc_proxy_port
                 )
             )
 
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
-        self.log.info(u'TcEx Version: {}'.format(__import__(__name__).__version__))
+        self.log.info('TcEx Version: {}'.format(__import__(__name__).__version__))
 
 
 class ApiFormatter(logging.Formatter):

@@ -744,6 +744,9 @@ class TcExPlaybook(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -795,6 +798,9 @@ class TcExPlaybook(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -879,6 +885,9 @@ class TcExPlaybook(object):
                 value = u'{}'.format(value)
             # data = self.db.create(key.strip(), str(json.dumps(value)))
             data = self.db.create(key.strip(), u'{}'.format(json.dumps(value)))
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -932,6 +941,9 @@ class TcExPlaybook(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -978,6 +990,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -1025,6 +1040,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
