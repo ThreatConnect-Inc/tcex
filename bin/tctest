@@ -1,4 +1,4 @@
-#!/Users/bpurdy-ad/.pyenv/versions/3.6.5/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Pytest Profile Generation Module"""
 import argparse
