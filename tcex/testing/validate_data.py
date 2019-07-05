@@ -525,7 +525,6 @@ class ThreatConnect(object):
 
     def batch(self, context, owner, validation_criteria):
         """Validates the batch submission"""
-        context = '962f7751-3948-4abd-8b29-506c3e2c451f'
 
         validation_percent = validation_criteria.get('percent', 100)
         validation_count = validation_criteria.get('count', None)
