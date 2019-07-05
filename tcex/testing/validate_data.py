@@ -599,11 +599,16 @@ class ThreatConnect(object):
         self._log_batch_submit_details(batch_errors, owner)
 
     def _log_batch_submit_details(self, batch_errors, owner):
+        if not batch_errors:
+            return
+
         counts = {}
         error_regex = r'\((.*?)\)'
         for error in batch_errors:
             reason = error.get('errorReason', '')
             m = re.search(error_regex, reason)
+            if not m:
+                continue
             if not m.group(1) in counts:
                 counts[m.group(1)] = 0
             counts[m.group(1)] += 1
