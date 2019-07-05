@@ -556,9 +556,16 @@ class ThreatConnect(object):
 
                 files = []
                 for sample_data in sample_validation_data:
+                    sample_data_type = sample_data.get('type').lower()
+                    if sample_data_type == 'document':
+                        sample_data_type = 'documents'
+                    elif sample_data_type == 'report':
+                        sample_data_type = 'reports'
+                    else:
+                        continue
                     filename = (
-                        sample_data.get('type').lower()
-                        + 's--'
+                        sample_data_type
+                        + '--'
                         + sample_data.get('xid')
                         + '--'
                         + sample_data.get('name', '')
