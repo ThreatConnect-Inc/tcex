@@ -572,7 +572,6 @@ class ThreatConnect(object):
                         + sample_data.get('name', '')
                     )
                     filename = os.path.join('.', 'log', context, filename)
-                    print(filename)
                     if os.path.isfile(filename):
                         files.append(filename)
                     else:
