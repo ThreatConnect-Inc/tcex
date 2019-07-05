@@ -557,6 +557,7 @@ class ThreatConnect(object):
                 for sample_data in sample_validation_data:
                     sample_data_type = sample_data.get('type').lower()
                     if sample_data_type not in ['document', 'report']:
+                        files.append(None)
                         continue
 
                     if sample_data_type == 'document':
@@ -588,6 +589,8 @@ class ThreatConnect(object):
                             'submission error: {}'.format(name, batch_error)
                         )
                         continue
+                    # TODO: Should use pip install pytest-check is_true method so it wont fail after
+                    # one failed assert.
                     assert result.get(
                         'valid'
                     ), '{} in ThreatConnect did not match what was submitted. Errors:{}'.format(
@@ -637,15 +640,18 @@ class ThreatConnect(object):
     def tc_entities(self, tc_entities, owner, files=None):
         """Validate a array of tc_entities"""
         results = []
+        print(files)
         if files:
             if not len(tc_entities) == len(files):
-                return {
-                    'valid': False,
-                    'errors': [
-                        'LengthError: Length of files provided does not '
-                        'match length of entities provided.'
-                    ],
-                }
+                return [
+                    {
+                        'valid': False,
+                        'errors': [
+                            'LengthError: Length of files provided does not '
+                            'match length of entities provided.'
+                        ],
+                    }
+                ]
 
         for index, entity in enumerate(tc_entities):
             name = entity.get('name', entity.get('summary'))
