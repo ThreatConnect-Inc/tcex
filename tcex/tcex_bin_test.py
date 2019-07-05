@@ -202,12 +202,13 @@ class TcExTest(TcExBin):
         super(TcExTest, self).__init__(_args)
 
         # properties
-        self.base_dir = os.path.join(self.app_path, 'tests')
-        self.feature_dir = os.path.join(self.base_dir, self.args.feature)
-        self.feature_profile_dir = os.path.join(self.base_dir, self.args.feature, 'profiles.d')
-        self.profiles = Profiles(self.profiles_dir)
-        self.validation = Validation(self.base_dir, self.args.branch)
-        self._output_variables = None
+        if not self.args.permutations:
+            self.base_dir = os.path.join(self.app_path, 'tests')
+            self.feature_dir = os.path.join(self.base_dir, self.args.feature)
+            self.feature_profile_dir = os.path.join(self.base_dir, self.args.feature, 'profiles.d')
+            self.profiles = Profiles(self.profiles_dir)
+            self.validation = Validation(self.base_dir, self.args.branch)
+            self._output_variables = None
 
     @staticmethod
     def _print_results(file, status):
