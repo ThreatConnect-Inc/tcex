@@ -525,6 +525,7 @@ class ThreatConnect(object):
 
     def batch(self, context, owner, validation_criteria):
         """Validates the batch submission"""
+        context = '962f7751-3948-4abd-8b29-506c3e2c451f'
 
         validation_percent = validation_criteria.get('percent', 100)
         validation_count = validation_criteria.get('count', None)
@@ -538,8 +539,6 @@ class ThreatConnect(object):
             with open(os.path.join('.', 'log', context, filename), 'r') as fh:
                 if not filename.startswith('errors-') or not filename.endswith('.json'):
                     continue
-
-            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
                 batch_errors += json.load(fh)
 
         for filename in os.listdir(os.path.join('.', 'log', context)):
@@ -554,7 +553,23 @@ class ThreatConnect(object):
                     for sub_partition in validation_data.get(key).values():
                         sample_size = math.ceil(len(sub_partition) * (validation_percent / 100))
                         sample_validation_data.extend(random.sample(sub_partition, sample_size))
-                results = self.tc_entities(sample_validation_data, owner)
+
+                files = []
+                for sample_data in sample_validation_data:
+                    filename = (
+                        sample_data.get('type').lower()
+                        + 's--'
+                        + sample_data.get('xid')
+                        + '--'
+                        + sample_data.get('name', '')
+                    )
+                    filename = os.path.join('.', 'log', context, filename)
+                    print(filename)
+                    if os.path.isfile(filename):
+                        files.append(filename)
+                    else:
+                        files.append(None)
+                results = self.tc_entities(sample_validation_data, owner, files=files)
                 for result in results:
                     if result.get('valid'):
                         continue

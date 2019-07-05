@@ -48,8 +48,8 @@ class TestFeature(${parent_class}):
     def test_profiles(self, profile_name, monkeypatch):
         """Run pre-created testing profiles."""
         pd = self.profile(profile_name)
-        #uncomment to start using the monkey patch annotations
-        #register_monkeypatch(monkeypatch, pd)
+        # uncomment to start using the monkey patch annotations
+        # register_monkeypatch(monkeypatch, pd)
         if self.env.intersection(set(pd.get('environments', ['build']))):
             assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
             ValidateFeature(self.validator).validate(pd.get('outputs'))
