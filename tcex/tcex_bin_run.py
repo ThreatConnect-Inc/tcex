@@ -22,6 +22,7 @@ import colorama as c
 
 from tcex import TcEx
 from .tcex_bin import TcExBin
+from .tcex_install_json import InstallJson
 
 
 class TcExRun(TcExBin):
@@ -733,8 +734,8 @@ class TcExRun(TcExBin):
                 install_json_filename = config.get('install_json')
                 ij = {}
                 if install_json_filename is not None:
-                    ij = self.load_install_json(install_json_filename)
-                config['install_json'] = ij
+                    ij = InstallJson(install_json_filename, self.app_path)
+                config['install_json'] = ij.contents
                 selected_profiles.append(config)
 
             self.reports.add_profile(config, profile_selected)

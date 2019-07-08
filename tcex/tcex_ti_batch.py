@@ -655,6 +655,24 @@ class TcExBatch(object):
         indicator_obj = EmailAddress(address, **kwargs)
         return self._indicator(indicator_obj)
 
+    @property
+    def error_codes(self):
+        """Static list of Batch error codes and short description"""
+        error_codes = {}
+        error_codes['0x1001'] = 'General Error'
+        error_codes['0x1002'] = 'Permission Error'
+        error_codes['0x1003'] = 'JsonSyntax Error'
+        error_codes['0x1004'] = 'Internal Error'
+        error_codes['0x1005'] = 'Invalid Indicator Error'
+        error_codes['0x1006'] = 'Invalid Group Error'
+        error_codes['0x1007'] = 'Item Not Found Error'
+        error_codes['0x1008'] = 'Indicator Limit Error'
+        error_codes['0x1009'] = 'Association Error'
+        error_codes['0x100A'] = 'Duplicate Item Error'
+        error_codes['0x100B'] = 'File IO Error'
+
+        return error_codes
+
     def errors(self, batch_id, halt_on_error=True):
         """Retrieve Batch errors to ThreatConnect API.
 
@@ -1417,7 +1435,20 @@ class TcExBatch(object):
                 # submit file data after batch job is complete
                 batch_data['uploadStatus'] = self.submit_files(halt_on_error)
             batch_data_array.append(batch_data)
+
+            if self.debug:
+                self.write_error_json(self.errors(batch_id))
+
         return batch_data_array
+
+    def write_error_json(self, errors):
+        """Writes the errors for debuging purposes"""
+        timestamp = str(time.time()).replace('.', '')
+        error_json_file = os.path.join(
+            self.tcex.args.tc_temp_path, 'errors-{}.json'.format(timestamp)
+        )
+        with open(error_json_file, 'w') as fh:
+            json.dump(errors, fh, indent=2)
 
     def submit_create_and_upload(self, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
@@ -1520,7 +1551,9 @@ class TcExBatch(object):
                 # special code for debugging App using batchV2.
                 fqfn = os.path.join(
                     self.tcex.args.tc_temp_path,
-                    '{}--{}--{}'.format(api_branch, xid, content_data.get('fileName')),
+                    '{}--{}--{}'.format(
+                        api_branch, xid, content_data.get('fileName').replace('/', ':')
+                    ),
                 )
                 with open(fqfn, 'wb') as fh:
                     fh.write(content)

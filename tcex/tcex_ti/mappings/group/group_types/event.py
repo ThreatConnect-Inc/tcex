@@ -22,7 +22,7 @@ class Event(Group):
             status (str, kwargs): The status for this Group.
         """
         super(Event, self).__init__(
-            tcex, 'Event', 'event', 'events', name=name, owner=owner, **kwargs
+            tcex, 'Event', 'event', 'events', owner=owner, name=name, **kwargs
         )
 
     def status(self, status):

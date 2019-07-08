@@ -26,8 +26,8 @@ class UserAgent(Indicator):
         super(UserAgent, self).__init__(
             tcex, 'User Agent', 'userAgent', 'userAgents', owner, **kwargs
         )
-        self.data['User Agent String'] = text
-        self.unique_id = self.unique_id or text
+        self.unique_id = kwargs.get('unique_id', text)
+        self.data['User Agent String'] = text or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)
 

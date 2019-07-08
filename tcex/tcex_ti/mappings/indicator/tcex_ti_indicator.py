@@ -37,12 +37,10 @@ def custom_indicator_class_factory(
         :param kwargs:
         """
         base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
-        self._data[value_fields[0]] = value1
-        self.unique_id = self.unique_id or value1
+        self.unique_id = kwargs.get('unique_id', value1)
+        self._data[value_fields[0]] = value1 or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)
-        # for k, v in class_dict.items():
-        #     setattr(self, k, v)
 
     def _set_unique_id_1(self, json_request):
         """
@@ -79,7 +77,7 @@ def custom_indicator_class_factory(
             value1 = quote_plus(value1)
         if value2:
             value2 = quote_plus(value2)
-        self.unique_id = self.unique_id or self.build_summary(value1, value2)
+        self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2))
 
     def _set_unique_id_2(self, json_request):
         """
@@ -121,7 +119,7 @@ def custom_indicator_class_factory(
             value2 = quote_plus(value2)
         if value3:
             value2 = quote_plus(value3)
-        self.unique_id = self.unique_id or self.build_summary(value1, value2, value3)
+        self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2, value3))
 
     def _set_unique_id_3(self, json_request):
         """

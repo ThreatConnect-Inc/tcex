@@ -19,7 +19,7 @@ class Email(Group):
             to (str, kwargs): The **to** address for this Email.
         """
         super(Email, self).__init__(
-            tcex, 'Email', 'email', 'emails', name=name, owner=owner, **kwargs
+            tcex, 'Email', 'email', 'emails', owner=owner, name=name, **kwargs
         )
         self._data['to'] = to or kwargs.get('to')
         self._data['from'] = from_addr or kwargs.get('from_addr')

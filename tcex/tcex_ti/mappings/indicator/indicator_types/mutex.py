@@ -24,8 +24,8 @@ class Mutex(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super(Mutex, self).__init__(tcex, 'Mutex', 'mutex', 'mutexes', owner, **kwargs)
-        self.data['Mutex'] = mutex
-        self.unique_id = self.unique_id or mutex
+        self.unique_id = kwargs.get('unique_id', mutex)
+        self.data['Mutex'] = mutex or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)
 

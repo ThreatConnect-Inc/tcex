@@ -43,6 +43,8 @@ scripts = [
     'bin/tcprofile.cmd',
     'bin/tcrun',
     'bin/tcrun.cmd',
+    'bin/tctest',
+    'bin/tctest.cmd',
     'bin/tcvalidate',
     'bin/tcvalidate.cmd',
 ]
@@ -52,6 +54,7 @@ setup(
     author_email='support@threatconnect.com',
     description='ThreatConnect Exchange App Framework',
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
+    extras_require={'development': ['deepdiff', 'jmespath', 'mako', 'pytest', 'pytest-cov']},
     include_package_data=True,
     install_requires=install_requires,
     license='Apache License, Version 2',
