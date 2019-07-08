@@ -23,8 +23,12 @@ class TcExService(object):
         # properties
         self._client = None
         self._metric = {'errors': 0, 'hits': 0, 'misses': 0}
+        self._pubsub = None
         self._start_time = datetime.now()
         self.configs = {}
+        self.config_thread = None
+        self.heartbeat_thread = None
+        self.shutdown = False
 
     def add_metric(self, label, value):
         """Add a metric to get reported in heartbeat."""
@@ -134,12 +138,12 @@ class TcExService(object):
         self.heartbeat()
 
         self.tcex.log.trace('custom trigger initialized.')
-        t = threading.Thread(
+        self.config_thread = threading.Thread(
             target=self.custom_trigger_subscriber,
             args=(create_callback, delete_callback, update_callback, shutdown_callback),
         )
-        t.daemon = True  # use setter for py2
-        t.start()
+        self.config_thread.daemon = True  # use setter for py2
+        self.config_thread.start()
 
     def custom_trigger_subscriber(
         self,
@@ -165,10 +169,9 @@ class TcExService(object):
 
         self.tcex.log.trace('custom trigger subscriber thread started.')
 
-        p = self.client.pubsub()
-        p.subscribe(self.tcex.default_args.tc_server_channel)
-        for m in p.listen():
-            self.tcex.log.trace('message: ({})'.format(m))
+        self.pubsub.subscribe(self.tcex.default_args.tc_server_channel)
+        for m in self.pubsub.listen():
+            self.tcex.log.trace('server message: ({})'.format(m))
             # only process "message" on channel (exclude subscriptions, etc)
             if m.get('type') != 'message':
                 continue
@@ -190,9 +193,25 @@ class TcExService(object):
                 self.tcex.log.warning('Received a message without command ({})'.format(m))
                 continue
 
+            if command == 'Shutdown':
+                self.pubsub.unsubscribe()
+                break
+
             # process config message
             self.process_config_message(
-                p=p,
+                command=command,
+                config=config,
+                config_id=config_id,
+                create_callback=create_callback,
+                delete_callback=delete_callback,
+                update_callback=update_callback,
+                shutdown_callback=shutdown_callback,
+            )
+
+        # process config command after shutdown
+        self.tcex.log.trace('process command after unsubscribe')
+        if command == 'Shutdown':
+            self.process_config_message(
                 command=command,
                 config=config,
                 config_id=config_id,
@@ -243,7 +262,7 @@ class TcExService(object):
 
             if trigger_type == 'custom':
                 try:
-                    if callback(config, **kwargs):
+                    if callback(config_id, config, **kwargs):
                         self.metric['hits'] += 1
                         # time.sleep(1)
                         self.fire_event_publish(config_id, session_id)
@@ -263,7 +282,7 @@ class TcExService(object):
                 method = msg_data.get('method')
                 params = msg_data.get('queryParams')
                 try:
-                    if callback(method, headers, params, body, config):
+                    if callback(method, headers, params, body, config_id, config):
                         self.metric['hits'] += 1
                         # time.sleep(1)
                         self.fire_event_publish(config_id, session_id, request_key)
@@ -293,13 +312,15 @@ class TcExService(object):
     def heartbeat(self):
         """Start heartbeat process."""
         self.tcex.log.info('Starting heartbeat thread.')
-        t = threading.Thread(target=self.heartbeat_publish)
-        t.daemon = True  # use setter for py2
-        t.start()
+        self.heartbeat_thread = threading.Thread(target=self.heartbeat_publish)
+        self.heartbeat_thread.daemon = True  # use setter for py2
+        self.heartbeat_thread.start()
 
     def heartbeat_publish(self):
         """Publish heartbeat on timer."""
         while True:
+            if self.shutdown:
+                break
             time.sleep(self.tcex.default_args.tc_heartbeat_seconds)
             response = {'command': 'Heartbeat', 'metric': self.metric}
             self.publish(json.dumps(response))
@@ -315,7 +336,6 @@ class TcExService(object):
 
     def process_config_message(
         self,
-        p,
         command,
         config,
         config_id,
@@ -364,11 +384,18 @@ class TcExService(object):
             self.update_config(config_id, config)
         elif command == 'Shutdown':
             self.tcex.log.trace('process config Shutdown')
+
+            # cleanup heartbeat thread
+            self.shutdown = True  # set shutdown to True so heartbeat loop will break
+
+            # acknowledge shutdown command
             message = {'status': 'Acknowledged', 'type': 'Shutdown'}
             self.publish(json.dumps(message))
             self.tcex.log.info(
                 'A shutdown command was received on server channel. Service is shutting down.'
             )
+
+            # call App shutdown callback
             if callable(shutdown_callback):
                 try:
                     # call callback for shutdown and handle exceptions to protect thread
@@ -378,9 +405,10 @@ class TcExService(object):
                         'The shutdown callback method encountered and error ({}).'.format(e)
                     )
                     self.tcex.log.trace(traceback.format_exc())
-            p.unsubscribe()
-            time.sleep(5)  # give App time to cleanup and exit on it's own
-            self.tcex.exit(0)
+
+            # give App time to cleanup and shutdown
+            time.sleep(5)
+            self.tcex.exit(0)  # final shutdown in case App did not
 
     def publish(self, message):
         """Publish a message on client channel.
@@ -388,8 +416,15 @@ class TcExService(object):
         Args:
             message (str): The message to be sent on client channel.
         """
-        self.tcex.log.trace('message: ({})'.format(message))
+        self.tcex.log.trace('client message: ({})'.format(message))
         self.client.publish(self.tcex.default_args.tc_client_channel, message)
+
+    @property
+    def pubsub(self):
+        """Return Redis pubsub."""
+        if self._pubsub is None:
+            self._pubsub = self.client.pubsub()
+        return self._pubsub
 
     @property
     def session_id(self):
@@ -454,7 +489,7 @@ class TcExService(object):
         p = self.client.pubsub()
         p.subscribe(self.tcex.default_args.tc_server_channel)
         for m in p.listen():
-            self.tcex.log.trace('message: ({})'.format(m))
+            self.tcex.log.trace('server message: ({})'.format(m))
             # only process "message" on channel (exclude subscriptions, etc)
             if m.get('type') != 'message':
                 continue
@@ -490,7 +525,6 @@ class TcExService(object):
             else:
                 self.tcex.log.trace('calling process config message')
                 self.process_config_message(
-                    p=p,
                     command=command,
                     config=config,
                     config_id=config_id,
