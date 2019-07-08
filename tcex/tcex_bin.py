@@ -125,13 +125,20 @@ class TcExBin(object):
         if args is None:
             args = []
         try:
-            name = self.lj.parameters_names[index]
-            display = self.lj.parameters_dict.get(name, {}).get('display')
+            if self.ij.runtime_level.lower() == 'playbook':
+                name = self.lj.parameters_names[index]
+                display = self.lj.parameters_dict.get(name, {}).get('display')
+            else:
+                name = [*self.ij.params_dict.keys()][index]
+                display = False
+
             input_type = self.ij.params_dict.get(name, {}).get('type')
             if input_type is None:
                 self.handle_error('No value found in install.json for "{}".'.format(name))
 
-            if self.validate_layout_display(self.input_table, display):
+            if self.ij.runtime_level.lower() == 'organization' or self.validate_layout_display(
+                self.input_table, display
+            ):
                 if input_type.lower() == 'boolean':
                     for val in [True, False]:
                         args.append({'name': name, 'value': val})

@@ -11,6 +11,7 @@ import uuid
 import sys
 import traceback
 from datetime import datetime
+from multiprocessing import Process
 from random import randint
 
 from six import string_types
@@ -137,10 +138,10 @@ class TestCase(object):
                 self._input_params.setdefault(p.get('name'), p)
         return self._input_params
 
-    def log_data(self, stage, label, data):
+    def log_data(self, stage, label, data, level='info'):
         """Log validation data."""
         msg = '{!s:>20} : {!s:<15}: {!s:<50}'.format('[{}]'.format(stage), label, data)
-        self.log.info(msg)
+        getattr(self.log, level)(msg)
 
     def profile(self, profile_name):
         """Get a profile from the profiles.json file by name"""
@@ -500,6 +501,7 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
 
     client_channel = 'client-channel-{}'.format(randint(100, 999))
     server_channel = 'server-channel-{}'.format(randint(100, 999))
+    service_run_method = 'thread'  # run service as thread or multiprocess
 
     @property
     def default_args(self):
@@ -513,6 +515,44 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
             }
         )
         return args
+
+    def patch_service(self):
+        """Patch the micro-service."""
+        from tcex.tcex_service import TcExService  # pylint: disable=no-name-in-module
+
+        current_context = self.context
+
+        def set_session_id(self, *args, **kwargs):
+            """Set the session id via monkeypatch"""
+            kwargs['session_id'] = current_context
+            return self.fire_event_orig(*args, **kwargs)
+
+        MonkeyPatch().setattr(TcExService, 'fire_event', set_session_id)
+
+    def publish_create_config(self, config_id, config):
+        """Send create config message."""
+        config_msg = {'command': 'CreateConfig', 'configId': config_id, 'config': config}
+        config_msg['config']['outputVariables'] = self.output_variables
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        time.sleep(0.5)
+
+    def publish_delete_config(self, config_id):
+        """Send create config message."""
+        config_msg = {'command': 'DeleteConfig', 'configId': config_id}
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+
+    def publish_shutdown(self):
+        """Publish shutdown message."""
+        config_msg = {'command': 'Shutdown'}
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        time.sleep(0.5)
+
+    def publish_update_config(self, config_id, config):
+        """Send create config message."""
+        config_msg = {'command': 'UpdateConfig', 'configId': config_id, 'config': config}
+        config_msg['config']['outputVariables'] = self.output_variables
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        time.sleep(0.5)
 
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.
@@ -590,50 +630,20 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
 
         return self._exit(0)
 
-    def patch_service(self):
-        """Patch the micro-service."""
-        from tcex.tcex_service import TcExService  # pylint: disable=no-name-in-module
-
-        current_context = self.context
-
-        def set_session_id(self, *args, **kwargs):
-            """Set the session id via monkeypatch"""
-            kwargs['session_id'] = current_context
-            return self.fire_event_orig(*args, **kwargs)
-
-        MonkeyPatch().setattr(TcExService, 'fire_event', set_session_id)
-
-    def publish_create_config(self, config_id, config):
-        """Send create config message."""
-        config_msg = {'command': 'CreateConfig', 'configId': config_id, 'config': config}
-        config_msg['config']['outputVariables'] = self.output_variables
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
-        time.sleep(0.5)
-
-    def publish_delete_config(self, config_id):
-        """Send create config message."""
-        config_msg = {'command': 'DeleteConfig', 'configId': config_id}
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
-
-    def publish_shutdown(self):
-        """Publish shutdown message."""
-        config_msg = {'command': 'Shutdown'}
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
-        time.sleep(0.5)
-
-    def publish_update_config(self, config_id, config):
-        """Send create config message."""
-        config_msg = {'command': 'UpdateConfig', 'configId': config_id, 'config': config}
-        config_msg['config']['outputVariables'] = self.output_variables
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
-        time.sleep(0.5)
-
     def run_service(self):
         """Run the micro-service."""
-        t = threading.Thread(target=self.run, args=(self.args,))
-        t.daemon = True  # use setter for py2
-        t.start()
-        time.sleep(1)
+        self.log_data('run', 'service method', self.service_run_method)
+        if self.service_run_method == 'thread':
+            t = threading.Thread(target=self.run, args=(self.args,))
+            t.daemon = True  # use setter for py2
+            t.start()
+            time.sleep(1)
+        elif self.service_run_method == 'multiprocess':
+            p = Process(target=self.run, args=(self.args,))
+            p.daemon = True
+            p.start()
+            # p.join()
+        time.sleep(5)
 
     @classmethod
     def setup_class(cls):
@@ -648,11 +658,11 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex.playbook.db.r
 
+        self.patch_service()
         if not os.path.isfile(self.service_file):
             with open(self.service_file, 'w+') as f:  # noqa: F841; pylint: disable=unused-variable
                 pass
             self.run_service()
-        self.patch_service()
 
     def stage_data(self, staged_data):
         """Stage the data in the profile."""

@@ -34,15 +34,6 @@ class InstallJson(object):
                 self._contents = json.load(fh, object_pairs_hook=OrderedDict)
         return self._contents
 
-    @property
-    def config_params_dict(self):
-        """Return params as name/data dict."""
-        params = {}
-        for p in self.params:
-            if p.get('config'):
-                params.setdefault(p.get('name'), p)
-        return params
-
     @staticmethod
     def expand_valid_values(valid_values):
         """Expand supported playbook variables to their full list.
@@ -78,20 +69,21 @@ class InstallJson(object):
             valid_values.append('')
         return valid_values
 
-    def filter_params_dict(self, config=None, name=None, required=None, _type=None):
+    def filter_params_dict(self, name=None, required=None, service_config=None, _type=None):
         """Return params as name/data dict."""
         params = {}
         for p in self.params:
-            if config is not None:
-                if p.get('config') is not config:
-                    continue
 
             if name is not None:
                 if p.get('name') != name:
                     continue
 
             if required is not None:
-                if p.get('required') is not required:
+                if p.get('required', False) is not required:
+                    continue
+
+            if service_config is not None:
+                if p.get('serviceConfig', False) is not service_config:
                     continue
 
             if _type is not None:
@@ -106,7 +98,7 @@ class InstallJson(object):
         """Return params as name/data dict."""
         params = {}
         for p in self.params:
-            if p.get('required') is False:
+            if p.get('required', False) is False:
                 params.setdefault(p.get('name'), p)
         return params
 
@@ -125,10 +117,10 @@ class InstallJson(object):
             params.setdefault(p.get('name'), p)
         return params
 
-    def params_to_args(self, config=None, name=None, required=None, _type=None):
+    def params_to_args(self, name=None, required=None, service_config=None, _type=None):
         """Return params as name/data dict."""
         args = {}
-        for n, p in self.filter_params_dict(config, name, required, _type).items():
+        for n, p in self.filter_params_dict(name, required, service_config, _type).items():
             if p.get('type').lower() == 'boolean':
                 args[n] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':
@@ -155,6 +147,24 @@ class InstallJson(object):
         params = {}
         for p in self.params:
             if p.get('required') is True:
+                params.setdefault(p.get('name'), p)
+        return params
+
+    @property
+    def service_config_params_dict(self):
+        """Return params as name/data dict."""
+        params = {}
+        for p in self.params:
+            if p.get('serviceConfig'):
+                params.setdefault(p.get('name'), p)
+        return params
+
+    @property
+    def trigger_config_params_dict(self):
+        """Return params as name/data dict."""
+        params = {}
+        for p in self.params:
+            if p.get('serviceConfig') is False:
                 params.setdefault(p.get('name'), p)
         return params
 
