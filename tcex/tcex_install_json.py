@@ -128,7 +128,7 @@ class InstallJson(object):
     def params_to_args(self, config=None, name=None, required=None, _type=None):
         """Return params as name/data dict."""
         args = {}
-        for n, p in list(self.filter_params_dict(config, name, required, _type).items()):
+        for n, p in self.filter_params_dict(config, name, required, _type).items():
             if p.get('type').lower() == 'boolean':
                 args[n] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':

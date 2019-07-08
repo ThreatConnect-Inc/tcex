@@ -266,26 +266,15 @@ class TcExTest(TcExBin):
                 }
 
         elif self.args.permutation_id is not None:
-            if self.ij.runtime_level.lower() == 'organization':
-                profile_data = {
-                    self.args.profile_name: {
-                        'inputs': {
-                            'optional': self.ij.params_to_args(required=False),
-                            'required': self.ij.params.to_args(required=True),
-                        },
-                        'runtime_level': self.ij.runtime_level,
-                    }
+            profile_data = {
+                self.args.profile_name: {
+                    'inputs': {
+                        'optional': self.profile_settings_args_layout_json(False),
+                        'required': self.profile_settings_args_layout_json(True),
+                    },
+                    'runtime_level': self.ij.runtime_level,
                 }
-            elif self.ij.runtime_level.lower() == 'playbook':
-                profile_data = {
-                    self.args.profile_name: {
-                        'inputs': {
-                            'optional': self.profile_settings_args_layout_json(False),
-                            'required': self.profile_settings_args_layout_json(True),
-                        },
-                        'runtime_level': self.ij.runtime_level,
-                    }
-                }
+            }
         elif self.ij.runtime_level.lower() == 'triggerservice':
             profile_data = {
                 self.args.profile_name: {
