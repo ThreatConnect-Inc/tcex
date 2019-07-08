@@ -211,7 +211,7 @@ class TcExProfile(TcExBin):
                 sys.exit(1)
             profile_args = self.profile_settings_args_layout_json(required)
         else:
-            profile_args = ij.params_to_args(required=True)
+            profile_args = ij.params_to_args(required=required)
         return profile_args
 
     @staticmethod

@@ -32,6 +32,19 @@ class Validator(object):
         self._threatconnect = None
         self.max_diff = 10
 
+    @staticmethod
+    def _string_to_int_float(x):
+        """Take string input and return float or int."""
+        try:
+            f = float(x)
+            i = int(x)
+        except ValueError:
+            return x  # return original value
+        else:
+            if f != i:
+                return f  # return float
+            return i  # return int
+
     def details(self, app_data, test_data, op):
         """Return details about the validation."""
         details = ''
@@ -48,11 +61,6 @@ class Validator(object):
                             'App Data',
                             '({}), Type: [{}]'.format(app_data, type(app_data)),
                         )
-                        # self.log.info(
-                        #     '[validate] App Data   : ({}), Type: [{}]'.format(
-                        #         app_data, type(app_data)
-                        #     )
-                        # )
                     elif diff[0] == '+':
                         details += '\n    * Extra data at index {}'.format(i)
                         self.log_data(
@@ -60,14 +68,12 @@ class Validator(object):
                             'Diff',
                             ('[validate] Diff       : Extra data at index {}'.format(i)),
                         )
-                        # self.log.info('[validate] Diff       : Extra data at index {}'.format(i))
                     if diff_count > self.max_diff:
                         details += '\n    * Max number of differences reached.'
                         # don't spam the logs if string are vastly different
                         self.log_data(
                             'validate', 'Maximum Reached', 'Max number of differences reached.'
                         )
-                        # self.log.info('[validate] Max number of differences reached.')
                         break
                     diff_count += 1
             except TypeError:
@@ -100,7 +106,7 @@ class Validator(object):
         }
         return operators.get(op, None)
 
-    def operator_deep_diff(self, app_data, test_data):
+    def operator_deep_diff(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
 
         Args:
@@ -119,14 +125,14 @@ class Validator(object):
 
         # run operator
         try:
-            ddiff = DeepDiff(app_data, test_data, ignore_order=True)
+            ddiff = DeepDiff(app_data, test_data, ignore_order=True, **kwargs)
         except KeyError:
             return False, 'Encountered KeyError when running deepdiff'
         except NameError:
             return False, 'Encountered NameError when running deepdiff'
 
         if ddiff:
-            return False, ddiff
+            return False, str(ddiff)
         return True, ''
 
     def operator_eq(self, app_data, tests_data):
@@ -142,8 +148,7 @@ class Validator(object):
         results = operator.eq(app_data, tests_data)
         return results, self.details(app_data, tests_data, 'eq')
 
-    @staticmethod
-    def operator_ge(app_data, tests_data):
+    def operator_ge(self, app_data, test_data):
         """Compare app data is greater than or equal to tests data.
 
         Args:
@@ -153,14 +158,17 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.ge(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not greater than or equal to test data'
+            details = '{} {} !(>=) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
-    @staticmethod
-    def operator_gt(app_data, tests_data):
+    def operator_gt(self, app_data, test_data):
         """Compare app data is greater than tests data.
 
         Args:
@@ -170,14 +178,21 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.gt(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not greater than to test data'
+            details = '{} {} !(>) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
     def operator_json_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
+
+        Takes a str, dict, or list value and removed field before passing to deepdiff. Only fields
+        at the "root" level can be removed (e.g., "date", not "data.date").
 
         Args:
             app_data (dict|str|list): The data created by the App.
@@ -191,19 +206,35 @@ class Validator(object):
         if isinstance(test_data, (string_types)):
             test_data = json.loads(test_data)
 
-        # remove exclude field. usually dynamic data like date fields.
-        for e in kwargs.get('exclude', []):
-            try:
-                del app_data[e]
-            except KeyError:
-                pass
+        exclude = kwargs.get('exclude', [])
+        if isinstance(app_data, list) and isinstance(test_data, list):
+            app_data = [self.operator_json_eq_exclude(ad, exclude) for ad in app_data]
+            test_data = [self.operator_json_eq_exclude(td, exclude) for td in test_data]
+        elif isinstance(app_data, dict) and isinstance(test_data, dict):
+            app_data = self.operator_json_eq_exclude(app_data, exclude)
+            test_data = self.operator_json_eq_exclude(test_data, exclude)
 
+        return self.operator_deep_diff(app_data, test_data)
+
+    @staticmethod
+    def operator_json_eq_exclude(data, exclude):
+        """Remove excluded field from dictionary.
+
+        Args:
+            app_data (dict|str): The data to be processed.
+            exclude (list): The key names to be "excluded" from data.
+
+        Returns:
+            dict: The data with excluded values removed.
+        """
+        if isinstance(data, (string_types)):
+            data = json.loads(data)
+        for e in exclude:
             try:
-                del test_data[e]
+                del data[e]
             except KeyError:
                 pass
-            del kwargs['exclude']
-        return self.operator_deep_diff(app_data, test_data)
+        return data
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -227,8 +258,7 @@ class Validator(object):
 
         return self.operator_deep_diff(app_data, test_data, **kwargs)
 
-    @staticmethod
-    def operator_le(app_data, tests_data):
+    def operator_le(self, app_data, test_data):
         """Compare app data is less than or equal to tests data.
 
         Args:
@@ -238,14 +268,17 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.le(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not less than or equal to test data'
+            details = '{} {} !(<=) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
-    @staticmethod
-    def operator_lt(app_data, tests_data):
+    def operator_lt(self, app_data, test_data):
         """Compare app data is less than tests data.
 
         Args:
@@ -255,10 +288,14 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.lt(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not less than to test data'
+            details = '{} {} !(<) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
     def operator_ne(self, app_data, tests_data):
@@ -323,8 +360,6 @@ class Redis(object):
         variable_data = self.provider.tcex.playbook.read(variable)
         self.log_data('validate', 'Variable', variable)
         self.log_data('validate', 'DB Data', variable_data)
-        # self.provider.log.info('[validate] Variable: {}'.format(variable))
-        # self.provider.log.info('[validate] DB Data: {}'.format(variable_data))
         if not variable:
             self.provider.log.error('NoneError: Redis Variable not provided')
             return False
@@ -342,8 +377,6 @@ class Redis(object):
         variable_data = self.provider.tcex.playbook.read(variable)
         self.log_data('validate', 'Variable', variable)
         self.log_data('validate', 'DB Data', variable_data)
-        # self.provider.log.info('[validate] Variable: {}'.format(variable))
-        # self.provider.log.info('[validate] App Data: {}'.format(variable_data))
         redis_type = self.provider.tcex.playbook.variable_type(variable)
         if redis_type.endswith('Array'):
             redis_type = list
@@ -498,22 +531,12 @@ class Redis(object):
         self.log_data('validate', 'App Data', '({}), Type: [{}]'.format(app_data, type(app_data)))
         self.log_data('validate', 'Operator', op)
         self.log_data('validate', 'Test Data', '({}), Type: [{}]'.format(test_data, type(app_data)))
-        # self.provider.log.info(
-        #     '[validate] App Data   : ({}), Type: [{}]'.format(app_data, type(app_data))
-        # )
-        # self.provider.log.info('[validate] Operator  : ({})'.format(op))
-        # self.provider.log.info(
-        #     '[validate] Test Data  : ({}), Type: [{}]'.format(test_data, type(test_data))
-        # )
 
         if passed:
             self.log_data('validate', 'Result', 'Passed')
-            # self.provider.log.info('[validate] Results    : Passed')
         else:
-            self.log_data('validate', 'Result', 'Failed')
-            self.log_data('validate', 'Details', details)
-            # self.provider.log.error('[validate] Results    : Failed')
-            # self.provider.log.error('[validate] Details    : {}'.format(details))
+            self.log_data('validate', 'Result', 'Failed', 'error')
+            self.log_data('validate', 'Details', details, 'error')
 
 
 class ThreatConnect(object):

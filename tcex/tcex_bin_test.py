@@ -281,7 +281,7 @@ class TcExTest(TcExBin):
                     'configs': [
                         {
                             'config_id': str(randint(1000, 9999)),
-                            'config': self.ij.params_to_args(config=True),
+                            'config': self.ij.params_to_args(service_config=False),
                         }
                     ],
                     'runtime_level': self.ij.runtime_level,
