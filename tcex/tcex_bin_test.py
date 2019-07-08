@@ -244,8 +244,12 @@ class TcExTest(TcExBin):
         if self.args.profile_file:
             sort_keys = False
             data = []
+            profile_file = os.path.join(self.app_path, 'tcex.d', 'profiles', self.args.profile_file)
             if os.path.isfile(self.args.profile_file):
                 with open(self.args.profile_file, 'r') as fh:
+                    data = json.load(fh)
+            elif os.path.isfile(profile_file):
+                with open(profile_file, 'r') as fh:
                     data = json.load(fh)
             else:
                 self.handle_error(
@@ -262,15 +266,26 @@ class TcExTest(TcExBin):
                 }
 
         elif self.args.permutation_id is not None:
-            profile_data = {
-                self.args.profile_name: {
-                    'inputs': {
-                        'optional': self.profile_settings_args_layout_json(False),
-                        'required': self.profile_settings_args_layout_json(True),
-                    },
-                    'runtime_level': self.ij.runtime_level,
+            if self.ij.runtime_level.lower() == 'organization':
+                profile_data = {
+                    self.args.profile_name: {
+                        'inputs': {
+                            'optional': self.ij.params_to_args(required=False),
+                            'required': self.ij.params.to_args(required=True),
+                        },
+                        'runtime_level': self.ij.runtime_level,
+                    }
                 }
-            }
+            elif self.ij.runtime_level.lower() == 'playbook':
+                profile_data = {
+                    self.args.profile_name: {
+                        'inputs': {
+                            'optional': self.profile_settings_args_layout_json(False),
+                            'required': self.profile_settings_args_layout_json(True),
+                        },
+                        'runtime_level': self.ij.runtime_level,
+                    }
+                }
         elif self.ij.runtime_level.lower() == 'triggerservice':
             profile_data = {
                 self.args.profile_name: {
@@ -297,10 +312,7 @@ class TcExTest(TcExBin):
 
         # add profiles
         for profile_name, data in profile_data.items():
-            if self.ij.runtime_level.lower() == 'organization':
-                self.profiles.add(profile_name, data, sort_keys=sort_keys)
-            else:
-                self.profiles.add(profile_name, data, sort_keys=sort_keys)
+            self.profiles.add(profile_name, data, sort_keys=sort_keys)
 
     @staticmethod
     def add_profile_staging(staging_files):

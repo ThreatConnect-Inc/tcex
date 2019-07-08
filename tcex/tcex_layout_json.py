@@ -46,7 +46,7 @@ class LayoutJson(object):
     @property
     def parameters_names(self):
         """Return layout.json params in a flattened dict with name param as key."""
-        return self.parameters_dict.keys()
+        return list(self.parameters_dict.keys())
 
     @property
     def outputs_dict(self):
