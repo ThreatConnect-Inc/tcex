@@ -7,7 +7,10 @@ import re
 import sys
 from random import randint
 
-from mako.template import Template
+try:
+    from mako.template import Template
+except ImportError:
+    pass  # mako is only required for local testing
 import requests
 import colorama as c
 

@@ -129,7 +129,7 @@ class TcExBin(object):
                 name = self.lj.parameters_names[index]
                 display = self.lj.parameters_dict.get(name, {}).get('display')
             else:
-                name = [*self.ij.params_dict.keys()][index]
+                name = list(self.ij.params_dict.keys())[index]
                 display = False
 
             input_type = self.ij.params_dict.get(name, {}).get('type')
