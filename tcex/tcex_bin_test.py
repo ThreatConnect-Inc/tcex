@@ -47,7 +47,7 @@ class Profiles:
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
         }
-        if profile_data.get('runtime_level').lower() == 'triggerservice':
+        if profile_data.get('runtime_level').lower() in ['triggerservice', 'webhooktriggerservice']:
             profile['configs'] = profile_data.get('configs')
             profile['trigger'] = profile_data.get('trigger')
         else:
@@ -275,7 +275,7 @@ class TcExTest(TcExBin):
                     'runtime_level': self.ij.runtime_level,
                 }
             }
-        elif self.ij.runtime_level.lower() == 'triggerservice':
+        elif self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             profile_data = {
                 self.args.profile_name: {
                     'configs': [

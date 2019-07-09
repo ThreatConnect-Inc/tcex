@@ -76,9 +76,6 @@
           "allowMultiple": {
             "type": "boolean"
           },
-          "config": {
-            "type": "boolean"
-          },
           "default": {
             "type": [
               "boolean",
@@ -136,6 +133,9 @@
           },
           "sequence": {
             "type": "integer"
+          },
+          "serviceConfig": {
+            "type": "boolean"
           },
           "setup": {
             "type": "boolean"

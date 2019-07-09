@@ -17,6 +17,7 @@
 from tcex.testing.test_case import TestCaseApp  # noqa: F401
 from tcex.testing.test_case import TestCasePlaybook  # noqa: F401
 from tcex.testing.test_case import TestCaseTriggerService  # noqa: F401
+from tcex.testing.test_case import TestCaseWebHookTriggerService  # noqa: F401
 from tcex.testing.monkeypatch import monkeypatch  # noqa: F401
 from tcex.testing.monkeypatch import register_monkeypatch  # noqa: F401
 from tcex.testing.stage_data import Stager  # noqa: F401

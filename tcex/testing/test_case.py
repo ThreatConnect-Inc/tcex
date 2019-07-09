@@ -489,8 +489,8 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         super(TestCasePlaybook, self).teardown_method()
 
 
-class TestCaseTriggerService(TestCasePlaybookCommon):
-    """Playbook TestCase Class"""
+class TestCaseService(TestCasePlaybookCommon):
+    """Service App TestCase Class"""
 
     # TODO: Update after merge of services branch
     if hasattr(TcEx, 'service'):
@@ -506,7 +506,7 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
     @property
     def default_args(self):
         """Return App default args."""
-        args = super(TestCaseTriggerService, self).default_args
+        args = super(TestCaseService, self).default_args
         args.update(
             {
                 'tc_client_channel': self.client_channel,
@@ -553,6 +553,94 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
         config_msg['config']['outputVariables'] = self.output_variables
         self.redis_client.publish(self.server_channel, json.dumps(config_msg))
         time.sleep(0.5)
+
+    def run(self, args):
+        """Implement in Child Class"""
+        raise NotImplementedError('Child class must implement this method.')
+
+    def run_profile(self, profile_name):
+        """Run an App using the profile name."""
+        profile = self.profile(profile_name)
+        if not profile:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+
+        # stage any staging data
+        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
+
+        # build args from install.json
+        args = {}
+        args.update(profile.get('inputs', {}).get('required', {}))
+        args.update(profile.get('inputs', {}).get('optional', {}))
+        if not args:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+
+        # run the App
+        self.run(args)
+
+        return self._exit(0)
+
+    def run_service(self):
+        """Run the micro-service."""
+        self.log_data('run', 'service method', self.service_run_method)
+        if self.service_run_method == 'thread':
+            t = threading.Thread(target=self.run, args=(self.args,))
+            t.daemon = True  # use setter for py2
+            t.start()
+            time.sleep(1)
+        elif self.service_run_method == 'multiprocess':
+            p = Process(target=self.run, args=(self.args,))
+            p.daemon = True
+            p.start()
+            # p.join()
+        time.sleep(5)
+
+    @classmethod
+    def setup_class(cls):
+        """Run once before all test cases."""
+        super(TestCaseService, cls).setup_class()
+        cls.args = {}
+        cls.service_file = 'SERVICE_STARTED'
+
+    def setup_method(self):
+        """Run before each test method runs."""
+        super(TestCaseService, self).setup_method()
+        self.stager.redis.from_dict(self.redis_staging_data)
+        self.redis_client = self.tcex.playbook.db.r
+
+        self.patch_service()
+        if not os.path.isfile(self.service_file):
+            with open(self.service_file, 'w+') as f:  # noqa: F841; pylint: disable=unused-variable
+                pass
+            self.run_service()
+
+    def stage_data(self, staged_data):
+        """Stage the data in the profile."""
+        for key, value in list(staged_data.get('redis', {}).items()):
+            self.stager.redis.stage(key, value)
+
+    @classmethod
+    def teardown_class(cls):
+        """Run once before all test cases."""
+        super(TestCaseService, cls).teardown_class()
+        try:
+            os.remove(cls.service_file)
+        except FileNotFoundError:
+            pass
+        # cls.publish_shutdown(cls)
+        # cls.redis_client.publish('server-channel-123', '{"command": "Shutdown"}')
+
+    def teardown_method(self):
+        """Run after each test method runs."""
+        time.sleep(0.5)
+        r = self.stager.redis.delete_context(self.context)
+        self.log_data('teardown method', 'delete count', r)
+        super(TestCaseService, self).teardown_method()
+
+
+class TestCaseTriggerService(TestCaseService):
+    """Service App TestCase Class"""
 
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.
@@ -607,79 +695,55 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
 
         return self._exit(app.tcex.exit_code)
 
-    def run_profile(self, profile_name):
-        """Run an App using the profile name."""
-        profile = self.profile(profile_name)
-        if not profile:
-            self.log.error('No profile named {} found.'.format(profile_name))
+
+class TestCaseWebHookTriggerService(TestCaseService):
+    """WebHookTrigger App TestCase Class"""
+
+    def run(self, args):  # pylint: disable=too-many-return-statements
+        """Run the Playbook App.
+
+        Args:
+            args (dict): The App CLI args.
+
+        Returns:
+            [type]: [description]
+        """
+        # resolve env vars
+        for k, v in args.items():
+            if isinstance(v, string_types):
+                args[k] = self.resolve_env_args(v)
+
+        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
+        self.log_data('run', 'args', args)
+        app = self.app(args)
+
+        # Setup
+        exit_code = self.run_app_method(app, 'setup')
+        if exit_code != 0:
+            return exit_code
+
+        # Trigger
+        try:
+            # start the webhook trigger (blocking)
+            app.tcex.service.webhook_trigger(
+                callback=app.webhook_callback,
+                create_callback=app.create_config_callback,
+                delete_callback=app.delete_config_callback,
+                update_callback=app.update_config_callback,
+                shutdown_callback=app.shutdown_callback,
+            )
+        except SystemExit as e:
+            self.log.error('App failed in run() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in run() method ({}).'.format(traceback.format_exc())
+            )
             return self._exit(1)
 
-        # stage any staging data
-        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
+        # Teardown
+        exit_code = self.run_app_method(app, 'teardown')
+        if exit_code != 0:
+            return exit_code
 
-        # build args from install.json
-        args = {}
-        args.update(profile.get('inputs', {}).get('required', {}))
-        args.update(profile.get('inputs', {}).get('optional', {}))
-        if not args:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
-
-        # run the App
-        self.run(args)
-
-        return self._exit(0)
-
-    def run_service(self):
-        """Run the micro-service."""
-        self.log_data('run', 'service method', self.service_run_method)
-        if self.service_run_method == 'thread':
-            t = threading.Thread(target=self.run, args=(self.args,))
-            t.daemon = True  # use setter for py2
-            t.start()
-            time.sleep(1)
-        elif self.service_run_method == 'multiprocess':
-            p = Process(target=self.run, args=(self.args,))
-            p.daemon = True
-            p.start()
-            # p.join()
-        time.sleep(5)
-
-    @classmethod
-    def setup_class(cls):
-        """Run once before all test cases."""
-        super(TestCaseTriggerService, cls).setup_class()
-        cls.args = {}
-        cls.service_file = 'SERVICE_STARTED'
-
-    def setup_method(self):
-        """Run before each test method runs."""
-        super(TestCaseTriggerService, self).setup_method()
-        self.stager.redis.from_dict(self.redis_staging_data)
-        self.redis_client = self.tcex.playbook.db.r
-
-        self.patch_service()
-        if not os.path.isfile(self.service_file):
-            with open(self.service_file, 'w+') as f:  # noqa: F841; pylint: disable=unused-variable
-                pass
-            self.run_service()
-
-    def stage_data(self, staged_data):
-        """Stage the data in the profile."""
-        for key, value in list(staged_data.get('redis', {}).items()):
-            self.stager.redis.stage(key, value)
-
-    @classmethod
-    def teardown_class(cls):
-        """Run once before all test cases."""
-        super(TestCaseTriggerService, cls).teardown_class()
-        os.remove(cls.service_file)
-        # cls.publish_shutdown(cls)
-        # cls.redis_client.publish('server-channel-123', '{"command": "Shutdown"}')
-
-    def teardown_method(self):
-        """Run after each test method runs."""
-        time.sleep(0.5)
-        r = self.stager.redis.delete_context(self.context)
-        self.log_data('teardown method', 'delete count', r)
-        super(TestCaseTriggerService, self).teardown_method()
+        return self._exit(app.tcex.exit_code)
