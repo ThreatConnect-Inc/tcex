@@ -668,7 +668,6 @@ class ThreatConnect(object):
     def tc_entities(self, tc_entities, owner, files=None):
         """Validate a array of tc_entities"""
         results = []
-        print(files)
         if files:
             if not len(tc_entities) == len(files):
                 return [
