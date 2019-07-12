@@ -5,8 +5,12 @@ import json
 import os
 import re
 import sys
+from random import randint
 
-from mako.template import Template
+try:
+    from mako.template import Template
+except ImportError:
+    pass  # mako is only required for local testing
 import requests
 import colorama as c
 
@@ -30,7 +34,7 @@ class Profiles:
         # properties
         self._profiles = None
 
-    def add(self, profile_name, profile_data, profile_type='Playbook', sort_keys=True):
+    def add(self, profile_name, profile_data, sort_keys=True):
         """Add a profile."""
         profile_filename = os.path.join(self.profile_dir, '{}.json'.format(profile_name))
         if os.path.isfile(profile_filename):
@@ -43,11 +47,16 @@ class Profiles:
 
         profile = {
             'exit_codes': profile_data.get('exit_codes', [0]),
-            'inputs': profile_data.get('inputs'),
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
         }
-        if profile_type == 'App':
+        if profile_data.get('runtime_level').lower() == 'triggerservice':
+            profile['configs'] = profile_data.get('configs')
+            profile['trigger'] = profile_data.get('trigger')
+        else:
+            profile['inputs'] = profile_data.get('inputs')
+
+        if profile_data.get('runtime_level').lower() == 'organization':
             profile['validation_criteria'] = profile_data.get('validation_criteria', {'percent': 5})
             profile.pop('outputs')
 
@@ -196,12 +205,13 @@ class TcExTest(TcExBin):
         super(TcExTest, self).__init__(_args)
 
         # properties
-        self.base_dir = os.path.join(self.app_path, 'tests')
-        self.feature_dir = os.path.join(self.base_dir, self.args.feature)
-        self.feature_profile_dir = os.path.join(self.base_dir, self.args.feature, 'profiles.d')
-        self.profiles = Profiles(self.profiles_dir)
-        self.validation = Validation(self.base_dir, self.args.branch)
-        self._output_variables = None
+        if not self.args.permutations:
+            self.base_dir = os.path.join(self.app_path, 'tests')
+            self.feature_dir = os.path.join(self.base_dir, self.args.feature)
+            self.feature_profile_dir = os.path.join(self.base_dir, self.args.feature, 'profiles.d')
+            self.profiles = Profiles(self.profiles_dir)
+            self.validation = Validation(self.base_dir, self.args.branch)
+            self._output_variables = None
 
     @staticmethod
     def _print_results(file, status):
@@ -237,8 +247,12 @@ class TcExTest(TcExBin):
         if self.args.profile_file:
             sort_keys = False
             data = []
+            profile_file = os.path.join(self.app_path, 'tcex.d', 'profiles', self.args.profile_file)
             if os.path.isfile(self.args.profile_file):
                 with open(self.args.profile_file, 'r') as fh:
+                    data = json.load(fh)
+            elif os.path.isfile(profile_file):
+                with open(profile_file, 'r') as fh:
                     data = json.load(fh)
             else:
                 self.handle_error(
@@ -250,39 +264,47 @@ class TcExTest(TcExBin):
                 profile_data[d.get('profile_name')] = {
                     'exit_codes': d.get('exit_codes'),
                     'inputs': d.get('args', {}).get('app'),
+                    'runtime_level': self.ij.runtime_level,
                     'stage': {'redis': self.add_profile_staging(d.get('data_files', []))},
                 }
 
-        elif self.args.permutation_id:
-            # TODO: fix the profile_settings_args_layout_json to not run permutations twice
+        elif self.args.permutation_id is not None:
             profile_data = {
                 self.args.profile_name: {
                     'inputs': {
                         'optional': self.profile_settings_args_layout_json(False),
                         'required': self.profile_settings_args_layout_json(True),
-                    }
+                    },
+                    'runtime_level': self.ij.runtime_level,
+                }
+            }
+        elif self.ij.runtime_level.lower() == 'triggerservice':
+            profile_data = {
+                self.args.profile_name: {
+                    'configs': [
+                        {
+                            'config_id': str(randint(1000, 9999)),
+                            'config': self.ij.params_to_args(service_config=False),
+                        }
+                    ],
+                    'runtime_level': self.ij.runtime_level,
+                    'trigger': {},
                 }
             }
         else:
             profile_data = {
                 self.args.profile_name: {
                     'inputs': {
-                        'optional': self.profile_settings_args_install_json(
-                            self.install_json, False
-                        ),
-                        'required': self.profile_settings_args_install_json(
-                            self.install_json, True
-                        ),
-                    }
+                        'optional': self.ij.params_to_args(required=False),
+                        'required': self.ij.params_to_args(required=True),
+                    },
+                    'runtime_level': self.ij.runtime_level,
                 }
             }
 
         # add profiles
         for profile_name, data in profile_data.items():
-            if self.is_runtime_app():
-                self.profiles.add(profile_name, data, profile_type='App', sort_keys=sort_keys)
-            else:
-                self.profiles.add(profile_name, data, sort_keys=sort_keys)
+            self.profiles.add(profile_name, data, sort_keys=sort_keys)
 
     @staticmethod
     def add_profile_staging(staging_files):
@@ -358,7 +380,7 @@ class TcExTest(TcExBin):
             'parent_class': 'TestCasePlaybook',
             'parent_import': 'from tcex.testing import TestCasePlaybook',
         }
-        if self.is_runtime_app():
+        if self.ij.runtime_level.lower() == 'organization':
             test_template_variables = {
                 'validate_batch_method': 'self.validator.threatconnect.batch('
                 'self.context, '
@@ -378,7 +400,7 @@ class TcExTest(TcExBin):
         if self._output_variables is None:
             self._output_variables = []
             # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
+            for p in self.ij.playbook.get('outputVariables') or []:
                 # "#App:9876:app.data.count!String"
                 self._output_variables.append(
                     '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))

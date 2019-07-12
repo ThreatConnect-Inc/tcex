@@ -13,11 +13,11 @@ class Validate(object):
         """Validate Redis output data."""
         if output_variables is None:
             return
-        % for data in output_data:
 
-        if '${data['variable']}' in output_variables:
-            data = output_variables.get('${data['variable']}')
-            self.${data['method']}(data)
+        for k, v in output_variables.items():
+        % for data in output_data:
+            if '${data['variable']}' == k:
+                self.${data['method']}(v)
         % endfor
     % for data in output_data:
 

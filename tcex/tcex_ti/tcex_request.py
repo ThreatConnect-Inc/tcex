@@ -31,7 +31,7 @@ def session_retry(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504
 class TcExRequest(object):
     """Wrapper on Python Requests Module with API logging."""
 
-    def __init__(self, tcex, session=None, url=None, http_method='GET', payload=None, json=None):
+    def __init__(self, tcex, session=None, url=None, http_method='GET', payload=None, _json=None):
         """Initialize the Class properties."""
         if payload is None:
             payload = {}
@@ -42,7 +42,7 @@ class TcExRequest(object):
         self._content_type = None
         self._headers = {}
         self._http_method = http_method
-        self._json = json
+        self._json = _json
         self._payload = payload
         self._url = url
         self._files = None

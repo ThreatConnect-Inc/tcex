@@ -129,10 +129,11 @@ class TcExArgs(object):
             self.args_update()
 
             # reinitialize logger with new log level and api settings
-            self.tcex._logger(fh=True)
+            self.tcex.logger.remove_handler_by_name('sh')
+            self.tcex.logger.add_rotating_file_handler()
 
             # log system and App data
-            self.tcex.log_info()
+            self.tcex.logger.log_info()
 
         return self._default_args
 
@@ -197,7 +198,7 @@ class TcExArgs(object):
                 self.inject_params(params)
             else:
                 # reinitialize logger with new log level and api settings
-                self.tcex._logger(clear_handler=False)
+                self.tcex.logger.add_rotating_file_handler()
 
         return self._default_args
 
@@ -244,7 +245,7 @@ class TcExArgs(object):
         self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
 
         # reinitialize logger with new log level and api settings
-        self.tcex._logger(fh=True)
+        self.tcex.logger.add_rotating_file_handler()
 
     def resolved_args(self):
         """Parse args if they have not already been parsed and return the Namespace for args.
@@ -276,7 +277,7 @@ class TcExArgs(object):
 
     @property
     def tc_bool_args(self):
-        """A list of default ThreatConnect Args that are booleans."""
+        """Return a list of default ThreatConnect Args that are booleans."""
         return [
             'apply_proxy_external',
             'apply_proxy_ext',
@@ -292,7 +293,7 @@ class TcExArgs(object):
 
     @property
     def tc_reserved_args(self):
-        """A list of *all* ThreatConnect reserved arg values."""
+        """Return a list of *all* ThreatConnect reserved arg values."""
         return [
             'tc_token',
             'tc_token_expires',

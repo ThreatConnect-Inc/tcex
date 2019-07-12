@@ -11,6 +11,7 @@ from random import randint
 import colorama as c
 
 from .tcex_bin import TcExBin
+from .tcex_install_json import InstallJson
 
 
 class TcExProfile(TcExBin):
@@ -146,7 +147,7 @@ class TcExProfile(TcExBin):
             self.handle_error('Profile "{}" already exists.'.format(self.args.profile_name))
 
         # load the install.json file defined as a arg (default: install.json)
-        ij = self.load_install_json(self.args.ij)
+        ij = InstallJson(self.args.ij, self.app_path)
 
         print(
             'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name)
@@ -167,7 +168,7 @@ class TcExProfile(TcExBin):
         profile['profile_name'] = self.args.profile_name
         profile['quiet'] = False
 
-        if ij.get('runtimeLevel') == 'Playbook':
+        if ij.runtime_level.lower() == 'playbook':
             validations = self.profile_settings_validations
             profile['validations'] = validations.get('rules')
             profile['args']['default']['tc_playbook_out_variables'] = '{}'.format(
@@ -210,7 +211,7 @@ class TcExProfile(TcExBin):
                 sys.exit(1)
             profile_args = self.profile_settings_args_layout_json(required)
         else:
-            profile_args = self.profile_settings_args_install_json(ij, required)
+            profile_args = ij.params_to_args(required=required)
         return profile_args
 
     @staticmethod
@@ -243,7 +244,7 @@ class TcExProfile(TcExBin):
         profile_default_args['tc_proxy_tc'] = False
         profile_default_args['tc_proxy_username'] = '$env.TC_PROXY_USERNAME'
         profile_default_args['tc_temp_path'] = 'log'
-        if ij.get('runtimeLevel') == 'Playbook':
+        if ij.runtime_level.lower() == 'playbook':
             profile_default_args['tc_playbook_db_type'] = 'Redis'
             profile_default_args['tc_playbook_db_context'] = str(uuid4())
             profile_default_args['tc_playbook_db_path'] = '$env.DB_PATH'
@@ -259,14 +260,13 @@ class TcExProfile(TcExBin):
         * One validation rule to ensure the output value is of the correct type.
         """
 
-        ij = self.load_install_json(self.args.ij)
+        ij = InstallJson(self.args.ij, self.app_path)
         validations = {'rules': [], 'outputs': []}
 
         job_id = randint(1000, 9999)
-        output_variables = ij.get('playbook', {}).get('outputVariables') or []
+        output_variables = ij.playbook.get('outputVariables') or []
         if self.args.permutation_id is not None:
             output_variables = self._output_permutations[self.args.permutation_id]
-        # for o in ij.get('playbook', {}).get('outputVariables') or []:
         for o in output_variables:
             variable = '#App:{}:{}!{}'.format(job_id, o.get('name'), o.get('type'))
             validations['outputs'].append(variable)
@@ -348,7 +348,7 @@ class TcExProfile(TcExBin):
         Args:
             profile (dict): The dictionary containting the profile settings.
         """
-        ij = self.load_install_json(profile.get('install_json', 'install.json'))
+        ij = InstallJson(profile.get('install_json', 'install.json'), self.app_path)
 
         if (
             profile.get('args', {}).get('app') is None
@@ -358,7 +358,7 @@ class TcExProfile(TcExBin):
             profile['args'] = {}
             profile['args']['app'] = {}
             profile['args']['default'] = {}
-            for arg in self.profile_settings_args_install_json(ij, None):
+            for arg in ij.params_to_args():
                 try:
                     profile['args']['app'][arg] = _args.pop(arg)
                 except KeyError:
@@ -402,8 +402,7 @@ class TcExProfile(TcExBin):
         Args:
             profile (dict): The dictionary containting the profile settings.
         """
-        ij = self.load_install_json(profile.get('install_json', 'install.json'))
-        ijp = self.install_json_params(ij)
+        ij = InstallJson(profile.get('install_json', 'install.json'))
 
         if (
             profile.get('args', {}).get('app', {}).get('optional') is None
@@ -413,8 +412,8 @@ class TcExProfile(TcExBin):
             profile['args']['app'] = {}
             profile['args']['app']['optional'] = {}
             profile['args']['app']['required'] = {}
-            for arg in self.profile_settings_args_install_json(ij, None):
-                required = ijp.get(arg).get('required', False)
+            for arg in ij.params_to_args():
+                required = ij.params_dict.get(arg).get('required', False)
 
                 try:
                     if required:
@@ -581,9 +580,9 @@ class TcExProfile(TcExBin):
             profile (dict): The current profile to validate.
         """
 
-        ij = self.load_install_json(profile.get('install_json'))
+        ij = InstallJson(profile.get('install_json'), self.app_path)
         print('{}{}Profile: "{}".'.format(c.Style.BRIGHT, c.Fore.BLUE, profile.get('profile_name')))
-        for arg in self.profile_settings_args_install_json(ij, None):
+        for arg in ij.params_to_args():
             if profile.get('args', {}).get('app', {}).get(arg) is None:
                 print('{}{}Input "{}" not found.'.format(c.Style.BRIGHT, c.Fore.YELLOW, arg))
 

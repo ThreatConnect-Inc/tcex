@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-""" Playbook App Template. """
+"""Playbook App Template."""
 from args import Args
-
-# Typically no changes are required to this file.
 
 
 class PlaybookApp(object):
@@ -23,7 +21,6 @@ class PlaybookApp(object):
 
     def parse_args(self):
         """Parse CLI args."""
-        self.tcex.log.info('Parsing Args.')
         Args(self.tcex.parser)
         self.args = self.tcex.args
 

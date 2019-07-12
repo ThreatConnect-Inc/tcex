@@ -697,12 +697,17 @@ class TIMappings(object):
         self._tcex.handle_error(925, ['action', 'attribute', 'action', 'action', action])
         return None
 
-    def add_attribute(self, attribute_type, attribute_value):
+    def add_attribute(
+        self, attribute_type, attribute_value, source=None, displayed=None, params=None
+    ):
         """
         Adds a attribute to a Group/Indicator or Victim
 
 
         Args:
+            source:
+            displayed:
+            params:
             attribute_type:
             attribute_value:
 
@@ -712,13 +717,19 @@ class TIMappings(object):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
+        if params is None:
+            params = {}
+
         return self.tc_requests.add_attribute(
             self.api_type,
             self.api_branch,
             self.unique_id,
             attribute_type,
             attribute_value,
+            source=source,
+            displayed=displayed,
             owner=self.owner,
+            params=params,
         )
 
     def attribute_labels(self, attribute_id, params=None):

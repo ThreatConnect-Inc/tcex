@@ -14,6 +14,9 @@ except ModuleNotFoundError:
 import colorama as c
 import redis
 
+from .tcex_install_json import InstallJson
+from .tcex_layout_json import LayoutJson
+
 
 class TcExBin(object):
     """Base Class for ThreatConnect command line tools.
@@ -33,18 +36,13 @@ class TcExBin(object):
         # properties
         self._db_conn = None
         self._input_permutations = []
-        self._install_json = None
-        self._install_json_params = None
-        self._install_json_output_variables = None
-        self._layout_json = None
-        self._layout_json_names = None
-        self._layout_json_params = None
-        self._layout_json_outputs = None
         self._output_permutations = []
         self._redis = None
         self._tcex_json = None
         self.app_path = os.getcwd()
         self.exit_code = 0
+        self.ij = InstallJson('install.json', self.app_path)
+        self.lj = LayoutJson('layout.json', self.app_path)
         self.input_table = 'inputs'
         self.output = []
 
@@ -115,45 +113,10 @@ class TcExBin(object):
         cur = self.db_conn.cursor()
         cur.execute(sql)
 
-    @staticmethod
-    def expand_valid_values(valid_values):
-        """Expand supported playbook variables to their full list.
-
-        Args:
-            valid_values (list): The list of valid values for Choice or MultiChoice inputs.
-
-        Returns:
-            List: An expanded list of valid values for Choice or MultiChoice inputs.
-        """
-
-        if '${GROUP_TYPES}' in valid_values:
-            valid_values.remove('${GROUP_TYPES}')
-            valid_values.extend(
-                [
-                    'Adversary',
-                    'Campaign',
-                    'Document',
-                    'Email',
-                    'Event',
-                    'Incident',
-                    'Intrusion Set',
-                    'Signature',
-                    'Task',
-                    'Threat',
-                ]
-            )
-        elif '${OWNERS}' in valid_values:
-            valid_values.remove('${OWNERS}')
-            valid_values.append('')
-        elif '${USERS}' in valid_values:
-            valid_values.remove('${USERS}')
-            valid_values.append('')
-        return valid_values
-
     def gen_permutations(self, index=0, args=None):
-        """Iterate recursively over layout.json parameter names.
+        """Iterate recursively over layout.json parameter names to build permutations.
 
-        TODO: Add indicator values.
+        .. NOTE:: Permutations are for layout.json based playbook Apps.
 
         Args:
             index (int, optional): The current index position in the layout names list.
@@ -162,19 +125,20 @@ class TcExBin(object):
         if args is None:
             args = []
         try:
-            is_playbook_app = self.is_playbook_app()
-            if is_playbook_app:
-                name = self.layout_json_names[index]
-                display = self.layout_json_params.get(name, {}).get('display')
+            if self.ij.runtime_level.lower() == 'playbook':
+                name = self.lj.parameters_names[index]
+                display = self.lj.parameters_dict.get(name, {}).get('display')
             else:
-                name = [*self.install_json_params().keys()][index]
+                name = list(self.ij.params_dict.keys())[index]
                 display = False
 
-            input_type = self.install_json_params().get(name, {}).get('type')
+            input_type = self.ij.params_dict.get(name, {}).get('type')
             if input_type is None:
                 self.handle_error('No value found in install.json for "{}".'.format(name))
 
-            if self.is_runtime_app() or self.validate_layout_display(self.input_table, display):
+            if self.ij.runtime_level.lower() == 'organization' or self.validate_layout_display(
+                self.input_table, display
+            ):
                 if input_type.lower() == 'boolean':
                     for val in [True, False]:
                         args.append({'name': name, 'value': val})
@@ -183,8 +147,8 @@ class TcExBin(object):
                         # remove the previous arg before next iteration
                         args.pop()
                 elif input_type.lower() == 'choice':
-                    valid_values = self.expand_valid_values(
-                        self.install_json_params().get(name, {}).get('validValues', [])
+                    valid_values = self.ij.expand_valid_values(
+                        self.ij.params_dict.get(name, {}).get('validValues', [])
                     )
                     for val in valid_values:
                         args.append({'name': name, 'value': val})
@@ -203,14 +167,13 @@ class TcExBin(object):
             self._input_permutations.append(args)
             outputs = []
 
-            for o_name in self.install_json_output_variables():
-                if self.layout_json_outputs.get(o_name) is not None:
-                    display = self.layout_json_outputs.get(o_name, {}).get('display')
+            for o_name in self.ij.output_variables_dict():
+                if self.lj.outputs_dict.get(o_name) is not None:
+                    display = self.lj.outputs_dict.get(o_name, {}).get('display')
                     valid = self.validate_layout_display(self.input_table, display)
                     if display is None or not valid:
                         continue
-                for ov in self.install_json_output_variables().get(o_name):
-                    outputs.append(ov)
+                outputs.append(self.ij.output_variables_dict().get(o_name))
             self._output_permutations.append(outputs)
 
     @staticmethod
@@ -225,147 +188,21 @@ class TcExBin(object):
         if halt:
             sys.exit(1)
 
-    # if its Organization then its runtime.
-    def is_runtime_app(self):
-        """Returns True if its a runtime app"""
-        runtime_level = self.install_json.get('runtimeLevel', 'Playbook').lower()
-        if runtime_level == 'organization':
-            return True
-        return False
-
-    def is_playbook_app(self):
-        """Returns True if its a playbook app"""
-        runtime_level = self.install_json.get('runtimeLevel', 'Playbook').lower()
-        if runtime_level == 'playbook':
-            return True
-        return False
-
-    @property
-    def install_json(self):
-        """Return install.json contents."""
-        file_fqpn = os.path.join(self.app_path, 'install.json')
-        if self._install_json is None:
-            if os.path.isfile(file_fqpn):
-                try:
-                    with open(file_fqpn, 'r') as fh:
-                        self._install_json = json.load(fh)
-                except ValueError as e:
-                    self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
-            else:
-                self.handle_error('File "{}" could not be found.'.format(file_fqpn))
-        return self._install_json
-
-    def install_json_params(self, ij=None):
-        """Return install.json params in a dict with name param as key.
-
-        Args:
-            ij (dict, optional): Defaults to None. The install.json contents.
-
-        Returns:
-            dict: A dictionary containing the install.json input params with name as key.
-        """
-        if self._install_json_params is None or ij is not None:
-            self._install_json_params = {}
-            # TODO: support for projects with multiple install.json files is not supported
-            if ij is None:
-                ij = self.install_json
-            for p in ij.get('params') or []:
-                self._install_json_params.setdefault(p.get('name'), p)
-        return self._install_json_params
-
-    def install_json_output_variables(self, ij=None):
-        """Return install.json output variables in a dict with name param as key.
-
-        Args:
-            ij (dict, optional): Defaults to None. The install.json contents.
-
-        Returns:
-            dict: A dictionary containing the install.json output variables with name as key.
-        """
-        if self._install_json_output_variables is None or ij is not None:
-            self._install_json_output_variables = {}
-            # TODO: currently there is no support for projects with multiple install.json files.
-            if ij is None:
-                ij = self.install_json
-            for p in ij.get('playbook', {}).get('outputVariables') or []:
-                self._install_json_output_variables.setdefault(p.get('name'), []).append(p)
-        return self._install_json_output_variables
-
-    @property
-    def layout_json(self):
-        """Return layout.json contents."""
-        file_fqpn = os.path.join(self.app_path, 'layout.json')
-        if self._layout_json is None:
-            if os.path.isfile(file_fqpn):
-                try:
-                    with open(file_fqpn, 'r') as fh:
-                        self._layout_json = json.load(fh)
-                except ValueError as e:
-                    self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
-            else:
-                self.handle_error('File "{}" could not be found.'.format(file_fqpn))
-        return self._layout_json
-
-    @property
-    def layout_json_params(self):
-        """Return layout.json params in a flattened dict with name param as key."""
-        if self._layout_json_params is None:
-            self._layout_json_params = {}
-            for i in self.layout_json.get('inputs', []):
-                for p in i.get('parameters', []):
-                    self._layout_json_params.setdefault(p.get('name'), p)
-        return self._layout_json_params
-
-    @property
-    def layout_json_names(self):
-        """Return layout.json names."""
-        if self._layout_json_names is None:
-            self._layout_json_names = self.layout_json_params.keys()
-        return self._layout_json_names
-
-    @property
-    def layout_json_outputs(self):
-        """Return layout.json outputs in a flattened dict with name param as key."""
-        if self._layout_json_outputs is None:
-            self._layout_json_outputs = {}
-            for o in self.layout_json.get('outputs', []):
-                self._layout_json_outputs.setdefault(o.get('name'), o)
-        return self._layout_json_outputs
-
-    def load_install_json(self, filename=None):
-        """Return install.json data.
-
-        Args:
-            filename (str, optional): Defaults to None. The install.json filename (for bundled
-                Apps).
-
-        Returns:
-            dict: The contents of the install.json file.
-        """
-        if filename is None:
-            filename = 'install.json'
-
-        file_fqpn = os.path.join(self.app_path, filename)
-        install_json = None
-        if os.path.isfile(file_fqpn):
-            try:
-                with open(file_fqpn, 'r') as fh:
-                    install_json = json.load(fh)
-            except ValueError as e:
-                self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
-        else:
-            self.handle_error('File "{}" could not be found.'.format(file_fqpn))
-        return install_json
-
     def permutations(self):
         """Process layout.json names/display to get all permutations of args."""
         if 'sqlite3' not in sys.modules:
             print('The sqlite3 module needs to be build-in to Python for this feature.')
             sys.exit(1)
 
-        self.db_create_table(self.input_table, self.install_json_params().keys())
-        self.db_insert_record(self.input_table, self.install_json_params().keys())
-        self.gen_permutations()
+        # create db for permutations testing
+        self.db_create_table(self.input_table, self.ij.params_dict.keys())
+        self.db_insert_record(self.input_table, self.ij.params_dict.keys())
+
+        # only gen permutations if none have been generated previously
+        if not self._input_permutations and not self._output_permutations:
+            self.gen_permutations()
+
+        # output permutations
         self.print_permutations()
 
     def print_permutations(self):
@@ -376,45 +213,8 @@ class TcExBin(object):
             permutations.append({'index': index, 'args': p})
             index += 1
         with open('permutations.json', 'w') as fh:
-            json.dump(permutations, fh, indent=2)
+            json.dump(permutations, fh, indent=2, sort_keys=True)
         print('All permutations written to the "permutations.json" file.')
-
-    def profile_settings_args_install_json(self, ij, required):
-        """Return args based on install.json params.
-
-        Args:
-            ij (dict): The install.json contents.
-            required (bool): If True only required args will be returned.
-
-        Returns:
-            dict: Dictionary of required or optional App args.
-        """
-
-        profile_args = {}
-        # add App specific args
-        for p in ij.get('params') or []:
-            # TODO: fix this required logic
-            if p.get('required', False) != required and required is not None:
-                continue
-            if p.get('type').lower() == 'boolean':
-                profile_args[p.get('name')] = self._to_bool(p.get('default', False))
-            elif p.get('type').lower() == 'choice':
-                valid_values = '|'.join(self.expand_valid_values(p.get('validValues', [])))
-                profile_args[p.get('name')] = '[{}]'.format(valid_values)
-            elif p.get('type').lower() == 'multichoice':
-                profile_args[p.get('name')] = p.get('validValues', [])
-            elif p.get('type').lower() == 'keyvaluelist':
-                profile_args[p.get('name')] = '<KeyValueList>'
-            elif p.get('name') in ['api_access_id', 'api_secret_key']:
-                # leave these parameters set to the value defined in defaults
-                pass
-            else:
-                types = '|'.join(p.get('playbookDataType', []))
-                if types:
-                    profile_args[p.get('name')] = p.get('default', '<{}>'.format(types))
-                else:
-                    profile_args[p.get('name')] = p.get('default', '')
-        return profile_args
 
     def profile_settings_args_layout_json(self, required):
         """Return args based on layout.json and conditional rendering.
@@ -425,16 +225,20 @@ class TcExBin(object):
         Returns:
             dict: Dictionary of required or optional App args.
         """
+        self.db_create_table(self.input_table, self.ij.params_dict.keys())
+        self.db_insert_record(self.input_table, self.ij.params_dict.keys())
+
+        # only gen permutations if none have been generated previously
+        if not self._input_permutations and not self._output_permutations:
+            self.gen_permutations()
 
         profile_args = {}
-        self.db_create_table(self.input_table, self.install_json_params().keys())
-        self.db_insert_record(self.input_table, self.install_json_params().keys())
-        self.gen_permutations()
         try:
             for pn in self._input_permutations[self.args.permutation_id]:
-                p = self.install_json_params().get(pn.get('name'))
-                if p.get('required', False) != required:
+                p = self.ij.filter_params_dict(required=required).get(pn.get('name'))
+                if p is None:
                     continue
+
                 if p.get('type').lower() == 'boolean':
                     # use the value generated in the permutation
                     profile_args[p.get('name')] = pn.get('value')

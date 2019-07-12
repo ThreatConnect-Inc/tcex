@@ -24,11 +24,26 @@ class Validator(object):
         self.log = log
         self.log_data = log_data
         self.tcex = tcex
+        # TODO: validate this
+        self.tcex.logger.update_handler_level('error')
 
         # properties
         self._redis = None
         self._threatconnect = None
         self.max_diff = 10
+
+    @staticmethod
+    def _string_to_int_float(x):
+        """Take string input and return float or int."""
+        try:
+            f = float(x)
+            i = int(x)
+        except ValueError:
+            return x  # return original value
+        else:
+            if f != i:
+                return f  # return float
+            return i  # return int
 
     def details(self, app_data, test_data, op):
         """Return details about the validation."""
@@ -46,11 +61,6 @@ class Validator(object):
                             'App Data',
                             '({}), Type: [{}]'.format(app_data, type(app_data)),
                         )
-                        # self.log.info(
-                        #     '[validate] App Data   : ({}), Type: [{}]'.format(
-                        #         app_data, type(app_data)
-                        #     )
-                        # )
                     elif diff[0] == '+':
                         details += '\n    * Extra data at index {}'.format(i)
                         self.log_data(
@@ -58,14 +68,12 @@ class Validator(object):
                             'Diff',
                             ('[validate] Diff       : Extra data at index {}'.format(i)),
                         )
-                        # self.log.info('[validate] Diff       : Extra data at index {}'.format(i))
                     if diff_count > self.max_diff:
                         details += '\n    * Max number of differences reached.'
                         # don't spam the logs if string are vastly different
                         self.log_data(
                             'validate', 'Maximum Reached', 'Max number of differences reached.'
                         )
-                        # self.log.info('[validate] Max number of differences reached.')
                         break
                     diff_count += 1
             except TypeError:
@@ -98,7 +106,7 @@ class Validator(object):
         }
         return operators.get(op, None)
 
-    def operator_deep_diff(self, app_data, test_data):
+    def operator_deep_diff(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
 
         Args:
@@ -117,14 +125,14 @@ class Validator(object):
 
         # run operator
         try:
-            ddiff = DeepDiff(app_data, test_data, ignore_order=True)
+            ddiff = DeepDiff(app_data, test_data, ignore_order=True, **kwargs)
         except KeyError:
             return False, 'Encountered KeyError when running deepdiff'
         except NameError:
             return False, 'Encountered NameError when running deepdiff'
 
         if ddiff:
-            return False, ddiff
+            return False, str(ddiff)
         return True, ''
 
     def operator_eq(self, app_data, tests_data):
@@ -140,8 +148,7 @@ class Validator(object):
         results = operator.eq(app_data, tests_data)
         return results, self.details(app_data, tests_data, 'eq')
 
-    @staticmethod
-    def operator_ge(app_data, tests_data):
+    def operator_ge(self, app_data, test_data):
         """Compare app data is greater than or equal to tests data.
 
         Args:
@@ -151,14 +158,17 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.ge(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not greater than or equal to test data'
+            details = '{} {} !(>=) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
-    @staticmethod
-    def operator_gt(app_data, tests_data):
+    def operator_gt(self, app_data, test_data):
         """Compare app data is greater than tests data.
 
         Args:
@@ -168,14 +178,21 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.gt(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not greater than to test data'
+            details = '{} {} !(>) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
     def operator_json_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
+
+        Takes a str, dict, or list value and removed field before passing to deepdiff. Only fields
+        at the "root" level can be removed (e.g., "date", not "data.date").
 
         Args:
             app_data (dict|str|list): The data created by the App.
@@ -189,19 +206,35 @@ class Validator(object):
         if isinstance(test_data, (string_types)):
             test_data = json.loads(test_data)
 
-        # remove exclude field. usually dynamic data like date fields.
-        for e in kwargs.get('exclude', []):
-            try:
-                del app_data[e]
-            except KeyError:
-                pass
+        exclude = kwargs.get('exclude', [])
+        if isinstance(app_data, list) and isinstance(test_data, list):
+            app_data = [self.operator_json_eq_exclude(ad, exclude) for ad in app_data]
+            test_data = [self.operator_json_eq_exclude(td, exclude) for td in test_data]
+        elif isinstance(app_data, dict) and isinstance(test_data, dict):
+            app_data = self.operator_json_eq_exclude(app_data, exclude)
+            test_data = self.operator_json_eq_exclude(test_data, exclude)
 
+        return self.operator_deep_diff(app_data, test_data)
+
+    @staticmethod
+    def operator_json_eq_exclude(data, exclude):
+        """Remove excluded field from dictionary.
+
+        Args:
+            app_data (dict|str): The data to be processed.
+            exclude (list): The key names to be "excluded" from data.
+
+        Returns:
+            dict: The data with excluded values removed.
+        """
+        if isinstance(data, (string_types)):
+            data = json.loads(data)
+        for e in exclude:
             try:
-                del test_data[e]
+                del data[e]
             except KeyError:
                 pass
-            del kwargs['exclude']
-        return self.operator_deep_diff(app_data, test_data)
+        return data
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -225,8 +258,7 @@ class Validator(object):
 
         return self.operator_deep_diff(app_data, test_data, **kwargs)
 
-    @staticmethod
-    def operator_le(app_data, tests_data):
+    def operator_le(self, app_data, test_data):
         """Compare app data is less than or equal to tests data.
 
         Args:
@@ -236,14 +268,17 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.le(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not less than or equal to test data'
+            details = '{} {} !(<=) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
-    @staticmethod
-    def operator_lt(app_data, tests_data):
+    def operator_lt(self, app_data, test_data):
         """Compare app data is less than tests data.
 
         Args:
@@ -253,10 +288,14 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
+        app_data = self._string_to_int_float(app_data)
+        test_data = self._string_to_int_float(test_data)
+        results = operator.lt(app_data, test_data)
         details = ''
         if not results:
-            details = 'App data is not less than to test data'
+            details = '{} {} !(<) {} {}'.format(
+                app_data, type(app_data), test_data, type(test_data)
+            )
         return results, details
 
     def operator_ne(self, app_data, tests_data):
@@ -321,8 +360,6 @@ class Redis(object):
         variable_data = self.provider.tcex.playbook.read(variable)
         self.log_data('validate', 'Variable', variable)
         self.log_data('validate', 'DB Data', variable_data)
-        # self.provider.log.info('[validate] Variable: {}'.format(variable))
-        # self.provider.log.info('[validate] DB Data: {}'.format(variable_data))
         if not variable:
             self.provider.log.error('NoneError: Redis Variable not provided')
             return False
@@ -340,8 +377,6 @@ class Redis(object):
         variable_data = self.provider.tcex.playbook.read(variable)
         self.log_data('validate', 'Variable', variable)
         self.log_data('validate', 'DB Data', variable_data)
-        # self.provider.log.info('[validate] Variable: {}'.format(variable))
-        # self.provider.log.info('[validate] App Data: {}'.format(variable_data))
         redis_type = self.provider.tcex.playbook.variable_type(variable)
         if redis_type.endswith('Array'):
             redis_type = list
@@ -496,22 +531,12 @@ class Redis(object):
         self.log_data('validate', 'App Data', '({}), Type: [{}]'.format(app_data, type(app_data)))
         self.log_data('validate', 'Operator', op)
         self.log_data('validate', 'Test Data', '({}), Type: [{}]'.format(test_data, type(app_data)))
-        # self.provider.log.info(
-        #     '[validate] App Data   : ({}), Type: [{}]'.format(app_data, type(app_data))
-        # )
-        # self.provider.log.info('[validate] Operator  : ({})'.format(op))
-        # self.provider.log.info(
-        #     '[validate] Test Data  : ({}), Type: [{}]'.format(test_data, type(test_data))
-        # )
 
         if passed:
             self.log_data('validate', 'Result', 'Passed')
-            # self.provider.log.info('[validate] Results    : Passed')
         else:
-            self.log_data('validate', 'Result', 'Failed')
-            self.log_data('validate', 'Details', details)
-            # self.provider.log.error('[validate] Results    : Failed')
-            # self.provider.log.error('[validate] Details    : {}'.format(details))
+            self.log_data('validate', 'Result', 'Failed', 'error')
+            self.log_data('validate', 'Details', details, 'error')
 
 
 class ThreatConnect(object):
@@ -531,6 +556,13 @@ class ThreatConnect(object):
         if validation_count:
             validation_percent = self._convert_to_percent(validation_count, batch_submit_totals)
 
+        batch_errors = []
+        for filename in os.listdir(os.path.join('.', 'log', context)):
+            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+                if not filename.startswith('errors-') or not filename.endswith('.json'):
+                    continue
+                batch_errors += json.load(fh)
+
         for filename in os.listdir(os.path.join('.', 'log', context)):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
@@ -543,15 +575,81 @@ class ThreatConnect(object):
                     for sub_partition in validation_data.get(key).values():
                         sample_size = math.ceil(len(sub_partition) * (validation_percent / 100))
                         sample_validation_data.extend(random.sample(sub_partition, sample_size))
-                results = self.tc_entities(sample_validation_data, owner)
-                passed = True
+
+                files = []
+                for sample_data in sample_validation_data:
+                    sample_data_type = sample_data.get('type').lower()
+                    if sample_data_type not in ['document', 'report']:
+                        files.append(None)
+                        continue
+
+                    if sample_data_type == 'document':
+                        sample_data_type = 'documents'
+                    else:
+                        sample_data_type = 'reports'
+
+                    filename = (
+                        sample_data_type
+                        + '--'
+                        + sample_data.get('xid')
+                        + '--'
+                        + sample_data.get('name', '')
+                    )
+                    filename = os.path.join('.', 'log', context, filename)
+                    if os.path.isfile(filename):
+                        files.append(filename)
+                    else:
+                        files.append(None)
+                results = self.tc_entities(sample_validation_data, owner, files=files)
                 for result in results:
-                    if not result:
-                        passed = False
-                assert passed, (
-                    'One or more of the Batch Requests did not match with what is '
-                    'currently in ThreatConnect. View tests.log for additional details.'
-                )
+                    if result.get('valid'):
+                        continue
+                    name = result.get('name')
+                    batch_error = self._batch_error(name, batch_errors)
+                    if batch_error:
+                        self.provider.log.error(
+                            'Errors validating {} due to batch '
+                            'submission error: {}'.format(name, batch_error)
+                        )
+                        continue
+                    # TODO: Should use pip install pytest-check is_true method so it wont fail after
+                    # one failed assert.
+                    assert result.get(
+                        'valid'
+                    ), '{} in ThreatConnect did not match what was submitted. Errors:{}'.format(
+                        name, result.get('errors')
+                    )
+        self._log_batch_submit_details(batch_errors, owner)
+
+    def _log_batch_submit_details(self, batch_errors, owner):
+        if not batch_errors:
+            return
+
+        counts = {}
+        error_regex = r'\((.*?)\)'
+        for error in batch_errors:
+            reason = error.get('errorReason', '')
+            m = re.search(error_regex, reason)
+            if not m:
+                continue
+            if not m.group(1) in counts:
+                counts[m.group(1)] = 0
+            counts[m.group(1)] += 1
+        log_message = ''
+        for code, count in counts.items():
+            log_message += (
+                self.provider.tcex.batch(owner).error_codes.get(code) + ': ' + str(count) + '\n'
+            )
+
+        self.provider.log.error(log_message)
+
+    @staticmethod
+    def _batch_error(key, batch_errors):
+        for error in batch_errors:
+            reason = error.get('errorReason', '')
+            if key in reason:
+                return reason
+        return None
 
     def dir(self, directory, owner):
         """Validate the content of a given dir"""
@@ -572,84 +670,92 @@ class ThreatConnect(object):
         results = []
         if files:
             if not len(tc_entities) == len(files):
-                return {
-                    'valid': True,
-                    'errors': [
-                        'LengthError: Length of files provided does not '
-                        'match length of entities provided.'
-                    ],
-                }
+                return [
+                    {
+                        'valid': False,
+                        'errors': [
+                            'LengthError: Length of files provided does not '
+                            'match length of entities provided.'
+                        ],
+                    }
+                ]
 
         for index, entity in enumerate(tc_entities):
+            name = entity.get('name', entity.get('summary'))
             if files:
-                results.append(self.tc_entity(entity, owner, files[index]))
-            results.append(self.tc_entity(entity, owner))
+                valid, errors = self.tc_entity(entity, owner, files[index])
+            else:
+                valid, errors = self.tc_entity(entity, owner)
+            results.append({'name': name, 'valid': valid, 'errors': errors})
         return results
 
     def tc_entity(self, tc_entity, owner, file=None):
         """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        valid = True
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
         ti_response = ti_entity.single(params=parameters)
+        entity_name = tc_entity.get('name')
+        errors = []
         if not self.success(ti_response):
-            print('unique_id: ', ti_entity.unique_id)
-            self.provider.log.error(
-                'NotFoundError: Provided {}: {} could not be fetched from ThreatConnect'.format(
-                    tc_entity.get('type'), tc_entity.get('summary', tc_entity.get('name', None))
-                )
+            error = 'NotFoundError: Provided {}: {} could not be fetched from ThreatConnect'.format(
+                tc_entity.get('type'), tc_entity.get('summary', entity_name)
             )
-            return False
+            return False, [error]
 
         ti_response_entity = None
         ti_response = ti_response.json().get('data', {}).get(ti_entity.api_entity, {})
         for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type', None)):
             ti_response_entity = entity
-            valid_attributes = self._response_attributes(ti_response, tc_entity)
-            valid_tags = self._response_tags(ti_response, tc_entity)
-            valid_labels = self._response_labels(ti_response, tc_entity)
-            valid_file = self._file(ti_entity, file)
-            if not valid_attributes or not valid_tags or not valid_labels or not valid_file:
-                valid = False
+            # pylint: disable=W0612
+            valid_attributes, attributes_errors = self._response_attributes(ti_response, tc_entity)
+            # pylint: disable=W0612
+            valid_tags, tag_errors = self._response_tags(ti_response, tc_entity)
+            # pylint: disable=W0612
+            valid_labels, label_errors = self._response_labels(ti_response, tc_entity)
+            # pylint: disable=W0612
+            valid_file, file_errors = self._file(ti_entity, file)
+
+            errors = attributes_errors + tag_errors + label_errors + file_errors
 
         if ti_entity.type == 'Indicator':
             provided_rating = tc_entity.get('rating', None)
             expected_rating = ti_response.get('rating', None)
             if not provided_rating == expected_rating:
-                self.provider.log.error(
-                    'RatingError: Provided rating {} does not match '
-                    'actual rating {}'.format(provided_rating, expected_rating)
+                error = 'RatingError: Provided rating {} does not match ' 'actual rating {}'.format(
+                    provided_rating, expected_rating
                 )
-                valid = False
+                errors += error
 
             provided_confidence = tc_entity.get('confidence', None)
             expected_confidence = ti_response.get('confidence', None)
             if not provided_confidence == expected_confidence:
-                self.provider.log.error(
+                error = (
                     'ConfidenceError: Provided confidence {} does not match '
                     'actual confidence {}'.format(provided_confidence, expected_confidence)
                 )
-                valid = False
+                errors += error
+
             provided_summary = unquote(
                 ':'.join([x for x in ti_entity.unique_id.split(':') if x.strip()])
             )
             expected_summary = unquote(ti_response_entity.get('value', ''))
             if provided_summary != expected_summary:
-                self.provider.log.error(
+                error = (
                     'SummaryError: Provided summary {} does not match '
                     'actual summary {}'.format(provided_summary, expected_summary)
                 )
-                valid = False
+                errors += error
         elif ti_entity.type == 'Group':
             provided_summary = tc_entity.get('name', None)
             expected_summary = ti_response_entity.get('value', None)
             if not provided_summary == expected_summary:
-                self.provider.log.error(
+                error = (
                     'SummaryError: Provided summary {} does not match '
                     'actual summary {}'.format(provided_summary, expected_summary)
                 )
-                valid = False
-        return valid
+                errors += error
+
+        return not bool(errors), errors
 
     def flatten(self, lis):
         """Idk why python doesnt have this built in but helper function to flatten a list"""
@@ -661,56 +767,53 @@ class ThreatConnect(object):
                 new_lis.append(item)
         return new_lis
 
-    def compare_dicts(self, expected, actual, error_type=''):
+    @staticmethod
+    def compare_dicts(expected, actual, error_type=''):
         """Compare two dicts and returns a list of errors if they don't match"""
-        valid = True
+        errors = []
         for item in expected:
             if item in actual:
                 if str(expected.get(item)) != actual.get(item):
-                    self.provider.log.error(
+                    errors.append(
                         '{0}{1} : {2} did not match {1} : {3}'.format(
                             error_type, item, expected.get(item), actual.get(item)
                         )
                     )
-                    valid = False
                 actual.pop(item)
             else:
-                self.provider.log.error(
+                errors.append(
                     '{}{} : {} was in expected results but not in actual results.'.format(
                         error_type, item, expected.get(item)
                     )
                 )
-                valid = False
         for item in list(actual.items()):
-            self.provider.log.error(
+            errors.append(
                 '{}{} : {} was in actual results but not in expected results.'.format(
                     error_type, item, actual.get(item)
                 )
             )
-            valid = False
 
-        return valid
+        return bool(errors), errors
 
-    def compare_lists(self, expected, actual, error_type=''):
+    @staticmethod
+    def compare_lists(expected, actual, error_type=''):
         """Compare two lists and returns a list of errors if they don't match"""
-        valid = True
+        errors = []
         for item in expected:
             if item in actual:
                 actual.remove(item)
             else:
-                self.provider.log.error(
+                errors.append(
                     '{}{} was in expected results but not in actual results.'.format(
                         error_type, item
                     )
                 )
-                valid = False
         for item in actual:
-            self.provider.log.error(
+            errors.append(
                 '{}{} was in actual results but not in expected results.'.format(error_type, item)
             )
-            valid = False
 
-        return valid
+        return bool(errors), errors
 
     @staticmethod
     def _convert_to_entities(file):
@@ -750,7 +853,7 @@ class ThreatConnect(object):
                         unique_id=entity.get('id'),
                     )
         elif tc_entity.get('type') in self.provider.tcex.indicator_types:
-            tc_entity['summary'] = unquote(tc_entity.get('summary'))
+            tc_entity['summary'] = tc_entity.get('summary')
             if tc_entity.get('type').lower() == 'file':
                 tc_entity['summary'] = tc_entity.get('summary').upper()
             ti_entity = self.provider.tcex.ti.indicator(
@@ -819,9 +922,7 @@ class ThreatConnect(object):
             expected[attribute.get('type')] = attribute.get('value')
         for attribute in ti_response.get('attribute', []):
             actual[attribute.get('type')] = attribute.get('value')
-        valid = self.compare_dicts(expected, actual, error_type='AttributeError: ')
-
-        return valid
+        return self.compare_dicts(expected, actual, error_type='AttributeError: ')
 
     def _response_tags(self, ti_response, tc_entity):
         """Validate the ti_response tags"""
@@ -834,9 +935,8 @@ class ThreatConnect(object):
             expected.append(tag.get('name'))
         for tag in ti_response.get('tag', []):
             actual.append(tag.get('name'))
-        valid = self.compare_lists(expected, actual, error_type='TagError: ')
 
-        return valid
+        return self.compare_lists(expected, actual, error_type='TagError: ')
 
     def _response_labels(self, ti_response, tc_entity):
         """Validate the ti_response labels"""
@@ -849,16 +949,16 @@ class ThreatConnect(object):
             expected.append(tag)
         for tag in ti_response.get('securityLabel', []):
             actual.append(tag.get('name'))
-        valid = self.compare_lists(expected, actual, error_type='SecurityLabelError: ')
 
-        return valid
+        return self.compare_lists(expected, actual, error_type='SecurityLabelError: ')
 
-    def _file(self, ti_entity, file):
+    @staticmethod
+    def _file(ti_entity, file):
         """Handle file data"""
         if not file:
-            return True
+            return True, []
 
-        valid = True
+        errors = []
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
             actual_hash = ti_entity.get_file_hash()
             actual_hash = actual_hash.hexdigest()
@@ -868,13 +968,11 @@ class ThreatConnect(object):
                     provided_hash.update(byte_block)
             provided_hash = provided_hash.hexdigest()
             if not provided_hash == actual_hash:
-                self.provider.log.error(
-                    'sha256 {} of provided file did not match sha256 of actual file {}'.format(
-                        provided_hash, actual_hash
-                    )
+                errors.append(
+                    'sha256 {} of provided file did not match sha256 of '
+                    'actual file {}'.format(provided_hash, actual_hash)
                 )
-                valid = False
-        return valid
+        return bool(errors), errors
 
     @staticmethod
     def success(r):
