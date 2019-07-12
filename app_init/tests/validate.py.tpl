@@ -14,11 +14,13 @@ class Validate(object):
         if output_variables is None:
             return
 
-        for k, v in output_variables.items():
-        % for data in output_data:
-            if '${data['variable']}' == k:
-                self.${data['method']}(v)
-        % endfor
+        % if output_variables
+            for k, v in output_variables.items():
+            % for data in output_data:
+                if '${data['variable']}' == k:
+                    self.${data['method']}(v)
+            % endfor
+        % endif
     % for data in output_data:
 
     def ${data['method']}(self, data):
