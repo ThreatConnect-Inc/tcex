@@ -14,7 +14,7 @@ class Validate(object):
         if output_variables is None:
             return
 
-        % if output_variables
+        % if output_variables:
             for k, v in output_variables.items():
             % for data in output_data:
                 if '${data['variable']}' == k:
