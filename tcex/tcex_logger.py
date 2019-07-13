@@ -61,12 +61,12 @@ class TcExLogger(object):
         logger.setLevel(logging.TRACE)
         return logger
 
-    @property
-    def _formatter(self):
-        """Return log formatter."""
-        tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        tx_format += '(%(filename)s:%(funcName)s:%(lineno)d)'
-        return logging.Formatter(tx_format)
+    # @property
+    # def _formatter(self):
+    #     """Return log formatter."""
+    #     tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
+    #     tx_format += '(%(filename)s:%(funcName)s:%(lineno)d)'
+    #     return logging.Formatter(tx_format)
 
     @property
     def log(self):
@@ -115,7 +115,7 @@ class TcExLogger(object):
         """Add File logging handler."""
         self.remove_handler_by_name(name)
         filename = filename or self.tcex.default_args.tc_log_file
-        formatter = formatter or self._formatter
+        formatter = formatter or FileHandleFormatter()
         level = level or self.logging_level
         # create handler
         fh = logging.FileHandler(os.path.join(self.tcex.default_args.tc_log_path, filename))
@@ -138,7 +138,7 @@ class TcExLogger(object):
         self.remove_handler_by_name(name)
         backup_count = backup_count or self.tcex.default_args.tc_log_backup_count
         filename = filename or self.tcex.default_args.tc_log_file
-        formatter = formatter or self._formatter
+        formatter = formatter or FileHandleFormatter()
         level = level or self.logging_level
         max_bytes = max_bytes or self.tcex.default_args.tc_log_max_bytes
         mode = mode or 'a'
@@ -157,7 +157,7 @@ class TcExLogger(object):
     def add_stream_handler(self, name='sh', formatter=None, level=None):
         """Return stream logging handler."""
         self.remove_handler_by_name(name)
-        formatter = formatter or self._formatter
+        formatter = formatter or FileHandleFormatter()
         level = level or self.logging_level
         # create handler
         sh = logging.StreamHandler()
@@ -290,3 +290,41 @@ class ApiHandler(logging.Handler):
             except Exception:
                 # best effort on api logging
                 pass
+
+
+class FileHandleFormatter(logging.Formatter):
+    """Logger formatter for ThreatConnect Exchange file handler logging."""
+
+    standard_format = (
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
+        '(%(filename)s:%(funcName)s:%(lineno)d)'
+    )
+    trace_format = (
+        '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s] %(message)s '
+        '(%(filename)s:%(funcName)s:%(lineno)d)'
+    )
+
+    def __init__(self):
+        """Initialize formatter parent."""
+        super().__init__(fmt='%(levelno)d: %(msg)s', datefmt=None, style='%')
+
+    def format(self, record):
+        """Format file handle log event according to logging level."""
+
+        # Save the original format configured by the user
+        # when the logger formatter was instantiated
+        format_orig = self._style._fmt
+
+        # Replace the original format with one customized by logging level
+        if record.levelno in [logging.DEBUG, logging.TRACE]:
+            self._style._fmt = FileHandleFormatter.trace_format
+        else:
+            self._style._fmt = FileHandleFormatter.standard_format
+
+        # Call the original formatter class to do the grunt work
+        result = logging.Formatter.format(self, record)
+
+        # Restore the original format configured by the user
+        self._style._fmt = format_orig
+
+        return result

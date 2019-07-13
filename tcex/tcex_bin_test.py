@@ -381,14 +381,23 @@ class TcExTest(TcExBin):
             'parent_import': 'from tcex.testing import TestCasePlaybook',
         }
         if self.ij.runtime_level.lower() == 'organization':
+            # TODO: remove this after validating
+            # test_template_variables = {
+            #     'validate_batch_method': 'self.validator.threatconnect.batch('
+            #     'self.context, '
+            #     'pd.get(\'owner\'),'
+            #     'pd.get(\'validation_criteria\', {})'
+            #     ')',
+            #     'parent_class': 'TestCaseJob',
+            #     'parent_import': 'from tcex.testing import TestCaseJob',
+            # }
             test_template_variables = {
-                'validate_batch_method': 'self.validator.threatconnect.batch('
-                'self.context, '
-                'pd.get(\'owner\'),'
-                'pd.get(\'validation_criteria\', {})'
-                ')',
-                'parent_class': 'TestCaseApp',
-                'parent_import': 'from tcex.testing import TestCaseApp',
+                'validate_batch_method': (
+                    'self.validator.threatconnect.batch(self.context, pd.get(\'owner\'),'
+                    'pd.get(\'validation_criteria\', {}))'
+                ),
+                'parent_class': 'TestCaseJob',
+                'parent_import': 'from tcex.testing import TestCaseJob',
             }
         self.validation.generate_test_template(
             test_template_variables, self.args.feature, self.test_file
