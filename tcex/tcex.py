@@ -710,9 +710,9 @@ class TcEx(object):
         .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
         """
         if self._service is None:
-            from .tcex_service import TcExService
+            from .service import Service
 
-            self._service = TcExService(self)
+            self._service = Service(self)
         return self._service
 
     def s(self, data, errors='strict'):

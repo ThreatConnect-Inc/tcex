@@ -94,7 +94,7 @@ class TestCase(object):
             '--tc_log_path',
             'log',
             '--tc_log_file',
-            '{}-app.log'.format(self.context),
+            '{}/app.log'.format(self.context),
         ]
         self.tcex = TcEx()
         # TODO: validate this

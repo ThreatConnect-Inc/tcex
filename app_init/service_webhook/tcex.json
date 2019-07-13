@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "TCSW-_WebHook",
+    "app_name": "TCSW-_Webhook",
     "app_version": "v1.0",
     "excludes": [
       ".gitignore",

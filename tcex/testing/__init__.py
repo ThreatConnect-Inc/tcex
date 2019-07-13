@@ -7,6 +7,6 @@ from tcex.testing.test_case_job import TestCaseJob  # noqa: F401
 from tcex.testing.test_case_playbook import TestCasePlaybook  # noqa: F401
 from tcex.testing.test_case_trigger_service import TestCaseTriggerService  # noqa: F401
 from tcex.testing.test_case_webhook_trigger_service import (  # noqa: F401
-    TestCaseWebHookTriggerService,
+    TestCaseWebhookTriggerService,
 )
 from tcex.testing.validate_data import Validator  # noqa: F401

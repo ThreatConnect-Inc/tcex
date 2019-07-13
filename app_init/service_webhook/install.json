@@ -1,6 +1,6 @@
 {
   "allowOnDemand": true,
-  "displayName": "WebHook",
+  "displayName": "Webhook",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",

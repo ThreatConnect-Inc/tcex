@@ -410,9 +410,13 @@ class TcExTest(TcExBin):
             self._output_variables = []
             # Currently there is no support for projects with multiple install.json files.
             for p in self.ij.playbook.get('outputVariables') or []:
+                var_type = 'App'
+                if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+                    var_type = 'Trigger'
                 # "#App:9876:app.data.count!String"
+                # "#Trigger:9876:app.data.count!String"
                 self._output_variables.append(
-                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
+                    '#{}:{}:{}!{}'.format(var_type, 9876, p.get('name'), p.get('type'))
                 )
         return self._output_variables
 

@@ -5,8 +5,8 @@ from six import string_types
 from .test_case_service_common import TestCaseServiceCommon
 
 
-class TestCaseWebHookTriggerService(TestCaseServiceCommon):
-    """WebHookTrigger App TestCase Class"""
+class TestCaseWebhookTriggerService(TestCaseServiceCommon):
+    """WebhookTrigger App TestCase Class"""
 
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.
