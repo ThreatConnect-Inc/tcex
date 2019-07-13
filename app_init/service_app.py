@@ -22,11 +22,11 @@ class ServiceApp(object):
         self.args = self.tcex.args
         self.tcex.log.info('Parsed Args.')
 
-    def create_config_callback(self, config_id, config):
+    def create_config_callback(self, trigger_id, config):
         """Handle create config messages."""
         self.tcex.log.trace('create config callback')
 
-    def delete_config_callback(self, config_id, config):
+    def delete_config_callback(self, trigger_id, config):
         """Handle create config messages."""
         self.tcex.log.trace('delete config callback')
 
@@ -46,7 +46,7 @@ class ServiceApp(object):
         """Perform cleanup operations and gracefully exit the App."""
         self.tcex.log.trace('teardown')
 
-    def update_config_callback(self, config_id, config):
+    def update_config_callback(self, trigger_id, config):
         """Handle update config messages."""
         self.tcex.log.trace('update config callback')
 

@@ -26,20 +26,20 @@ class ServiceApp(object):
         self.args = self.tcex.args
         self.tcex.log.info('Parsed Args.')
 
-    def create_config_callback(self, config_id, config):
+    def create_config_callback(self, trigger_id, config):
         """Handle create config messages.
 
         Args:
-            config_id (str): The ID of the playbook.
+            trigger_id (str): The ID of the playbook.
             config (dict): The playbook config inputs.
         """
         self.tcex.log.trace('create config callback')
 
-    def delete_config_callback(self, config_id):
+    def delete_config_callback(self, trigger_id):
         """Handle delete config messages.
 
         Args:
-            config_id (str): The ID of the playbook.
+            trigger_id (str): The ID of the playbook.
         """
         self.tcex.log.trace('delete config callback')
 
@@ -59,11 +59,11 @@ class ServiceApp(object):
         """Perform cleanup operations and gracefully exit the App."""
         self.tcex.log.trace('teardown')
 
-    def update_config_callback(self, config_id, config):
+    def update_config_callback(self, trigger_id, config):
         """Handle update config messages.
 
         Args:
-            config_id (str): The ID of the playbook.
+            trigger_id (str): The ID of the playbook.
             config (dict): The playbook config inputs.
         """
         self.tcex.log.trace('update config callback')

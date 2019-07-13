@@ -283,7 +283,7 @@ class TcExTest(TcExBin):
                 self.args.profile_name: {
                     'configs': [
                         {
-                            'config_id': str(randint(1000, 9999)),
+                            'trigger_id': str(randint(1000, 9999)),
                             'config': self.ij.params_to_args(service_config=False),
                         }
                     ],
