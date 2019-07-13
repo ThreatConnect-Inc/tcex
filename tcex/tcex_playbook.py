@@ -60,7 +60,7 @@ class TcExPlaybook(object):
     @property
     def _variable_pattern(self):
         """Regex pattern to match and parse a playbook variable."""
-        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
         variable_pattern += r':([\d]+)'  # app id (:7979)
         variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
         variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
@@ -278,6 +278,7 @@ class TcExPlaybook(object):
                 var_value = key
                 if variable_type is not None:
                     var_value = key_type
+                self.tcex.log.trace('requested output variables: {}'.format(self.output_variables))
                 self.tcex.log.info(
                     u'Variable {} was NOT requested by downstream app.'.format(var_value)
                 )

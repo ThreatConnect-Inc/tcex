@@ -1437,7 +1437,7 @@ class TcExBatch(object):
             batch_data_array.append(batch_data)
 
             if self.debug:
-                self.write_error_json(self.errors(batch_id))
+                self.write_error_json(batch_data.get('errors'))
 
         return batch_data_array
 

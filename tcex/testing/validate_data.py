@@ -668,7 +668,6 @@ class ThreatConnect(object):
     def tc_entities(self, tc_entities, owner, files=None):
         """Validate a array of tc_entities"""
         results = []
-        print(files)
         if files:
             if not len(tc_entities) == len(files):
                 return [
@@ -854,7 +853,7 @@ class ThreatConnect(object):
                         unique_id=entity.get('id'),
                     )
         elif tc_entity.get('type') in self.provider.tcex.indicator_types:
-            tc_entity['summary'] = unquote(tc_entity.get('summary'))
+            tc_entity['summary'] = tc_entity.get('summary')
             if tc_entity.get('type').lower() == 'file':
                 tc_entity['summary'] = tc_entity.get('summary').upper()
             ti_entity = self.provider.tcex.ti.indicator(
