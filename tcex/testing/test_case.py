@@ -15,6 +15,8 @@ from .stage_data import Stager
 from .validate_data import Validator
 
 logger = logging.getLogger('TestCase')
+if not os.path.exists('log'):
+    os.makedirs('log')
 rfh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10485760, mode='a')
 rfh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
