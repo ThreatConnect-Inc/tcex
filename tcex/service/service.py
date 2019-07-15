@@ -112,6 +112,7 @@ class Service(object):
                 playbook.db.key = session_id
                 playbook.output_variables = config.get('tc_playbook_out_variables', [])
 
+                # TODO: change this to a new logger on its owns
                 # add temporary logging file handler for this specific session
                 self.tcex.logger.add_file_handler(name=session_id, filename=session_logfile)
                 self.tcex.log.info('Trigger Session ID: {}'.format(session_id))
@@ -119,9 +120,6 @@ class Service(object):
                 if trigger_type == 'trigger_event':
                     args = (callback, playbook, session_id, trigger_id, config)
                     self.message_thread(self.fire_event_trigger, args, kwargs)
-                    self.fire_event_trigger(
-                        callback, playbook, session_id, trigger_id, config, **kwargs
-                    )
                 elif trigger_type == 'webhook_event':
                     args = (
                         callback,
@@ -150,6 +148,7 @@ class Service(object):
             self.tcex.log.trace(traceback.format_exc())
             self.metric['errors'] += 1
 
+        # TODO: close new logger
         # remove temporary logging file handler
         self.tcex.logger.remove_handler_by_name(session_id)
 
@@ -173,6 +172,7 @@ class Service(object):
             self.tcex.log.trace(traceback.format_exc())
             self.metric['errors'] += 1
 
+        # TODO: close new logger
         # remove temporary logging file handler
         self.tcex.logger.remove_handler_by_name(session_id)
 

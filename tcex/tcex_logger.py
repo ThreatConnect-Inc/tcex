@@ -19,13 +19,6 @@ class TraceLogger(logging.Logger):
 
     _in_trace = False
 
-    @property
-    def in_trace(self):
-        """Return in trace value. Automatic reset."""
-        in_trace = self._in_trace
-        self._in_trace = False
-        return in_trace
-
     def findCaller(self, stack_info=False):
         """Find the caller for the current log event."""
         caller = None
@@ -37,9 +30,6 @@ class TraceLogger(logging.Logger):
                 break
             depth += 1
 
-        # caller = getframeinfo(stack()[3][0])
-        # if self.in_trace:
-        #     caller = getframeinfo(stack()[4][0])
         if sys.version_info < (3,):
             # return value for py2
             return (caller.filename, caller.lineno, caller.function)
@@ -47,7 +37,6 @@ class TraceLogger(logging.Logger):
 
     def trace(self, msg, *args, **kwargs):
         """Set trace logging level"""
-        self._in_trace = True
         self.log(logging.TRACE, msg, *args, **kwargs)
 
 
@@ -316,11 +305,11 @@ class FileHandleFormatter(logging.Formatter):
 
     standard_format = (
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        '(%(filename)s:%(funcName)s:%(lineno)d)'
+        '(%(filename)s:%(funcName)s:%(lineno)d:%(thread)d)'
     )
     trace_format = (
-        '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s] %(message)s '
-        '(%(filename)s:%(funcName)s:%(lineno)d)'
+        '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s:%(lineno)d] %(message)s '
+        '(%(filename)s:%(thread)d)'
     )
 
     def __init__(self):
@@ -357,3 +346,10 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
+
+    # TODO: investigate controlling logging thread events
+    # def emit(self, record):
+    #     """Emit the log record."""
+    #     self.reopenIfNeeded()
+    #     print(self.name)
+    #     logging.FileHandler.emit(self, record)
