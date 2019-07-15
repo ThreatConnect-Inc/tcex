@@ -20,6 +20,7 @@ install_requires = [
     'hvac>=0.3.0',
     'inflect>=0.2.5',
     'jsonschema>=2.6.0',
+    'paho-mqtt',
     'parsedatetime',
     'python-dateutil>=2.6.1',
     'pytz',

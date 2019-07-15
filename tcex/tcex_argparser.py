@@ -221,11 +221,28 @@ class TcExArgParser(ArgumentParser):
 
         These arguments will be passed to every playbook app by default.
 
-        --tc_client_channel type          The Redis channel to send client messages.
-        --tc_server_channel type          The Redis channel to receive server messages.
+        --tc_broker_host host            The Broker channel/topic host.
+        --tc_broker_port port            The Broker channel/topic port.
+        --tc_broker_service service      The Broker service (mqtt/redis).
+        --tc_broker_timeout seconds      The Broker timeout in seconds.
+        --tc_broker_token token          The Broker auth token.
+        --tc_client_topic topic          The Broker channel/topic to send client messages.
+        --tc_server_topic topic          The Broker channel/topic to receive server messages.
         """
+        self.add_argument('--tc_broker_host', help='ThreatConnect Service broker host')
+        self.add_argument('--tc_broker_port', help='ThreatConnect Service broker port', type=int)
         self.add_argument(
-            '--tc_client_channel', default=None, help='ThreatConnect Service client channel'
+            '--tc_broker_service', default='redis', help='ThreatConnect Service broker token'
+        )
+        self.add_argument('--tc_broker_token', help='ThreatConnect Service broker token')
+        self.add_argument(
+            '--tc_broker_timeout', default=60, help='ThreatConnect Service broker token'
+        )
+        self.add_argument(
+            '--tc_client_channel',
+            '--tc_client_topic',
+            dest='tc_client_topic',
+            help='ThreatConnect Service client channel',
         )
         self.add_argument(
             '--tc_heartbeat_seconds',
@@ -234,7 +251,10 @@ class TcExArgParser(ArgumentParser):
             type=int,
         )
         self.add_argument(
-            '--tc_server_channel', default=None, help='ThreatConnect Service server channel'
+            '--tc_server_channel',
+            '--tc_server_topic',
+            dest='tc_server_topic',
+            help='ThreatConnect Service server channel',
         )
 
     def _standard_arguments(self):

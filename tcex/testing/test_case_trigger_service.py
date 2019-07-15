@@ -34,12 +34,14 @@ class TestCaseTriggerService(TestCaseServiceCommon):
         # Trigger
         try:
             # configure custom trigger message handler
-            app.tcex.service.custom_trigger(
-                create_callback=app.create_config_callback,  # pylint: disable=no-member
-                delete_callback=app.delete_config_callback,  # pylint: disable=no-member
-                update_callback=app.update_config_callback,  # pylint: disable=no-member
-                shutdown_callback=app.shutdown_callback,  # pylint: disable=no-member
-            )
+            app.tcex.service.create_config_callback = app.create_config_callback
+            app.tcex.service.delete_config_callback = app.delete_config_callback
+            app.tcex.service.update_config_callback = app.update_config_callback
+            app.tcex.service.shutdown_callback = app.shutdown_callback
+
+            app.tcex.service.listen()
+            app.tcex.service.heartbeat()
+            app.tcex.service.ready = True
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
             return self._exit(e.code)

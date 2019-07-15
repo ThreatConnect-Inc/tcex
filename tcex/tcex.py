@@ -16,6 +16,7 @@ except ImportError:
 
 from .tcex_args import TcExArgs
 from .tcex_logger import TcExLogger
+from .tcex_install_json import InstallJson
 
 
 class TcEx(object):
@@ -43,6 +44,7 @@ class TcEx(object):
         self._session = None
         self._utils = None
         self._ti = None
+        self.ij = InstallJson()
 
         # init args (needs logger)
         self.tcex_args = TcExArgs(self)
@@ -567,11 +569,9 @@ class TcEx(object):
 
         .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
         """
-        if self._playbook is None:
-            from .tcex_playbook import TcExPlaybook
+        from .tcex_playbook import TcExPlaybook
 
-            self._playbook = TcExPlaybook(self)
-        return self._playbook
+        return TcExPlaybook(self)
 
     @property
     def proxies(self):

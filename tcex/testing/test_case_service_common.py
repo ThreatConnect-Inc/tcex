@@ -6,15 +6,18 @@ import threading
 import time
 from multiprocessing import Process
 from random import randint
+
 from _pytest.monkeypatch import MonkeyPatch
+import paho.mqtt.client as mqtt
 from .test_case_playbook_common import TestCasePlaybookCommon
 
 
 class TestCaseServiceCommon(TestCasePlaybookCommon):
     """Service App TestCase Class"""
 
-    client_channel = 'client-channel-{}'.format(randint(100, 999))
-    server_channel = 'server-channel-{}'.format(randint(100, 999))
+    _mqtt_client = None
+    client_topic = 'client-topic-{}'.format(randint(100, 999))
+    server_topic = 'server-topic-{}'.format(randint(100, 999))
     service_run_method = 'thread'  # run service as thread or multiprocess
 
     @property
@@ -23,12 +26,28 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         args = super(TestCaseServiceCommon, self).default_args
         args.update(
             {
-                'tc_client_channel': self.client_channel,
-                'tc_server_channel': self.server_channel,
+                'tc_broker_host': os.getenv('TC_BROKER_HOST', 'localhost'),
+                'tc_broker_port': os.getenv('TC_BROKER_PORT', '1883'),
+                'tc_broker_service': os.getenv('TC_BROKER_SERVICE', 'redis'),
+                'tc_broker_token': os.getenv('TC_BROKER_TOKEN'),
+                'tc_client_topic': self.client_topic,
+                'tc_server_topic': self.server_topic,
                 'tc_heartbeat_seconds': int(os.getenv('TC_HEARTBEAT_SECONDS', '60')),
             }
         )
         return args
+
+    @property
+    def mqtt_client(self):
+        """Return a mqtt client instance."""
+        if self._mqtt_client is None:
+            self._mqtt_client = mqtt.Client()
+            self._mqtt_client.connect(
+                self.tcex.args.tc_broker_host,
+                self.tcex.args.tc_broker_port,
+                self.tcex.args.tc_broker_timeout,
+            )
+        return self._mqtt_client
 
     @property
     def output_variables(self):
@@ -60,6 +79,20 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         MonkeyPatch().setattr(Service, 'session_id', session_id)
         MonkeyPatch().setattr(Service, 'session_logfile', session_logfile)
 
+    def publish(self, message, topic=None):
+        """Publish message on server channel."""
+        if topic is None:
+            topic = self.server_topic
+
+        # self.log.debug('topic: ({})'.format(topic))
+        # self.log.debug('message: ({})'.format(message))
+        # self.log.debug('broker_service: ({})'.format(self.tcex.args.tc_broker_service))
+
+        if self.tcex.args.tc_broker_service.lower() == 'mqtt':
+            self.mqtt_client.publish(topic, message)
+        elif self.tcex.args.tc_broker_service.lower() == 'redis':
+            self.redis_client.publish(topic, message)
+
     def publish_create_config(self, trigger_id, config):
         """Send create config message.
 
@@ -69,7 +102,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """
         config_msg = {'command': 'CreateConfig', 'triggerId': trigger_id, 'config': config}
         config_msg['config']['tc_playbook_out_variables'] = self.output_variables
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        self.publish(json.dumps(config_msg))
         time.sleep(0.5)
 
     def publish_delete_config(self, trigger_id):
@@ -79,12 +112,12 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             trigger_id (str): The trigger id for the config message.
         """
         config_msg = {'command': 'DeleteConfig', 'triggerId': trigger_id}
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        self.publish(json.dumps(config_msg))
 
     def publish_shutdown(self):
         """Publish shutdown message."""
         config_msg = {'command': 'Shutdown'}
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        self.publish(json.dumps(config_msg))
         time.sleep(0.5)
 
     def publish_update_config(self, trigger_id, config):
@@ -96,7 +129,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """
         config_msg = {'command': 'UpdateConfig', 'triggerId': trigger_id, 'config': config}
         config_msg['config']['outputVariables'] = self.output_variables
-        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        self.publish(json.dumps(config_msg))
         time.sleep(0.5)
 
     def run(self, args):
@@ -180,8 +213,6 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             os.remove(cls.service_file)
         except FileNotFoundError:
             pass
-        # cls.publish_shutdown(cls)
-        # cls.redis_client.publish('server-channel-123', '{"command": "Shutdown"}')
 
     def teardown_method(self):
         """Run after each test method runs."""
