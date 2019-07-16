@@ -16,8 +16,8 @@ def clear_log_directory():
             if os.path.isdir(file_path):
                 shutil.rmtree(file_path)
             if os.path.isfile(file_path):
-                os.remove(file_path
-                      
+                os.remove(file_path)
+
 
 def update_system_path():
     """Update the system path to ensure project modules and dependencies can be found."""
