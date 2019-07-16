@@ -187,6 +187,7 @@ class TcExPackage(TcExBin):
             '.git',  # git directory
             '.gitmodules',  # git modules
             '.idea',  # PyCharm
+            '.pytest_cache',  # pytest cache directory
             '*.iml',  # PyCharm files
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv

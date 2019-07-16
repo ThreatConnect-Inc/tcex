@@ -356,10 +356,28 @@ class TcExTest(TcExBin):
 
     def download_conftest(self):
         """Download conftest.py file from github."""
+        # TODO: combine all download methods
         status = 'Failed'
         local_filename = os.path.join('tests', 'conftest.py')
         if not os.path.isfile(local_filename):
             url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, 'conftest.py')
+            r = requests.get(url, allow_redirects=True)
+            if r.ok:
+                open(local_filename, 'wb').write(r.content)
+                status = 'Success'
+            else:
+                self.handle_error('Error requesting: {}'.format(url), False)
+
+            # print download status
+            self._print_results(local_filename, status)
+
+    def download_profile(self):
+        """Download conftest.py file from github."""
+        # TODO: combine all download methods
+        status = 'Failed'
+        local_filename = os.path.join('tests', 'profiles.py')
+        if not os.path.isfile(local_filename):
+            url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, 'profiles.py')
             r = requests.get(url, allow_redirects=True)
             if r.ok:
                 open(local_filename, 'wb').write(r.content)
