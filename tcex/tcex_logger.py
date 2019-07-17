@@ -17,8 +17,6 @@ logging.addLevelName(logging.TRACE, 'TRACE')
 class TraceLogger(logging.Logger):
     """Add trace level to logging"""
 
-    _in_trace = False
-
     def findCaller(self, stack_info=False):
         """Find the caller for the current log event."""
         caller = None

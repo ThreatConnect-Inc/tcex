@@ -2,16 +2,15 @@
 """TcEx Framework Service module"""
 import base64
 import json
+import ssl
 import threading
 import time
 import traceback
 import uuid
 from datetime import datetime
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+# py2to3 will convert this to "from io"
+from StringIO import StringIO  # pylint: disable=import-error
 
 import paho.mqtt.client as mqtt
 
@@ -284,20 +283,21 @@ class Service(object):
 
     def listen_mqtt(self):
         """Listen for message coming from broker."""
-        self.mqtt_client.on_connect = self.on_connect
-        # self.broker_client.on_disconnect = self.on_disconnect
-        self.mqtt_client.on_message = self.on_message_mqtt
-        # self.broker_client.on_publish = self.on_publish
-        # self.broker_client.on_subscribe = self.on_subscribe
-        # self.broker_client.on_unsubscribe = self.on_unsubscribe
-        # self.broker_client.on_log = self.on_log
-        self.mqtt_client.connect(
-            self.tcex.args.tc_svc_broker_host,
-            int(self.tcex.args.tc_svc_broker_port),
-            int(self.tcex.args.tc_svc_broker_timeout),
-        )
-        self.mqtt_client.subscribe(self.tcex.default_args.tc_svc_server_topic)
-        self.mqtt_client.loop_forever()
+        try:
+            self.mqtt_client.on_connect = self.on_connect
+            self.mqtt_client.on_message = self.on_message_mqtt
+
+            # only needed when debugging
+            if self.tcex.log.getEffectiveLevel() == 5:
+                # self.mqtt_client.on_disconnect = self.on_disconnect
+                self.mqtt_client.on_publish = self.on_publish
+                self.mqtt_client.on_subscribe = self.on_subscribe
+                # self.mqtt_client.on_unsubscribe = self.on_unsubscribe
+                self.mqtt_client.on_log = self.on_log
+            self.mqtt_client.loop_forever()
+        except Exception as e:
+            self.tcex.log.trace('error in listen_mqtt: {}'.format(e))
+            self.tcex.log.trace(traceback.format_exc())
 
     def listen_redis(self):
         """Listen for message coming from broker."""
@@ -340,24 +340,43 @@ class Service(object):
         if self._mqtt_client is None:
             try:
                 self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
-                self._mqtt_client.username_pw_set(None, password=self.tcex.args.tc_svc_broker_token)
-                self._mqtt_client.tls_set(certfile=self.tcex.args.tc_svc_broker_cert_file)
-                self.tcex.log.trace(
-                    'tc_svc_broker_cert_file: {}'.format(self.tcex.args.tc_svc_broker_cert_file)
+                self.mqtt_client.connect(
+                    self.tcex.args.tc_svc_broker_host,
+                    int(self.tcex.args.tc_svc_broker_port),
+                    int(self.tcex.args.tc_svc_broker_timeout),
                 )
+                self._mqtt_client.tls_set(
+                    ca_certs=self.tcex.args.tc_svc_broker_cert_file,
+                    cert_reqs=ssl.CERT_REQUIRED,
+                    tls_version=ssl.PROTOCOL_TLSv1_2,
+                )
+                # username must be a empty string
+                self._mqtt_client.username_pw_set('', password=self.tcex.args.tc_svc_broker_token)
+                self._mqtt_client.tls_insecure_set(False)
             except Exception as e:
                 self.tcex.log.error('Failed connection to MQTT service ({})'.format(e))
                 self.tcex.log.trace(traceback.format_exc())
+                self.process_shutdown('Failure connecting to mqtt')
+
         return self._mqtt_client
 
     def on_connect(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
         """On connect method for mqtt broker."""
         self.tcex.log.info('Message broker connection status: {}'.format(str(rc)))
 
+        self.tcex.log.info(
+            'Subscribing to topic: {}'.format(self.tcex.default_args.tc_svc_server_topic)
+        )
+        self.mqtt_client.subscribe(self.tcex.default_args.tc_svc_server_topic)
+
+    def on_log(self, client, userdata, level, buf):  # pylint: disable=unused-argument
+        """Handle MQTT on_log events."""
+        self.tcex.log.trace('on_log - buf: {}, level: {}'.format(buf, level))
+
     def on_message_mqtt(self, client, userdata, message):  # pylint: disable=unused-argument
         """On message for mqtt."""
-        self.tcex.log.trace('message.payload: {}'.format(message.payload))
-        self.tcex.log.trace('message.topic: {}'.format(message.topic))
+        self.tcex.log.trace('on_message - message.payload: {}'.format(message.payload))
+        self.tcex.log.trace('on_message - message.topic: {}'.format(message.topic))
         try:
             # messages on server topic must be json objects
             m = json.loads(message.payload)
@@ -368,9 +387,9 @@ class Service(object):
         if message.topic == self.tcex.default_args.tc_svc_server_topic:
             self.server_topic(m)
 
-    def on_message_redis(self, message):
+    def on_message_redis(self, message):  # pylint: disable=unused-argument
         """Subscribe and listen to "message" on Redis topic."""
-        self.tcex.log.trace('message {}'.format(message))
+        self.tcex.log.trace('on_message - message {}'.format(message))
         # only process "message" on topic (exclude subscriptions, etc)
         if message.get('type') != 'message':
             return
@@ -382,6 +401,14 @@ class Service(object):
             self.tcex.log.warning('Cannot parse message ({}).'.format(message))
             return
         self.server_topic(m)
+
+    def on_publish(self, client, userdata, result):  # pylint: disable=unused-argument
+        """Handle MQTT on_log events."""
+        self.tcex.log.trace('on_publish - {}'.format(result))
+
+    def on_subscribe(self, client, userdata, mid, granted_qos):  # pylint: disable=unused-argument
+        """Handle MQTT on_log events."""
+        self.tcex.log.trace('on_subscribe - mid: {}, granted_qos: {}'.format(mid, granted_qos))
 
     def process_config(self, command, config, trigger_id):
         """Process config message."""
@@ -557,7 +584,8 @@ class Service(object):
         self.tcex.log.debug('message: ({})'.format(message))
 
         if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
-            self.mqtt_client.publish(topic, message)
+            r = self.mqtt_client.publish(topic, message)
+            self.tcex.log.trace('publish response: {}'.format(r))
         elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             self.redis_client.publish(topic, message)
 
