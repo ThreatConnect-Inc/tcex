@@ -2,7 +2,6 @@
 """TcEx testing Framework."""
 import json
 import logging
-from logging.handlers import RotatingFileHandler
 import os
 import re
 import time
@@ -11,15 +10,16 @@ import sys
 import traceback
 from datetime import datetime
 from tcex import TcEx
+from tcex.tcex_logger import FileHandlerCustom
 from .stage_data import Stager
 from .validate_data import Validator
 
 logger = logging.getLogger('TestCase')
-rfh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10485760, mode='a')
-rfh.setLevel(logging.DEBUG)
+lfh = FileHandlerCustom('log/tests.log')
+lfh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-rfh.setFormatter(formatter)
-logger.addHandler(rfh)
+lfh.setFormatter(formatter)
+logger.addHandler(lfh)
 logger.setLevel(logging.DEBUG)
 
 
@@ -94,7 +94,7 @@ class TestCase(object):
             '--tc_log_path',
             'log',
             '--tc_log_file',
-            '{}-app.log'.format(self.context),
+            '{}/app.log'.format(self.context),
         ]
         self.tcex = TcEx()
         # TODO: validate this

@@ -81,6 +81,8 @@ if __name__ == '__main__':
             tc_test.add_profile()
             # download conftest.py
             tc_test.download_conftest()
+            # download conftest.py
+            tc_test.download_profile()
         else:
             print('Invalid options.')
 

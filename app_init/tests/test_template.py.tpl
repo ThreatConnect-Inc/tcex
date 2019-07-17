@@ -4,6 +4,7 @@ import os
 import sys
 
 import pytest
+from ..profiles import profiles
 from tcex.testing.monkeypatch import register_monkeypatch
 
 ${parent_import}
@@ -14,12 +15,8 @@ if sys.version_info[0] == 2:
     reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=no-member
 
-# gather profile names
-profiles_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d')
-profile_names = []
-for filename in sorted(os.listdir(profiles_dir)):
-    if filename.endswith('.json'):
-        profile_names.append(filename.replace('.json', ''))
+# get profile names
+profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d'))
 
 
 # pylint: disable=W0235,too-many-function-args
@@ -48,9 +45,10 @@ class TestFeature(${parent_class}):
     def test_profiles(self, profile_name, monkeypatch): # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
         pd = self.profile(profile_name)
+
         # uncomment to start using the monkey patch annotations
         # register_monkeypatch(monkeypatch, pd)
-        if self.env.intersection(set(pd.get('environments', ['build']))):
-            assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
-            ValidateFeature(self.validator).validate(pd.get('outputs'))
-            ${validate_batch_method}
+
+        assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
+        ValidateFeature(self.validator).validate(pd.get('outputs'))
+        ${validate_batch_method}
