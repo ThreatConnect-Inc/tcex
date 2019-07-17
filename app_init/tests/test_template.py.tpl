@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Test case template for App testing."""
+# flake8: noqa: F401
 import os
 import sys
 
