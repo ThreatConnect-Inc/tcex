@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Validate feature test case class."""
 # flake8: noqa: F401
-from tcex.testing.monkeypatch import monkeypatch # pylint: disable=W0611
+from tcex.testing.monkeypatch import monkeypatch  # pylint: disable=W0611
 from ..validate import Validate
 
 

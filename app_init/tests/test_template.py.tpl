@@ -5,7 +5,7 @@ import os
 import sys
 
 import pytest
-from tcex.testing.monkeypatch import register_monkeypatch # pylint: disable=W0611
+from tcex.testing.monkeypatch import register_monkeypatch  # pylint: disable=W0611
 from ..profiles import profiles
 
 ${parent_import}  # pylint: disable=C0411

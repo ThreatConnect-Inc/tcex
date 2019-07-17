@@ -27,7 +27,7 @@ class Validate(object):
         """Assert output data for variable ${data['variable']}."""
         output_var = '${data['variable']}'
         passed, assert_error = self.validator.redis.data(
-            output_var, data.get('expected_output'), data.get('op', '='),
+            output_var, data.get('expected_output'), data.get('op', '=')
         )
         assert passed, assert_error
     % endfor
