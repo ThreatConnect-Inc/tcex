@@ -242,7 +242,7 @@ class Service(object):
         """Publish heartbeat on timer."""
         while True:
             if self.heartbeat_watchdog > (
-                self.tcex.default_args.tc_svc_heartbeat_timeout_seconds / self.heartbeat_sleep_time
+                self.tcex.default_args.tc_svc_hb_timeout_seconds / self.heartbeat_sleep_time
             ):
                 self.heartbeat_miss_count += 1
                 self.tcex.log.warning('Missed {} heartbeats'.format(self.heartbeat_miss_count))
@@ -264,7 +264,7 @@ class Service(object):
     def heartbeat_publish(self):
         """Publish heartbeat on timer."""
         while True:
-            time.sleep(self.tcex.default_args.tc_svc_heartbeat_timeout_seconds)
+            time.sleep(self.tcex.default_args.tc_svc_hb_timeout_seconds)
             response = {'command': 'Heartbeat', 'metric': self.metric}
             self.publish(json.dumps(response))
             self.tcex.log.info('Heartbeat command sent')
@@ -340,7 +340,7 @@ class Service(object):
         if self._mqtt_client is None:
             self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
             self._mqtt_client.username_pw_set(None, password=self.tcex.args.tc_svc_broker_token)
-            self._mqtt_client.tls_set(certfile=self.tcex.args.tc_svc_broker_crt_file)
+            self._mqtt_client.tls_set(certfile=self.tcex.args.tc_svc_broker_cert_file)
 
         return self._mqtt_client
 

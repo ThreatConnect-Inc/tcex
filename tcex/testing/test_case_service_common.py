@@ -32,9 +32,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
                 'tc_svc_client_topic': self.client_topic,
                 'tc_svc_server_topic': self.server_topic,
-                'tc_svc_heartbeat_timeout_seconds': int(
-                    os.getenv('TC_SVC_HEARTBEAT_TIMEOUT_SECONDS', '60')
-                ),
+                'tc_svc_hb_timeout_seconds': int(os.getenv('TC_SVC_HB_TIMEOUT_SECONDS', '60')),
             }
         )
         return args
