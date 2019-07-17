@@ -28,7 +28,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             {
                 'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
                 'tc_svc_broker_port': os.getenv('TC_SVC_BROKER_PORT', '1883'),
-                'tc_svc_broker_service': os.getenv('TC_SVC_BROKER_SERVICE', 'redis'),
+                'tc_svc_broker_service': os.getenv('TC_SVC_BROKER_SERVICE', 'mqtt'),
                 'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
                 'tc_svc_client_topic': self.client_topic,
                 'tc_svc_server_topic': self.server_topic,
@@ -69,13 +69,23 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         current_context = self.context
 
         @property
+        def mqtt_client(self):
+            self.tcex.log.trace('using monkeypatch method')
+            if self._mqtt_client is None:
+                self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
+            return self._mqtt_client
+
+        @property
         def session_id(self):  # pylint: disable=unused-argument
+            self.tcex.log.trace('using monkeypatch method')
             return current_context
 
         @staticmethod
         def session_logfile(session_id):  # pylint: disable=unused-argument
+            self.tcex.log.trace('using monkeypatch method')
             return '{0}/{0}.log'.format(current_context)
 
+        MonkeyPatch().setattr(Service, 'mqtt_client', mqtt_client)
         MonkeyPatch().setattr(Service, 'session_id', session_id)
         MonkeyPatch().setattr(Service, 'session_logfile', session_logfile)
 

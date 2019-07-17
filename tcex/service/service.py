@@ -338,10 +338,16 @@ class Service(object):
     def mqtt_client(self):
         """Return the correct KV store for this execution."""
         if self._mqtt_client is None:
-            self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
-            self._mqtt_client.username_pw_set(None, password=self.tcex.args.tc_svc_broker_token)
-            self._mqtt_client.tls_set(certfile=self.tcex.args.tc_svc_broker_cert_file)
-
+            try:
+                self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
+                self._mqtt_client.username_pw_set(None, password=self.tcex.args.tc_svc_broker_token)
+                self._mqtt_client.tls_set(certfile=self.tcex.args.tc_svc_broker_cert_file)
+                self.tcex.log.trace(
+                    'tc_svc_broker_cert_file: {}'.format(self.tcex.args.tc_svc_broker_cert_file)
+                )
+            except Exception as e:
+                self.tcex.log.error('Failed connection to MQTT service ({})'.format(e))
+                self.tcex.log.trace(traceback.format_exc())
         return self._mqtt_client
 
     def on_connect(self, client, userdata, flags, rc):  # pylint: disable=unused-argument

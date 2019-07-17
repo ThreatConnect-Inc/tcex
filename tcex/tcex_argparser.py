@@ -36,7 +36,7 @@ class TcExArgParser(ArgumentParser):
         self._tc_playbook_db_port = '6379'
 
         # service defaults
-        self._tc_svc_hb_timeout_seconds = 60
+        self._tc_svc_hb_timeout_seconds = 20
 
         # standard defaults
         self._tc_api_path = 'https://api.threatconnect.com'
@@ -227,9 +227,10 @@ class TcExArgParser(ArgumentParser):
         --tc_svc_broker_jks_pwd password            Unused.
         --tc_svc_broker_port port                   The Broker service port.
         --tc_svc_broker_service service             The Broker service (mqtt/redis).
+        --tc_svc_broker_timeout seconds             The Broker service timeout (tcex only).
         --tc_svc_broker_token token                 The Broker auth token.
         --tc_svc_client_topic topic                 The topic to send client message.
-        --tc_svc_hb_timeout_seconds seconds         The Broker timeout in seconds.
+        --tc_svc_hb_timeout_seconds seconds         The heartbeat interval in seconds.
         --tc_svc_server_topic topic                 The topic to receive server message.
         """
         self.add_argument('--tc_svc_broker_cert_file', help='Broker client ssl certificate')
@@ -240,12 +241,16 @@ class TcExArgParser(ArgumentParser):
         self.add_argument(
             '--tc_svc_broker_service', default='mqtt', help='Broker service (mqtt/redis)'
         )
+        self.add_argument(
+            '--tc_svc_broker_timeout', default=60, help='Broker timeout in seconds', type=int
+        )
         self.add_argument('--tc_svc_broker_token', help='Broker service auth token')
         self.add_argument('--tc_svc_client_topic', help='Topic to send client messages')
         self.add_argument(
             '--tc_svc_hb_timeout_seconds',
             default=self._tc_svc_hb_timeout_seconds,
-            help='Broker timeout in seconds',
+            help='Broker heartbeat interval in seconds',
+            type=int,
         )
         self.add_argument('--tc_svc_server_topic', help='Topic to send server messages')
 
