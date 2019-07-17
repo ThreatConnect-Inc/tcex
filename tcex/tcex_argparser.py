@@ -238,7 +238,7 @@ class TcExArgParser(ArgumentParser):
         self.add_argument('--tc_svc_broker_jks_pass', help='Unused')
         self.add_argument('--tc_svc_broker_port', help='Broker service port', type=int)
         self.add_argument(
-            '--tc_svc_broker_service', default='redis', help='Broker service (mqtt/redis)'
+            '--tc_svc_broker_service', default='mqtt', help='Broker service (mqtt/redis)'
         )
         self.add_argument('--tc_svc_broker_token', help='Broker service auth token')
         self.add_argument('--tc_svc_client_topic', help='Topic to send client messages')
