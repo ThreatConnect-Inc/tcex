@@ -346,7 +346,7 @@ class Service(object):
                     int(self.tcex.args.tc_svc_broker_timeout),
                 )
                 self._mqtt_client.tls_set(
-                    ca_certs=self.tcex.args.tc_svc_broker_cert_file,
+                    ca_certs=self.tcex.args.tc_svc_broker_cacert_file,
                     cert_reqs=ssl.CERT_REQUIRED,
                     tls_version=ssl.PROTOCOL_TLSv1_2,
                 )

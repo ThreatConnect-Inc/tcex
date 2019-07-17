@@ -221,7 +221,8 @@ class TcExArgParser(ArgumentParser):
 
         These arguments will be passed to every playbook app by default.
 
-        --tc_svc_broker_cert_file file              The Broker client ssl certificate.
+        --tc_svc_broker_cacert_file file            The Broker SSL CA (full chain) certificate.
+        --tc_svc_broker_cert_file file              The Broker SSL Server certificate.
         --tc_svc_broker_host host                   The Broker service hostname.
         --tc_svc_broker_jks_file file               Unused.
         --tc_svc_broker_jks_pwd password            Unused.
@@ -233,6 +234,7 @@ class TcExArgParser(ArgumentParser):
         --tc_svc_hb_timeout_seconds seconds         The heartbeat interval in seconds.
         --tc_svc_server_topic topic                 The topic to receive server message.
         """
+        self.add_argument('--tc_svc_broker_cacert_file', help='Broker client ssl certificate')
         self.add_argument('--tc_svc_broker_cert_file', help='Broker client ssl certificate')
         self.add_argument('--tc_svc_broker_host', help='Broker service host')
         self.add_argument('--tc_svc_broker_jks_file', help='Unused')
