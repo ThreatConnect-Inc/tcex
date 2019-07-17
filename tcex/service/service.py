@@ -29,6 +29,7 @@ class Service(object):
 
         # properties
         self._client = None
+        self._connected = False
         self._metric = {'errors': 0, 'hits': 0, 'misses': 0}
         self._mqtt_client = None
         self._ready = False
@@ -368,6 +369,7 @@ class Service(object):
             'Subscribing to topic: {}'.format(self.tcex.default_args.tc_svc_server_topic)
         )
         self.mqtt_client.subscribe(self.tcex.default_args.tc_svc_server_topic)
+        self._connected = True
 
     def on_log(self, client, userdata, level, buf):  # pylint: disable=unused-argument
         """Handle MQTT on_log events."""
@@ -474,7 +476,12 @@ class Service(object):
                 )
                 self.tcex.log.trace(traceback.format_exc())
 
-        # give App time to cleanup and shutdown
+        # unsubscribe and disconnect from the broker
+        if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
+            self.mqtt_client.unsubscribe(self.tcex.default_args.tc_svc_server_topic)
+            self.mqtt_client.disconnect()
+
+        # delay shutdown to give App time to cleanup
         self.shutdown = True
         time.sleep(5)
         self.tcex.exit(0)  # final shutdown in case App did not
@@ -598,8 +605,14 @@ class Service(object):
     def ready(self, bool_val):
         """Set ready boolean."""
         if isinstance(bool_val, bool) and bool_val is True:
-            self.publish(json.dumps({'command': 'Ready'}))
-            self._ready = True
+            # wait until connected to send ready command
+            while not self._connected:
+                if self.shutdown:
+                    break
+                time.sleep(1)
+            else:  # pylint: disable=useless-else-on-loop
+                self.publish(json.dumps({'command': 'Ready'}))
+                self._ready = True
 
     @property
     def redis_client(self):
