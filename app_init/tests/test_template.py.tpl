@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """Test case template for App testing."""
+# flake8: noqa: F401
 import os
 import sys
 
 import pytest
+from tcex.testing.monkeypatch import register_monkeypatch  # pylint: disable=W0611
 from ..profiles import profiles
-from tcex.testing.monkeypatch import register_monkeypatch
 
-${parent_import}
+${parent_import}  # pylint: disable=C0411
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
 # Python 2 unicode
@@ -42,7 +43,7 @@ class TestFeature(${parent_class}):
         super(TestFeature, self).teardown_method()
 
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name, monkeypatch):
+    def test_profiles(self, profile_name, monkeypatch): # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
         pd = self.profile(profile_name)
 

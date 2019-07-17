@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Base pytest configuration file."""
 import os
+import shutil
 import sys
 
 
@@ -11,8 +12,10 @@ def clear_log_directory():
         print('Clearing log directory.')
         for log_file in os.listdir(log_directory):
             file_path = os.path.join(log_directory, log_file)
+            if os.path.isdir(file_path):
+                shutil.rmtree(file_path)
             if os.path.isfile(file_path):
-                os.unlink(file_path)
+                os.remove(file_path)
 
 
 def update_system_path():

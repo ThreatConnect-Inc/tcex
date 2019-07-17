@@ -17,7 +17,7 @@ class Validate(object):
     % if output_data:
         for k, v in output_variables.items():
         % for data in output_data:
-            if '${data['variable']}' == k:
+            if k == '${data['variable']}':
                 self.${data['method']}(v)
         % endfor
     % endif
@@ -25,10 +25,9 @@ class Validate(object):
 
     def ${data['method']}(self, data):
         """Assert output data for variable ${data['variable']}."""
+        output_var = '${data['variable']}'
         passed, assert_error = self.validator.redis.data(
-            '${data['variable']}',
-            data.get('expected_output'),
-            data.get('op', '='),
+            output_var, data.get('expected_output'), data.get('op', '=')
         )
         assert passed, assert_error
     % endfor
