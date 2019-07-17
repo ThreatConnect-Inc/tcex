@@ -36,7 +36,7 @@ class TcExArgParser(ArgumentParser):
         self._tc_playbook_db_port = '6379'
 
         # service defaults
-        self._tc_heartbeat_seconds = 60
+        self._tc_svc_heartbeat_timeout_seconds = 60
 
         # standard defaults
         self._tc_api_path = 'https://api.threatconnect.com'
@@ -221,41 +221,33 @@ class TcExArgParser(ArgumentParser):
 
         These arguments will be passed to every playbook app by default.
 
-        --tc_broker_host host            The Broker channel/topic host.
-        --tc_broker_port port            The Broker channel/topic port.
-        --tc_broker_service service      The Broker service (mqtt/redis).
-        --tc_broker_timeout seconds      The Broker timeout in seconds.
-        --tc_broker_token token          The Broker auth token.
-        --tc_client_topic topic          The Broker channel/topic to send client messages.
-        --tc_server_topic topic          The Broker channel/topic to receive server messages.
+        --tc_svc_broker_crt_file file               The Broker client ssl certificate.
+        --tc_svc_broker_host host                   The Broker service hostname.
+        --tc_svc_broker_jks_file file               Unused.
+        --tc_svc_broker_jks_password password       Unused.
+        --tc_svc_broker_port port                   The Broker service port.
+        --tc_svc_broker_service service             The Broker service (mqtt/redis).
+        --tc_svc_broker_token token                 The Broker auth token.
+        --tc_svc_client_topic topic                 The topic to send client message.
+        --tc_svc_heartbeat_timeout_seconds seconds  The Broker timeout in seconds.
+        --tc_svc_server_topic topic                 The topic to receive server message.
         """
-        self.add_argument('--tc_broker_host', help='ThreatConnect Service broker host')
-        self.add_argument('--tc_broker_port', help='ThreatConnect Service broker port', type=int)
+        self.add_argument('--tc_svc_broker_crt_file', help='Broker client ssl certificate')
+        self.add_argument('--tc_svc_broker_host', help='Broker service host')
+        self.add_argument('--tc_svc_broker_jks_file', help='Unused')
+        self.add_argument('--tc_svc_broker_jks_pass', help='Unused')
+        self.add_argument('--tc_svc_broker_port', help='Broker service port', type=int)
         self.add_argument(
-            '--tc_broker_service', default='redis', help='ThreatConnect Service broker token'
+            '--tc_svc_broker_service', default='redis', help='Broker service (mqtt/redis)'
         )
-        self.add_argument('--tc_broker_token', help='ThreatConnect Service broker token')
+        self.add_argument('--tc_svc_broker_token', help='Broker service auth token')
+        self.add_argument('--tc_svc_client_topic', help='Topic to send client messages')
         self.add_argument(
-            '--tc_broker_timeout', default=60, help='ThreatConnect Service broker token'
+            '--tc_svc_heartbeat_timeout_seconds',
+            default=self._tc_svc_heartbeat_timeout_seconds,
+            help='Broker timeout in seconds',
         )
-        self.add_argument(
-            '--tc_client_channel',
-            '--tc_client_topic',
-            dest='tc_client_topic',
-            help='ThreatConnect Service client channel',
-        )
-        self.add_argument(
-            '--tc_heartbeat_seconds',
-            default=self._tc_heartbeat_seconds,
-            help='Service heartbeat time in seconds',
-            type=int,
-        )
-        self.add_argument(
-            '--tc_server_channel',
-            '--tc_server_topic',
-            dest='tc_server_topic',
-            help='ThreatConnect Service server channel',
-        )
+        self.add_argument('--tc_svc_server_topic', help='Topic to send server messages')
 
     def _standard_arguments(self):
         """Define standard args passed to every TcEx App.

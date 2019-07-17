@@ -242,7 +242,7 @@ class Service(object):
         """Publish heartbeat on timer."""
         while True:
             if self.heartbeat_watchdog > (
-                self.tcex.default_args.tc_heartbeat_seconds / self.heartbeat_sleep_time
+                self.tcex.default_args.tc_svc_heartbeat_timeout_seconds / self.heartbeat_sleep_time
             ):
                 self.heartbeat_miss_count += 1
                 self.tcex.log.warning('Missed {} heartbeats'.format(self.heartbeat_miss_count))
@@ -264,7 +264,7 @@ class Service(object):
     def heartbeat_publish(self):
         """Publish heartbeat on timer."""
         while True:
-            time.sleep(self.tcex.default_args.tc_heartbeat_seconds)
+            time.sleep(self.tcex.default_args.tc_svc_heartbeat_timeout_seconds)
             response = {'command': 'Heartbeat', 'metric': self.metric}
             self.publish(json.dumps(response))
             self.tcex.log.info('Heartbeat command sent')
@@ -272,10 +272,10 @@ class Service(object):
 
     def listen(self):
         """List for message coming from broker."""
-        self.tcex.log.trace('listen with broker {}'.format(self.tcex.args.tc_broker_service))
-        if self.tcex.args.tc_broker_service.lower() == 'mqtt':
+        self.tcex.log.trace('listen with broker {}'.format(self.tcex.args.tc_svc_broker_service))
+        if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             target = self.listen_mqtt
-        elif self.tcex.args.tc_broker_service.lower() == 'redis':
+        elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             target = self.listen_redis
 
         t = threading.Thread(target=target, args=())
@@ -292,20 +292,20 @@ class Service(object):
         # self.broker_client.on_unsubscribe = self.on_unsubscribe
         # self.broker_client.on_log = self.on_log
         self.mqtt_client.connect(
-            self.tcex.args.tc_broker_host,
-            int(self.tcex.args.tc_broker_port),
-            int(self.tcex.args.tc_broker_timeout),
+            self.tcex.args.tc_svc_broker_host,
+            int(self.tcex.args.tc_svc_broker_port),
+            int(self.tcex.args.tc_svc_broker_timeout),
         )
-        self.mqtt_client.subscribe(self.tcex.default_args.tc_server_topic)
+        self.mqtt_client.subscribe(self.tcex.default_args.tc_svc_server_topic)
         self.mqtt_client.loop_forever()
 
     def listen_redis(self):
         """Listen for message coming from broker."""
         self.tcex.log.info(
-            'Listening Redis topic {}'.format(self.tcex.default_args.tc_server_topic)
+            'Listening Redis topic {}'.format(self.tcex.default_args.tc_svc_server_topic)
         )
         p = self.redis_client.pubsub(ignore_subscribe_messages=True)
-        p.subscribe(self.tcex.default_args.tc_server_topic)
+        p.subscribe(self.tcex.default_args.tc_svc_server_topic)
         for message in p.listen():
             self.on_message_redis(message)
 
@@ -339,6 +339,9 @@ class Service(object):
         """Return the correct KV store for this execution."""
         if self._mqtt_client is None:
             self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
+            self._mqtt_client.username_pw_set(None, password=self.tcex.args.tc_svc_broker_token)
+            self._mqtt_client.tls_set(certfile=self.tcex.args.tc_svc_broker_crt_file)
+
         return self._mqtt_client
 
     def on_connect(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
@@ -356,7 +359,7 @@ class Service(object):
             self.tcex.log.warning('Cannot parse message ({}).'.format(m))
             return
 
-        if message.topic == self.tcex.default_args.tc_server_topic:
+        if message.topic == self.tcex.default_args.tc_svc_server_topic:
             self.server_topic(m)
 
     def on_message_redis(self, message):
@@ -543,13 +546,13 @@ class Service(object):
             message (str): The message to be sent on client topic.
         """
         if topic is None:
-            topic = self.tcex.default_args.tc_client_topic
+            topic = self.tcex.default_args.tc_svc_client_topic
         self.tcex.log.debug('topic: ({})'.format(topic))
         self.tcex.log.debug('message: ({})'.format(message))
 
-        if self.tcex.args.tc_broker_service.lower() == 'mqtt':
+        if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             self.mqtt_client.publish(topic, message)
-        elif self.tcex.args.tc_broker_service.lower() == 'redis':
+        elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             self.redis_client.publish(topic, message)
 
     @property

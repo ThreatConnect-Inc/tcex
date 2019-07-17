@@ -26,13 +26,15 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         args = super(TestCaseServiceCommon, self).default_args
         args.update(
             {
-                'tc_broker_host': os.getenv('TC_BROKER_HOST', 'localhost'),
-                'tc_broker_port': os.getenv('TC_BROKER_PORT', '1883'),
-                'tc_broker_service': os.getenv('TC_BROKER_SERVICE', 'redis'),
-                'tc_broker_token': os.getenv('TC_BROKER_TOKEN'),
-                'tc_client_topic': self.client_topic,
-                'tc_server_topic': self.server_topic,
-                'tc_heartbeat_seconds': int(os.getenv('TC_HEARTBEAT_SECONDS', '60')),
+                'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
+                'tc_svc_broker_port': os.getenv('TC_SVC_BROKER_PORT', '1883'),
+                'tc_svc_broker_service': os.getenv('TC_SVC_BROKER_SERVICE', 'redis'),
+                'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
+                'tc_svc_client_topic': self.client_topic,
+                'tc_svc_server_topic': self.server_topic,
+                'tc_svc_heartbeat_timeout_seconds': int(
+                    os.getenv('TC_SVC_HEARTBEAT_TIMEOUT_SECONDS', '60')
+                ),
             }
         )
         return args
@@ -43,9 +45,9 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         if self._mqtt_client is None:
             self._mqtt_client = mqtt.Client()
             self._mqtt_client.connect(
-                self.tcex.args.tc_broker_host,
-                self.tcex.args.tc_broker_port,
-                self.tcex.args.tc_broker_timeout,
+                self.tcex.args.tc_svc_broker_host,
+                self.tcex.args.tc_svc_broker_port,
+                self.tcex.args.tc_svc_broker_timeout,
             )
         return self._mqtt_client
 
@@ -86,11 +88,11 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
 
         # self.log.debug('topic: ({})'.format(topic))
         # self.log.debug('message: ({})'.format(message))
-        # self.log.debug('broker_service: ({})'.format(self.tcex.args.tc_broker_service))
+        # self.log.debug('broker_service: ({})'.format(self.tcex.args.tc_svc_broker_service))
 
-        if self.tcex.args.tc_broker_service.lower() == 'mqtt':
+        if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             self.mqtt_client.publish(topic, message)
-        elif self.tcex.args.tc_broker_service.lower() == 'redis':
+        elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             self.redis_client.publish(topic, message)
 
     def publish_create_config(self, trigger_id, config):
