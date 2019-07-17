@@ -4,10 +4,10 @@ import os
 import sys
 
 import pytest
+from tcex.testing.monkeypatch import register_monkeypatch # pylint: disable=W0611
 from ..profiles import profiles
-from tcex.testing.monkeypatch import register_monkeypatch
 
-${parent_import}
+${parent_import}  # pylint: disable=C0411
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
 # Python 2 unicode

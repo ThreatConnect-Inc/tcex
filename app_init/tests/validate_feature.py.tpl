@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Validate feature test case class."""
+from tcex.testing.monkeypatch import monkeypatch # pylint: disable=W0611
 from ..validate import Validate
-from tcex.testing.monkeypatch import monkeypatch
 
 
 class ValidateFeature(Validate):
