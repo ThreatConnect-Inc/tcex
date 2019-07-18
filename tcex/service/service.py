@@ -39,7 +39,7 @@ class Service(object):
         self.config_thread = None
         self.heartbeat_max_misses = 3
         self.heartbeat_miss_count = 0
-        self.heartbeat_sleep_time = 0.001
+        self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
         self.ready = False
         self.shutdown = False
