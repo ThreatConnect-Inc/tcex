@@ -500,12 +500,12 @@ class Service(object):
           "method": "GET",
           "queryParams": [ { key/value pairs } ],
           "headers": [ { key/value pairs } ],
-          "body": "request.body"
+          "bodyVariable": "request.body"
         }
         """
         request_key = message.get('requestKey')
         # body is stored in Redis
-        body = self.redis_client.hget(request_key, 'request.body')
+        body = self.redis_client.hget(request_key, message.get('bodyVariable'))
         if body is not None:
             body = StringIO(json.loads(base64.b64decode(body)))
         headers = self.format_request_headers(message.get('headers'))
@@ -559,7 +559,7 @@ class Service(object):
                 'status': status,
                 'statusCode': status_code,
                 'headers': self.format_response_headers(args[1]),
-                'body': 'response.body',
+                'bodyVariable': 'response.body',
             }
             time.sleep(2)  # give time for the body to be written to Redis before responding
             self.publish(json.dumps(response))

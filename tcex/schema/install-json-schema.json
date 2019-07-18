@@ -17,6 +17,10 @@
       "minLength": 3,
       "type": "string"
     },
+    "displayPath": {
+      "minLength": 3,
+      "type": "string"
+    },
     "dockerImage": {
       "type": "string"
     },
