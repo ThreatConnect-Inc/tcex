@@ -555,11 +555,13 @@ class Service(object):
             self.tcex.log.trace('args: {}'.format(args))
             status_code, status = args[0].split(' ', 1)
             response = {
+                'bodyVariable': 'response.body',
+                'command': 'Acknowledge',
+                'headers': self.format_response_headers(args[1]),
                 'requestKey': request_key,  # pylint: disable=cell-var-from-loop
                 'status': status,
                 'statusCode': status_code,
-                'headers': self.format_response_headers(args[1]),
-                'bodyVariable': 'response.body',
+                'type': 'RunService',
             }
             time.sleep(2)  # give time for the body to be written to Redis before responding
             self.publish(json.dumps(response))
