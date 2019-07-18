@@ -233,11 +233,6 @@ class Service(object):
         t.daemon = True  # use setter for py2
         t.start()
 
-        # start heartbeat publish thread
-        t = threading.Thread(target=self.heartbeat_publish)
-        t.daemon = True  # use setter for py2
-        t.start()
-
     def heartbeat_monitor(self):
         """Publish heartbeat on timer."""
         while True:
@@ -255,20 +250,8 @@ class Service(object):
                 )
                 break
 
-            # if watchdog % 1000 == 0:
-            #     self.tcex.log.trace('watchdog count: {}'.format(watchdog))
-
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
-
-    def heartbeat_publish(self):
-        """Publish heartbeat on timer."""
-        while True:
-            time.sleep(self.tcex.default_args.tc_svc_hb_timeout_seconds)
-            response = {'command': 'Heartbeat', 'metric': self.metric}
-            self.publish(json.dumps(response))
-            self.tcex.log.info('Heartbeat command sent')
-            self.tcex.log.debug('metric: {}'.format(self.metric))
 
     def listen(self):
         """List for message coming from broker."""
@@ -646,6 +629,7 @@ class Service(object):
                     break
                 time.sleep(1)
             else:  # pylint: disable=useless-else-on-loop
+                self.tcex.log.info('Service is Ready')
                 self.publish(json.dumps({'command': 'Ready'}))
                 self._ready = True
 
@@ -668,6 +652,12 @@ class Service(object):
         elif command.lower() == 'heartbeat':
             self.heartbeat_watchdog = 0
             self.heartbeat_miss_count = 0
+
+            # send heartbeat -acknowledge- command
+            response = {'command': 'Heartbeat', 'metric': self.metric}
+            self.publish(json.dumps(response))
+            self.tcex.log.info('Heartbeat command sent')
+            self.tcex.log.debug('metric: {}'.format(self.metric))
         elif command.lower() == 'loggingchange':
             # {"command": "LoggingChange", "level": "DEBUG"}
             level = message.get('level')
