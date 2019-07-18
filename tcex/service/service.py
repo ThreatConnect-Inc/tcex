@@ -289,12 +289,12 @@ class Service(object):
             self.mqtt_client.on_message = self.on_message_mqtt
 
             # only needed when debugging
-            if self.tcex.log.getEffectiveLevel() == 5:
-                # self.mqtt_client.on_disconnect = self.on_disconnect
-                self.mqtt_client.on_publish = self.on_publish
-                self.mqtt_client.on_subscribe = self.on_subscribe
-                # self.mqtt_client.on_unsubscribe = self.on_unsubscribe
-                self.mqtt_client.on_log = self.on_log
+            # if self.tcex.log.getEffectiveLevel() == 5:
+            #     # self.mqtt_client.on_disconnect = self.on_disconnect
+            #     self.mqtt_client.on_publish = self.on_publish
+            #     self.mqtt_client.on_subscribe = self.on_subscribe
+            #     # self.mqtt_client.on_unsubscribe = self.on_unsubscribe
+            #     self.mqtt_client.on_log = self.on_log
             self.mqtt_client.loop_forever()
         except Exception as e:
             self.tcex.log.trace('error in listen_mqtt: {}'.format(e))
@@ -455,6 +455,114 @@ class Service(object):
                     self.tcex.log.trace(traceback.format_exc())
             self.update_config(trigger_id, config)
 
+    def process_run_service_event(self, message):
+        """Process Webhook event messages.
+
+        {
+          "command": "RunService",
+          "requestKey": "123abc",
+          "method": "GET",
+          "queryParams": [ { key/value pairs } ],
+          "headers": [ { key/value pairs } ],
+          "bodyVariable": "request.body"
+        }
+        """
+        self.tcex.log.trace('Process RunService')
+        request_key = message.get('requestKey')
+        body = None
+        # read body from redis
+        try:
+            body_variable = message.get('bodyVariable')
+            if body_variable is not None:
+                body = self.redis_client.hget(request_key, message.get('bodyVariable'))
+                if body is not None:
+                    body = StringIO(json.loads(base64.b64decode(body)))
+        except Exception as e:
+            self.tcex.log.error('Failed reading body to Redis ({})'.format(e))
+            self.tcex.log.trace(traceback.format_exc())
+        headers = self.format_request_headers(message.get('headers'))
+        method = message.get('method')
+        params = message.get('queryParams')
+        path = message.get('path')
+
+        try:
+            environ = {
+                'wsgi.errors': self.tcex.log.error,  # sys.stderr
+                # 'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>
+                'wsgi.input': body,
+                'wsgi.multithread': True,
+                'wsgi.multiprocess': False,
+                'wsgi.run_once': True,
+                'wsgi.url_scheme': 'https',
+                'wsgi.version': (1, 0),
+                'CONTENT_TYPE': headers.get('content-type', ''),
+                'CONTENT_LENGTH': headers.get('content-length', 0),
+                # 'GATEWAY_INTERFACE': 'CGI/1.1',
+                # 'HTTP_ACCEPT': '',
+                'HTTP_ACCEPT': headers.get('accept', ''),
+                # 'HTTP_ACCEPT_ENCODING': '',
+                # 'HTTP_ACCEPT_LANGUAGE': '',
+                # 'HTTP_COOKIE': '',
+                # 'HTTP_DNT': 1,
+                # 'HTTP_CONNECTION': 'keep-alive',
+                # 'HTTP_HOST': '',
+                # 'HTTP_UPGRADE_INSECURE_REQUESTS': 1,
+                'HTTP_USER_AGENT': headers.get('user-agent', ''),
+                'PATH_INFO': path,
+                'QUERY_STRING': self.format_query_string(params),
+                # 'REMOTE_ADDR': '',
+                # 'REMOTE_HOST': '',
+                'REQUEST_METHOD': method.upper(),
+                'SCRIPT_NAME': '/',
+                # 'SERVER_NAME': '',
+                # 'SERVER_PORT': '',
+                'SERVER_PROTOCOL': 'HTTP/1.1',
+                # 'SERVER_SOFTWARE': 'WSGIServer/0.2',
+            }
+        except Exception as e:
+            self.tcex.log.error('Failed building environ ({})'.format(e))
+            self.tcex.log.trace(traceback.format_exc())
+
+        def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
+            """Handle WSGI Response
+
+            ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
+            """
+            self.tcex.log.trace('args: {}'.format(args))
+            response = {}
+            try:
+                status_code, status = args[0].split(' ', 1)
+                response = {
+                    'bodyVariable': 'response.body',
+                    'command': 'Acknowledge',
+                    'headers': self.format_response_headers(args[1]),
+                    'requestKey': request_key,  # pylint: disable=cell-var-from-loop
+                    'status': status,
+                    'statusCode': status_code,
+                    'type': 'RunService',
+                }
+            except Exception as e:
+                self.tcex.log.error('Failed creating response body ({})'.format(e))
+                self.tcex.log.trace(traceback.format_exc())
+                return
+            time.sleep(2)  # give time for the body to be written to Redis before responding
+            self.publish(json.dumps(response))
+
+        if callable(self.api_event_callback):
+            try:
+                body = self.api_event_callback(  # pylint: disable=not-callable
+                    environ, response_handler
+                )
+                # decode body entries
+                body = [base64.b64encode(b).decode('utf-8') for b in body]
+                # write body to Redis
+                self.redis_client.hset(request_key, 'response.body', json.dumps(body))
+            except Exception as e:
+                self.tcex.log.error(
+                    'The api event callback method encountered and error ({}).'.format(e)
+                )
+                self.tcex.log.trace(traceback.format_exc())
+
     def process_shutdown(self, reason):
         """Handle a shutdown message."""
         reason = reason or (
@@ -490,96 +598,6 @@ class Service(object):
         """Process Webhook event messages."""
         self.tcex.log.trace('webhook event')
         self.fire_event(self.webhook_event_callback, message=message, trigger_type='webhook_event')
-
-    def process_run_service_event(self, message):
-        """Process Webhook event messages.
-
-        {
-          "command": "RunService",
-          "requestKey": "123abc",
-          "method": "GET",
-          "queryParams": [ { key/value pairs } ],
-          "headers": [ { key/value pairs } ],
-          "bodyVariable": "request.body"
-        }
-        """
-        request_key = message.get('requestKey')
-        # body is stored in Redis
-        body = self.redis_client.hget(request_key, message.get('bodyVariable'))
-        if body is not None:
-            body = StringIO(json.loads(base64.b64decode(body)))
-        headers = self.format_request_headers(message.get('headers'))
-        method = message.get('method')
-        params = message.get('queryParams')
-        path = message.get('path')
-
-        environ = {
-            'wsgi.errors': self.tcex.log.error,  # sys.stderr
-            # 'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>
-            'wsgi.input': body,
-            'wsgi.multithread': True,
-            'wsgi.multiprocess': False,
-            'wsgi.run_once': True,
-            'wsgi.url_scheme': 'https',
-            'wsgi.version': (1, 0),
-            'CONTENT_TYPE': headers.get('content-type', ''),
-            'CONTENT_LENGTH': headers.get('content-length', 0),
-            # 'GATEWAY_INTERFACE': 'CGI/1.1',
-            # 'HTTP_ACCEPT': '',
-            'HTTP_ACCEPT': headers.get('accept', ''),
-            # 'HTTP_ACCEPT_ENCODING': '',
-            # 'HTTP_ACCEPT_LANGUAGE': '',
-            # 'HTTP_COOKIE': '',
-            # 'HTTP_DNT': 1,
-            # 'HTTP_CONNECTION': 'keep-alive',
-            # 'HTTP_HOST': '',
-            # 'HTTP_UPGRADE_INSECURE_REQUESTS': 1,
-            'HTTP_USER_AGENT': headers.get('user-agent', ''),
-            'PATH_INFO': path,
-            'QUERY_STRING': self.format_query_string(params),
-            # 'REMOTE_ADDR': '',
-            # 'REMOTE_HOST': '',
-            'REQUEST_METHOD': method.upper(),
-            'SCRIPT_NAME': '/',
-            # 'SERVER_NAME': '',
-            # 'SERVER_PORT': '',
-            'SERVER_PROTOCOL': 'HTTP/1.1',
-            # 'SERVER_SOFTWARE': 'WSGIServer/0.2',
-        }
-
-        def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
-            """Handle WSGI Response
-
-            ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
-            """
-            self.tcex.log.trace('args: {}'.format(args))
-            status_code, status = args[0].split(' ', 1)
-            response = {
-                'bodyVariable': 'response.body',
-                'command': 'Acknowledge',
-                'headers': self.format_response_headers(args[1]),
-                'requestKey': request_key,  # pylint: disable=cell-var-from-loop
-                'status': status,
-                'statusCode': status_code,
-                'type': 'RunService',
-            }
-            time.sleep(2)  # give time for the body to be written to Redis before responding
-            self.publish(json.dumps(response))
-
-        if callable(self.api_event_callback):
-            try:
-                body = self.api_event_callback(  # pylint: disable=not-callable
-                    environ, response_handler
-                )
-                # decode body entries
-                body = [base64.b64encode(b).decode('utf-8') for b in body]
-                # write body to Redis
-                self.redis_client.hset(request_key, 'response.body', json.dumps(body))
-            except Exception as e:
-                self.tcex.log.error(
-                    'The api event callback method encountered and error ({}).'.format(e)
-                )
-                self.tcex.log.trace(traceback.format_exc())
 
     def publish(self, message, topic=None):
         """Publish a message on client topic.
