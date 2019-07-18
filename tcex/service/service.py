@@ -455,7 +455,7 @@ class Service(object):
                     self.tcex.log.trace(traceback.format_exc())
             self.update_config(trigger_id, config)
 
-    def process_run_service_event(self, message):
+    def process_run_service(self, message):
         """Process Webhook event messages.
 
         {
@@ -467,7 +467,8 @@ class Service(object):
           "bodyVariable": "request.body"
         }
         """
-        self.tcex.log.trace('Process RunService')
+        self.tcex.log.info('process request: {}'.format('message'))
+        e = threading.Event()  # thread event
         request_key = message.get('requestKey')
         body = None
         # read body from redis
@@ -524,44 +525,58 @@ class Service(object):
             self.tcex.log.trace(traceback.format_exc())
 
         def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
-            """Handle WSGI Response
-
-            ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
-            """
-            self.tcex.log.trace('args: {}'.format(args))
-            response = {}
-            try:
-                status_code, status = args[0].split(' ', 1)
-                response = {
-                    'bodyVariable': 'response.body',
-                    'command': 'Acknowledge',
-                    'headers': self.format_response_headers(args[1]),
-                    'requestKey': request_key,  # pylint: disable=cell-var-from-loop
-                    'status': status,
-                    'statusCode': status_code,
-                    'type': 'RunService',
-                }
-            except Exception as e:
-                self.tcex.log.error('Failed creating response body ({})'.format(e))
-                self.tcex.log.trace(traceback.format_exc())
-                return
-            time.sleep(2)  # give time for the body to be written to Redis before responding
-            self.publish(json.dumps(response))
+            """Handle WSGI Response"""
+            kwargs['e'] = e
+            kwargs['request_key'] = request_key
+            t = threading.Thread(target=self.process_run_service_response, args=args, kwargs=kwargs)
+            t.daemon = True  # use setter for py2
+            t.start()
 
         if callable(self.api_event_callback):
             try:
+                self.redis_client.hset(request_key, 'response.ready', 0)
                 body = self.api_event_callback(  # pylint: disable=not-callable
                     environ, response_handler
                 )
+
                 # decode body entries
-                body = [base64.b64encode(b).decode('utf-8') for b in body]
+                # TODO: validate this logic
+                body = [base64.b64encode(b).decode('utf-8') for b in body][0]
                 # write body to Redis
                 self.redis_client.hset(request_key, 'response.body', json.dumps(body))
+                self.tcex.log.trace('body written')
+                e.set()
             except Exception as e:
                 self.tcex.log.error(
                     'The api event callback method encountered and error ({}).'.format(e)
                 )
                 self.tcex.log.trace(traceback.format_exc())
+
+    def process_run_service_response(self, *args, **kwargs):
+        """Handle service event responses.
+
+        ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
+        """
+        kwargs.get('e').wait(10)  # wait until body has been written
+        self.tcex.log.trace('args: {}'.format(args))
+        response = {}
+        try:
+            status_code, status = args[0].split(' ', 1)
+            response = {
+                'bodyVariable': 'response.body',
+                'command': 'Acknowledge',
+                'headers': self.format_response_headers(args[1]),
+                'requestKey': kwargs.get('request_key'),  # pylint: disable=cell-var-from-loop
+                'status': status,
+                'statusCode': status_code,
+                'type': 'RunService',
+            }
+            self.tcex.log.debug('API service response: {}'.format(response))
+        except Exception as e:
+            self.tcex.log.error('Failed creating response body ({})'.format(e))
+            self.tcex.log.trace(traceback.format_exc())
+            return
+        self.publish(json.dumps(response))
 
     def process_shutdown(self, reason):
         """Handle a shutdown message."""
@@ -594,7 +609,7 @@ class Service(object):
         time.sleep(5)
         self.tcex.exit(0)  # final shutdown in case App did not
 
-    def process_webhook_event(self, message):
+    def process_webhook(self, message):
         """Process Webhook event messages."""
         self.tcex.log.trace('webhook event')
         self.fire_event(self.webhook_event_callback, message=message, trigger_type='webhook_event')
@@ -639,7 +654,6 @@ class Service(object):
         """Return the correct KV store for this execution."""
         if self._redis_client is None:
             self._redis_client = self.tcex.playbook.db.client
-            # self._redis_client = RedisClient(host=host, port=port, db=0).client
         return self._redis_client
 
     def server_topic(self, message):
@@ -647,29 +661,27 @@ class Service(object):
         self.tcex.log.trace('message: {}'.format(message))
         # parse the command type
         command = message.get('command')
-        config = message.get('config', {})
 
+        self.tcex.log.info('Command received: {}'.format(command))
         if command.lower() == 'webhookevent':
-            self.tcex.log.info('Command: {}'.format(command))
-            self.message_thread(self.process_webhook_event, (message,))
+            self.message_thread(self.process_webhook, (message,))
         elif command.lower() == 'heartbeat':
-            self.tcex.log.info('Command: {}'.format(command))
             self.heartbeat_watchdog = 0
             self.heartbeat_miss_count = 0
         elif command.lower() == 'loggingchange':
-            self.tcex.log.info('Command: {}'.format(command))
-            level = config.get('level')
+            # {"command": "LoggingChange", "level": "DEBUG"}
+            level = message.get('level')
             self.tcex.log.info('LoggingChange - level: {}'.format(level))
             self.tcex.logger.update_handler_level(level)
         elif command.lower() == 'runservice':
-            self.tcex.log.info('Command: {}'.format(command))
-            self.message_thread(self.process_run_service_event, (message,))
+            self.message_thread(self.process_run_service, (message,))
         elif command.lower() == 'shutdown':
-            self.tcex.log.info('Command: {}'.format(command))
-            reason = config.get('reason')
+            # {"command": "Shutdown", "reason": "Service disabled by user."}
+            reason = message.get('reason')
             self.process_shutdown(reason)
         else:
             # any other message is a config message
+            config = message.get('config', {})
             self.message_thread(self.process_config, (command, config, message.get('triggerId')))
 
     @property
