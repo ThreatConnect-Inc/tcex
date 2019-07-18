@@ -526,7 +526,7 @@ class Service(object):
                 # TODO: validate this logic
                 body = [base64.b64encode(b).decode('utf-8') for b in body][0]
                 # write body to Redis
-                self.redis_client.hset(request_key, 'response.body', json.dumps(body))
+                self.redis_client.hset(request_key, 'response.body', body)
                 self.tcex.log.trace('body written')
                 e.set()
             except Exception as e:
