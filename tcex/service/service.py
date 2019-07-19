@@ -239,17 +239,9 @@ class Service(object):
             if self.heartbeat_watchdog > (
                 self.tcex.default_args.tc_svc_hb_timeout_seconds / self.heartbeat_sleep_time
             ):
-                self.heartbeat_miss_count += 1
-                self.tcex.log.warning('Missed {} heartbeats'.format(self.heartbeat_miss_count))
-                self.heartbeat_watchdog = 0
-
-            if self.heartbeat_miss_count >= self.heartbeat_max_misses:
                 self.tcex.log.error('Missed server heartbeat message. Service is shutting down.')
-                self.process_shutdown(
-                    'Missed {} consecutive heartbeat commands.'.format(self.heartbeat_miss_count)
-                )
+                self.process_shutdown('Missed heartbeat commands.')
                 break
-
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
 
@@ -498,8 +490,8 @@ class Service(object):
                 # 'REMOTE_HOST': '',
                 'REQUEST_METHOD': method.upper(),
                 'SCRIPT_NAME': '/',
-                # 'SERVER_NAME': '',
-                # 'SERVER_PORT': '',
+                'SERVER_NAME': '',
+                'SERVER_PORT': '',
                 'SERVER_PROTOCOL': 'HTTP/1.1',
                 # 'SERVER_SOFTWARE': 'WSGIServer/0.2',
             }
