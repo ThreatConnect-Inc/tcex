@@ -121,15 +121,10 @@ class Service(object):
                     args = (callback, playbook, session_id, trigger_id, config)
                     self.message_thread(self.fire_event_trigger, args, kwargs)
                 elif trigger_type == 'webhook_event':
-                    args = (
-                        callback,
-                        playbook,
-                        session_id,
-                        trigger_id,
-                        config,
-                        kwargs.get('message', {}),
-                    )
-                    self.message_thread(self.fire_event_webhook, args)
+                    if trigger_id == kwargs.get('message', {}).get('triggerId'):
+                        # only call webhook for the config item that matches the triggerId
+                        args = (callback, playbook, session_id, config, kwargs.get('message', {}))
+                        self.message_thread(self.fire_event_webhook, args)
             except Exception:
                 self.tcex.log.trace(traceback.format_exc())
 
@@ -152,7 +147,7 @@ class Service(object):
         # remove temporary logging file handler
         self.tcex.logger.remove_handler_by_name(session_id)
 
-    def fire_event_webhook(self, callback, playbook, session_id, trigger_id, config, message):
+    def fire_event_webhook(self, callback, playbook, session_id, config, message):
         """Fire event for webhook trigger"""
         try:
             request_key = message.get('requestKey')
@@ -162,7 +157,8 @@ class Service(object):
             headers = message.get('headers')
             method = message.get('method')
             params = message.get('queryParams')
-            if callback(playbook, method, headers, params, body, trigger_id, config):
+            trigger_id = message.get('triggerId')
+            if callback(playbook, method, headers, params, body, config):
                 self.metric['hits'] += 1
                 self.fire_event_publish(trigger_id, session_id, request_key)
             else:
@@ -639,9 +635,7 @@ class Service(object):
         command = message.get('command')
 
         self.tcex.log.info('Command received: {}'.format(command))
-        if command.lower() == 'webhookevent':
-            self.message_thread(self.process_webhook, (message,))
-        elif command.lower() == 'heartbeat':
+        if command.lower() == 'heartbeat':
             self.heartbeat_watchdog = 0
             self.heartbeat_miss_count = 0
 
@@ -661,6 +655,8 @@ class Service(object):
             # {"command": "Shutdown", "reason": "Service disabled by user."}
             reason = message.get('reason')
             self.process_shutdown(reason)
+        elif command.lower() == 'webhookevent':
+            self.message_thread(self.process_webhook, (message,))
         else:
             # any other message is a config message
             config = message.get('config', {})
