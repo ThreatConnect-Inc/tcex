@@ -29,7 +29,7 @@ class Host(Indicator):
         self.unique_id = kwargs.get('unique_id', hostname)
         self._data['hostName'] = hostname or self.unique_id
         if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+            self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
     def can_create(self):
         """

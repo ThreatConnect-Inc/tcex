@@ -5,7 +5,7 @@ import os
 import sys
 
 import pytest
-from tcex.testing.monkeypatch import register_monkeypatch  # pylint: disable=W0611
+from tcex.testing.monkeypatch import register_monkeypatchs  # pylint: disable=W0611
 from ..profiles import profiles
 
 ${parent_import}  # pylint: disable=C0411
@@ -48,7 +48,7 @@ class TestFeature(${parent_class}):
         pd = self.profile(profile_name)
 
         # uncomment to start using the monkey patch annotations
-        # register_monkeypatch(monkeypatch, pd)
+        # register_monkeypatchs(monkeypatch, pd)
 
         assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
         ValidateFeature(self.validator).validate(pd.get('outputs'))

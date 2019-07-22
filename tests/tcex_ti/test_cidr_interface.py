@@ -93,9 +93,6 @@ class TestCIDRIndicators:
         """Test cidr create."""
         ti = self.ti.indicator(indicator_type='CIDR', owner=tcex.args.tc_owner, Block=block)
         r = ti.create()
-        print(r.text)
-        print(r.url)
-        print(block)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
