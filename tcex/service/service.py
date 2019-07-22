@@ -56,7 +56,7 @@ class Service(object):
         """Add a metric to get reported in heartbeat."""
         self._metric[label] = str(value)
 
-    def create_config(self, trigger_id, config):
+    def create_config(self, trigger_id, config, message, status):
         """Add config item to service config object."""
         try:
             self.tcex.log.trace('trigger_id: {}'.format(trigger_id))
@@ -65,23 +65,27 @@ class Service(object):
 
             # send ack response
             response = {
-                'status': 'Acknowledged',
-                'command': 'CreateConfig',
+                'command': 'Acknowledged',
+                'message': message,
+                'status': status,
+                'type': 'CreateConfig',
                 'triggerId': trigger_id,
             }
             self.publish(json.dumps(response))
         except Exception as e:
             self.tcex.log.error('Could not create config for Id {} ({}).'.format(trigger_id, e))
 
-    def delete_config(self, trigger_id):
+    def delete_config(self, trigger_id, message, status):
         """Delete config item from config object."""
         try:
             del self.configs[trigger_id]
 
             # send ack response
             response = {
-                'status': 'Acknowledged',
-                'command': 'DeleteConfig',
+                'command': 'Acknowledged',
+                'message': message,
+                'status': status,
+                'type': 'DeleteConfig',
                 'triggerId': trigger_id,
             }
             self.publish(json.dumps(response))
@@ -385,46 +389,39 @@ class Service(object):
 
     def process_config(self, command, config, trigger_id):
         """Process config message."""
+        status = 'Success'
         if command.lower() == 'createconfig':
             self.tcex.log.info(
                 'CreateConfig - trigger_id: {} config : {}'.format(trigger_id, config)
             )
             if callable(self.create_config_callback):
+                message = 'Config created'
                 try:
                     # call callback for create config and handle exceptions to protect thread
                     self.create_config_callback(trigger_id, config)  # pylint: disable=not-callable
                 except Exception as e:
-                    self.tcex.log.error(
-                        'The create config callback method encountered and error ({}).'.format(e)
+                    message = 'The create config callback method encountered an error ({}).'.format(
+                        e
                     )
+                    self.tcex.log.error(message)
                     self.tcex.log.trace(traceback.format_exc())
-            self.create_config(trigger_id, config)
+                    status = 'Failed'
+            self.create_config(trigger_id, config, message, status)
         elif command.lower() == 'deleteconfig':
             self.tcex.log.info('DeleteConfig - trigger_id: {}'.format(trigger_id))
             if callable(self.delete_config_callback):
+                message = 'Config created'
                 try:
                     # call callback for delete config and handle exceptions to protect thread
                     self.delete_config_callback(trigger_id)  # pylint: disable=not-callable
                 except Exception as e:
-                    self.tcex.log.error(
-                        'The delete config callback method encountered and error ({}).'.format(e)
+                    message = 'The delete config callback method encountered an error ({}).'.format(
+                        e
                     )
+                    self.tcex.log.error(message)
                     self.tcex.log.trace(traceback.format_exc())
-            self.delete_config(trigger_id)
-        elif command.lower() == 'updateconfig':
-            self.tcex.log.trace(
-                'UpdateConfig - trigger_id: {} config : {}'.format(trigger_id, config)
-            )
-            if callable(self.update_config_callback):
-                try:
-                    # call callback for update config and handle exceptions to protect thread
-                    self.update_config_callback(trigger_id, config)  # pylint: disable=not-callable
-                except Exception as e:
-                    self.tcex.log.error(
-                        'The update config callback method encountered and error ({}).'.format(e)
-                    )
-                    self.tcex.log.trace(traceback.format_exc())
-            self.update_config(trigger_id, config)
+                    status = 'Failed'
+            self.delete_config(trigger_id, message, status)
 
     def process_run_service(self, message):
         """Process Webhook event messages.
@@ -458,6 +455,7 @@ class Service(object):
         path = message.get('path')
 
         try:
+            # TODO: research required field for wsgi and update
             environ = {
                 'wsgi.errors': self.tcex.log.error,  # sys.stderr
                 # 'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>
@@ -671,18 +669,3 @@ class Service(object):
     def session_logfile(session_id):
         """Return a uuid4 session id."""
         return '{}/{}.log'.format(datetime.today().strftime('%Y%m%d'), session_id)
-
-    def update_config(self, trigger_id, config):
-        """Add config item to service config object."""
-        try:
-            self.configs[trigger_id] = config
-
-            # send ack response
-            response = {
-                'status': 'Acknowledged',
-                'command': 'UpdateConfig',
-                'triggerId': trigger_id,
-            }
-            self.publish(json.dumps(response))
-        except Exception as e:
-            self.tcex.log.error('Could not update config for Id {} ({}).'.format(trigger_id, e))
