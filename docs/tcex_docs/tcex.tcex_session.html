@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_session module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_session module &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -228,30 +228,30 @@
 <p>ThreatConnect Requests Session</p>
 <dl class="class">
 <dt id="tcex.tcex_session.TcExSession">
-<em class="property">class </em><code class="descclassname">tcex.tcex_session.</code><code class="descname">TcExSession</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_session.</code><code class="sig-name descname">TcExSession</code><span class="sig-paren">(</span><em class="sig-param">tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.sessions.Session</span></code></p>
 <p>ThreatConnect REST API Requests Session</p>
 <dl class="method">
 <dt id="tcex.tcex_session.TcExSession._hmac_auth">
-<code class="descname">_hmac_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession._hmac_auth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession._hmac_auth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_hmac_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession._hmac_auth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession._hmac_auth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add ThreatConnect HMAC Auth to Session.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_session.TcExSession._token_auth">
-<code class="descname">_token_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession._token_auth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession._token_auth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_token_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession._token_auth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession._token_auth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add ThreatConnect Token Auth to Session.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_session.TcExSession.request">
-<code class="descname">request</code><span class="sig-paren">(</span><em>method</em>, <em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession.request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession.request" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">request</code><span class="sig-paren">(</span><em class="sig-param">method</em>, <em class="sig-param">url</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession.request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession.request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override request method disabling verify on token renewal if disabled on session.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_session.TcExSession.retry">
-<code class="descname">retry</code><span class="sig-paren">(</span><em>retries=3</em>, <em>backoff_factor=0.3</em>, <em>status_forcelist=(500</em>, <em>502</em>, <em>504)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession.retry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession.retry" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">retry</code><span class="sig-paren">(</span><em class="sig-param">retries=3</em>, <em class="sig-param">backoff_factor=0.3</em>, <em class="sig-param">status_forcelist=(500</em>, <em class="sig-param">502</em>, <em class="sig-param">504)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_session.html#TcExSession.retry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_session.TcExSession.retry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add retry to Requests Session</p>
 <p><a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry</a></p>
 </dd></dl>

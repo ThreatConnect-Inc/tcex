@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_app_decorators module &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -228,7 +228,7 @@
 <p>App Decorators Module.</p>
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.Benchmark">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Benchmark</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">Benchmark</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Log benchmarking times.</p>
 <p>This decorator will log the time of execution (benchmark_time) to the app.log file. It can be
@@ -246,27 +246,26 @@ helpful in troubleshooting performance issues with Apps.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.Benchmark.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.Debug">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Debug</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">Debug</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Debug function inputs.</p>
 <p>This decorator will log the inputs to the function to assist in debugging an App.</p>
@@ -279,27 +278,26 @@ helpful in troubleshooting performance issues with Apps.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.Debug.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.FailOnInput">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">FailOnInput</code><span class="sig-paren">(</span><em>enable</em>, <em>values</em>, <em>msg</em>, <em>arg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnInput" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">FailOnInput</code><span class="sig-paren">(</span><em class="sig-param">enable</em>, <em class="sig-param">values</em>, <em class="sig-param">msg</em>, <em class="sig-param">arg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnInput" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Fail App if input value conditions are met.</p>
 <p>This decorator allows for the App to exit on conditions defined in the function
@@ -313,27 +311,26 @@ parameters.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.FailOnInput.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnInput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnInput.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnInput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnInput.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.FailOnOutput">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">FailOnOutput</code><span class="sig-paren">(</span><em>enable</em>, <em>values</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnOutput" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">FailOnOutput</code><span class="sig-paren">(</span><em class="sig-param">enable</em>, <em class="sig-param">values</em>, <em class="sig-param">msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnOutput" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Fail App if return value (output) value conditions are met.</p>
 <p>This decorator allows for the App to exit on conditions defined in the function
@@ -351,27 +348,26 @@ parameters.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.FailOnOutput.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnOutput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnOutput.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnOutput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnOutput.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.IterateOnArg">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">IterateOnArg</code><span class="sig-paren">(</span><em>arg</em>, <em>default=None</em>, <em>fail_on=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">IterateOnArg</code><span class="sig-paren">(</span><em class="sig-param">arg</em>, <em class="sig-param">default=None</em>, <em class="sig-param">fail_on=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Iterate on values stored in <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>This decorator will iterate over all value of the supplied arg and return results. This feature
@@ -391,27 +387,26 @@ processed.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.IterateOnArg.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.OnException">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">OnException</code><span class="sig-paren">(</span><em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">OnException</code><span class="sig-paren">(</span><em class="sig-param">msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Set exit message on failed execution.</p>
 <p>This decorator will catch the generic “Exception” error, log the supplied error message, set
@@ -425,27 +420,26 @@ the “exit_message”, and exit the App with an exit code of 1.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.OnException.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.OnSuccess">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">OnSuccess</code><span class="sig-paren">(</span><em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">OnSuccess</code><span class="sig-paren">(</span><em class="sig-param">msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Set exit message on successful execution.</p>
 <p>This decorator will set the supplied msg as the App “exit_message”. Typically and App would
@@ -459,27 +453,26 @@ only have 1 exit message so this decorator would typically be used in App that u
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.OnSuccess.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.Output">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">Output</code><span class="sig-paren">(</span><em class="sig-param">attribute</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Store the method return value in self.&lt;attribute&gt;.</p>
 <p>This decorator will write, append, or extend the methods return value to the App attribute
@@ -502,27 +495,26 @@ provided in the <code class="docutils literal notranslate"><span class="pre">att
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.Output.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.ReadArg">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">ReadArg</code><span class="sig-paren">(</span><em>arg</em>, <em>array=False</em>, <em>default=None</em>, <em>fail_on=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">ReadArg</code><span class="sig-paren">(</span><em class="sig-param">arg</em>, <em class="sig-param">array=False</em>, <em class="sig-param">default=None</em>, <em class="sig-param">fail_on=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Read value of App arg resolving any playbook variables.</p>
 <p>This decorator will read the args from Redis, if it is a playbook variable, and pass the
@@ -536,27 +528,26 @@ resolved value to the function.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.ReadArg.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.WriteOutput">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">WriteOutput</code><span class="sig-paren">(</span><em>key</em>, <em>variable_type</em>, <em>value=None</em>, <em>overwrite=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_app_decorators.</code><code class="sig-name descname">WriteOutput</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">variable_type</em>, <em class="sig-param">value=None</em>, <em class="sig-param">overwrite=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Write the App output variables to Redis.</p>
 <p>This decorator will take the functions return value and write the data to Redis using the
@@ -574,20 +565,19 @@ template is the recommended way of writing output data.</p>
 </td></tr></table></div>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.WriteOutput.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The decorated function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The custom decorator function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

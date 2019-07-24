@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_profile &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_bin_profile &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -187,15 +187,10 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">randint</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sqlite3</span>
-<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
-    <span class="c1"># this module is only required for certain CLI commands</span>
-    <span class="k">pass</span>
-
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 
 <span class="kn">from</span> <span class="nn">.tcex_bin</span> <span class="k">import</span> <span class="n">TcExBin</span>
+<span class="kn">from</span> <span class="nn">.tcex_install_json</span> <span class="k">import</span> <span class="n">InstallJson</span>
 
 
 <div class="viewcode-block" id="TcExProfile"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile">[docs]</a><span class="k">class</span> <span class="nc">TcExProfile</span><span class="p">(</span><span class="n">TcExBin</span><span class="p">):</span>
@@ -215,120 +210,18 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">TcExProfile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
 
         <span class="c1"># properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;profiles&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExProfile._create_tcex_dirs"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile._create_tcex_dirs">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_tcex_dirs</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot;Create tcex.d directory and sub directories.&quot;&quot;&quot;</span>
 
         <span class="n">dirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tcex.d&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex.d/data&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex.d/profiles&#39;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert string value to bool.&quot;&quot;&quot;</span>
-        <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]:</span>
-            <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">bool_value</span>
-
-<div class="viewcode-block" id="TcExProfile.expand_valid_values"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.expand_valid_values">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">expand_valid_values</span><span class="p">(</span><span class="n">valid_values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Expand supported playbook variables to their full list.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            valid_values (list): The list of valid values for Choice or MultiChoice inputs.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            List: An expanded list of valid values for Choice or MultiChoice inputs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="s1">&#39;$</span><span class="si">{GROUP_TYPES}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
-            <span class="n">valid_values</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;$</span><span class="si">{GROUP_TYPES}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">valid_values</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Campaign&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Email&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Event&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Incident&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Signature&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Task&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;Threat&#39;</span><span class="p">,</span>
-                <span class="p">]</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;$</span><span class="si">{OWNERS}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
-            <span class="n">valid_values</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;$</span><span class="si">{OWNERS}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">valid_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;$</span><span class="si">{USERS}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
-            <span class="n">valid_values</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;$</span><span class="si">{USERS}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">valid_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">valid_values</span></div>
-
-<div class="viewcode-block" id="TcExProfile.gen_permutations"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.gen_permutations">[docs]</a>    <span class="k">def</span> <span class="nf">gen_permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterate recursively over layout.json parameter names.</span>
-
-<span class="sd">        TODO: Add indicator values.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            index (int, optional): The current index position in the layout names list.</span>
-<span class="sd">            args (list, optional): Defaults to None. The current list of args.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_names</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="n">display</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
-            <span class="n">input_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">input_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;No value found in install.json for &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">display</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">input_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">db_update_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-                        <span class="c1"># remove the previous arg before next iteration</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">input_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;choice&#39;</span><span class="p">:</span>
-                    <span class="n">valid_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand_valid_values</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;validValues&#39;</span><span class="p">,</span> <span class="p">[])</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">db_update_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-                        <span class="c1"># remove the previous arg before next iteration</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="c1"># when IndexError is reached all data has been processed.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-            <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">for</span> <span class="n">o_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_output_variables</span><span class="p">():</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_outputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">display</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_outputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
-                    <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">display</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">display</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                <span class="k">for</span> <span class="n">ov</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_output_variables</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">):</span>
-                    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ov</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span></div>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExProfile.load_profiles"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.load_profiles">[docs]</a>    <span class="k">def</span> <span class="nf">load_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return configuration data.</span>
@@ -427,35 +320,13 @@
                 <span class="n">fqfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">include_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">load_profiles_from_file</span><span class="p">(</span><span class="n">fqfn</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcExProfile.permutations"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.permutations">[docs]</a>    <span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process layout.json names/display to get all permutations of args.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The sqlite3 module needs to be build-in to Python for this feature.&#39;</span><span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_insert_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">print_permutations</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="TcExProfile.print_permutations"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.print_permutations">[docs]</a>    <span class="k">def</span> <span class="nf">print_permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print all valid permutations.&quot;&quot;&quot;</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">permutations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span><span class="p">:</span>
-            <span class="n">permutations</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="n">p</span><span class="p">})</span>
-            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;permutations.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">permutations</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;All permutations written to the &quot;permutations.json&quot; file.&#39;</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="TcExProfile.profile_create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.profile_create">[docs]</a>    <span class="k">def</span> <span class="nf">profile_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a profile.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Profile &quot;</span><span class="si">{}</span><span class="s1">&quot; already exists.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span><span class="p">))</span>
 
         <span class="c1"># load the install.json file defined as a arg (default: install.json)</span>
-        <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ij</span><span class="p">)</span>
+        <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span>
             <span class="s1">&#39;Building Profile: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span><span class="p">)</span>
@@ -476,7 +347,7 @@
         <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;profile_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span>
         <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;quiet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">if</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtimeLevel&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Playbook&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;playbook&#39;</span><span class="p">:</span>
             <span class="n">validations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_validations</span>
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;validations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">validations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rules&#39;</span><span class="p">)</span>
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="s1">&#39;tc_playbook_out_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -519,81 +390,7 @@
                 <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">profile_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_layout_json</span><span class="p">(</span><span class="n">required</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">profile_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">,</span> <span class="n">required</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">profile_args</span></div>
-
-<div class="viewcode-block" id="TcExProfile.profile_settings_args_install_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.profile_settings_args_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">profile_settings_args_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ij</span><span class="p">,</span> <span class="n">required</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return args based on install.json params.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            ij (dict): The install.json contents.</span>
-<span class="sd">            required (bool): If True only required args will be returned.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dict: Dictionary of required or optional App args.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">profile_args</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># add App specific args</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
-            <span class="c1"># TODO: fix this required logic</span>
-            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">!=</span> <span class="n">required</span> <span class="ow">and</span> <span class="n">required</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
-                <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_bool</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;choice&#39;</span><span class="p">:</span>
-                <span class="n">valid_values</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expand_valid_values</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;validValues&#39;</span><span class="p">,</span> <span class="p">[])))</span>
-                <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;multichoice&#39;</span><span class="p">:</span>
-                <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;validValues&#39;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;api_access_id&#39;</span><span class="p">,</span> <span class="s1">&#39;api_secret_key&#39;</span><span class="p">]:</span>
-                <span class="c1"># leave these parameters set to the value defined in defaults</span>
-                <span class="k">pass</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">types</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbookDataType&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-                <span class="k">if</span> <span class="n">types</span><span class="p">:</span>
-                    <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">types</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">profile_args</span></div>
-
-<div class="viewcode-block" id="TcExProfile.profile_settings_args_layout_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.profile_settings_args_layout_json">[docs]</a>    <span class="k">def</span> <span class="nf">profile_settings_args_layout_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return args based on layout.json and conditional rendering.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            required (bool): If True only required args will be returned.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dict: Dictionary of required or optional App args.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">profile_args</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_insert_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">pn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span><span class="p">]:</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">!=</span> <span class="n">required</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
-                    <span class="c1"># use the value generated in the permutation</span>
-                    <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;choice&#39;</span><span class="p">:</span>
-                    <span class="c1"># use the value generated in the permutation</span>
-                    <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;api_access_id&#39;</span><span class="p">,</span> <span class="s1">&#39;api_secret_key&#39;</span><span class="p">]:</span>
-                    <span class="c1"># leave these parameters set to the value defined in defaults</span>
-                    <span class="k">pass</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># add type stub for values</span>
-                    <span class="n">types</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbookDataType&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-                    <span class="k">if</span> <span class="n">types</span><span class="p">:</span>
-                        <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">types</span><span class="p">))</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Invalid permutation index provided.&#39;</span><span class="p">)</span>
+            <span class="n">profile_args</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">profile_args</span></div>
 
 <div class="viewcode-block" id="TcExProfile.profile_setting_default_args"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.profile_setting_default_args">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -626,7 +423,7 @@
         <span class="n">profile_default_args</span><span class="p">[</span><span class="s1">&#39;tc_proxy_tc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">profile_default_args</span><span class="p">[</span><span class="s1">&#39;tc_proxy_username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;$env.TC_PROXY_USERNAME&#39;</span>
         <span class="n">profile_default_args</span><span class="p">[</span><span class="s1">&#39;tc_temp_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span>
-        <span class="k">if</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtimeLevel&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Playbook&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;playbook&#39;</span><span class="p">:</span>
             <span class="n">profile_default_args</span><span class="p">[</span><span class="s1">&#39;tc_playbook_db_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Redis&#39;</span>
             <span class="n">profile_default_args</span><span class="p">[</span><span class="s1">&#39;tc_playbook_db_context&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span>
             <span class="n">profile_default_args</span><span class="p">[</span><span class="s1">&#39;tc_playbook_db_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;$env.DB_PATH&#39;</span>
@@ -642,14 +439,13 @@
 <span class="sd">        * One validation rule to ensure the output value is of the correct type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ij</span><span class="p">)</span>
+        <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
         <span class="n">validations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rules&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;outputs&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
         <span class="n">job_id</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
-        <span class="n">output_variables</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbook&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputVariables&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">output_variables</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputVariables&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">output_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span><span class="p">]</span>
-        <span class="c1"># for o in ij.get(&#39;playbook&#39;, {}).get(&#39;outputVariables&#39;) or []:</span>
         <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">output_variables</span><span class="p">:</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="s1">&#39;#App:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">!</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">))</span>
             <span class="n">validations</span><span class="p">[</span><span class="s1">&#39;outputs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
@@ -731,7 +527,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            profile (dict): The dictionary containting the profile settings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
+        <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -741,7 +537,7 @@
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;app&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">():</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;app&#39;</span><span class="p">][</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -785,8 +581,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            profile (dict): The dictionary containting the profile settings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
-        <span class="n">ijp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span>
+        <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optional&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -796,8 +591,8 @@
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;app&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;app&#39;</span><span class="p">][</span><span class="s1">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;app&#39;</span><span class="p">][</span><span class="s1">&#39;required&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="n">required</span> <span class="o">=</span> <span class="n">ijp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">():</span>
+                <span class="n">required</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">required</span><span class="p">:</span>
@@ -964,37 +759,11 @@
 <span class="sd">            profile (dict): The current profile to validate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">))</span>
+        <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Profile: &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="p">,</span> <span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">)))</span>
-        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Input &quot;</span><span class="si">{}</span><span class="s1">&quot; not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">,</span> <span class="n">arg</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="TcExProfile.validate_layout_display"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.validate_layout_display">[docs]</a>    <span class="k">def</span> <span class="nf">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">display_condition</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check to see if the display condition passes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            table (str): The name of the DB table which hold the App data.</span>
-<span class="sd">            display_condition (str): The &quot;where&quot; clause of the DB SQL statement.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: True if the row count is greater than 0.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">display</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">display_condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">display</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">display_query</span> <span class="o">=</span> <span class="s1">&#39;select count(*) from </span><span class="si">{}</span><span class="s1"> where </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">display_condition</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-                <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-                <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">display</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; query returned an error: (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">display_query</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">display</span></div>
 
 <div class="viewcode-block" id="TcExProfile.validate_profile_exists"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.validate_profile_exists">[docs]</a>    <span class="k">def</span> <span class="nf">validate_profile_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the provided profiles name exists.&quot;&quot;&quot;</span>

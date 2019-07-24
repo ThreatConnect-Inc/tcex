@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 1.0.5 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -231,35 +231,35 @@
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To get the latest usage and template choices for <code class="docutils literal notranslate"><span class="pre">tcinit</span></code>, run <code class="docutils literal notranslate"><span class="pre">tcinit</span> <span class="pre">-h</span></code>.</p>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcinit</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">branch</span> <span class="p">{</span><span class="n">master</span><span class="p">,</span><span class="n">develop</span><span class="p">}]</span>
-              <span class="p">[</span><span class="o">--</span><span class="n">action</span> <span class="p">{</span><span class="n">create</span><span class="p">,</span><span class="n">update</span><span class="p">,</span><span class="n">migrate</span><span class="p">}]</span>
-              <span class="p">[</span><span class="o">--</span><span class="n">template</span> <span class="p">{</span><span class="n">external</span><span class="p">,</span><span class="n">external_ingress</span><span class="p">,</span><span class="n">job</span><span class="p">,</span><span class="n">job_batch</span><span class="p">,</span><span class="n">playbook</span><span class="p">,</span><span class="n">playbook_actions</span><span class="p">,</span><span class="n">playbook_utility</span><span class="p">}]</span>
-              <span class="p">[</span><span class="o">--</span><span class="n">force</span><span class="p">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: tcinit <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--branch <span class="o">{</span>master,develop<span class="o">}]</span>
+              <span class="o">[</span>--action <span class="o">{</span>create,update,migrate<span class="o">}]</span>
+              <span class="o">[</span>--template <span class="o">{</span>external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility<span class="o">}]</span>
+              <span class="o">[</span>--force<span class="o">]</span>
 
-<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
-  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">Show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
-  <span class="o">--</span><span class="n">branch</span> <span class="p">{</span><span class="n">master</span><span class="p">,</span><span class="n">develop</span><span class="p">}</span>
-                        <span class="n">git</span> <span class="n">branch</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">action</span> <span class="p">{</span><span class="n">create</span><span class="p">,</span><span class="n">update</span><span class="p">,</span><span class="n">migrate</span><span class="p">}</span>
-                        <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">create</span><span class="p">)</span> <span class="n">Choose</span> <span class="s2">&quot;create&quot;</span> <span class="n">to</span> <span class="n">initialize</span> <span class="n">a</span> <span class="n">new</span>
-                        <span class="n">App</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span> <span class="n">to</span> <span class="n">download</span> <span class="n">updates</span> <span class="n">to</span> <span class="n">App</span> <span class="n">framework</span>
-                        <span class="n">files</span><span class="p">,</span> <span class="ow">and</span> <span class="s2">&quot;migrate&quot;</span> <span class="n">to</span> <span class="n">update</span> <span class="n">a</span> <span class="n">non</span> <span class="n">App</span> <span class="n">Builder</span>
-                        <span class="n">compliant</span> <span class="n">App</span> <span class="n">to</span> <span class="n">use</span> <span class="n">a</span> <span class="n">standard</span> <span class="n">template</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">template</span> <span class="p">{</span><span class="n">external</span><span class="p">,</span><span class="n">external_ingress</span><span class="p">,</span><span class="n">job</span><span class="p">,</span><span class="n">job_batch</span><span class="p">,</span><span class="n">playbook</span><span class="p">,</span><span class="n">playbook_actions</span><span class="p">,</span><span class="n">playbook_utility</span><span class="p">}</span>
-                        <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">playbook</span><span class="p">)</span> <span class="n">Choose</span> <span class="n">an</span> <span class="n">appropriate</span> <span class="n">App</span> <span class="n">template</span> <span class="k">for</span> <span class="n">the</span> <span class="n">current</span>
-                        <span class="n">project</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">force</span>               <span class="n">Enable</span> <span class="n">this</span> <span class="n">flag</span> <span class="n">to</span> <span class="n">forcibly</span> <span class="n">overwrite</span> <span class="n">existing</span> <span class="n">files</span>
-                        <span class="ow">in</span> <span class="n">the</span> <span class="n">current</span> <span class="n">working</span> <span class="n">directory</span><span class="o">.</span>
+optional arguments:
+  -h, --help            Show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  --branch <span class="o">{</span>master,develop<span class="o">}</span>
+                        git branch.
+  --action <span class="o">{</span>create,update,migrate<span class="o">}</span>
+                        <span class="o">(</span>default: create<span class="o">)</span> Choose <span class="s2">&quot;create&quot;</span> to initialize a new
+                        App, <span class="s2">&quot;update&quot;</span> to download updates to App framework
+                        files, and <span class="s2">&quot;migrate&quot;</span> to update a non App Builder
+                        compliant App to use a standard template.
+  --template <span class="o">{</span>external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility<span class="o">}</span>
+                        <span class="o">(</span>default: playbook<span class="o">)</span> Choose an appropriate App template <span class="k">for</span> the current
+                        project.
+  --force               Enable this flag to forcibly overwrite existing files
+                        in the current working directory.
 </pre></div>
 </div>
 <div class="section" id="common-usage">
 <h3>Common Usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h3>
 <p>To initialize a new App, run this command from the project directory:</p>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcinit</span> <span class="o">--</span><span class="n">template</span> <span class="n">playbook_utility</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tcinit --template playbook_utility
 </pre></div>
 </div>
 <p>To update an existing App, run the command below from the project directory. The <strong>update</strong> action will download all Frameworks files to ensure that these files are the latest with any bug fixes or updates.  It is best practice to run the <strong>update</strong> action whenever an App is being updated for new features or bug fixes.</p>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcinit</span> <span class="o">--</span><span class="n">action</span> <span class="n">update</span> <span class="o">--</span><span class="n">template</span> <span class="n">playbook</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tcinit --action update --template playbook
 </pre></div>
 </div>
 </div>
@@ -478,10 +478,10 @@
 <h3>Playbook Actions (playbook_actions)<a class="headerlink" href="#playbook-actions-playbook-actions" title="Permalink to this headline">¶</a></h3>
 <p>This template provides a working example of <strong>actions</strong> in a Playbook App. Using the Actions feature, a single Playbook can have multiple actions to perform different operations on the provided data. Python decorators are heavily used in this template to provide a clean interface to process inputs for an App.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="tcex_docs/tcex.tcex_app_decorators.html#module-tcex.tcex_app_decorators" title="tcex.tcex_app_decorators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_app_decorators</span></code></a></dt>
-<dd>Inline documentation of App decorators</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="tcex_docs/tcex.tcex_app_decorators.html#module-tcex.tcex_app_decorators" title="tcex.tcex_app_decorators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_app_decorators</span></code></a></dt><dd><p>Inline documentation of App decorators</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="id3">
