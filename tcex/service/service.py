@@ -133,10 +133,12 @@ class Service(object):
 
     def fire_event_trigger(self, callback, playbook, trigger_id, config, **kwargs):
         """Fire event for trigger"""
+        self.tcex.logger.add_file_handler(name=self.thread_name, filename=self.session_logfile)
         self.tcex.log.trace('Firing event trigger {}'.format(type(callback)))
-        self.tcex.token.register_token(
-            self.thread_name, config.get('apiToken'), config.get('tokenExpires')
-        )
+
+        # session auth shared data is thread name which needs to map back to config triggerId
+        self.tcex.token.register_thread(trigger_id, self.thread_name)
+
         try:
             if callback(playbook, trigger_id, config, **kwargs):
                 self.metric['hits'] += 1
@@ -148,7 +150,12 @@ class Service(object):
             self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
             self.tcex.log.trace(traceback.format_exc())
             self.metric['errors'] += 1
-        self.tcex.token.unregister_thread_token()  # remove thread token
+        finally:
+            # remove temporary logging file handler
+            self.tcex.logger.remove_handler_by_name(self.thread_name)
+
+            # unregister thread from token
+            self.tcex.token.unregister_thread(trigger_id, self.thread_name)
 
     def fire_event_publish(self, trigger_id, session_id, request_key=None):
         """Send FireEvent command"""
@@ -510,14 +517,9 @@ class Service(object):
 
         if callable(self.api_event_callback):
             try:
-                # register a tc token for current thread
-                # self.tcex.token.register_thread_token(
-                #     message.get('apiToken'), message.get('tokenExpires')
-                # )
                 body = self.api_event_callback(  # pylint: disable=not-callable
                     environ, response_handler
                 )
-                # self.tcex.token.unregister_thread_token()  # remove thread token
 
                 # decode body entries
                 # TODO: validate this logic
