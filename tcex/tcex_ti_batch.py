@@ -1666,6 +1666,7 @@ class TcExBatch(object):
 
     def write_batch_json(self, content):
         """Write batch json data to a file."""
+        # TODO: don't write empty data
         timestamp = str(time.time()).replace('.', '')
         batch_json_file = os.path.join(
             self.tcex.args.tc_temp_path, 'batch-{}.json'.format(timestamp)

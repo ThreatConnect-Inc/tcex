@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 import os
 import platform
 import sys
+import threading
 import time
 from inspect import getframeinfo, stack
 
@@ -260,6 +261,7 @@ class ApiHandler(logging.Handler):
         self.session = session
         self.flush_limit = flush_limit
         self.entries = []
+        self.in_token_renew = False
 
     def close(self):
         """Close the logger and flush entries."""
@@ -269,7 +271,7 @@ class ApiHandler(logging.Handler):
     def emit(self, record):
         """Emit the log record."""
         self.entries.append(self.format(record))
-        if len(self.entries) > self.flush_limit and not self.session.auth.renewing:
+        if len(self.entries) > self.flush_limit and not self.in_token_renew:
             self.log_to_api()
             self.entries = []
 
@@ -297,17 +299,22 @@ class FileHandlerCustom(logging.FileHandler):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
         logging.FileHandler.__init__(self, filename, mode, encoding, delay)
 
+    def emit(self, record):
+        """Emit a record."""
+        if self.get_name() == threading.current_thread().name:
+            logging.FileHandler.emit(self, record)
+
 
 class FileHandleFormatter(logging.Formatter):
     """Logger formatter for ThreatConnect Exchange file handler logging."""
 
     standard_format = (
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        '(%(filename)s:%(funcName)s:%(lineno)d:%(thread)d)'
+        '(%(filename)s:%(funcName)s:%(lineno)d:%(threadName)s)'
     )
     trace_format = (
         '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s:%(lineno)d] %(message)s '
-        '(%(filename)s:%(thread)d)'
+        '(%(filename)s:%(threadName)s)'
     )
 
     def __init__(self):
@@ -344,10 +351,3 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
-
-    # TODO: investigate controlling logging thread events
-    # def emit(self, record):
-    #     """Emit the log record."""
-    #     self.reopenIfNeeded()
-    #     print(self.name)
-    #     logging.FileHandler.emit(self, record)

@@ -44,6 +44,7 @@ class TcEx(object):
         self._session = None
         self._utils = None
         self._ti = None
+        self._token = None
         self.ij = InstallJson()
 
         # init args (needs logger)
@@ -52,12 +53,6 @@ class TcEx(object):
         # init logger (needs args)
         self.logger = TcExLogger(self)
         self.logger.add_stream_handler()
-
-        # NOTE: odd issue where args is not updating properly
-        if self.default_args.tc_token is not None:
-            self._tc_token = self.default_args.tc_token
-        if self.default_args.tc_token_expires is not None:
-            self._tc_token_expires = self.default_args.tc_token_expires
 
         # include resources module
         self._resources()
@@ -703,18 +698,6 @@ class TcEx(object):
             fh.write(results)
             fh.truncate()
 
-    @property
-    def service(self):
-        """Include the Service Module.
-
-        .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
-        """
-        if self._service is None:
-            from .service import Service
-
-            self._service = Service(self)
-        return self._service
-
     def s(self, data, errors='strict'):
         """Decode value using correct Python 2/3 method.
 
@@ -854,12 +837,24 @@ class TcEx(object):
         return url
 
     @property
+    def service(self):
+        """Include the Service Module.
+
+        .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
+        """
+        if self._service is None:
+            from .service import Service
+
+            self._service = Service(self)
+        return self._service
+
+    @property
     def session(self):
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session is None:
-            from .tcex_session import TcExSession
+            from .session import TcSession
 
-            self._session = TcExSession(self)
+            self._session = TcSession(self)
         return self._session
 
     @property
@@ -873,6 +868,21 @@ class TcEx(object):
 
             self._ti = TcExTi(self)
         return self._ti
+
+    @property
+    def token(self):
+        """Return token object."""
+        if self._token is None:
+            from .token import Token
+
+            self._token = Token(
+                self.args.tc_token,
+                self.args.tc_token_expires,
+                self.args.tc_api_path,
+                self.args.tc_verify,
+                self.log,
+            )
+        return self._token
 
     @property
     def utils(self):
