@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_argparser module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_argparser module &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -228,189 +228,159 @@
 <p>TcEx Common Arg Handler</p>
 <dl class="class">
 <dt id="tcex.tcex_argparser.TcExArgParser">
-<em class="property">class </em><code class="descclassname">tcex.tcex_argparser.</code><code class="descname">TcExArgParser</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_argparser.</code><code class="sig-name descname">TcExArgParser</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></p>
 <p>Overload of the ArgumentParser class.</p>
 <p>Adding common arguments for TcEx apps.</p>
 <dl class="method">
 <dt id="tcex.tcex_argparser.TcExArgParser._api_arguments">
-<code class="descname">_api_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._api_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._api_arguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Argument specific to working with TC API.</p>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_token <var>token</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Token provided by ThreatConnect for app Authorization.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_token_expires <var>token_expires</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Expiration time for the passed Token.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--api_access_id <var>access_id</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Access ID used for HMAC Authorization.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--api_secret_key <var>secret_key</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Secret Key used for HMAC Authorization.</td></tr>
-</tbody>
-</table>
+<code class="sig-name descname">_api_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._api_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._api_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define TC API args.</p>
+<dl class="option-list">
+<dt><kbd><span class="option">--tc_token <var>token</var></span></kbd></dt>
+<dd><p>Token provided by ThreatConnect for app Authorization.</p>
+</dd>
+<dt><kbd><span class="option">--tc_token_expires <var>token_expires</var></span></kbd></dt>
+<dd><p>Expiration time for the passed Token.</p>
+</dd>
+<dt><kbd><span class="option">--api_access_id <var>access_id</var></span></kbd></dt>
+<dd><p>Access ID used for HMAC Authorization.</p>
+</dd>
+<dt><kbd><span class="option">--api_secret_key <var>secret_key</var></span></kbd></dt>
+<dd><p>Secret Key used for HMAC Authorization.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_argparser.TcExArgParser._batch_arguments">
-<code class="descname">_batch_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._batch_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._batch_arguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Arguments specific to Batch API writes.</p>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--batch_action <var>action</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Action for the batch job [‘Create’, ‘Delete’].</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--batch_chunk <var>number</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The maximum number of indicator per batch job.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--batch_halt_on_error</span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Flag to indicate that the batch job should halt on error.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--batch_poll_interval <var>seconds</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Seconds between batch status polls.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--batch_interval_max <var>seconds</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Seconds before app should time out waiting on batch job
-completion.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--batch_write_type <var>type</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Write type for Indicator attributes [‘Append’, ‘Replace’].</td></tr>
-</tbody>
-</table>
+<code class="sig-name descname">_batch_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._batch_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._batch_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define Batch API args.</p>
+<dl class="option-list">
+<dt><kbd><span class="option">--batch_action <var>action</var></span></kbd></dt>
+<dd><p>Action for the batch job [‘Create’, ‘Delete’].</p>
+</dd>
+<dt><kbd><span class="option">--batch_chunk <var>number</var></span></kbd></dt>
+<dd><p>The maximum number of indicator per batch job.</p>
+</dd>
+<dt><kbd><span class="option">--batch_halt_on_error</span></kbd></dt>
+<dd><p>Flag to indicate that the batch job should halt on error.</p>
+</dd>
+<dt><kbd><span class="option">--batch_poll_interval <var>seconds</var></span></kbd></dt>
+<dd><p>Seconds between batch status polls.</p>
+</dd>
+<dt><kbd><span class="option">--batch_interval_max <var>seconds</var></span></kbd></dt>
+<dd><p>Seconds before app should time out waiting on batch job
+completion.</p>
+</dd>
+<dt><kbd><span class="option">--batch_write_type <var>type</var></span></kbd></dt>
+<dd><p>Write type for Indicator attributes [‘Append’, ‘Replace’].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_argparser.TcExArgParser._logger_arguments">
+<code class="sig-name descname">_logger_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._logger_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._logger_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define logger args supported by every TcEx App.</p>
+<dl class="option-list">
+<dt><kbd><span class="option">--tc_log_backup_count <var>count</var></span></kbd></dt>
+<dd><p>The number of backup files to keep.</p>
+</dd>
+<dt><kbd><span class="option">--tc_log_max_bytes <var>bytes</var></span></kbd></dt>
+<dd><p>The max size before rotating log file.</p>
+</dd>
+<dt><kbd><span class="option">--tc_log_name <var>name</var></span></kbd></dt>
+<dd><p>The name of the logger (displayed in log file).</p>
+</dd>
+<dt><kbd><span class="option">--tc_log_file <var>filename</var></span></kbd></dt>
+<dd><p>The app log file name.</p>
+</dd>
+<dt><kbd><span class="option">--tc_log_path <var>path</var></span></kbd></dt>
+<dd><p>The app log path.</p>
+</dd>
+<dt><kbd><span class="option">--tc_log_to_api</span></kbd></dt>
+<dd><p>Flag to indicate that app should log to API.</p>
+</dd>
+<dt><kbd><span class="option">--tc_log_level <var>level</var></span></kbd></dt>
+<dd><p>The logging level for the app.</p>
+</dd>
+<dt><kbd><span class="option">--logging <var>level</var></span></kbd></dt>
+<dd><p>Alias for <strong>tc_log_level</strong>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_argparser.TcExArgParser._playbook_arguments">
-<code class="descname">_playbook_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._playbook_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._playbook_arguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Argument specific to playbook apps.</p>
+<code class="sig-name descname">_playbook_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._playbook_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._playbook_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define playbook specific args.</p>
 <p>These arguments will be passed to every playbook app by default.</p>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_playbook_db_type <var>type</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The DB type (currently on Redis is supported).</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_playbook_db_context <var>context</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The playbook context provided by TC.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_playbook_db_path <var>path</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The DB path or server name.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_playbook_db_port <var>port</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The DB port when required.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_playbook_out_variables <var>vars</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The output variable requested by downstream apps.</td></tr>
-</tbody>
-</table>
+<dl class="option-list">
+<dt><kbd><span class="option">--tc_playbook_db_type <var>type</var></span></kbd></dt>
+<dd><p>The DB type (currently on Redis is supported).</p>
+</dd>
+<dt><kbd><span class="option">--tc_playbook_db_context <var>context</var></span></kbd></dt>
+<dd><p>The playbook context provided by TC.</p>
+</dd>
+<dt><kbd><span class="option">--tc_playbook_db_path <var>path</var></span></kbd></dt>
+<dd><p>The DB path or server name.</p>
+</dd>
+<dt><kbd><span class="option">--tc_playbook_db_port <var>port</var></span></kbd></dt>
+<dd><p>The DB port when required.</p>
+</dd>
+<dt><kbd><span class="option">--tc_playbook_out_variables <var>vars</var></span></kbd></dt>
+<dd><p>The output variable requested by downstream apps.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_argparser.TcExArgParser._standard_arguments">
-<code class="descname">_standard_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._standard_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._standard_arguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>These are the standard args passed to every TcEx App.</p>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--api_default_org <var>org</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The TC API user default organization.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_api_path <var>path</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The TC API path (e.g <a class="reference external" href="https://api.threatconnect.com">https://api.threatconnect.com</a>).</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_in_path <var>path</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The app in path.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_log_file <var>filename</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The app log file name.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_log_path <var>path</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The app log path.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_out_path <var>path</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The app out path.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_secure_params <var>bool</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Flag to indicator secure params is supported.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_temp_path <var>path</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The app temp path.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_user_id <var>id</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The user id of user running the job.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_proxy_host <var>host</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The proxy host.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_proxy_port <var>port</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The proxy port.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_proxy_username <var>user</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The proxy username.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_proxy_password <var>pass</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>The proxy password.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_proxy_external</span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Flag to indicate external communications requires the use of a
-proxy.</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--tc_proxy_tc</span></kbd></td>
-<td>Flag to indicate TC communications requires the use of a proxy.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--tc_log_to_api</span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Flag to indicate that app should log to API.</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--tc_log_level</span></kbd></td>
-<td>The logging level for the app.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--logging <var>level</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Alias for <strong>tc_log_level</strong>.</td></tr>
-</tbody>
-</table>
+<code class="sig-name descname">_standard_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_argparser.html#TcExArgParser._standard_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_argparser.TcExArgParser._standard_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define standard args passed to every TcEx App.</p>
+<dl class="option-list">
+<dt><kbd><span class="option">--api_default_org <var>org</var></span></kbd></dt>
+<dd><p>The TC API user default organization.</p>
+</dd>
+<dt><kbd><span class="option">--tc_api_path <var>path</var></span></kbd></dt>
+<dd><p>The TC API path (e.g <a class="reference external" href="https://api.threatconnect.com">https://api.threatconnect.com</a>).</p>
+</dd>
+<dt><kbd><span class="option">--tc_in_path <var>path</var></span></kbd></dt>
+<dd><p>The app in path.</p>
+</dd>
+<dt><kbd><span class="option">--tc_out_path <var>path</var></span></kbd></dt>
+<dd><p>The app out path.</p>
+</dd>
+<dt><kbd><span class="option">--tc_secure_params <var>bool</var></span></kbd></dt>
+<dd><p>Flag to indicator secure params is supported.</p>
+</dd>
+<dt><kbd><span class="option">--tc_temp_path <var>path</var></span></kbd></dt>
+<dd><p>The app temp path.</p>
+</dd>
+<dt><kbd><span class="option">--tc_user_id <var>id</var></span></kbd></dt>
+<dd><p>The user id of user running the job.</p>
+</dd>
+<dt><kbd><span class="option">--tc_proxy_host <var>host</var></span></kbd></dt>
+<dd><p>The proxy host.</p>
+</dd>
+<dt><kbd><span class="option">--tc_proxy_port <var>port</var></span></kbd></dt>
+<dd><p>The proxy port.</p>
+</dd>
+<dt><kbd><span class="option">--tc_proxy_username <var>user</var></span></kbd></dt>
+<dd><p>The proxy username.</p>
+</dd>
+<dt><kbd><span class="option">--tc_proxy_password <var>pass</var></span></kbd></dt>
+<dd><p>The proxy password.</p>
+</dd>
+<dt><kbd><span class="option">--tc_proxy_external</span></kbd></dt>
+<dd><p>Flag to indicate external communications requires the use of a
+proxy.</p>
+</dd>
+<dt><kbd><span class="option">--tc_proxy_tc</span></kbd></dt>
+<dd><p>Flag to indicate TC communications requires the use of a proxy.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_error_codes module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_error_codes module &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -228,16 +228,16 @@
 <p>TcEx Error Codes</p>
 <dl class="class">
 <dt id="tcex.tcex_error_codes.TcExErrorCodes">
-<em class="property">class </em><code class="descclassname">tcex.tcex_error_codes.</code><code class="descname">TcExErrorCodes</code><a class="reference internal" href="../_modules/tcex/tcex_error_codes.html#TcExErrorCodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_error_codes.TcExErrorCodes" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_error_codes.</code><code class="sig-name descname">TcExErrorCodes</code><a class="reference internal" href="../_modules/tcex/tcex_error_codes.html#TcExErrorCodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_error_codes.TcExErrorCodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Framework Error Codes.</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_error_codes.TcExErrorCodes.errors">
-<code class="descname">errors</code><a class="headerlink" href="#tcex.tcex_error_codes.TcExErrorCodes.errors" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">errors</code><a class="headerlink" href="#tcex.tcex_error_codes.TcExErrorCodes.errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>TcEx defined error codes and messages.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">RuntimeErrors with a code of &gt;= 10000 are considered critical.  Those &lt; 10000
+<p class="admonition-title">Note</p>
+<p>RuntimeErrors with a code of &gt;= 10000 are considered critical.  Those &lt; 10000
 are considered warning or errors and are up to the developer to determine the
 appropriate behavior.</p>
 </div>
@@ -245,20 +245,19 @@ appropriate behavior.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_error_codes.TcExErrorCodes.message">
-<code class="descname">message</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_error_codes.html#TcExErrorCodes.message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_error_codes.TcExErrorCodes.message" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">message</code><span class="sig-paren">(</span><em class="sig-param">code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_error_codes.html#TcExErrorCodes.message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_error_codes.TcExErrorCodes.message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the error message.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>integer</em>) – The error code integer.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The error message.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>code</strong> (<em>integer</em>) – The error code integer.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The error message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

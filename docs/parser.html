@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Parser/Args &mdash; TcEx 1.0.5 documentation</title>
+  <title>Parser/Args &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -192,8 +192,8 @@
 <h2>API Arguments<a class="headerlink" href="#api-arguments" title="Permalink to this headline">¶</a></h2>
 <p>Arguments in the API Arguments section are provided for authorization to the ThreatConnect API.  If the <code class="docutils literal notranslate"><span class="pre">tc_token</span></code> argument is passed, it has priority over the HMAC arguments. The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal notranslate"><span class="pre">args</span></code></a> property.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">api_access_id</span></code> and <code class="docutils literal notranslate"><span class="pre">api_secret_key</span></code> arguments have to be configured in the <a class="reference internal" href="app_deployment_configuration.html#app-deployment-configuration"><span class="std std-ref">App-Deployment Configuration</span></a> file and configured in each job to be passed to the app.  The <code class="docutils literal notranslate"><span class="pre">tc_token</span></code> will automatically be passed for Apps running in the ThreatConnect Exchange platform.</p>
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">api_access_id</span></code> and <code class="docutils literal notranslate"><span class="pre">api_secret_key</span></code> arguments have to be configured in the <a class="reference internal" href="app_deployment_configuration.html#app-deployment-configuration"><span class="std std-ref">App-Deployment Configuration</span></a> file and configured in each job to be passed to the app.  The <code class="docutils literal notranslate"><span class="pre">tc_token</span></code> will automatically be passed for Apps running in the ThreatConnect Exchange platform.</p>
 </div>
 <p>The list of API args can be found in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_api_arguments()</span></code> method.</p>
 </div>

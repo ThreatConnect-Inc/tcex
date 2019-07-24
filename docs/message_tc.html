@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Message TC &mdash; TcEx 1.0.5 documentation</title>
+  <title>Message TC &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -182,16 +182,16 @@
 <span id="id1"></span><h1>Message TC<a class="headerlink" href="#message-tc" title="Permalink to this headline">¶</a></h1>
 <p>All ThreatConnect Exchange Apps should write an exit message on successful or failed execution.  The TcEx Frameworks provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc" title="tcex.tcex.TcEx.message_tc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">message_tc()</span></code></a> method to handle writing this message.  The contents of <strong>message_tc</strong> are shown in the ThreatConnect UI and should provide a meaning message to the user.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The Message TC exit message only supports up to 255 characters.  All data added after that will be truncated.</p>
+<p class="admonition-title">Warning</p>
+<p>The Message TC exit message only supports up to 255 characters.  All data added after that will be truncated.</p>
 </div>
 <div class="admonition hint">
-<p class="first admonition-title">Hint</p>
-<p class="last">A successful execution might output: <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">total</span> <span class="pre">of</span> <span class="pre">132</span> <span class="pre">Indicators</span> <span class="pre">were</span> <span class="pre">written</span> <span class="pre">to</span> <span class="pre">Acme</span> <span class="pre">Corp.</span></code></p>
+<p class="admonition-title">Hint</p>
+<p>A successful execution might output: <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">total</span> <span class="pre">of</span> <span class="pre">132</span> <span class="pre">Indicators</span> <span class="pre">were</span> <span class="pre">written</span> <span class="pre">to</span> <span class="pre">Acme</span> <span class="pre">Corp.</span></code></p>
 </div>
 <div class="admonition hint">
-<p class="first admonition-title">Hint</p>
-<p class="last">A failed execution might output: <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">API</span> <span class="pre">key</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">remote</span> <span class="pre">service.</span></code></p>
+<p class="admonition-title">Hint</p>
+<p>A failed execution might output: <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">API</span> <span class="pre">key</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">remote</span> <span class="pre">service.</span></code></p>
 </div>
 <p><strong>Example Exit Message</strong></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1

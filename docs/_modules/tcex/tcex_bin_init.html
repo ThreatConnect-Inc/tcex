@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_init &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_bin_init &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -209,7 +209,7 @@
             <span class="s1">&#39;https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/</span><span class="si">{}</span><span class="s1">/app_init/&#39;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExInit._print_results"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_init.html#tcex.tcex_bin_init.TcExInit._print_results">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_print_results</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print the download results.</span>
 
@@ -235,9 +235,9 @@
                 <span class="n">status_color</span><span class="p">,</span>
                 <span class="n">status</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExInit._confirm_overwrite"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_init.html#tcex.tcex_bin_init.TcExInit._confirm_overwrite">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_confirm_overwrite</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Confirm overwrite of template files.</span>
 
@@ -260,7 +260,7 @@
 
         <span class="k">if</span> <span class="n">response</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="TcExInit.check_empty_app_dir"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_init.html#tcex.tcex_bin_init.TcExInit.check_empty_app_dir">[docs]</a>    <span class="k">def</span> <span class="nf">check_empty_app_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check to see if the directory in which the app is going to be created is empty.&quot;&quot;&quot;</span>

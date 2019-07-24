@@ -9,6 +9,7 @@ Release Notes
 + Updated logging of batch sizes to not log when there is not content.
 + Moved the logging of App info to the args call.
 + Added trace logging level (unsupported in platform currently).
++ Added new testing module using pytest.
 
 1.0.5
 =====
