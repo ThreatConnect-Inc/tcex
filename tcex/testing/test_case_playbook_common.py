@@ -72,8 +72,10 @@ class TestCasePlaybookCommon(TestCase):
                     )
                 outputs[variable] = {'expected_output': data, 'op': 'eq'}
 
-            profile_data['outputs'] = outputs
             if profile_data.get('outputs') is None:
+                # update the profile
+                profile_data['outputs'] = outputs
+
                 fh.seek(0)
                 fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
                 fh.truncate()
