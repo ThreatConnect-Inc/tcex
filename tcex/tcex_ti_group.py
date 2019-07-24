@@ -94,9 +94,10 @@ class Group(object):
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
-            self._group_data[key] = self._utils.format_datetime(
-                value, date_format='%Y-%m-%dT%H:%M:%SZ'
-            )
+            if value is not None:
+                self._group_data[key] = self._utils.format_datetime(
+                    value, date_format='%Y-%m-%dT%H:%M:%SZ'
+                )
         elif key == 'file_content':
             # file content arg is not part of Group JSON
             pass
