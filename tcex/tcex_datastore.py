@@ -42,7 +42,7 @@ class TcExDataStore(object):
         # properties
 
         # This module requires a token.
-        if self.tcex.tc_token is None:
+        if self.tcex.token.token is None:
             raise RuntimeError(
                 'The DataModel TcEx Module requires a Token to interact with the '
                 'ThreatConnect platform.'
