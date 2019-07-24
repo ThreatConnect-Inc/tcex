@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework Playbook module """
-# from builtins import int, str
 import base64
-
-# import codecs
 import json
 import re
 from collections import OrderedDict
@@ -20,8 +17,8 @@ class TcExPlaybook(object):
         """
         self.tcex = tcex
         self._db = None
-        self._out_variables = None
-        self._out_variables_type = None
+        self._output_variables = {}
+        self._output_variables_type = None
         self.output_data = {}
 
         # match full variable
@@ -33,32 +30,37 @@ class TcExPlaybook(object):
             r'(?:\"\:\s?)[^\"]?{}'.format(self._variable_pattern)
         )
 
-    def _parse_out_variable(self):
-        """Internal method to parse the tc_playbook_out_variable arg.
+    def _parse_output_variables(self, variables):
+        """Parse the injected output variables or tc_playbook_out_variable arg.
 
         **Example Variable Format**::
 
             #App:1234:status!String,#App:1234:status_code!String
         """
-        self._out_variables = {}
-        self._out_variables_type = {}
-        if self.tcex.default_args.tc_playbook_out_variables:
-            variables = self.tcex.default_args.tc_playbook_out_variables.strip()
-            for o in variables.split(','):
-                # parse the variable to get individual parts
-                parsed_key = self.parse_variable(o)
-                variable_name = parsed_key['name']
-                variable_type = parsed_key['type']
-                # store the variables in dict by name (e.g. "status_code")
-                self._out_variables[variable_name] = {'variable': o}
-                # store the variables in dict by name-type (e.g. "status_code-String")
-                vt_key = '{}-{}'.format(variable_name, variable_type)
-                self._out_variables_type[vt_key] = {'variable': o}
+        if variables is None:
+            return
+
+        if not isinstance(variables, list):
+            # process csv input
+            variables = variables.strip().split(',')
+
+        self._output_variables = {}
+        self._output_variables_type = {}
+        for o in variables:
+            # parse the variable to get individual parts
+            parsed_key = self.parse_variable(o)
+            variable_name = parsed_key.get('name')
+            variable_type = parsed_key.get('type')
+            # store the variables in dict by name (e.g. "status_code")
+            self._output_variables[variable_name] = {'variable': o}
+            # store the variables in dict by name-type (e.g. "status_code-String")
+            vt_key = '{}-{}'.format(variable_name, variable_type)
+            self._output_variables_type[vt_key] = {'variable': o}
 
     @property
     def _variable_pattern(self):
         """Regex pattern to match and parse a playbook variable."""
-        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
         variable_pattern += r':([\d]+)'  # app id (:7979)
         variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
         variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
@@ -182,7 +184,7 @@ class TcExPlaybook(object):
             (boolean): Boolean value indicator whether a match was found.
         """
         match = False
-        if variable in self.out_variables:
+        if variable in self.output_variables:
             match = True
         return match
 
@@ -246,9 +248,9 @@ class TcExPlaybook(object):
         if key is not None:
             key = key.strip()
             key_type = '{}-{}'.format(key, variable_type)
-            if self.out_variables_type.get(key_type) is not None:
+            if self.output_variables_type.get(key_type) is not None:
                 # variable key-type has been requested
-                v = self.out_variables_type.get(key_type)
+                v = self.output_variables_type.get(key_type)
                 self.tcex.log.info(
                     u'Variable {} was requested by downstream app.'.format(v.get('variable'))
                 )
@@ -258,9 +260,9 @@ class TcExPlaybook(object):
                     self.tcex.log.info(
                         u'Variable {} has a none value and will not be written.'.format(key)
                     )
-            elif self.out_variables.get(key) is not None and variable_type is None:
+            elif self.output_variables.get(key) is not None and variable_type is None:
                 # variable key has been requested
-                v = self.out_variables.get(key)
+                v = self.output_variables.get(key)
                 self.tcex.log.info(
                     u'Variable {} was requested by downstream app.'.format(v.get('variable'))
                 )
@@ -276,6 +278,7 @@ class TcExPlaybook(object):
                 var_value = key
                 if variable_type is not None:
                     var_value = key_type
+                self.tcex.log.trace('requested output variables: {}'.format(self.output_variables))
                 self.tcex.log.info(
                     u'Variable {} was NOT requested by downstream app.'.format(var_value)
                 )
@@ -337,20 +340,24 @@ class TcExPlaybook(object):
         self.tcex.exit(code, msg)
 
     @property
-    def out_variables(self):
+    def output_variables(self):
         """Return output variables stored as name dict."""
-        if self._out_variables is None:
-            # parse out variable
-            self._parse_out_variable()
-        return self._out_variables
+        if self._output_variables is None:
+            self._parse_output_variables(self.tcex.default_args.tc_playbook_out_variables)
+        return self._output_variables
+
+    @output_variables.setter
+    def output_variables(self, variables):
+        """Set output variables from list to dict."""
+        self._parse_output_variables(variables)
 
     @property
-    def out_variables_type(self):
+    def output_variables_type(self):
         """Return output variables stored as name-type dict."""
-        if self._out_variables_type is None:
+        if self._output_variables_type is None:
             # parse out variable
-            self._parse_out_variable()
-        return self._out_variables_type
+            self._parse_output_variables(self.tcex.default_args.tc_playbook_out_variables)
+        return self._output_variables_type
 
     def parse_variable(self, variable):
         """Method to parse an input or output variable.
@@ -738,6 +745,9 @@ class TcExPlaybook(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -789,6 +799,9 @@ class TcExPlaybook(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -873,6 +886,9 @@ class TcExPlaybook(object):
                 value = u'{}'.format(value)
             # data = self.db.create(key.strip(), str(json.dumps(value)))
             data = self.db.create(key.strip(), u'{}'.format(json.dumps(value)))
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -926,6 +942,9 @@ class TcExPlaybook(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -972,6 +991,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -1019,6 +1041,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
+            self.tcex.log.trace(
+                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data

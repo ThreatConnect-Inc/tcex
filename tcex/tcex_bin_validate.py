@@ -297,7 +297,7 @@ class TcExValidate(TcExBin):
 
         # inputs
         status = True
-        for i in self.layout_json.get('inputs', []):
+        for i in self.lj.inputs:
             for p in i.get('parameters'):
                 if p.get('name') not in ij_input_names:
                     # update validation data errors
@@ -326,7 +326,7 @@ class TcExValidate(TcExBin):
 
         # outputs
         status = True
-        for o in self.layout_json.get('outputs', []):
+        for o in self.lj.outputs:
             if o.get('name') not in ij_output_names:
                 # update validation data errors
                 self.validation_data['errors'].append(

@@ -15,7 +15,7 @@ config_data = {
     'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
     'tc_owner': os.getenv('TC_OWNER', 'TCI'),
     # logging
-    'tc_log_level': os.getenv('TC_LOG_LEVEL', 'debug'),
+    'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
     'tc_log_to_api': str(os.getenv('TC_LOG_TO_API', 'false')).lower() in ['true'],
     # paths
     'tc_api_path': os.getenv('TC_API_PATH'),

@@ -3,6 +3,13 @@
 Release Notes
 #############
 
+1.0.6
+=====
++ Reworked logging for the TcEx framework to provide better flexibility.
++ Updated logging of batch sizes to not log when there is not content.
++ Moved the logging of App info to the args call.
++ Added trace logging level (unsupported in platform currently).
+
 1.0.5
 =====
 + Updated arg parsing to better handle delimited input strings for secureParams/AOT input.

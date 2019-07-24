@@ -76,6 +76,9 @@
           "allowMultiple": {
             "type": "boolean"
           },
+          "config": {
+            "type": "boolean"
+          },
           "default": {
             "type": [
               "boolean",

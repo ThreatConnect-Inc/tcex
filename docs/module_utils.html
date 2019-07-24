@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Utils &mdash; TcEx 1.0.5 documentation</title>
+  <title>Module: Utils &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -205,14 +205,14 @@
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime" title="tcex.tcex_utils.TcExUtils.format_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">format_datetime</span></code></a> method accepts multiple input types and returns an ISO-formatted datetime string by default.  Optionally, the timezone of the timestamp can be provided as well as the <strong>strftime</strong> format.</p>
 <p>Accepted Formats:</p>
 <ol class="arabic simple">
-<li>Human Input (e.g., 30 days ago, last Friday)</li>
-<li>ISO 8601 (e.g., 2017-11-08T16:52:42Z)</li>
-<li>“Loose” Date format (e.g., 2017 12 25)</li>
-<li>UNIX® Time/POSIX Time/Epoch Time (e.g., 1510686617 or 1510686617.298753)</li>
+<li><p>Human Input (e.g., 30 days ago, last Friday)</p></li>
+<li><p>ISO 8601 (e.g., 2017-11-08T16:52:42Z)</p></li>
+<li><p>“Loose” Date format (e.g., 2017 12 25)</p></li>
+<li><p>UNIX® Time/POSIX Time/Epoch Time (e.g., 1510686617 or 1510686617.298753)</p></li>
 </ol>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This module supports the use of <code class="docutils literal notranslate"><span class="pre">%s</span></code> to retrieve the datetime in UNIX format.</p>
+<p class="admonition-title">Note</p>
+<p>This module supports the use of <code class="docutils literal notranslate"><span class="pre">%s</span></code> to retrieve the datetime in UNIX format.</p>
 </div>
 <div class="section" id="unix-timestamp-integer">
 <h3>UNIX Timestamp Integer<a class="headerlink" href="#unix-timestamp-integer" title="Permalink to this headline">¶</a></h3>
@@ -334,24 +334,24 @@
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="tcex.tcex_utils.TcExUtils.human_date_to_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">human_date_to_datetime</span></code></a> method uses the <strong>parsedatetime</strong> module to parse the provided data and return a <strong>datetime.datetime</strong> object.</p>
 <p>Examples:</p>
 <ul class="simple">
-<li>August 25, 2008</li>
-<li>25 Aug 2008</li>
-<li>Aug 25, 5 p.m.</li>
-<li>5 p.m., August 25</li>
-<li>next Saturday</li>
-<li>tomorrow</li>
-<li>next Thursday at 4 p.m.</li>
-<li>at 4 p.m,</li>
-<li>eod</li>
-<li>tomorrow eod</li>
-<li>eod Tuesday</li>
-<li>eoy</li>
-<li>eom</li>
-<li>in 5 minutes</li>
-<li>5 minutes from now</li>
-<li>5 hours before now</li>
-<li>2 hours before noon</li>
-<li>2 days from tomorrow</li>
+<li><p>August 25, 2008</p></li>
+<li><p>25 Aug 2008</p></li>
+<li><p>Aug 25, 5 p.m.</p></li>
+<li><p>5 p.m., August 25</p></li>
+<li><p>next Saturday</p></li>
+<li><p>tomorrow</p></li>
+<li><p>next Thursday at 4 p.m.</p></li>
+<li><p>at 4 p.m,</p></li>
+<li><p>eod</p></li>
+<li><p>tomorrow eod</p></li>
+<li><p>eod Tuesday</p></li>
+<li><p>eoy</p></li>
+<li><p>eom</p></li>
+<li><p>in 5 minutes</p></li>
+<li><p>5 minutes from now</p></li>
+<li><p>5 hours before now</p></li>
+<li><p>2 hours before noon</p></li>
+<li><p>2 days from tomorrow</p></li>
 </ul>
 </div>
 <div class="section" id="unix-time-to-datetime">
@@ -359,8 +359,8 @@
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="tcex.tcex_utils.TcExUtils.unix_time_to_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">unix_time_to_datetime</span></code></a> method converts a UNIX timestamp to a <strong>datetime.datetime</strong> object.</p>
 <p>Examples:</p>
 <ul class="simple">
-<li>1510686617</li>
-<li>1510686617.298753</li>
+<li><p>1510686617</p></li>
+<li><p>1510686617.298753</p></li>
 </ul>
 <p>UNIX® is a registered trademark of The Open Group.</p>
 </div>

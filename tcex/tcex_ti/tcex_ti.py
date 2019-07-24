@@ -138,7 +138,7 @@ class TcExTi(object):
         indicator = None
         if upper_indicator_type == 'ADDRESS':
             indicator = Address(self.tcex, kwargs.pop('ip', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'EMAIL ADDRESS':
+        elif upper_indicator_type in ['EMAIL ADDRESS', 'EMAILADDRESS']:
             indicator = EmailAddress(self.tcex, kwargs.pop('address', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'FILE':
             indicator = File(self.tcex, owner=owner, **kwargs)
@@ -192,7 +192,7 @@ class TcExTi(object):
 
         group = None
         if not group_type:
-            return Group(self.tcex, None, 'group', owner=owner, **kwargs)
+            return Group(self.tcex, None, 'group', None, owner=owner, **kwargs)
 
         name = kwargs.pop('name', None)
         group_type = group_type.upper()
@@ -429,6 +429,38 @@ class TcExTi(object):
 
         """
         return Owner(self.tcex)
+
+    def create_entities(self, entities, owner):
+        """
+        Creates a indicator/group in TC based on the given entity's
+        Args:
+            entities:
+            owner:
+
+        Returns:
+
+        """
+        for entity in entities:
+            entity['unique_id'] = entity.pop('summary', None)
+            attributes = entity.pop('attribute', [])
+            entity.pop('associatedGroups', [])
+            # associations = entity.pop('associatedGroups', [])
+            security_labels = entity.pop('securityLabel', [])
+            tags = entity.pop('tag', [])
+            entity_type = entity.pop('type')
+            responses = []
+            ti = self.indicator(entity_type, owner, **entity)
+            if not ti:
+                ti = self.group(type, owner, **entity)
+            responses.append(ti.create())
+            for attribute in attributes:
+                responses.append(ti.add_attribute(attribute.get('type'), attribute.get('value')))
+            for tag in tags:
+                responses.append(ti.add_tag(tag))
+            for label in security_labels:
+                responses.append(ti.add_label(label))
+            # for association in associations:
+            #     responses.append(ti.add_association(None, None, None, None))
 
     def entities(self, tc_data, resource_type):
         """

@@ -4,6 +4,7 @@ try:
     from urllib import quote  # Python 2
 except ImportError:
     from urllib.parse import quote  # Python
+import hashlib
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -328,6 +329,35 @@ class TiTcRequest:
             url = '/v2/{}/{}/{}/observations'.format(type, sub_type, unique_id)
 
         return self.tcex.session.get(url, json=params)
+
+    def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
+        """
+
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+
+        Return:
+
+        """
+        if not sub_type:
+            url = '/v2/{}/{}/download'.format(main_type, unique_id)
+        else:
+            url = '/v2/{}/{}/{}/download'.format(main_type, sub_type, unique_id)
+
+        if hash_type == 'sha256':
+            hashed_file = hashlib.sha256()
+        elif hash_type == 'sha1':
+            hashed_file = hashlib.sha1()
+        else:
+            hashed_file = hashlib.md5()
+
+        with self.tcex.session.get(url, stream=True) as r:
+            for chunk in r.iter_content(chunk_size=4096):
+                if chunk:  # filter out keep-alive new chunks
+                    hashed_file.update(chunk)
+        return hashed_file
 
     def download(self, main_type, sub_type, unique_id):
         """
@@ -1807,11 +1837,23 @@ class TiTcRequest:
         )
 
     def add_attribute(
-        self, main_type, sub_type, unique_id, attribute_type, attribute_value, owner=None
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        attribute_type,
+        attribute_value,
+        source=None,
+        displayed=None,
+        owner=None,
+        params=None,
     ):
         """
 
         Args:
+            displayed:
+            source:
+            params:
             owner:
             main_type:
             sub_type:
@@ -1822,7 +1864,8 @@ class TiTcRequest:
         Return:
 
         """
-        params = {}
+        if params is None:
+            params = {}
         if owner:
             params['owner'] = owner
         if not sub_type:
@@ -1830,9 +1873,15 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/attributes'.format(main_type, sub_type, unique_id)
 
-        return self.tcex.session.post(
-            url, json={'type': attribute_type, 'value': attribute_value}, params=params
-        )
+        json = {'type': attribute_type, 'value': attribute_value}
+
+        if source:
+            json['source'] = source
+
+        if displayed:
+            json['displayed'] = displayed
+
+        return self.tcex.session.post(url, json=json, params=params)
 
     def attribute_labels(
         self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None

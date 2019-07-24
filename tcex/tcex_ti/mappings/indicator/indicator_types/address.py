@@ -19,8 +19,8 @@ class Address(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super(Address, self).__init__(tcex, 'Address', 'address', 'addresses', owner, **kwargs)
-        self.data['ip'] = ip
-        self.unique_id = self.unique_id or ip
+        self.unique_id = kwargs.get('unique_id', ip)
+        self.data['ip'] = ip or self.unique_id
 
     def can_create(self):
         """

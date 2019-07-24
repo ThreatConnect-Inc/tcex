@@ -22,16 +22,8 @@ class File(Indicator):
             size (str, kwargs): The file size for this Indicator.
         """
         super(File, self).__init__(tcex, 'File', 'file', 'files', owner, **kwargs)
-        if md5:
-            self.data['md5'] = md5
-        if sha1:
-            self.data['sha1'] = sha1
-        if sha256:
-            self.data['sha256'] = sha256
-        if 'size' not in self.data:
-            self.data['size'] = 0
         self.unique_id = (
-            self.unique_id
+            kwargs.get('unique_id', None)
             or md5
             or sha1
             or sha256
@@ -39,6 +31,27 @@ class File(Indicator):
             or kwargs.get('sha1', None)
             or kwargs.get('sha256', None)
         )
+        if md5:
+            self.data['md5'] = md5 or self._hash_from_unique_id(hash_type='md5')
+        if sha1:
+            self.data['sha1'] = sha1 or self._hash_from_unique_id(hash_type='sha1')
+        if sha256:
+            self.data['sha256'] = sha256 or self._hash_from_unique_id(hash_type='sha256')
+        if 'size' not in self.data:
+            self.data['size'] = 0
+
+    def _hash_from_unique_id(self, hash_type='md5'):
+        if not self.unique_id:
+            return None
+
+        for hash_value in self.unique_id.split(':'):
+            if hash_type.lower() == 'md5' and len(hash_value) == 32:
+                return hash_value
+            if hash_type.lower() == 'sha1' and len(hash_value) == 40:
+                return hash_value
+            if hash_type.lower() == 'sha256' and len(hash_value) == 64:
+                return hash_value
+        return None
 
     def can_create(self):
         """

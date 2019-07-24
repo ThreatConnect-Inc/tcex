@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""TcEx Framework Pytest Profile Generation Module"""
+import argparse
+import sys
+import traceback
+
+import colorama as c
+from tcex import TcExTest
+
+
+# Python 2 unicode
+if sys.version_info[0] == 2:
+    reload(sys)  # noqa: F821; pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
+
+# autoreset colorama
+c.init(autoreset=True, strip=False)
+
+epilog = (
+    'Update the values and add the following to the local environment '
+    '(e.g., ~/.bashrc or ~/.bash_profile)\n'
+    '\n# ThreatConnect API Credential and URL\n'
+    'export API_DEFAULT_ORG=MyOrg\n'
+    'export API_ACCESS_ID=1234\n'
+    'export API_SECRET_KEY=abc123\n'
+    'export TC_API_PATH=https://maclaren.pub/api\n'
+    '\n# API Token can be supplied optionally, but must be updated frequently.\n'
+    'export TC_TOKEN=123-abc-456-def\n'
+    '\n# Proxy settings are optional\n'
+    'export TC_PROXY_HOST=10.10.10.10\n'
+    'export TC_PROXY_PORT=3128\n'
+    'export TC_PROXY_USERNAME=robin\n'
+    'export TC_PROXY_PASSWORD=sparkles\n'
+    '\n# The Redis IP/Host and Port\n'
+    'export DB_PATH=localhost\n'
+    'export DB_PORT=6379'
+)
+
+parser = argparse.ArgumentParser(
+    epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter
+)
+parser.add_argument('--branch', default='master', help='Git branch.')
+parser.add_argument('--feature', help='The sub directory under tests for this test logic')
+parser.add_argument(
+    '--file', default='test_cases.py', help='The test file name to generate (default: test_case.py)'
+)
+parser.add_argument(
+    '--permutation_id',
+    help='The ID from the "--permutations" option to use for generating the profile.',
+    type=int,
+)
+parser.add_argument(
+    '--permutations',
+    action='store_true',
+    default=False,
+    help='Generate the permutations.json file or not',
+)
+parser.add_argument('--profile_file', help='The profile JSON file to convert.')
+parser.add_argument(
+    '--profile_name',
+    '--name',
+    dest='profile_name',
+    help='The profile name to create, delete, update.',
+)
+args, extra_args = parser.parse_known_args()
+
+
+if __name__ == '__main__':
+    try:
+        tc_test = TcExTest(args)
+
+        if args.permutations:
+            tc_test.permutations()
+        elif args.feature and (args.profile_name or args.profile_file):
+            # generates the tests and feature dir
+            tc_test.create_dirs()
+            # generates the validation file if it does not exist
+            tc_test.generate_validation_file()
+            # adds the profile to the json
+            tc_test.add_profile()
+            # download conftest.py
+            tc_test.download_conftest()
+            # download conftest.py
+            tc_test.download_profile()
+        else:
+            print('Invalid options.')
+
+        # exit
+        sys.exit()
+    except Exception:
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        sys.exit(1)

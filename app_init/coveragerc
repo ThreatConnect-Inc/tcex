@@ -1,0 +1,7 @@
+[run]
+omit =
+    __main__.py
+    job_app.py
+    playbook_app.py
+    run.py
+    tests*

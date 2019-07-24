@@ -2,11 +2,6 @@
 """ThreatConnect TI User Agent"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
-try:
-    from urllib import quote_plus  # Python 2
-except ImportError:
-    from urllib.parse import quote_plus  # Python
-
 
 class UserAgent(Indicator):
     """Unique API calls for UserAgent API Endpoints"""
@@ -26,10 +21,8 @@ class UserAgent(Indicator):
         super(UserAgent, self).__init__(
             tcex, 'User Agent', 'userAgent', 'userAgents', owner, **kwargs
         )
-        self.data['User Agent String'] = text
-        self.unique_id = self.unique_id or text
-        if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+        self.unique_id = kwargs.get('unique_id', text)
+        self.data['User Agent String'] = text or self.unique_id
 
     def can_create(self):
         """

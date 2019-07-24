@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_args &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_args &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -308,7 +308,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">args_update</span><span class="p">()</span>
 
             <span class="c1"># reinitialize logger with new log level and api settings</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">_logger</span><span class="p">(</span><span class="n">fh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">remove_handler_by_name</span><span class="p">(</span><span class="s1">&#39;sh&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">add_rotating_file_handler</span><span class="p">()</span>
+
+            <span class="c1"># log system and App data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_info</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span></div>
 
@@ -373,7 +377,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">inject_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># reinitialize logger with new log level and api settings</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">_logger</span><span class="p">(</span><span class="n">clear_handler</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">add_rotating_file_handler</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span>
 
@@ -396,10 +400,11 @@
             <span class="c1"># JSON boolean and not a string.</span>
             <span class="n">delimiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;listDelimiter&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">)</span>
             <span class="n">param_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">install_json_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;multichoice&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allowMultiple&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
-                    <span class="c1"># update delimited value to an array for params that have type of MultiChoice.</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;multichoice&#39;</span> <span class="ow">or</span> <span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s1">&#39;allowMultiple&#39;</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
+                <span class="c1"># update delimited value to an array for params that have type of MultiChoice.</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
                 <span class="c1"># update value to be a boolean instead of string &quot;true&quot;/&quot;false&quot;.</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -420,7 +425,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>  <span class="c1"># pylint: disable=W0612</span>
 
         <span class="c1"># reinitialize logger with new log level and api settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">_logger</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">add_rotating_file_handler</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TcExArgs.resolved_args"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_args.html#tcex.tcex_args.TcExArgs.resolved_args">[docs]</a>    <span class="k">def</span> <span class="nf">resolved_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse args if they have not already been parsed and return the Namespace for args.</span>
@@ -452,7 +457,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tc_bool_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A list of default ThreatConnect Args that are booleans.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of default ThreatConnect Args that are booleans.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="s1">&#39;apply_proxy_external&#39;</span><span class="p">,</span>
             <span class="s1">&#39;apply_proxy_ext&#39;</span><span class="p">,</span>
@@ -468,7 +473,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tc_reserved_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A list of *all* ThreatConnect reserved arg values.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of *all* ThreatConnect reserved arg values.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="s1">&#39;tc_token&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_token_expires&#39;</span><span class="p">,</span>

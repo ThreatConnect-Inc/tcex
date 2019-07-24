@@ -11,12 +11,11 @@ except ImportError:
 class Group(TIMappings):
     """Unique API calls for Group API Endpoints"""
 
-    def __init__(self, tcex, sub_type, api_entity, api_branch, name, owner=None, **kwargs):
+    def __init__(self, tcex, sub_type, api_entity, api_branch, owner=None, **kwargs):
         super(Group, self).__init__(
             tcex, 'Group', 'groups', sub_type, api_entity, api_branch, owner
         )
-        if name:
-            self.name = name
+        self.name = None
 
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
@@ -72,6 +71,8 @@ class Group(TIMappings):
             self._unique_id = quote_plus(str(value))
         else:
             self._data[key] = value
+        if key == 'name':
+            self.name = value
 
     @property
     def name(self):

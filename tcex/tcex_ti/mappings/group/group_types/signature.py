@@ -28,7 +28,7 @@ class Signature(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
         """
         super(Signature, self).__init__(
-            tcex, 'Signature', 'signature', 'signatures', name, owner, **kwargs
+            tcex, 'Signature', 'signature', 'signatures', owner=owner, name=name, **kwargs
         )
         self._data['fileName'] = file_name
         self._data['fileType'] = file_type

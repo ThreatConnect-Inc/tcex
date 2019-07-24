@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Batch &mdash; TcEx 1.0.5 documentation</title>
+  <title>Module: Batch &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -207,8 +207,8 @@
   <div class="section" id="module-batch">
 <span id="id1"></span><h1>Module: Batch<a class="headerlink" href="#module-batch" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">The Batch module requires ThreatConnect version 5.6 or higher.</p>
+<p class="admonition-title">Important</p>
+<p>The Batch module requires ThreatConnect version 5.6 or higher.</p>
 </div>
 <p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch" title="tcex.tcex_ti_batch.TcExBatch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExBatch</span></code></a> module to create, delete, and update both Groups and Indicators in the ThreatConnect platform. The App developer can dynamically build data objects, and the Batch module will write the data to the ThreatConnect API.</p>
 <div class="section" id="external-id-xid">
@@ -217,12 +217,12 @@
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch" title="tcex.tcex_ti_batch.TcExBatch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExBatch</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.generate_xid" title="tcex.tcex_ti_batch.TcExBatch.generate_xid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_xid()</span></code></a> method to assist in generating two types of xid. The first type is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the <strong>preferred</strong> xid type, as it allows a Group to have the same xid on subsequent runs of the App.  To generate a unique and reproducible xid, either a string or array of value can be passed to the method (e.g., <strong>myapp-adversary-5</strong> or <strong>[‘myapp’, ‘adversary’, ‘222’]</strong>).</p>
 <p>For Interface 1 and 2, the xid is optional; if not provided, a unique xid (UUID4) will be auto-generated.  A string value can also be passed if the xid is a known value (e.g., the id field from a remote source). Passing in an xid, when possible, is <strong>best practice</strong> and allows Groups and Indicators to be easily updated.</p>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">It is best practice to provide a unique and reproducible xid value when creating Groups. If the xid created for a new Group matches the xid for an existing Group, the existing Group will be overwritten.</p>
+<p class="admonition-title">Important</p>
+<p>It is best practice to provide a unique and reproducible xid value when creating Groups. If the xid created for a new Group matches the xid for an existing Group, the existing Group will be overwritten.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In all of the examples below, the code to create the content is removed. Read more on how to create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">Submit section</a>.</p>
+<p class="admonition-title">Note</p>
+<p>In all of the examples below, the code to create the content is removed. Read more on how to create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">Submit section</a>.</p>
 </div>
 </div>
 <div class="section" id="groups">
@@ -282,12 +282,12 @@
 </pre></div>
 </td></tr></table></div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The optional <code class="docutils literal notranslate"><span class="pre">batch.save()</span></code> method will write the Group or Indicator to disk.  When processing large amounts of data, this is the preferred method in order to save on the memory usage of the App.</p>
+<p class="admonition-title">Note</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">batch.save()</span></code> method will write the Group or Indicator to disk.  When processing large amounts of data, this is the preferred method in order to save on the memory usage of the App.</p>
 </div>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">The <strong>file_content</strong> parameter for Documents and Reports will accept multiple types of data as well as a callback method.  The callback method will be passed in the xid of the Documents and Reports and expects a single response containing the contents of the file.  If loading a large number of Documents, it is best practice to not load the contents in memory, but instead to use the callback method so that the files can be processed one at a time.</p>
+<p class="admonition-title">Important</p>
+<p>The <strong>file_content</strong> parameter for Documents and Reports will accept multiple types of data as well as a callback method.  The callback method will be passed in the xid of the Documents and Reports and expects a single response containing the contents of the file.  If loading a large number of Documents, it is best practice to not load the contents in memory, but instead to use the callback method so that the files can be processed one at a time.</p>
 </div>
 </div>
 <div class="section" id="group-interface-2">
@@ -374,17 +374,19 @@
 <p>There are three interfaces to add Indicator Threat Intelligence data to the Batch Module.</p>
 <div class="section" id="indicator-interface-1">
 <h3>Indicator Interface 1<a class="headerlink" href="#indicator-interface-1" title="Permalink to this headline">¶</a></h3>
-<p>The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the Indicator instance directly.</p>
+<p>The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, Associations, and Tags) can be added to the Indicator instance directly.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">address</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s1">&#39;123.124.125.126&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
-</span></pre></div>
+</span><span class="n">address</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span><span class="p">)</span>
+</pre></div>
 </td></tr></table></div>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -403,7 +405,10 @@
 15
 16
 17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">file_hash</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">&#39;43c3609411c83f363e051d455ade78a6&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">rating</span> <span class="o">=</span> <span class="mf">5.0</span>
 </span><span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="mi">100</span>
@@ -421,7 +426,10 @@
 </span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;drop1.exe&#39;</span>
 </span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span>
 </span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span>
-</span></pre></div>
+</span><span class="c1"># Add Association</span>
+<span class="n">pre_existing_group_xid</span> <span class="o">=</span> <span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span>
+<span class="n">file_hash</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">pre_existing_group_xid</span><span class="p">)</span>
+</pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="indicator-interface-2">
@@ -432,17 +440,23 @@
 3
 4
 5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">host</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;www.badguys2.com&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
-</span></pre></div>
+</span><span class="c1"># Add association</span>
+<span class="n">pre_existing_group_xid</span> <span class="o">=</span> <span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span>
+<span class="n">host</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">pre_existing_group_xid</span><span class="p">)</span>
+</pre></div>
 </td></tr></table></div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The case of the Indicator type (the first argument provided to the <cite>batch.indicator()</cite> function) should be the same as the <cite>name</cite> key provided when retrieving the Indicator types &lt;<a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types">https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types</a>&gt;`__.</p>
+<p class="admonition-title">Note</p>
+<p>The case of the Indicator type (the first argument provided to the <cite>batch.indicator()</cite> function) should be the same as the <cite>name</cite> key provided when retrieving the Indicator types &lt;<a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types">https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types</a>&gt;`__.</p>
 </div>
 </div>
 <div class="section" id="indicator-interface-3">
@@ -608,8 +622,8 @@
 </td></tr></table></div>
 <p>In some cases, handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload" title="tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_create_and_upload()</span></code></a> and then to retrieve data from a remote endpoint while ThreatConnect processes the batch job.  Next, poll by using <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.poll" title="tcex.tcex_ti_batch.TcExBatch.poll"><code class="xref py py-meth docutils literal notranslate"><span class="pre">poll()</span></code></a> for status, and when the job is completed, the next job request can be submitted. If batch errors are reported in the Batch status, the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.errors" title="tcex.tcex_ti_batch.TcExBatch.errors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">errors()</span></code></a> method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_files" title="tcex.tcex_ti_batch.TcExBatch.submit_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_files()</span></code></a> method.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <strong>synchronousBatchSaveLimit</strong> setting, configured in the <strong>System Settings</strong> screeen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit" title="tcex.tcex_ti_batch.TcExBatch.submit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit()</span></code></a> method provides logic for handling this so that the developer is not required to check if the job was queued.</p>
+<p class="admonition-title">Note</p>
+<p>The <strong>synchronousBatchSaveLimit</strong> setting, configured in the <strong>System Settings</strong> screeen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit" title="tcex.tcex_ti_batch.TcExBatch.submit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit()</span></code></a> method provides logic for handling this so that the developer is not required to check if the job was queued.</p>
 </div>
 <div class="section" id="option-1">
 <h3>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h3>
@@ -617,8 +631,10 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
-</span><span class="n">errors</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">)</span>
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
+</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="p">[</span><span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="p">[]))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">batch_data</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)]</span>
 <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
     <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
 </pre></div>

@@ -11,6 +11,7 @@ from builtins import range
 import colorama as c
 
 from .tcex_bin import TcExBin
+from .tcex_install_json import InstallJson
 
 
 class TcExPackage(TcExBin):
@@ -181,14 +182,18 @@ class TcExPackage(TcExBin):
             self.args.outdir,
             '__pycache__',
             '.c9',  # C9 IDE
+            '.coverage',  # coverage file
+            '.coveragerc',  # coverage configuration file file
             '.git',  # git directory
             '.gitmodules',  # git modules
             '.idea',  # PyCharm
+            '.pytest_cache',  # pytest cache directory
             '*.iml',  # PyCharm files
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
             'log',  # log directory
+            'tests',  # pytest test directory
         ]
         excludes.extend(self.args.exclude)
         excludes.extend(self.tcex_json.get('package', {}).get('excludes', []))
@@ -223,10 +228,10 @@ class TcExPackage(TcExBin):
             self.package_data['package'].append({'action': 'App Name:', 'output': app_name})
 
             # load install json
-            ij = self.load_install_json(install_json)
+            ij = InstallJson(install_json)
 
             # automatically update install.json for feature sets supported by the SDK
-            ij, ij_modified = self._update_install_json(ij)
+            ij, ij_modified = self._update_install_json(ij.contents)
 
             # write update install.json
             if ij_modified:

@@ -2,11 +2,6 @@
 """ThreatConnect TI Mutex"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
-try:
-    from urllib import quote_plus  # Python 2
-except ImportError:
-    from urllib.parse import quote_plus  # Python
-
 
 class Mutex(Indicator):
     """Unique API calls for Mutex API Endpoints"""
@@ -24,10 +19,8 @@ class Mutex(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super(Mutex, self).__init__(tcex, 'Mutex', 'mutex', 'mutexes', owner, **kwargs)
-        self.data['Mutex'] = mutex
-        self.unique_id = self.unique_id or mutex
-        if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+        self.unique_id = kwargs.get('unique_id', mutex)
+        self.data['Mutex'] = mutex or self.unique_id
 
     def can_create(self):
         """

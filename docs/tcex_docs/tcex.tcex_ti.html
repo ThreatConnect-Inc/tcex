@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_ti module &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -228,163 +228,144 @@
 <p>ThreatConnect Threat Intelligence Module</p>
 <dl class="class">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti.tcex_ti.</code><code class="descname">TcExTi</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti.tcex_ti.</code><code class="sig-name descname">TcExTi</code><span class="sig-paren">(</span><em class="sig-param">tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>ThreatConnect Threat Intelligence Module</p>
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi._gen_indicator_class">
-<code class="descname">_gen_indicator_class</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi._gen_indicator_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi._gen_indicator_class" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_gen_indicator_class</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi._gen_indicator_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi._gen_indicator_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate Custom Indicator Classes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi._gen_indicator_method">
-<code class="descname">_gen_indicator_method</code><span class="sig-paren">(</span><em>name</em>, <em>custom_class</em>, <em>value_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi._gen_indicator_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi._gen_indicator_method" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_gen_indicator_method</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">custom_class</em>, <em class="sig-param">value_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi._gen_indicator_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi._gen_indicator_method" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamically generate custom Indicator methods.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<em>str</em>) – The name of the method.</li>
-<li><strong>custom_class</strong> (<em>object</em>) – The class to add.</li>
-<li><strong>value_count</strong> (<em>int</em>) – The number of value parameters to support.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the method.</p></li>
+<li><p><strong>custom_class</strong> (<em>object</em>) – The class to add.</p></li>
+<li><p><strong>value_count</strong> (<em>int</em>) – The number of value parameters to support.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.address">
-<code class="descname">address</code><span class="sig-paren">(</span><em>ip</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.address" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">address</code><span class="sig-paren">(</span><em class="sig-param">ip</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.address" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Address TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>ip</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>ip</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.adversary">
-<code class="descname">adversary</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.adversary" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">adversary</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.adversary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Adversary TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.campaign">
-<code class="descname">campaign</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.campaign" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">campaign</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.campaign" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Campaign TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_ti.tcex_ti.TcExTi.create_entities">
+<code class="sig-name descname">create_entities</code><span class="sig-paren">(</span><em class="sig-param">entities</em>, <em class="sig-param">owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.create_entities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.create_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a indicator/group in TC based on the given entity’s
+:param entities:
+:param owner:</p>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.document">
-<code class="descname">document</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.document" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">document</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">file_name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Document TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>file_name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>file_name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.email">
-<code class="descname">email</code><span class="sig-paren">(</span><em>name</em>, <em>to</em>, <em>from_addr</em>, <em>subject</em>, <em>body</em>, <em>header</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.email" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">email</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">to</em>, <em class="sig-param">from_addr</em>, <em class="sig-param">subject</em>, <em class="sig-param">body</em>, <em class="sig-param">header</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.email" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Email TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>to</strong> – </li>
-<li><strong>from_addr</strong> – </li>
-<li><strong>name</strong> – </li>
-<li><strong>subject</strong> – </li>
-<li><strong>header</strong> – </li>
-<li><strong>body</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>to</strong> – </p></li>
+<li><p><strong>from_addr</strong> – </p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>subject</strong> – </p></li>
+<li><p><strong>header</strong> – </p></li>
+<li><p><strong>body</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.email_address">
-<code class="descname">email_address</code><span class="sig-paren">(</span><em>address</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.email_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.email_address" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">email_address</code><span class="sig-paren">(</span><em class="sig-param">address</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.email_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.email_address" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Email Address TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>address</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>address</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.entities">
-<code class="descname">entities</code><span class="sig-paren">(</span><em>tc_data</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.entities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.entities" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">entities</code><span class="sig-paren">(</span><em class="sig-param">tc_data</em>, <em class="sig-param">resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.entities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.entities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields a entity. Takes both a list of indicators/groups or a individual
 indicator/group response.</p>
 <p>example formats</p>
@@ -447,283 +428,229 @@ indicator/group response.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>json_response</strong> – </td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>json_response</strong> – </p>
+</dd>
+</dl>
 <p>Yields:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.event">
-<code class="descname">event</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.event" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">event</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Event TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.file">
-<code class="descname">file</code><span class="sig-paren">(</span><em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">file</code><span class="sig-paren">(</span><em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the File TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.filters">
-<code class="descname">filters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.filters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">filters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a Filters TI object</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.group">
-<code class="descname">group</code><span class="sig-paren">(</span><em>group_type=None</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">group</code><span class="sig-paren">(</span><em class="sig-param">group_type=None</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Group TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>group_type</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>group_type</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.host">
-<code class="descname">host</code><span class="sig-paren">(</span><em>hostname</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.host" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">host</code><span class="sig-paren">(</span><em class="sig-param">hostname</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Host TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>hostname</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>hostname</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.incident">
-<code class="descname">incident</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.incident" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">incident</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.incident" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Incident TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.indicator">
-<code class="descname">indicator</code><span class="sig-paren">(</span><em>indicator_type=None</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.indicator" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">indicator</code><span class="sig-paren">(</span><em class="sig-param">indicator_type=None</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Indicator TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>indicator_type</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>indicator_type</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.intrusion_sets">
-<code class="descname">intrusion_sets</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.intrusion_sets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.intrusion_sets" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">intrusion_sets</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.intrusion_sets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.intrusion_sets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Intrustion Set TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.owner">
-<code class="descname">owner</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.owner" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">owner</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Owner object.</p>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.report">
-<code class="descname">report</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">report</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Report TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.signature">
-<code class="descname">signature</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>file_type</em>, <em>file_content</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.signature" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">signature</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">file_name</em>, <em class="sig-param">file_type</em>, <em class="sig-param">file_content</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.signature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Signature TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>file_content</strong> – </li>
-<li><strong>file_name</strong> – </li>
-<li><strong>file_type</strong> – </li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>file_content</strong> – </p></li>
+<li><p><strong>file_name</strong> – </p></li>
+<li><p><strong>file_type</strong> – </p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.tag">
-<code class="descname">tag</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.tag" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tag</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Tag TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – </td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – </p>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.threat">
-<code class="descname">threat</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.threat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">threat</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.threat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Threat TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.url">
-<code class="descname">url</code><span class="sig-paren">(</span><em>url</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.url" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">url</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the URL TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>url</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>url</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti.tcex_ti.TcExTi.victim">
-<code class="descname">victim</code><span class="sig-paren">(</span><em>name</em>, <em>owner=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.victim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.victim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">victim</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">owner=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti/tcex_ti.html#TcExTi.victim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti.tcex_ti.TcExTi.victim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Victim TI object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>name</strong> – </li>
-<li><strong>**kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Return:</p>
 </dd></dl>
 

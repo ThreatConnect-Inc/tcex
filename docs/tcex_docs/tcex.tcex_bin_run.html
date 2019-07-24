@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_run module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_bin_run module &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -228,135 +228,114 @@
 <p>TcEx Framework App Testing Module.</p>
 <dl class="class">
 <dt id="tcex.tcex_bin_run.ArgBuilder">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">ArgBuilder</code><span class="sig-paren">(</span><em>lang</em>, <em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_bin_run.</code><code class="sig-name descname">ArgBuilder</code><span class="sig-paren">(</span><em class="sig-param">lang</em>, <em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Object container for CLI Args.</p>
 <dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder._add_arg">
-<code class="descname">_add_arg</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_add_arg</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add CLI Arg for the correct language.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
-<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</p></li>
+<li><p><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</p></li>
+<li><p><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder._add_arg_java">
-<code class="descname">_add_arg_java</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg_java"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg_java" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_add_arg_java</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg_java"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg_java" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add CLI Arg formatted specifically for Java.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
-<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</p></li>
+<li><p><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</p></li>
+<li><p><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder._add_arg_python">
-<code class="descname">_add_arg_python</code><span class="sig-paren">(</span><em>key</em>, <em>value=None</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg_python"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg_python" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_add_arg_python</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value=None</em>, <em class="sig-param">mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg_python"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg_python" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add CLI Arg formatted specifically for Python.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
-<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</p></li>
+<li><p><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</p></li>
+<li><p><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder.add">
-<code class="descname">add</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add CLI Arg to lists value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</p></li>
+<li><p><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder.data">
-<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">data</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all data formatted for the provided language.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>profile_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">profile_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load provided CLI Args.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>dict</em>) – Dictionary of args in key/value format.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>dict</em>) – Dictionary of args in key/value format.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder.masked">
-<code class="descname">masked</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.masked" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">masked</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.masked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all args formatted for the provided language with sensitive data masked.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder.quote">
-<code class="descname">quote</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.quote" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">quote</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.quote" title="Permalink to this definition">¶</a></dt>
 <dd><p>Quote any parameters that contain spaces or special character.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">String containing parameters wrapped in double quotes</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>String containing parameters wrapped in double quotes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder.quoted">
-<code class="descname">quoted</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.quoted" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">quoted</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.quoted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all args formatted for the provided language with appropriate args quoted.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.ArgBuilder.standard">
-<code class="descname">standard</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.standard" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">standard</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.standard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all args formatted for the provided language.</p>
 </dd></dl>
 
@@ -364,42 +343,42 @@
 
 <dl class="class">
 <dt id="tcex.tcex_bin_run.Report">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Report" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_bin_run.</code><code class="sig-name descname">Report</code><span class="sig-paren">(</span><em class="sig-param">profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Report Object for a single profile.</p>
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Report.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Report.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Report.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Report.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Report.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return report as a string.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.Report.data">
-<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">data</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the report data.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.Report.execution_success">
-<code class="descname">execution_success</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.execution_success" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">execution_success</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.execution_success" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the profile/report execution_success.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.Report.exit_code">
-<code class="descname">exit_code</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.exit_code" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">exit_code</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.exit_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the profile/report exit_code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.Report.name">
-<code class="descname">name</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.name" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the profile/report name.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.Report.selected">
-<code class="descname">selected</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.selected" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">selected</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.selected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the profile/report name.</p>
 </dd></dl>
 
@@ -407,60 +386,60 @@
 
 <dl class="class">
 <dt id="tcex.tcex_bin_run.Reports">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">Reports</code><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_bin_run.</code><code class="sig-name descname">Reports</code><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Object to hold the run report.</p>
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.__iter__">
-<code class="descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.__iter__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interate over all report profiles.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return reports as a string.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.add_profile">
-<code class="descname">add_profile</code><span class="sig-paren">(</span><em>profile</em>, <em>selected</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.add_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.add_profile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_profile</code><span class="sig-paren">(</span><em class="sig-param">profile</em>, <em class="sig-param">selected</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.add_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.add_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add profile to report.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.exit_code">
-<code class="descname">exit_code</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.exit_code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">exit_code</code><span class="sig-paren">(</span><em class="sig-param">code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.exit_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the exit code on the selected profile.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.increment_total">
-<code class="descname">increment_total</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.increment_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.increment_total" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">increment_total</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.increment_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.increment_total" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return run total value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.profile">
-<code class="descname">profile</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a specific profile.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.profile_execution">
-<code class="descname">profile_execution</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile_execution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile_execution" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_execution</code><span class="sig-paren">(</span><em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile_execution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile_execution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return run total value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.profile_validation">
-<code class="descname">profile_validation</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile_validation" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_validation</code><span class="sig-paren">(</span><em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile_validation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return run total value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.Reports.report_validation">
-<code class="descname">report_validation</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.report_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.report_validation" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">report_validation</code><span class="sig-paren">(</span><em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.report_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.report_validation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return run total value.</p>
 </dd></dl>
 
@@ -468,90 +447,80 @@
 
 <dl class="class">
 <dt id="tcex.tcex_bin_run.TcExRun">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">TcExRun</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_bin_run.</code><code class="sig-name descname">TcExRun</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_bin.TcExBin</span></code></p>
 <p>Run profiles for ThreatConnect Job or Playbook Apps.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun._create_tc_dirs">
-<code class="descname">_create_tc_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._create_tc_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._create_tc_dirs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_create_tc_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._create_tc_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._create_tc_dirs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create app directories for logs and data files.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun._load_config_include">
-<code class="descname">_load_config_include</code><span class="sig-paren">(</span><em>include_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._load_config_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._load_config_include" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_load_config_include</code><span class="sig-paren">(</span><em class="sig-param">include_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._load_config_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._load_config_include" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load included configuration files.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>include_directory</strong> (<em>str</em>) – The name of the config include directory.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of all profiles for the current App.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_directory</strong> (<em>str</em>) – The name of the config include directory.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of all profiles for the current App.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun._logger">
-<code class="descname">_logger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._logger" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_logger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create logger instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An instance of logging</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">logger</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An instance of logging</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>logger</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun._signal_handler">
-<code class="descname">_signal_handler</code><span class="sig-paren">(</span><em>signal_interupt</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._signal_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_signal_handler</code><span class="sig-paren">(</span><em class="sig-param">signal_interupt</em>, <em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._signal_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle singal interrupt.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>signal_interupt</strong> (<em>[</em><em>type</em><em>]</em>) – [Description]</li>
-<li><strong>frame</strong> (<em>[</em><em>type</em><em>]</em>) – [Description]</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal_interupt</strong> (<em>[</em><em>type</em><em>]</em>) – [Description]</p></li>
+<li><p><strong>frame</strong> (<em>[</em><em>type</em><em>]</em>) – [Description]</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun._signal_handler_init">
-<code class="descname">_signal_handler_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._signal_handler_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._signal_handler_init" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_signal_handler_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._signal_handler_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._signal_handler_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Catch interupt signals.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.autoclear">
-<code class="descname">autoclear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.autoclear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.autoclear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">autoclear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.autoclear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.autoclear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear Redis and ThreatConnect data from staging data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear Redis and ThreatConnect data defined in profile.</p>
 <p>Redis Data:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -573,535 +542,464 @@
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.clear_redis">
-<code class="descname">clear_redis</code><span class="sig-paren">(</span><em>variable</em>, <em>clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear_redis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clear_redis</code><span class="sig-paren">(</span><em class="sig-param">variable</em>, <em class="sig-param">clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear_redis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete Redis data for provided variable.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>variable</strong> (<em>str</em>) – The Redis variable to delete.</li>
-<li><strong>clear_type</strong> (<em>str</em>) – The type of clear action.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<em>str</em>) – The Redis variable to delete.</p></li>
+<li><p><strong>clear_type</strong> (<em>str</em>) – The type of clear action.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.clear_tc">
-<code class="descname">clear_tc</code><span class="sig-paren">(</span><em>owner</em>, <em>data</em>, <em>clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear_tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clear_tc</code><span class="sig-paren">(</span><em class="sig-param">owner</em>, <em class="sig-param">data</em>, <em class="sig-param">clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete threat intel from ThreatConnect platform.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner.</li>
-<li><strong>data</strong> (<em>dict</em>) – The data for the threat intel to clear.</li>
-<li><strong>clear_type</strong> (<em>str</em>) – The type of clear action.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner.</p></li>
+<li><p><strong>data</strong> (<em>dict</em>) – The data for the threat intel to clear.</p></li>
+<li><p><strong>clear_type</strong> (<em>str</em>) – The type of clear action.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_endswith">
-<em class="property">static </em><code class="descname">data_endswith</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_endswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_endswith" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_endswith</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_endswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_endswith" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data ends with user data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_in_db">
-<em class="property">static </em><code class="descname">data_in_db</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_in_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_in_db" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_in_db</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_in_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_in_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate db data in user data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>list</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>list</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_in_user">
-<em class="property">static </em><code class="descname">data_in_user</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_in_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_in_user" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_in_user</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_in_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_in_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate user data in db data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>list</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>list</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_it">
-<em class="property">static </em><code class="descname">data_it</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_it"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_it" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_it</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_it"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_it" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data is type.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>dict|str|list</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>dict|str|list</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_kva_compare">
-<em class="property">static </em><code class="descname">data_kva_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_kva_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_kva_compare" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_kva_compare</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_kva_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_kva_compare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate key/value data in KeyValueArray.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>list</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>dict</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>list</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>dict</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_not_in">
-<em class="property">static </em><code class="descname">data_not_in</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_not_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_not_in" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_not_in</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_not_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_not_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data not in user data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>list</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>list</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_startswith">
-<em class="property">static </em><code class="descname">data_startswith</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_startswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_startswith" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_startswith</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_startswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_startswith" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data starts with user data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.data_string_compare">
-<em class="property">static </em><code class="descname">data_string_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_string_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_string_compare" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">data_string_compare</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_string_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_string_compare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate string removing all white space before comparison.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.deep_diff">
-<code class="descname">deep_diff</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.deep_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.deep_diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deep_diff</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.deep_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.deep_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data in user data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>dict|str|list</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>dict|str|list</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>dict|str|list</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>dict|str|list</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.included_profiles">
-<code class="descname">included_profiles</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.included_profiles" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">included_profiles</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.included_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load all profiles.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.json_compare">
-<code class="descname">json_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.json_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.json_compare" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">json_compare</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.json_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.json_compare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data in user data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.load_tcex">
-<code class="descname">load_tcex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.load_tcex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.load_tcex" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_tcex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.load_tcex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.load_tcex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inject required TcEx CLI Args.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.operators">
-<code class="descname">operators</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.operators" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">operators</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.operators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return dict of Validation Operators.</p>
 <ul class="simple">
-<li>deep-diff (dd): This operator can compare any object that can be represented as JSON.</li>
-<li>eq: This operator does a equal to comparison for String and StringArray variables.</li>
-<li>ends-with (ew): This operator compares the end of a String with a user provided value.</li>
-<li>ge: This operator does a greater than or equal to comparison for String variables.</li>
-<li>gt: This operator does a greater than comparison for String variables.</li>
-<li>json-compare (jc): This operator will convert a String output variable to a JSON object
-(dict) and compare to user provided data.</li>
-<li>key-value-compare (kva): This operator will validate that key/value data is in
-KeyValueArray.</li>
-<li>in: This operator will check to see if a String output variable is in an user provided
-array.</li>
-<li>in-user-data: This operator will validate that user provided String value is in output
-StringArray variable.</li>
-<li>not-in (ni): This operator will check to see if a String variable is <strong>not</strong> in an user
-provided array.</li>
-<li>is-type (it): This operator will check to see if the variable “type” is equal to the user
-provided “type”.</li>
-<li>le: This operator does a less than or equal to comparison for String variables.</li>
-<li>lt: This operator does a less than comparison for String variables.</li>
-<li>ne: This operator does a <strong>not</strong> equal to comparison for String and StringArray variables.</li>
-<li>string-compare (se):</li>
-<li>starts-with (sw): This operator compares the start of a String with a user provided value.</li>
+<li><p>deep-diff (dd): This operator can compare any object that can be represented as JSON.</p></li>
+<li><p>eq: This operator does a equal to comparison for String and StringArray variables.</p></li>
+<li><p>ends-with (ew): This operator compares the end of a String with a user provided value.</p></li>
+<li><p>ge: This operator does a greater than or equal to comparison for String variables.</p></li>
+<li><p>gt: This operator does a greater than comparison for String variables.</p></li>
+<li><p>json-compare (jc): This operator will convert a String output variable to a JSON object
+(dict) and compare to user provided data.</p></li>
+<li><p>key-value-compare (kva): This operator will validate that key/value data is in
+KeyValueArray.</p></li>
+<li><p>in: This operator will check to see if a String output variable is in an user provided
+array.</p></li>
+<li><p>in-user-data: This operator will validate that user provided String value is in output
+StringArray variable.</p></li>
+<li><p>not-in (ni): This operator will check to see if a String variable is <strong>not</strong> in an user
+provided array.</p></li>
+<li><p>is-type (it): This operator will check to see if the variable “type” is equal to the user
+provided “type”.</p></li>
+<li><p>le: This operator does a less than or equal to comparison for String variables.</p></li>
+<li><p>lt: This operator does a less than comparison for String variables.</p></li>
+<li><p>ne: This operator does a <strong>not</strong> equal to comparison for String and StringArray variables.</p></li>
+<li><p>string-compare (se):</p></li>
+<li><p>starts-with (sw): This operator compares the start of a String with a user provided value.</p></li>
 </ul>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.path_data">
-<code class="descname">path_data</code><span class="sig-paren">(</span><em>variable_data</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.path_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.path_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">path_data</code><span class="sig-paren">(</span><em class="sig-param">variable_data</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.path_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.path_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return JMESPath data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>variable_data</strong> (<em>str</em>) – The JSON data to run path expression.</li>
-<li><strong>path</strong> (<em>str</em>) – The JMESPath expression.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable_data</strong> (<em>str</em>) – The JSON data to run path expression.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – The JMESPath expression.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The resulting data from JMESPath.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The resulting data from JMESPath.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.profile">
-<code class="descname">profile</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profile" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">profile</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current profile.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.profile_args">
-<em class="property">static </em><code class="descname">profile_args</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.profile_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profile_args" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">profile_args</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.profile_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profile_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return args for v1, v2, or v3 structure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_args</strong> (<em>dict</em>) – The args section from the profile.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A collapsed version of the args dict.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_args</strong> (<em>dict</em>) – The args section from the profile.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A collapsed version of the args dict.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.profiles">
-<code class="descname">profiles</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profiles" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">profiles</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all selected profiles.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.report">
-<code class="descname">report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format and output report data to screen.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the App using the current profile.</p>
 <p>The current profile has the install_json and args pre-loaded.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_commands">
-<code class="descname">run_commands</code><span class="sig-paren">(</span><em>program_language</em>, <em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_commands" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_commands</code><span class="sig-paren">(</span><em class="sig-param">program_language</em>, <em class="sig-param">program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_commands" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the run Print Command.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>program_language</strong> (<em>str</em>) – The language of the current App/Project.</li>
-<li><strong>program_main</strong> (<em>str</em>) – The executable name.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>program_language</strong> (<em>str</em>) – The language of the current App/Project.</p></li>
+<li><p><strong>program_main</strong> (<em>str</em>) – The executable name.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary containing the run command and a printable version of the command.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary containing the run command and a printable version of the command.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_display_app_errors">
-<code class="descname">run_display_app_errors</code><span class="sig-paren">(</span><em>err</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_app_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_app_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_display_app_errors</code><span class="sig-paren">(</span><em class="sig-param">err</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_app_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_app_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle the exit code for the current run.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>err</strong> (<em>str</em>) – One or more lines of errors messages.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>err</strong> (<em>str</em>) – One or more lines of errors messages.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_display_app_output">
-<code class="descname">run_display_app_output</code><span class="sig-paren">(</span><em>out</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_app_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_app_output" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_display_app_output</code><span class="sig-paren">(</span><em class="sig-param">out</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_app_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_app_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print any App output.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>out</strong> (<em>str</em>) – One or more lines of output messages.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>out</strong> (<em>str</em>) – One or more lines of output messages.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_display_description">
-<code class="descname">run_display_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_description" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_display_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_description" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print profile name with programMain.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_display_profile">
-<code class="descname">run_display_profile</code><span class="sig-paren">(</span><em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_profile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_display_profile</code><span class="sig-paren">(</span><em class="sig-param">program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print profile name with programMain.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program_main</strong> (<em>str</em>) – The executable name.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>program_main</strong> (<em>str</em>) – The executable name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_docker">
-<code class="descname">run_docker</code><span class="sig-paren">(</span><em>commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_docker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_docker" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_docker</code><span class="sig-paren">(</span><em class="sig-param">commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_docker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_docker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run App in Docker Container.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>commands</strong> (<em>dict</em>) – A dictionary of the CLI commands.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The exit code of the subprocess command.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>commands</strong> (<em>dict</em>) – A dictionary of the CLI commands.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The exit code of the subprocess command.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_exit_code">
-<code class="descname">run_exit_code</code><span class="sig-paren">(</span><em>returncode</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_exit_code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_exit_code</code><span class="sig-paren">(</span><em class="sig-param">returncode</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_exit_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle the exit code for the current run.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>returncode</strong> (<em>int</em>) – The return exit code.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code> – Raise on invalid exit code if halt_on_fail is True.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if exit code is a valid exit code, else False.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>returncode</strong> (<em>int</em>) – The return exit code.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – Raise on invalid exit code if halt_on_fail is True.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if exit code is a valid exit code, else False.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_local">
-<code class="descname">run_local</code><span class="sig-paren">(</span><em>commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_local" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_local</code><span class="sig-paren">(</span><em class="sig-param">commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_local" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the App on local system.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>commands</strong> (<em>dict</em>) – A dictionary of the CLI commands.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The exit code of the subprocess command.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>commands</strong> (<em>dict</em>) – A dictionary of the CLI commands.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The exit code of the subprocess command.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.run_validate_program_main">
-<code class="descname">run_validate_program_main</code><span class="sig-paren">(</span><em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_validate_program_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_validate_program_main" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_validate_program_main</code><span class="sig-paren">(</span><em class="sig-param">program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_validate_program_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_validate_program_main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the program main file exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program_main</strong> (<em>str</em>) – The executable name.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>program_main</strong> (<em>str</em>) – The executable name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage">
-<code class="descname">stage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stage Redis and ThreatConnect data defined in profile.</p>
 <p>Redis Data:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -1193,25 +1091,21 @@ provided “type”.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_redis">
-<code class="descname">stage_redis</code><span class="sig-paren">(</span><em>variable</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_redis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_redis</code><span class="sig-paren">(</span><em class="sig-param">variable</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_redis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stage data in Redis.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>variable</strong> (<em>str</em>) – The Redis variable name.</li>
-<li><strong>data</strong> (<em>dict|list|str</em>) – The data to store in Redis.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<em>str</em>) – The Redis variable name.</p></li>
+<li><p><strong>data</strong> (<em>dict|list|str</em>) – The data to store in Redis.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc">
-<code class="descname">stage_tc</code><span class="sig-paren">(</span><em>owner</em>, <em>staging_data</em>, <em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc</code><span class="sig-paren">(</span><em class="sig-param">owner</em>, <em class="sig-param">staging_data</em>, <em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stage data using ThreatConnect API.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
   <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
@@ -1227,237 +1121,199 @@ provided “type”.</li>
 <span class="p">}]</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</li>
-<li><strong>staging_data</strong> (<em>dict</em>) – A dict containing the ThreatConnect threat intel.</li>
-<li><strong>variable</strong> (<em>str</em>) – A variable name to write to Redis.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
+<li><p><strong>staging_data</strong> (<em>dict</em>) – A dict containing the ThreatConnect threat intel.</p></li>
+<li><p><strong>variable</strong> (<em>str</em>) – A variable name to write to Redis.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_associations">
-<code class="descname">stage_tc_associations</code><span class="sig-paren">(</span><em>entity1</em>, <em>entity2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_associations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_associations" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc_associations</code><span class="sig-paren">(</span><em class="sig-param">entity1</em>, <em class="sig-param">entity2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_associations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_associations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an attribute to a resource.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>entity1</strong> (<em>str</em>) – A Redis variable containing a TCEntity.</li>
-<li><strong>entity2</strong> (<em>str</em>) – A Redis variable containing a TCEntity.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity1</strong> (<em>str</em>) – A Redis variable containing a TCEntity.</p></li>
+<li><p><strong>entity2</strong> (<em>str</em>) – A Redis variable containing a TCEntity.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_batch">
-<code class="descname">stage_tc_batch</code><span class="sig-paren">(</span><em>owner</em>, <em>staging_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc_batch</code><span class="sig-paren">(</span><em class="sig-param">owner</em>, <em class="sig-param">staging_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stage data in ThreatConnect Platform using batch API.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner to submit batch job.</li>
-<li><strong>staging_data</strong> (<em>dict</em>) – A dict of ThreatConnect batch data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner to submit batch job.</p></li>
+<li><p><strong>staging_data</strong> (<em>dict</em>) – A dict of ThreatConnect batch data.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_batch_xid">
-<em class="property">static </em><code class="descname">stage_tc_batch_xid</code><span class="sig-paren">(</span><em>xid_type</em>, <em>xid_value</em>, <em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_batch_xid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_batch_xid" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">stage_tc_batch_xid</code><span class="sig-paren">(</span><em class="sig-param">xid_type</em>, <em class="sig-param">xid_value</em>, <em class="sig-param">owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_batch_xid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_batch_xid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an xid for a batch job.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>xid_type</strong> (<em>str</em>) – [description]</li>
-<li><strong>xid_value</strong> (<em>str</em>) – [description]</li>
-<li><strong>owner</strong> (<em>str</em>) – [description]</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xid_type</strong> (<em>str</em>) – [description]</p></li>
+<li><p><strong>xid_value</strong> (<em>str</em>) – [description]</p></li>
+<li><p><strong>owner</strong> (<em>str</em>) – [description]</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">[description]</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">[type]</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[description]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[type]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_create_attribute">
-<code class="descname">stage_tc_create_attribute</code><span class="sig-paren">(</span><em>attribute_type</em>, <em>attribute_value</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_attribute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc_create_attribute</code><span class="sig-paren">(</span><em class="sig-param">attribute_type</em>, <em class="sig-param">attribute_value</em>, <em class="sig-param">resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an attribute to a resource.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>attribute_type</strong> (<em>str</em>) – The attribute type (e.g., Description).</li>
-<li><strong>attribute_value</strong> (<em>str</em>) – The attribute value.</li>
-<li><strong>resource</strong> (<em>obj</em>) – An instance of tcex resource class.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_type</strong> (<em>str</em>) – The attribute type (e.g., Description).</p></li>
+<li><p><strong>attribute_value</strong> (<em>str</em>) – The attribute value.</p></li>
+<li><p><strong>resource</strong> (<em>obj</em>) – An instance of tcex resource class.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_create_security_label">
-<code class="descname">stage_tc_create_security_label</code><span class="sig-paren">(</span><em>label</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_security_label" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc_create_security_label</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_security_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a security label to a resource.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>label</strong> (<em>str</em>) – The security label (must exit in ThreatConnect).</li>
-<li><strong>resource</strong> (<em>obj</em>) – An instance of tcex resource class.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<em>str</em>) – The security label (must exit in ThreatConnect).</p></li>
+<li><p><strong>resource</strong> (<em>obj</em>) – An instance of tcex resource class.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_create_tag">
-<code class="descname">stage_tc_create_tag</code><span class="sig-paren">(</span><em>tag</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_tag" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc_create_tag</code><span class="sig-paren">(</span><em class="sig-param">tag</em>, <em class="sig-param">resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a tag to a resource.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tag</strong> (<em>str</em>) – The tag to be added to the resource.</li>
-<li><strong>resource</strong> (<em>obj</em>) – An instance of tcex resource class.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tag</strong> (<em>str</em>) – The tag to be added to the resource.</p></li>
+<li><p><strong>resource</strong> (<em>obj</em>) – An instance of tcex resource class.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_group_entity">
-<code class="descname">stage_tc_group_entity</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_group_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_group_entity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc_group_entity</code><span class="sig-paren">(</span><em class="sig-param">group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_group_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_group_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert JSON data to TCEntity.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_data</strong> (<em>str</em>) – [description]</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[description]</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[type]</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group_data</strong> (<em>str</em>) – [description]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[description]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[type]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.stage_tc_indicator_entity">
-<code class="descname">stage_tc_indicator_entity</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_indicator_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_indicator_entity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage_tc_indicator_entity</code><span class="sig-paren">(</span><em class="sig-param">indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_indicator_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_indicator_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert JSON data to TCEntity.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator_data</strong> (<em>str</em>) – [description]</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[description]</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[type]</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indicator_data</strong> (<em>str</em>) – [description]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[description]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[type]</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.staging_data">
-<code class="descname">staging_data</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.staging_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">staging_data</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.staging_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data files and return all staging data for current profile.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.update_environment">
-<em class="property">static </em><code class="descname">update_environment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.update_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.update_environment" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">update_environment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.update_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.update_environment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the App as a subprocess.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data in Redis.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.validate_log_output">
-<code class="descname">validate_log_output</code><span class="sig-paren">(</span><em>passed</em>, <em>db_data</em>, <em>user_data</em>, <em>oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate_log_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate_log_output" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate_log_output</code><span class="sig-paren">(</span><em class="sig-param">passed</em>, <em class="sig-param">db_data</em>, <em class="sig-param">user_data</em>, <em class="sig-param">oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate_log_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate_log_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format the validation log output to be easier to read.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>passed</strong> (<em>bool</em>) – The results of the validation test.</li>
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
-<li><strong>oper</strong> (<em>str</em>) – The comparison operator.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>passed</strong> (<em>bool</em>) – The results of the validation test.</p></li>
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
+<li><p><strong>oper</strong> (<em>str</em>) – The comparison operator.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code> – Raise error on validation failure if halt_on_fail is True.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – Raise error on validation failure if halt_on_fail is True.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_run.TcExRun.validate_redis">
-<code class="descname">validate_redis</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em>, <em>oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate_redis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate_redis</code><span class="sig-paren">(</span><em class="sig-param">db_data</em>, <em class="sig-param">user_data</em>, <em class="sig-param">oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate_redis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data in Redis.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</li>
-<li><strong>user_data</strong> (<em>str</em>) – The user provided data.</li>
-<li><strong>oper</strong> (<em>str</em>) – The comparison operator.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_data</strong> (<em>str</em>) – The data store in Redis.</p></li>
+<li><p><strong>user_data</strong> (<em>str</em>) – The user provided data.</p></li>
+<li><p><strong>oper</strong> (<em>str</em>) – The comparison operator.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the data passed validation.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the data passed validation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

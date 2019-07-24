@@ -13,4 +13,6 @@ class Threat(Group):
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
         """
-        super(Threat, self).__init__(tcex, 'Threat', 'threat', 'threats', name, owner, **kwargs)
+        super(Threat, self).__init__(
+            tcex, 'Threat', 'threat', 'threats', owner=owner, name=name, **kwargs
+        )

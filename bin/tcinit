@@ -46,7 +46,7 @@ epilog = (
 parser = argparse.ArgumentParser(
     epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter
 )
-parser.add_argument('--branch', choices=['master', 'develop'], default='master', help='Git branch.')
+parser.add_argument('--branch', default='master', help='Git branch.')
 parser.add_argument(
     '--action',
     choices=['create', 'update', 'migrate'],

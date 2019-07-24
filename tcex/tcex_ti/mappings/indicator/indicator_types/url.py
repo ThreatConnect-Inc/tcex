@@ -25,10 +25,10 @@ class URL(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         super(URL, self).__init__(tcex, 'URL', 'url', 'urls', owner, **kwargs)
-        self.data['text'] = text
-        self.unique_id = self.unique_id or text
+        self.unique_id = kwargs.get('unique_id', text)
+        self.data['text'] = text or self.unique_id
         if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+            self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
     def can_create(self):
         """
@@ -49,4 +49,4 @@ class URL(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = quote_plus(json_response.get('text', ''))
+        self.unique_id = quote_plus(self.fully_decode_uri(json_response.get('text', '')))

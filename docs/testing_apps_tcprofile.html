@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Testing Apps: Profiles (tcprofile) &mdash; TcEx 1.0.5 documentation</title>
+  <title>Testing Apps: Profiles (tcprofile) &mdash; TcEx 1.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
 
 
@@ -212,54 +212,54 @@
 <p>The <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be created and grouped to allow testing of different data inputs and outputs.</p>
 <p>By default, the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command will add any default values defined in the <strong>install.json</strong> file to the args value.  Args without a default value will have to be populated manually. For validation rules, there are two rules created automatically for each output variable.  One rule ensures that the output variable is not null and should be update to a more specific test. The second rule validates that the output variable is of the correct type (e.g., String value is a &lt;str&gt; type; StringArray value is a &lt;list&gt; type.).</p>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">The generation of profiles uses the <strong>install.json</strong> file to create the <code class="docutils literal notranslate"><span class="pre">args.apps</span></code> section and the <code class="docutils literal notranslate"><span class="pre">validation</span></code> section of the profile. It is important that all inputs and outputs are defined in the <strong>install.json</strong> prior to running the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command.</p>
+<p class="admonition-title">Important</p>
+<p>The generation of profiles uses the <strong>install.json</strong> file to create the <code class="docutils literal notranslate"><span class="pre">args.apps</span></code> section and the <code class="docutils literal notranslate"><span class="pre">validation</span></code> section of the profile. It is important that all inputs and outputs are defined in the <strong>install.json</strong> prior to running the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command.</p>
 </div>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">A local instance of Redis must be running to test Playbook Apps locally.</p>
+<p class="admonition-title">Important</p>
+<p>A local instance of Redis must be running to test Playbook Apps locally.</p>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcprofile</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
-                 <span class="p">[</span><span class="o">--</span><span class="n">action</span> <span class="p">{</span><span class="n">create</span><span class="p">,</span><span class="n">delete</span><span class="p">,</span><span class="n">replace_validation</span><span class="p">,</span><span class="n">update</span><span class="p">,</span><span class="n">validate</span><span class="p">}]</span>
-                 <span class="p">[</span><span class="o">--</span><span class="n">ij</span> <span class="n">IJ</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outfile</span> <span class="n">OUTFILE</span><span class="p">]</span>
-                 <span class="p">[</span><span class="o">--</span><span class="n">profile_name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">redis_host</span> <span class="n">REDIS_HOST</span><span class="p">]</span>
-                 <span class="p">[</span><span class="o">--</span><span class="n">redis_port</span> <span class="n">REDIS_PORT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">verbose</span><span class="p">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: tcprofile <span class="o">[</span>-h<span class="o">]</span>
+                 <span class="o">[</span>--action <span class="o">{</span>create,delete,replace_validation,update,validate<span class="o">}]</span>
+                 <span class="o">[</span>--ij IJ<span class="o">]</span> <span class="o">[</span>--outdir OUTDIR<span class="o">]</span> <span class="o">[</span>--outfile OUTFILE<span class="o">]</span>
+                 <span class="o">[</span>--profile_name PROFILE_NAME<span class="o">]</span> <span class="o">[</span>--redis_host REDIS_HOST<span class="o">]</span>
+                 <span class="o">[</span>--redis_port REDIS_PORT<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span>
 
-<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
-  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">Show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">action</span> <span class="p">{</span><span class="n">create</span><span class="p">,</span><span class="n">delete</span><span class="p">,</span><span class="n">replace_validation</span><span class="p">,</span><span class="n">update</span><span class="p">,</span><span class="n">validate</span><span class="p">}</span>
-  <span class="o">--</span><span class="n">ij</span> <span class="n">IJ</span>               <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">The</span> <span class="n">install</span><span class="o">.</span><span class="n">json</span> <span class="n">file</span> <span class="n">name</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span>
-                        <span class="n">install</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
-  <span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span>       <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">The</span> <span class="o">*</span><span class="n">base</span><span class="o">*</span> <span class="n">output</span> <span class="n">directory</span> <span class="n">containing</span> <span class="n">the</span>
-                        <span class="n">data</span><span class="o">/</span><span class="n">profiles</span> <span class="n">folder</span><span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">outfile</span> <span class="n">OUTFILE</span>     <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">The</span> <span class="n">filename</span> <span class="k">for</span> <span class="n">the</span> <span class="n">profile</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span>
-                        <span class="o">&lt;</span><span class="n">profile</span> <span class="n">name</span><span class="o">&gt;.</span><span class="n">json</span><span class="p">)</span>
-  <span class="o">--</span><span class="n">name</span> <span class="n">PROFILE_NAME</span>   <span class="n">The</span> <span class="n">profile</span> <span class="n">name</span> <span class="n">to</span> <span class="n">create</span><span class="p">,</span> <span class="n">delete</span><span class="p">,</span> <span class="ow">or</span>
-                        <span class="n">replace_validation</span>
-  <span class="o">--</span><span class="n">redis_host</span> <span class="n">REDIS_HOST</span>
-                        <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">The</span> <span class="n">Redis</span> <span class="n">host</span>
-  <span class="o">--</span><span class="n">redis_port</span> <span class="n">REDIS_PORT</span>
-                        <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">The</span> <span class="n">Redis</span> <span class="n">port</span>
-  <span class="o">--</span><span class="n">verbose</span>             <span class="n">Show</span> <span class="n">verbose</span> <span class="n">output</span><span class="o">.</span>
+optional arguments:
+  -h, --help            Show this <span class="nb">help</span> message and exit.
+  --action <span class="o">{</span>create,delete,replace_validation,update,validate<span class="o">}</span>
+  --ij IJ               <span class="o">(</span>Advanced<span class="o">)</span> The install.json file name <span class="o">(</span>default:
+                        install.json<span class="o">)</span>
+  --outdir OUTDIR       <span class="o">(</span>Advanced<span class="o">)</span> The *base* output directory containing the
+                        data/profiles folder<span class="o">(</span>default: tcex.d<span class="o">)</span>.
+  --outfile OUTFILE     <span class="o">(</span>Advanced<span class="o">)</span> The filename <span class="k">for</span> the profile <span class="o">(</span>default:
+                        &lt;profile name&gt;.json<span class="o">)</span>
+  --name PROFILE_NAME   The profile name to create, delete, or
+                        replace_validation
+  --redis_host REDIS_HOST
+                        <span class="o">(</span>Advanced<span class="o">)</span> The Redis host
+  --redis_port REDIS_PORT
+                        <span class="o">(</span>Advanced<span class="o">)</span> The Redis port
+  --verbose             Show verbose output.
 </pre></div>
 </div>
 <div class="section" id="common-usage">
 <h3>Common Usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h3>
 <p>To create a new profile run the following command.  The profile will be created in the <strong>tcex.d/profiles</strong> directory of the project.</p>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcprofile</span> <span class="o">--</span><span class="n">name</span> <span class="n">simple_data</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tcprofile --name simple_data
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input and/or output variables.</p>
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input and/or output variables.</p>
 </div>
 </div>
 <div class="section" id="output">
 <h3>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
 <p>After running the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code>, the directory <strong>tcex.d</strong> will be created in the project directory.  The <strong>tcex.d</strong> directory will have the structure displayed below. New testing profiles can be added to existing file or new files can be created.</p>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>tcex.d
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tcex.d
 ├── data
 └── profiles
     └── simple_data.json
@@ -274,102 +274,102 @@
 <h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h3>
 <p>An important part of local testing is setting up the appropriate environmental variables.  In each profile, the <code class="docutils literal notranslate"><span class="pre">args.default</span></code> section has all the default args that will be provided to every App by the ThreatConnect platform during execution. The values for these args can be entered directly into the configuration file; however, to keep sensitive data out of version-control systems, the use of environment variables is employed.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This list of environment variables can be found by running <code class="docutils literal notranslate"><span class="pre">tcprofile</span> <span class="pre">-h</span></code>.</p>
+<p class="admonition-title">Note</p>
+<p>This list of environment variables can be found by running <code class="docutils literal notranslate"><span class="pre">tcprofile</span> <span class="pre">-h</span></code>.</p>
 </div>
 <p>Update the values for each variable and add to the local environment (e.g., ~/.bashrc or ~/.bash_profile). Once done, the environment file needs to be sourced once or the shell restarted before the values are available (e.g., source ~/.bashrc).</p>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span># ThreatConnect API Credential and URL
-export API_DEFAULT_ORG=MyOrg
-export API_ACCESS_ID=1234
-export API_SECRET_KEY=abc123
-export TC_API_PATH=https://maclaren.pub/api
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ThreatConnect API Credential and URL</span>
+<span class="nb">export</span> <span class="nv">API_DEFAULT_ORG</span><span class="o">=</span>MyOrg
+<span class="nb">export</span> <span class="nv">API_ACCESS_ID</span><span class="o">=</span><span class="m">1234</span>
+<span class="nb">export</span> <span class="nv">API_SECRET_KEY</span><span class="o">=</span>abc123
+<span class="nb">export</span> <span class="nv">TC_API_PATH</span><span class="o">=</span>https://maclaren.pub/api
 
-# API Token can be supplied optionally but must be updated frequently.
-export TC_TOKEN=123-abc-456-def
+<span class="c1"># API Token can be supplied optionally but must be updated frequently.</span>
+<span class="nb">export</span> <span class="nv">TC_TOKEN</span><span class="o">=</span><span class="m">123</span>-abc-456-def
 
-# Proxy settings are optional
-export TC_PROXY_HOST=10.10.10.10
-export TC_PROXY_PORT=3128
-export TC_PROXY_USERNAME=robin
-export TC_PROXY_PASSWORD=sparkles
+<span class="c1"># Proxy settings are optional</span>
+<span class="nb">export</span> <span class="nv">TC_PROXY_HOST</span><span class="o">=</span><span class="m">10</span>.10.10.10
+<span class="nb">export</span> <span class="nv">TC_PROXY_PORT</span><span class="o">=</span><span class="m">3128</span>
+<span class="nb">export</span> <span class="nv">TC_PROXY_USERNAME</span><span class="o">=</span>robin
+<span class="nb">export</span> <span class="nv">TC_PROXY_PASSWORD</span><span class="o">=</span>sparkles
 
-# The Redis IP/Host and Port
-export DB_PATH=localhost
-export DB_PORT=6379
+<span class="c1"># The Redis IP/Host and Port</span>
+<span class="nb">export</span> <span class="nv">DB_PATH</span><span class="o">=</span>localhost
+<span class="nb">export</span> <span class="nv">DB_PORT</span><span class="o">=</span><span class="m">6379</span>
 </pre></div>
 </div>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">To test that the values are available, run <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$API_ACCESS_ID</span></code>.</p>
+<p class="admonition-title">Important</p>
+<p>To test that the values are available, run <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$API_ACCESS_ID</span></code>.</p>
 </div>
 </div>
 </div>
 <div class="section" id="profile-format">
 <h2>Profile Format<a class="headerlink" href="#profile-format" title="Permalink to this headline">¶</a></h2>
 <p>Multiple testing profiles can be created in the <strong>tcex.d/profiles</strong> directory to increase testing coverage.  Each profile must include a unique <strong>profile_name</strong>. One or more groups can be added to a profile to allow testing of multiple profiles at once.</p>
-<div class="code javascript highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
   <span class="p">{</span>
-    <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;app&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;indent&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;json_data&quot;</span><span class="p">:</span> <span class="s2">&quot;{</span><span class="se">\&quot;</span><span class="s2">four</span><span class="se">\&quot;</span><span class="s2">: 5, </span><span class="se">\&quot;</span><span class="s2">one</span><span class="se">\&quot;</span><span class="s2">: 1, </span><span class="se">\&quot;</span><span class="s2">two</span><span class="se">\&quot;</span><span class="s2">: 2, </span><span class="se">\&quot;</span><span class="s2">three</span><span class="se">\&quot;</span><span class="s2">: 3}&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sort_keys&quot;</span><span class="p">:</span> <span class="n">true</span>
+    <span class="s2">&quot;args&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;app&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;indent&quot;</span><span class="o">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;json_data&quot;</span><span class="o">:</span> <span class="s2">&quot;{\&quot;four\&quot;: 5, \&quot;one\&quot;: 1, \&quot;two\&quot;: 2, \&quot;three\&quot;: 3}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sort_keys&quot;</span><span class="o">:</span> <span class="kc">true</span>
       <span class="p">},</span>
-      <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;api_access_id&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.API_ACCESS_ID&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_default_org&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.API_DEFAULT_ORG&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;api_secret_key&quot;</span><span class="p">:</span> <span class="s2">&quot;$envs.API_SECRET_KEY&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_api_path&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.TC_API_PATH&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_docker&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-        <span class="s2">&quot;tc_in_path&quot;</span><span class="p">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_log_level&quot;</span><span class="p">:</span> <span class="s2">&quot;debug&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_log_path&quot;</span><span class="p">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_log_to_api&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-        <span class="s2">&quot;tc_out_path&quot;</span><span class="p">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_playbook_db_context&quot;</span><span class="p">:</span> <span class="s2">&quot;c723fe88-d4bb-40db-8a98-bdec323e6190&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_playbook_db_path&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.DB_PATH&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_playbook_db_port&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.DB_PORT&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_playbook_db_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Redis&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_playbook_out_variables&quot;</span><span class="p">:</span> <span class="s2">&quot;#App:7909:json.pretty!String&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_proxy_external&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-        <span class="s2">&quot;tc_proxy_host&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.TC_PROXY_HOST&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_proxy_password&quot;</span><span class="p">:</span> <span class="s2">&quot;$envs.TC_PROXY_PASSWORD&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_proxy_port&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.TC_PROXY_PORT&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_proxy_tc&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-        <span class="s2">&quot;tc_proxy_username&quot;</span><span class="p">:</span> <span class="s2">&quot;$env.TC_PROXY_USERNAME&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_temp_path&quot;</span><span class="p">:</span> <span class="s2">&quot;log&quot;</span>
+      <span class="s2">&quot;default&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;api_access_id&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.API_ACCESS_ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;api_default_org&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.API_DEFAULT_ORG&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;api_secret_key&quot;</span><span class="o">:</span> <span class="s2">&quot;$envs.API_SECRET_KEY&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_api_path&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_API_PATH&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_docker&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s2">&quot;tc_in_path&quot;</span><span class="o">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_log_level&quot;</span><span class="o">:</span> <span class="s2">&quot;debug&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_log_path&quot;</span><span class="o">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_log_to_api&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s2">&quot;tc_out_path&quot;</span><span class="o">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_playbook_db_context&quot;</span><span class="o">:</span> <span class="s2">&quot;c723fe88-d4bb-40db-8a98-bdec323e6190&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_playbook_db_path&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.DB_PATH&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_playbook_db_port&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.DB_PORT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_playbook_db_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Redis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_playbook_out_variables&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:7909:json.pretty!String&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_proxy_external&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s2">&quot;tc_proxy_host&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_PROXY_HOST&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_proxy_password&quot;</span><span class="o">:</span> <span class="s2">&quot;$envs.TC_PROXY_PASSWORD&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_proxy_port&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_PROXY_PORT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_proxy_tc&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s2">&quot;tc_proxy_username&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_PROXY_USERNAME&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tc_temp_path&quot;</span><span class="o">:</span> <span class="s2">&quot;log&quot;</span>
       <span class="p">}</span>
     <span class="p">},</span>
-    <span class="s2">&quot;autoclear&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-    <span class="s2">&quot;clear&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;data_files&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;exit_codes&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;autoclear&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">&quot;clear&quot;</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="s2">&quot;data_files&quot;</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;exit_codes&quot;</span><span class="o">:</span> <span class="p">[</span>
       <span class="mi">0</span>
     <span class="p">],</span>
-    <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;groups&quot;</span><span class="o">:</span> <span class="p">[</span>
       <span class="s2">&quot;qa-build&quot;</span>
     <span class="p">],</span>
-    <span class="s2">&quot;install_json&quot;</span><span class="p">:</span> <span class="s2">&quot;install.json&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;profile_name&quot;</span><span class="p">:</span> <span class="s2">&quot;simple_data&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;quiet&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-    <span class="s2">&quot;validations&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;install_json&quot;</span><span class="o">:</span> <span class="s2">&quot;install.json&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;profile_name&quot;</span><span class="o">:</span> <span class="s2">&quot;simple_data&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;quiet&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">&quot;validations&quot;</span><span class="o">:</span> <span class="p">[</span>
       <span class="p">{</span>
-        <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;four&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-          <span class="s2">&quot;one&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-          <span class="s2">&quot;three&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-          <span class="s2">&quot;two&quot;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;four&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+          <span class="s2">&quot;one&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s2">&quot;three&quot;</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+          <span class="s2">&quot;two&quot;</span><span class="o">:</span> <span class="mi">2</span>
         <span class="p">},</span>
-        <span class="s2">&quot;data_type&quot;</span><span class="p">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;operator&quot;</span><span class="p">:</span> <span class="s2">&quot;json-compare&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;variable&quot;</span><span class="p">:</span> <span class="s2">&quot;#App:7909:json.pretty!String&quot;</span>
+        <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operator&quot;</span><span class="o">:</span> <span class="s2">&quot;json-compare&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:7909:json.pretty!String&quot;</span>
       <span class="p">},</span>
       <span class="p">{</span>
-        <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;data_type&quot;</span><span class="p">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;operator&quot;</span><span class="p">:</span> <span class="s2">&quot;it&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;variable&quot;</span><span class="p">:</span> <span class="s2">&quot;#App:7909:json.pretty!String&quot;</span>
+        <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operator&quot;</span><span class="o">:</span> <span class="s2">&quot;it&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:7909:json.pretty!String&quot;</span>
       <span class="p">}</span>
     <span class="p">]</span>
   <span class="p">}</span>
@@ -400,8 +400,8 @@ export DB_PORT=6379
 <h3>exit_codes<a class="headerlink" href="#exit-codes" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">exit_codes</span></code> section allows for one or more exit codes to be defined. If the exit code of the App matches one of the defined values, then the profile was completed successfully. For “fail” testing, adding an exit code of <strong>1</strong> is appropriate.  If the App exits with a <strong>1</strong> then the profile succeeded.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For Job Apps there are three valid exit codes.  An exit code of 0 indicates success, 1 indicates failure, and 3 indicates partial success/failure.</p>
+<p class="admonition-title">Note</p>
+<p>For Job Apps there are three valid exit codes.  An exit code of 0 indicates success, 1 indicates failure, and 3 indicates partial success/failure.</p>
 </div>
 </div>
 <div class="section" id="groups">
@@ -432,8 +432,8 @@ export DB_PORT=6379
 <div class="section" id="id1">
 <h2>Data Files<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Data files can contain a single data input or multiple data inputs.  If the data is reusable, it is best practice to keep the data in a file by itself so that it can be used in multiple profiles.</p>
+<p class="admonition-title">Note</p>
+<p>Data files can contain a single data input or multiple data inputs.  If the data is reusable, it is best practice to keep the data in a file by itself so that it can be used in multiple profiles.</p>
 </div>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
   <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">[{</span>

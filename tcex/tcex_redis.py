@@ -6,109 +6,124 @@ import redis
 
 
 class TcExRedis(object):
-    """Create/Read Data in/from Redis"""
+    """TcEx Redis Module.
 
-    def __init__(self, host, port, rhash):
-        """Initialize the Class properties.
+    Args:
+        host (str): The Redis host.
+        port (str): The Redis port.
+        key (str): The hash key.
+    """
 
-        Args:
-            host (string): The Redis host.
-            port (string): The Redis port.
-            rhash (string): The rhash value.
-        """
-        self.hash = rhash
-        self.r = redis.StrictRedis(host=host, port=port)
+    def __init__(self, host, port, key):
+        """Initialize the Class properties."""
+        self._key = key
+        self.client = redis.StrictRedis(host=host, port=port)
+        self.r = self.client  # for legacy App that may have been using this value
+
+    @property
+    def key(self):
+        """Return the current key."""
+        return self._key
+
+    @key.setter
+    def key(self, key):
+        """Set the current key."""
+        self._key = key
 
     def blpop(self, keys, timeout=30):
-        """RPOP a value off the first empty list in keys.
+        """POP a value off the first empty list in keys.
 
-        .. note:: If timeout is 0, the block indefinitely.
+        .. note:: If timeout is 0, block will not timeout.
 
         Args:
-            keys (string|list): The key(s) to pop the value.
+            keys (str|list): The key(s) to pop the value.
             timeout (int): The number of seconds to wait before blocking stops.
 
         Returns:
-            (string): The response from Redis.
+            str: The response from Redis.
         """
-        return self.r.blpop(keys, timeout)
+        return self.client.blpop(keys, timeout)
 
-    def create(self, key, value):
+    def create(self, field, value):
         """Create key/value pair in Redis.
 
         Args:
-            key (string): The key to create in Redis.
-            value (any): The value to store in Redis.
+            field (str): The field name (key) for the kv pair in Redis.
+            value (any): The value for the kv pair in Redis.
 
         Returns:
-            (string): The response from Redis.
+            str: The response from Redis.
         """
-        return self.r.hset(self.hash, key, value)
+        return self.client.hset(self.key, field, value)
 
-    def delete(self, key):
-        """Alias for hdel method."""
-        return self.hdel(key)
+    def delete(self, field):
+        """Alias for hdel method.
 
-    def hdel(self, key):
+        Args:
+            field (str): The field name (key) for the kv pair in Redis.
+
+        Returns:
+            str: The response from Redis.
+        """
+        return self.hdel(field)
+
+    def hdel(self, field):
         """Delete data from Redis for the provided key.
 
         Args:
-            key (string): The key to delete in Redis.
+            field (str): The field name (key) for the kv pair in Redis.
 
         Returns:
-            (string): The response from Redis.
+            str: The response from Redis.
         """
-        return self.r.hdel(self.hash, key)
+        return self.client.hdel(self.key, field)
 
-    def hget(self, key):
+    def hget(self, field):
         """Read data from Redis for the provided key.
 
         Args:
-            key (string): The key to read in Redis.
+            field (str): The field name (key) for the kv pair in Redis.
 
         Returns:
-            (any): The response data from Redis.
+            str: The response data from Redis.
         """
-        data = self.r.hget(self.hash, key)
+        data = self.client.hget(self.key, field)
         if data is not None and not isinstance(data, str):
-            data = str(self.r.hget(self.hash, key), 'utf-8')
+            data = str(self.client.hget(self.key, field), 'utf-8')
         return data
 
     def hgetall(self):
         """Read data from Redis for the provided key.
 
-        Args:
-            key (string): The key to read in Redis.
-
         Returns:
-            (any): The response data from Redis.
+            str: The response data from Redis.
         """
-        return self.r.hgetall(self.hash)
+        return self.client.hgetall(self.key)
 
-    def hset(self, key, value):
+    def hset(self, field, value):
         """Create key/value pair in Redis.
 
         Args:
-            key (string): The key to create in Redis.
-            value (any): The value to store in Redis.
+            field (str): The field name (key) for the kv pair in Redis.
+            value (any): The value for the kv pair in Redis.
 
         Returns:
-            (string): The response from Redis.
+            str: The response from Redis.
         """
-        return self.r.hset(self.hash, key, value)
+        return self.client.hset(self.key, field, value)
 
-    def read(self, key):
+    def read(self, field):
         """Alias for hget method."""
-        return self.hget(key)
+        return self.hget(field)
 
-    def rpush(self, name, values):
+    def rpush(self, key, values):
         """Append/Push values to the end of list ``name``.
 
         Args:
-            name (string): The channel/name of the list.
-            timeout (int): The number of seconds to wait before blocking stops.
+            key (str): The channel/name to push the data.
+            value (str): The values to push on the channel.
 
         Returns:
-            (string): The response from Redis.
+            str: The response from Redis.
         """
-        return self.r.rpush(name, values)
+        return self.client.rpush(key, values)

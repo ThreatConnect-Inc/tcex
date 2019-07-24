@@ -129,7 +129,11 @@ class TcExArgs(object):
             self.args_update()
 
             # reinitialize logger with new log level and api settings
-            self.tcex._logger(fh=True)
+            self.tcex.logger.remove_handler_by_name('sh')
+            self.tcex.logger.add_rotating_file_handler()
+
+            # log system and App data
+            self.tcex.logger.log_info()
 
         return self._default_args
 
@@ -194,7 +198,7 @@ class TcExArgs(object):
                 self.inject_params(params)
             else:
                 # reinitialize logger with new log level and api settings
-                self.tcex._logger(clear_handler=False)
+                self.tcex.logger.add_rotating_file_handler()
 
         return self._default_args
 
@@ -217,10 +221,11 @@ class TcExArgs(object):
             # JSON boolean and not a string.
             delimiter = self.tcex.install_json.get('listDelimiter', '|')
             param_data = self.tcex.install_json_params.get(arg) or {}
-            if param_data.get('type', '').lower() == 'multichoice':
-                if param_data.get('allowMultiple') in ['true', True]:
-                    # update delimited value to an array for params that have type of MultiChoice.
-                    value = value.split(delimiter)
+            if param_data.get('type', '').lower() == 'multichoice' or param_data.get(
+                'allowMultiple'
+            ) in ['true', True]:
+                # update delimited value to an array for params that have type of MultiChoice.
+                value = value.split(delimiter)
             elif param_data.get('type', '').lower() == 'boolean':
                 # update value to be a boolean instead of string "true"/"false".
                 value = self.tcex.utils.to_bool(value)
@@ -241,7 +246,7 @@ class TcExArgs(object):
         self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
 
         # reinitialize logger with new log level and api settings
-        self.tcex._logger()
+        self.tcex.logger.add_rotating_file_handler()
 
     def resolved_args(self):
         """Parse args if they have not already been parsed and return the Namespace for args.
@@ -273,7 +278,7 @@ class TcExArgs(object):
 
     @property
     def tc_bool_args(self):
-        """A list of default ThreatConnect Args that are booleans."""
+        """Return a list of default ThreatConnect Args that are booleans."""
         return [
             'apply_proxy_external',
             'apply_proxy_ext',
@@ -289,7 +294,7 @@ class TcExArgs(object):
 
     @property
     def tc_reserved_args(self):
-        """A list of *all* ThreatConnect reserved arg values."""
+        """Return a list of *all* ThreatConnect reserved arg values."""
         return [
             'tc_token',
             'tc_token_expires',
