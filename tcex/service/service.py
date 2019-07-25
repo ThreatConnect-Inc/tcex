@@ -99,13 +99,6 @@ class Service(object):
         Args:
             callback (callable): The trigger method in the App to call.
         """
-        # add temporary logging file handler for this specific session
-        # self.tcex.logger.add_file_handler(name=self.thread_name, filename=self.session_logfile)
-
-        # TODO: BCS move this to appropriate method
-        # remove temporary logging file handler
-        # self.tcex.logger.remove_handler_by_name(self.thread_name)
-
         trigger_type = kwargs.get('trigger_type', 'trigger_event')
         self.tcex.log.info('Firing event for {} trigger'.format(trigger_type))
         if not callable(callback):
@@ -133,11 +126,13 @@ class Service(object):
 
     def fire_event_trigger(self, callback, playbook, trigger_id, config, **kwargs):
         """Fire event for trigger"""
-        self.tcex.logger.add_file_handler(name=self.thread_name, filename=self.session_logfile)
-        self.tcex.log.trace('Firing event trigger {}'.format(type(callback)))
-
         # session auth shared data is thread name which needs to map back to config triggerId
         self.tcex.token.register_thread(trigger_id, self.thread_name)
+
+        self.tcex.logger.add_thread_file_handler(
+            name=self.thread_name, filename=self.session_logfile
+        )
+        self.tcex.log.trace('Firing event trigger {}'.format(type(callback)))
 
         try:
             if callback(playbook, trigger_id, config, **kwargs):
@@ -174,21 +169,24 @@ class Service(object):
 
     def format_query_string(self, params):
         """Convert name/value array to a query string."""
-        query_string = ''
+        query_string = []
         try:
             for q in params:
-                query_string += '{}={}'.format(q.get('name'), q.get('value'))
+                query_string.append('{}={}'.format(q.get('name'), q.get('value')))
         except AttributeError as e:
             self.tcex.log.error('Bad params data provided {} ({})'.format(params, e))
             self.tcex.log.trace(traceback.format_exc())
-        return query_string
+        return '&'.join(query_string)
 
     def format_request_headers(self, headers):
-        """Convert name/value array to a query string."""
+        """Convert name/value array to a headers dict."""
         headers_ = {}
         try:
             for h in headers:
-                headers_.setdefault(h.get('name').lower(), []).append(h.get('value'))
+                # TODO: either support tuple or csv list of values
+                # headers_.setdefault(h.get('name').lower(), []).append(h.get('value'))
+                headers_.setdefault(h.get('name').lower(), str(h.get('value')))
+
         except AttributeError as e:
             self.tcex.log.error('Bad header data provided {} ({})'.format(headers, e))
             self.tcex.log.trace(traceback.format_exc())
@@ -207,12 +205,11 @@ class Service(object):
 
     def heartbeat(self):
         """Start heartbeat process."""
-        self.tcex.log.info('Starting heartbeat threads.')
-
         # start heartbeat monitor thread
         t = threading.Thread(name='heartbeat', target=self.heartbeat_monitor)
         t.daemon = True  # use setter for py2
         t.start()
+        self.tcex.log.info('Heartbeat monitor started')
 
     def heartbeat_monitor(self):
         """Publish heartbeat on timer."""
@@ -228,7 +225,7 @@ class Service(object):
 
     def listen(self):
         """List for message coming from broker."""
-        self.tcex.log.trace('listen with broker {}'.format(self.tcex.args.tc_svc_broker_service))
+        self.tcex.log.trace('listen with {} broker'.format(self.tcex.args.tc_svc_broker_service))
         if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             target = self.listen_mqtt
         elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
@@ -276,9 +273,8 @@ class Service(object):
 
     def message_thread(self, name, target, args, kwargs=None):
         """Start a message thread."""
-        self.tcex.log.trace('message thread: {} - {}'.format(type(target), args))
+        # self.tcex.log.trace('message thread: {} - {}'.format(type(target), args))
         try:
-            # thread name is typically the session_id
             t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs)
             t.daemon = True  # use setter for py2
             t.start()
@@ -443,13 +439,22 @@ class Service(object):
           "requestKey": "123abc"
         }
         """
-        # add custom logger
-        self.tcex.log.info('process request: {}'.format('message'))
-        e = threading.Event()  # thread event
-        body = None
+        # register config apiToken (before any logging)
+        self.tcex.token.register_token(
+            self.thread_name, message.get('apiToken'), message.get('tokenExpires')
+        )
+
+        self.tcex.log.info('Processing RunService Command')
+        self.tcex.log.debug('message: {}'.format(message))
+
+        # thread event used to block response until body is written
+        e = threading.Event()
+
+        # process message
         request_key = message.get('requestKey')
-        # read body from redis
+        body = None
         try:
+            # read body from redis
             body_variable = message.get('bodyVariable')
             if body_variable is not None:
                 body = self.redis_client.hget(request_key, message.get('bodyVariable'))
@@ -465,6 +470,7 @@ class Service(object):
 
         try:
             # TODO: research required field for wsgi and update
+            # TODO: move to a method
             environ = {
                 'wsgi.errors': self.tcex.log.error,  # sys.stderr
                 # 'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>
@@ -474,8 +480,6 @@ class Service(object):
                 'wsgi.run_once': True,
                 'wsgi.url_scheme': 'https',
                 'wsgi.version': (1, 0),
-                'CONTENT_TYPE': headers.get('content-type', ''),
-                'CONTENT_LENGTH': headers.get('content-length', 0),
                 # 'GATEWAY_INTERFACE': 'CGI/1.1',
                 # 'HTTP_ACCEPT': '',
                 'HTTP_ACCEPT': headers.get('accept', ''),
@@ -498,6 +502,11 @@ class Service(object):
                 'SERVER_PROTOCOL': 'HTTP/1.1',
                 # 'SERVER_SOFTWARE': 'WSGIServer/0.2',
             }
+            if headers.get('content-type') is not None:
+                environ['CONTENT_TYPE'] = (headers.get('content-type'),)
+            if headers.get('content-length') is not None:
+                environ['CONTENT_LENGTH'] = headers.get('content-length')
+            self.tcex.log.trace('environ: {}'.format(environ))
         except Exception as e:
             self.tcex.log.error('Failed building environ ({})'.format(e))
             self.tcex.log.trace(traceback.format_exc())
@@ -526,9 +535,9 @@ class Service(object):
                 body = [base64.b64encode(b).decode('utf-8') for b in body][0]
                 # write body to Redis
                 self.redis_client.hset(request_key, 'response.body', body)
-                self.tcex.log.trace('body written')
 
                 # set thread event to True to trigger response
+                self.tcex.log.info('API response body written')
                 e.set()
             except Exception as e:
                 self.tcex.log.error(
@@ -536,14 +545,17 @@ class Service(object):
                 )
                 self.tcex.log.trace(traceback.format_exc())
 
+        # unregister config apiToken
+        self.tcex.token.unregister_token(self.thread_name)
+
     def process_run_service_response(self, *args, **kwargs):
         """Handle service event responses.
 
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
         """
+        self.tcex.log.info('API response received, waiting on body to be written')
         kwargs.get('e').wait(10)  # wait for thread event - (set on body write)
-        self.tcex.log.trace('args: {}'.format(args))
-        response = {}
+        self.tcex.log.trace('response args: {}'.format(args))
         try:
             status_code, status = args[0].split(' ', 1)
             response = {
@@ -555,12 +567,11 @@ class Service(object):
                 'statusCode': status_code,
                 'type': 'RunService',
             }
-            self.tcex.log.debug('API service response: {}'.format(response))
+            self.tcex.log.info('API response sent')
+            self.publish(json.dumps(response))
         except Exception as e:
             self.tcex.log.error('Failed creating response body ({})'.format(e))
             self.tcex.log.trace(traceback.format_exc())
-            return
-        self.publish(json.dumps(response))
 
     def process_shutdown(self, reason):
         """Handle a shutdown message."""
@@ -595,11 +606,14 @@ class Service(object):
 
     def process_webhook(self, message):
         """Process Webhook event messages."""
-        self.tcex.logger.add_file_handler(name=self.thread_name, filename=self.session_logfile)
-        self.tcex.log.trace('Process webhook event trigger')
-
         # session auth shared data is thread name which needs to map back to config triggerId
         self.tcex.token.register_thread(message.get('triggerId'), self.thread_name)
+
+        # add logger for current session
+        self.tcex.logger.add_thread_file_handler(
+            name=self.thread_name, filename=self.session_logfile
+        )
+        self.tcex.log.trace('Process webhook event trigger')
 
         # get config using triggerId passed in WebhookEvent data
         config = self.configs.get(message.get('triggerId'))
@@ -646,8 +660,8 @@ class Service(object):
         """
         if topic is None:
             topic = self.tcex.default_args.tc_svc_client_topic
-        self.tcex.log.debug('topic: ({})'.format(topic))
-        self.tcex.log.debug('message: ({})'.format(message))
+        self.tcex.log.debug('publish topic: ({})'.format(topic))
+        self.tcex.log.debug('publish message: ({})'.format(message))
 
         if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             r = self.mqtt_client.publish(topic, message)
@@ -703,7 +717,7 @@ class Service(object):
             self.tcex.log.info('LoggingChange - level: {}'.format(level))
             self.tcex.logger.update_handler_level(level)
         elif command.lower() == 'runservice':
-            self.message_thread('process-run-service', self.process_run_service, (message,))
+            self.message_thread(self.session_id, self.process_run_service, (message,))
         elif command.lower() == 'shutdown':
             # {"command": "Shutdown", "reason": "Service disabled by user."}
             reason = message.get('reason')

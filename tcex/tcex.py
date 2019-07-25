@@ -15,7 +15,7 @@ except ImportError:
     from urllib.parse import quote  # Python 3
 
 from .tcex_args import TcExArgs
-from .tcex_logger import TcExLogger
+from .logger import Logger
 from .tcex_install_json import InstallJson
 
 
@@ -51,7 +51,7 @@ class TcEx(object):
         self.tcex_args = TcExArgs(self)
 
         # init logger (needs args)
-        self.logger = TcExLogger(self)
+        self.logger = Logger(self)
         self.logger.add_stream_handler()
 
         # include resources module

@@ -6,7 +6,15 @@ from requests import exceptions, get
 
 
 class Token(object):
-    """Service methods for customer Service (e.g., Triggers)."""
+    """Service methods for customer Service (e.g., Triggers).
+
+    Args:
+        token (str): The ThreatConnect API token
+        token_expires (int): The API token expiration timestamp
+        token_url (str): The ThreatConnect URL
+        verify (bool): A boolean to enable/disable SSL verification
+        logger (logging.logger): An pre-configured instance of a logger.
+    """
 
     def __init__(self, token, token_expires, token_url, verify, logger):
         """Initialize the Class properties."""
@@ -19,12 +27,17 @@ class Token(object):
         }
         self.token_url = token_url
         self.token_window = 60  # amount of seconds to pad before token renewal
-        self.renewing = False
         self.verify = verify
 
     def _renew_token(self, retry=True):
-        """Renew expired ThreatConnect Token."""
-        self.log.in_token_renew = True
+        """Renew expired ThreatConnect Token.
+
+        This method will renew a token an update the token_map with new token and expiration.
+
+        Args:
+            retry (bool, optional): If True the renewal will be retried. Defaults to True.
+        """
+        self.log.in_token_renewal = True
         self.renewing = True
 
         # log token information
@@ -33,7 +46,7 @@ class Token(object):
 
         try:
             # get token directly from token map
-            params = {'expiredToken': self.token_map.get(threading.get_ident(), {}).get('token')}
+            params = {'expiredToken': self.token_map.get(self.key, {}).get('token')}
             url = '{}/appAuth'.format(self.token_url)
             r = get(url, params=params, verify=self.verify)
 
@@ -56,10 +69,18 @@ class Token(object):
             self.log.error('SSL Error during token renewal.')
             self.renewing = False
         finally:
-            self.log.in_token_renew = False
+            self.log.in_token_renewal = False
 
     def _renew_token_handle_error(self, r, retry):
-        """Handle errors during token renewal."""
+        """Handle errors during token renewal.
+
+        Args:
+            r (requests.Response): The token renewal response object.
+            retry (boolean): The retry boolean.
+
+        Raises:
+            RuntimeError: Raises for token renewal failure.
+        """
         # TODO: Update this logic
         if (  # pylint: disable=no-else-raise
             r.status_code == 401
@@ -84,24 +105,50 @@ class Token(object):
     @property
     def key(self):
         """Return the current key."""
-        for key, data in self.token_map.items():
-            if self.thread_name in data.get('thread_names', []):
-                return key
-        return 'MainThread'  # return the key from the cli args
+        key = 'MainThread'  # default for non threaded Apps
+        self.log.trace('in key - thread_name: {}'.format(self.thread_name))
+        if self.thread_name in self.token_map:
+            # for non-threaded Apps and ApiService Apps the key is the thread name.
+            key = self.thread_name
+        else:
+            # for TriggerService and WebhookTriggerService check for thread name in dict
+            for k, d in self.token_map.items():
+                if self.thread_name in d.get('thread_names', []):
+                    key = k
+                    break
+            else:
+                self.log.warning('Thread name not found, defaulting to {}'.format(key))
+        return key
 
     def register_thread(self, key, thread_name):
-        """Register a thread name to a key."""
+        """Register a thread name to a key.
+
+        Args:
+            key (str): The key to use to identify a token.
+            thread_name (str): The thread to register to a key.
+        """
         self.token_map.setdefault(key, {}).setdefault('thread_names', []).append(thread_name)
+        self.log.debug('token thread {} registered for key {}'.format(thread_name, key))
 
     def register_token(self, key, token, expires):
-        """Register a token for a thread."""
-        self.log.trace('thread - token: {}, expires: {}'.format(token, expires))
+        """Register a token.
+
+        Args:
+            key (str): The key to use to identify a token.
+            token (str): The ThreatConnect API token.
+            expires (int): The token expiration timestamp.
+        """
         self.token_map[key] = {
             'renewing': False,
             'thread_names': [],
             'token': token,
             'token_expires': expires,
         }
+        self.log.debug(
+            'token {} registered for key {} with expiration of {}'.format(
+                '{}...{}'.format(token[:10], token[-10:]), key, expires
+            )
+        )
 
     @property
     def renewing(self):
@@ -148,15 +195,26 @@ class Token(object):
         self.token_map.setdefault(self.key, {})['token_expires'] = expires
 
     def unregister_thread(self, key, thread_name):
-        """Register a thread name to a key."""
+        """Unregister a thread name for a key.
+
+        Args:
+            key (str): The key to use to identify a token.
+            thread_name (str): The thread to unregister from a key.
+        """
         try:
             self.token_map[key]['thread_names'].remove(thread_name)
+            self.log.debug('token thread {} unregistered for key {}'.format(thread_name, key))
         except (KeyError, ValueError):
             pass
 
-    def unregister_thread_token(self, key):
-        """Remove a registered token for a thread."""
+    def unregister_token(self, key):
+        """Unregister a token.
+
+        Args:
+            key (str): The key to use to identify a token.
+        """
         try:
             del self.token_map[key]
+            self.log.debug('token unregistered for key {}'.format(key))
         except KeyError:
             pass
