@@ -132,14 +132,15 @@ class Service(object):
         self.tcex.logger.add_thread_file_handler(
             name=self.thread_name, filename=self.session_logfile
         )
-        self.tcex.log.trace('Firing event trigger {}'.format(type(callback)))
+        self.tcex.log.info('Handling fire event trigger ({})'.format(self.thread_name))
 
         try:
             if callback(playbook, trigger_id, config, **kwargs):
+                self.tcex.log.info('Trigger ID {} hit.'.format(trigger_id))
                 self.metric['hits'] += 1
-                # time.sleep(1)
                 self.fire_event_publish(trigger_id, self.thread_name)
             else:
+                self.tcex.log.info('Trigger ID {} missed.'.format(trigger_id))
                 self.metric['misses'] += 1
         except Exception as e:
             self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
@@ -161,7 +162,6 @@ class Service(object):
         }
         if request_key is not None:
             msg['requestKey'] = request_key  # reference for a specific playbook execution
-
         self.tcex.log.info('Firing Event ({})'.format(msg))
 
         # publish FireEvent command to client topic
@@ -284,8 +284,7 @@ class Service(object):
     @property
     def metric(self):
         """Return current metrics."""
-        self._metric['configs'] = len(self.configs)
-        # self._metric['uptime'] = self.uptime
+        self._metric['active playbooks'] = len(self.configs)
         return self._metric
 
     @property
@@ -443,7 +442,6 @@ class Service(object):
         self.tcex.token.register_token(
             self.thread_name, message.get('apiToken'), message.get('tokenExpires')
         )
-
         self.tcex.log.info('Processing RunService Command')
         self.tcex.log.debug('message: {}'.format(message))
 

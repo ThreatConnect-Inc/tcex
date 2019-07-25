@@ -279,7 +279,7 @@ class TcExPlaybook(object):
                 if variable_type is not None:
                     var_value = key_type
                 self.tcex.log.trace('requested output variables: {}'.format(self.output_variables))
-                self.tcex.log.info(
+                self.tcex.log.debug(
                     u'Variable {} was NOT requested by downstream app.'.format(var_value)
                 )
         return results

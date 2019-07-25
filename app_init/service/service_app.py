@@ -58,12 +58,3 @@ class ServiceApp(object):
     def teardown(self):
         """Perform cleanup operations and gracefully exit the App."""
         self.tcex.log.trace('teardown')
-
-    def update_config_callback(self, trigger_id, config):
-        """Handle update config messages.
-
-        Args:
-            trigger_id (str): The ID of the playbook.
-            config (dict): The playbook config inputs.
-        """
-        self.tcex.log.trace('update config callback')

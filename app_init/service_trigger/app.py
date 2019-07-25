@@ -6,6 +6,7 @@ import time
 from service_app import ServiceApp
 
 
+# pylint: disable=unused-argument
 class App(ServiceApp):
     """Service App Template."""
 
@@ -15,7 +16,7 @@ class App(ServiceApp):
             time.sleep(30)
             self.tcex.service.fire_event(self.trigger_callback)
 
-    def trigger_callback(self, session_id, config, **kwargs):  # pylint: disable=unused-argument
+    def trigger_callback(self, playbook, trigger_id, config, **kwargs):
         """Execute trigger callback for all current configs.
 
         Args:
@@ -27,7 +28,6 @@ class App(ServiceApp):
         """
         self.tcex.log.error('trigger callback')
         try:
-            self.tcex.log.trace('session_id: {}'.format(session_id))
             self.tcex.log.trace('config: {}'.format(config))
 
             if config.get('fire') is True:

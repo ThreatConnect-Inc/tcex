@@ -52,15 +52,21 @@ if __name__ == '__main__':
         app = App(tcex)
 
         # configure custom trigger message handler
-        tcex.service.custom_trigger(
-            create_callback=app.create_config_callback,
-            delete_callback=app.delete_config_callback,
-            update_callback=app.update_config_callback,
-            shutdown_callback=app.shutdown_callback,
-        )
+        tcex.service.create_config_callback = app.create_config_callback
+        tcex.service.delete_config_callback = app.delete_config_callback
+        tcex.service.shutdown_callback = app.shutdown_callback
 
         # perform prep/setup operations
         app.setup()
+
+        # listen on channel/topic
+        tcex.service.listen()
+
+        # start heartbeat threads
+        tcex.service.heartbeat()
+
+        # inform TC that micro-service is Ready
+        tcex.service.ready = True
 
         # run app logic
         app.run()

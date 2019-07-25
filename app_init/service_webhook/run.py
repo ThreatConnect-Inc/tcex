@@ -51,17 +51,27 @@ if __name__ == '__main__':
         # load App class
         app = App(tcex)
 
+        # configure custom trigger message handler
+        tcex.service.create_config_callback = app.create_config_callback
+        tcex.service.delete_config_callback = app.delete_config_callback
+        tcex.service.update_config_callback = app.update_config_callback
+        tcex.service.shutdown_callback = app.shutdown_callback
+        tcex.service.webhook_event_callback = app.webhook_event_callback
+
         # perform prep/setup operations
         app.setup()
 
-        # start the webhook trigger (blocking)
-        tcex.service.webhook_trigger(
-            callback=app.webhook_callback,
-            create_callback=app.create_config_callback,
-            delete_callback=app.delete_config_callback,
-            update_callback=app.update_config_callback,
-            shutdown_callback=app.shutdown_callback,
-        )
+        # listen on channel/topic
+        tcex.service.listen()
+
+        # start heartbeat threads
+        tcex.service.heartbeat()
+
+        # inform TC that micro-service is Ready
+        tcex.service.ready = True
+
+        # loop until exit
+        tcex.service.loop_forever()
 
         # perform cleanup/teardown operations
         app.teardown()
