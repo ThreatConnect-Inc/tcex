@@ -4,18 +4,27 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
 
 ## Requirements
 
-Python requirements with known working version:
- * colorama 0.3.9 (https://pypi.python.org/pypi/colorama)
- * hvac 0.3.0 (https://pypi.python.org/pypi/hvac)
- * inflect 0.2.5 (https://pypi.python.org/pypi/inflect)
- * jsonschema 2.6.0 (https://pypi.python.org/pypi/jsonschema)
- * parsedatetime 2.4 (https://pypi.python.org/pypi/parsedatetime)
+ * colorama (https://pypi.python.org/pypi/colorama)
+ * future (https://pypi.org/project/future/)
+ * hvac (https://pypi.python.org/pypi/hvac)
+ * inflect (https://pypi.python.org/pypi/inflect)
+ * jsonschema (https://pypi.python.org/pypi/jsonschema)
+ * parsedatetime (https://pypi.python.org/pypi/parsedatetime)
  * python-datetuil (https://pypi.python.org/pypi/python-dateutil)
- * pytz latest (https://pypi.python.org/pypi/pytz)
- * redis 2.10.6 (https://pypi.python.org/pypi/redis)
- * requests 2.18.4 (http://docs.python-requests.org/en/latest)
- * six 1.11.0 (https://pypi.python.org/pypi/six)
- * tzlocal 1.5.1 (https://pypi.python.org/pypi/tzlocal)
+ * pytz (https://pypi.python.org/pypi/pytz)
+ * redis (https://pypi.python.org/pypi/redis)
+ * requests (http://docs.python-requests.org/en/latest)
+ * six (https://pypi.python.org/pypi/six)
+ * stdlib-list (https://pypi.org/project/stdlib-list/)
+ * tzlocal (https://pypi.python.org/pypi/tzlocal)
+
+### Development Requirements
+
+ * deepdiff (https://pypi.org/project/deepdiff/)
+ * jmespath (https://pypi.org/project/jmespath/)
+ * mako (https://pypi.org/project/mako/)
+ * pytest (https://pypi.org/project/pytest/)
+ * pytest-cov (https://pypi.org/project/pytest-cov/)
 
 ## Installation
 
@@ -23,6 +32,7 @@ Python requirements with known working version:
 
 ```
 pip install tcex
+pip install tcex[development]
 ```
 
 **Manually**

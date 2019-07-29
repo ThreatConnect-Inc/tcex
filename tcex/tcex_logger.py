@@ -314,7 +314,13 @@ class FileHandleFormatter(logging.Formatter):
 
     def __init__(self):
         """Initialize formatter parent."""
-        super().__init__(fmt='%(levelno)d: %(msg)s', datefmt=None, style='%')
+        try:  # py3
+            super(FileHandleFormatter, self).__init__(
+                fmt='%(levelno)d: %(msg)s', datefmt=None, style='%'
+            )
+        except TypeError:  # py2
+            # TODO: remove after py2 support is dropped
+            super(FileHandleFormatter, self).__init__(fmt='%(levelno)d: %(msg)s', datefmt=None)
 
     def format(self, record):
         """Format file handle log event according to logging level."""
