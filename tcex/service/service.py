@@ -385,7 +385,7 @@ class Service(object):
 
             # register config apiToken
             self.tcex.token.register_token(
-                trigger_id, message.get('apiToken'), message.get('tokenExpires')
+                trigger_id, message.get('apiToken'), message.get('expireSeconds')
             )
 
             if callable(self.create_config_callback):
@@ -440,7 +440,7 @@ class Service(object):
         """
         # register config apiToken (before any logging)
         self.tcex.token.register_token(
-            self.thread_name, message.get('apiToken'), message.get('tokenExpires')
+            self.thread_name, message.get('apiToken'), message.get('expireSeconds')
         )
         self.tcex.log.info('Processing RunService Command')
         self.tcex.log.debug('message: {}'.format(message))

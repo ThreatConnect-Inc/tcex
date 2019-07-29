@@ -138,6 +138,9 @@ class Token(object):
             token (str): The ThreatConnect API token.
             expires (int): The token expiration timestamp.
         """
+        if token is None or expires is None:
+            raise RuntimeError('Invalid token data provided.')
+
         self.token_map[key] = {
             'renewing': False,
             'thread_names': [],
@@ -187,7 +190,7 @@ class Token(object):
     def token_expires(self):
         """Return token_expires for current thread."""
         # TODO: add lock.acquire / lock.release
-        return self.token_map.get(self.key, {}).get('token_expires', int(time.time()) + 3600)
+        return self.token_map.get(self.key, {}).get('token_expires')
 
     @token_expires.setter
     def token_expires(self, expires):
