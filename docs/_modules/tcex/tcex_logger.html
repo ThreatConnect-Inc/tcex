@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_logger &mdash; TcEx 1.0.6 documentation</title>
+  <title>tcex.tcex_logger &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.6
+                1.0.7
               </div>
 
 
@@ -493,7 +493,13 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize formatter parent.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(levelno)d</span><span class="s1">: </span><span class="si">%(msg)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>  <span class="c1"># py3</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">FileHandleFormatter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(levelno)d</span><span class="s1">: </span><span class="si">%(msg)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;%&#39;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># py2</span>
+            <span class="c1"># TODO: remove after py2 support is dropped</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">FileHandleFormatter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(levelno)d</span><span class="s1">: </span><span class="si">%(msg)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FileHandleFormatter.format"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.FileHandleFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format file handle log event according to logging level.&quot;&quot;&quot;</span>

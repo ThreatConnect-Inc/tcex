@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+1.0.7
+=====
++ Updated logging formatter for issue in py2.
++ Updated test_case to automatically create profile output.
+
 1.0.6
 =====
 + Reworked logging for the TcEx framework to provide better flexibility.
