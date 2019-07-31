@@ -181,6 +181,9 @@
           "items": {
             "additionalProperties": false,
             "properties": {
+              "intelType": {
+                "type": "array"
+              },
               "name": {
                 "type": "string"
               },
