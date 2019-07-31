@@ -8,7 +8,6 @@
       "local-*",
       "pyproject.toml",
       "setup.cfg",
-      "tcex.json",
       "*.install.json",
       "tcex.d"
     ],

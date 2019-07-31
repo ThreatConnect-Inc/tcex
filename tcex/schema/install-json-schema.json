@@ -105,6 +105,9 @@
           "hidden": {
             "type": "boolean"
           },
+          "intelType": {
+            "type": "array"
+          },
           "label": {
             "type": "string"
           },

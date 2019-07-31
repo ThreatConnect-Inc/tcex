@@ -192,6 +192,7 @@ class TcExPackage(TcExBin):
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
+            'local-*',  # log directory
             'log',  # log directory
             'tests',  # pytest test directory
         ]

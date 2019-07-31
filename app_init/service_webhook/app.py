@@ -9,7 +9,9 @@ from service_app import ServiceApp
 class App(ServiceApp):
     """Service App Template."""
 
-    def webhook_event_callback(self, playbook, method, headers, params, body, config):
+    def webhook_event_callback(  # pylint: disable=no-self-use
+        self, playbook, method, headers, params, body, config
+    ):
         """Run the trigger logic.
 
         Args:
@@ -23,12 +25,4 @@ class App(ServiceApp):
         Returns:
             bool: True if playbook should trigger, False if not.
         """
-        self.tcex.log.info('method: {}'.format(method))
-        self.tcex.log.info('headers: {}'.format(headers))
-        self.tcex.log.info('params: {}'.format(params))
-        self.tcex.log.info('body: {}'.format(body))
-        self.tcex.log.info('config: {}'.format(config))
-
-        if config.get('id') == params.get('id'):
-            return True  # playbook triggered
-        return False  # playbook skipped
+        return True

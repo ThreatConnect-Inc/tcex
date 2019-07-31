@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""ThreatConnect Playbook App"""
+"""ThreatConnect Trigger Service App"""
 import time
 
-# Import default Service Class (Required)
+# Import default Service App Class (Required)
 from service_app import ServiceApp
 
 
@@ -12,28 +12,24 @@ class App(ServiceApp):
 
     def run(self):
         """Run the trigger logic."""
+        sleep_time = 30
         while True:
-            time.sleep(30)
+            # sleep for 30 seconds and then fire playbook
+            time.sleep(sleep_time)
             self.tcex.service.fire_event(self.trigger_callback)
 
-    def trigger_callback(self, playbook, trigger_id, config, **kwargs):
+    def trigger_callback(  # pylint: disable=no-self-use
+        self, playbook, trigger_id, config, **kwargs
+    ):
         """Execute trigger callback for all current configs.
 
         Args:
-            session_id (str): The session_id for the current playbook execution.
-            config (dict): The playbook config inputs.
+            playbook (object): An instance of Playbooks used to write output variables to be
+                used in downstream Apps.
+            trigger_id (int): The ID of the Playbook Trigger.
+            config (dict): The trigger input configuration data.
 
         Returns:
             bool: True if playbook should trigger, False if not.
         """
-        self.tcex.log.error('trigger callback')
-        try:
-            self.tcex.log.trace('config: {}'.format(config))
-
-            if config.get('fire') is True:
-                return True
-            return False
-        except Exception as e:
-            # micro-service callback should not raise for any reason
-            self.tcex.log.error('Custom trigger failed ({})'.format(e))
-            return False
+        return True
