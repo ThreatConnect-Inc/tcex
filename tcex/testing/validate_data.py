@@ -103,6 +103,7 @@ class Validator(object):
             'ne': self.operator_ne,
             '!=': self.operator_ne,
             'rex': self.operator_regex_match,
+            'json_raw_eq': self.operator_json_raw_eq,
         }
         return operators.get(op, None)
 
@@ -325,6 +326,83 @@ class Validator(object):
         if re.match(test_data, app_data) is None:
             return False, 'app_data id not match regex ({})'.format(test_data)
         return True, ''
+
+    def operator_json_raw_eq(self, app_data, test_data, **kwargs):
+        """Specifically handles json.raw outputs by using DeepDiff to compare app_data to
+        test_data and supports native DeepDiff ignore_order and excludes_path options. Used
+        exclude_paths when dealing with simple data and where you want to exclude first-level
+        data. Use exclude_regex_paths when dealing with more complex data or you need to exclude
+        nested data.
+
+        Example to compare two simple dicts, using exclude_paths to exclude the 'sys_id' key which
+        contains a randomly generated id:
+
+            data1 = {"sys_id": 12, "data": "some data"}
+            data2 = {"sys_id": 34, "data": "some data"}
+            diff = DeepDiff(data1, data2, exclude_paths="root['sys_id']"
+            assert diff == {}
+
+        Example to compare two arrays, using exclude_regex_paths to exclude the nested 'sys_id' key
+        which contains a randomly generated id:
+
+            data1 =  [
+                {"results":
+                    {"sys_id": "12", "data": "some data"}
+                 },
+                {"results":
+                     {"sys_id": "34", "data": "some data"}
+                 }
+            ]
+            data2 =  [
+                {"results":
+                    {"sys_id": "56", "data": "some data"}
+                 },
+                {"results":
+                     {"sys_id": "78", "data": "some data"}
+                 }
+            ]
+            diff = DeepDiff(data1, data2,
+                            exclude_regex_paths=["root\[\d+\]\['results'\]\['sys_id'\]"])
+            assert diff == {}
+
+        Args:
+            app_data (dict|str|list): The data created by the App.
+            test_data (dict|str|list): The data provided in the test case.
+        Returns:
+            bool: The results of the operator.
+        """
+        if isinstance(app_data, string_types):
+            app_data = json.loads(app_data)
+            if isinstance(app_data, list):
+                # This json.raw is packaged as a list of string representation of dictionary.
+                # Needs to be converted to list of native dictionary.
+                try:
+                    app_data = [json.loads(data) for data in app_data]
+                except Exception as e:
+                    self.log.debug('app_data: {}'.format(app_data))
+                    self.log.error('Error handling json.raw app_data: {}'.format(e))
+        if isinstance(test_data, string_types):
+            test_data = json.loads(test_data)
+            if isinstance(test_data, list):
+                # This json.raw is packaged as a list of string representation of dictionary.
+                # Needs to be converted to list of native dictionary.
+                try:
+                    test_data = [json.loads(test_data) for data in test_data]
+                except Exception as e:
+                    self.log.debug('test_data: {}'.format(test_data))
+                    self.log.error('Error handling json.raw test_data: {}'.format(e))
+        ignore_order = kwargs.get('ignore_order', False)
+        # exclude_paths works simple data that is only one level deep.
+        exclude_paths = kwargs.get('exclude_paths')
+        # exclude_regex_paths is needed for nested data.
+        exclude_regex_paths = kwargs.get('exclude_regex_paths')
+        return self.operator_deep_diff(
+            app_data,
+            test_data,
+            ignore_order=ignore_order,
+            exclude_paths=exclude_paths,
+            exclude_regex_paths=exclude_regex_paths
+        )
 
     @property
     def redis(self):
