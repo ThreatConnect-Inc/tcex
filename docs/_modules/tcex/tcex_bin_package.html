@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_package &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_bin_package &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -190,6 +190,7 @@
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 
 <span class="kn">from</span> <span class="nn">.tcex_bin</span> <span class="k">import</span> <span class="n">TcExBin</span>
+<span class="kn">from</span> <span class="nn">.tcex_install_json</span> <span class="k">import</span> <span class="n">InstallJson</span>
 
 
 <div class="viewcode-block" id="TcExPackage"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage">[docs]</a><span class="k">class</span> <span class="nc">TcExPackage</span><span class="p">(</span><span class="n">TcExBin</span><span class="p">):</span>
@@ -360,14 +361,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span>
             <span class="s1">&#39;__pycache__&#39;</span><span class="p">,</span>
             <span class="s1">&#39;.c9&#39;</span><span class="p">,</span>  <span class="c1"># C9 IDE</span>
+            <span class="s1">&#39;.coverage&#39;</span><span class="p">,</span>  <span class="c1"># coverage file</span>
+            <span class="s1">&#39;.coveragerc&#39;</span><span class="p">,</span>  <span class="c1"># coverage configuration file file</span>
             <span class="s1">&#39;.git&#39;</span><span class="p">,</span>  <span class="c1"># git directory</span>
             <span class="s1">&#39;.gitmodules&#39;</span><span class="p">,</span>  <span class="c1"># git modules</span>
             <span class="s1">&#39;.idea&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm</span>
+            <span class="s1">&#39;.pytest_cache&#39;</span><span class="p">,</span>  <span class="c1"># pytest cache directory</span>
             <span class="s1">&#39;*.iml&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm files</span>
             <span class="s1">&#39;*.pyc&#39;</span><span class="p">,</span>  <span class="c1"># any pyc file</span>
             <span class="s1">&#39;.python-version&#39;</span><span class="p">,</span>  <span class="c1"># pyenv</span>
             <span class="s1">&#39;.vscode&#39;</span><span class="p">,</span>  <span class="c1"># Visual Studio Code</span>
             <span class="s1">&#39;log&#39;</span><span class="p">,</span>  <span class="c1"># log directory</span>
+            <span class="s1">&#39;tests&#39;</span><span class="p">,</span>  <span class="c1"># pytest test directory</span>
         <span class="p">]</span>
         <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>
         <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;excludes&#39;</span><span class="p">,</span> <span class="p">[]))</span>
@@ -402,10 +407,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Name:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">app_name</span><span class="p">})</span>
 
             <span class="c1"># load install json</span>
-            <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span>
+            <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span>
 
             <span class="c1"># automatically update install.json for feature sets supported by the SDK</span>
-            <span class="n">ij</span><span class="p">,</span> <span class="n">ij_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span>
+            <span class="n">ij</span><span class="p">,</span> <span class="n">ij_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_install_json</span><span class="p">(</span><span class="n">ij</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span>
 
             <span class="c1"># write update install.json</span>
             <span class="k">if</span> <span class="n">ij_modified</span><span class="p">:</span>

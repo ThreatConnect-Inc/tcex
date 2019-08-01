@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 1.0.5 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -202,7 +202,7 @@
 
   <div class="section" id="app-directory-structure">
 <span id="id1"></span><h1>App-Directory Structure<a class="headerlink" href="#app-directory-structure" title="Permalink to this headline">¶</a></h1>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>├── .gitignore
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>├── .gitignore
 ├── .pre-commit-config.yaml
 ├── README.md
 ├── __main__.py
@@ -281,7 +281,8 @@
 51
 52
 53
-54</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
+54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
 <span class="c1"># Python App Template</span>
 <span class="c1"># Version: 1.0.2</span>
 <span class="c1"># Last Updated: 2017/10/04</span>
@@ -291,6 +292,7 @@
 <span class="c1"># Language Exclusions</span>
 <span class="c1">#-------------------------------------------------</span>
 __pycache__
+.pytest_cache
 *.pyc
 venv
 
@@ -365,8 +367,7 @@ nbproject
 22
 23
 24
-25
-26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
 <span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
     <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
     <span class="nt">hooks</span><span class="p">:</span>
@@ -385,7 +386,6 @@ nbproject
     <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">stable</span>
     <span class="nt">hooks</span><span class="p">:</span>
     <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
-        <span class="nt">language_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">python3.6</span>
 <span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-pylint</span>
     <span class="nt">rev</span><span class="p">:</span> <span class="s">&#39;master&#39;</span>
     <span class="nt">hooks</span><span class="p">:</span>
@@ -889,14 +889,9 @@ nbproject
 34
 35
 36
-37
-38
-39
-40</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot; Playbook App Template. &quot;&quot;&quot;</span>
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Playbook App Template.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">args</span> <span class="kn">import</span> <span class="n">Args</span>
-
-<span class="c1"># Typically no changes are required to this file.</span>
 
 
 <span class="k">class</span> <span class="nc">PlaybookApp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -917,7 +912,6 @@ nbproject
 
     <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse CLI args.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Parsing Args.&#39;</span><span class="p">)</span>
         <span class="n">Args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">parser</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
 

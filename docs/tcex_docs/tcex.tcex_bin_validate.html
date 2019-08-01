@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_validate module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_bin_validate module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,62 +228,57 @@
 <p>TcEx Framework Validate Module.</p>
 <dl class="class">
 <dt id="tcex.tcex_bin_validate.TcExValidate">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_validate.</code><code class="descname">TcExValidate</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_bin_validate.</code><code class="sig-name descname">TcExValidate</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_bin.TcExBin</span></code></p>
 <p>Validate syntax, imports, and schemas.</p>
 <ul class="simple">
-<li>Python and JSON file syntax</li>
-<li>Python import modules</li>
-<li>install.json schema</li>
-<li>layout.json schema</li>
+<li><p>Python and JSON file syntax</p></li>
+<li><p>Python import modules</p></li>
+<li><p>install.json schema</p></li>
+<li><p>layout.json schema</p></li>
 </ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</td>
-</tr>
-</tbody>
-</table>
-<dl class="staticmethod">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
+</dd>
+</dl>
+<dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_import_stdlib">
-<em class="property">static </em><code class="descname">check_import_stdlib</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">check_import_stdlib</code><span class="sig-paren">(</span><em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if module is in Python stdlib.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) – The name of the module to check.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns True if the module is in the stdlib or template.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – The name of the module to check.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns True if the module is in the stdlib or template.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_imported">
-<em class="property">static </em><code class="descname">check_imported</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_imported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_imported" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">check_imported</code><span class="sig-paren">(</span><em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_imported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_imported" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the provide module can be imported (package installed).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) – The name of the module to check availability.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the module can be imported, False otherwise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – The name of the module to check availability.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the module can be imported, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_imports">
-<code class="descname">check_imports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_imports" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_imports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_imports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the projects top level directory for missing imports.</p>
 <p>This method will check only files ending in <strong>.py</strong> and does not handle imports validation
 for sub-directories.</p>
@@ -291,19 +286,19 @@ for sub-directories.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_install_json">
-<code class="descname">check_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_install_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_install_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check all install.json files for valid schema.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_layout_json">
-<code class="descname">check_layout_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_layout_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_layout_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_layout_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_layout_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_layout_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check all layout.json files for valid schema.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_layout_params">
-<code class="descname">check_layout_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_layout_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_layout_params" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_layout_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_layout_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_layout_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that the layout.json is consistent with install.json.</p>
 <p>The layout.json files references the params.name from the install.json file.  The method
 will validate that no reference appear for inputs in install.json that don’t exist.</p>
@@ -311,57 +306,54 @@ will validate that no reference appear for inputs in install.json that don’t e
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_syntax">
-<code class="descname">check_syntax</code><span class="sig-paren">(</span><em>app_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_syntax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_syntax" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_syntax</code><span class="sig-paren">(</span><em class="sig-param">app_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_syntax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_syntax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run syntax on each “.py” and “.json” file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The path of Python files.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>app_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The path of Python files.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.install_json_schema">
-<code class="descname">install_json_schema</code><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.install_json_schema" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">install_json_schema</code><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.install_json_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load install.json schema file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.interactive">
-<code class="descname">interactive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.interactive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.interactive" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">interactive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.interactive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.interactive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run in interactive mode.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.layout_json_schema">
-<code class="descname">layout_json_schema</code><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.layout_json_schema" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">layout_json_schema</code><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.layout_json_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load layout.json schema file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.print_json">
-<code class="descname">print_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.print_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.print_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.print_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.print_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print JSON output.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.print_results">
-<code class="descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.print_results" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.print_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print results.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.status_color">
-<em class="property">static </em><code class="descname">status_color</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.status_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.status_color" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">status_color</code><span class="sig-paren">(</span><em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.status_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.status_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate status color.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.status_value">
-<em class="property">static </em><code class="descname">status_value</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.status_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.status_value" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">status_value</code><span class="sig-paren">(</span><em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.status_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.status_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate status color.</p>
 </dd></dl>
 

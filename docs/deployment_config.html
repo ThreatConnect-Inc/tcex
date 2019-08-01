@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Deployment Configuration File &mdash; TcEx 1.0.5 documentation</title>
+  <title>App-Deployment Configuration File &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -181,100 +181,100 @@
 <p>A configuration file named <code class="docutils literal notranslate"><span class="pre">install.json</span></code> is used for ThreatConnect
 apps written in:</p>
 <ul class="simple">
-<li>Python</li>
-<li>Java®</li>
-<li>JavaScript® (Spaces)</li>
+<li><p>Python</p></li>
+<li><p>Java®</p></li>
+<li><p>JavaScript® (Spaces)</p></li>
 </ul>
 <div class="section" id="standard-section">
 <h2>Standard Section<a class="headerlink" href="#standard-section" title="Permalink to this headline">¶</a></h2>
 <p>The Standard section defines required and optional properties of all Apps in ThreatConnect. The required properties are properties that must be provided for any packaged App installed through the ThreatConnect platform. The optional properties provide additional information based on the type of target App.</p>
 <p>The table below lists all of the properties of the Standard section.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="46%" />
-<col width="11%" />
-<col width="43%" />
+<col style="width: 46%" />
+<col style="width: 11%" />
+<col style="width: 43%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Property</th>
-<th class="head">Required?</th>
-<th class="head">Allowed Values</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Allowed Values</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference external" href="#allowondemand">allowOnDemand</a></td>
-<td>TRUE</td>
-<td>Boolean</td>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#allowondemand">allowOnDemand</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#apiusertokenparam">apiUserTokenParam</a></td>
-<td>FALSE</td>
-<td>Boolean</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#apiusertokenparam">apiUserTokenParam</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#displayname">displayName</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#displayname">displayName</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#feed-app-configuration">feeds</a></td>
-<td>FALSE</td>
-<td>Object</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#feed-app-configuration">feeds</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Object</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#languageversion">languageVersion</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#languageversion">languageVersion</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#listdelimiter">listDelimiter</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#listdelimiter">listDelimiter</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#minserverversion">minServerVersion</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#minserverversion">minServerVersion</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#note">note</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#note">note</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#parameter-array-section">params</a></td>
-<td>TRUE</td>
-<td>Object</td>
+<tr class="row-even"><td><p><a class="reference external" href="#parameter-array-section">params</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>Object</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#playbook-app-configuration">Playbook</a></td>
-<td>FALSE</td>
-<td>Array of objects</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#playbook-app-configuration">Playbook</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Array of objects</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#programicon">programIcon</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#programicon">programIcon</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#programlanguage">programLanguage</a></td>
-<td>TRUE</td>
-<td><code class="docutils literal notranslate"><span class="pre">&quot;JAVA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;PYTHON&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;NONE&quot;</span></code></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#programlanguage">programLanguage</a></p></td>
+<td><p>TRUE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;JAVA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;PYTHON&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;NONE&quot;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#programmain">programMain</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#programmain">programMain</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#programversion">programVersion</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#programversion">programVersion</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#publishoutfiles">publishOutFiles</a></td>
-<td>FALSE</td>
-<td>Array of strings</td>
+<tr class="row-even"><td><p><a class="reference external" href="#publishoutfiles">publishOutFiles</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Array of strings</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#repeatingminutes">repeatingMinutes</a></td>
-<td>FALSE</td>
-<td>Array of integers</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#repeatingminutes">repeatingMinutes</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Array of integers</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#runtimecontext">runtimeContext</a></td>
-<td>FALSE</td>
-<td>Array of strings</td>
+<tr class="row-even"><td><p><a class="reference external" href="#runtimecontext">runtimeContext</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Array of strings</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#runtimelevel">runtimeLevel</a></td>
-<td>TRUE</td>
-<td><code class="docutils literal notranslate"><span class="pre">&quot;Organization&quot;</span></code>,
+<tr class="row-odd"><td><p><a class="reference external" href="#runtimelevel">runtimeLevel</a></p></td>
+<td><p>TRUE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Organization&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;SpaceOrganization&quot;</span></code>, or
-<code class="docutils literal notranslate"><span class="pre">&quot;System&quot;</span></code></td>
+<code class="docutils literal notranslate"><span class="pre">&quot;System&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -334,68 +334,68 @@ apps written in:</p>
 <h3>runtimeContext<a class="headerlink" href="#runtimecontext" title="Permalink to this headline">¶</a></h3>
 <p>Optional property enabling Spaces Apps to be context aware. (Context-aware Spaces Apps can be added to the <strong>Details</strong> screen of an object in the ThreatConnect platform.) Because this property is an array of strings, the App can be displayed in Spaces under multiple contexts within the ThreatConnect platform, including the <strong>Menu</strong> and <strong>Search</strong> screens. This property is only relevant to Spaces Apps.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Context-aware Spaces Apps are passed contextual information via the URL query string when the App is displayed in the ThreatConnect platform. The details of those parameters are bewyond the scope of this document.</p>
+<p class="admonition-title">Note</p>
+<p>Context-aware Spaces Apps are passed contextual information via the URL query string when the App is displayed in the ThreatConnect platform. The details of those parameters are bewyond the scope of this document.</p>
 </div>
 <p>The available runtime contexts are:</p>
 <ul class="simple">
-<li>Address</li>
-<li>Adversary</li>
-<li>ASN</li>
-<li>Campaign</li>
-<li>CIDR</li>
-<li>Document</li>
-<li>Email</li>
-<li>EmailAddress</li>
-<li>Event</li>
-<li>File</li>
-<li>Host</li>
-<li>Incident</li>
-<li>IntrusionSet</li>
-<li>Menu</li>
-<li>Mutex</li>
-<li>RegistryKey</li>
-<li>Report</li>
-<li>Search</li>
-<li>Signature</li>
-<li>Tag</li>
-<li>Threat</li>
-<li>URL</li>
-<li>UserAgent</li>
-<li>Victim</li>
+<li><p>Address</p></li>
+<li><p>Adversary</p></li>
+<li><p>ASN</p></li>
+<li><p>Campaign</p></li>
+<li><p>CIDR</p></li>
+<li><p>Document</p></li>
+<li><p>Email</p></li>
+<li><p>EmailAddress</p></li>
+<li><p>Event</p></li>
+<li><p>File</p></li>
+<li><p>Host</p></li>
+<li><p>Incident</p></li>
+<li><p>IntrusionSet</p></li>
+<li><p>Menu</p></li>
+<li><p>Mutex</p></li>
+<li><p>RegistryKey</p></li>
+<li><p>Report</p></li>
+<li><p>Search</p></li>
+<li><p>Signature</p></li>
+<li><p>Tag</p></li>
+<li><p>Threat</p></li>
+<li><p>URL</p></li>
+<li><p>UserAgent</p></li>
+<li><p>Victim</p></li>
 </ul>
 </div>
 <div class="section" id="runtimelevel">
 <h3>runtimeLevel<a class="headerlink" href="#runtimelevel" title="Permalink to this headline">¶</a></h3>
 <p>Required property which dictates how the app is used within the ThreatConnect platform, as detailed in the table below.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="20%" />
-<col width="80%" />
+<col style="width: 20%" />
+<col style="width: 80%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Value</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>Organization</td>
-<td>This value is a Python or Java App that is run by the Job Execution Engine.
+<tbody>
+<tr class="row-even"><td><p>Organization</p></td>
+<td><p>This value is a Python or Java App that is run by the Job Execution Engine.
 This type of app must be provisioned to specific organizations (or <strong>Allow
 All Orgs</strong> must be selected) by the System Administrator. Once provisioned,
-the App can be scheduled to run as part of a Job.</td>
+the App can be scheduled to run as part of a Job.</p></td>
 </tr>
-<tr class="row-odd"><td>SpaceOrganization</td>
-<td>This value is a Spaces App that is run within ThreatConnect as a Space.
+<tr class="row-odd"><td><p>SpaceOrganization</p></td>
+<td><p>This value is a Spaces App that is run within ThreatConnect as a Space.
 This type of App must be provisioned to specific organizations (or <strong>Allow
 All Orgs</strong> must be selected) by the System Administrator. Once provisioned,
 the App can be added as a Spaces App by any user belonging to the
-Organization.</td>
+Organization.</p></td>
 </tr>
-<tr class="row-even"><td>System</td>
-<td>Although not commonly used, a System-level App is a Python or Java App that
+<tr class="row-even"><td><p>System</p></td>
+<td><p>Although not commonly used, a System-level App is a Python or Java App that
 is strictly visible by the System Administrator. This App can be scheduled
-only in a System Job.</td>
+only in a System Job.</p></td>
 </tr>
 </tbody>
 </table>
@@ -403,50 +403,50 @@ only in a System Job.</td>
 </div>
 <div class="section" id="feed-app-configuration">
 <h2>Feed App Configuration<a class="headerlink" href="#feed-app-configuration" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="71%" />
-<col width="11%" />
-<col width="18%" />
+<col style="width: 71%" />
+<col style="width: 11%" />
+<col style="width: 18%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Property</th>
-<th class="head">Required?</th>
-<th class="head">Allowed Values</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Allowed Values</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference external" href="#attributesfile">attributesFile</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#attributesfile">attributesFile</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#documentstoragelimitmb">documentStorageLimitMb</a></td>
-<td>FALSE</td>
-<td>Integer</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#documentstoragelimitmb">documentStorageLimitMb</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Integer</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#enablebulkjson">enableBulkJson</a></td>
-<td>FALSE</td>
-<td>Boolean</td>
+<tr class="row-even"><td><p><a class="reference external" href="#enablebulkjson">enableBulkJson</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#indicatorlimit">indicatorLimit</a></td>
-<td>FALSE</td>
-<td>Integer</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#indicatorlimit">indicatorLimit</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Integer</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#jobfile">jobFile</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#jobfile">jobFile</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#sourcecategory">sourceCategory</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#sourcecategory">sourceCategory</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#sourcedescription">sourceDescription</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#sourcedescription">sourceDescription</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#sourcename">sourceName</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#sourcename">sourceName</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
 </tbody>
 </table>
@@ -487,74 +487,74 @@ only in a System Job.</td>
 <h2>Parameter Array Section<a class="headerlink" href="#parameter-array-section" title="Permalink to this headline">¶</a></h2>
 <p>The Parameter Array section of the <strong>install.json</strong> file is the mechanism used by the Job Execution Engine and the Spaces framework to pass configuration data at runtime. For Java and Python Apps, the entries defined in this section dictate the <strong>Parameters</strong> panel of the Job Wizard in the ThreatConnect platform. Spaces Apps have their own configuration screen as part of the user’s Space for each App.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In Python, parameters are called by using the <strong>–param &lt;value&gt;</strong> syntax handled by the <strong>argparse</strong> library. For Java Apps, the System-environment arguments are passed by using the <strong>-Dparam=&lt;value&gt;</strong> syntax. Discussion of App argument parsing is beyond the scope of this document.</p>
+<p class="admonition-title">Note</p>
+<p>In Python, parameters are called by using the <strong>–param &lt;value&gt;</strong> syntax handled by the <strong>argparse</strong> library. For Java Apps, the System-environment arguments are passed by using the <strong>-Dparam=&lt;value&gt;</strong> syntax. Discussion of App argument parsing is beyond the scope of this document.</p>
 </div>
 <p>The table below highlights the Parameter array properties (the <strong>params</strong> array).</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="57%" />
-<col width="11%" />
-<col width="31%" />
+<col style="width: 57%" />
+<col style="width: 11%" />
+<col style="width: 31%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Property</th>
-<th class="head">Required?</th>
-<th class="head">Allowed Values</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Allowed Values</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference external" href="#allowmultiple">allowMultiple</a></td>
-<td>FALSE</td>
-<td>Boolean</td>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#allowmultiple">allowMultiple</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#default">default</a></td>
-<td>FALSE</td>
-<td>Boolean or Integer or String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#default">default</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean or Integer or String</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#encrypt">encrypt</a></td>
-<td>FALSE</td>
-<td>Boolean</td>
+<tr class="row-even"><td><p><a class="reference external" href="#encrypt">encrypt</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#hidden">hidden</a></td>
-<td>FALSE</td>
-<td>Boolean</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#hidden">hidden</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#label">label</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#label">label</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#name">name</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#name">name</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#note-parameter">note</a></td>
-<td>FALSE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#note-parameter">note</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#playbookdatatype">PlaybookDataType</a></td>
-<td>FALSE</td>
-<td>Array</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#playbookdatatype">PlaybookDataType</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Array</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#required">required</a></td>
-<td>FALSE</td>
-<td>Boolean</td>
+<tr class="row-even"><td><p><a class="reference external" href="#required">required</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#sequence">sequence</a></td>
-<td>FALSE</td>
-<td>Integer</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#sequence">sequence</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Integer</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#type">type</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tr class="row-even"><td><p><a class="reference external" href="#type">type</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#validvalues">validValues</a></td>
-<td>FALSE</td>
-<td>Array</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#validvalues">validValues</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Array</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#viewrows">viewRows</a></td>
-<td>FALSE</td>
-<td>Integer</td>
+<tr class="row-even"><td><p><a class="reference external" href="#viewrows">viewRows</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Integer</p></td>
 </tr>
 </tbody>
 </table>
@@ -591,16 +591,16 @@ only in a System Job.</td>
 <p>Optional property restricting the data type of incoming Playbook variables. This is different than the <code class="docutils literal notranslate"><span class="pre">type</span></code> property that controls the UI input type. The PlaybookDataType can be any standard or custom type and is expected to be an array of strings.</p>
 <p>As of ThreatConnect 5.4, the standard Playbook types supported by the Python and Java SDK are:</p>
 <ul class="simple">
-<li>String</li>
-<li>StringArray</li>
-<li>Binary</li>
-<li>BinaryArray</li>
-<li>KeyValue</li>
-<li>KeyValueArray</li>
-<li>TCEntity</li>
-<li>TCEntityArray</li>
-<li>TCEnhancedEntity</li>
-<li>TCEnhancedEntityArray</li>
+<li><p>String</p></li>
+<li><p>StringArray</p></li>
+<li><p>Binary</p></li>
+<li><p>BinaryArray</p></li>
+<li><p>KeyValue</p></li>
+<li><p>KeyValueArray</p></li>
+<li><p>TCEntity</p></li>
+<li><p>TCEntityArray</p></li>
+<li><p>TCEnhancedEntity</p></li>
+<li><p>TCEnhancedEntityArray</p></li>
 </ul>
 </div>
 <div class="section" id="required">
@@ -614,30 +614,30 @@ only in a System Job.</td>
 <div class="section" id="type">
 <h3>type<a class="headerlink" href="#type" title="Permalink to this headline">¶</a></h3>
 <p>Required property to enable the UI to display relevant components and allow the Job Executor to adapt how parameters are passed to an App at runtime. The table below lists the available types and how they affect elements within the platform.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="13%" />
-<col width="87%" />
+<col style="width: 13%" />
+<col style="width: 87%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Type</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>String</td>
-<td>This type renders an HTML Input textbox in the Job Wizard or Spaces Configuration
+<tbody>
+<tr class="row-even"><td><p>String</p></td>
+<td><p>This type renders an HTML Input textbox in the Job Wizard or Spaces Configuration
 dialog box. This allows the user to enter free-form text as a parameter. Values
-are passed as a String to Python and Java Apps.</td>
+are passed as a String to Python and Java Apps.</p></td>
 </tr>
-<tr class="row-odd"><td>Choice</td>
-<td>This type renders an HTML Select option in the Job Wizard or Spaces Configuration
+<tr class="row-odd"><td><p>Choice</p></td>
+<td><p>This type renders an HTML Select option in the Job Wizard or Spaces Configuration
 dialog box. This allows the user to select predefined text values as a parameter.
 (See the description of the <strong>validValues”</strong> string array property in 3.) Values
-are passed as a String to Python and Java Apps.</td>
+are passed as a String to Python and Java Apps.</p></td>
 </tr>
-<tr class="row-even"><td>MultiChoice</td>
-<td>This type renders an HTML Multi-Checkbox Select option in the Job Wizard or Spaces
+<tr class="row-even"><td><p>MultiChoice</p></td>
+<td><p>This type renders an HTML Multi-Checkbox Select option in the Job Wizard or Spaces
 Configuration dialog box. This allows the user to select multiple predefined text
 values as a parameter. (See the description of the <strong>validValues</strong> string array
 property in 3.) The same parameter is passed multiple times for a Python App.
@@ -645,15 +645,15 @@ Python Apps should use the argparse <strong>action=’append’</strong> option 
 parameters as an array. Java and Spaces Apps will receive the parameter as a
 single value separated by a pipe character. Values are passed as a String to
 Python and Java Apps. This selection must be used together with the
-<strong>allowMultiple</strong> flag defined as <strong>true</strong>.</td>
+<strong>allowMultiple</strong> flag defined as <strong>true</strong>.</p></td>
 </tr>
-<tr class="row-odd"><td>Boolean</td>
-<td>This type renders an HTML Checkbox option in the Job Wizard or Spaces
+<tr class="row-odd"><td><p>Boolean</p></td>
+<td><p>This type renders an HTML Checkbox option in the Job Wizard or Spaces
 Configuration dialog box. This allows the user to turn on a flag as a parameter.
 Values are passed as a <strong>–flag</strong> style parameter to Python Apps. (See the
 <strong>action=’store_true’</strong> option in the argparse module.) Java and Spaces Apps
 receive the actual Boolean value <strong>true</strong> or <strong>false</strong>. These Apps should parse
-the string to resolve the Boolean flag value.</td>
+the string to resolve the Boolean flag value.</p></td>
 </tr>
 </tbody>
 </table>
@@ -669,52 +669,52 @@ the string to resolve the Boolean flag value.</td>
 </div>
 <div class="section" id="playbook-app-configuration">
 <h2>Playbook App Configuration<a class="headerlink" href="#playbook-app-configuration" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="72%" />
-<col width="11%" />
-<col width="17%" />
+<col style="width: 72%" />
+<col style="width: 11%" />
+<col style="width: 17%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Property</th>
-<th class="head">Required?</th>
-<th class="head">Allowed Values</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Allowed Values</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference external" href="#outputvariables">outputVariables</a></td>
-<td>FALSE</td>
-<td>Array</td>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#outputvariables">outputVariables</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Array</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#retry">retry</a></td>
-<td>FALSE</td>
-<td>Object</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#retry">retry</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Object</p></td>
 </tr>
 </tbody>
 </table>
 <div class="section" id="outputvariables">
 <h3>outputVariables<a class="headerlink" href="#outputvariables" title="Permalink to this headline">¶</a></h3>
 <p>Optional <code class="docutils literal notranslate"><span class="pre">outputVariables</span></code> property that specifies the variables that a Playbook App will provide for downstream Playbooks</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="72%" />
-<col width="11%" />
-<col width="17%" />
+<col style="width: 72%" />
+<col style="width: 11%" />
+<col style="width: 17%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Property</th>
-<th class="head">Required?</th>
-<th class="head">Allowed Values</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Allowed Values</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference external" href="#output-variable-name">name</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#output-variable-name">name</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#output-variable-type">type</a></td>
-<td>TRUE</td>
-<td>String</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#output-variable-type">type</a></p></td>
+<td><p>TRUE</p></td>
+<td><p>String</p></td>
 </tr>
 </tbody>
 </table>
@@ -726,44 +726,44 @@ the string to resolve the Boolean flag value.</td>
 <h4>Output Variable Type<a class="headerlink" href="#output-variable-type" title="Permalink to this headline">¶</a></h4>
 <p>Required property that specifies the type of the output variable. The valid types are:</p>
 <ul class="simple">
-<li>Binary</li>
-<li>BinaryArray</li>
-<li>KeyValue</li>
-<li>KeyValueArray</li>
-<li>String</li>
-<li>StringArray</li>
-<li>TCEntity</li>
-<li>TCEntityArray</li>
+<li><p>Binary</p></li>
+<li><p>BinaryArray</p></li>
+<li><p>KeyValue</p></li>
+<li><p>KeyValueArray</p></li>
+<li><p>String</p></li>
+<li><p>StringArray</p></li>
+<li><p>TCEntity</p></li>
+<li><p>TCEntityArray</p></li>
 </ul>
 </div>
 </div>
 <div class="section" id="retry">
 <h3>retry<a class="headerlink" href="#retry" title="Permalink to this headline">¶</a></h3>
 <p>Optional <code class="docutils literal notranslate"><span class="pre">retry</span></code> property that can be used to allow a Playbook to retry its execution in case of failure</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="72%" />
-<col width="11%" />
-<col width="17%" />
+<col style="width: 72%" />
+<col style="width: 11%" />
+<col style="width: 17%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Property</th>
-<th class="head">Required?</th>
-<th class="head">Allowed Values</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Allowed Values</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference external" href="#allowed">allowed</a></td>
-<td>FALSE</td>
-<td>Boolean</td>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#allowed">allowed</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Boolean</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference external" href="#defaultdelayminutes">defaultDelayMinutes</a></td>
-<td>FALSE</td>
-<td>Integer</td>
+<tr class="row-odd"><td><p><a class="reference external" href="#defaultdelayminutes">defaultDelayMinutes</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Integer</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference external" href="#defaultmaxretries">defaultMaxRetries</a></td>
-<td>FALSE</td>
-<td>Integer</td>
+<tr class="row-even"><td><p><a class="reference external" href="#defaultmaxretries">defaultMaxRetries</a></p></td>
+<td><p>FALSE</p></td>
+<td><p>Integer</p></td>
 </tr>
 </tbody>
 </table>
@@ -799,84 +799,84 @@ to convert the variables into literal values. Internal variables should
 be used only with the <strong>Choice</strong> and <strong>MultiChoice</strong> types. They should
 be defined in the <strong>validValues</strong> property.</p>
 <p>Example of a validValues parameter definition:</p>
-<div class="code json highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Owner&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Choice&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;$</span><span class="si">{OWNERS}</span><span class="s2">&quot;</span><span class="p">]</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Owner&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Choice&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;${OWNERS}&quot;</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>The variables listed in the table below are internal variables
 understood by the ThreatConnect platform.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="8%" />
-<col width="12%" />
-<col width="21%" />
-<col width="59%" />
+<col style="width: 8%" />
+<col style="width: 12%" />
+<col style="width: 21%" />
+<col style="width: 59%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Variable</th>
-<th class="head">Resolves As Type</th>
-<th class="head">Example of Usage</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Resolves As Type</p></th>
+<th class="head"><p>Example of Usage</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>OWNERS</td>
-<td>String Array</td>
-<td><code class="docutils literal notranslate"><span class="pre">[&quot;${OWNERS}&quot;]</span></code></td>
-<td>The OWNERS variable resolves to the available owners to which the current user has
+<tbody>
+<tr class="row-even"><td><p>OWNERS</p></td>
+<td><p>String Array</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[&quot;${OWNERS}&quot;]</span></code></p></td>
+<td><p>The OWNERS variable resolves to the available owners to which the current user has
 access. Since this determination is dynamically resolved at runtime, the owners
 rendered depend on the user. This variable is useful when an App needs to have a
 defined owner passed as a parameter. The string value of the owner(s) is passed as
-an argument to the App.</td>
+an argument to the App.</p></td>
 </tr>
-<tr class="row-odd"><td>ATTRIBUTES</td>
-<td>String Array</td>
-<td><code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES}&quot;]</span></code> or
-<code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:&lt;type&gt;}&quot;]</span></code></td>
-<td>The ATTRIBUTES variable resolves to available Attributes in the current
+<tr class="row-odd"><td><p>ATTRIBUTES</p></td>
+<td><p>String Array</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES}&quot;]</span></code> or
+<code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:&lt;type&gt;}&quot;]</span></code></p></td>
+<td><p>The ATTRIBUTES variable resolves to available Attributes in the current
 organization. This variable has a second, optional component, <strong>:&lt;type&gt;</strong>, that
 further refines the attributes resolved to the specific Indicator or Group type
 (e.g., <strong>[“${ATTRIBUTES:Address}”]</strong>). The string value of the Attribute(s) is
-passed as an argument to the App.</td>
+passed as an argument to the App.</p></td>
 </tr>
-<tr class="row-even"><td>INDICATORS</td>
-<td>String Array</td>
-<td><code class="docutils literal notranslate"><span class="pre">[&quot;${INDICATOR_TYPES}&quot;]</span></code></td>
-<td>The INDICATOR_TYPES variable resolves to all of the Indicator types available in
+<tr class="row-even"><td><p>INDICATORS</p></td>
+<td><p>String Array</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[&quot;${INDICATOR_TYPES}&quot;]</span></code></p></td>
+<td><p>The INDICATOR_TYPES variable resolves to all of the Indicator types available in
 the given instance of ThreatConnect. The string value of the Indicator type(s) is
-passed as an argument to the app.</td>
+passed as an argument to the app.</p></td>
 </tr>
 </tbody>
 </table>
 <p>When the <code class="docutils literal notranslate"><span class="pre">$ATTRIBUTES</span></code> internal variable is used with a <code class="docutils literal notranslate"><span class="pre">:&lt;type&gt;</span></code> suffix, the type can be any of the Indicator, Group, Task, or Victim types in the ThreatConnect platform:</p>
 <ul class="simple">
-<li>Address: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Address}&quot;]</span></code></li>
-<li>Adversary: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
-<li>ASN: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:ASN}&quot;]</span></code></li>
-<li>Campaign: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Campaign}&quot;]</span></code></li>
-<li>CIDR: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:CIDR}&quot;]</span></code></li>
-<li>Document: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Document}&quot;]</span></code></li>
-<li>Email: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Email}&quot;]</span></code></li>
-<li>EmailAddress: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:EmailAddress}&quot;]</span></code></li>
-<li>Event: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Event}&quot;]</span></code></li>
-<li>File: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:File}&quot;]</span></code></li>
-<li>Host: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Host}&quot;]</span></code></li>
-<li>Incident: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Incident}&quot;]</span></code></li>
-<li>IntrusionSet: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:IntusionSet}&quot;]</span></code></li>
-<li>Mutex: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Mutex}&quot;]</span></code></li>
-<li>RegistryKey: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:RegistryKey}&quot;]</span></code></li>
-<li>Report: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Report}&quot;]</span></code></li>
-<li>Adversary: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
-<li>Signature: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Signature}&quot;]</span></code></li>
-<li>Task: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Task}&quot;]</span></code></li>
-<li>Threat: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Threat}&quot;]</span></code></li>
-<li>URL: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
-<li>UserAgent: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
-<li>Victim: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Victim}&quot;]</span></code></li>
+<li><p>Address: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Address}&quot;]</span></code></p></li>
+<li><p>Adversary: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></p></li>
+<li><p>ASN: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:ASN}&quot;]</span></code></p></li>
+<li><p>Campaign: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Campaign}&quot;]</span></code></p></li>
+<li><p>CIDR: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:CIDR}&quot;]</span></code></p></li>
+<li><p>Document: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Document}&quot;]</span></code></p></li>
+<li><p>Email: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Email}&quot;]</span></code></p></li>
+<li><p>EmailAddress: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:EmailAddress}&quot;]</span></code></p></li>
+<li><p>Event: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Event}&quot;]</span></code></p></li>
+<li><p>File: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:File}&quot;]</span></code></p></li>
+<li><p>Host: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Host}&quot;]</span></code></p></li>
+<li><p>Incident: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Incident}&quot;]</span></code></p></li>
+<li><p>IntrusionSet: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:IntusionSet}&quot;]</span></code></p></li>
+<li><p>Mutex: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Mutex}&quot;]</span></code></p></li>
+<li><p>RegistryKey: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:RegistryKey}&quot;]</span></code></p></li>
+<li><p>Report: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Report}&quot;]</span></code></p></li>
+<li><p>Adversary: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></p></li>
+<li><p>Signature: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Signature}&quot;]</span></code></p></li>
+<li><p>Task: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Task}&quot;]</span></code></p></li>
+<li><p>Threat: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Threat}&quot;]</span></code></p></li>
+<li><p>URL: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></p></li>
+<li><p>UserAgent: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></p></li>
+<li><p>Victim: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Victim}&quot;]</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="external-variables">
@@ -885,8 +885,8 @@ passed as an argument to the app.</td>
 directing the Job Wizard and Spaces Configuration dialog box to take
 advantage of the Variables feature.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The Variables feature in the ThreatConnect platform allows any user to create variable key/value pairs. Once created, these values can be selected by the user in the Job Wizard or Spaces Configuration dialog box to reduce the need to copy and paste keys and plain-text data.</p>
+<p class="admonition-title">Note</p>
+<p>The Variables feature in the ThreatConnect platform allows any user to create variable key/value pairs. Once created, these values can be selected by the user in the Job Wizard or Spaces Configuration dialog box to reduce the need to copy and paste keys and plain-text data.</p>
 </div>
 <p>Since the variable names are not known by the App developer, the generic
 form of the variables is referenced instead in a <strong>&lt;level:type&gt;</strong>
@@ -894,33 +894,33 @@ format.</p>
 <p>For example, to allow users to select one of their plain-text
 variables from Organization and User levels, the <strong>install.json</strong> file
 would reference them as follows:</p>
-<div class="code json highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;{USER:TEXT}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:TEXT}&quot;</span><span class="p">]</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>&quot;validValues&quot;: [&quot;{USER:TEXT}&quot;, &quot;${ORGANIZATION:TEXT}&quot;]
 </pre></div>
 </div>
 <p>The left-hand component of the variable is the level. The level can be
 any of the options listed in the table below.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="14%" />
-<col width="86%" />
+<col style="width: 14%" />
+<col style="width: 86%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Level Option</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Level Option</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>User</td>
-<td>This option displays the list of the user’s variables in the Job Wizard or Spaces
-Configuration dialog box.</td>
+<tbody>
+<tr class="row-even"><td><p>User</p></td>
+<td><p>This option displays the list of the user’s variables in the Job Wizard or Spaces
+Configuration dialog box.</p></td>
 </tr>
-<tr class="row-odd"><td>Organization</td>
-<td>This option displays the list of organization variables available to the current
-user in the Job wizard or Spaces Configuration dialog box.</td>
+<tr class="row-odd"><td><p>Organization</p></td>
+<td><p>This option displays the list of organization variables available to the current
+user in the Job wizard or Spaces Configuration dialog box.</p></td>
 </tr>
-<tr class="row-even"><td>System</td>
-<td>This option displays the list of System variables available to the current user
-in the Job Wizard or Spaces Configuration dialog box.</td>
+<tr class="row-even"><td><p>System</p></td>
+<td><p>This option displays the list of System variables available to the current user
+in the Job Wizard or Spaces Configuration dialog box.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1368,44 +1368,44 @@ in 8, below the example.</p>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="13%" />
-<col width="87%" />
+<col style="width: 13%" />
+<col style="width: 87%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Line Number</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Line Number</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>2</td>
-<td>The <strong>programVersion</strong> is 1.0.0. This value is rendered in the Apps listing for
-System Administrators.</td>
+<tbody>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>The <strong>programVersion</strong> is 1.0.0. This value is rendered in the Apps listing for
+System Administrators.</p></td>
 </tr>
-<tr class="row-odd"><td>4</td>
-<td>The <strong>programMain</strong> will direct the Job Executor to run this App as a main module.</td>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>The <strong>programMain</strong> will direct the Job Executor to run this App as a main module.</p></td>
 </tr>
-<tr class="row-even"><td>6</td>
-<td>The <strong>runtimeLevel</strong> for this App is <strong>Organization</strong>. This App will allow Jobs
+<tr class="row-even"><td><p>6</p></td>
+<td><p>The <strong>runtimeLevel</strong> for this App is <strong>Organization</strong>. This App will allow Jobs
 to be configured only for an organization (assuming that the System Administrator
-has provisioned the organization).</td>
+has provisioned the organization).</p></td>
 </tr>
-<tr class="row-odd"><td>8</td>
-<td>This line is the start of the <strong>params</strong> array. The contents in this array are
-solely for parameter definitions.</td>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>This line is the start of the <strong>params</strong> array. The contents in this array are
+solely for parameter definitions.</p></td>
 </tr>
-<tr class="row-even"><td>9–13</td>
-<td>This parameter describes the <strong>api_access_id</strong> argument for the App. The App will
+<tr class="row-even"><td><p>9–13</p></td>
+<td><p>This parameter describes the <strong>api_access_id</strong> argument for the App. The App will
 be passed an argument called <strong>–api_access_id</strong> at execution time. The label in
 the Job Wizard will be <strong>Local ThreatConnect API Access ID</strong>. Since the sequence
 is defined as <strong>1</strong>, this parameter will be the first parameter displayed in the
 Job Wizard. This parameter is required, and the user can benefit from user- and
 organization-level plain-text variables, if defined. Otherwise, the user is
-allowed to enter free-form text (the default type if no variables are defined).</td>
+allowed to enter free-form text (the default type if no variables are defined).</p></td>
 </tr>
-<tr class="row-odd"><td>35–40</td>
-<td>This parameter describes the <strong>remote_api_secret_key</strong> argument for the App. The
+<tr class="row-odd"><td><p>35–40</p></td>
+<td><p>This parameter describes the <strong>remote_api_secret_key</strong> argument for the App. The
 App will be passed an argument called <strong>–remote_api_secret_key</strong> at execution
 time. The label in the Job Wizard will be <strong>Remote ThreatConnect API Secret Key</strong>.
 This parameter will be the fifth parameter in the Job Wizard <strong>Parameters</strong> panel.
@@ -1414,27 +1414,27 @@ password with a masked value. Encrypted parameters will also be stored in
 encrypted form in the database. At runtime, the decrypted password will be passed
 to the App. Finally, the user can benefit from user- and organization-level
 keychain variables, if defined. Otherwise, the user is allowed to enter free-form
-password text.</td>
+password text.</p></td>
 </tr>
-<tr class="row-even"><td>65–68</td>
-<td>This parameter describes the <strong>apply_threat_assess_confidence</strong> Boolean argument
+<tr class="row-even"><td><p>65–68</p></td>
+<td><p>This parameter describes the <strong>apply_threat_assess_confidence</strong> Boolean argument
 for the App. The App will be passed an argument called
 <strong>–apply_threat_assess_confidence</strong> at execution time, only if the user selects
 this value in the Job Wizard. The Job Wizard will display a label called <strong>Apply
 ThreatAssessRating from Remote Owner</strong>, along with a checkbox. The argparse style
 flag (without an argument) and the checkbox displayed in the Job Wizard are
 dictated by the Boolean type in the parameter definition. This parameter will be
-the eigth parameter in the Job Wizard <strong>Parameters</strong> panel.</td>
+the eigth parameter in the Job Wizard <strong>Parameters</strong> panel.</p></td>
 </tr>
-<tr class="row-odd"><td>98–103</td>
-<td>This parameter describes the <strong>logging</strong> argument for the App. The App will be
+<tr class="row-odd"><td><p>98–103</p></td>
+<td><p>This parameter describes the <strong>logging</strong> argument for the App. The App will be
 passed a parameter named <strong>–logging</strong> with a string argument. The
 <strong>Logging Level</strong> label will be displayed in the Job Wizard. This parameter will
 be the sixteenth (and last) parameter in the Job Wizard <strong>Parameters</strong> panel. The
 type for this parameter is <strong>Choice</strong>, and the definition dictates that a valid
 value for this parameter is one of <strong>debug</strong>, <strong>info</strong>, <strong>warning</strong>, <strong>error</strong>,
 or <strong>critical</strong>. The user will not be able to edit this drop-down list, and the
-default value for new Jobs will be logging-level info.</td>
+default value for new Jobs will be logging-level info.</p></td>
 </tr>
 </tbody>
 </table>

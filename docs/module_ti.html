@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Threat Intelligence &mdash; TcEx 1.0.5 documentation</title>
+  <title>Module: Threat Intelligence &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -244,7 +244,7 @@
 </div>
 <div class="section" id="get-groups-by-filter">
 <h3>Get Groups by Filter<a class="headerlink" href="#get-groups-by-filter" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all Groups using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. The calling  <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Groups matching the provided Filter(s).</p>
+<p>To retrieve all Groups using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. The calling  <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Groups matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.</p>
 <p>The example below retrieves all Groups where the name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -254,7 +254,7 @@
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
-</span><span class="n">filters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
+</span><span class="n">filters</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
 </pre></div>
@@ -413,7 +413,7 @@
 </div>
 <div class="section" id="get-indicators-by-filter">
 <h3>Get Indicators by Filter<a class="headerlink" href="#get-indicators-by-filter" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Indicators matching the provided Filter(s).</p>
+<p>To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Indicators matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.</p>
 <p>The example below retrieves all Indicators where name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -423,7 +423,7 @@
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
-</span><span class="n">filters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
+</span><span class="n">filters</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
 </pre></div>
@@ -467,7 +467,7 @@
 21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="s1">&#39;1.1.1.1&#39;</span><span class="p">)</span>
 
 <span class="c1"># get group associations</span>
-<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">group_associations</span><span class="p">():</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
 
 <span class="c1"># get indicator associations</span>

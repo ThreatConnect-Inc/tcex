@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_playbook module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,13 +228,13 @@
 <p>TcEx Framework Playbook module</p>
 <dl class="class">
 <dt id="tcex.tcex_playbook.TcExPlaybook">
-<em class="property">class </em><code class="descclassname">tcex.tcex_playbook.</code><code class="descname">TcExPlaybook</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_playbook.</code><code class="sig-name descname">TcExPlaybook</code><span class="sig-paren">(</span><em class="sig-param">tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Playbook methods for accessing key value store.</p>
 <dl class="method">
-<dt id="tcex.tcex_playbook.TcExPlaybook._parse_out_variable">
-<code class="descname">_parse_out_variable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook._parse_out_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook._parse_out_variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal method to parse the tc_playbook_out_variable arg.</p>
+<dt id="tcex.tcex_playbook.TcExPlaybook._parse_output_variables">
+<code class="sig-name descname">_parse_output_variables</code><span class="sig-paren">(</span><em class="sig-param">variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook._parse_output_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook._parse_output_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the injected output variables or tc_playbook_out_variable arg.</p>
 <p><strong>Example Variable Format</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#App:1234:status!String,#App:1234:status_code!String</span>
 </pre></div>
@@ -243,7 +243,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.add_output">
-<code class="descname">add_output</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>variable_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.add_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.add_output" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_output</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">variable_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.add_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.add_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamically add output to output_data dictionary to be written to DB later.</p>
 <p>This method provides an alternative and more dynamic way to create output variables in an
 App. Instead of storing the output data manually and writing all at once the data can be
@@ -292,659 +292,572 @@ stored inline, when it is generated and then written before the App completes.</
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The variable name to write to storage.</li>
-<li><strong>value</strong> (<em>any</em>) – The value to write to storage.</li>
-<li><strong>variable_type</strong> (<em>string</em>) – The variable type being written.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable name to write to storage.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The value to write to storage.</p></li>
+<li><p><strong>variable_type</strong> (<em>string</em>) – The variable type being written.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.aot_blpop">
-<code class="descname">aot_blpop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.aot_blpop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.aot_blpop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">aot_blpop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.aot_blpop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.aot_blpop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe to AOT action channel.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.aot_rpush">
-<code class="descname">aot_rpush</code><span class="sig-paren">(</span><em>exit_code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.aot_rpush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.aot_rpush" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">aot_rpush</code><span class="sig-paren">(</span><em class="sig-param">exit_code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.aot_rpush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.aot_rpush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Push message to AOT action channel.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.check_output_variable">
-<code class="descname">check_output_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.check_output_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.check_output_variable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_output_variable</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.check_output_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.check_output_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check to see if output variable was requested by downstream app.</p>
 <p>Using the auto generated dictionary of output variables check to see if provided
 variable was requested by downstream app.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) – The variable name, not the full variable.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Boolean value indicator whether a match was found.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable name, not the full variable.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean value indicator whether a match was found.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(boolean)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically determine the variable type and
 call the appropriate method to write the data.  If a non standard
 type is provided the data will be written as RAW data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result string of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result string of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_binary">
-<code class="descname">create_binary</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_binary</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for binary data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_binary_array">
-<code class="descname">create_binary_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_binary_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for binary array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_data_types">
-<code class="descname">create_data_types</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_data_types" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">create_data_types</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_data_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map of standard playbook variable types to create method.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_key_value">
-<code class="descname">create_key_value</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_key_value</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for key/value data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_key_value_array">
-<code class="descname">create_key_value_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_key_value_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for key/value array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_output">
-<code class="descname">create_output</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>variable_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_output" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_output</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">variable_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for Create method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if provided variable was requested by
 a downstream app and if so create the data in the KeyValue DB.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
-<li><strong>variable_type</strong> (<em>string</em>) – The variable type being written.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
+<li><p><strong>variable_type</strong> (<em>string</em>) – The variable type being written.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result string of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result string of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_raw">
-<code class="descname">create_raw</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_raw" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_raw</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for raw data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_string">
-<code class="descname">create_string</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_string</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for string data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_string_array">
-<code class="descname">create_string_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_string_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for string array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_tc_entity">
-<code class="descname">create_tc_entity</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_tc_entity</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for TC entity data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_tc_entity_array">
-<code class="descname">create_tc_entity_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_tc_entity_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for TC entity array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.db">
-<code class="descname">db</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.db" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">db</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the correct KV store for this execution.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.delete">
-<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete method of CRUD operation for all data types.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Result of DB write.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of DB write.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.entity_to_bulk">
-<em class="property">static </em><code class="descname">entity_to_bulk</code><span class="sig-paren">(</span><em>entities</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.entity_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">entity_to_bulk</code><span class="sig-paren">(</span><em class="sig-param">entities</em>, <em class="sig-param">resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.entity_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert Single TC Entity to Bulk format.</p>
 <div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">This method is subject to frequent changes</p>
+<p class="admonition-title">Attention</p>
+<p>This method is subject to frequent changes</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>entities</strong> (<em>dictionary</em>) – TC Entity to be converted to Bulk.</li>
-<li><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entities</strong> (<em>dictionary</em>) – TC Entity to be converted to Bulk.</p></li>
+<li><p><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary representing TC Bulk format.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary representing TC Bulk format.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dictionary)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.exit">
-<code class="descname">exit</code><span class="sig-paren">(</span><em>code=None</em>, <em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.exit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">exit</code><span class="sig-paren">(</span><em class="sig-param">code=None</em>, <em class="sig-param">msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Playbook wrapper on TcEx exit method</p>
 <p>Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
 it a partial success instead.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.hgetall">
-<code class="descname">hgetall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.hgetall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.hgetall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">hgetall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.hgetall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.hgetall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all values for a context.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.indicator_arrays">
-<em class="property">static </em><code class="descname">indicator_arrays</code><span class="sig-paren">(</span><em>tc_entity_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.indicator_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.indicator_arrays" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">indicator_arrays</code><span class="sig-paren">(</span><em class="sig-param">tc_entity_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.indicator_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.indicator_arrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert TCEntityArray to Indicator Type dictionary.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tc_entity_array</strong> (<em>dictionary</em>) – The TCEntityArray to convert.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary containing arrays of indicators for each indicator type.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tc_entity_array</strong> (<em>dictionary</em>) – The TCEntityArray to convert.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary containing arrays of indicators for each indicator type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dictionary)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_bulk">
-<em class="property">static </em><code class="descname">json_to_bulk</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_bulk" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">json_to_bulk</code><span class="sig-paren">(</span><em class="sig-param">tc_data</em>, <em class="sig-param">value_fields</em>, <em class="sig-param">resource_type</em>, <em class="sig-param">resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_bulk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ThreatConnect JSON response to a Bulk Format.</p>
 <div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">This method is subject to frequent changes</p>
+<p class="admonition-title">Attention</p>
+<p>This method is subject to frequent changes</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tc_data</strong> (<em>dictionary</em>) – Array of data returned from TC API call.</li>
-<li><strong>value_fields</strong> (<em>list</em>) – Field names that contain the “value” data.</li>
-<li><strong>resource_type</strong> (<em>string</em>) – The resource type of the tc_data provided.</li>
-<li><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tc_data</strong> (<em>dictionary</em>) – Array of data returned from TC API call.</p></li>
+<li><p><strong>value_fields</strong> (<em>list</em>) – Field names that contain the “value” data.</p></li>
+<li><p><strong>resource_type</strong> (<em>string</em>) – The resource type of the tc_data provided.</p></li>
+<li><p><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary representing a TCEntityArray</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary representing a TCEntityArray</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_entity">
-<em class="property">static </em><code class="descname">json_to_entity</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_entity" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">json_to_entity</code><span class="sig-paren">(</span><em class="sig-param">tc_data</em>, <em class="sig-param">value_fields</em>, <em class="sig-param">resource_type</em>, <em class="sig-param">resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ThreatConnect JSON response to a TCEntityArray.</p>
 <div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">This method is subject to frequent changes.</p>
+<p class="admonition-title">Attention</p>
+<p>This method is subject to frequent changes.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tc_data</strong> (<em>dictionary</em>) – Array of data returned from TC API call.</li>
-<li><strong>value_fields</strong> (<em>list</em>) – Field names that contain the “value” data.</li>
-<li><strong>resource_type</strong> (<em>string</em>) – The resource type of the tc_data provided.</li>
-<li><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tc_data</strong> (<em>dictionary</em>) – Array of data returned from TC API call.</p></li>
+<li><p><strong>value_fields</strong> (<em>list</em>) – Field names that contain the “value” data.</p></li>
+<li><p><strong>resource_type</strong> (<em>string</em>) – The resource type of the tc_data provided.</p></li>
+<li><p><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list representing a TCEntityArray.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list representing a TCEntityArray.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_key_value">
-<em class="property">static </em><code class="descname">json_to_key_value</code><span class="sig-paren">(</span><em>json_data</em>, <em>key_field</em>, <em>value_field=None</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_key_value" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">json_to_key_value</code><span class="sig-paren">(</span><em class="sig-param">json_data</em>, <em class="sig-param">key_field</em>, <em class="sig-param">value_field=None</em>, <em class="sig-param">array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert JSON data to a KeyValue/KeyValueArray.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>json_data</strong> (<em>dictionary|list</em>) – Array/List of JSON data.</li>
-<li><strong>key_field</strong> (<em>string</em>) – Field name for the key.</li>
-<li><strong>value_field</strong> (<em>string</em>) – Field name for the value or use the value of the key field.</li>
-<li><strong>array</strong> (<em>boolean</em>) – Always return array even if only on result.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_data</strong> (<em>dictionary|list</em>) – Array/List of JSON data.</p></li>
+<li><p><strong>key_field</strong> (<em>string</em>) – Field name for the key.</p></li>
+<li><p><strong>value_field</strong> (<em>string</em>) – Field name for the value or use the value of the key field.</p></li>
+<li><p><strong>array</strong> (<em>boolean</em>) – Always return array even if only on result.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary or list representing a KeyValue or KeyValueArray.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary|list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary or list representing a KeyValue or KeyValueArray.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dictionary|list)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="tcex.tcex_playbook.TcExPlaybook.out_variables">
-<code class="descname">out_variables</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.out_variables" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="tcex.tcex_playbook.TcExPlaybook.output_variables">
+<em class="property">property </em><code class="sig-name descname">output_variables</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.output_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return output variables stored as name dict.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="tcex.tcex_playbook.TcExPlaybook.out_variables_type">
-<code class="descname">out_variables_type</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.out_variables_type" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="tcex.tcex_playbook.TcExPlaybook.output_variables_type">
+<em class="property">property </em><code class="sig-name descname">output_variables_type</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.output_variables_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return output variables stored as name-type dict.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.parse_variable">
-<code class="descname">parse_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.parse_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.parse_variable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parse_variable</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.parse_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.parse_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to parse an input or output variable.</p>
 <p><strong>Example Variable</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#App:1234:output!String</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) – The variable name to parse.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Result of parsed string.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable name to parse.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of parsed string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dictionary)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>key</em>, <em>array=False</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">array=False</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if a single variable is passed
 or if “mixed” data is passed and return the results from the DB. It will also
 automatically determine the variable type to read.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>array</strong> (<em>boolean</em>) – Convert string/dict to Array/List before returning.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>array</strong> (<em>boolean</em>) – Convert string/dict to Array/List before returning.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(any)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(any)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_array">
-<code class="descname">read_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_array" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Alias for read method that will read any type (e.g., String, KeyValue) and always</dt>
-<dd>return array.</dd>
+<code class="sig-name descname">read_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_array" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Alias for read method that will read any type (e.g., String, KeyValue) and always</dt><dd><p>return array.</p>
+</dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(any)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(any)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_binary">
-<code class="descname">read_binary</code><span class="sig-paren">(</span><em>key</em>, <em>b64decode=True</em>, <em>decode=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_binary</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">b64decode=True</em>, <em class="sig-param">decode=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>b64decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</li>
-<li><strong>decode</strong> (<em>bool</em>) – If true the data will be decoded to a String.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>b64decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</p></li>
+<li><p><strong>decode</strong> (<em>bool</em>) – If true the data will be decoded to a String.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(bytes|string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(bytes|string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_binary_array">
-<code class="descname">read_binary_array</code><span class="sig-paren">(</span><em>key</em>, <em>b64decode=True</em>, <em>decode=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_binary_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">b64decode=True</em>, <em class="sig-param">decode=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>b64decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</li>
-<li><strong>decode</strong> (<em>bool</em>) – If true the data will be decoded to a String.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>b64decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</p></li>
+<li><p><strong>decode</strong> (<em>bool</em>) – If true the data will be decoded to a String.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_data_types">
-<code class="descname">read_data_types</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_data_types" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">read_data_types</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_data_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map of standard playbook variable types to read method.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_embedded">
-<code class="descname">read_embedded</code><span class="sig-paren">(</span><em>data</em>, <em>parent_var_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_embedded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_embedded</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">parent_var_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_embedded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method for “mixed” variable type.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">read()</span></code> method will automatically determine if the input is a variable or
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">read()</span></code> method will automatically determine if the input is a variable or
 needs to be searched for embedded variables. There usually is no reason to call
 this method directly.</p>
 </div>
@@ -978,191 +891,162 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
     <span class="p">}]</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>string</em>) – The data to parsed and updated from the DB.</li>
-<li><strong>parent_var_type</strong> (<em>string</em>) – The parent type of the embedded variable.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>string</em>) – The data to parsed and updated from the DB.</p></li>
+<li><p><strong>parent_var_type</strong> (<em>string</em>) – The parent type of the embedded variable.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_key_value">
-<code class="descname">read_key_value</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_key_value</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dictionary)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_key_value_array">
-<code class="descname">read_key_value_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_key_value_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_raw">
-<code class="descname">read_raw</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_raw" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_raw</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for raw data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(any)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_string">
-<code class="descname">read_string</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_string</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_string_array">
-<code class="descname">read_string_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_string_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_tc_entity">
-<code class="descname">read_tc_entity</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_tc_entity</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dictionary)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array">
-<code class="descname">read_tc_entity_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_tc_entity_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity array data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
-<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.variable_type">
-<code class="descname">variable_type</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.variable_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.variable_type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">variable_type</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.variable_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.variable_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the Type from the variable string or default to String type.</p>
 <p>The default type is “String” for those cases when the input variable is
 contains not “DB variable” and is just a String.</p>
@@ -1174,41 +1058,39 @@ contains not “DB variable” and is just a String.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;My Data&quot;</span> <span class="n">returns</span> <span class="o">**</span><span class="n">String</span><span class="o">**</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) – The variable to be parsed</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The variable type.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable to be parsed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The variable type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.wrap_embedded_keyvalue">
-<code class="descname">wrap_embedded_keyvalue</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.wrap_embedded_keyvalue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.wrap_embedded_keyvalue" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">wrap_embedded_keyvalue</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.wrap_embedded_keyvalue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.wrap_embedded_keyvalue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap keyvalue embedded variable in double quotes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) – The data with embedded variables.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>string</em>) – The data with embedded variables.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results retrieved from DB</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.write_output">
-<code class="descname">write_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.write_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.write_output" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.write_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.write_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write all stored output data to storage.</p>
 </dd></dl>
 

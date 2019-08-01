@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_profile module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_bin_profile module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,71 +228,34 @@
 <p>TcEx Framework Profile Generation Module.</p>
 <dl class="class">
 <dt id="tcex.tcex_bin_profile.TcExProfile">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_profile.</code><code class="descname">TcExProfile</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_bin_profile.</code><code class="sig-name descname">TcExProfile</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_bin.TcExBin</span></code></p>
 <p>Create profiles for ThreatConnect Job or Playbook App.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</td>
-</tr>
-</tbody>
-</table>
-<dl class="staticmethod">
-<dt id="tcex.tcex_bin_profile.TcExProfile.expand_valid_values">
-<em class="property">static </em><code class="descname">expand_valid_values</code><span class="sig-paren">(</span><em>valid_values</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.expand_valid_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.expand_valid_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expand supported playbook variables to their full list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>valid_values</strong> (<em>list</em>) – The list of valid values for Choice or MultiChoice inputs.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An expanded list of valid values for Choice or MultiChoice inputs.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
+</dd>
+</dl>
 <dl class="method">
-<dt id="tcex.tcex_bin_profile.TcExProfile.gen_permutations">
-<code class="descname">gen_permutations</code><span class="sig-paren">(</span><em>index=0</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.gen_permutations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.gen_permutations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate recursively over layout.json parameter names.</p>
-<p>TODO: Add indicator values.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – The current index position in the layout names list.</li>
-<li><strong>args</strong> (<em>list</em><em>, </em><em>optional</em>) – Defaults to None. The current list of args.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="tcex.tcex_bin_profile.TcExProfile._create_tcex_dirs">
+<em class="property">static </em><code class="sig-name descname">_create_tcex_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile._create_tcex_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile._create_tcex_dirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create tcex.d directory and sub directories.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.load_profile_include">
-<code class="descname">load_profile_include</code><span class="sig-paren">(</span><em>include_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.load_profile_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.load_profile_include" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_profile_include</code><span class="sig-paren">(</span><em class="sig-param">include_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.load_profile_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.load_profile_include" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load included configuration files.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>include_directory</strong> (<em>str</em>) – The path of the profile include directory.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_directory</strong> (<em>str</em>) – The path of the profile include directory.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.load_profiles">
-<code class="descname">load_profiles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.load_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.load_profiles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_profiles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.load_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.load_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return configuration data.</p>
 <p>Load on first access, otherwise return existing data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="p">{</span>
@@ -307,153 +270,88 @@
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.load_profiles_from_file">
-<code class="descname">load_profiles_from_file</code><span class="sig-paren">(</span><em>fqfn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.load_profiles_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.load_profiles_from_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_profiles_from_file</code><span class="sig-paren">(</span><em class="sig-param">fqfn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.load_profiles_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.load_profiles_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load profiles from file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fqfn</strong> (<em>str</em>) – Fully qualified file name.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_bin_profile.TcExProfile.permutations">
-<code class="descname">permutations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.permutations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.permutations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process layout.json names/display to get all permutations of args.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_bin_profile.TcExProfile.print_permutations">
-<code class="descname">print_permutations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.print_permutations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.print_permutations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print all valid permutations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fqfn</strong> (<em>str</em>) – Fully qualified file name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_create">
-<code class="descname">profile_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a profile.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_delete">
-<code class="descname">profile_delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete an existing profile.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_setting_default_args">
-<em class="property">static </em><code class="descname">profile_setting_default_args</code><span class="sig-paren">(</span><em>ij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_setting_default_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_setting_default_args" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">profile_setting_default_args</code><span class="sig-paren">(</span><em class="sig-param">ij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_setting_default_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_setting_default_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the default args for this profile.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ij</strong> (<em>dict</em>) – The install.json contents.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The default args for a Job or Playbook App.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ij</strong> (<em>dict</em>) – The install.json contents.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The default args for a Job or Playbook App.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_settings_args">
-<code class="descname">profile_settings_args</code><span class="sig-paren">(</span><em>ij</em>, <em>required</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_settings_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_settings_args" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_settings_args</code><span class="sig-paren">(</span><em class="sig-param">ij</em>, <em class="sig-param">required</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_settings_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_settings_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return args based on install.json or layout.json params.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ij</strong> (<em>dict</em>) – The install.json contents.</li>
-<li><strong>required</strong> (<em>bool</em>) – If True only required args will be returned.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ij</strong> (<em>dict</em>) – The install.json contents.</p></li>
+<li><p><strong>required</strong> (<em>bool</em>) – If True only required args will be returned.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Dictionary of required or optional App args.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary of required or optional App args.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_bin_profile.TcExProfile.profile_settings_args_install_json">
-<code class="descname">profile_settings_args_install_json</code><span class="sig-paren">(</span><em>ij</em>, <em>required</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_settings_args_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_settings_args_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return args based on install.json params.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ij</strong> (<em>dict</em>) – The install.json contents.</li>
-<li><strong>required</strong> (<em>bool</em>) – If True only required args will be returned.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Dictionary of required or optional App args.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_bin_profile.TcExProfile.profile_settings_args_layout_json">
-<code class="descname">profile_settings_args_layout_json</code><span class="sig-paren">(</span><em>required</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_settings_args_layout_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_settings_args_layout_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return args based on layout.json and conditional rendering.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>required</strong> (<em>bool</em>) – If True only required args will be returned.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of required or optional App args.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_settings_validations">
-<code class="descname">profile_settings_validations</code><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_settings_validations" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">profile_settings_validations</code><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_settings_validations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create 2 default validations rules for each output variable.</p>
 <ul class="simple">
-<li>One validation rule to check that the output variable is not null.</li>
-<li>One validation rule to ensure the output value is of the correct type.</li>
+<li><p>One validation rule to check that the output variable is not null.</p></li>
+<li><p>One validation rule to ensure the output value is of the correct type.</p></li>
 </ul>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_update">
-<code class="descname">profile_update</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_update</code><span class="sig-paren">(</span><em class="sig-param">profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update an existing profile with new parameters or remove deprecated parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_update_args_v2">
-<code class="descname">profile_update_args_v2</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update_args_v2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update_args_v2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_update_args_v2</code><span class="sig-paren">(</span><em class="sig-param">profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update_args_v2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update_args_v2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update v1 profile args to v2 schema for args.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;args&quot;</span><span class="o">:</span> <span class="p">{</span>
     <span class="s2">&quot;app&quot;</span><span class="o">:</span> <span class="p">{</span>
@@ -467,19 +365,16 @@
 <span class="p">},</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_update_args_v3">
-<code class="descname">profile_update_args_v3</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update_args_v3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update_args_v3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_update_args_v3</code><span class="sig-paren">(</span><em class="sig-param">profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update_args_v3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update_args_v3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update v1 profile args to v3 schema for args.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;args&quot;</span><span class="o">:</span> <span class="p">{</span>
     <span class="s2">&quot;app&quot;</span><span class="o">:</span> <span class="p">{</span>
@@ -498,102 +393,65 @@
 <span class="p">},</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_update_schema">
-<em class="property">static </em><code class="descname">profile_update_schema</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update_schema" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">profile_update_schema</code><span class="sig-paren">(</span><em class="sig-param">profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_update_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_update_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update profile to latest schema.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.profile_write">
-<code class="descname">profile_write</code><span class="sig-paren">(</span><em>profile</em>, <em>outfile=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_write" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_write</code><span class="sig-paren">(</span><em class="sig-param">profile</em>, <em class="sig-param">outfile=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.profile_write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.profile_write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the profile to the output directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</li>
-<li><strong>outfile</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The filename for the profile.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<em>dict</em>) – The dictionary containting the profile settings.</p></li>
+<li><p><strong>outfile</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The filename for the profile.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.replace_validation">
-<code class="descname">replace_validation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.replace_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.replace_validation" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">replace_validation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.replace_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.replace_validation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace the validation configuration in the selected profile.</p>
 <p>TODO: Update this method.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.validate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param">profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check to see if any args are “missing” from profile.</p>
 <p>Validate all args from install.json are in the profile.  This can be helpful to validate
 that any new args added to App are included in the profiles.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This method does not work with layout.json Apps.</p>
+<p class="admonition-title">Note</p>
+<p>This method does not work with layout.json Apps.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> (<em>dict</em>) – The current profile to validate.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_bin_profile.TcExProfile.validate_layout_display">
-<code class="descname">validate_layout_display</code><span class="sig-paren">(</span><em>table</em>, <em>display_condition</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.validate_layout_display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.validate_layout_display" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to see if the display condition passes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>table</strong> (<em>str</em>) – The name of the DB table which hold the App data.</li>
-<li><strong>display_condition</strong> (<em>str</em>) – The “where” clause of the DB SQL statement.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the row count is greater than 0.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>profile</strong> (<em>dict</em>) – The current profile to validate.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_profile.TcExProfile.validate_profile_exists">
-<code class="descname">validate_profile_exists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.validate_profile_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.validate_profile_exists" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate_profile_exists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_profile.html#TcExProfile.validate_profile_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_profile.TcExProfile.validate_profile_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the provided profiles name exists.</p>
 </dd></dl>
 

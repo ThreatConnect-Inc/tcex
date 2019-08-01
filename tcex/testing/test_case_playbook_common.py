@@ -49,15 +49,33 @@ class TestCasePlaybookCommon(TestCase):
         profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
+
+            redis_data = self.redis_client.hgetall(self.context)
+            outputs = {}
+            for variable in self.output_variables:
+                data = redis_data.get(variable.encode('utf-8'))
+
+                # validate redis variables
+                if data is None:
+                    # log warning missing output data
+                    self.log.error(
+                        '[{}] Missing redis output for variable {}'.format(profile_name, variable)
+                    )
+                else:
+                    data = json.loads(data.decode('utf-8'))
+
+                # validate validation variables
+                validation_output = (profile_data.get('outputs') or {}).get(variable)
+                if validation_output is None and profile_data.get('outputs') is not None:
+                    self.log.error(
+                        '[{}] Missing validations rule: {}'.format(profile_name, variable)
+                    )
+                outputs[variable] = {'expected_output': data, 'op': 'eq'}
+
             if profile_data.get('outputs') is None:
-                redis_data = self.redis_client.hgetall(self.context)
-                outputs = {}
-                for variable, data in redis_data.items():
-                    variable = variable.decode('utf-8')
-                    data = data.decode('utf-8')
-                    if variable in self.output_variables:
-                        outputs[variable] = {'expected_output': json.loads(data), 'op': 'eq'}
+                # update the profile
                 profile_data['outputs'] = outputs
+
                 fh.seek(0)
                 fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
                 fh.truncate()

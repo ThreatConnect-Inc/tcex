@@ -50,7 +50,7 @@ __main__.py
 lib*
 *.log
 local-*
-log
+log/*
 requirements.txt
 tcex.json
 tcex.d
@@ -60,3 +60,4 @@ threatconnect*
 #-------------------------------------------------
 # Other Nonsense
 #-------------------------------------------------
+.pytest_cache

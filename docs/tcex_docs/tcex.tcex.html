@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,719 +228,577 @@
 <p>TcEx Framework</p>
 <dl class="class">
 <dt id="tcex.tcex.TcEx">
-<em class="property">class </em><code class="descclassname">tcex.tcex.</code><code class="descname">TcEx</code><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex.</code><code class="sig-name descname">TcEx</code><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Provides basic functionality for all types of TxEx Apps.</p>
 <dl class="method">
 <dt id="tcex.tcex.TcEx._association_types">
-<code class="descname">_association_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._association_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._association_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_association_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._association_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._association_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve Custom Indicator Associations types from the ThreatConnect API.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex.TcEx._log">
-<code class="descname">_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send System and App data to logs.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._log_app_data">
-<code class="descname">_log_app_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log_app_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log_app_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log the App data information.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._log_platform">
-<code class="descname">_log_platform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log_platform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log_platform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log the current Platform.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._log_python_version">
-<code class="descname">_log_python_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log_python_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log_python_version" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log the current Python version.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._log_tc_proxy">
-<code class="descname">_log_tc_proxy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log_tc_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log_tc_proxy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log the proxy settings.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._log_tcex_version">
-<code class="descname">_log_tcex_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log_tcex_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log_tcex_version" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log the current TcEx version number.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._logger">
-<code class="descname">_logger</code><span class="sig-paren">(</span><em>fh=False</em>, <em>clear_handler=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create TcEx app logger instance.</p>
-<p>The logger is accessible via the <code class="docutils literal notranslate"><span class="pre">tc.log.&lt;level&gt;</span></code> call.</p>
-<p><strong>Logging examples</strong></p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;logging debug&#39;</span><span class="p">)</span>
-<span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;logging info&#39;</span><span class="p">)</span>
-<span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;logging warning&#39;</span><span class="p">)</span>
-<span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;logging error&#39;</span><span class="p">)</span>
-</pre></div>
-</td></tr></table></div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>stream_only</em>) – False): If True only the Stream handler will be enabled.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An instance of logging</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">logger</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._logger_api">
-<code class="descname">_logger_api</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add API logging handler.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._logger_fh">
-<code class="descname">_logger_fh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger_fh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger_fh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add File logging handler.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._logger_stream">
-<code class="descname">_logger_stream</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger_stream" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add stream logging handler.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.tcex.TcEx._resources">
-<code class="descname">_resources</code><span class="sig-paren">(</span><em>custom_indicators=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._resources" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_resources</code><span class="sig-paren">(</span><em class="sig-param">custom_indicators=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._resources" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the resource module.</p>
 <p>This method will make a request to the ThreatConnect API to dynamically
 build classes to support custom Indicators.  All other resources are available
 via this class.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Resource Classes can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.resources.&lt;Class&gt;</span></code> or using
+<p class="admonition-title">Note</p>
+<p>Resource Classes can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.resources.&lt;Class&gt;</span></code> or using
 tcex.resource(‘&lt;resource name&gt;’).</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._signal_handler">
-<code class="descname">_signal_handler</code><span class="sig-paren">(</span><em>signal_interupt</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._signal_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_signal_handler</code><span class="sig-paren">(</span><em class="sig-param">signal_interupt</em>, <em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._signal_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle singal interrupt.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.args">
-<code class="descname">args</code><a class="headerlink" href="#tcex.tcex.TcEx.args" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">args</code><a class="headerlink" href="#tcex.tcex.TcEx.args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argparser args Namespace.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.batch">
-<code class="descname">batch</code><span class="sig-paren">(</span><em>owner</em>, <em>action=None</em>, <em>attribute_write_type=None</em>, <em>halt_on_error=False</em>, <em>playbook_triggers_enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">batch</code><span class="sig-paren">(</span><em class="sig-param">owner</em>, <em class="sig-param">action=None</em>, <em class="sig-param">attribute_write_type=None</em>, <em class="sig-param">halt_on_error=False</em>, <em class="sig-param">playbook_triggers_enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Batch</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.cache">
-<code class="descname">cache</code><span class="sig-paren">(</span><em>domain</em>, <em>data_type</em>, <em>ttl_minutes=None</em>, <em>mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.cache" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cache</code><span class="sig-paren">(</span><em class="sig-param">domain</em>, <em class="sig-param">data_type</em>, <em class="sig-param">ttl_minutes=None</em>, <em class="sig-param">mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the Cache module.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>domain</strong> (<em>str</em>) – The domain can be either “system”, “organization”, or “local”. When using
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<em>str</em>) – The domain can be either “system”, “organization”, or “local”. When using
 “organization” the data store can be accessed by any Application in the entire org,
 while “local” access is restricted to the App writing the data. The “system” option
-should not be used in almost all cases.</li>
-<li><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</li>
-<li><strong>ttl_minutes</strong> (<em>int</em>) – The number of minutes the cache is valid.</li>
+should not be used in almost all cases.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</p></li>
+<li><p><strong>ttl_minutes</strong> (<em>int</em>) – The number of minutes the cache is valid.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of the Cache Class.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Cache Class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.data_filter">
-<code class="descname">data_filter</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.data_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.data_filter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">data_filter</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.data_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.data_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of the Data Filter Class.</p>
 <p>A simple helper module to filter results from ThreatConnect API or other data
 source.  For example if results need to be filtered by an unsupported field the module
 allows you to pass the data array/list in and specify one or more filters to get just the
 results required.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>list</em>) – The list of dictionary structure to filter.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An instance of DataFilter Class</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(object)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em>) – The list of dictionary structure to filter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of DataFilter Class</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(object)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.datastore">
-<code class="descname">datastore</code><span class="sig-paren">(</span><em>domain</em>, <em>data_type</em>, <em>mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.datastore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.datastore" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">datastore</code><span class="sig-paren">(</span><em class="sig-param">domain</em>, <em class="sig-param">data_type</em>, <em class="sig-param">mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.datastore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.datastore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the DataStore module.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>domain</strong> (<em>str</em>) – The domain can be either “system”, “organization”, or “local”. When using
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<em>str</em>) – The domain can be either “system”, “organization”, or “local”. When using
 “organization” the data store can be accessed by any Application in the entire org,
 while “local” access is restricted to the App writing the data. The “system” option
-should not be used in almost all cases.</li>
-<li><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</li>
+should not be used in almost all cases.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of the DataStore Class.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the DataStore Class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.default_args">
-<code class="descname">default_args</code><a class="headerlink" href="#tcex.tcex.TcEx.default_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>All args parsed before App args are added.</p>
+<em class="property">property </em><code class="sig-name descname">default_args</code><a class="headerlink" href="#tcex.tcex.TcEx.default_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all args parsed before App args are added.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.error_codes">
-<code class="descname">error_codes</code><a class="headerlink" href="#tcex.tcex.TcEx.error_codes" title="Permalink to this definition">¶</a></dt>
-<dd><p>ThreatConnect error codes.</p>
+<em class="property">property </em><code class="sig-name descname">error_codes</code><a class="headerlink" href="#tcex.tcex.TcEx.error_codes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return TcEx error codes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.exit">
-<code class="descname">exit</code><span class="sig-paren">(</span><em>code=None</em>, <em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.exit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">exit</code><span class="sig-paren">(</span><em class="sig-param">code=None</em>, <em class="sig-param">msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Application exit method with proper exit code</p>
 <p>The method will run the Python standard sys.exit() with the exit code
 previously defined via <a class="reference internal" href="#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit_code()</span></code></a> or provided
 during the call of this method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</li>
-<li><strong>msg</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – A message to log and add to message tc output.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</p></li>
+<li><p><strong>msg</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – A message to log and add to message tc output.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.exit_code">
-<code class="descname">exit_code</code><a class="headerlink" href="#tcex.tcex.TcEx.exit_code" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">exit_code</code><a class="headerlink" href="#tcex.tcex.TcEx.exit_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current exit code.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.expand_indicators">
-<em class="property">static </em><code class="descname">expand_indicators</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.expand_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">expand_indicators</code><span class="sig-paren">(</span><em class="sig-param">indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.expand_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process indicators expanding file hashes/custom indicators into multiple entries.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator</strong> (<em>string</em>) – ” : ” delimited string</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list of indicators split on ” : “.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indicator</strong> (<em>string</em>) – ” : ” delimited string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of indicators split on ” : “.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.get_type_from_api_entity">
-<code class="descname">get_type_from_api_entity</code><span class="sig-paren">(</span><em>api_entity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.get_type_from_api_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.get_type_from_api_entity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the object type as a string given a api entity.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>api_entity</strong> – </td>
-</tr>
-</tbody>
-</table>
+<code class="sig-name descname">get_type_from_api_entity</code><span class="sig-paren">(</span><em class="sig-param">api_entity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.get_type_from_api_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.get_type_from_api_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object type as a string given a api entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>api_entity</strong> – </p>
+</dd>
+</dl>
 <p>Returns:</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.group_types">
-<code class="descname">group_types</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">group_types</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all defined ThreatConnect Group types.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of ThreatConnect Group types.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of ThreatConnect Group types.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.group_types_data">
-<code class="descname">group_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>All supported ThreatConnect Group types.</p>
+<em class="property">property </em><code class="sig-name descname">group_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return supported ThreatConnect Group types.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.handle_error">
-<code class="descname">handle_error</code><span class="sig-paren">(</span><em>code</em>, <em>message_values=None</em>, <em>raise_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.handle_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.handle_error" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">handle_error</code><span class="sig-paren">(</span><em class="sig-param">code</em>, <em class="sig-param">message_values=None</em>, <em class="sig-param">raise_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.handle_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.handle_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise RuntimeError</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>code</strong> (<em>integer</em>) – The error code from API or SDK.</li>
-<li><strong>message</strong> (<em>string</em>) – The error message from API or SDK.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> (<em>integer</em>) – The error code from API or SDK.</p></li>
+<li><p><strong>message</strong> (<em>string</em>) – The error message from API or SDK.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.indicator_associations_types_data">
-<code class="descname">indicator_associations_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_associations_types_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">indicator_associations_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_associations_types_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ThreatConnect associations type data.</p>
 <p>Retrieve the data from the API if it hasn’t already been retrieved.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of ThreatConnect associations types.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of ThreatConnect associations types.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(dictionary)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.indicator_types">
-<code class="descname">indicator_types</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">indicator_types</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ThreatConnect Indicator types.</p>
 <p>Retrieve the data from the API if it hasn’t already been retrieved.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of ThreatConnect Indicator types.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of ThreatConnect Indicator types.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.indicator_types_data">
-<code class="descname">indicator_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">indicator_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ThreatConnect indicator types data.</p>
 <p>Retrieve the data from the API if it hasn’t already been retrieved.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of ThreatConnect Indicator data.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dict)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of ThreatConnect Indicator data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(dict)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.install_json">
-<code class="descname">install_json</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">install_json</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return contents of install.json configuration file, loading from disk if required.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.install_json_params">
-<code class="descname">install_json_params</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json_params" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">install_json_params</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse params from install.json into a dict by name.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex.TcEx.log">
+<em class="property">property </em><code class="sig-name descname">log</code><a class="headerlink" href="#tcex.tcex.TcEx.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a valid logger.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex.TcEx.message_tc">
-<code class="descname">message_tc</code><span class="sig-paren">(</span><em>message</em>, <em>max_length=255</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.message_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">message_tc</code><span class="sig-paren">(</span><em class="sig-param">message</em>, <em class="sig-param">max_length=255</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.message_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to message_tc file in TcEX specified directory.</p>
 <p>This method is used to set and exit message in the ThreatConnect Platform.
 ThreatConnect only supports files of max_message_length.  Any data exceeding
 this limit will be truncated by this method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (<em>string</em>) – The message to add to message_tc file</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>string</em>) – The message to add to message_tc file</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.metric">
-<code class="descname">metric</code><span class="sig-paren">(</span><em>name</em>, <em>description</em>, <em>data_type</em>, <em>interval</em>, <em>keyed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.metric" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">metric</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">description</em>, <em class="sig-param">data_type</em>, <em class="sig-param">interval</em>, <em class="sig-param">keyed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the Metrics module.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>string</em>) – The name for the metric.</li>
-<li><strong>description</strong> (<em>string</em>) – The description of the metric.</li>
-<li><strong>data_type</strong> (<em>string</em>) – The type of metric: Sum, Count, Min, Max, First, Last, and Average.</li>
-<li><strong>interval</strong> (<em>string</em>) – The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.</li>
-<li><strong>keyed</strong> (<em>boolean</em>) – Indicates whether the data will have a keyed value.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – The name for the metric.</p></li>
+<li><p><strong>description</strong> (<em>string</em>) – The description of the metric.</p></li>
+<li><p><strong>data_type</strong> (<em>string</em>) – The type of metric: Sum, Count, Min, Max, First, Last, and Average.</p></li>
+<li><p><strong>interval</strong> (<em>string</em>) – The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.</p></li>
+<li><p><strong>keyed</strong> (<em>boolean</em>) – Indicates whether the data will have a keyed value.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of the Metrics Class.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(object)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Metrics Class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(object)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.notification">
-<code class="descname">notification</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.notification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.notification" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">notification</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.notification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.notification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the Notification module.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An instance of the Notification Class.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(object)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An instance of the Notification Class.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(object)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.parser">
-<code class="descname">parser</code><a class="headerlink" href="#tcex.tcex.TcEx.parser" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">parser</code><a class="headerlink" href="#tcex.tcex.TcEx.parser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instance tcex args parser.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.playbook">
-<code class="descname">playbook</code><a class="headerlink" href="#tcex.tcex.TcEx.playbook" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">playbook</code><a class="headerlink" href="#tcex.tcex.TcEx.playbook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Playbook Module.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Playbook methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.playbook.&lt;method&gt;</span></code>.</p>
+<p class="admonition-title">Note</p>
+<p>Playbook methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.playbook.&lt;method&gt;</span></code>.</p>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.proxies">
-<code class="descname">proxies</code><a class="headerlink" href="#tcex.tcex.TcEx.proxies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Formats proxy configuration into required format for Python Requests module.</p>
+<em class="property">property </em><code class="sig-name descname">proxies</code><a class="headerlink" href="#tcex.tcex.TcEx.proxies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the proxy configuration for Python Requests module.</p>
 <p>Generates a dictionary for use with the Python Requests module format
 when proxy is required for remote connections.</p>
 <p><strong>Example Response</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;http://user:pass@10.10.1.10:3128/&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of proxy settings</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary of proxy settings</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(dictionary)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.rargs">
-<code class="descname">rargs</code><a class="headerlink" href="#tcex.tcex.TcEx.rargs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Argparser args Namespace with Playbook args automatically resolved (resolved args).</p>
+<em class="property">property </em><code class="sig-name descname">rargs</code><a class="headerlink" href="#tcex.tcex.TcEx.rargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return argparser args Namespace with Playbook args automatically resolved.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.request">
-<code class="descname">request</code><span class="sig-paren">(</span><em>session=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.request" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">request</code><span class="sig-paren">(</span><em class="sig-param">session=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of the Request Class.</p>
 <p>A wrapper on the Python Requests module that provides a different interface for creating
 requests. The session property of this instance has built-in logging, session level
 retries, and preconfigured proxy configuration.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An instance of Request Class</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(object)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An instance of Request Class</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(object)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.resource">
-<code class="descname">resource</code><span class="sig-paren">(</span><em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.resource" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">resource</code><span class="sig-paren">(</span><em class="sig-param">resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.resource" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of Resource Class with dynamic type.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_type</strong> – The resource type name (e.g Adversary, User Agent, etc).</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Instance of Resource Object child class.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(object)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>resource_type</strong> – The resource type name (e.g Adversary, User Agent, etc).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of Resource Object child class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(object)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.results_tc">
-<code class="descname">results_tc</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.results_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.results_tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">results_tc</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.results_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.results_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to results_tc file in TcEX specified directory.</p>
 <p>The TcEx platform support persistent values between executions of the App.  This
 method will store the values for TC to read and put into the Database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The data key to be stored.</li>
-<li><strong>value</strong> (<em>string</em>) – The data value to be stored.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The data key to be stored.</p></li>
+<li><p><strong>value</strong> (<em>string</em>) – The data value to be stored.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.s">
-<code class="descname">s</code><span class="sig-paren">(</span><em>data</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.s" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">s</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.s" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decode value using correct Python 2/3 method.</p>
 <p>This method is intended to replace the <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_string()</span></code> method with
 better logic to handle poorly encoded unicode data in Python2 and still work in Python3.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>any</em>) – Data to ve validated and (de)encoded</li>
-<li><strong>errors</strong> (<em>string</em>) – What method to use when dealing with errors.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>any</em>) – Data to ve validated and (de)encoded</p></li>
+<li><p><strong>errors</strong> (<em>string</em>) – What method to use when dealing with errors.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Return decoded data</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return decoded data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.safe_group_name">
-<em class="property">static </em><code class="descname">safe_group_name</code><span class="sig-paren">(</span><em>group_name</em>, <em>group_max_length=100</em>, <em>ellipsis=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_group_name" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">safe_group_name</code><span class="sig-paren">(</span><em class="sig-param">group_name</em>, <em class="sig-param">group_max_length=100</em>, <em class="sig-param">ellipsis=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_group_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Truncate group name to match limit breaking on space and optionally add an ellipsis.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Currently the ThreatConnect group name limit is 100 characters.</p>
+<p class="admonition-title">Note</p>
+<p>Currently the ThreatConnect group name limit is 100 characters.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>group_name</strong> (<em>string</em>) – The raw group name to be truncated.</li>
-<li><strong>group_max_length</strong> (<em>int</em>) – The max length of the group name.</li>
-<li><strong>ellipsis</strong> (<em>boolean</em>) – If true the truncated name will have ‘…’ appended.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group_name</strong> (<em>string</em>) – The raw group name to be truncated.</p></li>
+<li><p><strong>group_max_length</strong> (<em>int</em>) – The max length of the group name.</p></li>
+<li><p><strong>ellipsis</strong> (<em>boolean</em>) – If true the truncated name will have ‘…’ appended.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The truncated group name with optional ellipsis.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The truncated group name with optional ellipsis.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.safe_indicator">
-<code class="descname">safe_indicator</code><span class="sig-paren">(</span><em>indicator</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_indicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicator encode value for safe HTTP request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>indicator</strong> (<em>string</em>) – Indicator to URL Encode</li>
-<li><strong>errors</strong> (<em>string</em>) – The error handler type.</li>
+<code class="sig-name descname">safe_indicator</code><span class="sig-paren">(</span><em class="sig-param">indicator</em>, <em class="sig-param">errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format indicator value for safe HTTP request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator</strong> (<em>string</em>) – Indicator to URL Encode</p></li>
+<li><p><strong>errors</strong> (<em>string</em>) – The error handler type.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The urlencoded string</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The urlencoded string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.safe_rt">
-<em class="property">static </em><code class="descname">safe_rt</code><span class="sig-paren">(</span><em>resource_type</em>, <em>lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_rt" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">safe_rt</code><span class="sig-paren">(</span><em class="sig-param">resource_type</em>, <em class="sig-param">lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_rt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format the Resource Type.</p>
 <p>Takes Custom Indicator types with a space character and return a <em>safe</em> string.</p>
 <p>(e.g. <em>User Agent</em> is converted to User_Agent or user_agent.)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>resource_type</strong> (<em>string</em>) – The resource type to format.</li>
-<li><strong>lower</strong> (<em>boolean</em>) – Return type in all lower case</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>resource_type</strong> (<em>string</em>) – The resource type to format.</p></li>
+<li><p><strong>lower</strong> (<em>boolean</em>) – Return type in all lower case</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The formatted resource type.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The formatted resource type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.safe_tag">
-<code class="descname">safe_tag</code><span class="sig-paren">(</span><em>tag</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_tag" title="Permalink to this definition">¶</a></dt>
-<dd><p>URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tag</strong> (<em>string</em>) – The tag to be truncated</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The truncated tag</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
+<code class="sig-name descname">safe_tag</code><span class="sig-paren">(</span><em class="sig-param">tag</em>, <em class="sig-param">errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tag</strong> (<em>string</em>) – The tag to be truncated</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The truncated tag</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.safe_url">
-<code class="descname">safe_url</code><span class="sig-paren">(</span><em>url</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_url" title="Permalink to this definition">¶</a></dt>
-<dd><p>URL encode value for safe HTTP request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>string</em>) – The string to URL Encode.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The urlencoded string.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
+<code class="sig-name descname">safe_url</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode value for safe HTTP request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>url</strong> (<em>string</em>) – The string to URL Encode.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The urlencoded string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.safetag">
-<code class="descname">safetag</code><span class="sig-paren">(</span><em>tag</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safetag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safetag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper method for safe_tag.</p>
+<code class="sig-name descname">safetag</code><span class="sig-paren">(</span><em class="sig-param">tag</em>, <em class="sig-param">errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safetag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safetag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preserve safetag method name for older Apps.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.safeurl">
-<code class="descname">safeurl</code><span class="sig-paren">(</span><em>url</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safeurl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safeurl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper method for safe_url.</p>
+<code class="sig-name descname">safeurl</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safeurl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safeurl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preserve safeurl method name for older Apps.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.session">
-<code class="descname">session</code><a class="headerlink" href="#tcex.tcex.TcEx.session" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">session</code><a class="headerlink" href="#tcex.tcex.TcEx.session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.ti">
-<code class="descname">ti</code><a class="headerlink" href="#tcex.tcex.TcEx.ti" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">ti</code><a class="headerlink" href="#tcex.tcex.TcEx.ti" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Threat Intel Module.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Threat Intell methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.ti.&lt;method&gt;</span></code>.</p>
+<p class="admonition-title">Note</p>
+<p>Threat Intell methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.ti.&lt;method&gt;</span></code>.</p>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.utils">
-<code class="descname">utils</code><a class="headerlink" href="#tcex.tcex.TcEx.utils" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">utils</code><a class="headerlink" href="#tcex.tcex.TcEx.utils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Utils module.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Utils methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.utils.&lt;method&gt;</span></code>.</p>
+<p class="admonition-title">Note</p>
+<p>Utils methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.utils.&lt;method&gt;</span></code>.</p>
 </div>
 </dd></dl>
 

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_vault module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_vault module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,54 +228,44 @@
 <p>TcEx Framework Value Module</p>
 <dl class="class">
 <dt id="tcex.tcex_vault.TcExVault">
-<em class="property">class </em><code class="descclassname">tcex.tcex_vault.</code><code class="descname">TcExVault</code><span class="sig-paren">(</span><em>url=None</em>, <em>token=None</em>, <em>cert=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_vault.</code><code class="sig-name descname">TcExVault</code><span class="sig-paren">(</span><em class="sig-param">url=None</em>, <em class="sig-param">token=None</em>, <em class="sig-param">cert=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Add Value functionality to TcEx Framework</p>
 <dl class="method">
 <dt id="tcex.tcex_vault.TcExVault.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>lease='1h'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">lease='1h'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create key/value pair in Vault.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The data key.</li>
-<li><strong>value</strong> (<em>string</em>) – The data value.</li>
-<li><strong>lease</strong> (<em>string</em>) – The least time.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The data key.</p></li>
+<li><p><strong>value</strong> (<em>string</em>) – The data value.</p></li>
+<li><p><strong>lease</strong> (<em>string</em>) – The least time.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_vault.TcExVault.delete">
-<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete data from Vault for the provided key.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The data key.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The data key.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_vault.TcExVault.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from Vault for the provided key.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The data key.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The data key.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

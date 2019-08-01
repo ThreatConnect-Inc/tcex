@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti_group module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_ti_group module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,19 +228,19 @@
 <p>ThreatConnect Batch Import Module</p>
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Adversary">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Adversary</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Adversary" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Adversary</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Adversary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Adversary Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Campaign">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Campaign</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Campaign" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Campaign</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Campaign" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Campaign Object</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Campaign.first_seen">
-<code class="descname">first_seen</code><a class="headerlink" href="#tcex.tcex_ti_group.Campaign.first_seen" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">first_seen</code><a class="headerlink" href="#tcex.tcex_ti_group.Campaign.first_seen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Document first seen.</p>
 </dd></dl>
 
@@ -248,30 +248,30 @@
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Document">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Document" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Document</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">file_name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Document Object</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Document.file_content">
-<code class="descname">file_content</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.file_content" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">file_content</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.file_content" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group files.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Document.file_data">
-<code class="descname">file_data</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.file_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">file_data</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.file_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group files.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Document.malware">
-<code class="descname">malware</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.malware" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">malware</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.malware" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Document malware.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Document.password">
-<code class="descname">password</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.password" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">password</code><a class="headerlink" href="#tcex.tcex_ti_group.Document.password" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Document password.</p>
 </dd></dl>
 
@@ -279,24 +279,24 @@
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Email">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Email</code><span class="sig-paren">(</span><em>name</em>, <em>subject</em>, <em>header</em>, <em>body</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Email" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Email</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">subject</em>, <em class="sig-param">header</em>, <em class="sig-param">body</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Email" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Email Object</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Email.from_addr">
-<code class="descname">from_addr</code><a class="headerlink" href="#tcex.tcex_ti_group.Email.from_addr" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">from_addr</code><a class="headerlink" href="#tcex.tcex_ti_group.Email.from_addr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Email to.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Email.score">
-<code class="descname">score</code><a class="headerlink" href="#tcex.tcex_ti_group.Email.score" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">score</code><a class="headerlink" href="#tcex.tcex_ti_group.Email.score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Email to.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Email.to_addr">
-<code class="descname">to_addr</code><a class="headerlink" href="#tcex.tcex_ti_group.Email.to_addr" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">to_addr</code><a class="headerlink" href="#tcex.tcex_ti_group.Email.to_addr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Email to.</p>
 </dd></dl>
 
@@ -304,18 +304,18 @@
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Event">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Event" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Event</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Event Object</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Event.event_date">
-<code class="descname">event_date</code><a class="headerlink" href="#tcex.tcex_ti_group.Event.event_date" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">event_date</code><a class="headerlink" href="#tcex.tcex_ti_group.Event.event_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Events “event date” value.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Event.status">
-<code class="descname">status</code><a class="headerlink" href="#tcex.tcex_ti_group.Event.status" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">status</code><a class="headerlink" href="#tcex.tcex_ti_group.Event.status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Events status value.</p>
 </dd></dl>
 
@@ -323,216 +323,192 @@
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Group">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>group_type</em>, <em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Group</code><span class="sig-paren">(</span><em class="sig-param">group_type</em>, <em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch Group Object</p>
 <dl class="method">
 <dt id="tcex.tcex_ti_group.Group.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return string representation of object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti_group.Group.add_file">
-<code class="descname">add_file</code><span class="sig-paren">(</span><em>filename</em>, <em>file_content</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.add_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.add_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">file_content</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.add_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.add_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a file for Document and Report types.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">document</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;My Document&#39;</span><span class="p">)</span>
 <span class="n">document</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s1">&#39;my_file.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;my contents&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<em>str</em>) – The name of the file.</li>
-<li><strong>file_content</strong> (<em>bytes|method|str</em>) – The contents of the file or callback to get contents.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – The name of the file.</p></li>
+<li><p><strong>file_content</strong> (<em>bytes|method|str</em>) – The contents of the file or callback to get contents.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti_group.Group.add_key_value">
-<code class="descname">add_key_value</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.add_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.add_key_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_key_value</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.add_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.add_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add custom field to Group object.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The key must be the exact name required by the batch schema.</p>
+<p class="admonition-title">Note</p>
+<p>The key must be the exact name required by the batch schema.</p>
 </div>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">document</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;My Document&#39;</span><span class="p">)</span>
 <span class="n">document</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;something.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>str</em>) – The field key to add to the JSON batch data.</li>
-<li><strong>value</strong> (<em>str</em>) – The field value to add to the JSON batch data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – The field key to add to the JSON batch data.</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – The field value to add to the JSON batch data.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti_group.Group.association">
-<code class="descname">association</code><span class="sig-paren">(</span><em>group_xid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.association" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">association</code><span class="sig-paren">(</span><em class="sig-param">group_xid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.association" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add association using xid value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_xid</strong> (<em>str</em>) – The external id of the Group to associate.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group_xid</strong> (<em>str</em>) – The external id of the Group to associate.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti_group.Group.attribute">
-<code class="descname">attribute</code><span class="sig-paren">(</span><em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>unique=True</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.attribute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">attribute</code><span class="sig-paren">(</span><em class="sig-param">attr_type</em>, <em class="sig-param">attr_value</em>, <em class="sig-param">displayed=False</em>, <em class="sig-param">source=None</em>, <em class="sig-param">unique=True</em>, <em class="sig-param">formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Attribute</p>
-<dl class="docutils">
-<dt>unique:</dt>
-<dd><ul class="first last simple">
-<li>False - Attribute type:value can be duplicated.</li>
-<li>‘Type’ - Attribute type has to be unique (e.g., only 1 Description Attribute).</li>
-<li>True - Attribute type:value combo must be unique.</li>
+<dl class="simple">
+<dt>unique:</dt><dd><ul class="simple">
+<li><p>False - Attribute type:value can be duplicated.</p></li>
+<li><p>‘Type’ - Attribute type has to be unique (e.g., only 1 Description Attribute).</p></li>
+<li><p>True - Attribute type:value combo must be unique.</p></li>
 </ul>
 </dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>attr_type</strong> (<em>str</em>) – The ThreatConnect defined attribute type.</li>
-<li><strong>attr_value</strong> (<em>str</em>) – The value for this attribute.</li>
-<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>displayed</em>) – false): If True the supported attribute will be marked for
-display.</li>
-<li><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source value for this attribute.</li>
-<li><strong>unique</strong> (<em>bool|string</em><em>, </em><em>optional</em>) – Control attribute creation.</li>
-<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that takes a single attribute value and returns a
-single formatted value.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attr_type</strong> (<em>str</em>) – The ThreatConnect defined attribute type.</p></li>
+<li><p><strong>attr_value</strong> (<em>str</em>) – The value for this attribute.</p></li>
+<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>displayed</em>) – false): If True the supported attribute will be marked for
+display.</p></li>
+<li><p><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source value for this attribute.</p></li>
+<li><p><strong>unique</strong> (<em>bool|string</em><em>, </em><em>optional</em>) – Control attribute creation.</p></li>
+<li><p><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that takes a single attribute value and returns a
+single formatted value.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Attribute.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of Attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Group.data">
-<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">data</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group data.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Group.date_added">
-<code class="descname">date_added</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.date_added" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">date_added</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.date_added" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group dateAdded.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Group.file_data">
-<code class="descname">file_data</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.file_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">file_data</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.file_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group file (only supported for Document and Report).</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Group.name">
-<code class="descname">name</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.name" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group name.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Group.processed">
-<code class="descname">processed</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.processed" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">processed</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.processed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return processed value.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Processed value indicates that a group with this xid has already been processed.</p>
+<p class="admonition-title">Note</p>
+<p>Processed value indicates that a group with this xid has already been processed.</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti_group.Group.security_label">
-<code class="descname">security_label</code><span class="sig-paren">(</span><em>name</em>, <em>description=None</em>, <em>color=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.security_label" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">security_label</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">description=None</em>, <em class="sig-param">color=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.security_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of SecurityLabel.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The provided security label will be create if it doesn’t exist. If the security
+<p class="admonition-title">Note</p>
+<p>The provided security label will be create if it doesn’t exist. If the security
 label already exists nothing will be changed.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – The value for this security label.</li>
-<li><strong>description</strong> (<em>str</em>) – A description for this security label.</li>
-<li><strong>color</strong> (<em>str</em>) – A color (hex value) for this security label.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The value for this security label.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – A description for this security label.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – A color (hex value) for this security label.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of SecurityLabel.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of SecurityLabel.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_ti_group.Group.tag">
-<code class="descname">tag</code><span class="sig-paren">(</span><em>name</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.tag" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tag</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Group.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Group.tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Tag.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – The value for this tag.</li>
-<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that take a tag value and returns a
-formatted tag.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The value for this tag.</p></li>
+<li><p><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that take a tag value and returns a
+formatted tag.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Tag.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of Tag.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Group.type">
-<code class="descname">type</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.type" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">type</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group type.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Group.xid">
-<code class="descname">xid</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.xid" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">xid</code><a class="headerlink" href="#tcex.tcex_ti_group.Group.xid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group xid.</p>
 </dd></dl>
 
@@ -540,18 +516,18 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Incident">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Incident</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Incident" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Incident</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Incident" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Incident Object</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Incident.event_date">
-<code class="descname">event_date</code><a class="headerlink" href="#tcex.tcex_ti_group.Incident.event_date" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">event_date</code><a class="headerlink" href="#tcex.tcex_ti_group.Incident.event_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Incident event date.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Incident.status">
-<code class="descname">status</code><a class="headerlink" href="#tcex.tcex_ti_group.Incident.status" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">status</code><a class="headerlink" href="#tcex.tcex_ti_group.Incident.status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Incident status.</p>
 </dd></dl>
 
@@ -559,31 +535,31 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.IntrusionSet">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">IntrusionSet</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#IntrusionSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.IntrusionSet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">IntrusionSet</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#IntrusionSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.IntrusionSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Adversary Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Report">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Report" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Report</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Report Object</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Report.file_content">
-<code class="descname">file_content</code><a class="headerlink" href="#tcex.tcex_ti_group.Report.file_content" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">file_content</code><a class="headerlink" href="#tcex.tcex_ti_group.Report.file_content" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group files.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Report.file_data">
-<code class="descname">file_data</code><a class="headerlink" href="#tcex.tcex_ti_group.Report.file_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">file_data</code><a class="headerlink" href="#tcex.tcex_ti_group.Report.file_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group files.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_ti_group.Report.publish_date">
-<code class="descname">publish_date</code><a class="headerlink" href="#tcex.tcex_ti_group.Report.publish_date" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">publish_date</code><a class="headerlink" href="#tcex.tcex_ti_group.Report.publish_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Report publish date.</p>
 </dd></dl>
 
@@ -591,14 +567,14 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Signature">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Signature</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>file_type</em>, <em>file_text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Signature" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Signature</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">file_name</em>, <em class="sig-param">file_type</em>, <em class="sig-param">file_text</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Signature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Signature Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_ti_group.Threat">
-<em class="property">class </em><code class="descclassname">tcex.tcex_ti_group.</code><code class="descname">Threat</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Threat" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_ti_group.</code><code class="sig-name descname">Threat</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_group.html#Threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_group.Threat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_group.Group" title="tcex.tcex_ti_group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_ti_group.Group</span></code></a></p>
 <p>ThreatConnect Batch Threat Object</p>
 </dd></dl>

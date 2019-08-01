@@ -3,6 +3,19 @@
 Release Notes
 #############
 
+1.0.7
+=====
++ Updated logging formatter for issue in py2.
++ Updated test_case to automatically create profile output.
+
+1.0.6
+=====
++ Reworked logging for the TcEx framework to provide better flexibility.
++ Updated logging of batch sizes to not log when there is not content.
++ Moved the logging of App info to the args call.
++ Added trace logging level (unsupported in platform currently).
++ Added new testing module using pytest.
+
 1.0.5
 =====
 + Updated arg parsing to better handle delimited input strings for secureParams/AOT input.
@@ -144,7 +157,7 @@ Release Notes
 + Removed ``tcex.authorization()`` method
 + Removed ``tcex.authorization_hmac()`` method
 + Removed ``tcex._authorization_token_renew()`` method
-+ Updated **all** code to standard formatting and structur
++ Updated **all** code to standard formatting and structure
 + Updated and restructured Documents
 
 0.8.x
@@ -182,7 +195,7 @@ Release Notes
 
 0.8.23
 ------
-+ Updatd Batch module to handle Attribute values of False
++ Updated Batch module to handle Attribute values of False
 + Added ``read_array`` method to Playbook module
 + Updated App templates to include **start** and **done** methods
 + Update **tcprofile** to create the **tcex.d** directory automatically
@@ -264,7 +277,7 @@ Release Notes
 + Merged AOT feature in prep for 5.7
 + Added :py:meth:`~tcex.tcex.TcEx.install_json` method to load **install.json**, which is used in the injection method to determine the structure on the param values
 + Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method to save batch data to disk to reduce memory usage of the App
-+ Updated the logic in :py:meth:`~tcex.tcex.TcEx.default_args` method to handle both injecting secureParams and AOT params depending, on selected featur.
++ Updated the logic in :py:meth:`~tcex.tcex.TcEx.default_args` method to handle both injecting secureParams and AOT params depending, on selected feature.
 + Updated :py:meth:`~tcex.tcex.TcEx.inject_params` method to be public and generic and to allow params to be injected manually
 + Updated :py:mod:`~tcex.tcex_redis` module to support additional Redis methods required for AOT
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` methods to support b64decode and decode params
@@ -276,7 +289,7 @@ Release Notes
 ------
 + Updated **submit_create_and_upload** method to clear raw list after submission
 + Rewrote **results_tc** method to handle updates to key/value pairs
-+ Updated tcrun to autocreate required directories
++ Updated tcrun to auto-create required directories
 + Updated tclib to support building tcex develop version with **--tcex_develop** CLI flag
 
 0.8.9
@@ -326,7 +339,7 @@ Release Notes
 + Updated :py:mod:`~tcex.tcex_logger` module
 + Updated :py:mod:`~tcex.tcex` module to only import modules when required
 + Moved :py:meth:`~tcex.tcex_utils.TcExUtils.inflect` to the Utils module
-+ Updated dpcuments for Metrics, Notifications, and Batch
++ Updated documents for Metrics, Notifications, and Batch
 
 0.8.0
 ------
@@ -373,7 +386,7 @@ Release Notes
 
 0.7.17
 ------
-+ Updatde Utils module for handling naive datetime in py2
++ Updated Utils module for handling naive datetime in py2
 + Added **to_bool()** method back to Utils module
 
 0.7.16
@@ -414,7 +427,7 @@ Release Notes
 0.7.10
 ------
 + Updated **__main__.py** template with better logic to detect Python lib directory version
-+ Updated regex patterns for variable matching in Paybook module
++ Updated regex patterns for variable matching in Playbook module
 + Updated Playbook module function in handling variables
 
 0.7.9
@@ -443,8 +456,8 @@ Release Notes
 0.7.5
 -----
 + Updated all TcEx framework command-line interface (CLI) commands to use utf-8 encoding by default
-+ Replaced usage of unicode with built-in strs (Python 2/3 compatible
-+ Replaced usage of long with built-in ints (Python 2/3 compatible)
++ Replaced usage of unicode with built-in "str" (Python 2/3 compatible
++ Replaced usage of long with built-in "int" (Python 2/3 compatible)
 + Update usage of **urllib.quote** to be Python 2/3 compatible
 
 0.7.4
@@ -631,7 +644,7 @@ Release Notes
 0.5.3
 -----
 + Added new tcdata, tclib, tcpackage, and tcrun commands for App testing and packaging (The app.py will be deprecated in the future.)
-+ Updatesd ``__main__.py`` for new lib directory structure created with pip (replaced easy_install)
++ Updated ``__main__.py`` for new lib directory structure created with pip (replaced easy_install)
 + Changed method so that Apps are now built with ``requirements.txt`` instead of ``setup.py``
 
 0.5.2
@@ -720,7 +733,7 @@ Release Notes
 0.4.1
 -----
 + Added :py:meth:`~tcex.tcex_resources.Datastore.add_payload` method to :py:mod:`~tcex.tcex_resources.DataStore` class
-+ Fixed issue with :py:mod:`~tcex.tcex_job.TcExJob` module in ehich batch Indicator POST with chunking would fail after first chunk
++ Fixed issue with :py:mod:`~tcex.tcex_job.TcExJob` module in which batch Indicator POST with chunking would fail after first chunk
 + Added :py:meth:`~tcex.tcex.TcEx.safe_indicator` method to urlencode and cleaned up Indicator before associations, etc.
 + Updated :py:meth:`~tcex.tcex.TcEx.expand_indicators` method to use a regex instead of split for better support of custom Indicators
 + Updated :py:mod:`~tcex.tcex_job.TcExJob._process_indicators_v2` to better handle custom Indicator types

@@ -221,10 +221,11 @@ class TcExArgs(object):
             # JSON boolean and not a string.
             delimiter = self.tcex.install_json.get('listDelimiter', '|')
             param_data = self.tcex.install_json_params.get(arg) or {}
-            if param_data.get('type', '').lower() == 'multichoice':
-                if param_data.get('allowMultiple') in ['true', True]:
-                    # update delimited value to an array for params that have type of MultiChoice.
-                    value = value.split(delimiter)
+            if param_data.get('type', '').lower() == 'multichoice' or param_data.get(
+                'allowMultiple'
+            ) in ['true', True]:
+                # update delimited value to an array for params that have type of MultiChoice.
+                value = value.split(delimiter)
             elif param_data.get('type', '').lower() == 'boolean':
                 # update value to be a boolean instead of string "true"/"false".
                 value = self.tcex.utils.to_bool(value)

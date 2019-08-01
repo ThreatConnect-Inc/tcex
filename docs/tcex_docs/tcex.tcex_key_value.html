@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_key_value module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_key_value module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,49 +228,44 @@
 <p>TcEx Framework KeyValue Module</p>
 <dl class="class">
 <dt id="tcex.tcex_key_value.TcExKeyValue">
-<em class="property">class </em><code class="descclassname">tcex.tcex_key_value.</code><code class="descname">TcExKeyValue</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_key_value.html#TcExKeyValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_key_value.TcExKeyValue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_key_value.</code><code class="sig-name descname">TcExKeyValue</code><span class="sig-paren">(</span><em class="sig-param">tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_key_value.html#TcExKeyValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_key_value.TcExKeyValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Update Redis via ThreatConnect API Wrapper</p>
 <dl class="method">
 <dt id="tcex.tcex_key_value.TcExKeyValue.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_key_value.html#TcExKeyValue.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_key_value.TcExKeyValue.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_key_value.html#TcExKeyValue.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_key_value.TcExKeyValue.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create key/value pair in remote KV store.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) – The key to create in remote KV store.</li>
-<li><strong>value</strong> (<em>any</em>) – The value to store in remote KV store.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The key to create in remote KV store.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The value to store in remote KV store.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The response from the API call.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response from the API call.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_key_value.TcExKeyValue.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_key_value.html#TcExKeyValue.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_key_value.TcExKeyValue.read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_key_value.html#TcExKeyValue.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_key_value.TcExKeyValue.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from remote KV store for the provided key.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to read in remote KV store.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response data from the remote KV store.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The key to read in remote KV store.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response data from the remote KV store.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(any)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

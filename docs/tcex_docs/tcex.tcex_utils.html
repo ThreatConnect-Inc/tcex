@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_utils module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_utils module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,272 +228,241 @@
 <p>TcEx Utilities Module</p>
 <dl class="class">
 <dt id="tcex.tcex_utils.TcExUtils">
-<em class="property">class </em><code class="descclassname">tcex.tcex_utils.</code><code class="descname">TcExUtils</code><span class="sig-paren">(</span><em>tcex=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils" title="Permalink to this definition">¶</a></dt>
-<dd><p>TcEx framework Utils module</p>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_utils.</code><code class="sig-name descname">TcExUtils</code><span class="sig-paren">(</span><em class="sig-param">tcex=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>TcEx framework Utils module</p>
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.any_to_datetime">
-<code class="descname">any_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.any_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.any_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">any_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.any_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.any_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return datetime object from multiple formats.</p>
 <blockquote>
 <div><p>Formats:</p>
 <ol class="arabic simple">
-<li>Human Input (e.g 30 days ago, last friday)</li>
-<li>ISO 8601 (e.g. 2017-11-08T16:52:42Z)</li>
-<li>Loose Date format (e.g. 2017 12 25)</li>
-<li>Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</li>
+<li><p>Human Input (e.g 30 days ago, last friday)</p></li>
+<li><p>ISO 8601 (e.g. 2017-11-08T16:52:42Z)</p></li>
+<li><p>Loose Date format (e.g. 2017 12 25)</p></li>
+<li><p>Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</p></li>
 </ol>
 </div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Python datetime.datetime object.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(datetime.datetime)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.date_to_datetime">
-<code class="descname">date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.date_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ISO 8601 and other date strings to datetime.datetime type.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Python datetime.datetime object.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(datetime.datetime)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.format_datetime">
-<code class="descname">format_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em>, <em>date_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.format_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.format_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em>, <em class="sig-param">date_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.format_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.format_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return timestamp from multiple input formats.</p>
 <blockquote>
 <div><p>Formats:</p>
 <ol class="arabic simple">
-<li>Human Input (e.g 30 days ago, last friday)</li>
-<li>ISO 8601 (e.g. 2017-11-08T16:52:42Z)</li>
-<li>Loose Date format (e.g. 2017 12 25)</li>
-<li>Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</li>
+<li><p>Human Input (e.g 30 days ago, last friday)</p></li>
+<li><p>ISO 8601 (e.g. 2017-11-08T16:52:42Z)</p></li>
+<li><p>Loose Date format (e.g. 2017 12 25)</p></li>
+<li><p>Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</p></li>
 </ol>
 </div></blockquote>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">To get a unix timestamp format use the strftime format <strong>%s</strong>. Python
+<p class="admonition-title">Note</p>
+<p>To get a unix timestamp format use the strftime format <strong>%s</strong>. Python
 does not natively support <strong>%s</strong>, however this method has support.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</li>
-<li><strong>date_format</strong> (<em>string</em>) – The strftime format to use, ISO by default.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
+<li><p><strong>date_format</strong> (<em>string</em>) – The strftime format to use, ISO by default.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Formatted datetime string.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Formatted datetime string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.human_date_to_datetime">
-<code class="descname">human_date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em>, <em>source_datetime=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Convert human readable date (e.g. 30 days ago) to datetime.datetime using</dt>
-<dd>parsedatetime module.</dd>
+<code class="sig-name descname">human_date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em>, <em class="sig-param">source_datetime=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Convert human readable date (e.g. 30 days ago) to datetime.datetime using</dt><dd><p>parsedatetime module.</p>
+</dd>
 </dl>
 <p>Examples:</p>
 <ul class="simple">
-<li>August 25th, 2008</li>
-<li>25 Aug 2008</li>
-<li>Aug 25 5pm</li>
-<li>5pm August 25</li>
-<li>next saturday</li>
-<li>tomorrow</li>
-<li>next thursday at 4pm</li>
-<li>at 4pm</li>
-<li>eod</li>
-<li>tomorrow eod</li>
-<li>eod tuesday</li>
-<li>eoy</li>
-<li>eom</li>
-<li>in 5 minutes</li>
-<li>5 minutes from now</li>
-<li>5 hours before now</li>
-<li>2 hours before noon</li>
-<li>2 days from tomorrow</li>
+<li><p>August 25th, 2008</p></li>
+<li><p>25 Aug 2008</p></li>
+<li><p>Aug 25 5pm</p></li>
+<li><p>5pm August 25</p></li>
+<li><p>next saturday</p></li>
+<li><p>tomorrow</p></li>
+<li><p>next thursday at 4pm</p></li>
+<li><p>at 4pm</p></li>
+<li><p>eod</p></li>
+<li><p>tomorrow eod</p></li>
+<li><p>eod tuesday</p></li>
+<li><p>eoy</p></li>
+<li><p>eom</p></li>
+<li><p>in 5 minutes</p></li>
+<li><p>5 minutes from now</p></li>
+<li><p>5 hours before now</p></li>
+<li><p>2 hours before noon</p></li>
+<li><p>2 days from tomorrow</p></li>
 </ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime.</li>
-<li><strong>source_datetime</strong> (<em>datetime.datetime</em>) – The reference or source datetime.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime.</p></li>
+<li><p><strong>source_datetime</strong> (<em>datetime.datetime</em>) – The reference or source datetime.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Python datetime.datetime object.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(datetime.datetime)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.inflect">
-<code class="descname">inflect</code><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.inflect" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">inflect</code><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.inflect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of inflect.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.timedelta">
-<code class="descname">timedelta</code><span class="sig-paren">(</span><em>time_input1</em>, <em>time_input2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.timedelta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.timedelta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">timedelta</code><span class="sig-paren">(</span><em class="sig-param">time_input1</em>, <em class="sig-param">time_input2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.timedelta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.timedelta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates time delta between two time expressions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>time_input1</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>time_input2</strong> (<em>string</em>) – The time input string (see formats above).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input1</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>time_input2</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Dict with delta values.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dict)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dict with delta values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dict)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.to_bool">
-<em class="property">static </em><code class="descname">to_bool</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.to_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.to_bool" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">to_bool</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.to_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.to_bool" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert string value to bool.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.unix_time_to_datetime">
-<em class="property">static </em><code class="descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753</dt>
-<dd>to datetime.datetime type.</dd>
+<em class="property">static </em><code class="sig-name descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753</dt><dd><p>to datetime.datetime type.</p>
+</dd>
 </dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This method assumes UTC for all inputs.</p>
+<p class="admonition-title">Note</p>
+<p>This method assumes UTC for all inputs.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This method only accepts a 9-10 character time_input.</p>
+<p class="admonition-title">Note</p>
+<p>This method only accepts a 9-10 character time_input.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime (e.g. UTC).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime (e.g. UTC).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Python datetime.datetime object.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(datetime.datetime)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.write_temp_binary_file">
-<code class="descname">write_temp_binary_file</code><span class="sig-paren">(</span><em>content</em>, <em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.write_temp_binary_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.write_temp_binary_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_temp_binary_file</code><span class="sig-paren">(</span><em class="sig-param">content</em>, <em class="sig-param">filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.write_temp_binary_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.write_temp_binary_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write content to a temporary file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>content</strong> (<em>bytes</em>) – The file content.</li>
-<li><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to use when writing the file.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>content</strong> (<em>bytes</em>) – The file content.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to use when writing the file.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Fully qualified path name for the file.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Fully qualified path name for the file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.write_temp_file">
-<code class="descname">write_temp_file</code><span class="sig-paren">(</span><em>content</em>, <em>filename=None</em>, <em>mode='w'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.write_temp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.write_temp_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_temp_file</code><span class="sig-paren">(</span><em class="sig-param">content</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">mode='w'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.write_temp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.write_temp_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write content to a temporary file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>content</strong> (<em>bytes|str</em>) – The file content. If passing binary data the mode needs to be set
-to ‘wb’.</li>
-<li><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to use when writing the file.</li>
-<li><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – The file write mode which could be either ‘w’ or ‘wb’.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>content</strong> (<em>bytes|str</em>) – The file content. If passing binary data the mode needs to be set
+to ‘wb’.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to use when writing the file.</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – The file write mode which could be either ‘w’ or ‘wb’.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Fully qualified path name for the file.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Fully qualified path name for the file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_argparser &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_argparser &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -199,6 +199,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span> <span class="o">=</span> <span class="mi">3600</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span> <span class="o">=</span> <span class="s1">&#39;Append&#39;</span>
 
+        <span class="c1"># logger defaults</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_backup_count</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span> <span class="o">=</span> <span class="s1">&#39;app.log&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_level</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_max_bytes</span> <span class="o">=</span> <span class="mi">10485760</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_name</span> <span class="o">=</span> <span class="s1">&#39;tcex&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="c1"># playbook defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_playbook_db_type</span> <span class="o">=</span> <span class="s1">&#39;Redis&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_playbook_db_context</span> <span class="o">=</span> <span class="s1">&#39;1234-abcd&#39;</span>
@@ -208,30 +217,26 @@
         <span class="c1"># standard defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span> <span class="o">=</span> <span class="s1">&#39;https://api.threatconnect.com&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span> <span class="o">=</span> <span class="s1">&#39;app.log&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_secure_params</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_user_id</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_level</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>
 
         <span class="c1"># include arguments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_arguments</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_standard_arguments</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TcExArgParser._api_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_argparser.html#tcex.tcex_argparser.TcExArgParser._api_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_api_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Argument specific to working with TC API.</span>
+        <span class="sd">&quot;&quot;&quot;Define TC API args.</span>
 
 <span class="sd">        --tc_token token                  Token provided by ThreatConnect for app Authorization.</span>
 <span class="sd">        --tc_token_expires token_expires  Expiration time for the passed Token.</span>
 <span class="sd">        --api_access_id access_id         Access ID used for HMAC Authorization.</span>
 <span class="sd">        --api_secret_key secret_key       Secret Key used for HMAC Authorization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># TC main &gt;= 4.4 token will be passed to jobs.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_token&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Token&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -255,7 +260,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExArgParser._batch_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_argparser.html#tcex.tcex_argparser.TcExArgParser._batch_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_batch_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Arguments specific to Batch API writes.</span>
+        <span class="sd">&quot;&quot;&quot;Define Batch API args.</span>
 
 <span class="sd">        --batch_action action          Action for the batch job [&#39;Create&#39;, &#39;Delete&#39;].</span>
 <span class="sd">        --batch_chunk number           The maximum number of indicator per batch job.</span>
@@ -265,7 +270,6 @@
 <span class="sd">                                       completion.</span>
 <span class="sd">        --batch_write_type type        Write type for Indicator attributes [&#39;Append&#39;, &#39;Replace&#39;].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--batch_action&#39;</span><span class="p">,</span>
             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Create&#39;</span><span class="p">,</span> <span class="s1">&#39;Delete&#39;</span><span class="p">],</span>
@@ -303,8 +307,63 @@
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Append or Replace attributes.&#39;</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcExArgParser._logger_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_argparser.html#tcex.tcex_argparser.TcExArgParser._logger_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_logger_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Define logger args supported by every TcEx App.</span>
+
+<span class="sd">        --tc_log_backup_count count  The number of backup files to keep.</span>
+<span class="sd">        --tc_log_max_bytes bytes     The max size before rotating log file.</span>
+<span class="sd">        --tc_log_name name           The name of the logger (displayed in log file).</span>
+
+<span class="sd">        --tc_log_file filename       The app log file name.</span>
+<span class="sd">        --tc_log_path path           The app log path.</span>
+<span class="sd">        --tc_log_to_api              Flag to indicate that app should log to API.</span>
+<span class="sd">        --tc_log_level level         The logging level for the app.</span>
+<span class="sd">        --logging level              Alias for **tc_log_level**.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_log_backup_count&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_backup_count</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The number of backup files to keep&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_log_max_bytes&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_max_bytes</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The max size before rotating log file&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_log_name&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_name</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The name of the logger&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_log_file&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;App logfile name&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_log_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect log path&#39;</span><span class="p">)</span>
+        <span class="c1"># requires a token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_log_to_api&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Logging&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># self.add_argument(</span>
+        <span class="c1">#     &#39;--tc_log_level&#39;, &#39;--logging&#39;, choices=[&#39;trace&#39;, &#39;debug&#39;, &#39;info&#39;, &#39;warning&#39;, &#39;error&#39;,</span>
+        <span class="c1">#     &#39;critical&#39;],</span>
+        <span class="c1">#     default=self._tc_log_level, help=&#39;Logging Level&#39;, dest=&#39;tc_log_level&#39;, type=str.lower)</span>
+        <span class="c1"># BCS - temporarily until there is some way to configure App logging level in the UI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--logging&#39;</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;trace&#39;</span><span class="p">,</span> <span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;critical&#39;</span><span class="p">],</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Logging Level&#39;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_log_level&#39;</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;trace&#39;</span><span class="p">,</span> <span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;critical&#39;</span><span class="p">],</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;tc_log_level&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Logging Level&#39;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="TcExArgParser._playbook_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_argparser.html#tcex.tcex_argparser.TcExArgParser._playbook_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_playbook_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Argument specific to playbook apps.</span>
+        <span class="sd">&quot;&quot;&quot;Define playbook specific args.</span>
 
 <span class="sd">        These arguments will be passed to every playbook app by default.</span>
 
@@ -314,7 +373,6 @@
 <span class="sd">        --tc_playbook_db_port port        The DB port when required.</span>
 <span class="sd">        --tc_playbook_out_variables vars  The output variable requested by downstream apps.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_playbook_db_type&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_playbook_db_type</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Playbook DB type&#39;</span>
         <span class="p">)</span>
@@ -334,13 +392,11 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExArgParser._standard_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_argparser.html#tcex.tcex_argparser.TcExArgParser._standard_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_standard_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;These are the standard args passed to every TcEx App.</span>
+        <span class="sd">&quot;&quot;&quot;Define standard args passed to every TcEx App.</span>
 
 <span class="sd">        --api_default_org org        The TC API user default organization.</span>
 <span class="sd">        --tc_api_path path           The TC API path (e.g https://api.threatconnect.com).</span>
 <span class="sd">        --tc_in_path path            The app in path.</span>
-<span class="sd">        --tc_log_file filename       The app log file name.</span>
-<span class="sd">        --tc_log_path path           The app log path.</span>
 <span class="sd">        --tc_out_path path           The app out path.</span>
 <span class="sd">        --tc_secure_params bool      Flag to indicator secure params is supported.</span>
 <span class="sd">        --tc_temp_path path          The app temp path.</span>
@@ -353,11 +409,7 @@
 <span class="sd">        --tc_proxy_external          Flag to indicate external communications requires the use of a</span>
 <span class="sd">                                     proxy.</span>
 <span class="sd">        --tc_proxy_tc                Flag to indicate TC communications requires the use of a proxy.</span>
-<span class="sd">        --tc_log_to_api              Flag to indicate that app should log to API.</span>
-<span class="sd">        --tc_log_level               The logging level for the app.</span>
-<span class="sd">        --logging level              Alias for **tc_log_level**.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--api_default_org&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect api default Org&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_action_channel&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect AOT action channel&#39;</span>
@@ -366,8 +418,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_api_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect api path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_exit_channel&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect AOT exit channel&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_in_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect in path&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_log_file&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;App logfile name&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_log_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect log path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_out_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect output path&#39;</span>
         <span class="p">)</span>
@@ -408,39 +458,6 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;tc_proxy_tc&#39;</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Proxy TC Connection&#39;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="c1">#</span>
-        <span class="c1"># Logging</span>
-        <span class="c1">#</span>
-
-        <span class="c1"># currently only applicable to TC Main</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--tc_log_to_api&#39;</span><span class="p">,</span>
-            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Logging&#39;</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="c1"># self.add_argument(</span>
-        <span class="c1">#     &#39;--tc_log_level&#39;, &#39;--logging&#39;, choices=[&#39;debug&#39;, &#39;info&#39;, &#39;warning&#39;, &#39;error&#39;,</span>
-        <span class="c1">#     &#39;critical&#39;],</span>
-        <span class="c1">#     default=self._tc_log_level, help=&#39;Logging Level&#39;, dest=&#39;tc_log_level&#39;, type=str.lower)</span>
-        <span class="c1"># BCS - temporarily until there is some way to configure App logging level in the UI</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--logging&#39;</span><span class="p">,</span>
-            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;critical&#39;</span><span class="p">],</span>
-            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Logging Level&#39;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--tc_log_level&#39;</span><span class="p">,</span>
-            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;critical&#39;</span><span class="p">],</span>
-            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;tc_log_level&#39;</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Logging Level&#39;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>
 

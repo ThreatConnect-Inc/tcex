@@ -4,8 +4,10 @@ import json
 
 try:
     from urllib import quote_plus  # Python 2
+    from urllib import unquote  # Python 2
 except ImportError:
     from urllib.parse import quote_plus  # Python
+    from urllib.parse import unquote  # Python
 
 from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 
@@ -40,7 +42,7 @@ def custom_indicator_class_factory(
         self.unique_id = kwargs.get('unique_id', value1)
         self._data[value_fields[0]] = value1 or self.unique_id
         if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+            self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
     def _set_unique_id_1(self, json_request):
         """
@@ -50,7 +52,7 @@ def custom_indicator_class_factory(
         """
         self.unique_id = json_request.get(value_fields[0])
         if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+            self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
     def can_create_1(self):  # pylint: disable=W0641
         """
@@ -74,9 +76,9 @@ def custom_indicator_class_factory(
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         if value1:
-            value1 = quote_plus(value1)
+            value1 = quote_plus(self.fully_decode_uri(value1))
         if value2:
-            value2 = quote_plus(value2)
+            value2 = quote_plus(self.fully_decode_uri(value2))
         self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2))
 
     def _set_unique_id_2(self, json_request):
@@ -88,7 +90,8 @@ def custom_indicator_class_factory(
         value_0 = json_request.get(value_fields[0], '')
         value_1 = json_request.get(value_fields[1], '')
         self.unique_id = self.build_summary(
-            quote_plus(value_0) or None, quote_plus(value_1) or None
+            quote_plus(self.fully_decode_uri(value_0)) or None,
+            quote_plus(self.fully_decode_uri(value_1)) or None,
         )
 
     def can_create_2(self):  # pylint: disable=W0641
@@ -114,11 +117,11 @@ def custom_indicator_class_factory(
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
         if value1:
-            value1 = quote_plus(value1)
+            value1 = quote_plus(self.fully_decode_uri(value1))
         if value2:
-            value2 = quote_plus(value2)
+            value2 = quote_plus(self.fully_decode_uri(value2))
         if value3:
-            value2 = quote_plus(value3)
+            value3 = quote_plus(self.fully_decode_uri(value3))
         self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2, value3))
 
     def _set_unique_id_3(self, json_request):
@@ -131,7 +134,9 @@ def custom_indicator_class_factory(
         value_1 = json_request.get(value_fields[1], '')
         value_2 = json_request.get(value_fields[2], '')
         self.unique_id = self.build_summary(
-            quote_plus(value_0) or None, quote_plus(value_1) or None, quote_plus(value_2) or None
+            quote_plus(self.fully_decode_uri(value_0)) or None,
+            quote_plus(self.fully_decode_uri(value_1)) or None,
+            quote_plus(self.fully_decode_uri(value_2)) or None,
         )
 
     def can_create_3(self):  # pylint: disable=W0641
@@ -182,6 +187,25 @@ class Indicator(TIMappings):
     def owner(self):
         return self._owner
 
+    @staticmethod
+    def is_encoded(uri):
+        """Determines if a uri is currently encoded"""
+        uri = uri or ''
+
+        return uri != unquote(uri)
+
+    def fully_decode_uri(self, uri):
+        """Decodes a url till it is no longer encoded."""
+        saftey_valve = 0
+
+        while self.is_encoded(uri):
+            uri = unquote(uri)
+            saftey_valve += 1
+            if saftey_valve > 10:
+                break
+
+        return uri
+
     def can_create(self):
         """
         Overridden by other indicator classes.
@@ -225,7 +249,7 @@ class Indicator(TIMappings):
         elif key == 'rating':
             self._data[key] = float(value)
         elif key == 'unique_id':
-            self._unique_id = quote_plus(value)
+            self._unique_id = quote_plus(self.fully_decode_uri(value))
         else:
             self._data[key] = value
 

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Authorization (Token/HMAC) &mdash; TcEx 1.0.5 documentation</title>
+  <title>Authorization (Token/HMAC) &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -187,8 +187,8 @@
 <p>In general, when communicating with the ThreatConnect API using the TcEx Framework, the App developer does not need to handle authorization.  If using any of the Resource Classes in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a>, the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect platform or the Integration server without having to change any code.</p>
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#module-tcex.tcex" title="tcex.tcex"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tcex()</span></code></a> module also has the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.session" title="tcex.tcex.TcEx.session"><code class="xref py py-mod docutils literal notranslate"><span class="pre">session</span></code></a> property, which is a Python Requests Session (<a class="reference external" href="http://docs.python-requests.org/en/master/user/advanced/#session-objects">http://docs.python-requests.org/en/master/user/advanced/#session-objects</a>) with ThreatConnect authorization added.  API calls to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built in.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The latest version of the ThreatConnect platform supports both token-based and HMAC authorization.  The ThreatConnect Environment server supports HMAC or token-based authorization, depending on the version.</p>
+<p class="admonition-title">Note</p>
+<p>The latest version of the ThreatConnect platform supports both token-based and HMAC authorization.  The ThreatConnect Environment server supports HMAC or token-based authorization, depending on the version.</p>
 </div>
 <div class="section" id="token-refresh">
 <h2>Token Refresh<a class="headerlink" href="#token-refresh" title="Permalink to this headline">¶</a></h2>

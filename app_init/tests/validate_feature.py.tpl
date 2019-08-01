@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Validate feature test case class."""
+from tcex.testing.monkeypatch import monkeypatch  # noqa: F401; pylint: disable=unused-import
 from ..validate import Validate
-from tcex.testing.monkeypatch import monkeypatch
 
 
 class ValidateFeature(Validate):

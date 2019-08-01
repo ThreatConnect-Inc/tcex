@@ -15,20 +15,25 @@ class Validate(object):
             return
 
     % if output_data:
-        for k, v in output_variables.items():
+        for k, v in output_variables.items():<%use_if = True%>
         % for data in output_data:
-            if '${data['variable']}' == k:
+            % if use_if:
+            if k == '${data['variable']}':<%use_if = False%>
+            % else:
+            elif k == '${data['variable']}':
+            % endif
                 self.${data['method']}(v)
         % endfor
+            else:
+                assert False, 'Unknown output variable found in profile: {}'.format(k)
     % endif
     % for data in output_data:
 
     def ${data['method']}(self, data):
-        """Assert output data for variable ${data['variable']}."""
+        """Assert for ${data['variable']}."""
+        output_var = '${data['variable']}'
         passed, assert_error = self.validator.redis.data(
-            '${data['variable']}',
-            data.get('expected_output'),
-            data.get('op', '='),
+            output_var, data.pop('expected_output'), data.pop('op', '='), **data
         )
         assert passed, assert_error
     % endfor

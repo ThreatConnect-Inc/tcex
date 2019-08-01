@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -182,7 +182,6 @@
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">str</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -195,6 +194,7 @@
     <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 3</span>
 
 <span class="kn">from</span> <span class="nn">.tcex_args</span> <span class="k">import</span> <span class="n">TcExArgs</span>
+<span class="kn">from</span> <span class="nn">.tcex_logger</span> <span class="k">import</span> <span class="n">TcExLogger</span>
 
 
 <div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -207,9 +207,7 @@
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
             <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGHUP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
-        <span class="c1"># init logger</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;tcex&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger_stream</span><span class="p">()</span>
+
         <span class="c1"># Property defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="mi">0</span>
@@ -224,17 +222,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Parser</span>
+        <span class="c1"># init args (needs logger)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span> <span class="o">=</span> <span class="n">TcExArgs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># init logger (needs args)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">TcExLogger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">add_stream_handler</span><span class="p">()</span>
 
         <span class="c1"># NOTE: odd issue where args is not updating properly</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token_expires</span>
-
-        <span class="c1"># Log system and App data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">()</span>
 
         <span class="c1"># include resources module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">()</span>
@@ -246,15 +245,13 @@
 
         <span class="c1"># check for bad status code and response that is not JSON</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Custom Indicators Associations are not supported.&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Custom Indicators Associations are not supported.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># validate successful API results</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Bad Status: Custom Indicators Associations are not supported.&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Bad Status: Custom Indicators Associations are not supported.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -263,150 +260,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_associations_types_data</span><span class="p">[</span><span class="n">association</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">association</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">])</span></div>
-
-<div class="viewcode-block" id="TcEx._log"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log">[docs]</a>    <span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Send System and App data to logs.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_platform</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_app_data</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_python_version</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_tcex_version</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_tc_proxy</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="TcEx._log_app_data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_app_data">[docs]</a>    <span class="k">def</span> <span class="nf">_log_app_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log the App data information.&quot;&quot;&quot;</span>
-        <span class="c1"># Best Effort</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="p">:</span>
-            <span class="n">app_commit_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;commitHash&#39;</span><span class="p">)</span>
-            <span class="n">app_features</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-            <span class="n">app_min_ver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;minServerVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
-            <span class="n">app_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">)</span>
-            <span class="n">app_runtime_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtimeLevel&#39;</span><span class="p">)</span>
-            <span class="n">app_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Name: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_name</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">app_features</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Features: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Minimum ThreatConnect Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_min_ver</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Runtime Level: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_runtime_level</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_version</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">app_commit_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Commit Hash: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_commit_hash</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="TcEx._log_platform"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_platform">[docs]</a>    <span class="k">def</span> <span class="nf">_log_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log the current Platform.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Platform: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">platform</span><span class="p">()))</span></div>
-
-<div class="viewcode-block" id="TcEx._log_python_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_python_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_python_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log the current Python version.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">u</span><span class="s1">&#39;Python Version: </span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span>
-            <span class="p">)</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcEx._log_tc_proxy"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tc_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tc_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log the proxy settings.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">u</span><span class="s1">&#39;Proxy Server (TC): </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
-                <span class="p">)</span>
-            <span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcEx._log_tcex_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tcex_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tcex_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log the current TcEx version number.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;TcEx Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="TcEx._logger"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger">[docs]</a>    <span class="k">def</span> <span class="nf">_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">clear_handler</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create TcEx app logger instance.</span>
-
-<span class="sd">        The logger is accessible via the ``tc.log.&lt;level&gt;`` call.</span>
-
-<span class="sd">        **Logging examples**</span>
-
-<span class="sd">        .. code-block:: python</span>
-<span class="sd">            :linenos:</span>
-<span class="sd">            :lineno-start: 1</span>
-
-<span class="sd">            tcex.log.debug(&#39;logging debug&#39;)</span>
-<span class="sd">            tcex.log.info(&#39;logging info&#39;)</span>
-<span class="sd">            tcex.log.warning(&#39;logging warning&#39;)</span>
-<span class="sd">            tcex.log.error(&#39;logging error&#39;)</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            stream_only (bool, default:False): If True only the Stream handler will be enabled.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            logger: An instance of logging</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
-
-        <span class="c1"># clear all handlers</span>
-        <span class="k">if</span> <span class="n">clear_handler</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="c1"># update logging level</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">logging</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger_levels</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">logging</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger_levels</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_level</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
-
-        <span class="c1"># add file handler if not already added</span>
-        <span class="k">if</span> <span class="n">fh</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger_fh</span><span class="p">()</span>
-
-        <span class="c1"># add api handler if not already added</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger_api</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Logging Level: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">)))</span></div>
-
-<div class="viewcode-block" id="TcEx._logger_api"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger_api">[docs]</a>    <span class="k">def</span> <span class="nf">_logger_api</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add API logging handler.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_logger</span> <span class="k">import</span> <span class="n">TcExLogHandler</span><span class="p">,</span> <span class="n">TcExLogFormatter</span>
-
-        <span class="n">api</span> <span class="o">=</span> <span class="n">TcExLogHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
-        <span class="n">api</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">)</span>
-        <span class="n">api</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-        <span class="n">api</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">TcExLogFormatter</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">api</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcEx._logger_fh"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger_fh">[docs]</a>    <span class="k">def</span> <span class="nf">_logger_fh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add File logging handler.&quot;&quot;&quot;</span>
-        <span class="n">logfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_file</span><span class="p">)</span>
-        <span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
-        <span class="n">fh</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;fh&#39;</span><span class="p">)</span>
-        <span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-        <span class="n">fh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger_formatter</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_logger_formatter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return log formatter.&quot;&quot;&quot;</span>
-        <span class="n">tx_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1"> &#39;</span>
-        <span class="n">tx_format</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">%(filename)s</span><span class="s1">:</span><span class="si">%(funcName)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">)&#39;</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">tx_format</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_logger_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return log levels.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;debug&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
-            <span class="s1">&#39;info&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-            <span class="s1">&#39;warning&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
-            <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
-            <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
-        <span class="p">}</span>
-
-<div class="viewcode-block" id="TcEx._logger_stream"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger_stream">[docs]</a>    <span class="k">def</span> <span class="nf">_logger_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add stream logging handler.&quot;&quot;&quot;</span>
-        <span class="n">sh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
-        <span class="n">sh</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;sh&#39;</span><span class="p">)</span>
-        <span class="n">sh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-        <span class="n">sh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger_formatter</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx._resources"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources">[docs]</a>    <span class="k">def</span> <span class="nf">_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_indicators</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the resource module.</span>
@@ -430,13 +283,13 @@
 
             <span class="c1"># check for bad status code and response that is not JSON</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-                <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Custom Indicators are not supported (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Custom Indicators are not supported (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
                 <span class="k">return</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Bad Status: Custom Indicators are not supported (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;Bad Status: Custom Indicators are not supported (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="p">)</span>
                 <span class="k">return</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -504,26 +357,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;The App received an interrupt signal and will now exit.&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">utils</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Include the Utils module.</span>
-
-<span class="sd">        .. Note:: Utils methods can be accessed using ``tcex.utils.&lt;method&gt;``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_utils</span> <span class="k">import</span> <span class="n">TcExUtils</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">TcExUtils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Argparser args Namespace.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span><span class="o">.</span><span class="n">args</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Argparser args Namespace with Playbook args automatically resolved (resolved args).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span><span class="o">.</span><span class="n">resolved_args</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TcEx.batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.batch">[docs]</a>    <span class="k">def</span> <span class="nf">batch</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -578,8 +414,7 @@
 
             <span class="k">return</span> <span class="n">DataFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Required Module is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Required Module is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcEx.datastore"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.datastore">[docs]</a>    <span class="k">def</span> <span class="nf">datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the DataStore module.</span>
@@ -600,12 +435,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;All args parsed before App args are added.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return all args parsed before App args are added.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span><span class="o">.</span><span class="n">default_args</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;ThreatConnect error codes.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return TcEx error codes.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.tcex_error_codes</span> <span class="k">import</span> <span class="n">TcExErrorCodes</span>
 
@@ -666,7 +501,7 @@
         <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">code</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="n">code</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Invalid exit code&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid exit code&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcEx.expand_indicators"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.expand_indicators">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">expand_indicators</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
@@ -722,6 +557,40 @@
             <span class="s1">&#39;Threat&#39;</span><span class="p">,</span>
             <span class="s1">&#39;Task&#39;</span><span class="p">,</span>
         <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">group_types_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return supported ThreatConnect Group types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Adversary&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;adversaries&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;adversary&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Campaign&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;campaigns&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;campaign&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Document&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;documents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;document&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Email&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;email&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Event&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;events&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Incident&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;incidents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;incident&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSets&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSet&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Report&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;report&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Signature&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;signatures&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;signature&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Threat&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;threats&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;threat&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Task&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;task&#39;</span><span class="p">},</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="TcEx.get_type_from_api_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.get_type_from_api_entity">[docs]</a>    <span class="k">def</span> <span class="nf">get_type_from_api_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the object type as a string given a api entity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            api_entity:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_types_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">merged</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_types_data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">api_entity</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">key</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="TcEx.handle_error"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.handle_error">[docs]</a>    <span class="k">def</span> <span class="nf">handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">message_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">raise_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Raise RuntimeError</span>
@@ -789,41 +658,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">group_types_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;All supported ThreatConnect Group types.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;Adversary&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;adversaries&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;adversary&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Campaign&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;campaigns&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;campaign&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Document&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;documents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;document&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Email&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;email&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Event&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;events&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Incident&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;incidents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;incident&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSets&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSet&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Report&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;report&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Signature&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;signatures&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;signature&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Threat&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;threats&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;threat&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Task&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;task&#39;</span><span class="p">},</span>
-        <span class="p">}</span>
-
-<div class="viewcode-block" id="TcEx.get_type_from_api_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.get_type_from_api_entity">[docs]</a>    <span class="k">def</span> <span class="nf">get_type_from_api_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the object type as a string given a api entity.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            api_entity:</span>
-
-<span class="sd">        Returns:</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_types_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">merged</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_types_data</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">api_entity</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">key</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return contents of install.json configuration file, loading from disk if required.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -832,7 +666,7 @@
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">install_json_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Could not retrieve App Data.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Could not retrieve App Data.&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span>
 
@@ -843,6 +677,11 @@
             <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a valid logger.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span>
 
 <div class="viewcode-block" id="TcEx.metric"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.metric">[docs]</a>    <span class="k">def</span> <span class="nf">metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the Metrics module.</span>
@@ -860,16 +699,6 @@
         <span class="kn">from</span> <span class="nn">.tcex_metrics_v2</span> <span class="k">import</span> <span class="n">TcExMetricsV2</span>
 
         <span class="k">return</span> <span class="n">TcExMetricsV2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcEx.notification"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.notification">[docs]</a>    <span class="k">def</span> <span class="nf">notification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get instance of the Notification module.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (object): An instance of the Notification Class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_notification_v2</span> <span class="k">import</span> <span class="n">TcExNotificationV2</span>
-
-        <span class="k">return</span> <span class="n">TcExNotificationV2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.message_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc">[docs]</a>    <span class="k">def</span> <span class="nf">message_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write data to message_tc file in TcEX specified directory.</span>
@@ -895,6 +724,16 @@
                 <span class="n">mh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">[:</span><span class="n">max_length</span><span class="p">])</span>
         <span class="n">max_length</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcEx.notification"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.notification">[docs]</a>    <span class="k">def</span> <span class="nf">notification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get instance of the Notification module.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (object): An instance of the Notification Class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.tcex_notification_v2</span> <span class="k">import</span> <span class="n">TcExNotificationV2</span>
+
+        <span class="k">return</span> <span class="n">TcExNotificationV2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instance tcex args parser.&quot;&quot;&quot;</span>
@@ -914,7 +753,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Formats proxy configuration into required format for Python Requests module.</span>
+        <span class="sd">&quot;&quot;&quot;Format the proxy configuration for Python Requests module.</span>
 
 <span class="sd">        Generates a dictionary for use with the Python Requests module format</span>
 <span class="sd">        when proxy is required for remote connections.</span>
@@ -957,6 +796,11 @@
                 <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proxy_url</span><span class="p">),</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="n">proxies</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return argparser args Namespace with Playbook args automatically resolved.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span><span class="o">.</span><span class="n">resolved_args</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TcEx.request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.request">[docs]</a>    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of the Request Class.</span>
@@ -1059,7 +903,7 @@
                 <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>  <span class="c1"># 2to3 converts unicode to str</span>
                     <span class="c1"># 2to3 converts unicode to str</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Encoding poorly encoded string (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Encoding poorly encoded string (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>  <span class="c1"># Python 3 can&#39;t decode a str</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1069,7 +913,7 @@
         <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="TcEx.safe_indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_indicator">[docs]</a>    <span class="k">def</span> <span class="nf">safe_indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Indicator encode value for safe HTTP request.</span>
+        <span class="sd">&quot;&quot;&quot;Format indicator value for safe HTTP request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            indicator (string): Indicator to URL Encode</span>
@@ -1138,11 +982,11 @@
         <span class="k">return</span> <span class="n">group_name</span></div>
 
 <div class="viewcode-block" id="TcEx.safetag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag">[docs]</a>    <span class="k">def</span> <span class="nf">safetag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wrapper method for safe_tag.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Preserve safetag method name for older Apps.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.safe_tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_tag">[docs]</a>    <span class="k">def</span> <span class="nf">safe_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</span>
+        <span class="sd">&quot;&quot;&quot;Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">           tag (string): The tag to be truncated</span>
@@ -1155,16 +999,15 @@
                 <span class="c1"># handle unicode characters and url encode tag value</span>
                 <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)[:</span><span class="mi">128</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Failed converting tag to safetag (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed converting tag to safetag (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">tag</span></div>
 
 <div class="viewcode-block" id="TcEx.safeurl"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl">[docs]</a>    <span class="k">def</span> <span class="nf">safeurl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wrapper method for safe_url.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Preserve safeurl method name for older Apps.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.safe_url"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_url">[docs]</a>    <span class="k">def</span> <span class="nf">safe_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;URL encode value for safe HTTP request.</span>
+        <span class="sd">&quot;&quot;&quot;Encode value for safe HTTP request.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url (string): The string to URL Encode.</span>
@@ -1195,7 +1038,19 @@
             <span class="kn">from</span> <span class="nn">.tcex_ti</span> <span class="k">import</span> <span class="n">TcExTi</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="n">TcExTi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">utils</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include the Utils module.</span>
+
+<span class="sd">        .. Note:: Utils methods can be accessed using ``tcex.utils.&lt;method&gt;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.tcex_utils</span> <span class="k">import</span> <span class="n">TcExUtils</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">TcExUtils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span></div>
 </pre></div>
 
            </div>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti_batch &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_ti_batch &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -406,7 +406,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">indicators</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicator_data</span>
         <span class="k">return</span> <span class="n">indicator_data</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExBatch._indicator_values"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch._indicator_values">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_indicator_values</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process indicators expanding file hashes/custom indicators into multiple entries.</span>
 
@@ -437,7 +437,7 @@
             <span class="k">if</span> <span class="n">indicators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">indicator_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indicators</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="n">indicator_list</span>
+        <span class="k">return</span> <span class="n">indicator_list</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -833,6 +833,24 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indicator_obj</span> <span class="o">=</span> <span class="n">EmailAddress</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator</span><span class="p">(</span><span class="n">indicator_obj</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Static list of Batch error codes and short description&quot;&quot;&quot;</span>
+        <span class="n">error_codes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1001&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;General Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1002&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Permission Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1003&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;JsonSyntax Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1004&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Internal Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1005&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Invalid Indicator Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1006&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Invalid Group Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1007&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Item Not Found Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1008&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Indicator Limit Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1009&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Association Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x100A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Duplicate Item Error&#39;</span>
+        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x100B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;File IO Error&#39;</span>
+
+        <span class="k">return</span> <span class="n">error_codes</span>
 
 <div class="viewcode-block" id="TcExBatch.errors"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.errors">[docs]</a>    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieve Batch errors to ThreatConnect API.</span>
@@ -1596,7 +1614,20 @@
                 <span class="c1"># submit file data after batch job is complete</span>
                 <span class="n">batch_data</span><span class="p">[</span><span class="s1">&#39;uploadStatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">(</span><span class="n">halt_on_error</span><span class="p">)</span>
             <span class="n">batch_data_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">write_error_json</span><span class="p">(</span><span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">))</span>
+
         <span class="k">return</span> <span class="n">batch_data_array</span></div>
+
+<div class="viewcode-block" id="TcExBatch.write_error_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.write_error_json">[docs]</a>    <span class="k">def</span> <span class="nf">write_error_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Writes the errors for debuging purposes&quot;&quot;&quot;</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">error_json_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="s1">&#39;errors-</span><span class="si">{}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">error_json_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">errors</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExBatch.submit_create_and_upload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload">[docs]</a>    <span class="k">def</span> <span class="nf">submit_create_and_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Submit Batch request to ThreatConnect API.</span>
@@ -1609,13 +1640,14 @@
             <span class="n">halt_on_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halt_on_batch_error</span>
 
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
-        <span class="c1"># store the length of the batch data to use for poll interval calculations</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Group Size: </span><span class="si">{:,}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Indicator Size </span><span class="si">{:,}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
             <span class="c1"># special code for debugging App using batchV2.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_batch_json</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">):</span>
+            <span class="c1"># store the length of the batch data to use for poll interval calculations</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Group Size: </span><span class="si">{:,}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Indicator Size </span><span class="si">{:,}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))))</span>
+
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">files</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includeAdditional&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span><span class="p">}</span>
@@ -1698,7 +1730,9 @@
                 <span class="c1"># special code for debugging App using batchV2.</span>
                 <span class="n">fqfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">--</span><span class="si">{}</span><span class="s1">--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">)),</span>
+                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">--</span><span class="si">{}</span><span class="s1">--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">api_branch</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+                    <span class="p">),</span>
                 <span class="p">)</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqfn</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                     <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_notification_v2 module &mdash; TcEx 1.0.5 documentation</title>
+  <title>tcex.tcex_notification_v2 module &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -228,12 +228,12 @@
 <p>TcEx Notification Module</p>
 <dl class="class">
 <dt id="tcex.tcex_notification_v2.TcExNotificationV2">
-<em class="property">class </em><code class="descclassname">tcex.tcex_notification_v2.</code><code class="descname">TcExNotificationV2</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex_notification_v2.</code><code class="sig-name descname">TcExNotificationV2</code><span class="sig-paren">(</span><em class="sig-param">tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Notification Class</p>
 <dl class="method">
 <dt id="tcex.tcex_notification_v2.TcExNotificationV2.org">
-<code class="descname">org</code><span class="sig-paren">(</span><em>notification_type</em>, <em>priority='Low'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2.org"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2.org" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">org</code><span class="sig-paren">(</span><em class="sig-param">notification_type</em>, <em class="sig-param">priority='Low'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2.org"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2.org" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vars for the passed in data. Used for org notification.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;notificationType&quot;</span><span class="o">:</span> <span class="nx">notification_type</span><span class="p">,</span>
@@ -242,23 +242,19 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>notification_type</strong> (<em>str</em>) – The notification type.</li>
-<li><strong>priority</strong> (<em>str</em>) – The priority: Low, Medium, High.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>notification_type</strong> (<em>str</em>) – The notification type.</p></li>
+<li><p><strong>priority</strong> (<em>str</em>) – The priority: Low, Medium, High.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_notification_v2.TcExNotificationV2.recipients">
-<code class="descname">recipients</code><span class="sig-paren">(</span><em>notification_type</em>, <em>recipients</em>, <em>priority='Low'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2.recipients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2.recipients" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">recipients</code><span class="sig-paren">(</span><em class="sig-param">notification_type</em>, <em class="sig-param">recipients</em>, <em class="sig-param">priority='Low'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2.recipients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2.recipients" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vars for the passed in data. Used for one or more recipient notification.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;notificationType&quot;</span><span class="o">:</span> <span class="nx">notification_type</span><span class="p">,</span>
@@ -268,37 +264,32 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>notification_type</strong> (<em>str</em>) – The type of notification being sent.</li>
-<li><strong>recipients</strong> (<em>str</em>) – A comma delimited string of recipients.</li>
-<li><strong>priority</strong> (<em>str</em>) – The priority: Low, Medium, High.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>notification_type</strong> (<em>str</em>) – The type of notification being sent.</p></li>
+<li><p><strong>recipients</strong> (<em>str</em>) – A comma delimited string of recipients.</p></li>
+<li><p><strong>priority</strong> (<em>str</em>) – The priority: Low, Medium, High.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_notification_v2.TcExNotificationV2.send">
-<code class="descname">send</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2.send" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_notification_v2.html#TcExNotificationV2.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_notification_v2.TcExNotificationV2.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send our message</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (<em>str</em>) – The message to be sent.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response from the request.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">requests.models.Response</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The message to be sent.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response from the request.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>requests.models.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

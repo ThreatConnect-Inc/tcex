@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Exit &mdash; TcEx 1.0.5 documentation</title>
+  <title>Exit &mdash; TcEx 1.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.5
+                1.0.7
               </div>
 
 
@@ -197,12 +197,12 @@
 <p>All ThreatConnect Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcEx</span></code></a> Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal notranslate"><span class="pre">exit_code</span></code></a> property to handle exit codes.  All Apps should end with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method.</p>
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method supports and optional <code class="docutils literal notranslate"><span class="pre">msg</span></code> parameter.  If provided, the <code class="docutils literal notranslate"><span class="pre">msg</span></code> value will be logged and written to the <code class="docutils literal notranslate"><span class="pre">message_tc</span></code> file as the App exit message.</p>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">Providing a proper exit code for Playbook Apps is important for execution of downstream Apps. Supported exit codes for Playbook Apps are 0 (success) and 1 (failure).</p>
+<p class="admonition-title">Important</p>
+<p>Providing a proper exit code for Playbook Apps is important for execution of downstream Apps. Supported exit codes for Playbook Apps are 0 (success) and 1 (failure).</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The exit method automatically logs the exit code using the <a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a> functionality of the TcEx Framework.</p>
+<p class="admonition-title">Note</p>
+<p>The exit method automatically logs the exit code using the <a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a> functionality of the TcEx Framework.</p>
 </div>
 <div class="section" id="setting-the-exit-code">
 <h2>Setting the Exit Code<a class="headerlink" href="#setting-the-exit-code" title="Permalink to this headline">¶</a></h2>
@@ -319,16 +319,16 @@
 <div class="section" id="job-app-exit-codes">
 <h2>Job App Exit Codes<a class="headerlink" href="#job-app-exit-codes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>0 - Successful execution of App</li>
-<li>1 - Failed execution of App</li>
-<li>3 - Partial failure of App</li>
+<li><p>0 - Successful execution of App</p></li>
+<li><p>1 - Failed execution of App</p></li>
+<li><p>3 - Partial failure of App</p></li>
 </ul>
 </div>
 <div class="section" id="playbook-app-exit-codes">
 <h2>Playbook App Exit Codes<a class="headerlink" href="#playbook-app-exit-codes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>0 - Successful execution of App</li>
-<li>1 - Failed execution of App</li>
+<li><p>0 - Successful execution of App</p></li>
+<li><p>1 - Failed execution of App</p></li>
 </ul>
 </div>
 </div>

@@ -19,18 +19,17 @@ class TraceLogger(logging.Logger):
 
     _in_trace = False
 
-    @property
-    def in_trace(self):
-        """Return in trace value. Automatic reset."""
-        in_trace = self._in_trace
-        self._in_trace = False
-        return in_trace
-
     def findCaller(self, stack_info=False):
         """Find the caller for the current log event."""
-        caller = getframeinfo(stack()[3][0])
-        if self.in_trace:
-            caller = getframeinfo(stack()[4][0])
+        caller = None
+        depth = 3
+        while True:
+            # search for the correct calling method
+            caller = getframeinfo(stack()[depth][0])
+            if caller.function != 'trace' or depth >= 6:
+                break
+            depth += 1
+
         if sys.version_info < (3,):
             # return value for py2
             return (caller.filename, caller.lineno, caller.function)
@@ -38,7 +37,6 @@ class TraceLogger(logging.Logger):
 
     def trace(self, msg, *args, **kwargs):
         """Set trace logging level"""
-        self._in_trace = True
         self.log(logging.TRACE, msg, *args, **kwargs)
 
 
@@ -117,8 +115,8 @@ class TcExLogger(object):
         filename = filename or self.tcex.default_args.tc_log_file
         formatter = formatter or FileHandleFormatter()
         level = level or self.logging_level
-        # create handler
-        fh = logging.FileHandler(os.path.join(self.tcex.default_args.tc_log_path, filename))
+        # create customized handler
+        fh = FileHandlerCustom(os.path.join(self.tcex.default_args.tc_log_path, filename))
         fh.set_name(name)
         fh.setFormatter(formatter)
         fh.setLevel(level)
@@ -142,8 +140,8 @@ class TcExLogger(object):
         level = level or self.logging_level
         max_bytes = max_bytes or self.tcex.default_args.tc_log_max_bytes
         mode = mode or 'a'
-        # create handler
-        fh = RotatingFileHandler(
+        # create customized handler
+        fh = RotatingFileHandlerCustom(
             os.path.join(self.tcex.default_args.tc_log_path, filename),
             backupCount=backup_count,
             maxBytes=max_bytes,
@@ -292,21 +290,37 @@ class ApiHandler(logging.Handler):
                 pass
 
 
+class FileHandlerCustom(logging.FileHandler):
+    """Logger handler for ThreatConnect Exchange File logging."""
+
+    def __init__(self, filename, mode='a', encoding=None, delay=0):
+        """Add logic to create log directory if it does not exists."""
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+        logging.FileHandler.__init__(self, filename, mode, encoding, delay)
+
+
 class FileHandleFormatter(logging.Formatter):
     """Logger formatter for ThreatConnect Exchange file handler logging."""
 
     standard_format = (
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        '(%(filename)s:%(funcName)s:%(lineno)d)'
+        '(%(filename)s:%(funcName)s:%(lineno)d:%(thread)d)'
     )
     trace_format = (
-        '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s] %(message)s '
-        '(%(filename)s:%(funcName)s:%(lineno)d)'
+        '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s:%(lineno)d] %(message)s '
+        '(%(filename)s:%(thread)d)'
     )
 
     def __init__(self):
         """Initialize formatter parent."""
-        super().__init__(fmt='%(levelno)d: %(msg)s', datefmt=None, style='%')
+        try:  # py3
+            super(FileHandleFormatter, self).__init__(
+                fmt='%(levelno)d: %(msg)s', datefmt=None, style='%'
+            )
+        except TypeError:  # py2
+            # TODO: remove after py2 support is dropped
+            super(FileHandleFormatter, self).__init__(fmt='%(levelno)d: %(msg)s', datefmt=None)
 
     def format(self, record):
         """Format file handle log event according to logging level."""
@@ -328,3 +342,20 @@ class FileHandleFormatter(logging.Formatter):
         self._style._fmt = format_orig
 
         return result
+
+
+class RotatingFileHandlerCustom(RotatingFileHandler):
+    """Logger handler for ThreatConnect Exchange File logging."""
+
+    def __init__(self, filename, mode='a', maxBytes=0, backupCount=0, encoding=None, delay=0):
+        """Add logic to create log directory if it does not exists."""
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+        RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
+
+    # TODO: investigate controlling logging thread events
+    # def emit(self, record):
+    #     """Emit the log record."""
+    #     self.reopenIfNeeded()
+    #     print(self.name)
+    #     logging.FileHandler.emit(self, record)
