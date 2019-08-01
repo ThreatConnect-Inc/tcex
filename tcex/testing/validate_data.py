@@ -329,10 +329,9 @@ class Validator(object):
 
     def operator_json_raw_eq(self, app_data, test_data, **kwargs):
         """Specifically handles json.raw outputs by using DeepDiff to compare app_data to
-        test_data and supports native DeepDiff ignore_order and excludes_path options. Used
-        exclude_paths when dealing with simple data and where you want to exclude first-level
-        data. Use exclude_regex_paths when dealing with more complex data or you need to exclude
-        nested data.
+        test_data and supports native DeepDiff excludes_path options. Use exclude_paths when
+        dealing with simple data and where you want to exclude first-level data. Use
+        exclude_regex_paths when dealing with more complex data or you need to exclude nested data.
 
         Example to compare two simple dicts, using exclude_paths to exclude the 'sys_id' key which
         contains a randomly generated id:
@@ -387,6 +386,7 @@ class Validator(object):
                 # This json.raw is packaged as a list of string representation of dictionary.
                 # Needs to be converted to list of native dictionary.
                 try:
+                    self.log.debug('test_data: {}'.format(test_data))
                     test_data = [json.loads(test_data) for data in test_data]
                 except Exception as e:
                     self.log.debug('test_data: {}'.format(test_data))
@@ -399,7 +399,6 @@ class Validator(object):
         return self.operator_deep_diff(
             app_data,
             test_data,
-            ignore_order=ignore_order,
             exclude_paths=exclude_paths,
             exclude_regex_paths=exclude_regex_paths
         )
