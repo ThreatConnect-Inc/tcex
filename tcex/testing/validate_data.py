@@ -126,6 +126,7 @@ class Validator(object):
 
         # run operator
         try:
+            # TODO: Do we really want to hardcode ignore_order for every DeepDiff evaluation?
             ddiff = DeepDiff(app_data, test_data, ignore_order=True, **kwargs)
         except KeyError:
             return False, 'Encountered KeyError when running deepdiff'
@@ -379,7 +380,7 @@ class Validator(object):
                     app_data = [json.loads(data) for data in app_data]
                 except Exception as e:
                     self.log.debug('app_data: {}'.format(app_data))
-                    self.log.error('Error handling json.raw app_data: {}'.format(e))
+                    self.log.error('Error deserializing json.raw app_data: {}'.format(e))
         if isinstance(test_data, string_types):
             test_data = json.loads(test_data)
             if isinstance(test_data, list):
@@ -387,20 +388,14 @@ class Validator(object):
                 # Needs to be converted to list of native dictionary.
                 try:
                     self.log.debug('test_data: {}'.format(test_data))
-                    test_data = [json.loads(test_data) for data in test_data]
+                    test_data = [json.loads(data) for data in test_data]
                 except Exception as e:
                     self.log.debug('test_data: {}'.format(test_data))
-                    self.log.error('Error handling json.raw test_data: {}'.format(e))
-        ignore_order = kwargs.get('ignore_order', False)
-        # exclude_paths works simple data that is only one level deep.
-        exclude_paths = kwargs.get('exclude_paths')
-        # exclude_regex_paths is needed for nested data.
-        exclude_regex_paths = kwargs.get('exclude_regex_paths')
+                    self.log.error('Error deserializing json.raw test_data: {}'.format(e))
         return self.operator_deep_diff(
             app_data,
             test_data,
-            exclude_paths=exclude_paths,
-            exclude_regex_paths=exclude_regex_paths
+            **kwargs
         )
 
     @property
