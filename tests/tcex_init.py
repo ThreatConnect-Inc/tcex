@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Testing Initialization."""
 import os
+import sys
 
 from tcex import TcEx
 
@@ -14,6 +15,9 @@ config_data = {
     'tc_token': os.getenv('TC_TOKEN'),
     'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
     'tc_owner': os.getenv('TC_OWNER', 'TCI'),
+    # hmac auth (for session tests)
+    'api_access_id': os.getenv('API_ACCESS_ID'),
+    'api_secret_key': os.getenv('API_SECRET_KEY'),
     # logging
     'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
     'tc_log_to_api': str(os.getenv('TC_LOG_TO_API', 'false')).lower() in ['true'],
@@ -46,5 +50,7 @@ if os.getenv('TC_PROXY_PASSWORD'):
     config_data['tc_proxy_password'] = os.getenv('TC_PROXY_PASSWORD')
 
 tcex = TcEx()
+# clear sys.argv
+sys.argv = sys.argv[:1] + ['--tc_log_level', 'trace']  # args.py [if cli_arg in sys.argv:]
 tcex.tcex_args.config(config_data)
 args = tcex.args

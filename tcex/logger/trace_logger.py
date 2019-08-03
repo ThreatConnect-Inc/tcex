@@ -33,7 +33,8 @@ class TraceLogger(logging.Logger):
         if sys.version_info < (3,):
             # return value for py2
             return (caller.filename, caller.lineno, caller.function)
-        return (caller.filename, caller.lineno, caller.function, None)
+        # TODO: [py2] - remove py2 statement and remove coverage pragma
+        return (caller.filename, caller.lineno, caller.function, None)  # pragma: no cover
 
     def trace(self, msg, *args, **kwargs):
         """Set trace logging level

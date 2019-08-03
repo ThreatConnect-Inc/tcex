@@ -10,12 +10,12 @@ import sys
 import traceback
 from datetime import datetime
 from tcex import TcEx
-from tcex.tcex_logger import FileHandlerCustom
+from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
 from .validate_data import Validator
 
 logger = logging.getLogger('TestCase')
-lfh = FileHandlerCustom('log/tests.log')
+lfh = RotatingFileHandlerCustom(filename='log/tests.log')
 lfh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 lfh.setFormatter(formatter)

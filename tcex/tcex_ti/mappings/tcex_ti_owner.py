@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Generic Mappings Object"""
 from tcex.tcex_ti.tcex_ti_tc_request import TiTcRequest
-from tcex.tcex_utils import TcExUtils
+from tcex.utils import Utils
 
 
 class Owner(object):
@@ -20,7 +20,7 @@ class Owner(object):
         self._api_type = 'owners'
         self._api_entity = 'owner'
 
-        self._utils = TcExUtils()
+        self._utils = Utils()
         self._tc_requests = TiTcRequest(self._tcex)
 
     @property

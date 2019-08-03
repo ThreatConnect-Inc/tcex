@@ -10,7 +10,7 @@ import traceback
 
 import colorama as c
 
-from tcex import TcExRun
+from tcex.bin import Run
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -58,7 +58,7 @@ args, extra_args = parser.parse_known_args()
 
 if __name__ == '__main__':
     try:
-        tcr = TcExRun(args)
+        tcr = Run(args)
         profile_count = 0
         # load staging data
         for p in tcr.profiles:

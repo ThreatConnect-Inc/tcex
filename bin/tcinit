@@ -8,7 +8,7 @@ import traceback
 
 import colorama as c
 
-from tcex import TcExInit
+from tcex.bin import Init
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -84,7 +84,7 @@ args, extra_args = parser.parse_known_args()
 
 if __name__ == '__main__':
     try:
-        tci = TcExInit(args)
+        tci = Init(args)
         print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
 
         if args.action == 'update' or args.action == 'migrate':

@@ -7,7 +7,7 @@ import traceback
 
 import colorama as c
 
-from tcex import TcExLib
+from tcex.bin import Lib
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -44,7 +44,7 @@ args, extra_args = parser.parse_known_args()
 
 if __name__ == '__main__':
     try:
-        tcl = TcExLib(args)
+        tcl = Lib(args)
         tcl.install_libs()
         sys.exit(tcl.exit_code)
     except Exception:

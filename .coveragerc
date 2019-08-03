@@ -2,5 +2,6 @@
 omit =
     tcex/tcex_resources.py
     tcex/tcex_vault.py
-    tcex/testing
-    tests
+    tcex/testing/*
+    tcex/tcex_ti/*
+    tests/*

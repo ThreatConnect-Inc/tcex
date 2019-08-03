@@ -3,7 +3,7 @@
 
 # import local modules for dynamic reference
 from tcex.tcex_ti.tcex_ti_tc_request import TiTcRequest
-from tcex.tcex_utils import TcExUtils
+from tcex.utils import Utils
 
 
 class Tag(object):
@@ -24,7 +24,7 @@ class Tag(object):
         self._api_type = None
         self._api_entity = 'tag'
 
-        self._utils = TcExUtils()
+        self._utils = Utils()
         self._tc_requests = TiTcRequest(self._tcex)
 
     @staticmethod

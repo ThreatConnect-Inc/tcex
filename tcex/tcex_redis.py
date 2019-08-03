@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Redis Module"""
 from builtins import str
+
+# TODO: [py2] switch to py3 metaclass
+from six import with_metaclass
 import redis
 
 
@@ -16,7 +19,8 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class RedisClient(metaclass=Singleton):
+# class RedisClient(metaclass=Singleton):
+class RedisClient(with_metaclass(Singleton)):
     """A shared REDIS client connection using a ConnectionPooling singleton.
 
     Initialize a single shared redis.connection.ConnectionPool.

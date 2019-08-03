@@ -7,7 +7,7 @@ import traceback
 
 import colorama as c
 
-from tcex import TcExProfile
+from tcex.bin import Profile
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -85,7 +85,7 @@ args, extra_args = parser.parse_known_args()
 
 if __name__ == '__main__':
     try:
-        tcp = TcExProfile(args)
+        tcp = Profile(args)
 
         # load all profiles
         tcp.load_profiles()

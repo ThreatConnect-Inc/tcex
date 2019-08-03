@@ -1,3 +1,5 @@
 # -*- coding: utf-8 -*-
 """Logger module for TcEx Framework"""
-from tcex.logger.logger import Logger  # noqa: F401
+# flake8: noqa
+from .logger import Logger
+from .rotating_file_handler_custom import RotatingFileHandlerCustom

@@ -2,6 +2,7 @@
 """API Handler Class"""
 import logging
 import time
+import threading
 
 
 class ApiHandler(logging.Handler):
@@ -17,13 +18,12 @@ class ApiHandler(logging.Handler):
         super(ApiHandler, self).__init__()
         self.session = session
         self.flush_limit = flush_limit
-        self.entries = []
+        self._entries = []
         self.in_token_renewal = False
 
-    def close(self):
+    def flush(self):
         """Close the logger and flush entries."""
-        self.log_to_api()
-        self.entries = []
+        self.log_to_api(self.entries)  # pragma: no cover
 
     def emit(self, record):
         """Emit a record.
@@ -31,22 +31,31 @@ class ApiHandler(logging.Handler):
         Args:
             record (obj): The record to be logged.
         """
+        if threading.current_thread().name != 'MainThread':
+            return
+
         # queue log events
-        self.entries.append(self.format(record))
+        self._entries.append(self.format(record))
 
         # flush queue once limit is hit token module is currently renewing token
-        if len(self.entries) > self.flush_limit and not self.in_token_renewal:
-            self.log_to_api()
-            self.entries = []
+        if len(self._entries) > self.flush_limit and not self.in_token_renewal:
+            self.log_to_api(self.entries)
 
-    def log_to_api(self):
+    @property
+    def entries(self):
+        """Return a copy and clear self._entries."""
+        entries = list(self._entries)
+        self._entries = []
+        return entries
+
+    def log_to_api(self, entries):
         """Send log events to the ThreatConnect API"""
-        if self.entries:
+        if entries:
             try:
                 headers = {'Content-Type': 'application/json'}
-                self.session.post('/v2/logs/app', headers=headers, json=self.entries)
-            except Exception:
-                pass  # best effort on api logging
+                self.session.post('/v2/logs/app', headers=headers, json=entries)
+            except Exception:  # pragma: no cover
+                pass
 
 
 class ApiHandlerFormatter(logging.Formatter):

@@ -55,12 +55,12 @@ class Logger(object):
     @property
     def logging_level(self):
         """Return the configured logging level."""
-        level = logging.DEBUG
+        level = 'DEBUG'
         if self.tcex.default_args.logging is not None:
-            level = logging.getLevelName(self.tcex.default_args.logging.upper())
+            level = self.tcex.default_args.logging.upper()  # pragma: no cover
         elif self.tcex.default_args.tc_log_level is not None:
-            level = logging.getLevelName(self.tcex.default_args.tc_log_level.upper())
-        return level
+            level = self.tcex.default_args.tc_log_level.upper()
+        return logging.getLevelName(level)
 
     def remove_handler_by_name(self, handler_name):
         """Remove a file handler by name.
@@ -198,22 +198,19 @@ class Logger(object):
     def _log_app_data(self):
         """Log the App data information."""
         # Best Effort
-        if self.tcex.install_json:
-            app_commit_hash = self.tcex.install_json.get('commitHash')
-            app_features = ','.join(self.tcex.install_json.get('features', []))
-            app_min_ver = self.tcex.install_json.get('minServerVersion', 'N/A')
-            app_name = self.tcex.install_json.get('displayName')
-            app_runtime_level = self.tcex.install_json.get('runtimeLevel')
-            app_version = self.tcex.install_json.get('programVersion')
-
-            self.log.info('App Name: {}'.format(app_name))
-            if app_features:
-                self.log.info('App Features: {}'.format(app_features))
-            self.log.info('App Minimum ThreatConnect Version: {}'.format(app_min_ver))
-            self.log.info('App Runtime Level: {}'.format(app_runtime_level))
-            self.log.info('App Version: {}'.format(app_version))
-            if app_commit_hash is not None:
-                self.log.info('App Commit Hash: {}'.format(app_commit_hash))
+        try:
+            self.log.info('App Name: {}'.format(self.tcex.ij.display_name))
+            if self.tcex.ij.features:
+                self.log.info('App Features: {}'.format(','.join(self.tcex.ij.features)))
+            self.log.info(
+                'App Minimum ThreatConnect Version: {}'.format(self.tcex.ij.min_server_version)
+            )
+            self.log.info('App Runtime Level: {}'.format(self.tcex.ij.runtime_level))
+            self.log.info('App Version: {}'.format(self.tcex.ij.program_version))
+            if self.tcex.ij.commit_hash is not None:
+                self.log.info('App Commit Hash: {}'.format(self.tcex.ij.commit_hash))
+        except Exception:
+            pass
 
     def _log_platform(self):
         """Log the current Platform."""

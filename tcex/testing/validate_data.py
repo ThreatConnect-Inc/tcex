@@ -112,7 +112,6 @@ class Validator(object):
         Args:
             app_data (dict|str|list): The data created by the App.
             test_data (dict|str|list): The data provided in the test case.
-            exclude_keys (list, kwargs): A list of key for a KeyValueArray to be removed.
 
         Returns:
             bool: The results of the operator.
@@ -206,7 +205,7 @@ class Validator(object):
         if isinstance(test_data, (string_types)):
             test_data = json.loads(test_data)
 
-        exclude = kwargs.get('exclude', [])
+        exclude = kwargs.pop('exclude', [])
         if isinstance(app_data, list) and isinstance(test_data, list):
             app_data = [self.operator_json_eq_exclude(ad, exclude) for ad in app_data]
             test_data = [self.operator_json_eq_exclude(td, exclude) for td in test_data]
@@ -214,7 +213,7 @@ class Validator(object):
             app_data = self.operator_json_eq_exclude(app_data, exclude)
             test_data = self.operator_json_eq_exclude(test_data, exclude)
 
-        return self.operator_deep_diff(app_data, test_data)
+        return self.operator_deep_diff(app_data, test_data, **kwargs)
 
     @staticmethod
     def operator_json_eq_exclude(data, exclude):
@@ -547,7 +546,7 @@ class ThreatConnect(object):
         self.provider = provider
 
     def batch(self, context, owner, validation_criteria):
-        """Validates the batch submission"""
+        """Validate the batch submission"""
 
         validation_percent = validation_criteria.get('percent', 100)
         validation_count = validation_criteria.get('count', None)
@@ -758,7 +757,7 @@ class ThreatConnect(object):
         return not bool(errors), errors
 
     def flatten(self, lis):
-        """Idk why python doesnt have this built in but helper function to flatten a list"""
+        """Idk why python doesn't have this built in but helper function to flatten a list"""
         new_lis = []
         for item in lis:
             if isinstance(item, list):
@@ -868,8 +867,10 @@ class ThreatConnect(object):
         return ti_entity
 
     def _get_batch_submit_totals(self, context):
-        """Breaks the batch submitions up into seperate partitions with each partition containing
-        its total."""
+        """Break the batch submitions up into separate partitions.
+
+        Each partition containing its total.
+        """
         counts = {}
         for filename in os.listdir(os.path.join('.', 'log', context)):
             if not filename.startswith('batch-') or not filename.endswith('.json'):

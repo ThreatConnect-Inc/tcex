@@ -7,8 +7,8 @@ import traceback
 
 import colorama as c
 
-from tcex import TcExPackage
-from tcex import TcExValidate
+from tcex.bin import Package
+from tcex.bin import Validate
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -39,7 +39,7 @@ args, extra_args = parser.parse_known_args()
 if __name__ == '__main__':
     try:
         # validate App
-        tcv = TcExValidate(args)
+        tcv = Validate(args)
         tcv.update_system_path()
         tcv.check_syntax()
         tcv.check_imports()
@@ -51,7 +51,7 @@ if __name__ == '__main__':
             sys.exit(tcv.exit_code)
 
         # set exit code for tc package
-        tcp = TcExPackage(args)
+        tcp = Package(args)
         tcp.validation_data = tcv.validation_data
         tcp.package()
         if args.json_output:

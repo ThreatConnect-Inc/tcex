@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """API Handler Class"""
-import logging
-from logging.handlers import RotatingFileHandler
 import os
+from logging.handlers import RotatingFileHandler
 
 
 class RotatingFileHandlerCustom(RotatingFileHandler):
@@ -20,45 +19,51 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
             delay (int, optional): The delay period. Defaults to 0.
         """
         if not os.path.exists(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
+            try:
+                # pylint: disable=unexpected-keyword-arg
+                os.makedirs(os.path.dirname(filename), exist_ok=True)
+            except TypeError:
+                # TODO: [py2] - remove py2 specific code and pylint-disable
+                if not os.path.exists(os.path.dirname(filename)):
+                    os.makedirs(os.path.dirname(filename))
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
 
 
-class RotatingFileHandlerFormatter(logging.Formatter):
-    """Custom logging formatter that allows a different format depending on the logging level."""
-
-    def __init__(self):
-        """Initialize formatter parent."""
-        super().__init__(fmt='%(levelno)d: %(msg)s', datefmt=None, style='%')
-
-    def format(self, record):
-        """Format file handle log event according to logging level.
-
-        Args:
-            record (obj): The record to be logged.
-        """
-        # Replace the original format with one customized by logging level
-        self._style._fmt = self.standard_format
-        if record.levelno < 10:  # <= logging.DEBUG
-            self._style._fmt = self.trace_format
-
-        # Call the original formatter class to do the grunt work
-        result = logging.Formatter.format(self, record)
-
-        return result
-
-    @property
-    def standard_format(self):
-        """Return the standard log format"""
-        return (
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-            '(%(filename)s:%(funcName)s:%(lineno)d:%(threadName)s)'
-        )
-
-    @property
-    def trace_format(self):
-        """Return the standard log format"""
-        return (
-            '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s:%(lineno)d] %(message)s '
-            '(%(filename)s:%(threadName)s)'
-        )
+# class RotatingFileHandlerFormatter(logging.Formatter):
+#     """Custom logging formatter that allows a different format depending on the logging level."""
+#
+#     def __init__(self):
+#         """Initialize formatter parent."""
+#         super().__init__(fmt='%(levelno)d: %(msg)s', datefmt=None, style='%')
+#
+#     def format(self, record):
+#         """Format file handle log event according to logging level.
+#
+#         Args:
+#             record (obj): The record to be logged.
+#         """
+#         # Replace the original format with one customized by logging level
+#         self._style._fmt = self.standard_format
+#         if record.levelno < 10:  # <= logging.DEBUG
+#             self._style._fmt = self.trace_format
+#
+#         # Call the original formatter class to do the grunt work
+#         result = logging.Formatter.format(self, record)
+#
+#         return result
+#
+#     @property
+#     def standard_format(self):
+#         """Return the standard log format"""
+#         return (
+#             '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
+#             '(%(filename)s:%(funcName)s:%(lineno)d:%(threadName)s)'
+#         )
+#
+#     @property
+#     def trace_format(self):
+#         """Return the standard log format"""
+#         return (
+#             '%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s:%(lineno)d] %(message)s '
+#             '(%(filename)s:%(threadName)s)'
+#         )

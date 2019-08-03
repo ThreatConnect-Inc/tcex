@@ -2,7 +2,6 @@
 """TcEx Framework"""
 from builtins import str
 import inspect
-import json
 import platform
 import os
 import re
@@ -14,9 +13,9 @@ try:
 except ImportError:
     from urllib.parse import quote  # Python 3
 
-from .tcex_args import TcExArgs
+from .args import Args
 from .logger import Logger
-from .tcex_install_json import InstallJson
+from .app_config_object import InstallJson
 
 
 class TcEx(object):
@@ -33,8 +32,6 @@ class TcEx(object):
         # Property defaults
         self._error_codes = None
         self._exit_code = 0
-        self._install_json = None
-        self._install_json_params = {}
         self._indicator_associations_types_data = {}
         self._indicator_types = []
         self._indicator_types_data = {}
@@ -48,7 +45,7 @@ class TcEx(object):
         self.ij = InstallJson()
 
         # init args (needs logger)
-        self.tcex_args = TcExArgs(self)
+        self.tcex_args = Args(self)
 
         # init logger (needs args)
         self.logger = Logger(self)
@@ -93,7 +90,7 @@ class TcEx(object):
         from importlib import import_module
 
         # create resource object
-        self.resources = import_module('tcex.tcex_resources')
+        self.resources = import_module('tcex.resources.resources')
 
         if custom_indicators:
             self.log.info('Loading custom indicator types.')
@@ -189,9 +186,9 @@ class TcEx(object):
         playbook_triggers_enabled=None,
     ):
         """Return instance of Batch"""
-        from .tcex_ti_batch import TcExBatch
+        from .batch import Batch
 
-        return TcExBatch(
+        return Batch(
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
@@ -209,9 +206,9 @@ class TcEx(object):
         Returns:
             object: An instance of the Cache Class.
         """
-        from .tcex_cache import TcExCache
+        from .datastore import Cache
 
-        return TcExCache(self, domain, data_type, ttl_minutes, mapping)
+        return Cache(self, domain, data_type, ttl_minutes, mapping)
 
     # TODO: remove this method and use JMESPath instead.
     def data_filter(self, data):
@@ -248,9 +245,9 @@ class TcEx(object):
         Returns:
             object: An instance of the DataStore Class.
         """
-        from .tcex_datastore import TcExDataStore
+        from .datastore import DataStore
 
-        return TcExDataStore(self, domain, data_type, mapping)
+        return DataStore(self, domain, data_type, mapping)
 
     @property
     def default_args(self):
@@ -477,27 +474,6 @@ class TcEx(object):
         return self._indicator_types_data
 
     @property
-    def install_json(self):
-        """Return contents of install.json configuration file, loading from disk if required."""
-        if self._install_json is None:
-            try:
-                install_json_filename = os.path.join(os.getcwd(), 'install.json')
-                with open(install_json_filename, 'r') as fh:
-                    self._install_json = json.load(fh)
-            except IOError:
-                self.log.warning('Could not retrieve App Data.')
-                self._install_json = {}
-        return self._install_json
-
-    @property
-    def install_json_params(self):
-        """Parse params from install.json into a dict by name."""
-        if not self._install_json_params:
-            for param in self.install_json.get('params') or []:
-                self._install_json_params[param.get('name')] = param
-        return self._install_json_params
-
-    @property
     def log(self):
         """Return a valid logger."""
         return self.logger.log
@@ -515,9 +491,9 @@ class TcEx(object):
         Returns:
             (object): An instance of the Metrics Class.
         """
-        from .tcex_metrics_v2 import TcExMetricsV2
+        from .metrics import Metrics
 
-        return TcExMetricsV2(self, name, description, data_type, interval, keyed)
+        return Metrics(self, name, description, data_type, interval, keyed)
 
     def message_tc(self, message, max_length=255):
         """Write data to message_tc file in TcEX specified directory.
@@ -549,9 +525,9 @@ class TcEx(object):
         Returns:
             (object): An instance of the Notification Class.
         """
-        from .tcex_notification_v2 import TcExNotificationV2
+        from .notifications import Notifications
 
-        return TcExNotificationV2(self)
+        return Notifications(self)
 
     @property
     def parser(self):
@@ -564,9 +540,9 @@ class TcEx(object):
 
         .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
         """
-        from .tcex_playbook import TcExPlaybook
+        from .playbooks import Playbooks
 
-        return TcExPlaybook(self)
+        return Playbooks(self)
 
     @property
     def proxies(self):
@@ -843,16 +819,16 @@ class TcEx(object):
         .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
         """
         if self._service is None:
-            from .service import Service
+            from .services import Services
 
-            self._service = Service(self)
+            self._service = Services(self)
         return self._service
 
     @property
     def session(self):
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session is None:
-            from .session import TcSession
+            from .sessions import TcSession
 
             self._session = TcSession(self)
         return self._session
@@ -873,9 +849,9 @@ class TcEx(object):
     def token(self):
         """Return token object."""
         if self._token is None:
-            from .token import Token
+            from .tokens import Tokens
 
-            self._token = Token(
+            self._token = Tokens(
                 self.args.tc_token,
                 self.args.tc_token_expires,
                 self.args.tc_api_path,
@@ -891,7 +867,7 @@ class TcEx(object):
         .. Note:: Utils methods can be accessed using ``tcex.utils.<method>``.
         """
         if self._utils is None:
-            from .tcex_utils import TcExUtils
+            from .utils import Utils
 
-            self._utils = TcExUtils(self)
+            self._utils = Utils(self)
         return self._utils

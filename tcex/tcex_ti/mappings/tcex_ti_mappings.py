@@ -2,7 +2,7 @@
 """ThreatConnect TI Generic Mappings Object"""
 import json
 from tcex.tcex_ti.tcex_ti_tc_request import TiTcRequest
-from tcex.tcex_utils import TcExUtils
+from tcex.utils import Utils
 
 
 class TIMappings(object):
@@ -29,7 +29,7 @@ class TIMappings(object):
         self._api_entity = api_entity
         self._api_branch = api_branch
 
-        self._utils = TcExUtils()
+        self._utils = Utils()
         self._tc_requests = TiTcRequest(self._tcex)
 
     @property

@@ -6,7 +6,7 @@ import sys
 import traceback
 
 import colorama as c
-from tcex import TcExTest
+from tcex.bin import Test
 
 
 # Python 2 unicode
@@ -68,7 +68,7 @@ args, extra_args = parser.parse_known_args()
 
 if __name__ == '__main__':
     try:
-        tc_test = TcExTest(args)
+        tc_test = Test(args)
 
         if args.permutations:
             tc_test.permutations()

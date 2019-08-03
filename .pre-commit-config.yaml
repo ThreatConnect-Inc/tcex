@@ -23,3 +23,4 @@ repos:
     -   id: pylint
         args:
         -    --disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202
+        -    --ignore-patterns=app_init*
