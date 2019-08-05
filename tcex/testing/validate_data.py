@@ -329,18 +329,19 @@ class Validator(object):
         return True, ''
 
     def operator_json_raw_eq(self, app_data, test_data, **kwargs):
-        """Specifically handles json.raw outputs by using DeepDiff to compare app_data to
-        test_data and supports native DeepDiff excludes_path options. Use exclude_paths when
-        dealing with simple data and where you want to exclude first-level data. Use
-        exclude_regex_paths when dealing with more complex data or you need to exclude nested data.
+        """ Specifically handles json.raw outputs, including where arrays are stored, by using
+        DeepDiff to compare app_data to test_data and supports native DeepDiff excludes_path
+        options.
+
+        Use exclude_paths whe dealing with simple data and where you want to exclude first-level
+        data. Use exclude_regex_paths when dealing with more complex data or nested data.
 
         Example to compare two simple dicts, using exclude_paths to exclude the 'sys_id' key which
         contains a randomly generated id:
 
             data1 = {"sys_id": 12, "data": "some data"}
             data2 = {"sys_id": 34, "data": "some data"}
-            diff = DeepDiff(data1, data2, exclude_paths="root['sys_id']"
-            assert diff == {}
+            operator_json_raw_eq(app_data, test_data, exclude_paths="root['sys_id']"
 
         Example to compare two arrays, using exclude_regex_paths to exclude the nested 'sys_id' key
         which contains a randomly generated id:
@@ -361,9 +362,9 @@ class Validator(object):
                      {"sys_id": "78", "data": "some data"}
                  }
             ]
-            diff = DeepDiff(data1, data2,
-                            exclude_regex_paths=["root\[\d+\]\['results'\]\['sys_id'\]"])
-            assert diff == {}
+            operator_json_raw_eq(app_data, test_data,
+                                 exclude_regex_paths=["root\\['results'\\]\\['sys_id'\\]"])
+
 
         Args:
             app_data (dict|str|list): The data created by the App.
@@ -379,7 +380,6 @@ class Validator(object):
                 try:
                     app_data = [json.loads(data) for data in app_data]
                 except Exception as e:
-                    self.log.debug('app_data: {}'.format(app_data))
                     self.log.error('Error deserializing json.raw app_data: {}'.format(e))
         if isinstance(test_data, string_types):
             test_data = json.loads(test_data)
@@ -387,16 +387,10 @@ class Validator(object):
                 # This json.raw is packaged as a list of string representation of dictionary.
                 # Needs to be converted to list of native dictionary.
                 try:
-                    self.log.debug('test_data: {}'.format(test_data))
                     test_data = [json.loads(data) for data in test_data]
                 except Exception as e:
-                    self.log.debug('test_data: {}'.format(test_data))
                     self.log.error('Error deserializing json.raw test_data: {}'.format(e))
-        return self.operator_deep_diff(
-            app_data,
-            test_data,
-            **kwargs
-        )
+        return self.operator_deep_diff(app_data, test_data, **kwargs)
 
     @property
     def redis(self):
