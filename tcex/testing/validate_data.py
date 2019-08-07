@@ -380,7 +380,7 @@ class Validator(object):
                 try:
                     app_data = [json.loads(data) for data in app_data]
                 except Exception as e:
-                    self.log.error('Error deserializing json.raw app_data: {}'.format(e))
+                    return False, 'Error deserializing json.raw app_data: {}'.format(e)
         if isinstance(test_data, string_types):
             test_data = json.loads(test_data)
             if isinstance(test_data, list):
@@ -389,7 +389,7 @@ class Validator(object):
                 try:
                     test_data = [json.loads(data) for data in test_data]
                 except Exception as e:
-                    self.log.error('Error deserializing json.raw test_data: {}'.format(e))
+                    return False, 'Error deserializing json.raw test_data: {}'.format(e)
         return self.operator_deep_diff(app_data, test_data, **kwargs)
 
     @property
