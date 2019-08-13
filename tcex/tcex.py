@@ -852,11 +852,7 @@ class TcEx(object):
             from .tokens import Tokens
 
             self._token = Tokens(
-                self.args.tc_token,
-                self.args.tc_token_expires,
-                self.args.tc_api_path,
-                self.args.tc_verify,
-                self.log,
+                self.default_args.tc_api_path, self.default_args.tc_verify, self.log
             )
         return self._token
 
