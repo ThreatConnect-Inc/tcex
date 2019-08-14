@@ -37,7 +37,6 @@ class TestCase(object):
     context = None
     log = logger
     env = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
-    # TODO: Why does this init the stager twice???
     tcex = None
     _staged_tc_data = []
     _tc_output_variables = {}
@@ -252,9 +251,7 @@ class TestCase(object):
     @property
     def stager(self):
         """Return instance of Stager class."""
-        if not self._stager:
-            self._stager = Stager(self.get_tcex(self.default_args), logger, self.log_data)
-        return self._stager
+        return Stager(self.get_tcex(self.default_args), logger, self.log_data)
 
     @classmethod
     def teardown_class(cls):
