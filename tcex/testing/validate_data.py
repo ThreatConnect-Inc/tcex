@@ -143,22 +143,25 @@ class Validator(object):
             test_data = json.loads(json.dumps(test_data))
         except ValueError:
             pass
-        if isinstance(app_data, list) and isinstance(test_data, list):
-            for index, data in enumerate(app_data):
+        try:
+            if isinstance(app_data, list) and isinstance(test_data, list):
+                for index, data in enumerate(app_data):
+                    for path in exclude_paths:
+                        paths = path.split('.')
+                        data = self.remove_excludes(data, paths)
+                    app_data[index] = data
+                for index, data in enumerate(test_data):
+                    for path in exclude_paths:
+                        paths = path.split('.')
+                        data = self.remove_excludes(data, paths)
+                    test_data[index] = data
+            else:
                 for path in exclude_paths:
                     paths = path.split('.')
-                    data = self.remove_excludes(data, paths)
-                app_data[index] = data
-            for index, data in enumerate(test_data):
-                for path in exclude_paths:
-                    paths = path.split('.')
-                    data = self.remove_excludes(data, paths)
-                test_data[index] = data
-        else:
-            for path in exclude_paths:
-                paths = path.split('.')
-                app_data = self.remove_excludes(app_data, paths)
-                test_data = self.remove_excludes(test_data, paths)
+                    app_data = self.remove_excludes(app_data, paths)
+                    test_data = self.remove_excludes(test_data, paths)
+        except AttributeError:
+            pass
         # run operator
         try:
             ddiff = DeepDiff(app_data, test_data, ignore_order=True, **kwargs)
