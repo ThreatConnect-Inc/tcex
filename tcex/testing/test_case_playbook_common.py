@@ -44,11 +44,10 @@ class TestCasePlaybookCommon(TestCase):
                 )
         return self._output_variables
 
-    def populate_output_variables(self, profile_name):
+    def populate_output_variables(self, profile):
         """Generate validation rules from App outputs."""
-        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
+        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile.get('name')))
         with open(profile_filename, 'r+') as fh:
-            profile_data = json.load(fh)
 
             redis_data = self.redis_client.hgetall(self.context)
             outputs = {}
@@ -59,25 +58,27 @@ class TestCasePlaybookCommon(TestCase):
                 if data is None:
                     # log warning missing output data
                     self.log.error(
-                        '[{}] Missing redis output for variable {}'.format(profile_name, variable)
+                        '[{}] Missing redis output for variable {}'.format(
+                            profile.get('name', '??'), variable
+                        )
                     )
                 else:
                     data = json.loads(data.decode('utf-8'))
 
                 # validate validation variables
-                validation_output = (profile_data.get('outputs') or {}).get(variable)
-                if validation_output is None and profile_data.get('outputs') is not None:
+                validation_output = (profile.get('outputs') or {}).get(variable)
+                if validation_output is None and profile.get('outputs') is not None:
                     self.log.error(
-                        '[{}] Missing validations rule: {}'.format(profile_name, variable)
+                        '[{}] Missing validations rule: {}'.format(profile.get('name'), variable)
                     )
                 outputs[variable] = {'expected_output': data, 'op': 'eq'}
 
-            if profile_data.get('outputs') is None:
+            if profile.get('outputs') is None:
                 # update the profile
-                profile_data['outputs'] = outputs
+                profile['outputs'] = outputs
 
                 fh.seek(0)
-                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
+                fh.write(json.dumps(profile, indent=2, sort_keys=True))
                 fh.truncate()
 
     def run(self, args):

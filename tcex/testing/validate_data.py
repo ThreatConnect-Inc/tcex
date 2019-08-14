@@ -86,6 +86,8 @@ class Validator(object):
         """Get the corresponding operator"""
         operators = {
             'dd': self.operator_deep_diff,
+            'length_eq': self.operator_length_eq,
+            'leq': self.operator_length_eq,
             'eq': self.operator_eq,
             '=': self.operator_eq,
             'le': self.operator_le,
@@ -106,6 +108,19 @@ class Validator(object):
         }
         return operators.get(op, None)
 
+    def operator_length_eq(self, app_data, test_data):
+        """
+        If data passed in is 2 lists, validates length lists are the same.
+        If data passed in is 2 strings, validates length strings are the same.
+        If data passed in is 1 list and 1 int, validates length array and int value are the same.
+        If data passed in is 1 str and 1 int, validates length str and int value are the same.
+        """
+        if isinstance(test_data, (list, str)):
+            results = operator.eq(len(app_data), len(test_data))
+        else:
+            results = operator.eq(len(app_data), test_data)
+        return results, self.details(app_data, test_data, 'length_eq')
+
     def operator_deep_diff(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
 
@@ -122,6 +137,28 @@ class Validator(object):
             self.log.error('Could not import DeepDiff module (try "pip install deepdiff").')
             return False
 
+        exclude_paths = kwargs.pop('exclude_paths', [])
+        try:
+            app_data = json.loads(json.dumps(app_data))
+            test_data = json.loads(json.dumps(test_data))
+        except ValueError:
+            pass
+        if isinstance(app_data, list) and isinstance(test_data, list):
+            for index, data in enumerate(app_data):
+                for path in exclude_paths:
+                    paths = path.split('.')
+                    data = self.remove_excludes(data, paths)
+                app_data[index] = data
+            for index, data in enumerate(test_data):
+                for path in exclude_paths:
+                    paths = path.split('.')
+                    data = self.remove_excludes(data, paths)
+                test_data[index] = data
+        else:
+            for path in exclude_paths:
+                paths = path.split('.')
+                app_data = self.remove_excludes(app_data, paths)
+                test_data = self.remove_excludes(test_data, paths)
         # run operator
         try:
             ddiff = DeepDiff(app_data, test_data, ignore_order=True, **kwargs)
@@ -133,6 +170,39 @@ class Validator(object):
         if ddiff:
             return False, str(ddiff)
         return True, ''
+
+    def remove_excludes(self, dict_1, paths):
+        """Removes a list of paths from a given dict
+        ex:
+            dict_1: {
+                'result': {
+                    'sys_id': 123,
+                    'owner': {
+                        'id': 5,
+                        'name': 'System'
+                    },
+                    'name': results
+                },
+                'status': 'Uploaded
+            paths: ['result', 'owner', 'id']
+
+            retuns: {
+                'result': {
+                    sys_id': 123,
+                        'owner': {
+                            'name': 'System'
+                        },
+                    'name': results
+                },
+                'status': 'Uploaded
+            }
+            """
+        path_0 = paths[0]
+        if len(paths) == 1:
+            dict_1.pop(path_0, None)
+            return dict_1
+        self.remove_excludes(dict_1.get(path_0), paths[1:])
+        return dict_1
 
     def operator_eq(self, app_data, tests_data):
         """Compare app data is equal to tests data.

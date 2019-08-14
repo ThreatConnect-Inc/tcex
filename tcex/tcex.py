@@ -131,17 +131,18 @@ class TcEx(object):
                         value_fields.append(entry.get('value3Label'))
 
                     # get instance of Indicator Class
-                    i = self.resources.Indicator(self)
+                    # i = self.resources.Indicator(self)
+                    api_branch = 'indicators'
                     custom = {
                         '_api_branch': entry['apiBranch'],
                         '_api_entity': entry['apiEntity'],
-                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_api_uri': '{}/{}'.format(api_branch, entry['apiBranch']),
                         '_case_preference': entry['casePreference'],
                         '_custom': entry['custom'],
                         '_name': name,
                         '_parsable': entry['parsable'],
                         '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_request_uri': '{}/{}'.format(api_branch, entry['apiBranch']),
                         '_status_codes': {
                             'DELETE': [200],
                             'GET': [200],
@@ -402,7 +403,6 @@ class TcEx(object):
         """
         merged = self.group_types_data.copy()
         merged.update(self.indicator_types_data)
-        print(merged)
         for (key, value) in merged.items():
             if value.get('apiEntity') == api_entity:
                 return key
@@ -852,10 +852,10 @@ class TcEx(object):
             from .tokens import Tokens
 
             self._token = Tokens(
-                self.args.tc_token,
-                self.args.tc_token_expires,
-                self.args.tc_api_path,
-                self.args.tc_verify,
+                self.default_args.tc_token,
+                self.default_args.tc_token_expires,
+                self.default_args.tc_api_path,
+                self.default_args.tc_verify,
                 self.log,
             )
         return self._token
