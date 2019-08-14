@@ -47,8 +47,9 @@ class TestCasePlaybookCommon(TestCase):
     def populate_output_variables(self, profile):
         """Generate validation rules from App outputs."""
         profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile.get('name')))
+        profile_name = profile.get('name')
         with open(profile_filename, 'r+') as fh:
-
+            profile = json.load(fh)
             redis_data = self.redis_client.hgetall(self.context)
             outputs = {}
             for variable in self.output_variables:
@@ -58,9 +59,7 @@ class TestCasePlaybookCommon(TestCase):
                 if data is None:
                     # log warning missing output data
                     self.log.error(
-                        '[{}] Missing redis output for variable {}'.format(
-                            profile.get('name', '??'), variable
-                        )
+                        '[{}] Missing redis output for variable {}'.format(profile_name, variable)
                     )
                 else:
                     data = json.loads(data.decode('utf-8'))
@@ -69,7 +68,7 @@ class TestCasePlaybookCommon(TestCase):
                 validation_output = (profile.get('outputs') or {}).get(variable)
                 if validation_output is None and profile.get('outputs') is not None:
                     self.log.error(
-                        '[{}] Missing validations rule: {}'.format(profile.get('name'), variable)
+                        '[{}] Missing validations rule: {}'.format(profile_name, variable)
                     )
                 outputs[variable] = {'expected_output': data, 'op': 'eq'}
 
