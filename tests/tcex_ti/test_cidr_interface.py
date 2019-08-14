@@ -91,7 +91,7 @@ class TestCIDRIndicators:
 
     def cidr_create(self, block='1.1.1.7/8'):
         """Test cidr create."""
-        ti = self.ti.indicator(indicator_type='CIDR', owner=tcex.args.tc_owner, Block=block)
+        ti = self.ti.indicator(indicator_type='CIDR', owner=tcex.args.tc_owner, block=block)
         r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
@@ -157,7 +157,7 @@ class TestCIDRIndicators:
 
         # update indicator
         ti = self.ti.indicator(
-            indicator_type='CIDR', owner=tcex.args.tc_owner, Block=block, rating=5, confidence=10
+            indicator_type='CIDR', owner=tcex.args.tc_owner, block=block, rating=5, confidence=10
         )
         r = ti.update()
         ti_data = r.json()
