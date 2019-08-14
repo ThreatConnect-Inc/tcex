@@ -146,9 +146,28 @@ class ThreatConnect(object):
 
     def entity(self, entity, owner):
         """Stage data in ThreatConnect"""
-        if not isinstance(entity, list):
-            entity = [entity]
-        self.provider.tcex.ti.create_entities(entity, owner)
+        outputs = entity.pop('outputs', {})
+        created_entity = self.provider.tcex.ti.create_entity(entity, owner)
+        created_entity['outputs'] = outputs
+        return created_entity
+
+    def delete_staged(self, staged_data):
+        """Delete data in redis"""
+        for data in staged_data:
+            if data.get('status_code') != 201:
+                continue
+
+            entity_type = data.pop('main_type')
+            ti = None
+            if entity_type == 'Group':
+                ti = self.provider.tcex.ti.group(
+                    data.get('sub_type'), unique_id=data.get('unique_id')
+                )
+            elif entity_type == 'Indicator':
+                ti = self.provider.tcex.ti.indicator(
+                    data.get('sub_type'), unique_id=data.get('unique_id')
+                )
+            ti.delete()
 
     def clear(self, owner):
         """delete and recreate the owner"""

@@ -66,31 +66,22 @@ class TestCasePlaybook(TestCasePlaybookCommon):
 
         return self._exit(app.tcex.exit_code)
 
-    def run_profile(self, profile_name):
+    def run_profile(self, profile):
         """Run an App using the profile name."""
-        profile = self.profile(profile_name)
-        if not profile:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
-
-        # stage any staging data
-        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
+        if isinstance(profile, str):
+            profile = self.init_profile(profile)
 
         # build args from install.json
         args = {}
         args.update(profile.get('inputs', {}).get('required', {}))
         args.update(profile.get('inputs', {}).get('optional', {}))
-        if not args:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
 
         # run the App
         exit_code = self.run(args)
 
         # populate the output variables
-        # TODO: [INT-1320] investigate improvements
         if exit_code == 0:
-            self.populate_output_variables(profile_name)
+            self.populate_output_variables(profile)
 
         return self._exit(exit_code)
 
@@ -103,5 +94,6 @@ class TestCasePlaybook(TestCasePlaybookCommon):
     def teardown_method(self):
         """Run after each test method runs."""
         r = self.stager.redis.delete_context(self.context)
+        self.stager.threatconnect.delete_staged(self._staged_tc_data)
         self.log_data('teardown method', 'delete count', r)
         super(TestCasePlaybook, self).teardown_method()

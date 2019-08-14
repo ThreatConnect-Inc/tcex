@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 
+import random
 from ..tcex_init import tcex
 
 
@@ -106,7 +107,10 @@ class TestFileIndicators:
 
     def file_create(self, md5, sha1, sha256):
         """Test file create."""
-        ti = self.ti.file(owner=tcex.args.tc_owner, md5=md5, sha1=sha1, sha256=sha256)
+        random_size = random.randint(1, 101)
+        ti = self.ti.file(
+            owner=tcex.args.tc_owner, md5=md5, sha1=sha1, sha256=sha256, size=random_size
+        )
         r = ti.create()
         assert r.status_code == 201
         ti_data = r.json()
@@ -114,6 +118,7 @@ class TestFileIndicators:
         assert ti_data.get('data').get('file').get('md5', None) == md5
         assert ti_data.get('data').get('file').get('sha1', None) == sha1
         assert ti_data.get('data').get('file').get('sha256', None) == sha256
+        assert ti_data.get('data').get('file').get('size', None) == random_size
 
         if md5:
             return md5

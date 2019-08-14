@@ -14,6 +14,7 @@ from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
 from .validate_data import Validator
 
+
 logger = logging.getLogger('TestCase')
 lfh = RotatingFileHandlerCustom(filename='log/tests.log')
 lfh.setLevel(logging.DEBUG)
@@ -32,10 +33,13 @@ class TestCase(object):
     _install_json = None
     _timer_class_start = None
     _timer_method_start = None
+    _stager = None
     context = None
     log = logger
     env = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
     tcex = None
+    _staged_tc_data = []
+    _tc_output_variables = {}
 
     def _exit(self, code):
         """Log and return exit code"""
@@ -79,6 +83,19 @@ class TestCase(object):
             args['tc_token'] = os.getenv('TC_TOKEN')
             args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
         return args
+
+    def add_tc_output_variable(self, variable_name, variable_value):
+        """Adds a TC output variable to the output variable dict"""
+        self._tc_output_variables[self._convert_variable_name(variable_name)] = variable_value
+
+    @staticmethod
+    def _convert_variable_name(variable_name):
+        """Converts a TC output variable to the correct name"""
+        if not variable_name.startswith('#TCVar:'):
+            variable_name = '#TCVar:' + variable_name
+        if not variable_name.endswith('#'):
+            variable_name = variable_name + '#'
+        return variable_name
 
     def get_tcex(self, args=None):
         """Return an instance of App."""
@@ -135,12 +152,43 @@ class TestCase(object):
         msg = '{!s:>20} : {!s:<15}: {!s:<50}'.format('[{}]'.format(stage), label, data)
         getattr(self.log, level)(msg)
 
-    def profile(self, profile_name):
+    def init_profile(self, profile_name):
         """Get a profile from the profiles.json file by name"""
-        profile = None
-        with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
-            profile = json.load(fh)
+        try:
+            with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
+                profile = json.load(fh)
+        except FileExistsError:
+            self.log.error('No profile {} provided.'.format(profile_name))
+            return self._exit(1)
+        profile['name'] = profile_name
+
+        self._staged_tc_data = self.stager.threatconnect.entities(
+            profile.get('stage', {}).get('threatconnect', {}), 'TCI'
+        )
+        self.generate_tc_output_variables(self._staged_tc_data)
+        profile = self.populate_tc_output_variables(profile)
+        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
         return profile
+
+    def populate_tc_output_variables(self, profile):
+        """Replaces all of the TC output variables in the profile with their correct value"""
+        profile_str = json.dumps(profile)
+        for output_variable, value in self._tc_output_variables.items():
+            profile_str = profile_str.replace(output_variable, str(value))
+        return json.loads(profile_str)
+
+    def generate_tc_output_variables(self, staged_tc_data):
+        """Generates all of the TC output variables given the profiles staged data"""
+        for staged_data in staged_tc_data:
+            for key, value in staged_data.get('outputs', {}).items():
+                paths = key.split('.')
+                for path in paths:
+                    data = staged_data[path]
+                    self.add_tc_output_variable(value, data)
+
+    def profile(self, profile_name):
+        """Stages and sets up the profile given a profile name"""
+        return self.init_profile(profile_name)
 
     @property
     def profiles_dir(self):

@@ -39,8 +39,10 @@ def custom_indicator_class_factory(
         :param kwargs:
         """
         base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
+        res = {v: k for k, v in self._metadata_map().items()}
+        value1 = value1 or kwargs.pop(res.get(value_fields[0]), value_fields[0])
+        self._data[value_fields[0]] = value1
         self.unique_id = kwargs.get('unique_id', value1)
-        self._data[value_fields[0]] = value1 or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
@@ -53,6 +55,14 @@ def custom_indicator_class_factory(
         self.unique_id = json_request.get(value_fields[0])
         if self.unique_id:
             self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
+
+    def _metadata_map_1(self):
+        metadata_map = base_class._metadata_map(self)
+        for value in value_fields:
+            manipulated_value = value.lower().replace(' ', '_')
+            if manipulated_value not in metadata_map.keys():
+                metadata_map[manipulated_value] = value
+        return metadata_map
 
     def can_create_1(self):  # pylint: disable=W0641
         """
@@ -73,6 +83,9 @@ def custom_indicator_class_factory(
         :param kwargs:
         """
         base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
+        res = {v: k for k, v in self._metadata_map().items()}
+        value1 = value1 or kwargs.pop(res.get(value_fields[0]), value_fields[0])
+        value2 = value2 or kwargs.pop(res.get(value_fields[0]), value_fields[1])
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         if value1:
@@ -113,6 +126,10 @@ def custom_indicator_class_factory(
         :param kwargs:
         """
         base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
+        res = {v: k for k, v in self._metadata_map().items()}
+        value1 = value1 or kwargs.pop(res.get(value_fields[0]), value_fields[0])
+        value2 = value2 or kwargs.pop(res.get(value_fields[0]), value_fields[1])
+        value3 = value3 or kwargs.pop(res.get(value_fields[0]), value_fields[2])
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
@@ -156,6 +173,7 @@ def custom_indicator_class_factory(
     init_method = locals()['init_{}'.format(value_count)]
     set_unique_id_method = locals()['_set_unique_id_{}'.format(value_count)]
     can_create_method = locals()['can_create_{}'.format(value_count)]
+    _metadata_map = locals()['_metadata_map_1']
     new_class = type(
         str(class_name),
         (base_class,),
@@ -163,6 +181,7 @@ def custom_indicator_class_factory(
             '__init__': init_method,
             '_set_unique_id': set_unique_id_method,
             'can_create': can_create_method,
+            '_metadata_map': _metadata_map,
         },
     )
     return new_class
@@ -215,19 +234,16 @@ class Indicator(TIMappings):
          """
         return True
 
-    @property
-    def _metadata_map(self):
+    def _metadata_map(self):  # pylint: disable=R0201
         return {
             'date_added': 'dateAdded',
             'dns_active': 'dnsActive',
             'last_modified': 'lastModified',
             'private_flag': 'privateFlag',
-            'size': 'intValue1',
             'whois_active': 'whoisActive',
             'key_name': 'Key Name',
             'value_type': 'Value Type',
             'value_name': 'Value Name',
-            'user_agent_string': 'User Agent String',
             'block': 'Block',
             'mutex': 'Mutex',
             'as_number': 'AS Number',
@@ -241,7 +257,7 @@ class Indicator(TIMappings):
             key:
             value:
         """
-        key = self._metadata_map.get(key, key)
+        key = self._metadata_map().get(key, key)
         if key in ['dateAdded', 'lastModified']:
             self._data[key] = self._utils.format_datetime(value, date_format='%Y-%m-%dT%H:%M:%SZ')
         elif key == 'confidence':

@@ -402,7 +402,6 @@ class TcEx(object):
         """
         merged = self.group_types_data.copy()
         merged.update(self.indicator_types_data)
-        print(merged)
         for (key, value) in merged.items():
             if value.get('apiEntity') == api_entity:
                 return key

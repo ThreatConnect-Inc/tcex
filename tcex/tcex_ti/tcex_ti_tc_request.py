@@ -440,7 +440,7 @@ class TiTcRequest:
         Return:
 
         """
-        sub_type = target.api_sub_type
+        sub_type = target.api_branch
         api_type = target.api_type
         api_entity = target.api_entity
         params = params or {}
@@ -648,7 +648,7 @@ class TiTcRequest:
         if owner:
             params['owner'] = owner
 
-        api_branch = api_branch or target.api_sub_type
+        api_branch = api_branch or target.api_branch
         api_entity = api_entity or target.api_entity
 
         if not sub_type:

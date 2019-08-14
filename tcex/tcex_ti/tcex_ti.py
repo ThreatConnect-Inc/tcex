@@ -153,26 +153,11 @@ class TcExTi(object):
                     value_fields = custom_indicator_details.get('value_fields')
                     c = getattr(module, indicator_type.replace(' ', ''))
                     if len(value_fields) == 1:
-                        indicator = c(
-                            self.tcex, kwargs.pop(value_fields[0], None), owner=owner, **kwargs
-                        )
+                        indicator = c(self.tcex, None, owner=owner, **kwargs)
                     elif len(value_fields) == 2:
-                        indicator = c(
-                            self.tcex,
-                            kwargs.pop(value_fields[0], None),
-                            kwargs.pop(value_fields[1], None),
-                            owner=owner,
-                            **kwargs
-                        )
+                        indicator = c(self.tcex, None, None, owner=owner, **kwargs)
                     elif len(value_fields) == 3:
-                        indicator = c(
-                            self.tcex,
-                            kwargs.pop(value_fields[0], None),
-                            kwargs.pop(value_fields[1], None),
-                            kwargs.pop(value_fields[2], None),
-                            owner=owner,
-                            **kwargs
-                        )
+                        indicator = c(self.tcex, None, None, None, owner=owner, **kwargs)
             except Exception:
                 return None
         return indicator
@@ -430,6 +415,63 @@ class TcExTi(object):
         """
         return Owner(self.tcex)
 
+    def create_entity(self, entity, owner):
+        """ Given a Entity and a Owner, creates a indicator/group in ThreatConnect"""
+
+        tc_entity = {'unique_id': entity.pop('summary', None)}
+        attributes = entity.pop('attribute', [])
+        associations = entity.pop('associations', [])
+        security_labels = entity.pop('securityLabel', [])
+        tags = entity.pop('tag', [])
+        entity_type = entity.pop('type')
+        ti = self.indicator(entity_type, owner, **entity)
+        if not ti:
+            tc_entity['name'] = tc_entity['unique_id']
+            ti = self.group(entity_type, owner, **tc_entity)
+        r = ti.create()
+        response = {
+            'status_code': r.status_code,
+            'main_type': ti.type,
+            'sub_type': ti.api_sub_type,
+            'api_type': ti.api_type,
+            'unique_id': ti.unique_id,
+            'api_entity': ti.api_entity,
+            'api_branch': ti.api_branch,
+            'attributes': [],
+            'tags': [],
+            'security_labels': [],
+            'associations': [],
+        }
+        for attribute in attributes:
+            r = ti.add_attribute(attribute.get('type'), attribute.get('value'))
+            attribute_response = {
+                'status_code': r.status_code,
+                'type': r.json().get('attribute', {}).get('type', 'Description'),
+                'id': r.json().get('attribute', {}).get('id', None),
+            }
+            response['attributes'].append(attribute_response)
+        for tag in tags:
+            r = ti.add_tag(tag)
+            tag_response = {'status_code': r.status_code}
+            response['tags'].append(tag_response)
+        for label in security_labels:
+            r = ti.add_label(label)
+            label_response = {'status_code': r.status_code}
+            response['security_labels'].append(label_response)
+        for association in associations:
+            association_target = self.indicator(
+                association.pop('type', None), association.pop('owner', None), **association
+            )
+            if not association_target:
+                association_target = self.group(
+                    association.pop('type', None), association.pop('owner', None), **association
+                )
+            r = ti.add_association(association_target)
+            association_response = {'status_code': r.status_code}
+            response['associations'].append(association_response)
+
+        return response
+
     def create_entities(self, entities, owner):
         """
         Creates a indicator/group in TC based on the given entity's
@@ -440,27 +482,10 @@ class TcExTi(object):
         Returns:
 
         """
+        responses = []
         for entity in entities:
-            entity['unique_id'] = entity.pop('summary', None)
-            attributes = entity.pop('attribute', [])
-            entity.pop('associatedGroups', [])
-            # associations = entity.pop('associatedGroups', [])
-            security_labels = entity.pop('securityLabel', [])
-            tags = entity.pop('tag', [])
-            entity_type = entity.pop('type')
-            responses = []
-            ti = self.indicator(entity_type, owner, **entity)
-            if not ti:
-                ti = self.group(type, owner, **entity)
-            responses.append(ti.create())
-            for attribute in attributes:
-                responses.append(ti.add_attribute(attribute.get('type'), attribute.get('value')))
-            for tag in tags:
-                responses.append(ti.add_tag(tag))
-            for label in security_labels:
-                responses.append(ti.add_label(label))
-            # for association in associations:
-            #     responses.append(ti.add_association(None, None, None, None))
+            responses.append(self.create_entity(entity, owner))
+        return responses
 
     def entities(self, tc_data, resource_type):
         """

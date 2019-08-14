@@ -53,9 +53,10 @@ class TestCasePlaybookCommon(TestCase):
             variables.append('#App:{}:{}!{}'.format(job_id, p.get('name'), p.get('type')))
         return variables
 
-    def populate_output_variables(self, profile_name):
+    def populate_output_variables(self, profile):
         """Generate validation rules from App outputs."""
-        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
+        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile.get('name')))
+        profile_name = profile.get('name')
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
             pov = self.output_variable_creator(profile_data.get('permutation_output_variables'))
