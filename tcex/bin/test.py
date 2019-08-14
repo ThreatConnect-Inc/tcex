@@ -56,6 +56,10 @@ class Profiles:
         else:
             profile['inputs'] = profile_data.get('inputs')
 
+        if profile_data.get('output_variables'):
+            # add a list of output variable for the current permutation
+            profile['permutation_output_variables'] = profile_data.get('output_variables')
+
         if profile_data.get('runtime_level').lower() == 'organization':
             profile['validation_criteria'] = profile_data.get('validation_criteria', {'percent': 5})
             profile.pop('outputs')
@@ -275,6 +279,7 @@ class Test(Bin):
                         'optional': self.profile_settings_args_layout_json(False),
                         'required': self.profile_settings_args_layout_json(True),
                     },
+                    'output_variables': self._output_permutations[self.args.permutation_id],
                     'runtime_level': self.ij.runtime_level,
                 }
             }

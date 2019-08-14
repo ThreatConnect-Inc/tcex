@@ -35,24 +35,38 @@ class TestCasePlaybookCommon(TestCase):
     def output_variables(self):
         """Return playbook output variables"""
         if self._output_variables is None:
-            self._output_variables = []
-            # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
-                # "#App:9876:app.data.count!String"
-                self._output_variables.append(
-                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
-                )
+            output_variables = self.install_json.get('playbook', {}).get('outputVariables') or []
+            self._output_variables = self.output_variable_creator(output_variables)
         return self._output_variables
+
+    @staticmethod
+    def output_variable_creator(output_variables, job_id=9876):
+        """Create output variables.
+
+        Args:
+            variables (dict): A dict of output variable data.
+            job_id (int): A job id to use in output variable string.
+        """
+        variables = []
+        for p in output_variables:
+            # "#App:9876:app.data.count!String"
+            variables.append('#App:{}:{}!{}'.format(job_id, p.get('name'), p.get('type')))
+        return variables
 
     def populate_output_variables(self, profile_name):
         """Generate validation rules from App outputs."""
         profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
+            pov = self.output_variable_creator(profile_data.get('permutation_output_variables'))
 
             redis_data = self.redis_client.hgetall(self.context)
             outputs = {}
             for variable in self.output_variables:
+                if pov is not None and variable not in pov:
+                    # variable is not in permutation output variables
+                    continue
+
                 data = redis_data.get(variable.encode('utf-8'))
 
                 # validate redis variables
