@@ -131,18 +131,17 @@ class TcEx(object):
                         value_fields.append(entry.get('value3Label'))
 
                     # get instance of Indicator Class
-                    # i = self.resources.Indicator(self)
-                    api_branch = 'indicators'
+                    i = self.resources.Indicator(self)
                     custom = {
                         '_api_branch': entry['apiBranch'],
                         '_api_entity': entry['apiEntity'],
-                        '_api_uri': '{}/{}'.format(api_branch, entry['apiBranch']),
+                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
                         '_case_preference': entry['casePreference'],
                         '_custom': entry['custom'],
                         '_name': name,
                         '_parsable': entry['parsable'],
                         '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(api_branch, entry['apiBranch']),
+                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
                         '_status_codes': {
                             'DELETE': [200],
                             'GET': [200],

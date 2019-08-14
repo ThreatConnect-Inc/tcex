@@ -3,6 +3,12 @@
 Release Notes
 #############
 
+1.1.0
+=====
++ Restructured tcex module into individual directories.
++ Added new services module for service Apps.
++ Updated multiple module to simplify testing.
+
 1.0.7
 =====
 + Updated logging formatter for issue in py2.
