@@ -84,7 +84,9 @@ class Tokens(object):
         Returns:
             str: The reformatted token.
         """
-        return '{}...{}'.format(token[:10], token[-10:])
+        if token is not None:
+            token = '{}...{}'.format(token[:10], token[-10:])
+        return token
 
     def register_thread(self, key, thread_name):
         """Register a thread name to a key.
@@ -106,8 +108,13 @@ class Tokens(object):
             token (str): The ThreatConnect API token.
             expires (int): The token expiration timestamp.
         """
-        if token is None or expires is None:
-            raise RuntimeError('Invalid token data provided.')  # pragma: no cover
+        if token is None or expires is None:  # pragma: no cover
+            self.log.error(
+                'Invalid token data provided - token: {}, expires: {}.'.format(
+                    self.printable_token(token), expires
+                )
+            )
+            return
 
         self.token_map[key] = {'thread_names': [], 'token': token, 'token_expires': int(expires)}
         self.log.info(
@@ -223,13 +230,13 @@ class Tokens(object):
                                 )
                             )
                         except RuntimeError as e:
+                            self.log.error(e)
                             try:
                                 del self.token_map[key]
                                 self.log.error('Failed token removed - key: {}'.format(key))
                             except KeyError:
                                 pass
-                            self.log.error(e)
-                time.sleep(sleep_interval)
+            time.sleep(sleep_interval)
 
     def unregister_thread(self, key, thread_name):
         """Unregister a thread name for a key.

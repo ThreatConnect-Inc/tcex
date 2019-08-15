@@ -410,7 +410,7 @@ class Services(object):
             self.tcex.token.unregister_token(trigger_id)
 
             if callable(self.delete_config_callback):
-                message = 'Config created'
+                message = 'Delete created'
                 try:
                     # call callback for delete config and handle exceptions to protect thread
                     self.delete_config_callback(trigger_id)  # pylint: disable=not-callable
