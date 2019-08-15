@@ -558,7 +558,7 @@ class Services(object):
             status_code, status = args[0].split(' ', 1)
             response = {
                 'bodyVariable': 'response.body',
-                'command': 'Acknowledge',
+                'command': 'Acknowledged',
                 'headers': self.format_response_headers(args[1]),
                 'requestKey': kwargs.get('request_key'),  # pylint: disable=cell-var-from-loop
                 'status': status,
