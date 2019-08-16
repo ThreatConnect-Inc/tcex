@@ -16,6 +16,7 @@ except ImportError:
 from .args import Args
 from .logger import Logger
 from .app_config_object import InstallJson
+from .tokens import Tokens
 
 
 class TcEx(object):
@@ -848,7 +849,6 @@ class TcEx(object):
     def token(self):
         """Return token object."""
         if self._token is None:
-            from .tokens import Tokens
 
             self._token = Tokens(
                 self.default_args.tc_api_path, self.default_args.tc_verify, self.log

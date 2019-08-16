@@ -16,21 +16,20 @@ import paho.mqtt.client as mqtt
 
 
 class Services(object):
-    """Service methods for customer Service (e.g., Triggers)."""
+    """Service methods for customer Service (e.g., Triggers).
+
+    Args:
+        tcex (object): Instance of TcEx.
+    """
 
     def __init__(self, tcex):
-        """Initialize the Class properties.
-
-        Args:
-            tcex (object): Instance of TcEx.
-        """
+        """Initialize the Class properties."""
         self.tcex = tcex
         self.log = self.tcex.log
 
         # properties
         self._client = None
         self._connected = False
-        self._metric = {'errors': 0, 'hits': 0, 'misses': 0}
         self._mqtt_client = None
         self._ready = False
         self._redis_client = None
@@ -44,6 +43,12 @@ class Services(object):
         self.ready = False
         self.shutdown = False
 
+        # default metrics per service type
+        if self.tcex.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            self._metrics = {'active playbooks': 0, 'errors': 0, 'hits': 0, 'misses': 0}
+        else:
+            self._metrics = {'errors': 0, 'requests': 0, 'responses': 0}
+
         # config callbacks
         self.api_event_callback = None
         self.create_config_callback = None
@@ -53,11 +58,25 @@ class Services(object):
         self.webhook_event_callback = None
 
     def add_metric(self, label, value):
-        """Add a metric to get reported in heartbeat."""
-        self._metric[label] = str(value)
+        """Add a metric.
+
+        Metrics are reported in heartbeat message.
+
+        Args:
+            label (str): The metric label (e.g., hits) to add.
+            value (int|str): The value for the metric.
+        """
+        self._metrics[label] = value
 
     def create_config(self, trigger_id, config, message, status):
-        """Add config item to service config object."""
+        """Add config item to service config object.
+
+        Args:
+            trigger_id (int): The trigger ID for the current config.
+            config (dict): The config for the current trigger.
+            message (str): A simple message for the action.
+            status (str): The passed/fail status for the App handling of config.
+        """
         try:
             # add config to configs
             self.configs[trigger_id] = config
@@ -76,7 +95,13 @@ class Services(object):
             self.tcex.log.trace(traceback.format_exc())
 
     def delete_config(self, trigger_id, message, status):
-        """Delete config item from config object."""
+        """Delete config item from config object.
+
+        Args:
+            trigger_id (int): The trigger ID for the current config.
+            message (str): A simple message for the action.
+            status (str): The passed/fail status for the App handling of config.
+        """
         try:
             # delete config from configs dict
             del self.configs[trigger_id]
@@ -99,8 +124,6 @@ class Services(object):
         Args:
             callback (callable): The trigger method in the App to call.
         """
-        trigger_type = kwargs.get('trigger_type', 'trigger_event')
-        self.tcex.log.info('Firing event for {} trigger'.format(trigger_type))
         if not callable(callback):
             raise RuntimeError('Callback method (callback) is not a callable.')
 
@@ -125,7 +148,15 @@ class Services(object):
                 self.tcex.log.trace(traceback.format_exc())
 
     def fire_event_trigger(self, callback, playbook, trigger_id, config, **kwargs):
-        """Fire event for trigger"""
+        """Fire event for trigger.
+
+        Args:
+            callback (callable): The App callback method for firing an event.
+            playbook (tcex.Playbook): A configure playbook instance for using to interact with
+                KvStore.
+            trigger_id (int): The current trigger Id.
+            config (dict): A dict containing the configuration information.
+        """
         # session auth shared data is thread name which needs to map back to config triggerId
         self.tcex.token.register_thread(trigger_id, self.thread_name)
 
@@ -136,16 +167,16 @@ class Services(object):
 
         try:
             if callback(playbook, trigger_id, config, **kwargs):
-                self.tcex.log.info('Trigger ID {} hit.'.format(trigger_id))
-                self.metric['hits'] += 1
+                # self.tcex.log.info('Trigger ID {} hit.'.format(trigger_id))
+                self.increment_metric('hits')
                 self.fire_event_publish(trigger_id, self.thread_name)
             else:
+                self.increment_metric('misses')
                 self.tcex.log.info('Trigger ID {} missed.'.format(trigger_id))
-                self.metric['misses'] += 1
         except Exception as e:
+            self.increment_metric('errors')
             self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
             self.tcex.log.trace(traceback.format_exc())
-            self.metric['errors'] += 1
         finally:
             # remove temporary logging file handler
             self.tcex.logger.remove_handler_by_name(self.thread_name)
@@ -154,7 +185,13 @@ class Services(object):
             self.tcex.token.unregister_thread(trigger_id, self.thread_name)
 
     def fire_event_publish(self, trigger_id, session_id, request_key=None):
-        """Send FireEvent command"""
+        """Send FireEvent command.
+
+        Args:
+            trigger_id (int): The ID of the trigger.
+            session_id (str): The generated session for this fired event.
+            request_key (str): The request key for this response.
+        """
         msg = {
             'command': 'FireEvent',
             'triggerId': trigger_id,  # reference to single playbook
@@ -168,7 +205,14 @@ class Services(object):
         self.publish(json.dumps(msg))
 
     def format_query_string(self, params):
-        """Convert name/value array to a query string."""
+        """Convert name/value array to a query string.
+
+        Args:
+            params (dict): The query params for the request.
+
+        Returns:
+            str: The query params reformatted as a string.
+        """
         query_string = []
         try:
             for q in params:
@@ -179,7 +223,14 @@ class Services(object):
         return '&'.join(query_string)
 
     def format_request_headers(self, headers):
-        """Convert name/value array to a headers dict."""
+        """Convert name/value array to a headers dict.
+
+        Args:
+            headers (dict): The dict of key/value header data.
+
+        Returns:
+            dict: The restructured header data.
+        """
         headers_ = {}
         try:
             for h in headers:
@@ -193,7 +244,14 @@ class Services(object):
         return headers_
 
     def format_response_headers(self, headers):
-        """Convert name/value array to a query string."""
+        """Convert name/value array to a query string.
+
+        Args:
+            headers (dict): The dict header data to be converted to key/value pairs.
+
+        Returns:
+            dict: The restructured header data.
+        """
         headers_ = []
         try:
             for h in headers:
@@ -222,6 +280,16 @@ class Services(object):
                 break
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
+
+    def increment_metric(self, label, value=1):
+        """Increment a metric if already exists.
+
+        Args:
+            label (str): The metric label (e.g., hits) to increment.
+            value (int): The increment value. Defaults to 1.
+        """
+        if self._metrics.get(label) is not None:
+            self._metrics[label] += value
 
     def listen(self):
         """List for message coming from broker."""
@@ -272,7 +340,13 @@ class Services(object):
                 break
 
     def message_thread(self, name, target, args, kwargs=None):
-        """Start a message thread."""
+        """Start a message thread.
+
+        Args:
+            name (str): The name of the thread.
+            target (callable): The method to call for the thread.
+            args (tuple): The args to pass to the target method.
+        """
         # self.tcex.log.trace('message thread: {} - {}'.format(type(target), args))
         try:
             t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs)
@@ -282,10 +356,19 @@ class Services(object):
             self.tcex.log.trace(traceback.format_exc())
 
     @property
-    def metric(self):
+    def metrics(self):
         """Return current metrics."""
-        self._metric['active playbooks'] = len(self.configs)
-        return self._metric
+        # update default active playbook metric
+        self.update_metric('active playbooks', len(self.configs))
+        return self._metrics
+
+    @metrics.setter
+    def metrics(self, metrics):
+        """Return current metrics."""
+        if isinstance(metrics, dict):
+            self._metrics = metrics
+        else:
+            self.tcex.log.error('Invalid data provided for metrics.')
 
     @property
     def mqtt_client(self):
@@ -365,14 +448,26 @@ class Services(object):
         self.tcex.log.trace('on_subscribe - mid: {}, granted_qos: {}'.format(mid, granted_qos))
 
     def playbook(self, session_id, variables):
-        """Return a configure playbook instance."""
+        """Return a configure playbook instance.
+
+        Args:
+            session_id (str): The current session Id.
+            variables (list): The requested output variables.
+
+        Returns:
+            tcex.Playbook: An instance of Playbooks.
+        """
         playbook = self.tcex.playbook
         playbook.db.key = session_id
         playbook.output_variables = variables or []
         return playbook
 
     def process_config(self, message):
-        """Process config message."""
+        """Process config message.
+
+        Args:
+            message (dict): The broker message.
+        """
         command = message.get('command')
         config = message.get('config')
         status = 'Success'
@@ -437,6 +532,9 @@ class Services(object):
           "queryParams": [ { key/value pairs } ],
           "requestKey": "123abc"
         }
+
+        Args:
+            message (dict): The broker message.
         """
         # register config apiToken (before any logging)
         self.tcex.token.register_token(
@@ -505,9 +603,12 @@ class Services(object):
             if headers.get('content-length') is not None:
                 environ['CONTENT_LENGTH'] = headers.get('content-length')
             self.tcex.log.trace('environ: {}'.format(environ))
+            self.increment_metric('requests')
         except Exception as e:
             self.tcex.log.error('Failed building environ ({})'.format(e))
             self.tcex.log.trace(traceback.format_exc())
+            self.increment_metric('errors')
+            return  # stop processing
 
         def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
             """Handle WSGI Response"""
@@ -542,6 +643,7 @@ class Services(object):
                     'The api event callback method encountered and error ({}).'.format(e)
                 )
                 self.tcex.log.trace(traceback.format_exc())
+                self.increment_metric('errors')
 
         # unregister config apiToken
         self.tcex.token.unregister_token(self.thread_name)
@@ -567,12 +669,18 @@ class Services(object):
             }
             self.tcex.log.info('API response sent')
             self.publish(json.dumps(response))
+            self.increment_metric('responses')
         except Exception as e:
             self.tcex.log.error('Failed creating response body ({})'.format(e))
             self.tcex.log.trace(traceback.format_exc())
+            self.increment_metric('errors')
 
     def process_shutdown(self, reason):
-        """Handle a shutdown message."""
+        """Handle a shutdown message.
+
+        Args:
+            reason (str): The reason for the shutdown.
+        """
         reason = reason or (
             'A shutdown command was received on server topic. Service is shutting down.'
         )
@@ -603,7 +711,11 @@ class Services(object):
         self.tcex.exit(0)  # final shutdown in case App did not
 
     def process_webhook(self, message):
-        """Process Webhook event messages."""
+        """Process Webhook event messages.
+
+        Args:
+            message (dict): The message data from the broker.
+        """
         # session auth shared data is thread name which needs to map back to config triggerId
         self.tcex.token.register_thread(message.get('triggerId'), self.thread_name)
 
@@ -635,14 +747,14 @@ class Services(object):
             if self.webhook_event_callback(  # pylint: disable=not-callable
                 playbook, method, headers, params, body, config
             ):
-                self.metric['hits'] += 1
+                self.increment_metric('hits')
                 self.fire_event_publish(trigger_id, self.thread_name, request_key)
             else:
-                self.metric['misses'] += 1
+                self.increment_metric('misses')
         except Exception as e:
             self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
             self.tcex.log.trace(traceback.format_exc())
-            self.metric['errors'] += 1
+            self.increment_metric('errors')
         finally:
             # remove temporary logging file handler
             self.tcex.logger.remove_handler_by_name(self.thread_name)
@@ -655,6 +767,7 @@ class Services(object):
 
         Args:
             message (str): The message to be sent on client topic.
+            topic (str): The broker topic. Default to None.
         """
         if topic is None:
             topic = self.tcex.default_args.tc_svc_client_topic
@@ -694,7 +807,11 @@ class Services(object):
         return self._redis_client
 
     def server_topic(self, message):
-        """Handle any event coming in on server_topic."""
+        """Handle any event coming in on server_topic.
+
+        Args:
+            message (dict): The broker message.
+        """
         self.tcex.log.trace('message: {}'.format(message))
         # parse the command type
         command = message.get('command')
@@ -705,10 +822,10 @@ class Services(object):
             self.heartbeat_miss_count = 0
 
             # send heartbeat -acknowledge- command
-            response = {'command': 'Heartbeat', 'metric': self.metric}
+            response = {'command': 'Heartbeat', 'metric': self.metrics}
             self.publish(json.dumps(response))
             self.tcex.log.info('Heartbeat command sent')
-            self.tcex.log.debug('metric: {}'.format(self.metric))
+            self.tcex.log.debug('metrics: {}'.format(self.metrics))
         elif command.lower() == 'loggingchange':
             # {"command": "LoggingChange", "level": "DEBUG"}
             level = message.get('level')
@@ -740,3 +857,13 @@ class Services(object):
     def thread_name(self):
         """Return a uuid4 session id."""
         return threading.current_thread().name
+
+    def update_metric(self, label, value):
+        """Update a metric if already exists.
+
+        Args:
+            label (str): The metric label (e.g., hits) to update.
+            value (int|str): The updated value for the metric.
+        """
+        if self._metrics.get(label) is not None:
+            self._metrics[label] = value
