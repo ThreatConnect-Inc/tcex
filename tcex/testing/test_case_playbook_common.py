@@ -44,7 +44,7 @@ class TestCasePlaybookCommon(TestCase):
         """Create output variables.
 
         Args:
-            variables (dict): A dict of output variable data.
+            output_variables (dict): A dict of the output variables
             job_id (int): A job id to use in output variable string.
         """
         variables = []
@@ -59,7 +59,7 @@ class TestCasePlaybookCommon(TestCase):
         profile_name = profile.get('name')
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
-            pov = self.output_variable_creator(profile_data.get('permutation_output_variables'))
+            pov = self.output_variable_creator(profile_data.get('permutation_output_variables', {}))
 
             redis_data = self.redis_client.hgetall(self.context)
             outputs = {}
