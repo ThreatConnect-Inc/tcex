@@ -48,8 +48,8 @@ class TestCasePlaybookCommon(TestCase):
             job_id (int): A job id to use in output variable string.
         """
         variables = []
-        if not output_variables:
-            return []
+        if output_variables is None:
+            output_variables = []
 
         for p in output_variables:
             # "#App:9876:app.data.count!String"
@@ -62,7 +62,9 @@ class TestCasePlaybookCommon(TestCase):
         profile_name = profile.get('name')
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
-            pov = self.output_variable_creator(profile_data.get('permutation_output_variables', {}))
+            pov = profile_data.get('permutation_output_variables')
+            if pov is not None:
+                pov = self.output_variable_creator(pov)
 
             redis_data = self.redis_client.hgetall(self.context)
             outputs = {}
