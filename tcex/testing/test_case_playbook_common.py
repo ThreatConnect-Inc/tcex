@@ -48,6 +48,9 @@ class TestCasePlaybookCommon(TestCase):
             job_id (int): A job id to use in output variable string.
         """
         variables = []
+        if not output_variables:
+            return []
+
         for p in output_variables:
             # "#App:9876:app.data.count!String"
             variables.append('#App:{}:{}!{}'.format(job_id, p.get('name'), p.get('type')))
