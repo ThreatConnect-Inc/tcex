@@ -43,7 +43,7 @@ class TestFeature(${parent_class}):
         super(TestFeature, self).teardown_method()
 
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name, monkeypatch): # pylint: disable=unused-argument
+    def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
         pd = self.profile(profile_name)
 

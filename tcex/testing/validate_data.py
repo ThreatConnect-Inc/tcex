@@ -56,18 +56,8 @@ class Validator(object):
                         continue
                     elif diff[0] == '-':
                         details += '\n    * Missing data at index {}'.format(i)
-                        self.log_data(
-                            'validate',
-                            'App Data',
-                            '({}), Type: [{}]'.format(app_data, type(app_data)),
-                        )
                     elif diff[0] == '+':
                         details += '\n    * Extra data at index {}'.format(i)
-                        self.log_data(
-                            'validate',
-                            'Diff',
-                            ('[validate] Diff       : Extra data at index {}'.format(i)),
-                        )
                     if diff_count > self.max_diff:
                         details += '\n    * Max number of differences reached.'
                         # don't spam the logs if string are vastly different
