@@ -1,5 +1,9 @@
-tcex.decorators module
-======================
+----------
+Decorators
+----------
+
+decorators.app_decorators
+-------------------------
 
 .. automodule:: tcex.decorators.app_decorators
     :members:

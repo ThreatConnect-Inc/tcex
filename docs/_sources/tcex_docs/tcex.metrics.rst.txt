@@ -1,5 +1,9 @@
-tcex.metrics module
-===================
+--------------
+Metrics module
+--------------
+
+metrics.metrics
+---------------
 
 .. automodule:: tcex.metrics.metrics
     :members:

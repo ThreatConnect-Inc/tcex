@@ -1,5 +1,9 @@
-tcex.playbooks module
-=====================
+----------------
+Playbooks Module
+----------------
+
+playbooks.playbooks
+-------------------
 
 .. automodule:: tcex.playbooks.playbooks
     :members:

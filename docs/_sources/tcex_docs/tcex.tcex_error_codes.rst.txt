@@ -1,5 +1,9 @@
-tcex.tcex_error_codes module
-============================
+-----------
+Error Codes
+-----------
+
+tcex.tcex_error_codes
+---------------------
 
 .. automodule:: tcex.tcex_error_codes
     :members:

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex module &mdash; TcEx 1.1.0 documentation</title>
+  <title>TcEx &mdash; TcEx 1.1.0 documentation</title>
 
 
 
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tcex.bin module" href="tcex.bin.html" />
-    <link rel="prev" title="tcex.logger module" href="tcex.logger.html" />
+    <link rel="next" title="Bin Module" href="tcex.bin.html" />
+    <link rel="prev" title="Logger Module" href="tcex.logger.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -115,35 +115,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">TcEx Module</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="tcex.args.html">tcex.args module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.batch.html">tcex.batch module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.decorators.html">tcex.decorators module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.logger.html">tcex.logger module</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.bin.html">tcex.bin module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.metrics.html">tcex.metrics module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.notifications.html">tcex.notifications module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.playbooks.html">tcex.playbooks module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.resources.html">tcex.resources module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.sessions.html">tcex.sessions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti.html">tcex.tcex_ti module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.vault.html">tcex.vault module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.utils.html">tcex.utils module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tcex.args.html">Args Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.batch.html">Batch Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.decorators.html">Decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.logger.html">Logger Module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">TcEx</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-tcex.tcex">tcex.tcex</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.bin.html">Bin Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.metrics.html">Metrics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.notifications.html">Notifications Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.playbooks.html">Playbooks Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.resources.html">Resources Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.sessions.html">Session Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_data_filter.html">Data Filter Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_error_codes.html">Error Codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_key_value.html">Key Value Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_redis.html">Redis Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_request.html">Request Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_ti.html">TI (threat intel) module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.vault.html">Vault Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.utils.html">Utils Module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -191,9 +190,9 @@
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
-          <li><a href="tcex.html">TcEx Module</a> &raquo;</li>
+          <li><a href="tcex.html">Modules</a> &raquo;</li>
 
-      <li>tcex.tcex module</li>
+      <li>TcEx</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -210,8 +209,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <div class="section" id="module-tcex.tcex">
-<span id="tcex-tcex-module"></span><h1>tcex.tcex module<a class="headerlink" href="#module-tcex.tcex" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="tcex">
+<h1>TcEx<a class="headerlink" href="#tcex" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-tcex.tcex">
+<span id="tcex-tcex"></span><h2>tcex.tcex<a class="headerlink" href="#module-tcex.tcex" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework</p>
 <dl class="class">
 <dt id="tcex.tcex.TcEx">
@@ -796,6 +797,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 </dd></dl>
 
 </div>
+</div>
 
 
            </div>
@@ -805,10 +807,10 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="tcex.bin.html" class="btn btn-neutral float-right" title="tcex.bin module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.bin.html" class="btn btn-neutral float-right" title="Bin Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="tcex.logger.html" class="btn btn-neutral float-left" title="tcex.logger module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.logger.html" class="btn btn-neutral float-left" title="Logger Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 

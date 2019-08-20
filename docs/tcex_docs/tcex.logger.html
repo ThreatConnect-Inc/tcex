@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.logger module &mdash; TcEx 1.1.0 documentation</title>
+  <title>Logger Module &mdash; TcEx 1.1.0 documentation</title>
 
 
 
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tcex.tcex module" href="tcex.tcex.html" />
-    <link rel="prev" title="tcex.decorators module" href="tcex.decorators.html" />
+    <link rel="next" title="TcEx" href="tcex.tcex.html" />
+    <link rel="prev" title="Decorators" href="tcex.decorators.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -115,35 +115,38 @@
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">TcEx Module</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="tcex.args.html">tcex.args module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.batch.html">tcex.batch module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.decorators.html">tcex.decorators module</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.logger module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.bin.html">tcex.bin module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.metrics.html">tcex.metrics module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.notifications.html">tcex.notifications module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.playbooks.html">tcex.playbooks module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.resources.html">tcex.resources module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.sessions.html">tcex.sessions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti.html">tcex.tcex_ti module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.vault.html">tcex.vault module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.utils.html">tcex.utils module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tcex.args.html">Args Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.batch.html">Batch Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.decorators.html">Decorators</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Logger Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-tcex.logger.logger">logger.logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tcex.logger.api_handler">logger.api_handler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tcex.logger.rotating_file_handler_custom">logger.rotating_file_handler_custom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tcex.logger.thread_file_handler">logger.thread_file_handler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tcex.logger.trace_logger">logger.trace_logger</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex.html">TcEx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.bin.html">Bin Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.metrics.html">Metrics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.notifications.html">Notifications Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.playbooks.html">Playbooks Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.resources.html">Resources Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.sessions.html">Session Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_data_filter.html">Data Filter Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_error_codes.html">Error Codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_key_value.html">Key Value Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_redis.html">Redis Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_request.html">Request Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_ti.html">TI (threat intel) module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.vault.html">Vault Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.utils.html">Utils Module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -191,9 +194,9 @@
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
-          <li><a href="tcex.html">TcEx Module</a> &raquo;</li>
+          <li><a href="tcex.html">Modules</a> &raquo;</li>
 
-      <li>tcex.logger module</li>
+      <li>Logger Module</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -210,8 +213,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <div class="section" id="module-tcex.logger.logger">
-<span id="tcex-logger-module"></span><h1>tcex.logger module<a class="headerlink" href="#module-tcex.logger.logger" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="logger-module">
+<h1>Logger Module<a class="headerlink" href="#logger-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-tcex.logger.logger">
+<span id="logger-logger"></span><h2>logger.logger<a class="headerlink" href="#module-tcex.logger.logger" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Logger module</p>
 <dl class="class">
 <dt id="tcex.logger.logger.Logger">
@@ -351,7 +356,10 @@
 
 </dd></dl>
 
-<span class="target" id="module-tcex.logger.api_handler"></span><p>API Handler Class</p>
+</div>
+<div class="section" id="module-tcex.logger.api_handler">
+<span id="logger-api-handler"></span><h2>logger.api_handler<a class="headerlink" href="#module-tcex.logger.api_handler" title="Permalink to this headline">¶</a></h2>
+<p>API Handler Class</p>
 <dl class="class">
 <dt id="tcex.logger.api_handler.ApiHandler">
 <em class="property">class </em><code class="sig-prename descclassname">tcex.logger.api_handler.</code><code class="sig-name descname">ApiHandler</code><span class="sig-paren">(</span><em class="sig-param">session</em>, <em class="sig-param">flush_limit=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler" title="Permalink to this definition">¶</a></dt>
@@ -414,7 +422,10 @@
 
 </dd></dl>
 
-<span class="target" id="module-tcex.logger.rotating_file_handler_custom"></span><p>API Handler Class</p>
+</div>
+<div class="section" id="module-tcex.logger.rotating_file_handler_custom">
+<span id="logger-rotating-file-handler-custom"></span><h2>logger.rotating_file_handler_custom<a class="headerlink" href="#module-tcex.logger.rotating_file_handler_custom" title="Permalink to this headline">¶</a></h2>
+<p>API Handler Class</p>
 <dl class="class">
 <dt id="tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom">
 <em class="property">class </em><code class="sig-prename descclassname">tcex.logger.rotating_file_handler_custom.</code><code class="sig-name descname">RotatingFileHandlerCustom</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='a'</em>, <em class="sig-param">maxBytes=0</em>, <em class="sig-param">backupCount=0</em>, <em class="sig-param">encoding=None</em>, <em class="sig-param">delay=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/rotating_file_handler_custom.html#RotatingFileHandlerCustom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom" title="Permalink to this definition">¶</a></dt>
@@ -422,7 +433,10 @@
 <p>Logger handler for ThreatConnect Exchange File logging.</p>
 </dd></dl>
 
-<span class="target" id="module-tcex.logger.thread_file_handler"></span><p>API Handler Class</p>
+</div>
+<div class="section" id="module-tcex.logger.thread_file_handler">
+<span id="logger-thread-file-handler"></span><h2>logger.thread_file_handler<a class="headerlink" href="#module-tcex.logger.thread_file_handler" title="Permalink to this headline">¶</a></h2>
+<p>API Handler Class</p>
 <dl class="class">
 <dt id="tcex.logger.thread_file_handler.ThreadFileHandler">
 <em class="property">class </em><code class="sig-prename descclassname">tcex.logger.thread_file_handler.</code><code class="sig-name descname">ThreadFileHandler</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='a'</em>, <em class="sig-param">encoding=None</em>, <em class="sig-param">delay=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/thread_file_handler.html#ThreadFileHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.thread_file_handler.ThreadFileHandler" title="Permalink to this definition">¶</a></dt>
@@ -441,7 +455,10 @@
 
 </dd></dl>
 
-<span class="target" id="module-tcex.logger.trace_logger"></span><p>Trace Logger Class</p>
+</div>
+<div class="section" id="module-tcex.logger.trace_logger">
+<span id="logger-trace-logger"></span><h2>logger.trace_logger<a class="headerlink" href="#module-tcex.logger.trace_logger" title="Permalink to this headline">¶</a></h2>
+<p>Trace Logger Class</p>
 <dl class="class">
 <dt id="tcex.logger.trace_logger.TraceLogger">
 <em class="property">class </em><code class="sig-prename descclassname">tcex.logger.trace_logger.</code><code class="sig-name descname">TraceLogger</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">level=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/trace_logger.html#TraceLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.trace_logger.TraceLogger" title="Permalink to this definition">¶</a></dt>
@@ -478,6 +495,7 @@
 </dd></dl>
 
 </div>
+</div>
 
 
            </div>
@@ -487,10 +505,10 @@
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="tcex.tcex.html" class="btn btn-neutral float-right" title="tcex.tcex module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex.html" class="btn btn-neutral float-right" title="TcEx" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="tcex.decorators.html" class="btn btn-neutral float-left" title="tcex.decorators module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.decorators.html" class="btn btn-neutral float-left" title="Decorators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
