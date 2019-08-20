@@ -133,6 +133,7 @@ class Validator(object):
             test_data = json.loads(json.dumps(test_data))
         except ValueError:
             pass
+
         try:
             if isinstance(app_data, list) and isinstance(test_data, list):
                 for index, data in enumerate(app_data):
@@ -152,9 +153,10 @@ class Validator(object):
                     test_data = self.remove_excludes(test_data, paths)
         except AttributeError:
             pass
+
         # run operator
         try:
-            ddiff = DeepDiff(app_data, test_data, ignore_order=True, **kwargs)
+            ddiff = DeepDiff(app_data, test_data, **kwargs)
         except KeyError:
             return False, 'Encountered KeyError when running deepdiff'
         except NameError:
