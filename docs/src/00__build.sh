@@ -8,14 +8,14 @@
 # sphinx-apidoc -f -e -o tcex_docs ../../tcex
 
 # temp update bin directory
-touch ../../bin/__init__.py
-ln -fs tcinit ../../bin/tcinit.py
-ln -fs tclib ../../bin/tclib.py
-ln -fs tcpackage ../../bin/tcpackage.py
-ln -fs tcprofile ../../bin/tcprofile.py
-ln -fs tcrun ../../bin/tcrun.py
-ln -fs tctest ../../bin/tctest.py
-ln -fs tcvalidate ../../bin/tcvalidate.py
+# touch ../../bin/__init__.py
+# ln -fs tcinit ../../bin/tcinit.py
+# ln -fs tclib ../../bin/tclib.py
+# ln -fs tcpackage ../../bin/tcpackage.py
+# ln -fs tcprofile ../../bin/tcprofile.py
+# ln -fs tcrun ../../bin/tcrun.py
+# ln -fs tctest ../../bin/tctest.py
+# ln -fs tcvalidate ../../bin/tcvalidate.py
 
 # get app deployment
 wget https://raw.githubusercontent.com/ThreatConnect-Inc/threatconnect-developer-docs/master/docs/deployment_config.rst --output-document=deployment_config.rst
@@ -36,14 +36,14 @@ touch ../.nojekyll
 rm -fr _build
 
 # cleanup bin directory
-rm -f ../../bin/__init__.py
-unlink ../../bin/tcinit.py
-unlink ../../bin/tclib.py
-unlink ../../bin/tcpackage.py
-unlink ../../bin/tcprofile.py
-unlink ../../bin/tcrun.py
-unlink ../../bin/tctest.py
-unlink ../../bin/tcvalidate.py
+# rm -f ../../bin/__init__.py
+# unlink ../../bin/tcinit.py
+# unlink ../../bin/tclib.py
+# unlink ../../bin/tcpackage.py
+# unlink ../../bin/tcprofile.py
+# unlink ../../bin/tcrun.py
+# unlink ../../bin/tctest.py
+# unlink ../../bin/tcvalidate.py
 
 # cleanup
 rm -f deployment_config.rst

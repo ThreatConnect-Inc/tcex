@@ -1,5 +1,9 @@
-tcex.tcex_request module
-========================
+--------------
+Request Module
+--------------
+
+tcex.tcex_request
+-----------------
 
 .. automodule:: tcex.tcex_request
     :members:

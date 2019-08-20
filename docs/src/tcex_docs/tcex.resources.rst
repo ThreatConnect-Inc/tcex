@@ -1,5 +1,9 @@
-tcex.resources module
-=====================
+----------------
+Resources Module
+----------------
+
+resources.resources
+-------------------
 
 .. automodule:: tcex.resources.resources
     :members:

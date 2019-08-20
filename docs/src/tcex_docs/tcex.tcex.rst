@@ -1,5 +1,9 @@
-tcex.tcex module
-================
+----
+TcEx
+----
+
+tcex.tcex
+---------
 
 .. automodule:: tcex.tcex
     :members:

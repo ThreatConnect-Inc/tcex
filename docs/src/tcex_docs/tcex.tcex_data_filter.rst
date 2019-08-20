@@ -1,5 +1,9 @@
-tcex.tcex_data_filter module
-============================
+------------------
+Data Filter Module
+------------------
+
+tcex.tcex_data_filter
+---------------------
 
 .. automodule:: tcex.tcex_data_filter
     :members:

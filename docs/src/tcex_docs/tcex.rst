@@ -1,10 +1,8 @@
-TcEx Module
-===========
-
-Submodules
-----------
+Modules
+=======
 
 .. toctree::
+   :maxdepth: 3
 
    tcex.args
    tcex.batch
@@ -27,7 +25,7 @@ Submodules
    tcex.utils
 
 Module contents
----------------
+===============
 
 .. automodule:: tcex
     :members:

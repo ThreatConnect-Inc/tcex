@@ -1,5 +1,9 @@
-tcex.tcex_redis module
-======================
+------------
+Redis Module
+------------
+
+tcex.tcex_redis
+---------------
 
 .. automodule:: tcex.tcex_redis
     :members:

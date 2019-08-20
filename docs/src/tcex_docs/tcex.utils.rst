@@ -1,5 +1,9 @@
-tcex.utils module
-=================
+------------
+Utils Module
+------------
+
+utils.utils
+-----------
 
 .. automodule:: tcex.utils.utils
     :members:
