@@ -236,8 +236,8 @@ class TestCase(object):
         """Run once before all test cases."""
         cls._timer_class_start = time.time()
         cls.log.info('{0} {1} {0}'.format('#' * 10, 'Setup Class'))
-        cls.log_data(cls, 'setup class', 'started', datetime.now().isoformat())
-        cls.log_data(cls, 'setup class', 'local envs', cls.env)
+        TestCase.log_data(TestCase(), 'setup class', 'started', datetime.now().isoformat())
+        TestCase.log_data(TestCase(), 'setup class', 'local envs', cls.env)
 
     def setup_method(self):
         """Run before each test method runs."""
@@ -257,8 +257,10 @@ class TestCase(object):
     def teardown_class(cls):
         """Run once before all test cases."""
         cls.log.info('{0} {1} {0}'.format('^' * 10, 'Teardown Class'))
-        cls.log_data(cls, 'teardown class', 'finished', datetime.now().isoformat())
-        cls.log_data(cls, 'teardown class', 'elapsed', time.time() - cls._timer_class_start)
+        TestCase.log_data(TestCase(), 'teardown class', 'finished', datetime.now().isoformat())
+        TestCase.log_data(
+            TestCase(), 'teardown class', 'elapsed', time.time() - cls._timer_class_start
+        )
 
     def teardown_method(self):
         """Run after each test method runs."""
