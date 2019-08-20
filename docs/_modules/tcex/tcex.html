@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 1.0.7 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 1.1.0 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.7
+                1.1.0
               </div>
 
 
@@ -181,7 +181,6 @@
 <span class="sd">&quot;&quot;&quot;TcEx Framework&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">str</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -193,8 +192,10 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 3</span>
 
-<span class="kn">from</span> <span class="nn">.tcex_args</span> <span class="k">import</span> <span class="n">TcExArgs</span>
-<span class="kn">from</span> <span class="nn">.tcex_logger</span> <span class="k">import</span> <span class="n">TcExLogger</span>
+<span class="kn">from</span> <span class="nn">.args</span> <span class="k">import</span> <span class="n">Args</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">.app_config_object</span> <span class="k">import</span> <span class="n">InstallJson</span>
+<span class="kn">from</span> <span class="nn">.tokens</span> <span class="k">import</span> <span class="n">Tokens</span>
 
 
 <div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -211,29 +212,24 @@
         <span class="c1"># Property defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_associations_types_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">()</span>
 
         <span class="c1"># init args (needs logger)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span> <span class="o">=</span> <span class="n">TcExArgs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span> <span class="o">=</span> <span class="n">Args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># init logger (needs args)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">TcExLogger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">add_stream_handler</span><span class="p">()</span>
-
-        <span class="c1"># NOTE: odd issue where args is not updating properly</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token_expires</span>
 
         <span class="c1"># include resources module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">()</span>
@@ -274,7 +270,7 @@
         <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
 
         <span class="c1"># create resource object</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;tcex.tcex_resources&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;tcex.resources.resources&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">custom_indicators</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading custom indicator types.&#39;</span><span class="p">)</span>
@@ -370,9 +366,9 @@
         <span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return instance of Batch&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_ti_batch</span> <span class="k">import</span> <span class="n">TcExBatch</span>
+        <span class="kn">from</span> <span class="nn">.batch</span> <span class="k">import</span> <span class="n">Batch</span>
 
-        <span class="k">return</span> <span class="n">TcExBatch</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Batch</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,</span> <span class="n">playbook_triggers_enabled</span>
         <span class="p">)</span></div>
 
@@ -390,9 +386,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            object: An instance of the Cache Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_cache</span> <span class="k">import</span> <span class="n">TcExCache</span>
+        <span class="kn">from</span> <span class="nn">.datastore</span> <span class="k">import</span> <span class="n">Cache</span>
 
-        <span class="k">return</span> <span class="n">TcExCache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_minutes</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_minutes</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
     <span class="c1"># TODO: remove this method and use JMESPath instead.</span>
 <div class="viewcode-block" id="TcEx.data_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.data_filter">[docs]</a>    <span class="k">def</span> <span class="nf">data_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -429,9 +425,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            object: An instance of the DataStore Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_datastore</span> <span class="k">import</span> <span class="n">TcExDataStore</span>
+        <span class="kn">from</span> <span class="nn">.datastore</span> <span class="k">import</span> <span class="n">DataStore</span>
 
-        <span class="k">return</span> <span class="n">TcExDataStore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">DataStore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -586,7 +582,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_types_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">merged</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_types_data</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">api_entity</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">key</span>
@@ -658,27 +653,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return contents of install.json configuration file, loading from disk if required.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">install_json_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;install.json&#39;</span><span class="p">)</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">install_json_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Could not retrieve App Data.&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">install_json_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parse params from install.json into a dict by name.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a valid logger.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span>
@@ -696,9 +670,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (object): An instance of the Metrics Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_metrics_v2</span> <span class="k">import</span> <span class="n">TcExMetricsV2</span>
+        <span class="kn">from</span> <span class="nn">.metrics</span> <span class="k">import</span> <span class="n">Metrics</span>
 
-        <span class="k">return</span> <span class="n">TcExMetricsV2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.message_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc">[docs]</a>    <span class="k">def</span> <span class="nf">message_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write data to message_tc file in TcEX specified directory.</span>
@@ -730,9 +704,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (object): An instance of the Notification Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_notification_v2</span> <span class="k">import</span> <span class="n">TcExNotificationV2</span>
+        <span class="kn">from</span> <span class="nn">.notifications</span> <span class="k">import</span> <span class="n">Notifications</span>
 
-        <span class="k">return</span> <span class="n">TcExNotificationV2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Notifications</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -745,11 +719,9 @@
 
 <span class="sd">        .. Note:: Playbook methods can be accessed using ``tcex.playbook.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_playbook</span> <span class="k">import</span> <span class="n">TcExPlaybook</span>
+        <span class="kn">from</span> <span class="nn">.playbooks</span> <span class="k">import</span> <span class="n">Playbooks</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="o">=</span> <span class="n">TcExPlaybook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span>
+        <span class="k">return</span> <span class="n">Playbooks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1020,12 +992,24 @@
         <span class="k">return</span> <span class="n">url</span></div>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include the Service Module.</span>
+
+<span class="sd">        .. Note:: Service methods can be accessed using ``tcex.service.&lt;method&gt;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.services</span> <span class="k">import</span> <span class="n">Services</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="n">Services</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of Requests Session configured for the ThreatConnect API.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_session</span> <span class="k">import</span> <span class="n">TcExSession</span>
+            <span class="kn">from</span> <span class="nn">.sessions</span> <span class="k">import</span> <span class="n">TcSession</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">TcExSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">TcSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
 
     <span class="nd">@property</span>
@@ -1041,15 +1025,25 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return token object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">Tokens</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_verify</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">utils</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Include the Utils module.</span>
 
 <span class="sd">        .. Note:: Utils methods can be accessed using ``tcex.utils.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_utils</span> <span class="k">import</span> <span class="n">TcExUtils</span>
+            <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">Utils</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">TcExUtils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span></div>
 </pre></div>
 

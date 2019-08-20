@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Dependencies (tclib) &mdash; TcEx 1.0.7 documentation</title>
+  <title>Building Apps: Dependencies (tclib) &mdash; TcEx 1.1.0 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.7
+                1.1.0
               </div>
 
 
@@ -260,28 +260,28 @@ optional arguments:
 </div>
 <p>For ease of management, when building multiple Apps the tcex.json file can contain environment <strong>vars</strong> defining the Python version (e.g., $env.PY36 for <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PY36='3.6.5'</span></code>).</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="p">...</span><span class="nx">snipped</span><span class="o">&gt;</span>
-  <span class="p">{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_$env.PY36&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~/.pyenv/versions/$env.PY36/bin/python&quot;</span>
-  <span class="p">}</span>
+<span class="p">{</span>
+  <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_$env.PY36&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~/.pyenv/versions/$env.PY36/bin/python&quot;</span>
+<span class="p">}</span>
 <span class="o">&lt;</span><span class="nx">snipped</span><span class="p">...</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p><strong>Windows</strong></p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span>&lt;...snipped&gt;
-&quot;lib_versions&quot;: [{
-    &quot;lib_dir&quot;: &quot;lib_2.7.13&quot;,
-    &quot;python_executable&quot;: &quot;~\\AppData\\Local\\Programs\\Python\\Python27\\python.exe&quot;
-  }, {
-    &quot;lib_dir&quot;: &quot;lib_3.6.5&quot;,
-    &quot;python_executable&quot;: &quot;~\\AppData\\Local\\Programs\\Python\\Python36\\python.exe&quot;
-  }
-],
-&lt;snipped...&gt;
-
-macOS® is a registered trademark of Apple, Inc.
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="p">...</span><span class="nx">snipped</span><span class="o">&gt;</span>
+<span class="p">{</span>
+      <span class="s2">&quot;lib_versions&quot;</span><span class="o">:</span> <span class="p">[{</span>
+              <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_2.7.13&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~\\AppData\\Local\\Programs\\Python\\Python27\\python.exe&quot;</span>
+      <span class="p">},</span> <span class="p">{</span>
+              <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_3.6.5&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~\\AppData\\Local\\Programs\\Python\\Python36\\python.exe&quot;</span>
+      <span class="p">}]</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="nx">snipped</span><span class="p">...</span><span class="o">&gt;</span>
 </pre></div>
 </div>
+<p>macOS® is a registered trademark of Apple, Inc.</p>
 </div>
 </div>
 

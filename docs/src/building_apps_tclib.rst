@@ -86,10 +86,10 @@ For ease of management, when building multiple Apps the tcex.json file can conta
 .. code:: javascript
 
   <...snipped>
-    {
-      "lib_dir": "lib_$env.PY36",
-      "python_executable": "~/.pyenv/versions/$env.PY36/bin/python"
-    }
+  {
+    "lib_dir": "lib_$env.PY36",
+    "python_executable": "~/.pyenv/versions/$env.PY36/bin/python"
+  }
   <snipped...>
 
 **Windows**
@@ -97,14 +97,15 @@ For ease of management, when building multiple Apps the tcex.json file can conta
 .. code:: javascript
 
   <...snipped>
-  "lib_versions": [{
-      "lib_dir": "lib_2.7.13",
-      "python_executable": "~\\AppData\\Local\\Programs\\Python\\Python27\\python.exe"
-    }, {
-      "lib_dir": "lib_3.6.5",
-      "python_executable": "~\\AppData\\Local\\Programs\\Python\\Python36\\python.exe"
-    }
-  ],
+  {
+  	"lib_versions": [{
+  		"lib_dir": "lib_2.7.13",
+  		"python_executable": "~\\AppData\\Local\\Programs\\Python\\Python27\\python.exe"
+  	}, {
+  		"lib_dir": "lib_3.6.5",
+  		"python_executable": "~\\AppData\\Local\\Programs\\Python\\Python36\\python.exe"
+  	}]
+  }
   <snipped...>
 
-  macOS® is a registered trademark of Apple, Inc.
+macOS® is a registered trademark of Apple, Inc.

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_redis &mdash; TcEx 1.0.7 documentation</title>
+  <title>tcex.tcex_redis &mdash; TcEx 1.1.0 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.7
+                1.1.0
               </div>
 
 
@@ -181,7 +181,55 @@
 <span class="sd">&quot;&quot;&quot;TcEx Framework Redis Module&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">str</span>
 
+<span class="c1"># TODO: [py2] switch to py3 metaclass</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">with_metaclass</span>
 <span class="kn">import</span> <span class="nn">redis</span>
+
+
+<div class="viewcode-block" id="Singleton"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.Singleton">[docs]</a><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A singleton Metaclass&quot;&quot;&quot;</span>
+
+    <span class="n">_instances</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Singleton.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.Singleton.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evoke call method.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Singleton</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span></div></div>
+
+
+<span class="c1"># class RedisClient(metaclass=Singleton):</span>
+<div class="viewcode-block" id="RedisClient"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.RedisClient">[docs]</a><span class="k">class</span> <span class="nc">RedisClient</span><span class="p">(</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">Singleton</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;A shared REDIS client connection using a ConnectionPooling singleton.</span>
+
+<span class="sd">    Initialize a single shared redis.connection.ConnectionPool.</span>
+<span class="sd">    For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        host (str, optional): The REDIS host. Defaults to localhost.</span>
+<span class="sd">        port (int, optional): The REDIS port. Defaults to 6379.</span>
+<span class="sd">        db (int, optional): The REDIS db. Defaults to 0.</span>
+<span class="sd">        blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.</span>
+<span class="sd">        errors (str, kwargs): The REDIS errors policy (e.g. strict).</span>
+<span class="sd">        max_connections (int, kwargs): The maximum number of connections to REDIS.</span>
+<span class="sd">        password (str, kwargs): The REDIS password.</span>
+<span class="sd">        socket_timeout (int, kwargs): The REDIS socket timeout.</span>
+<span class="sd">        timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">blocking_pool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize class properties&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">ConnectionPool</span>
+        <span class="k">if</span> <span class="n">blocking_pool</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">BlockingConnectionPool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an instance of redis.client.Redis.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">connection_pool</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span></div>
 
 
 <div class="viewcode-block" id="TcExRedis"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis">[docs]</a><span class="k">class</span> <span class="nc">TcExRedis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -196,7 +244,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the Class properties.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="n">key</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">RedisClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span>  <span class="c1"># for legacy App that may have been using this value</span>
 
     <span class="nd">@property</span>

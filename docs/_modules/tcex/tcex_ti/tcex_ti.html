@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti.tcex_ti &mdash; TcEx 1.0.7 documentation</title>
+  <title>tcex.tcex_ti.tcex_ti &mdash; TcEx 1.1.0 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.7
+                1.1.0
               </div>
 
 
@@ -332,26 +332,11 @@
                     <span class="n">value_fields</span> <span class="o">=</span> <span class="n">custom_indicator_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value_fields&#39;</span><span class="p">)</span>
                     <span class="n">c</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">indicator_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">indicator</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">value_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                        <span class="p">)</span>
+                        <span class="n">indicator</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="n">indicator</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span>
-                            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">value_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
-                            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">value_fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
-                            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
-                            <span class="o">**</span><span class="n">kwargs</span>
-                        <span class="p">)</span>
+                        <span class="n">indicator</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="n">indicator</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span>
-                            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">value_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
-                            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">value_fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
-                            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">value_fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
-                            <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span>
-                            <span class="o">**</span><span class="n">kwargs</span>
-                        <span class="p">)</span>
+                        <span class="n">indicator</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">indicator</span></div>
@@ -609,6 +594,63 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Owner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcExTi.create_entity"><a class="viewcode-back" href="../../../tcex_docs/tcex.tcex_ti.html#tcex.tcex_ti.tcex_ti.TcExTi.create_entity">[docs]</a>    <span class="k">def</span> <span class="nf">create_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Given a Entity and a Owner, creates a indicator/group in ThreatConnect&quot;&quot;&quot;</span>
+
+        <span class="n">tc_entity</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;unique_id&#39;</span><span class="p">:</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)}</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">associations</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;associations&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">security_labels</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;securityLabel&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">entity_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ti</span><span class="p">:</span>
+            <span class="n">tc_entity</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tc_entity</span><span class="p">[</span><span class="s1">&#39;unique_id&#39;</span><span class="p">]</span>
+            <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">tc_entity</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+            <span class="s1">&#39;main_type&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="s1">&#39;sub_type&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">api_sub_type</span><span class="p">,</span>
+            <span class="s1">&#39;api_type&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="s1">&#39;unique_id&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="s1">&#39;api_entity&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">api_entity</span><span class="p">,</span>
+            <span class="s1">&#39;api_branch&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;security_labels&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;associations&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">))</span>
+            <span class="n">attribute_response</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;Description&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="n">response</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attribute_response</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="n">tag_response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">}</span>
+            <span class="n">response</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag_response</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">security_labels</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="n">label_response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">}</span>
+            <span class="n">response</span><span class="p">[</span><span class="s1">&#39;security_labels&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_response</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">associations</span><span class="p">:</span>
+            <span class="n">association_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span>
+                <span class="n">association</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">association</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="o">**</span><span class="n">association</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">association_target</span><span class="p">:</span>
+                <span class="n">association_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
+                    <span class="n">association</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">association</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="o">**</span><span class="n">association</span>
+                <span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span><span class="n">association_target</span><span class="p">)</span>
+            <span class="n">association_response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">}</span>
+            <span class="n">response</span><span class="p">[</span><span class="s1">&#39;associations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">association_response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+
 <div class="viewcode-block" id="TcExTi.create_entities"><a class="viewcode-back" href="../../../tcex_docs/tcex.tcex_ti.html#tcex.tcex_ti.tcex_ti.TcExTi.create_entities">[docs]</a>    <span class="k">def</span> <span class="nf">create_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a indicator/group in TC based on the given entity&#39;s</span>
@@ -619,27 +661,10 @@
 <span class="sd">        Returns:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
-            <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;unique_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;associatedGroups&#39;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="c1"># associations = entity.pop(&#39;associatedGroups&#39;, [])</span>
-            <span class="n">security_labels</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;securityLabel&#39;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">tags</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">entity_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
-            <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">ti</span><span class="p">:</span>
-                <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
-            <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">create</span><span class="p">())</span>
-            <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
-                <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">add_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)))</span>
-            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-                <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">security_labels</span><span class="p">:</span>
-                <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="n">label</span><span class="p">))</span></div>
-            <span class="c1"># for association in associations:</span>
-            <span class="c1">#     responses.append(ti.add_association(None, None, None, None))</span>
+            <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_entity</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">owner</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">responses</span></div>
 
 <div class="viewcode-block" id="TcExTi.entities"><a class="viewcode-back" href="../../../tcex_docs/tcex.tcex_ti.html#tcex.tcex_ti.tcex_ti.TcExTi.entities">[docs]</a>    <span class="k">def</span> <span class="nf">entities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tc_data</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

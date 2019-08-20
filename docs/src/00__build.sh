@@ -14,6 +14,7 @@ ln -fs tclib ../../bin/tclib.py
 ln -fs tcpackage ../../bin/tcpackage.py
 ln -fs tcprofile ../../bin/tcprofile.py
 ln -fs tcrun ../../bin/tcrun.py
+ln -fs tctest ../../bin/tctest.py
 ln -fs tcvalidate ../../bin/tcvalidate.py
 
 # get app deployment
@@ -41,6 +42,7 @@ unlink ../../bin/tclib.py
 unlink ../../bin/tcpackage.py
 unlink ../../bin/tcprofile.py
 unlink ../../bin/tcrun.py
+unlink ../../bin/tctest.py
 unlink ../../bin/tcvalidate.py
 
 # cleanup

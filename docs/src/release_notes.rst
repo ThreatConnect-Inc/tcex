@@ -5,10 +5,10 @@ Release Notes
 
 1.1.0
 =====
-+ Restructured tcex module into individual directories.
++ Restructured tcex modules into individual directories.
 + Added services module for service Apps.
-+ Added token service module.
-+ Moved token renewal from session to new token service.
++ Added token module to manage tokens for all types of Apps.
++ Moved token renewal from session to new token module.
 + Updated multiple module to simplify testing.
 
 1.0.7

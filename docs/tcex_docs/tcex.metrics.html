@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.metrics module &mdash; TcEx 1.1.0 documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tcex.notifications module" href="tcex.notifications.html" />
+    <link rel="prev" title="tcex.bin module" href="tcex.bin.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                1.1.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">TcEx Module</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tcex.args.html">tcex.args module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.batch.html">tcex.batch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.decorators.html">tcex.decorators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.logger.html">tcex.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.bin.html">tcex.bin module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.metrics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.notifications.html">tcex.notifications module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.playbooks.html">tcex.playbooks module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.resources.html">tcex.resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.sessions.html">tcex.sessions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti.html">tcex.tcex_ti module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.vault.html">tcex.vault module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.utils.html">tcex.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#tcex-cli">TcEx CLI</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="modules.html">TcEx Package</a> &raquo;</li>
+
+          <li><a href="tcex.html">TcEx Module</a> &raquo;</li>
+
+      <li>tcex.metrics module</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-tcex.metrics.metrics">
+<span id="tcex-metrics-module"></span><h1>tcex.metrics module<a class="headerlink" href="#module-tcex.metrics.metrics" title="Permalink to this headline">¶</a></h1>
+<p>TcEx Framework Module for working with Metrics in the ThreatConnect Platform.</p>
+<dl class="class">
+<dt id="tcex.metrics.metrics.Metrics">
+<em class="property">class </em><code class="sig-prename descclassname">tcex.metrics.metrics.</code><code class="sig-name descname">Metrics</code><span class="sig-paren">(</span><em class="sig-param">tcex</em>, <em class="sig-param">name</em>, <em class="sig-param">description</em>, <em class="sig-param">data_type</em>, <em class="sig-param">interval</em>, <em class="sig-param">keyed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>TcEx Metrics Class</p>
+<dl class="method">
+<dt id="tcex.metrics.metrics.Metrics.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">date=None</em>, <em class="sig-param">return_value=False</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add metrics data to collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>str</em>) – The value of the metric.</p></li>
+<li><p><strong>date</strong> (<em>str</em><em>, </em><em>optional</em>) – The optional date of the metric.</p></li>
+<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>return_value</em>) – False): Tell the API to return the updates metric value.</p></li>
+<li><p><strong>key</strong> (<em>str</em><em>, </em><em>optional</em>) – The key value for keyed metrics.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>If return_value is True a dict with the current value for the time period</dt><dd><p>is returned.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.metrics.metrics.Metrics.add_keyed">
+<code class="sig-name descname">add_keyed</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">key</em>, <em class="sig-param">date=None</em>, <em class="sig-param">return_value=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.add_keyed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.add_keyed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add keyed metrics data to collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>str</em>) – The value of the metric.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The key value for keyed metrics.</p></li>
+<li><p><strong>date</strong> (<em>str</em><em>, </em><em>optional</em>) – The optional date of the metric.</p></li>
+<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>return_value</em>) – False): Tell the API to return the updates metric value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>If return_value is True a dict with the current value for the time period</dt><dd><p>is returned.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.metrics.metrics.Metrics.metric_create">
+<code class="sig-name descname">metric_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.metric_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.metric_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the defined metric.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;status&quot;</span><span class="o">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;customMetricConfig&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Added Reports&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dataType&quot;</span><span class="o">:</span> <span class="s2">&quot;Sum&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;Daily&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;keyedValues&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Added reports daily count.&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.metrics.metrics.Metrics.metric_find">
+<code class="sig-name descname">metric_find</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.metric_find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.metric_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the Metric by name.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;status&quot;</span><span class="o">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;resultCount&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;customMetricConfig&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">9</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;My Metric&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;dataType&quot;</span><span class="o">:</span> <span class="s2">&quot;Sum&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;Daily&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;keyedValues&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+                <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;TcEx Metric Testing&quot;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="tcex.notifications.html" class="btn btn-neutral float-right" title="tcex.notifications module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="tcex.bin.html" class="btn btn-neutral float-left" title="tcex.bin module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

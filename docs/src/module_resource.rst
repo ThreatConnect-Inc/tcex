@@ -1,7 +1,7 @@
 .. include:: <isonum.txt>
 .. _module_resources:
 
-.. Important:: The resource module is deprecated.  The framework now has a new TI (Threat Intel) module that provides the same functionality.
+.. danger:: The resource module is deprecated.  The framework now has a new TI (Threat Intel) module that provides the same functionality.
 
 ==================
 Module: Resources

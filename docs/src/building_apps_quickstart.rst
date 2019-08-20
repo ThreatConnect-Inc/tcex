@@ -46,7 +46,7 @@ At a minimum, all Apps require the ``tcex`` Python package.  If other Python pac
 
 After running the ``tclib`` command, a "lib_<Python version>" (e.g., lib_3.6.7) directory will be in the project directory. This directory will contain all Python packages defined in **requirements.txt** and any sub-dependencies.
 
-.. Important:: This version of the "lib" directory should closely match the version of Python on the ThreatConnect server.  Differences in micro-ersions (e.g., Python version 3.6.5 vs. lib_3.6.7) are acceptable.
+.. Important:: This version of the "lib" directory should closely match the version of Python on the ThreatConnect server.  Differences in micro-versions (e.g., Python version 3.6.5 vs. lib_3.6.7) are usually acceptable.
 
 .. seealso::
 

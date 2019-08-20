@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 1.0.7 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 1.1.0 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.0.7
+                1.1.0
               </div>
 
 
@@ -282,9 +282,10 @@
 52
 53
 54
-55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
+55
+56</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
 <span class="c1"># Python App Template</span>
-<span class="c1"># Version: 1.0.2</span>
+<span class="c1"># Version: 1.0.3</span>
 <span class="c1"># Last Updated: 2017/10/04</span>
 <span class="c1">#=================================================</span>
 
@@ -292,6 +293,7 @@
 <span class="c1"># Language Exclusions</span>
 <span class="c1">#-------------------------------------------------</span>
 __pycache__
+.coverage
 .pytest_cache
 *.pyc
 venv
@@ -895,7 +897,7 @@ nbproject
 
 
 <span class="k">class</span> <span class="nc">PlaybookApp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Playbook App Class&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Playbook App Class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
@@ -943,7 +945,7 @@ nbproject
 <div class="section" id="requirements-txt-required">
 <h2>requirements.txt (required)<a class="headerlink" href="#requirements-txt-required" title="Permalink to this headline">¶</a></h2>
 <p>This file contains all the required Python dependencies for the App. The <strong>requirements.txt</strong> file is used by the <code class="docutils literal notranslate"><span class="pre">tclib</span></code> command to build the <strong>lib_x.x.x</strong> directories.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">0</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -1157,7 +1159,7 @@ nbproject
 <span class="n">ignore</span> <span class="o">=</span> <span class="n">E203</span><span class="p">,</span><span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
 
 <span class="p">[</span><span class="n">pydocstyle</span><span class="p">]</span>
-<span class="n">ignore</span> <span class="o">=</span> <span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span>
+<span class="n">ignore</span> <span class="o">=</span> <span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D400</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span>
 </pre></div>
 </td></tr></table></div>
 </div>
