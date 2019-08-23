@@ -1,6 +1,7 @@
 [run]
 omit =
     __main__.py
+    lib_*
     job_app.py
     playbook_app.py
     run.py
