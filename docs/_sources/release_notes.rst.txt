@@ -3,6 +3,13 @@
 Release Notes
 #############
 
+1.1.1
+=====
++ Moved registration of default token to default_args method to address issue with secure params.
++ Updated template files.
++ Updated build process for wheel files.
++ Updated permutations generation to include hidden inputs.
+
 1.1.0
 =====
 + Restructured tcex modules into individual directories.
