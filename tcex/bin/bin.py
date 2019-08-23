@@ -124,14 +124,15 @@ class Bin(object):
         if args is None:
             args = []
         try:
+            hidden = False
             if self.ij.runtime_level.lower() == 'playbook':
                 name = self.lj.parameters_names[index]
                 display = self.lj.parameters_dict.get(name, {}).get('display')
+                hidden = self.lj.parameters_dict.get(name, {}).get('hidden', False)
             else:
                 name = list(self.ij.params_dict.keys())[index]
                 display = False
 
-            hidden = self.ij.params_dict.get(name, {}).get('hidden')
             input_type = self.ij.params_dict.get(name, {}).get('type')
             if input_type is None:
                 self.handle_error('No value found in install.json for "{}".'.format(name))
