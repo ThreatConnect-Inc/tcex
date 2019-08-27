@@ -147,14 +147,6 @@ class Args(object):
             # log system and App data
             self.tcex.logger.log_info()
 
-            # register token after log_info
-            if self._default_args.tc_token is not None:
-                # register token if provided in args (non-service Apps)
-                # TODO: swap MainThread with threading.current_thread().name ?
-                self.tcex.token.register_token(
-                    'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
-                )
-
         return self._default_args
 
     def args_update(self):
@@ -207,6 +199,14 @@ class Args(object):
         """Parse args and return default args."""
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
+
+            # register token after log_info
+            if self._default_args.tc_token is not None:
+                # register token if provided in args (non-service Apps)
+                # TODO: swap MainThread with threading.current_thread().name ?
+                self.tcex.token.register_token(
+                    'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
+                )
 
             if self._default_args.tc_aot_enabled:
                 # block for AOT message and get params
