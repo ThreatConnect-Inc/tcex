@@ -92,6 +92,9 @@ class TestCasePlaybookCommon(TestCase):
                     )
                 outputs[variable] = {'expected_output': data, 'op': 'eq'}
 
+                if variable.endswith('json.raw!String'):
+                    outputs[variable] = {'expected_output': data, 'op': 'jeq'}
+
             if profile_data.get('outputs') is None:
                 # update the profile
                 profile_data['outputs'] = outputs

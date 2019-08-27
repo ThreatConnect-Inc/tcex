@@ -21,8 +21,8 @@ class Email(Group):
         super(Email, self).__init__(
             tcex, 'Email', 'email', 'emails', owner=owner, name=name, **kwargs
         )
-        self._data['to'] = to or kwargs.get('to')
-        self._data['from'] = from_addr or kwargs.get('from_addr')
+        self._data['to'] = to or kwargs.get('to') or kwargs.get('to_addr')
+        self._data['from'] = from_addr or kwargs.get('from_addr') or kwargs.get('from')
         self._data['subject'] = subject or kwargs.get('subject')
         self._data['body'] = body or kwargs.get('body')
         self._data['header'] = header or kwargs.get('header')

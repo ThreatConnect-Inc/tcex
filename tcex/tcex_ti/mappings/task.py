@@ -34,18 +34,36 @@ class Task(TIMappings):
         """
 
         super(Task, self).__init__(tcex, 'Task', 'tasks', None, 'task', None, owner)
+        for arg, value in kwargs.items():
+            self.add_key_value(arg, value)
+
         self._data['name'] = name
         if status:
             self._data['status'] = status
         if due_date:
             self._data['dueDate'] = due_date
+            try:
+                self._data['dueDate'] = self._utils.format_datetime(
+                    due_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+                )
+            except RuntimeError:
+                pass
         if reminder_date:
             self._data['reminderDate'] = reminder_date
+            try:
+                self._data['reminderDate'] = self._utils.format_datetime(
+                    reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+                )
+            except RuntimeError:
+                pass
         if escalation_date:
             self._data['escalationDate'] = escalation_date
-
-        for arg, value in kwargs.items():
-            self.add_key_value(arg, value)
+            try:
+                self._data['escalationDate'] = self._utils.format_datetime(
+                    escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+                )
+            except RuntimeError:
+                pass
 
     @property
     def name(self):
@@ -253,6 +271,15 @@ class Task(TIMappings):
         """
         return self.assignee(escalatee_id, action='DELETE')
 
+    @property
+    def _metadata_map(self):
+        """Return metadata map for Group objects."""
+        return {
+            'due_date': 'dueDate',
+            'reminder_date': 'reminderDate',
+            'escalation_date': 'escalationDate',
+        }
+
     def add_key_value(self, key, value):
         """
         Converts the value and adds it as a data field.
@@ -261,8 +288,11 @@ class Task(TIMappings):
             key:
             value:
         """
+        key = self._metadata_map.get(key, key)
         if key == 'unique_id':
             self._unique_id = quote_plus(str(value))
+        elif key in ['dueDate', 'reminderDate', 'escalationDate']:
+            self._data[key] = self._utils.format_datetime(value, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data[key] = value
 
     def can_create(self):

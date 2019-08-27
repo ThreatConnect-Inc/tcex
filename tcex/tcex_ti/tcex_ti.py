@@ -418,17 +418,21 @@ class TcExTi(object):
     def create_entity(self, entity, owner):
         """ Given a Entity and a Owner, creates a indicator/group in ThreatConnect"""
 
-        tc_entity = {'unique_id': entity.pop('summary', None)}
         attributes = entity.pop('attribute', [])
         associations = entity.pop('associations', [])
         security_labels = entity.pop('securityLabel', [])
         tags = entity.pop('tag', [])
         entity_type = entity.pop('type')
+        file_content = None
+        if entity_type.lower() in ['document', 'report']:
+            file_content = entity.pop('file_content', None) or entity.pop('fileContent', None)
         ti = self.indicator(entity_type, owner, **entity)
         if not ti:
-            tc_entity['name'] = tc_entity['unique_id']
-            ti = self.group(entity_type, owner, **tc_entity)
+            entity['name'] = entity.pop('summary', None)
+            ti = self.group(entity_type, owner, **entity)
         r = ti.create()
+        if entity_type.lower() in ['document', 'report']:
+            ti.file_content(file_content)
         response = {
             'status_code': r.status_code,
             'main_type': ti.type,
@@ -569,6 +573,7 @@ class TcExTi(object):
             entity = {'id': d.get('id'), 'webLink': d.get('webLink')}
             values = []
             value = None
+            keys = d.keys()
             if resource_type in self.tcex.group_types:
                 r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
@@ -604,6 +609,51 @@ class TcExTi(object):
                 entity['threatAssessConfidence'] = d.get('threatAssessConfidence')
                 entity['threatAssessRating'] = d.get('threatAssessRating')
                 entity['dateLastModified'] = d.get('lastModified')
+
+            if r.is_task():
+                entity['status'] = d.get('status')
+                entity['escalated'] = d.get('escalated')
+                entity['reminded'] = d.get('reminded')
+                entity['overdue'] = d.get('overdue')
+                entity['dueDate'] = d.get('dueDate', None)
+                entity['reminderDate'] = d.get('reminderDate', None)
+                entity['escalationDate'] = d.get('escalationDate', None)
+                if d.get('xid'):
+                    entity['xid'] = d.get('xid')
+            if r.is_group():
+                if 'xid' in keys:
+                    entity['xid'] = d.get('xid')
+                if 'firstSeen' in keys:
+                    entity['firstSeen'] = d.get('firstSeen')
+                if 'fileName' in keys:
+                    entity['fileName'] = d.get('fileName')
+                if 'fileType' in keys:
+                    entity['fileType'] = d.get('fileType')
+                if 'fileSize' in keys:
+                    entity['fileSize'] = d.get('fileSize')
+                if 'eventDate' in keys:
+                    entity['eventDate'] = d.get('eventDate')
+                if 'status' in keys:
+                    entity['status'] = d.get('status')
+                if 'to' in keys:
+                    entity['to'] = d.get('to')
+                if 'from' in keys:
+                    entity['from'] = d.get('from')
+                if 'subject' in keys:
+                    entity['subject'] = d.get('subject')
+                if 'score' in keys:
+                    entity['score'] = d.get('score')
+                if 'header' in keys:
+                    entity['header'] = d.get('header')
+                if 'body' in keys:
+                    entity['body'] = d.get('body')
+                if 'publishDate' in keys:
+                    entity['publishDate'] = d.get('publishDate')
+                if r.api_sub_type.lower() in ['signature', 'document', 'report']:
+                    r.unique_id = d.get('id')
+                    content_response = r.download()
+                    if content_response.ok:
+                        entity['fileContent'] = content_response.text
             # type
             if d.get('type') is not None:
                 entity['type'] = d.get('type')

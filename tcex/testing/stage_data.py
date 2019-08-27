@@ -167,6 +167,8 @@ class ThreatConnect(object):
                 ti = self.provider.tcex.ti.indicator(
                     data.get('sub_type'), unique_id=data.get('unique_id')
                 )
+            elif entity_type == 'Task':
+                ti = self.provider.tcex.ti.group(entity_type, unique_id=data.get('unique_id'))
             ti.delete()
 
     def clear(self, owner):

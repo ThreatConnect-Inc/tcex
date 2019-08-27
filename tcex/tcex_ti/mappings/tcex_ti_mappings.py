@@ -178,6 +178,10 @@ class TIMappings(object):
 
         response = self.tc_requests.create(self.api_type, self.api_branch, self._data, self.owner)
 
+        # print('response: ', response)
+        # print('text: ', response.text)
+        # print('data: ', self._data)
+
         if self.tc_requests.success(response):
             self._set_unique_id(response.json().get('data').get(self.api_entity))
 

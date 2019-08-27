@@ -76,6 +76,7 @@ class Validator(object):
         """Get the corresponding operator"""
         operators = {
             'dd': self.operator_deep_diff,
+            'is_date': self.operator_is_date,
             'length_eq': self.operator_length_eq,
             'leq': self.operator_length_eq,
             'eq': self.operator_eq,
@@ -97,6 +98,18 @@ class Validator(object):
             'rex': self.operator_regex_match,
         }
         return operators.get(op, None)
+
+    def operator_is_date(self, app_data, test_data):
+        """Checks if the test_data is a known date."""
+        if not isinstance(test_data, list):
+            test_data = [test_data]
+        for data in test_data:
+            try:
+                self.tcex.utils.any_to_datetime(data)
+            except RuntimeError:
+                details = data + ' is not a recognized date field'
+                return False, details
+        return True, self.details(app_data, test_data, 'is_date')
 
     def operator_length_eq(self, app_data, test_data):
         """

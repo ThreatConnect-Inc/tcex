@@ -428,10 +428,11 @@ class TiTcRequest:
 
         return self.tcex.session.get(url, params=params)
 
-    def pivot_from_tag(self, target, tag_name, filters=None, params=None):
+    def pivot_from_tag(self, target, tag_name, filters=None, owner=None, params=None):
         """
 
         Args:
+            owner:
             filters:
             target:
             tag_name:
@@ -445,6 +446,9 @@ class TiTcRequest:
         api_entity = target.api_entity
         params = params or {}
 
+        if owner:
+            params['owner'] = owner
+
         if filters and filters.filters:
             params['filters'] = filters.filters_string
         if sub_type:
@@ -454,10 +458,11 @@ class TiTcRequest:
         for i in self._iterate(url, params, api_entity):
             yield i
 
-    def groups_from_tag(self, group, tag_name, filters=None, params=None):
+    def groups_from_tag(self, group, tag_name, filters=None, owner=None, params=None):
         """
 
         Args:
+            owner:
             group:
             tag_name:
             filters:
@@ -466,12 +471,13 @@ class TiTcRequest:
         Return:
 
         """
-        for t in self.pivot_from_tag(group, tag_name, filters=filters, params=params):
+        for t in self.pivot_from_tag(group, tag_name, filters=filters, owner=owner, params=params):
             yield t
 
-    def indicators_from_tag(self, indicator, tag_name, filters=None, params=None):
+    def indicators_from_tag(self, indicator, tag_name, filters=None, owner=None, params=None):
         """
                 Args:
+                    owner:
                     indicator:
                     tag_name:
                     filters:
@@ -482,13 +488,16 @@ class TiTcRequest:
         """
         params = params or {}
 
-        for t in self.pivot_from_tag(indicator, tag_name, filters=filters, params=params):
+        for t in self.pivot_from_tag(
+            indicator, tag_name, filters=filters, owner=owner, params=params
+        ):
             yield t
 
-    def victims_from_tag(self, victim, tag_name, filters=None, params=None):
+    def victims_from_tag(self, victim, tag_name, filters=None, owner=None, params=None):
         """
 
         Args:
+            owner:
             victim:
             tag_name:
             filters:
@@ -497,7 +506,7 @@ class TiTcRequest:
         Return:
 
         """
-        for t in self.pivot_from_tag(victim, tag_name, filters=filters, params=params):
+        for t in self.pivot_from_tag(victim, tag_name, filters=filters, owner=owner, params=params):
             yield t
 
     def indicator_associations(self, main_type, sub_type, unique_id, owner=None, params=None):
@@ -651,7 +660,12 @@ class TiTcRequest:
         api_branch = api_branch or target.api_branch
         api_entity = api_entity or target.api_entity
 
-        if not sub_type:
+        if target and target.is_task():
+            if not sub_type:
+                url = '/v2/{}/{}/tasks/{}'.format(main_type, unique_id, api_branch)
+            else:
+                url = '/v2/{}/{}/{}/tasks'.format(main_type, sub_type, unique_id)
+        elif not sub_type:
             url = '/v2/{}/{}/groups/{}'.format(main_type, unique_id, api_branch)
         else:
             url = '/v2/{}/{}/{}/groups/{}'.format(main_type, sub_type, unique_id, api_branch)

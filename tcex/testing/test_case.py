@@ -162,15 +162,27 @@ class TestCase(object):
             return self._exit(1)
         profile['name'] = profile_name
 
+        profile = self.populate_system_variables(profile)
         self._staged_tc_data = self.stager.threatconnect.entities(
             profile.get('stage', {}).get('threatconnect', {}), 'TCI'
         )
         self.generate_tc_output_variables(self._staged_tc_data)
-        profile = self.populate_tc_output_variables(profile)
+        profile = self.populate_threatconnect_variables(profile)
         self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
         return profile
 
-    def populate_tc_output_variables(self, profile):
+    @staticmethod
+    def populate_system_variables(profile):
+        """Replaces all System variables with their correct value"""
+        profile_str = json.dumps(profile)
+        system_var_regex = r'#EnvVar:(.*?)#'
+        for m in re.finditer(system_var_regex, profile_str):
+            old_string = '#EnvVar:' + m.group(1) + '#'
+            if os.environ.get(m.group(1)):
+                profile_str = profile_str.replace(old_string, os.environ.get(m.group(1)))
+        return json.loads(profile_str)
+
+    def populate_threatconnect_variables(self, profile):
         """Replaces all of the TC output variables in the profile with their correct value"""
         profile_str = json.dumps(profile)
         for output_variable, value in self._tc_output_variables.items():
