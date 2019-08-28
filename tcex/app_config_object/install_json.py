@@ -30,8 +30,11 @@ class InstallJson(object):
     def contents(self):
         """Return install.json contents."""
         if self._contents is None:
-            with open(self.filename, 'r') as fh:
-                self._contents = json.load(fh, object_pairs_hook=OrderedDict)
+            try:
+                with open(self.filename, 'r') as fh:
+                    self._contents = json.load(fh, object_pairs_hook=OrderedDict)
+            except FileNotFoundError:
+                self._contents = {'runtimeLevel': 'external'}
         return self._contents
 
     @staticmethod

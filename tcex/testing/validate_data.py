@@ -194,7 +194,7 @@ class Validator(object):
                 'status': 'Uploaded
             paths: ['result', 'owner', 'id']
 
-            retuns: {
+            returns: {
                 'result': {
                     sys_id': 123,
                         'owner': {
