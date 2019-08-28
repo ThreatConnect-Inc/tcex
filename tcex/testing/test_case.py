@@ -91,10 +91,10 @@ class TestCase(object):
     @staticmethod
     def _convert_variable_name(variable_name):
         """Converts a TC output variable to the correct name"""
-        if not variable_name.startswith('#TCVar:'):
-            variable_name = '#TCVar:' + variable_name
-        if not variable_name.endswith('#'):
-            variable_name = variable_name + '#'
+        if not variable_name.startswith('${tcenv.'):
+            variable_name = '${tcenv.' + variable_name
+        if not variable_name.endswith('}'):
+            variable_name = variable_name + '}'
         return variable_name
 
     def get_tcex(self, args=None):
@@ -175,9 +175,9 @@ class TestCase(object):
     def populate_system_variables(profile):
         """Replaces all System variables with their correct value"""
         profile_str = json.dumps(profile)
-        system_var_regex = r'#EnvVar:(.*?)#'
+        system_var_regex = r'\${env.(.*?)}'
         for m in re.finditer(system_var_regex, profile_str):
-            old_string = '#EnvVar:' + m.group(1) + '#'
+            old_string = '${env.' + m.group(1) + '}'
             if os.environ.get(m.group(1)):
                 profile_str = profile_str.replace(old_string, os.environ.get(m.group(1)))
         return json.loads(profile_str)
