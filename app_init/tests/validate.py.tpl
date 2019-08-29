@@ -12,7 +12,7 @@ class Validate(object):
         self.validator = validator
         self.validation_methods = {
             % for data in output_data:
-            '${data['variable']}': self.${data['variable']},
+            '${data['variable']}': self.${data['method']},
             % endfor
         }
 
