@@ -13,6 +13,7 @@ class Validate(object):
         self.validation_methods = {
             % for data in output_data:
             '${data['variable']}': self.${data['variable']},
+            % endfor
         }
 
     def validate(self, output_variables):
