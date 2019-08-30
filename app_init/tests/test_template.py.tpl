@@ -50,6 +50,6 @@ class TestFeature(${parent_class}):
         # uncomment to start using the monkey patch annotations
         # register_monkeypatches(monkeypatch, pd)
 
-        assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
+        assert self.run_profile(pd) in pd.get('exit_codes', [0])
         ValidateFeature(self.validator).validate(pd.get('outputs'))
         ${validate_batch_method}
