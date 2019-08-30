@@ -199,7 +199,7 @@ class Tokens(object):
         """Monitor token expiration and renew when required."""
         sleep_interval = 30
         while True:
-            for key, token_data in self.token_map.items():
+            for key, token_data in dict(self.token_map).items():
                 # calculate the time left to sleep
                 sleep_seconds = (
                     token_data.get('token_expires') - int(time.time()) - self.token_window

@@ -40,14 +40,6 @@ class DataStore(object):
         self.mapping = mapping or {'dynamic': False}
 
         # properties
-
-        # This module requires a token.
-        if self.tcex.token.token is None:
-            raise RuntimeError(
-                'The DataModel TcEx Module requires a Token to interact with the '
-                'ThreatConnect platform.'
-            )
-
         self._create_index()  # create the initial index.
         self._update_mappings()  # update mappings
 
@@ -68,6 +60,18 @@ class DataStore(object):
             )
             # delete temporary record
             self.delete(rid, False)
+
+    def _token_available(self):
+        """Raise an error if token is not available.
+
+        This check needs to be made after args are parsed to ensure token module has initialized.
+        """
+        # This module requires a token.
+        if self.tcex.token.token is None:  # pragma: no cover
+            raise RuntimeError(
+                'The DataModel TcEx Module requires a Token to interact with the '
+                'ThreatConnect platform.'
+            )
 
     def _update_mappings(self):
         """Update the mappings for the current index."""
@@ -112,6 +116,8 @@ class DataStore(object):
         Returns:
             object : Python request response.
         """
+        self._token_available()  # ensure a token is available
+
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
         url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
@@ -135,6 +141,8 @@ class DataStore(object):
         Returns:
             object : Python request response.
         """
+        self._token_available()  # ensure a token is available
+
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
         if rid is None:
@@ -163,6 +171,8 @@ class DataStore(object):
         Returns:
             object : Python request response.
         """
+        self._token_available()  # ensure a token is available
+
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
         if rid is None:
@@ -189,6 +199,8 @@ class DataStore(object):
         Returns:
             object : Python request response.
         """
+        self._token_available()  # ensure a token is available
+
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)

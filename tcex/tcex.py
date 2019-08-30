@@ -2,6 +2,7 @@
 """TcEx Framework"""
 from builtins import str
 import inspect
+import logging
 import platform
 import os
 import re
@@ -20,9 +21,18 @@ from .tokens import Tokens
 
 
 class TcEx(object):
-    """Provides basic functionality for all types of TxEx Apps."""
+    """Provides basic functionality for all types of TxEx Apps.
 
-    def __init__(self):
+    Args:
+        config (dict, kwargs): A dictionary containing configuration items typically used by
+            external Apps.
+        config_file (str, kwargs): A filename containing JSON configuration items typically used
+            by external Apps.
+        logger (logging.Logger, kwargs): An pre-configured instance of logger to use instead of
+            tcex logger.
+    """
+
+    def __init__(self, **kwargs):
         """Initialize Class Properties."""
         # catch interupt signals
         signal.signal(signal.SIGINT, self._signal_handler)
@@ -37,6 +47,8 @@ class TcEx(object):
         self._indicator_types = []
         self._indicator_types_data = {}
         self._jobs = None
+        self._log = None
+        self._logger = None
         self._playbook = None
         self._service = None
         self._session = None
@@ -45,12 +57,13 @@ class TcEx(object):
         self._token = None
         self.ij = InstallJson()
 
+        # add custom logger
+        self.log = kwargs.get('logger')
+
         # init args (needs logger)
         self.tcex_args = Args(self)
-
-        # init logger (needs args)
-        self.logger = Logger(self)
-        self.logger.add_stream_handler()
+        self.tcex_args.config(kwargs.get('config'))
+        self.tcex_args.config(kwargs.get('config_file'))
 
         # include resources module
         self._resources()
@@ -476,7 +489,23 @@ class TcEx(object):
     @property
     def log(self):
         """Return a valid logger."""
-        return self.logger.log
+        if self._log is None:
+            self._log = self.logger.log
+        return self._log
+
+    @log.setter
+    def log(self, log):
+        """Return a valid logger."""
+        if isinstance(log, logging.Logger):
+            self._log = log
+
+    @property
+    def logger(self):
+        """Return logger."""
+        if self._logger is None:
+            self._logger = Logger(self)
+            self._logger.add_stream_handler()
+        return self._logger
 
     def metric(self, name, description, data_type, interval, keyed=False):
         """Get instance of the Metrics module.

@@ -64,10 +64,12 @@ class TcSession(Session):
         if self._service_app or self._token_available:
             # service Apps only use tokens and playbook/runtime Apps will use token if available
             self.auth = TokenAuth(self.token)
+            self.tcex.log.trace('Using token authorization.')
         else:
             try:
                 # for external Apps or testing Apps locally
                 self.auth = HmacAuth(self.args.api_access_id, self.args.api_secret_key)
+                self.tcex.log.trace('Using HMAC authorization.')
             except AttributeError:  # pragma: no cover
                 raise RuntimeError('No valid ThreatConnect API credentials provided.')
 

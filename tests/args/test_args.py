@@ -4,6 +4,7 @@ import json
 import sys
 
 from tcex import TcEx
+from tcex.args import Args
 from ..tcex_init import tcex, config_data
 
 
@@ -22,8 +23,7 @@ class MockGet:
 
     def json(self):
         """Mock json method"""
-        print('!!!!!!!!!!!!', self.data)
-        return json.dumps(self.data)
+        return self.data
 
     @property
     def ok(self):
@@ -31,9 +31,14 @@ class MockGet:
         return self.ok
 
     @property
+    def reason(self):
+        """Mock text property"""
+        return 'reason'
+
+    @property
     def text(self):
         """Mock text property"""
-        return 'failed'
+        return json.dumps(self.data)
 
 
 # pylint: disable=W0201
@@ -47,58 +52,61 @@ class TestArgsConfig:
         assert tcex.args.tc_token_expires
         assert tcex.args.api_default_org == 'TCI'
 
-    # def test_load_secure_params(self, monkeypatch):
-    #     """Test load_secure_params method."""
-    #     get_orig = tcex.session.get
+    @staticmethod
+    def test_load_secure_params(monkeypatch):
+        """Test load_secure_params method."""
+        get_orig = tcex.session.get
 
-    #     # monkeypatch method
-    #     def mp_get(*args, **kwargs):
-    #         return MockGet()
+        # monkeypatch method
+        def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
+            return MockGet({'inputs': config_data})
 
-    #     monkeypatch.setattr(tcex.session, 'get', mp_get)
+        monkeypatch.setattr(tcex.session, 'get', mp_get)
 
-    #     data = tcex.tcex_args._load_secure_params()
+        data = tcex.tcex_args._load_secure_params()
 
-    #     assert data.get('tc_log_path') == 'log'
+        assert data.get('tc_log_path') == 'log'
 
-    #     # reset monkeypatched tcex.session.get()
-    #     tcex.session.get = get_orig
+        # reset monkeypatched tcex.session.get()
+        tcex.session.get = get_orig
 
-    # def test_load_secure_params_bad_data(self, monkeypatch):
-    #     """Test load_secure_params method."""
-    #     get_orig = tcex.session.get
+    @staticmethod
+    def test_load_secure_params_bad_data(monkeypatch):
+        """Test load_secure_params method."""
+        get_orig = tcex.session.get
 
-    #     # monkeypatch method
-    #     def mp_get(*args, **kwargs):
-    #         return MockGet(ok=True, bad_json=True)
+        # monkeypatch method
+        def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
+            return MockGet({})
 
-    #     monkeypatch.setattr(tcex.session, 'get', mp_get)
+        monkeypatch.setattr(tcex.session, 'get', mp_get)
 
-    #     try:
-    #         tcex.tcex_args._load_secure_params()
-    #     except RuntimeError:
-    #         assert True
+        try:
+            tcex.tcex_args._load_secure_params()
+        except RuntimeError:
+            assert True
 
-    #     # reset monkeypatched tcex.session.get()
-    #     tcex.session.get = get_orig
+        # reset monkeypatched tcex.session.get()
+        tcex.session.get = get_orig
 
-    # def test_load_secure_params_not_ok(self, monkeypatch):
-    #     """Test load_secure_params method."""
-    #     get_orig = tcex.session.get
+    @staticmethod
+    def test_load_secure_params_not_ok(monkeypatch):
+        """Test load_secure_params method."""
+        get_orig = tcex.session.get
 
-    #     # monkeypatch method
-    #     def mp_get(*args, **kwargs):
-    #         return MockGet(ok=False)
+        # monkeypatch method
+        def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
+            return MockGet(data={}, ok=False)
 
-    #     monkeypatch.setattr(tcex.session, 'get', mp_get)
+        monkeypatch.setattr(tcex.session, 'get', mp_get)
 
-    #     try:
-    #         tcex.tcex_args._load_secure_params()
-    #     except RuntimeError:
-    #         assert True
+        try:
+            tcex.tcex_args._load_secure_params()
+        except RuntimeError:
+            assert True
 
-    #     # reset monkeypatched tcex.session.get()
-    #     tcex.session.get = get_orig
+        # reset monkeypatched tcex.session.get()
+        tcex.session.get = get_orig
 
     @staticmethod
     def test_config_file():
@@ -167,46 +175,42 @@ class TestArgsConfig:
         # reset sys.argv
         sys.argv = sys_argv_orig
 
-    # @staticmethod
-    # def test_secure_params(monkeypatch):
-    #     """Test load_secure_params method."""
-    #     # add custom config data
-    #     config_data['my_bool'] = 'true'
-    #     config_data['my_multi'] = 'one|two'
+    @staticmethod
+    def test_secure_params(monkeypatch):
+        """Test load_secure_params method."""
+        # add custom config data
+        config_data['my_bool'] = 'true'
+        config_data['my_multi'] = 'one|two'
 
-    #     # monkeypatch session get method
-    #     @property
-    #     def mp_session(self):
-    #         def get(*args, **kwargs):
-    #             return MockGet({'inputs': config_data})
+        # monkeypatch session get method
+        def load_secure_params(self):  # pylint: disable=unused-argument
+            return config_data
 
-    #         return self.get
+        monkeypatch.setattr(Args, '_load_secure_params', load_secure_params)
 
-    #     monkeypatch.setattr(TcEx, 'session', mp_session)
+        # update sys.argv to enable secure_params
+        sys_argv_orig = sys.argv
+        sys.argv = sys.argv[:1] + [
+            '--tc_secure_params',
+            '--tc_token',
+            config_data.get('tc_token'),
+            '--tc_token_expires',
+            config_data.get('tc_token_expires'),
+        ]
+        my_tcex = TcEx()
 
-    #     # update sys.argv to enable secure_params
-    #     sys_argv_orig = sys.argv
-    #     sys.argv = sys.argv[:1] + [
-    #         '--tc_secure_params',
-    #         '--tc_token',
-    #         config_data.get('tc_token'),
-    #         '--tc_token_expires',
-    #         config_data.get('tc_token_expires'),
-    #     ]
-    #     my_tcex = TcEx()
+        # add custom args (install.json defined in conftest.py)
+        my_tcex.parser.add_argument('--my_bool', action='store_true')
+        my_tcex.parser.add_argument('--my_multi', action='append')
 
-    #     # add custom args (install.json defined in conftest.py)
-    #     my_tcex.parser.add_argument('--my_bool', action='store_true')
-    #     my_tcex.parser.add_argument('--my_multi', action='append')
+        # parser args
+        args = my_tcex.args
+        rargs = my_tcex.rargs
 
-    #     # parser args
-    #     args = my_tcex.args
-    #     rargs = my_tcex.rargs
+        assert args.my_bool is True
+        assert rargs.my_bool is True  # pylint: disable=no-member
+        assert args.my_multi == ['one', 'two']
+        assert rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
 
-    #     assert args.my_bool is True
-    #     assert rargs.my_bool is True  # pylint: disable=no-member
-    #     assert args.my_multi == ['one', 'two']
-    #     assert rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
-
-    #     # reset sys.argv
-    #     sys.argv = sys_argv_orig
+        # reset sys.argv
+        sys.argv = sys_argv_orig

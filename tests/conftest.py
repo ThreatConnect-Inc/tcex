@@ -4,6 +4,14 @@ import json
 import os
 import shutil
 
+import pytest
+from .tc_token import TcToken
+
+
+# instance of tc token to retrieve testing token from API
+tc_token = TcToken()
+
+
 # install.json data for testing
 pytest_install_json = {
     'allowOnDemand': True,
@@ -82,9 +90,13 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
         pass
 
 
-# @pytest.fixture(scope='module')
-# def token_data():
-#     """Get a valid TC token."""
-#     token_url = os.getenv('TOKEN_PROVIDER')
-#     r = requests.get(token_url, verify=False)
-#     return r.json()
+@pytest.fixture(scope='module')
+def tc_api_token():
+    """Return a valid TC api token."""
+    return tc_token.api_token
+
+
+@pytest.fixture(scope='module')
+def tc_service_token():
+    """Return a valid TC service token."""
+    return tc_token.service_token

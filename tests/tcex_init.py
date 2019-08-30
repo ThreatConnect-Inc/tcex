@@ -4,6 +4,12 @@ import os
 import sys
 
 from tcex import TcEx
+from .tc_token import TcToken
+
+
+# instance of tc token to retrieve testing token from API
+tc_token = TcToken()
+
 
 # a token in required for DataStore testing
 if not os.getenv('TC_TOKEN'):
@@ -12,6 +18,8 @@ if not os.getenv('TC_TOKEN'):
 config_data = {
     # connection
     'api_default_org': os.getenv('API_DEFAULT_ORG'),
+    # 'tc_token': tc_token.service_token,
+    # 'tc_token': tc_token.api_token,
     'tc_token': os.getenv('TC_TOKEN'),
     'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
     'tc_owner': os.getenv('TC_OWNER', 'TCI'),
@@ -49,8 +57,6 @@ if os.getenv('TC_PROXY_USERNAME'):
 if os.getenv('TC_PROXY_PASSWORD'):
     config_data['tc_proxy_password'] = os.getenv('TC_PROXY_PASSWORD')
 
-tcex = TcEx()
+tcex = TcEx(config=config_data)
 # clear sys.argv
 sys.argv = sys.argv[:1] + ['--tc_log_level', 'trace']  # args.py [if cli_arg in sys.argv:]
-tcex.tcex_args.config(config_data)
-args = tcex.args

@@ -212,48 +212,33 @@ class Package(Bin):
             contents = os.listdir(self.app_path)
 
         # package app
-        for install_json in sorted(contents):
+        for install_json_name in sorted(contents):
             # skip files that are not install.json files
-            if 'install.json' not in install_json:
+            if 'install.json' not in install_json_name:
                 continue
 
-            # get App Name from config, install.json prefix or directory name.
-            if install_json == 'install.json':
-                app_name = self.tcex_json.get('package', {}).get(
-                    'app_name', os.path.basename(self.app_path)
-                )
-            else:
-                app_name = install_json.split('.')[0]
-
-            # update package data
-            self.package_data['package'].append({'action': 'App Name:', 'output': app_name})
-
             # load install json
-            ij = InstallJson(install_json)
+            ij = InstallJson(install_json_name)
 
             # automatically update install.json for feature sets supported by the SDK
             ij, ij_modified = self._update_install_json(ij.contents)
 
             # write update install.json
             if ij_modified:
-                self._write_install_json(install_json, ij)
+                self._write_install_json(install_json_name, ij)
+
+            # get App Name from config, install.json prefix or directory name.
+            app_name = self.app_name(install_json_name)
+
+            # update package data
+            self.package_data['package'].append({'action': 'App Name:', 'output': app_name})
 
             # find a usable app version
-            program_version = ij.get('programVersion', '1.0.0').split('.')
-            major_version = program_version[0]
-            try:
-                minor_version = program_version[1]
-            except IndexError:
-                minor_version = 0
-            app_version = '{}'.format(
-                self.tcex_json.get('package', {}).get(
-                    'app_version', 'v{}.{}'.format(major_version, minor_version)
-                )
-            )
+            app_version = self.app_version(ij)
 
             # update package data
             self.package_data['package'].append(
-                {'action': 'App Version:', 'output': 'v{}.{}'.format(major_version, minor_version)}
+                {'action': 'App Version:', 'output': '{}'.format(app_version)}
             )
 
             # !!! The name of the folder in the zip is the *key* for an App. This value must
@@ -269,7 +254,7 @@ class Package(Bin):
 
             # Copy install.json
             # TODO: do we need copy if writing the data in the next step?
-            shutil.copy(install_json, os.path.join(tmp_app_path, 'install.json'))
+            shutil.copy(install_json_name, os.path.join(tmp_app_path, 'install.json'))
 
             # Update commit hash after install.json has been copied.
             if self.commit_hash is not None:
@@ -290,6 +275,31 @@ class Package(Bin):
         # bundle zips (must have more than 1 app)
         if len(self._app_packages) > 1:
             self.bundle(self.tcex_json.get('package', {}).get('bundle_name', app_name))
+
+    def app_name(self, install_json_name):
+        """Return the app package name without version.
+
+        1. Use the prefix on the install.json file (bundled Apps).
+        2. Use the app_name field from the tcex.json file.
+        3. Use the app directory name. This option should not be used.
+        """
+        if install_json_name != 'install.json':
+            return install_json_name.split('.')[0]
+        return self.tcex_json.get('package', {}).get('app_name', os.path.basename(self.app_path))
+
+    def app_version(self, ij):
+        """Return the app version "v1".
+
+        1. Use app_version value from tcex.json if available. Typicall version is major only
+           (e.g., v1), but from older Apps it could have minor version.
+        2. Use major version from programVersion field in install.json if available.
+        3. Default to '1.0.0' updated to major version only ('v1').
+        """
+        program_version = ij.get('programVersion', '1.0.0').split('.')
+        major_version = program_version[0]
+        return '{}'.format(
+            self.tcex_json.get('package', {}).get('app_version', 'v{}'.format(major_version))
+        )
 
     def print_json(self):
         """Print JSON output containing results of the package command."""

@@ -26,12 +26,6 @@ class Args(object):
         self._parsed_resolved = False
         self.parser = TcArgumentParser()
 
-        # NOTE: odd issue where args is not updating properly
-        # if self.default_args.tc_token is not None:
-        #     self._tc_token = self.default_args.tc_token
-        # if self.default_args.tc_token_expires is not None:
-        #     self._tc_token_expires = self.default_args.tc_token_expires
-
     def _load_secure_params(self):
         """Load secure params from the API.
 
@@ -65,7 +59,7 @@ class Args(object):
         secure_params = {}
         try:
             secure_params = r.json()['inputs']
-        except (AttributeError, TypeError, ValueError):  # pragma: no cover
+        except (AttributeError, KeyError, TypeError, ValueError):  # pragma: no cover
             err = r.text or r.reason
             raise RuntimeError('Error retrieving secure params from API ({}).'.format(err))
 
@@ -119,6 +113,8 @@ class Args(object):
             (namespace): ArgParser parsed arguments.
         """
         if not self._parsed:  # only resolve once
+            # initialize default args
+            self.default_args  # pylint: disable=pointless-statement
             self._default_args, unknown = self.parser.parse_known_args()
 
             # when running locally retrieve any args from the results.tc file.  when running in
@@ -128,24 +124,12 @@ class Args(object):
             # log unknown arguments only once
             self._unknown_args(unknown)
 
-            # set parsed bool to ensure args are only parsed once
-            self._parsed = True
-
-            # update args with value from config data or configuration file
-            self.args_update()
-
-            # remote stream handler
-            self.tcex.logger.remove_handler_by_name('sh')
-
-            # add rotating log handler
-            self.tcex.logger.add_rotating_file_handler()
-
             # add api handler
             if self._default_args.tc_token is not None and self._default_args.tc_log_to_api:
                 self.tcex.logger.add_api_handler()
 
-            # log system and App data
-            self.tcex.logger.log_info()
+            # mark arg parsing as done
+            self.mark_parsed()
 
         return self._default_args
 
@@ -180,7 +164,11 @@ class Args(object):
         Args:
             config (dict): A dictionary of configuration values.
         """
-        self._config_data = config_data
+        if isinstance(config_data, dict):
+            self._config_data = config_data
+
+            # mark arg parsing as done
+            self.mark_parsed()
 
     def config_file(self, filename):
         """Load configuration data from provided file and inject values into sys.argv.
@@ -200,6 +188,9 @@ class Args(object):
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
 
+            # update args namespace with self._config_data
+            self.args_update()
+
             # register token after log_info
             if self._default_args.tc_token is not None:
                 # register token if provided in args (non-service Apps)
@@ -216,7 +207,7 @@ class Args(object):
                 # inject secure params from API
                 params = self._load_secure_params()
                 self.inject_params(params)
-            else:
+            elif hasattr(self.tcex, 'logger'):
                 # reinitialize logger with new log level and api settings
                 self.tcex.logger.add_rotating_file_handler()
 
@@ -266,6 +257,20 @@ class Args(object):
 
         # reinitialize logger with new log level and api settings
         self.tcex.logger.add_rotating_file_handler()
+
+    def mark_parsed(self):
+        """Mark args as parsed."""
+        # set parsed bool to ensure args are only parsed once
+        self._parsed = True
+
+        # remove stream handler
+        self.tcex.logger.remove_handler_by_name('sh')
+
+        # add rotating log handler
+        self.tcex.logger.add_rotating_file_handler()
+
+        # log system and App data
+        self.tcex.logger.log_info()
 
     def resolved_args(self):
         """Return namespace of args that have all PB variable automatically resolved.

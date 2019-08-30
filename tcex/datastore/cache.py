@@ -11,10 +11,10 @@ class Cache(object):
 
         Args:
             tcex (object): An instance of TcEx.
-            domain (): [description]
-            data_type ([type]): [description]
+            domain (str): A value of “system”, “organization”, or “local”.
+            data_type (str): A free form type name for the data.
             ttl_minutes (int, optional): Defaults to None. Number of minutes the cache is valid.
-            mapping ([type], optional): Defaults to None. [description]
+            mapping (dict, optional): Defaults to None. Elasticsearch mappings data.
         """
         self.tcex = tcex
 

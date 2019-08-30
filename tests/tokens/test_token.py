@@ -54,13 +54,10 @@ class TestLogs:
         tcex.token.unregister_token(token_key)
         tcex.token.unregister_token('dummy-key')  # hit except on unregister_token()
 
-    # def test_token_thread_with_renewal(self, token_data, monkeypatch):
-    def test_token_thread_with_renewal(self):
+    def test_token_thread_with_renewal(self, tc_service_token):
         """Test thread file handler."""
         # get token from fixture
-        # tc_token = token_data.get('tc_token')
-        # tc_token_expires = token_data.get('tc_token_expires')
-        tc_token = '4:146:-1:-1:1564807311:saCMu:NA:OKFubNwzJcKAmWGk1YYfRvTUByEcNBD6jAtheHF443g='
+        tc_token = tc_service_token
         tc_token_expires = int(time.time()) - 999  # expire token immediately
 
         token_key = '1234'
@@ -88,6 +85,7 @@ class TestLogs:
     def token_thread_pass(self, key, status_code):
         """Thread to test logging."""
         tcex.token.register_thread(key, self.thread_name)
+        time.sleep(30)
         try:
             r = tcex.session.get('/v2/owners')
             assert r.status_code == status_code
