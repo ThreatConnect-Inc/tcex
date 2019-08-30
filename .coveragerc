@@ -1,7 +1,8 @@
 [run]
 omit =
-    tcex/tcex_resources.py
-    tcex/tcex_vault.py
+    tcex/resources/resources.py
+    tcex/value/vault.py
     tcex/testing/*
+    tcex/tcex_data_filter.py
     tcex/tcex_ti/*
     tests/*

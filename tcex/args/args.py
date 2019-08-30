@@ -193,11 +193,7 @@ class Args(object):
 
             # register token after log_info
             if self._default_args.tc_token is not None:
-                # register token if provided in args (non-service Apps)
-                # TODO: swap MainThread with threading.current_thread().name ?
-                self.tcex.token.register_token(
-                    'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
-                )
+                self.register_token()
 
             if self._default_args.tc_aot_enabled:
                 # block for AOT message and get params
@@ -258,6 +254,10 @@ class Args(object):
         # reinitialize logger with new log level and api settings
         self.tcex.logger.add_rotating_file_handler()
 
+        # register token after params are injected
+        if self._default_args.tc_token is not None:
+            self.register_token()
+
     def mark_parsed(self):
         """Mark args as parsed."""
         # set parsed bool to ensure args are only parsed once
@@ -271,6 +271,13 @@ class Args(object):
 
         # log system and App data
         self.tcex.logger.log_info()
+
+    def register_token(self):
+        """Register token if provided in args (non-service Apps)"""
+        # TODO: swap MainThread with threading.current_thread().name ?
+        self.tcex.token.register_token(
+            'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
+        )
 
     def resolved_args(self):
         """Return namespace of args that have all PB variable automatically resolved.

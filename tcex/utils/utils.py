@@ -69,7 +69,7 @@ class Utils:
         try:
             # try to get the timezone from tzlocal
             tzinfo = timezone(get_localzone().zone)
-        except pytz.exceptions.UnknownTimeZoneError:
+        except pytz.exceptions.UnknownTimeZoneError:  # pragma: no cover
             try:
                 # try to get the timezone from python's time package
                 tzinfo = timezone(time.tzname[0])
@@ -97,7 +97,7 @@ class Utils:
                 if dt.tzinfo is None:
                     dt = self._replace_timezone(dt)
                 dt = dt.astimezone(timezone(tz))
-        except IndexError:
+        except IndexError:  # pragma: no cover
             pass
         except TypeError:
             pass
@@ -192,7 +192,7 @@ class Utils:
                     dt = dt.astimezone(timezone(tz))
             if status == 0:
                 dt = None
-        except TypeError:
+        except TypeError:  # pragma: no cover
             dt = None
 
         return dt

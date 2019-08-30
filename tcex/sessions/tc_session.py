@@ -57,21 +57,11 @@ class TcSession(Session):
         """Initialize the Class properties."""
         super(TcSession, self).__init__()
         self.tcex = tcex
-        self.args = self.tcex.default_args
-        self.token = self.tcex.token
 
-        # Add ThreatConnect Authorization
-        if self._service_app or self._token_available:
-            # service Apps only use tokens and playbook/runtime Apps will use token if available
-            self.auth = TokenAuth(self.token)
-            self.tcex.log.trace('Using token authorization.')
-        else:
-            try:
-                # for external Apps or testing Apps locally
-                self.auth = HmacAuth(self.args.api_access_id, self.args.api_secret_key)
-                self.tcex.log.trace('Using HMAC authorization.')
-            except AttributeError:  # pragma: no cover
-                raise RuntimeError('No valid ThreatConnect API credentials provided.')
+        # properties
+        self.args = self.tcex.default_args
+        self.auth = None
+        self.token = self.tcex.token
 
         # Update User-Agent
         self.headers.update({'User-Agent': 'TcEx'})
@@ -91,6 +81,21 @@ class TcSession(Session):
         # Set Verify
         self.verify = self.args.tc_verify
 
+    def _configure_auth(self):
+        """Return Auth property for session."""
+        # Add ThreatConnect Authorization
+        if self._service_app or self._token_available:
+            # service Apps only use tokens and playbook/runtime Apps will use token if available
+            self.auth = TokenAuth(self.token)
+            self.tcex.log.trace('Using token authorization.')
+        else:
+            try:
+                # for external Apps or testing Apps locally
+                self.auth = HmacAuth(self.args.api_access_id, self.args.api_secret_key)
+                self.tcex.log.trace('Using HMAC authorization.')
+            except AttributeError:  # pragma: no cover
+                raise RuntimeError('No valid ThreatConnect API credentials provided.')
+
     @property
     def _service_app(self):
         """Return true if the current App is a service App."""
@@ -107,6 +112,9 @@ class TcSession(Session):
 
     def request(self, method, url, **kwargs):  # pylint: disable=arguments-differ
         """Override request method disabling verify on token renewal if disabled on session."""
+        if self.auth is None:
+            self._configure_auth()
+
         if not url.startswith('https'):
             url = '{}{}'.format(self.args.tc_api_path, url)
         return super(TcSession, self).request(method, url, **kwargs)

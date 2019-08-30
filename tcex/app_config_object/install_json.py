@@ -33,7 +33,7 @@ class InstallJson(object):
             try:
                 with open(self.filename, 'r') as fh:
                     self._contents = json.load(fh, object_pairs_hook=OrderedDict)
-            except FileNotFoundError:
+            except IOError:
                 self._contents = {'runtimeLevel': 'external'}
         return self._contents
 

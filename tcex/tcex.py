@@ -878,9 +878,9 @@ class TcEx(object):
     def token(self):
         """Return token object."""
         if self._token is None:
-
+            sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
             self._token = Tokens(
-                self.default_args.tc_api_path, self.default_args.tc_verify, self.log
+                self.default_args.tc_api_path, sleep_interval, self.default_args.tc_verify, self.log
             )
         return self._token
 

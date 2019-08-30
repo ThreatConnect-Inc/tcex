@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
-
+from datetime import datetime
+import re
 import pytest
-
 from ..tcex_init import tcex
 
 
@@ -32,6 +32,15 @@ class TestUtils:
         dt = tcex.utils.any_to_datetime(date, tz)
         # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt.isoformat(), results))
         assert dt.isoformat().startswith(results)
+
+    @staticmethod
+    def test_any_to_datetime_fail():
+        """Test any to datetime"""
+        try:
+            tcex.utils.any_to_datetime('abc')
+            assert False
+        except RuntimeError:
+            assert True
 
     @pytest.mark.parametrize(
         'date,tz,results',
@@ -78,34 +87,118 @@ class TestUtils:
         assert str(dt).startswith(results)
 
     @pytest.mark.parametrize(
-        'date,tz,results',
+        'date,tz,pattern',
         [
-            ('August 25th, 2008', 'UTC', '2008-08-2'),
-            ('25 Aug 2008', 'UTC', '2008-08-2'),
-            ('Aug 25 5pm', 'UTC', '2019-08-25'),
-            ('5pm August 25', 'UTC', '2019-08-25'),
-            ('next saturday', 'UTC', '2019-'),
-            ('tomorrow', 'UTC', '2019-'),
-            ('next thursday at 4pm', 'UTC', '2019-'),
-            ('at 4pm', 'UTC', '2019-'),
-            ('eod', 'UTC', '2019-'),
-            ('tomorrow eod', 'UTC', '2019'),
-            ('eod tuesday', 'UTC', '2019-'),
-            ('eoy', 'UTC', '2019-12-31'),
-            ('eom', 'UTC', '2019-'),
-            ('in 5 minutes', 'UTC', '2019-'),
-            ('5 minutes from now', 'UTC', '2019-'),
-            ('5 hours before now', 'UTC', '2019-'),
-            ('2 hours before noon', 'UTC', '2019-'),
-            ('2 days from tomorrow', 'UTC', '2019-'),
+            (
+                'August 25th, 2008',
+                'UTC',
+                r'^2008-08-25\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            ('25 Aug 2008', 'UTC', r'^2008-08-25\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$'),
+            (
+                'Aug 25 5pm',
+                'UTC',
+                r'^20[0-9]{2}-08-25\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),  # assumes future
+            (
+                '5pm August 25',
+                'UTC',
+                r'^20[0-9]{2}-08-25\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'next saturday',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'tomorrow',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'next thursday at 4pm',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'at 4pm',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'eod',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'tomorrow eod',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'eod tuesday',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'eoy',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'eom',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                'in 5 minutes',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                '5 minutes from now',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                '5 hours before now',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                '2 hours before noon',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
+            (
+                '2 days from tomorrow',
+                'UTC',
+                r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
             ('0', 'US/Eastern', None),
         ],
     )
-    def test_human_date_to_datetime(self, date, tz, results):
+    def test_human_date_to_datetime(self, date, tz, pattern):
         """Test format datetime"""
         dt = tcex.utils.human_date_to_datetime(time_input=date, tz=tz)
-        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
-        assert str(dt).startswith(str(results))
+        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, pattern))
+        if pattern is None:
+            assert dt is None
+        elif not re.match(pattern, str(dt)):
+            assert False, 'Results ({}) does not match pattern ({})'.format(str(dt), pattern)
+
+    @staticmethod
+    def test_human_date_to_datetime_with_source():
+        """Test format datetime"""
+        source_datetime = datetime.now()
+        dt = tcex.utils.human_date_to_datetime(
+            time_input='now', tz='UTC', source_datetime=source_datetime
+        )
+        if not re.match(
+            r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            str(dt),
+        ):
+            assert False, 'Results ({}) does not match pattern'.format(str(dt))
 
     def test_timedelta(self):
         """Test timedelta module"""

@@ -65,7 +65,43 @@ class TestLogs:
 
         # create a thread to test register_thread
         t = threading.Thread(
-            name='pytest-token-pass', target=self.token_thread_pass, args=(token_key, 200)
+            name='pytest-token-pass', target=self.token_thread_pass, args=(token_key,)
+        )
+        t.start()
+        t.join()
+
+        tcex.token.unregister_token(token_key)
+
+    def test_register_token_thread_as_key(self, tc_service_token):
+        """Test thread file handler."""
+        # get token from fixture
+        tc_token = tc_service_token
+        tc_token_expires = int(time.time()) + 999
+
+        token_key = 'thread-as-key'
+        tcex.token.register_token(key=token_key, token=tc_token, expires=tc_token_expires)
+
+        # create a thread to test register_thread
+        t = threading.Thread(
+            name=token_key, target=self.token_thread_pass, args=(token_key, False, False)
+        )
+        t.start()
+        t.join()
+
+        tcex.token.unregister_token(token_key)
+
+    def test_register_token_fail(self, tc_service_token):
+        """Test thread file handler."""
+        # get token from fixture
+        tc_token = tc_service_token
+        tc_token_expires = int(time.time()) - 999
+
+        token_key = 'thread-as-key'
+        tcex.token.register_token(key=token_key, token=tc_token, expires=tc_token_expires)
+
+        # create a thread to test register_thread
+        t = threading.Thread(
+            name=token_key, target=self.token_thread_pass, args=(token_key, False, False)
         )
         t.start()
         t.join()
@@ -73,8 +109,12 @@ class TestLogs:
         tcex.token.unregister_token(token_key)
 
     def token_thread_fail(self, key):
-        """Thread to test logging."""
+        """Method to test token failure."""
         tcex.token.register_thread(key, self.thread_name)
+
+        # sleep until token renewal
+        time.sleep(tcex.token.sleep_interval + 1)
+
         try:
             tcex.session.get('/v2/owners')
         except RuntimeError:
@@ -82,14 +122,30 @@ class TestLogs:
 
         tcex.token.unregister_thread(key, self.thread_name)
 
-    def token_thread_pass(self, key, status_code):
-        """Thread to test logging."""
-        tcex.token.register_thread(key, self.thread_name)
-        time.sleep(30)
+    def token_thread_pass(self, key, sleep=True, register_thread=True):
+        """Method to ensure token is valid."""
+        if register_thread:
+            tcex.token.register_thread(key, self.thread_name)
+
+        # sleep until renewal
+        if sleep:
+            time.sleep(tcex.token.sleep_interval + 1)
+
+        r = tcex.session.get('/v2/owners')
+        if not r.ok:
+            raise RuntimeError('API call failed {}'.format(r.text))
+
+        if register_thread:
+            tcex.token.unregister_thread(key, self.thread_name)
+
+    @staticmethod
+    def test_token_setter():
+        """Testing token setters."""
+        tcex.token.token = os.getenv('TC_TOKEN')
+        tcex.token.token_expires = os.getenv('TC_TOKEN_EXPIRES')
+
         try:
             r = tcex.session.get('/v2/owners')
-            assert r.status_code == status_code
+            assert r.status_code == 200
         except RuntimeError:
             assert False
-
-        tcex.token.unregister_thread(key, self.thread_name)

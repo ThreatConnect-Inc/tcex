@@ -36,13 +36,15 @@ class Tokens(object):
         logger (logging.logger): An pre-configured instance of a logger.
     """
 
-    def __init__(self, token_url, verify, logger):
+    def __init__(self, token_url, sleep_interval, verify, logger):
         """Initialize the Class properties."""
         self.lock = threading.Lock()
         # tcex logger
         self.log = logger
         # session with retry for token renewal
         self.session = retry_session()
+        # token monitor sleep interval
+        self.sleep_interval = sleep_interval
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
         # base url for token renewal
@@ -197,7 +199,6 @@ class Tokens(object):
 
     def token_renewal_monitor(self):
         """Monitor token expiration and renew when required."""
-        sleep_interval = 30
         while True:
             for key, token_data in dict(self.token_map).items():
                 # calculate the time left to sleep
@@ -234,9 +235,9 @@ class Tokens(object):
                             try:
                                 del self.token_map[key]
                                 self.log.error('Failed token removed - key: {}'.format(key))
-                            except KeyError:
+                            except KeyError:  # pragma: no cover
                                 pass
-            time.sleep(sleep_interval)
+            time.sleep(self.sleep_interval)
 
     def unregister_thread(self, key, thread_name):
         """Unregister a thread name for a key.
