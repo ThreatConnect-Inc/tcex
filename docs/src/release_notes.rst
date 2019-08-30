@@ -3,6 +3,12 @@
 Release Notes
 #############
 
+1.1.2
+=====
++ Updates to token and args modules to better support testing framework and external Apps.
++ Added kwargs on tcex init for external Apps.
++ Updates to testing templates.
+
 1.1.1
 =====
 + Moved registration of default token to default_args method to address issue with secure params.

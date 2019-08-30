@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.utils &mdash; TcEx 1.1.1 documentation</title>
+  <title>tcex.utils.utils &mdash; TcEx 1.1.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.1
+                1.1.2
               </div>
 
 
@@ -247,7 +247,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># try to get the timezone from tzlocal</span>
             <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># try to get the timezone from python&#39;s time package</span>
                 <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">tzname</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -275,7 +275,7 @@
                 <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_timezone</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -370,7 +370,7 @@
                     <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">dt</span></div>

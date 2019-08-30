@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Bin Module &mdash; TcEx 1.1.1 documentation</title>
+  <title>Bin Module &mdash; TcEx 1.1.2 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.1
+                1.1.2
               </div>
 
 
@@ -581,6 +581,29 @@ prefixed with the App name (e.g., MyApp.install.json).</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.package.Package.app_name">
+<code class="sig-name descname">app_name</code><span class="sig-paren">(</span><em class="sig-param">install_json_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.app_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.app_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the app package name without version.</p>
+<ol class="arabic simple">
+<li><p>Use the prefix on the install.json file (bundled Apps).</p></li>
+<li><p>Use the app_name field from the tcex.json file.</p></li>
+<li><p>Use the app directory name. This option should not be used.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.package.Package.app_version">
+<code class="sig-name descname">app_version</code><span class="sig-paren">(</span><em class="sig-param">ij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.app_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.app_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the app version “v1”.</p>
+<ol class="arabic simple">
+<li><p>Use app_version value from tcex.json if available. Typicall version is major only
+(e.g., v1), but from older Apps it could have minor version.</p></li>
+<li><p>Use major version from programVersion field in install.json if available.</p></li>
+<li><p>Default to ‘1.0.0’ updated to major version only (‘v1’).</p></li>
+</ol>
 </dd></dl>
 
 <dl class="method">

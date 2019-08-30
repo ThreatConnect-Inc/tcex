@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TcEx &mdash; TcEx 1.1.1 documentation</title>
+  <title>TcEx &mdash; TcEx 1.1.2 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.1
+                1.1.2
               </div>
 
 
@@ -216,9 +216,21 @@
 <p>TcEx Framework</p>
 <dl class="class">
 <dt id="tcex.tcex.TcEx">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex.</code><code class="sig-name descname">TcEx</code><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex.</code><code class="sig-name descname">TcEx</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Provides basic functionality for all types of TxEx Apps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>kwargs</em>) – A dictionary containing configuration items typically used by
+external Apps.</p></li>
+<li><p><strong>config_file</strong> (<em>str</em><em>, </em><em>kwargs</em>) – A filename containing JSON configuration items typically used
+by external Apps.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em><em>, </em><em>kwargs</em>) – An pre-configured instance of logger to use instead of
+tcex logger.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="tcex.tcex.TcEx._association_types">
 <code class="sig-name descname">_association_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._association_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._association_types" title="Permalink to this definition">¶</a></dt>
@@ -472,6 +484,12 @@ during the call of this method.</p>
 <dt id="tcex.tcex.TcEx.log">
 <em class="property">property </em><code class="sig-name descname">log</code><a class="headerlink" href="#tcex.tcex.TcEx.log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a valid logger.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex.TcEx.logger">
+<em class="property">property </em><code class="sig-name descname">logger</code><a class="headerlink" href="#tcex.tcex.TcEx.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return logger.</p>
 </dd></dl>
 
 <dl class="method">

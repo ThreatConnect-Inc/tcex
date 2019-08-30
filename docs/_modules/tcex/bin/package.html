@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.package &mdash; TcEx 1.1.1 documentation</title>
+  <title>tcex.bin.package &mdash; TcEx 1.1.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.1
+                1.1.2
               </div>
 
 
@@ -390,48 +390,33 @@
             <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
 
         <span class="c1"># package app</span>
-        <span class="k">for</span> <span class="n">install_json</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">install_json_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
             <span class="c1"># skip files that are not install.json files</span>
-            <span class="k">if</span> <span class="s1">&#39;install.json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">install_json</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;install.json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">install_json_name</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># get App Name from config, install.json prefix or directory name.</span>
-            <span class="k">if</span> <span class="n">install_json</span> <span class="o">==</span> <span class="s1">&#39;install.json&#39;</span><span class="p">:</span>
-                <span class="n">app_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="s1">&#39;app_name&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">app_name</span> <span class="o">=</span> <span class="n">install_json</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-            <span class="c1"># update package data</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Name:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">app_name</span><span class="p">})</span>
-
             <span class="c1"># load install json</span>
-            <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span>
+            <span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="n">install_json_name</span><span class="p">)</span>
 
             <span class="c1"># automatically update install.json for feature sets supported by the SDK</span>
             <span class="n">ij</span><span class="p">,</span> <span class="n">ij_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_install_json</span><span class="p">(</span><span class="n">ij</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span>
 
             <span class="c1"># write update install.json</span>
             <span class="k">if</span> <span class="n">ij_modified</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_write_install_json</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">ij</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_install_json</span><span class="p">(</span><span class="n">install_json_name</span><span class="p">,</span> <span class="n">ij</span><span class="p">)</span>
+
+            <span class="c1"># get App Name from config, install.json prefix or directory name.</span>
+            <span class="n">app_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_name</span><span class="p">(</span><span class="n">install_json_name</span><span class="p">)</span>
+
+            <span class="c1"># update package data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Name:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">app_name</span><span class="p">})</span>
 
             <span class="c1"># find a usable app version</span>
-            <span class="n">program_version</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-            <span class="n">major_version</span> <span class="o">=</span> <span class="n">program_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">minor_version</span> <span class="o">=</span> <span class="n">program_version</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="n">minor_version</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">app_version</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="s1">&#39;app_version&#39;</span><span class="p">,</span> <span class="s1">&#39;v</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major_version</span><span class="p">,</span> <span class="n">minor_version</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">app_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_version</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span>
 
             <span class="c1"># update package data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Version:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="s1">&#39;v</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major_version</span><span class="p">,</span> <span class="n">minor_version</span><span class="p">)}</span>
+                <span class="p">{</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Version:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_version</span><span class="p">)}</span>
             <span class="p">)</span>
 
             <span class="c1"># !!! The name of the folder in the zip is the *key* for an App. This value must</span>
@@ -447,7 +432,7 @@
 
             <span class="c1"># Copy install.json</span>
             <span class="c1"># TODO: do we need copy if writing the data in the next step?</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">install_json_name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
 
             <span class="c1"># Update commit hash after install.json has been copied.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -468,6 +453,31 @@
         <span class="c1"># bundle zips (must have more than 1 app)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bundle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_name&#39;</span><span class="p">,</span> <span class="n">app_name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Package.app_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.app_name">[docs]</a>    <span class="k">def</span> <span class="nf">app_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">install_json_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the app package name without version.</span>
+
+<span class="sd">        1. Use the prefix on the install.json file (bundled Apps).</span>
+<span class="sd">        2. Use the app_name field from the tcex.json file.</span>
+<span class="sd">        3. Use the app directory name. This option should not be used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">install_json_name</span> <span class="o">!=</span> <span class="s1">&#39;install.json&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">install_json_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Package.app_version"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.app_version">[docs]</a>    <span class="k">def</span> <span class="nf">app_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ij</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the app version &quot;v1&quot;.</span>
+
+<span class="sd">        1. Use app_version value from tcex.json if available. Typicall version is major only</span>
+<span class="sd">           (e.g., v1), but from older Apps it could have minor version.</span>
+<span class="sd">        2. Use major version from programVersion field in install.json if available.</span>
+<span class="sd">        3. Default to &#39;1.0.0&#39; updated to major version only (&#39;v1&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">program_version</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">major_version</span> <span class="o">=</span> <span class="n">program_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_version&#39;</span><span class="p">,</span> <span class="s1">&#39;v</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major_version</span><span class="p">))</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Package.print_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.print_json">[docs]</a>    <span class="k">def</span> <span class="nf">print_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print JSON output containing results of the package command.&quot;&quot;&quot;</span>
