@@ -116,7 +116,7 @@ class TestArgsConfig:
         my_tcex.tcex_args.config_file('tests/args/dummy-config.json')
 
     @staticmethod
-    def test_inject_params():
+    def test_update_params():
         """Test tcex_args.config_file() method."""
         my_tcex = TcEx()
 
@@ -125,8 +125,9 @@ class TestArgsConfig:
         config_data['my_multi'] = 'one|two'
         config_data['unknown_args'] = True  # test unknown args
 
-        # inject params
-        my_tcex.tcex_args.inject_params(config_data)
+        # update params
+        updated_params = my_tcex.tcex_args.update_params(config_data)
+        my_tcex.tcex_args.config(updated_params, False)
 
         # add custom args (install.json defined in conftest.py)
         my_tcex.parser.add_argument('--my_bool', action='store_true')

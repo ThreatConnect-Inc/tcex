@@ -47,7 +47,6 @@ class TcEx(object):
         self._indicator_types = []
         self._indicator_types_data = {}
         self._jobs = None
-        self._log = None
         self._logger = None
         self._playbook = None
         self._service = None
@@ -57,8 +56,8 @@ class TcEx(object):
         self._token = None
         self.ij = InstallJson()
 
-        # add custom logger
-        self.log = kwargs.get('logger')
+        # add custom logger if provided
+        self._log = kwargs.get('logger')
 
         # init args (needs logger)
         self.tcex_args = Args(self)
@@ -309,6 +308,7 @@ class TcEx(object):
             self.playbook.aot_rpush(code)
 
         self.log.info(u'Exit Code: {}'.format(code))
+        self.log.shutdown()
         sys.exit(code)
 
     @property
@@ -504,7 +504,7 @@ class TcEx(object):
         """Return logger."""
         if self._logger is None:
             self._logger = Logger(self)
-            self._logger.add_stream_handler()
+            self._logger.add_cache_handler('cache')
         return self._logger
 
     def metric(self, name, description, data_type, interval, keyed=False):

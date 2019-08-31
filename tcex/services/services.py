@@ -157,11 +157,15 @@ class Services(object):
             trigger_id (int): The current trigger Id.
             config (dict): A dict containing the configuration information.
         """
-        # session auth shared data is thread name which needs to map back to config triggerId
+        # tokens are registered with a key, in this case the key is the trigger_id. each thread
+        # is required to be registered to a key to use during lookup.
         self.tcex.token.register_thread(trigger_id, self.thread_name)
 
+        # add a logging handler for this thread
         self.tcex.logger.add_thread_file_handler(
-            name=self.thread_name, filename=self.session_logfile
+            name=self.thread_name,
+            filename=self.session_logfile,
+            path=self.tcex.default_args.tc_log_path,
         )
         self.tcex.log.info('Handling fire event trigger ({})'.format(self.thread_name))
 
@@ -721,7 +725,9 @@ class Services(object):
 
         # add logger for current session
         self.tcex.logger.add_thread_file_handler(
-            name=self.thread_name, filename=self.session_logfile
+            name=self.thread_name,
+            filename=self.session_logfile,
+            path=self.tcex.default_args.tc_log_path,
         )
         self.tcex.log.trace('Process webhook event trigger')
 

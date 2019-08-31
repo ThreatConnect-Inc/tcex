@@ -5,6 +5,7 @@ import os
 import platform
 import sys
 from .api_handler import ApiHandler, ApiHandlerFormatter
+from .cache_handler import CacheHandler
 from .rotating_file_handler_custom import RotatingFileHandlerCustom
 from .thread_file_handler import ThreadFileHandler
 from .trace_logger import TraceLogger
@@ -25,7 +26,7 @@ class Logger(object):
     def _logger(self):
         """Return the logger. The default_args property is not available in init."""
         logging.setLoggerClass(TraceLogger)
-        logger = logging.getLogger(self.tcex.default_args.tc_log_name)
+        logger = logging.getLogger('tcex')
         logger.setLevel(logging.TRACE)
         return logger
 
@@ -56,10 +57,11 @@ class Logger(object):
     def logging_level(self):
         """Return the configured logging level."""
         level = 'DEBUG'
-        if self.tcex.default_args.logging is not None:
-            level = self.tcex.default_args.logging.upper()  # pragma: no cover
-        elif self.tcex.default_args.tc_log_level is not None:
-            level = self.tcex.default_args.tc_log_level.upper()
+        if hasattr(self.tcex, 'tcex_args'):
+            if self.tcex.default_args.logging is not None:
+                level = self.tcex.default_args.logging.upper()  # pragma: no cover
+            elif self.tcex.default_args.tc_log_level is not None:
+                level = self.tcex.default_args.tc_log_level.upper()
         return logging.getLevelName(level)
 
     def remove_handler_by_name(self, handler_name):
@@ -70,6 +72,15 @@ class Logger(object):
         """
         for h in self._logger.handlers:
             if h.get_name() == handler_name:
+                self._logger.removeHandler(h)
+                break
+
+    def replay_cached_events(self, handler_name='cache'):
+        """Replay cached log events and remove handler."""
+        for h in self._logger.handlers:
+            if h.get_name() == handler_name:
+                for event in h.events:
+                    self._logger.handle(event)
                 self._logger.removeHandler(h)
                 break
 
@@ -105,40 +116,42 @@ class Logger(object):
         api.setFormatter(ApiHandlerFormatter())
         self._logger.addHandler(api)
 
+    def add_cache_handler(self, name):
+        """Add cache logging handler.
+
+        Args:
+            name (str): The name of the handler.
+        """
+        self.remove_handler_by_name(name)
+        cache = CacheHandler()
+        cache.set_name(name)
+        # set logging level to INFO as event will typically be only those that happen before args
+        # are processed
+        cache.setLevel('INFO')
+        cache.setFormatter(self._formatter)
+        self._logger.addHandler(cache)
+
     def add_rotating_file_handler(
-        self,
-        name='rfh',
-        filename=None,
-        level=None,
-        formatter=None,
-        backup_count=None,
-        max_bytes=None,
-        mode=None,
+        self, name, filename, path, backup_count, max_bytes, formatter=None, level=None, mode='a'
     ):
         """Add a rotating file handler
 
         Args:
             name (str, optional): The name of the handler. Defaults to 'rfh'.
             filename (str): The name of the logfile.
-            level (int, optional): The logging level. Defaults to None.
-            formatter (str, optional): The logging formatter to use. Defaults to None.
-            backupCount (int, optional): The maximum # of backup files. Defaults to 0.
+            path (str): The path for the logfile.
+            backup_count (int, optional): The maximum # of backup files. Defaults to 0.
             max_bytes (int, optional): The max file size before rotating. Defaults to 0.
+            formatter (str, optional): The logging formatter to use. Defaults to None.
+            level (int, optional): The logging level. Defaults to None.
             mode (str, optional): The write mode for the file. Defaults to 'a'.
         """
         self.remove_handler_by_name(name)
-        backup_count = backup_count or self.tcex.default_args.tc_log_backup_count
-        filename = filename or self.tcex.default_args.tc_log_file
         formatter = formatter or self._formatter_thread_name
         level = level or self.logging_level
-        max_bytes = max_bytes or self.tcex.default_args.tc_log_max_bytes
-        mode = mode or 'a'
         # create customized handler
         fh = RotatingFileHandlerCustom(
-            os.path.join(self.tcex.default_args.tc_log_path, filename),
-            backupCount=backup_count,
-            maxBytes=max_bytes,
-            mode=mode,
+            os.path.join(path, filename), backupCount=backup_count, maxBytes=max_bytes, mode=mode
         )
         fh.set_name(name)
         fh.setFormatter(formatter)
@@ -163,21 +176,21 @@ class Logger(object):
         sh.setLevel(level)
         self._logger.addHandler(sh)
 
-    def add_thread_file_handler(self, name='fh', filename=None, formatter=None, level=None):
+    def add_thread_file_handler(self, name, filename, path, formatter=None, level=None):
         """Add File logging handler.
 
         Args:
-            name (str, optional): The name of the handler. Defaults to 'sh'.
+            name (str): The name of the handler.
             filename (str): The name of the logfile.
+            path (str): The path for the logfile.
             formatter (str, optional): The logging formatter to use. Defaults to None.
             level (int, optional): The logging level. Defaults to None.
         """
         self.remove_handler_by_name(name)
-        filename = filename or self.tcex.default_args.tc_log_file
         formatter = formatter or self._formatter
         level = level or self.logging_level
         # create customized handler
-        fh = ThreadFileHandler(os.path.join(self.tcex.default_args.tc_log_path, filename))
+        fh = ThreadFileHandler(os.path.join(path, filename))
         fh.set_name(name)
         fh.setFormatter(formatter)
         fh.setLevel(level)
@@ -187,13 +200,13 @@ class Logger(object):
     # App info logging
     #
 
-    def log_info(self):
+    def log_info(self, args):
         """Send System and App data to logs."""
         self._log_platform()
         self._log_app_data()
         self._log_python_version()
         self._log_tcex_version()
-        self._log_tc_proxy()
+        self._log_tc_proxy(args)
 
     def _log_app_data(self):
         """Log the App data information."""
@@ -224,13 +237,11 @@ class Logger(object):
             )
         )
 
-    def _log_tc_proxy(self):
+    def _log_tc_proxy(self, args):
         """Log the proxy settings."""
-        if self.tcex.default_args.tc_proxy_tc:
+        if args.tc_proxy_tc:
             self.log.info(
-                'Proxy Server (TC): {}:{}.'.format(
-                    self.tcex.default_args.tc_proxy_host, self.tcex.default_args.tc_proxy_port
-                )
+                'Proxy Server (TC): {}:{}.'.format(args.tc_proxy_host, args.tc_proxy_port)
             )
 
     def _log_tcex_version(self):

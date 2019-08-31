@@ -192,7 +192,7 @@ class Tokens(object):
 
     def token_renewal(self):
         """Start token renewal monitor thread."""
-        self.log.info('Token renewal monitor starting')
+        self.log.debug('Token renewal monitor starting')
         t = threading.Thread(name='token-renewal', target=self.token_renewal_monitor)
         t.daemon = True  # use setter for py2
         t.start()

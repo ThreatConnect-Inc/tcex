@@ -33,7 +33,9 @@ class TestLogs:
 
     def logging_thread(self):  # pylint: disable=no-self-use
         """Thread to test logging."""
-        tcex.logger.add_thread_file_handler(name='pytest', filename=logfile)
+        tcex.logger.add_thread_file_handler(
+            name='pytest', filename=logfile, path=tcex.default_args.tc_log_path
+        )
 
         tcex.log.trace('THREAD TRACE LOGGING')
         tcex.log.debug('THREAD DEBUG LOGGING')

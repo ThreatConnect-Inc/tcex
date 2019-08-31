@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Common Arg Handler"""
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 
 
 class TcArgumentParser(ArgumentParser):
@@ -26,7 +26,6 @@ class TcArgumentParser(ArgumentParser):
         self._tc_log_level = 'info'
         self._tc_log_path = '/tmp'
         self._tc_log_max_bytes = 10485760
-        self._tc_log_name = 'tcex'
         self._tc_log_to_api = False
 
         # playbook defaults
@@ -53,6 +52,9 @@ class TcArgumentParser(ArgumentParser):
         self._playbook_arguments()
         self._service_arguments()
         self._standard_arguments()
+
+        # default namespace
+        self.namespace = Namespace()
 
     def _api_arguments(self):
         """Define TC API args.
@@ -137,7 +139,6 @@ class TcArgumentParser(ArgumentParser):
 
         --tc_log_backup_count count  The number of backup files to keep.
         --tc_log_max_bytes bytes     The max size before rotating log file.
-        --tc_log_name name           The name of the logger (displayed in log file).
 
         --tc_log_file filename       The app log file name.
         --tc_log_path path           The app log path.
@@ -155,7 +156,6 @@ class TcArgumentParser(ArgumentParser):
             default=self._tc_log_max_bytes,
             help='The max size before rotating log file',
         )
-        self.add_argument('--tc_log_name', default=self._tc_log_name, help='The name of the logger')
         self.add_argument('--tc_log_file', default=self._tc_log_file, help='App logfile name')
         self.add_argument('--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
         # requires a token
@@ -324,3 +324,22 @@ class TcArgumentParser(ArgumentParser):
             dest='tc_proxy_tc',
             help='Proxy TC Connection',
         )
+
+    def add_argument(self, *args, **kwargs):
+        """Customize add_argument method for parser.
+
+        Remove required flag from App args and instead insert a default value from default_args
+        namespace. This is an attempt to move away from manipulating sys.argv and using args
+        in favor on adding args in as a config (dict) in all cases.
+        """
+        if kwargs.get('required', False):
+            # iterate over all args values to handle arg aliases
+            for name in args:
+                # strip '--' or '-' prefix from arg name.
+                name = name.lstrip('-')
+                # lookup default value in default_arg namespace
+                if name in vars(self.namespace):
+                    kwargs['default'] = getattr(self.namespace, name, None)
+                    del kwargs['required']  # remove required fields to prevent argparser failure
+                    break  # first match wins
+        super(TcArgumentParser, self).add_argument(*args, **kwargs)

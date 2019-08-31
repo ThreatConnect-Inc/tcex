@@ -2,7 +2,8 @@
 """TcEx Framework"""
 import json
 import os
-import sys
+
+# import sys
 from argparse import Namespace
 
 from .argument_parser import TcArgumentParser
@@ -17,14 +18,20 @@ class Args(object):
         Args:
             tcex (tcex.TcEx): Instance of TcEx class.
         """
-
         self.tcex = tcex
-        self._config_data = {}
-        self._default_args = None
-        self._default_args_resolved = None
+
+        # track optional arg input to only parse once
+        self._loaded_aot = False
+        self._loaded_secure_params = False
+
         self._parsed = False
         self._parsed_resolved = False
+
+        # parser and arg properties
         self.parser = TcArgumentParser()
+        self._default_args, self._unknown_args = self.parser.parse_known_args()
+        self._default_args_resolved = Namespace()
+        self.parser.namespace = self._default_args
 
     def _load_secure_params(self):
         """Load secure params from the API.
@@ -48,7 +55,7 @@ class Args(object):
             dict: Parameters ("inputs") from the TC API.
         """
         self.tcex.log.info('Loading secure params.')
-        # Retrieve secure params and inject them into sys.argv
+        # Retrieve secure params
         r = self.tcex.session.get('/internal/job/execution/parameters')
 
         # check for bad status code and response that is not JSON
@@ -95,15 +102,6 @@ class Args(object):
                 value = None
             setattr(self._default_args, key, value)
 
-    def _unknown_args(self, args):
-        """Log argparser unknown arguments.
-
-        Args:
-            args (list): List of unknown arguments
-        """
-        for u in args:
-            self.tcex.log.warning(u'Unsupported arg found ({}).'.format(u))
-
     def args(self):
         """Parse args if they have not already been parsed and return the Namespace for args.
 
@@ -113,33 +111,27 @@ class Args(object):
             (namespace): ArgParser parsed arguments.
         """
         if not self._parsed:  # only resolve once
+            self.init_default_args()
+
             # initialize default args
-            self.default_args  # pylint: disable=pointless-statement
-            self._default_args, unknown = self.parser.parse_known_args()
+            args, self._unknown_args = self.parser.parse_known_args(namespace=self._default_args)
+            self.config(args.__dict__)
 
             # when running locally retrieve any args from the results.tc file.  when running in
             # platform this is done automatically.
             self._results_tc_args()
 
-            # log unknown arguments only once
-            self._unknown_args(unknown)
-
             # add api handler
             if self._default_args.tc_token is not None and self._default_args.tc_log_to_api:
                 self.tcex.logger.add_api_handler()
 
-            # mark arg parsing as done
-            self.mark_parsed()
+            # set parsed bool to ensure args are only parsed once
+            self._parsed = True
 
         return self._default_args
 
-    def args_update(self):
-        """Update the argparser namespace with any data from configuration file."""
-        for key, value in self._config_data.items():
-            setattr(self._default_args, key, value)
-
-    def config(self, config_data):
-        """Add configuration data to be injected into sys.argv.
+    def config(self, config_data, complete=True, replace=False):
+        """Add configuration data to update default_args.
 
         Below are the default args that the TcEx frameworks supports. Any App specific args
         should be included in the provided data.
@@ -165,112 +157,54 @@ class Args(object):
             config (dict): A dictionary of configuration values.
         """
         if isinstance(config_data, dict):
-            self._config_data = config_data
+            if replace:
+                # start with fresh args for pytest cases
+                self._default_args, self._unknown_args = self.parser.parse_known_args()
+                self._parsed = False
 
-            # mark arg parsing as done
-            self.mark_parsed()
+            # update the arg Namespace via dict
+            self.default_args.__dict__.update(config_data)
+
+            if complete:
+                # mark arg parsing as done
+                self.parsing_complete()
 
     def config_file(self, filename):
-        """Load configuration data from provided file and inject values into sys.argv.
+        """Load configuration data from provided file and update default_args.
 
         Args:
             config (str): The configuration file name.
         """
         if os.path.isfile(filename):
             with open(filename, 'r') as fh:
-                self._config_data = json.load(fh)
+                self.config(json.load(fh))
         else:
             self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
 
     @property
     def default_args(self):
         """Parse args and return default args."""
-        if self._default_args is None:
-            self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
-
-            # update args namespace with self._config_data
-            self.args_update()
-
-            # register token after log_info
-            if self._default_args.tc_token is not None:
-                self.register_token()
-
-            if self._default_args.tc_aot_enabled:
-                # block for AOT message and get params
-                params = self.tcex.playbook.aot_blpop()
-                self.inject_params(params)
-            elif self._default_args.tc_secure_params:
-                # inject secure params from API
-                params = self._load_secure_params()
-                self.inject_params(params)
-            elif hasattr(self.tcex, 'logger'):
-                # reinitialize logger with new log level and api settings
-                self.tcex.logger.add_rotating_file_handler()
-
         return self._default_args
 
-    def inject_params(self, params):
-        """Inject params into sys.argv from secureParams API, AOT, or user provided.
-
-        Args:
-            params (dict): A dictionary containing all parameters that need to be injected as args.
-        """
-
-        for arg, value in params.items():
-            cli_arg = '--{}'.format(arg)
-            if cli_arg in sys.argv:
-                # arg already passed on the command line
-                self.tcex.log.debug('skipping existing arg: {}'.format(cli_arg))
-                continue
-
-            # ThreatConnect secure/AOT params should be updated in the future to proper JSON format.
-            # MultiChoice data should be represented as JSON array and Boolean values should be a
-            # JSON boolean and not a string.
-            param_data = self.tcex.ij.params_dict.get(arg) or {}
-            if param_data.get('type', '').lower() == 'multichoice' or param_data.get(
-                'allowMultiple'
-            ) in ['true', True]:
-                # update delimited value to an array for params that have type of MultiChoice.
-                value = value.split(self.tcex.ij.list_delimiter)
-            elif param_data.get('type', '').lower() == 'boolean':
-                # update value to be a boolean instead of string "true"/"false".
-                value = self.tcex.utils.to_bool(value)
-            elif arg in self.tc_bool_args:
-                value = self.tcex.utils.to_bool(value)
-
-            if isinstance(value, (bool)):
-                # handle bool values as flags (e.g., --flag) with no value
-                if value is True:
-                    sys.argv.append(cli_arg)
-            elif isinstance(value, (list)):
-                for mcv in value:
-                    sys.argv.append('{}={}'.format(cli_arg, mcv))
-            else:
-                sys.argv.append('{}={}'.format(cli_arg, value))
-
-        # reset default_args now that values have been injected into sys.argv
-        self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
-
-        # reinitialize logger with new log level and api settings
-        self.tcex.logger.add_rotating_file_handler()
-
-        # register token after params are injected
-        if self._default_args.tc_token is not None:
-            self.register_token()
-
-    def mark_parsed(self):
+    def parsing_complete(self):
         """Mark args as parsed."""
-        # set parsed bool to ensure args are only parsed once
-        self._parsed = True
-
-        # remove stream handler
-        self.tcex.logger.remove_handler_by_name('sh')
-
         # add rotating log handler
-        self.tcex.logger.add_rotating_file_handler()
+        self.tcex.logger.add_rotating_file_handler(
+            name='rfh',
+            filename=self.default_args.tc_log_file,
+            path=self.default_args.tc_log_path,
+            backup_count=self.default_args.tc_log_backup_count,
+            max_bytes=self.default_args.tc_log_max_bytes,
+        )
 
-        # log system and App data
-        self.tcex.logger.log_info()
+        # replay cached log events
+        self.tcex.logger.replay_cached_events(handler_name='cache')
+
+        # remove cache handler
+        self.tcex.logger.remove_handler_by_name('cache')
+
+        # log unknown arguments only once
+        self.unknown_args()
 
     def register_token(self):
         """Register token if provided in args (non-service Apps)"""
@@ -306,6 +240,28 @@ class Args(object):
             self._parsed_resolved = True
 
         return self._default_args_resolved
+
+    def init_default_args(self):
+        """Parse args and return default args."""
+        # log system and App data
+        self.tcex.logger.log_info(self._default_args)
+
+        # register token after log_info
+        if self._default_args.tc_token is not None:
+            self.register_token()
+
+        if self._default_args.tc_aot_enabled and not self._loaded_aot:
+            # update default_args with AOT params
+            params = self.tcex.playbook.aot_blpop()
+            updated_params = self.update_params(params)
+            self.config(updated_params, False)
+            self._loaded_aot = True  # only load once
+        elif self._default_args.tc_secure_params and not self._loaded_secure_params:
+            # update default_args with secure params from API
+            params = self._load_secure_params()
+            updated_params = self.update_params(params)
+            self.config(updated_params, False)
+            self._loaded_secure_params = True  # only load once
 
     @property
     def tc_bool_args(self):
@@ -361,3 +317,44 @@ class Args(object):
             'tc_log_level',
             'logging',
         ]
+
+    def unknown_args(self):
+        """Log argparser unknown arguments.
+
+        Args:
+            args (list): List of unknown arguments
+        """
+        for u in self._unknown_args:
+            self.tcex.log.warning(u'Unsupported arg found ({}).'.format(u))
+
+    def update_params(self, params):
+        """Update params provided by AOT and Secure Params to be of the proper value
+
+        Args:
+            params (dict): A dictionary containing params to update default_args
+        """
+        updated_params = {}
+        for arg, value in params.items():
+            # ThreatConnect secure/AOT params could be updated in the future to proper JSON format.
+            # MultiChoice data should be represented as JSON array and Boolean values should be a
+            # JSON boolean and not a string.
+            param_data = self.tcex.ij.params_dict.get(arg) or {}
+            param_type = param_data.get('type', '').lower()
+            param_allow_multiple = self.tcex.utils.to_bool(param_data.get('allowMultiple', False))
+
+            if param_type == 'multichoice' or param_allow_multiple:
+                # update delimited value to an array for params that have type of MultiChoice.
+                if not isinstance(value, dict):
+                    value = value.split(self.tcex.ij.list_delimiter)
+            elif param_type == 'boolean':
+                # convert boolean input that are passed in as a string ("true" -> True)
+                value = self.tcex.utils.to_bool(value)
+            elif arg in self.tc_bool_args:
+                # convert default boolean args that are passed in as a string ("true" -> True)
+                value = self.tcex.utils.to_bool(value)
+
+            # add args and updated value to dict
+            updated_params[arg] = value
+
+        # update args
+        return updated_params

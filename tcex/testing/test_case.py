@@ -103,7 +103,7 @@ class TestCase(object):
         app_args = self.default_args
         app_args.update(args)
         if self.tcex is not None and self.context == self.tcex.default_args.tc_playbook_db_context:
-            self.tcex.tcex_args.inject_params(app_args)  # during run this is required
+            self.tcex.tcex_args.config(app_args, replace=False)  # during run this is required
             return self.tcex
 
         sys.argv = [
@@ -116,7 +116,7 @@ class TestCase(object):
         self.tcex = TcEx()
         # TODO: validate this
         self.tcex.logger.update_handler_level('error')
-        self.tcex.tcex_args.inject_params(app_args)  # required for stager
+        self.tcex.tcex_args.config(app_args)  # required for stager
         return self.tcex
 
     @property

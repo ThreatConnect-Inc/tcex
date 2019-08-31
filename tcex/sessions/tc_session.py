@@ -69,7 +69,7 @@ class TcSession(Session):
         # Set Proxy
         if self.args.tc_proxy_tc:
             self.proxies = self.tcex.proxies
-            self.tcex.log.debug(
+            self.tcex.log.trace(
                 'Using proxy host {}:{} for ThreatConnect API.'.format(
                     self.args.tc_proxy_host, self.args.tc_proxy_port
                 )
