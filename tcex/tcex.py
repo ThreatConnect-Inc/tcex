@@ -62,7 +62,8 @@ class TcEx(object):
         # init args (needs logger)
         self.tcex_args = Args(self)
         self.tcex_args.config(kwargs.get('config'))
-        self.tcex_args.config(kwargs.get('config_file'))
+        self.tcex_args.config_file(kwargs.get('config_file'))
+        self.default_args = self.tcex_args.default_args
 
         # include resources module
         self._resources()
@@ -263,11 +264,6 @@ class TcEx(object):
         return DataStore(self, domain, data_type, mapping)
 
     @property
-    def default_args(self):
-        """Return all args parsed before App args are added."""
-        return self.tcex_args.default_args
-
-    @property
     def error_codes(self):
         """Return TcEx error codes."""
         if self._error_codes is None:
@@ -308,7 +304,6 @@ class TcEx(object):
             self.playbook.aot_rpush(code)
 
         self.log.info(u'Exit Code: {}'.format(code))
-        self.log.shutdown()
         sys.exit(code)
 
     @property

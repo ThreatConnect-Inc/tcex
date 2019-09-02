@@ -73,7 +73,7 @@ class Tokens(object):
                     key = k
                     break
             else:  # pragma: no cover
-                self.log.warning('Thread name not found, defaulting to {}'.format(key))
+                self.log.trace('Thread name not found, defaulting to {}'.format(key))
         return key
 
     @staticmethod
@@ -145,8 +145,9 @@ class Tokens(object):
 
             if not r.ok:
                 err_reason = r.text or r.reason
-                err_msg = 'Token Retry Error. API status code: {}, API message: {}.'.format(
-                    r.status_code, err_reason
+                err_msg = (
+                    'Token Retry Error. API status code: {}, API message: {}, '
+                    'Token: {}.'.format(r.status_code, err_reason, self.printable_token(token))
                 )
                 self.log.error(err_msg)
                 raise RuntimeError(1042, err_msg)
@@ -188,7 +189,7 @@ class Tokens(object):
     @token_expires.setter
     def token_expires(self, expires):
         """Set token expires for current thread."""
-        self.token_map.setdefault(self.key, {})['token_expires'] = expires
+        self.token_map.setdefault(self.key, {})['token_expires'] = int(expires)
 
     def token_renewal(self):
         """Start token renewal monitor thread."""

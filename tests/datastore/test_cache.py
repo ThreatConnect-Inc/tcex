@@ -2,8 +2,6 @@
 """Test the TcEx DataStore Module."""
 import time
 
-from ..tcex_init import tcex
-
 
 # pylint: disable=W0201
 class TestDataStore:
@@ -13,7 +11,12 @@ class TestDataStore:
         """Configure setup before all tests."""
         self.data_type = 'pytest'
 
-    def test_cache_add(self, rid='cache-one', data=None, expire=1):
+    @staticmethod
+    def expired_data_callback(rid):
+        """Return dummy data for cache callback."""
+        return {'dummy-data': rid}
+
+    def test_cache_add(self, tcex, rid='cache-one', data=None, expire=1):
         """Test data store add."""
         if data is None:
             data = {'one': 1}
@@ -22,7 +25,7 @@ class TestDataStore:
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
 
-    def test_cache_delete(self, rid='cache-delete'):
+    def test_cache_delete(self, tcex, rid='cache-delete'):
         """Test data store add."""
         self.test_cache_add(rid, {'delete': 'delete'})
 
@@ -32,7 +35,7 @@ class TestDataStore:
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
-    def test_cache_get(self, rid='cache-get'):
+    def test_cache_get(self, tcex, rid='cache-get'):
         """Test data store add."""
         self.test_cache_add(rid, {'get': 'get'})
 
@@ -40,12 +43,7 @@ class TestDataStore:
         results = cache.get(rid=rid)
         assert results.get('get') == 'get'
 
-    @staticmethod
-    def expired_data_callback(rid):
-        """Return dummy data for cache callback."""
-        return {'dummy-data': rid}
-
-    def test_cache_get_expired(self, rid='cache-get-expire'):
+    def test_cache_get_expired(self, tcex, rid='cache-get-expire'):
         """Test data store add."""
         self.test_cache_add(rid, {'get': 'get'}, expire=1)
 
@@ -54,7 +52,7 @@ class TestDataStore:
         results = cache.get(rid=rid, data_callback=self.expired_data_callback)
         assert results.get('dummy-data') == 'cache-get-expire'
 
-    def test_cache_update(self, rid='cache-one', data=None, expire=1):
+    def test_cache_update(self, tcex, rid='cache-one', data=None, expire=1):
         """Test data store add."""
         if data is None:
             data = {'one': 1}

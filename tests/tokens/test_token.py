@@ -4,7 +4,7 @@ import os
 import threading
 import time
 
-from ..tcex_init import tcex
+# from ..tcex_init import tcex
 
 # define thread logfile
 logfile = os.path.join('pytest', 'pytest.log')
@@ -21,32 +21,21 @@ class TestLogs:
         """Return the current thread name."""
         return threading.current_thread().name
 
-    @staticmethod
-    def test_invalid_register_token():
-        """Test invalid token data."""
-        # test register_token() [if token is None or expires is None:]
-        try:
-            tcex.token.register_token('dummy-key', None, None)
-        except RuntimeError:
-            assert True
-
-    @staticmethod
-    def test_invalid_unregister_token():
-        """Test invalid token data."""
-        tcex.token.unregister_token('zzzzzz')  # hit except on unregister_token()
-
-    def test_expired_token(self):
+    def test_expired_token(self, tcex):
         """Test thread file handler."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         token_key = '666'
         tcex.token.register_token(
             key=token_key,
-            token='4:146:-1:-1:1564808228:otlhb:NA:Zb3jqAAgLcKJi1JJglpwJaPY4D8hVSv/aZ1rdwtZMnU=',
+            token=(
+                'JOB:3:ksKNpI:1567352558827:220:null:YPSaVFIGVbIkt1cfi4DzoG2bjWwsLBfwv9fJbeEx68A='
+            ),
             expires=int(time.time()) - 999,  # expire token immediately
         )
 
         # create a thread to test register_thread
         t = threading.Thread(
-            name='pytest-token-fail', target=self.token_thread_fail, args=(token_key,)
+            name='pytest-token-fail', target=self.token_thread_fail, args=(tcex, token_key)
         )
         t.start()
         t.join()
@@ -54,44 +43,25 @@ class TestLogs:
         tcex.token.unregister_token(token_key)
         tcex.token.unregister_token('dummy-key')  # hit except on unregister_token()
 
-    def test_token_thread_with_renewal(self, tc_service_token):
+    @staticmethod
+    def test_invalid_register_token(tcex):
+        """Test invalid token data."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        # test register_token() [if token is None or expires is None:]
+        try:
+            tcex.token.register_token('dummy-key', None, None)
+        except RuntimeError:
+            assert True
+
+    @staticmethod
+    def test_invalid_unregister_token(tcex):
+        """Test invalid token data."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        tcex.token.unregister_token('zzzzzz')  # hit except on unregister_token()
+
+    def test_register_token_fail(self, tcex, tc_service_token):
         """Test thread file handler."""
-        # get token from fixture
-        tc_token = tc_service_token
-        tc_token_expires = int(time.time()) - 999  # expire token immediately
-
-        token_key = '1234'
-        tcex.token.register_token(key=token_key, token=tc_token, expires=tc_token_expires)
-
-        # create a thread to test register_thread
-        t = threading.Thread(
-            name='pytest-token-pass', target=self.token_thread_pass, args=(token_key,)
-        )
-        t.start()
-        t.join()
-
-        tcex.token.unregister_token(token_key)
-
-    def test_register_token_thread_as_key(self, tc_service_token):
-        """Test thread file handler."""
-        # get token from fixture
-        tc_token = tc_service_token
-        tc_token_expires = int(time.time()) + 999
-
-        token_key = 'thread-as-key'
-        tcex.token.register_token(key=token_key, token=tc_token, expires=tc_token_expires)
-
-        # create a thread to test register_thread
-        t = threading.Thread(
-            name=token_key, target=self.token_thread_pass, args=(token_key, False, False)
-        )
-        t.start()
-        t.join()
-
-        tcex.token.unregister_token(token_key)
-
-    def test_register_token_fail(self, tc_service_token):
-        """Test thread file handler."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         # get token from fixture
         tc_token = tc_service_token
         tc_token_expires = int(time.time()) - 999
@@ -101,14 +71,65 @@ class TestLogs:
 
         # create a thread to test register_thread
         t = threading.Thread(
-            name=token_key, target=self.token_thread_pass, args=(token_key, False, False)
+            name=token_key, target=self.token_thread_pass, args=(tcex, token_key, False, False)
         )
         t.start()
         t.join()
 
         tcex.token.unregister_token(token_key)
 
-    def token_thread_fail(self, key):
+    def test_register_token_thread_as_key(self, tcex, tc_service_token):
+        """Test thread file handler."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        # get token from fixture
+        tc_token = tc_service_token
+        tc_token_expires = int(time.time()) + 999
+
+        token_key = 'thread-as-key'
+        tcex.token.register_token(key=token_key, token=tc_token, expires=tc_token_expires)
+
+        # create a thread to test register_thread
+        t = threading.Thread(
+            name=token_key, target=self.token_thread_pass, args=(tcex, token_key, False, False)
+        )
+        t.start()
+        t.join()
+
+        tcex.token.unregister_token(token_key)
+
+    @staticmethod
+    def test_token_setter(tcex, tc_api_token):
+        """Testing token setters."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        tcex.token.token = tc_api_token
+        tcex.token.token_expires = os.getenv('TC_TOKEN_EXPIRES')
+
+        try:
+            r = tcex.session.get('/v2/owners')
+            assert r.status_code == 200, 'Failed API call ({})'.format(r.text)
+        except RuntimeError:
+            assert False
+
+    def test_token_thread_with_renewal(self, tcex, tc_service_token):
+        """Test thread file handler."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        # get token from fixture
+        tc_token = tc_service_token
+        tc_token_expires = int(time.time()) - 999  # expire token immediately
+
+        token_key = '1234'
+        tcex.token.register_token(key=token_key, token=tc_token, expires=tc_token_expires)
+
+        # create a thread to test register_thread
+        t = threading.Thread(
+            name='pytest-token-pass', target=self.token_thread_pass, args=(tcex, token_key)
+        )
+        t.start()
+        t.join()
+
+        tcex.token.unregister_token(token_key)
+
+    def token_thread_fail(self, tcex, key):
         """Method to test token failure."""
         tcex.token.register_thread(key, self.thread_name)
 
@@ -118,11 +139,11 @@ class TestLogs:
         try:
             tcex.session.get('/v2/owners')
         except RuntimeError:
-            assert True
+            pass
 
         tcex.token.unregister_thread(key, self.thread_name)
 
-    def token_thread_pass(self, key, sleep=True, register_thread=True):
+    def token_thread_pass(self, tcex, key, sleep=True, register_thread=True):
         """Method to ensure token is valid."""
         if register_thread:
             tcex.token.register_thread(key, self.thread_name)
@@ -137,15 +158,3 @@ class TestLogs:
 
         if register_thread:
             tcex.token.unregister_thread(key, self.thread_name)
-
-    @staticmethod
-    def test_token_setter():
-        """Testing token setters."""
-        tcex.token.token = os.getenv('TC_TOKEN')
-        tcex.token.token_expires = os.getenv('TC_TOKEN_EXPIRES')
-
-        try:
-            r = tcex.session.get('/v2/owners')
-            assert r.status_code == 200
-        except RuntimeError:
-            assert False

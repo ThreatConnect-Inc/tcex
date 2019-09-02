@@ -36,7 +36,7 @@ class TestCase(object):
     _stager = None
     context = None
     log = logger
-    env = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
+    env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
     tcex = None
     _staged_tc_data = []
     _tc_output_variables = {}
@@ -178,8 +178,8 @@ class TestCase(object):
         system_var_regex = r'\${env.(.*?)}'
         for m in re.finditer(system_var_regex, profile_str):
             old_string = '${env.' + m.group(1) + '}'
-            if os.environ.get(m.group(1)):
-                profile_str = profile_str.replace(old_string, os.environ.get(m.group(1)))
+            if os.getenv(m.group(1)):
+                profile_str = profile_str.replace(old_string, os.getenv(m.group(1)))
         return json.loads(profile_str)
 
     def populate_threatconnect_variables(self, profile):
@@ -232,11 +232,11 @@ class TestCase(object):
         if env_var.match(value):
             # read value from environment variable
             env_key = env_var.match(str(value)).groups()[0]
-            value = os.environ.get(env_key, value)
+            value = os.getenv(env_key, value)
         elif envs_var.match(value):
             # read secure value from environment variable
             env_key = envs_var.match(str(value)).groups()[0]
-            value = os.environ.get(env_key, value)
+            value = os.getenv(env_key, value)
         return value
 
     def run(self, args):
@@ -254,7 +254,7 @@ class TestCase(object):
     def setup_method(self):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
-        self._current_test = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
+        self._current_test = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0]
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
         self.log_data('setup method', 'started', datetime.now().isoformat())
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))

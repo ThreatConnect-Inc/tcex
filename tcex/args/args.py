@@ -2,10 +2,7 @@
 """TcEx Framework"""
 import json
 import os
-
-# import sys
 from argparse import Namespace
-
 from .argument_parser import TcArgumentParser
 
 
@@ -30,6 +27,7 @@ class Args(object):
         # parser and arg properties
         self.parser = TcArgumentParser()
         self._default_args, self._unknown_args = self.parser.parse_known_args()
+        self.register_token()  # register token as soon as possible
         self._default_args_resolved = Namespace()
         self.parser.namespace = self._default_args
 
@@ -163,7 +161,8 @@ class Args(object):
                 self._parsed = False
 
             # update the arg Namespace via dict
-            self.default_args.__dict__.update(config_data)
+            self._default_args.__dict__.update(config_data)
+            self.register_token()  # register token as soon as possible
 
             if complete:
                 # mark arg parsing as done
@@ -175,11 +174,12 @@ class Args(object):
         Args:
             config (str): The configuration file name.
         """
-        if os.path.isfile(filename):
-            with open(filename, 'r') as fh:
-                self.config(json.load(fh))
-        else:
-            self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
+        if filename is not None:
+            if os.path.isfile(filename):
+                with open(filename, 'r') as fh:
+                    self.config(json.load(fh))
+            else:
+                self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
 
     @property
     def default_args(self):
@@ -209,9 +209,11 @@ class Args(object):
     def register_token(self):
         """Register token if provided in args (non-service Apps)"""
         # TODO: swap MainThread with threading.current_thread().name ?
-        self.tcex.token.register_token(
-            'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
-        )
+        if self._default_args.tc_token is not None:
+            self.tcex.default_args = self._default_args
+            self.tcex.token.register_token(
+                'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
+            )
 
     def resolved_args(self):
         """Return namespace of args that have all PB variable automatically resolved.
@@ -245,10 +247,6 @@ class Args(object):
         """Parse args and return default args."""
         # log system and App data
         self.tcex.logger.log_info(self._default_args)
-
-        # register token after log_info
-        if self._default_args.tc_token is not None:
-            self.register_token()
 
         if self._default_args.tc_aot_enabled and not self._loaded_aot:
             # update default_args with AOT params
