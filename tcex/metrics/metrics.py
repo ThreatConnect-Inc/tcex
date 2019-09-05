@@ -55,7 +55,7 @@ class Metrics(object):
         self.tcex.log.debug('metric body: {}'.format(body))
         r = self.tcex.session.post('/v2/customMetrics', json=body)
 
-        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+        if not r.ok:  # pragma: no cover
             self.tcex.handle_error(700, [r.status_code, r.text])
 
         data = r.json()
@@ -89,7 +89,7 @@ class Metrics(object):
             if params.get('resultStart') >= params.get('resultLimit'):
                 break
             r = self.tcex.session.get('/v2/customMetrics', params=params)
-            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+            if not r.ok:  # pragma: no cover
                 self.tcex.handle_error(705, [r.status_code, r.text])
             data = r.json()
             for metric in data.get('data', {}).get('customMetricConfig'):
@@ -115,7 +115,7 @@ class Metrics(object):
                 is returned.
         """
         data = {}
-        if self._metric_id is None:
+        if self._metric_id is None:  # pragma: no cover
             self.tcex.handle_error(715, [self._metric_name])
 
         body = {'value': value}
@@ -133,7 +133,7 @@ class Metrics(object):
             data = r.json()
         elif r.status_code == 204:
             pass
-        else:
+        else:  # pragma: no cover
             self.tcex.handle_error(710, [r.status_code, r.text])
 
         return data

@@ -45,6 +45,8 @@ class TcExErrorCodes(object):
             705: 'Error while finding metric by name. API status code: {}, API message: {}.',
             710: 'Failed to add metric data. API status code: {}, API message: {}.',
             715: 'No metric ID found for "{}".',
+            # notifications
+            750: 'Failed to send notification. API status code: {}, API message: {}.',
             # datastore
             800: 'Failed to create index. API status code: {}, API message: {}.',
             805: 'Failed to {} record data. API status code: {}, API message: {}.',

@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
-
 import pytest
-
-from ..tcex_init import tcex
 
 
 # pylint: disable=R0201,W0201
 class TestEmbedded:
     """Test the TcEx Batch Module."""
 
-    def setup_class(self):
+    def stage_data(self, tcex):
         """Configure setup before all tests."""
         out_variables = []
         setattr(tcex.args, 'tc_playbook_out_variables', ','.join(out_variables))
@@ -148,8 +145,9 @@ class TestEmbedded:
             ('#App:0001:array.1!StringArray', ['two', 'three']),
         ],
     )
-    def test_embedded_read_string(self, embedded_value, resolved_value):
+    def test_embedded_read_string(self, tcex, embedded_value, resolved_value):
         """Test playbook embedded string in string"""
+        self.stage_data(tcex)
         assert tcex.playbook.read(embedded_value) == resolved_value
 
         # print('redis    : <{}>'.format(tcex.playbook.read(embedded_value)))
@@ -177,8 +175,9 @@ class TestEmbedded:
             ),
         ],
     )
-    def test_embedded_string_in_string(self, variable, embedded_value, resolved_value):
+    def test_embedded_string_in_string(self, tcex, variable, embedded_value, resolved_value):
         """Test playbook embedded string in string"""
+        self.stage_data(tcex)
         tcex.playbook.create_string(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
@@ -200,8 +199,9 @@ class TestEmbedded:
             )
         ],
     )
-    def test_embedded_string_array_in_string(self, variable, embedded_value, resolved_value):
+    def test_embedded_string_array_in_string(self, tcex, variable, embedded_value, resolved_value):
         """Test playbook embedded string array in string"""
+        self.stage_data(tcex)
         tcex.playbook.create_string(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
@@ -223,8 +223,9 @@ class TestEmbedded:
             )
         ],
     )
-    def test_embedded_string_in_string_array(self, variable, embedded_value, resolved_value):
+    def test_embedded_string_in_string_array(self, tcex, variable, embedded_value, resolved_value):
         """Test playbook embedded string in string array"""
+        self.stage_data(tcex)
         tcex.playbook.create_string_array(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
@@ -246,8 +247,9 @@ class TestEmbedded:
             )
         ],
     )
-    def test_embedded_string_in_keyvalue(self, variable, embedded_value, resolved_value):
+    def test_embedded_string_in_keyvalue(self, tcex, variable, embedded_value, resolved_value):
         """Test playbook embedded string array in string array"""
+        self.stage_data(tcex)
         tcex.playbook.create_key_value(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
@@ -269,8 +271,11 @@ class TestEmbedded:
             )
         ],
     )
-    def test_embedded_string_array_in_keyvalue(self, variable, embedded_value, resolved_value):
+    def test_embedded_string_array_in_keyvalue(
+        self, tcex, variable, embedded_value, resolved_value
+    ):
         """Test playbook embedded string array in string array"""
+        self.stage_data(tcex)
         tcex.playbook.create_key_value(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
@@ -292,8 +297,9 @@ class TestEmbedded:
             )
         ],
     )
-    def test_embedded_keyvalue_in_keyvalue(self, variable, embedded_value, resolved_value):
+    def test_embedded_keyvalue_in_keyvalue(self, tcex, variable, embedded_value, resolved_value):
         """Test playbook embedded string array in string array"""
+        self.stage_data(tcex)
         tcex.playbook.create_key_value(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 

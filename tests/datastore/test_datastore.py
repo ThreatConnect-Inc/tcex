@@ -136,11 +136,12 @@ class TestDataStore:
     def test_data_store_local_delete(self, tcex, rid='three'):
         """Test data store add."""
         args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        # add
-        self.test_data_store_local_add(rid, {'three': 3})
+        ds = tcex.datastore('local', self.data_type)
+
+        # add entry to be deleted
+        ds.add(rid, {'delete': 'delete'})
 
         # delete
-        ds = tcex.datastore('local', self.data_type)
         results = ds.delete(rid=rid)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
@@ -174,16 +175,18 @@ class TestDataStore:
         args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         if data is None:
             data = {'two': 2}
-        self.test_data_store_local_add(rid, data)
-
         ds = tcex.datastore('local', self.data_type)
+
+        # add entry to be deleted
+        ds.add(rid, data)
+
         results = ds.get(rid=rid)
         assert results.get('_type') == self.data_type
         assert results.get('_source').get('two') == 2
         assert results.get('found') is True
 
         # delete
-        self.test_data_store_local_delete(rid)
+        ds.delete(rid)
 
     def test_data_store_local_get_no_rid(self, tcex):
         """Test data store add."""
@@ -221,6 +224,7 @@ class TestDataStore:
         if data is None:
             data = {'one': 1}
         ds = tcex.datastore('organization', self.data_type)
+
         results = ds.add(rid=rid, data=data)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
@@ -228,11 +232,12 @@ class TestDataStore:
     def test_data_store_organization_delete(self, tcex, rid='three'):
         """Test data store add."""
         args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        # add
-        self.test_data_store_organization_add(rid, {'three': 3})
+        ds = tcex.datastore('organization', self.data_type)
+
+        # add entry to be deleted
+        ds.add(rid, {'three': 3})
 
         # delete
-        ds = tcex.datastore('organization', self.data_type)
         results = ds.delete(rid=rid)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
@@ -243,16 +248,18 @@ class TestDataStore:
         args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         if data is None:
             data = {'two': 2}
-        self.test_data_store_organization_add(rid, data)
-
         ds = tcex.datastore('organization', self.data_type)
+
+        # add entry to get
+        ds.add(rid, data)
+
         results = ds.get(rid=rid)
         assert results.get('_type') == self.data_type
         assert results.get('_source').get('two') == 2
         assert results.get('found') is True
 
         # delete
-        self.test_data_store_organization_delete(rid)
+        ds.delete(rid)
 
     def test_data_store_local_put(self, tcex, rid='one', data=None):
         """Test data store add."""
@@ -260,6 +267,10 @@ class TestDataStore:
         if data is None:
             data = {'one': 1}
         ds = tcex.datastore('local', self.data_type)
+
+        # add entry to update
+        ds.add(rid, {'one': 2})
+
         results = ds.put(rid=rid, data=data)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1

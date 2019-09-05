@@ -58,11 +58,8 @@ _config_data = {
     # connection
     'api_default_org': os.getenv('API_DEFAULT_ORG'),
     # 'tc_token': tc_token.service_token,
-    # 'tc_token': tc_token.api_token,
-    # 'tc_token': os.getenv('TC_TOKEN'),
-    'tc_token': 'API:3:X0Vhes:1567396228601:ps3BRlDQsDKgL4UoKf/SMWMrkGaxfx8fQRj2koL+Rp4=',
-    # 'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
-    'tc_token_expires': '1667351945',
+    'tc_token': tc_token.api_token,
+    'tc_token_expires': '1700000000',
     'tc_owner': os.getenv('TC_OWNER', 'TCI'),
     # hmac auth (for session tests)
     'api_access_id': os.getenv('API_ACCESS_ID'),
@@ -146,7 +143,8 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
 #
 
 
-@pytest.fixture(scope='module')
+# @pytest.fixture(scope='module')
+@pytest.fixture()
 def config_data():
     """Return tcex config data."""
     return _config_data
@@ -174,11 +172,12 @@ def tc_service_token():
 def tcex():
     """Return an instance of tcex."""
     # create log structure for feature/test (e.g., args/test_args.log)
-    _config_data['tc_log_file'] = _tc_log_file()
+    config_data_ = dict(_config_data)
+    config_data_['tc_log_file'] = _tc_log_file()
 
     # clear sys.argv to avoid invalid arguments
     sys.argv = sys.argv[:1]
-    return TcEx(config=_config_data)
+    return TcEx(config=config_data_)
 
 
 #

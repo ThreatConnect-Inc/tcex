@@ -57,7 +57,7 @@ class Logger(object):
     def logging_level(self):
         """Return the configured logging level."""
         level = 'DEBUG'
-        if hasattr(self.tcex, 'tcex_args'):
+        if hasattr(self.tcex, 'inputs'):
             if self.tcex.default_args.logging is not None:
                 level = self.tcex.default_args.logging.upper()  # pragma: no cover
             elif self.tcex.default_args.tc_log_level is not None:
@@ -79,9 +79,10 @@ class Logger(object):
         """Replay cached log events and remove handler."""
         for h in self._logger.handlers:
             if h.get_name() == handler_name:
-                for event in h.events:
-                    self._logger.handle(event)
+                events = h.events
                 self._logger.removeHandler(h)
+                for event in events:
+                    self._logger.handle(event)
                 break
 
     def update_handler_level(self, level=None):

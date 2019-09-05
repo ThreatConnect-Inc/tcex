@@ -6,7 +6,8 @@ import os
 import re
 import time
 import uuid
-import sys
+
+# import sys
 import traceback
 from datetime import datetime
 from tcex import TcEx
@@ -85,12 +86,12 @@ class TestCase(object):
         return args
 
     def add_tc_output_variable(self, variable_name, variable_value):
-        """Adds a TC output variable to the output variable dict"""
+        """Add a TC output variable to the output variable dict"""
         self._tc_output_variables[self._convert_variable_name(variable_name)] = variable_value
 
     @staticmethod
     def _convert_variable_name(variable_name):
-        """Converts a TC output variable to the correct name"""
+        """Convert a TC output variable to the correct name"""
         if not variable_name.startswith('${tcenv.'):
             variable_name = '${tcenv.' + variable_name
         if not variable_name.endswith('}'):
@@ -102,21 +103,25 @@ class TestCase(object):
         args = args or {}
         app_args = self.default_args
         app_args.update(args)
-        if self.tcex is not None and self.context == self.tcex.default_args.tc_playbook_db_context:
-            self.tcex.tcex_args.config(app_args, replace=False)  # during run this is required
-            return self.tcex
+        # if (
+        #     self.tcex is not None and
+        #     self.context == self.tcex.default_args.tc_playbook_db_context
+        # ):
+        #     self.tcex.inputs.config(app_args)  # during run this is required
+        #     return self.tcex
 
-        sys.argv = [
-            sys.argv[0],
-            '--tc_log_path',
-            'log',
-            '--tc_log_file',
-            '{}/app.log'.format(self.context),
-        ]
-        self.tcex = TcEx()
+        # sys.argv = [
+        #     sys.argv[0],
+        #     '--tc_log_path',
+        #     'log',
+        #     '--tc_log_file',
+        #     '{}/app.log'.format(self.context),
+        # ]
+        app_args['tc_log_path'] = 'log'
+        app_args['tc_log_file'] = '{}/app.log'.format(self.context)
+        self.tcex = TcEx(config=app_args)
         # TODO: validate this
         self.tcex.logger.update_handler_level('error')
-        self.tcex.tcex_args.config(app_args)  # required for stager
         return self.tcex
 
     @property
@@ -173,7 +178,7 @@ class TestCase(object):
 
     @staticmethod
     def populate_system_variables(profile):
-        """Replaces all System variables with their correct value"""
+        """Replace all System variables with their correct value"""
         profile_str = json.dumps(profile)
         system_var_regex = r'\${env.(.*?)}'
         for m in re.finditer(system_var_regex, profile_str):
@@ -183,14 +188,14 @@ class TestCase(object):
         return json.loads(profile_str)
 
     def populate_threatconnect_variables(self, profile):
-        """Replaces all of the TC output variables in the profile with their correct value"""
+        """Replace all of the TC output variables in the profile with their correct value"""
         profile_str = json.dumps(profile)
         for output_variable, value in self._tc_output_variables.items():
             profile_str = profile_str.replace(output_variable, str(value))
         return json.loads(profile_str)
 
     def generate_tc_output_variables(self, staged_tc_data):
-        """Generates all of the TC output variables given the profiles staged data"""
+        """Generate all of the TC output variables given the profiles staged data"""
         for staged_data in staged_tc_data:
             for key, value in staged_data.get('outputs', {}).items():
                 paths = key.split('.')

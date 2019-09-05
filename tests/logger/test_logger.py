@@ -3,8 +3,6 @@
 import os
 import threading
 
-from ..tcex_init import tcex
-
 # define thread logfile
 logfile = os.path.join('pytest', 'pytest.log')
 
@@ -15,7 +13,7 @@ class TestLogs:
     def setup_class(self):
         """Configure setup before all tests."""
 
-    def test_any_to_datetime(self):  # pylint: disable=no-self-use
+    def test_logger(self, tc_log_file, tcex):  # pylint: disable=no-self-use
         """Test any to datetime"""
         for _ in range(0, 20):
             tcex.log.trace('TRACE LOGGING')
@@ -29,9 +27,9 @@ class TestLogs:
         tcex.logger.update_handler_level('trace')
 
         # simple assert to ensure the log file was created
-        assert os.path.exists(os.path.join(tcex.default_args.tc_log_path, 'app.log'))
+        assert os.path.exists(os.path.join(tcex.default_args.tc_log_path, tc_log_file))
 
-    def logging_thread(self):  # pylint: disable=no-self-use
+    def logging_thread(self, tcex):  # pylint: disable=no-self-use
         """Thread to test logging."""
         tcex.logger.add_thread_file_handler(
             name='pytest', filename=logfile, path=tcex.default_args.tc_log_path
@@ -45,11 +43,11 @@ class TestLogs:
 
         tcex.logger.remove_handler_by_name(handler_name='pytest')
 
-    def test_thread_file_handler(self):
+    def test_thread_file_handler(self, tc_log_file, tcex):
         """Test thread file handler."""
         t = threading.Thread(name='pytest', target=self.logging_thread)
         t.start()
         t.join()
 
         # simple assert to ensure the log file was created
-        assert os.path.exists(os.path.join(tcex.default_args.tc_log_path, logfile))
+        assert os.path.exists(os.path.join(tcex.default_args.tc_log_path, tc_log_file))

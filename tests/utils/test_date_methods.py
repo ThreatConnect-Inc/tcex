@@ -3,7 +3,6 @@
 from datetime import datetime
 import re
 import pytest
-from ..tcex_init import tcex
 
 
 # pylint: disable=R0201,W0201
@@ -12,7 +11,6 @@ class TestUtils:
 
     def setup_class(self):
         """Configure setup before all tests."""
-        # self.tcex = test()
 
     @pytest.mark.parametrize(
         'date,tz,results',
@@ -27,14 +25,14 @@ class TestUtils:
             (1556643600000, None, '2019-04-30T17:00:00+00:00'),
         ],
     )
-    def test_any_to_datetime(self, date, tz, results):
+    def test_any_to_datetime(self, tcex, date, tz, results):
         """Test any to datetime"""
         dt = tcex.utils.any_to_datetime(date, tz)
         # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt.isoformat(), results))
         assert dt.isoformat().startswith(results)
 
     @staticmethod
-    def test_any_to_datetime_fail():
+    def test_any_to_datetime_fail(tcex):
         """Test any to datetime"""
         try:
             tcex.utils.any_to_datetime('abc')
@@ -60,7 +58,7 @@ class TestUtils:
             (0, 'US/Eastern', None),
         ],
     )
-    def test_date_to_datetime(self, date, tz, results):
+    def test_date_to_datetime(self, tcex, date, tz, results):
         """Test format datetime"""
         dt = tcex.utils.date_to_datetime(time_input=date, tz=tz)
         # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
@@ -79,7 +77,7 @@ class TestUtils:
             ('now', 'UTC', '%Y-%m-%dT%H:%M:%S', '2019-'),
         ],
     )
-    def test_format_datetime(self, date, tz, date_format, results):
+    def test_format_datetime(self, tcex, date, tz, date_format, results):
         """Test format datetime"""
         dt = tcex.utils.format_datetime(time_input=date, tz=tz, date_format=date_format)
         # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
@@ -92,9 +90,13 @@ class TestUtils:
             (
                 'August 25th, 2008',
                 'UTC',
-                r'^2008-08-25\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+                r'^2008-08-2[5-6]\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
             ),
-            ('25 Aug 2008', 'UTC', r'^2008-08-25\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$'),
+            (
+                '25 Aug 2008',
+                'UTC',
+                r'^2008-08-2[5-6]\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
+            ),
             (
                 'Aug 25 5pm',
                 'UTC',
@@ -178,7 +180,7 @@ class TestUtils:
             ('0', 'US/Eastern', None),
         ],
     )
-    def test_human_date_to_datetime(self, date, tz, pattern):
+    def test_human_date_to_datetime(self, tcex, date, tz, pattern):
         """Test format datetime"""
         dt = tcex.utils.human_date_to_datetime(time_input=date, tz=tz)
         # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, pattern))
@@ -188,7 +190,7 @@ class TestUtils:
             assert False, 'Results ({}) does not match pattern ({})'.format(str(dt), pattern)
 
     @staticmethod
-    def test_human_date_to_datetime_with_source():
+    def test_human_date_to_datetime_with_source(tcex):
         """Test format datetime"""
         source_datetime = datetime.now()
         dt = tcex.utils.human_date_to_datetime(
@@ -200,7 +202,8 @@ class TestUtils:
         ):
             assert False, 'Results ({}) does not match pattern'.format(str(dt))
 
-    def test_timedelta(self):
+    @staticmethod
+    def test_timedelta(tcex):
         """Test timedelta module"""
         delta = tcex.utils.timedelta('2018-01-13', '2018-02-14')
         assert delta['days'] == -1
@@ -228,7 +231,7 @@ class TestUtils:
             ('1556643600123456', None, '2019-04-30T17:00:00.123456+00:00'),
         ],
     )
-    def test_unix_time_to_datetime(self, date, tz, results):
+    def test_unix_time_to_datetime(self, tcex, date, tz, results):
         """Test unix time to datetime"""
         dt = tcex.utils.unix_time_to_datetime(time_input=date, tz=tz)
         if results is None:
