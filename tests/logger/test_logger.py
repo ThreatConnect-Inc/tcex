@@ -23,7 +23,7 @@ class TestLogs:
             tcex.log.error('ERROR LOGGING')
 
         # update handler log level
-        tcex.logger.update_handler_level()
+        tcex.logger.update_handler_level(None)
         tcex.logger.update_handler_level('trace')
 
         # simple assert to ensure the log file was created
@@ -32,7 +32,7 @@ class TestLogs:
     def logging_thread(self, tcex):  # pylint: disable=no-self-use
         """Thread to test logging."""
         tcex.logger.add_thread_file_handler(
-            name='pytest', filename=logfile, path=tcex.default_args.tc_log_path
+            name='pytest', filename=logfile, level='trace', path=tcex.default_args.tc_log_path
         )
 
         tcex.log.trace('THREAD TRACE LOGGING')

@@ -41,6 +41,7 @@ class TcEx(object):
         signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Property defaults
+        self._config = kwargs.get('config', {})
         self._default_args = None
         self._error_codes = None
         self._exit_code = 0
@@ -61,7 +62,7 @@ class TcEx(object):
         self._log = kwargs.get('logger')
 
         # init args (needs logger)
-        self.inputs = Inputs(self, kwargs.get('config'), kwargs.get('config_file'))
+        self.inputs = Inputs(self, self._config, kwargs.get('config_file'))
 
         # include resources module
         self._resources()
@@ -501,7 +502,8 @@ class TcEx(object):
     def logger(self):
         """Return logger."""
         if self._logger is None:
-            self._logger = Logger(self)
+            logger_name = self._config.get('tc_logger_name', 'tcex')
+            self._logger = Logger(self, logger_name)
             self._logger.add_cache_handler('cache')
         return self._logger
 

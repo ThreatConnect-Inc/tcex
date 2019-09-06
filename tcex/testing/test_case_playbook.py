@@ -64,6 +64,7 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         if exit_code != 0:
             return exit_code
 
+        app.tcex.log.info('Exit Code: {}'.format(app.tcex.exit_code))
         return self._exit(app.tcex.exit_code)
 
     def run_profile(self, profile):
@@ -83,7 +84,7 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         if exit_code == 0:
             self.populate_output_variables(profile)
 
-        return self._exit(exit_code)
+        return exit_code
 
     def setup_method(self):
         """Run before each test method runs."""

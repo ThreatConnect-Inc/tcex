@@ -32,20 +32,20 @@ class TestCase(object):
     _current_test = None
     _input_params = None
     _install_json = None
+    _stager = None
+    _staged_tc_data = []
+    _tc_output_variables = {}
     _timer_class_start = None
     _timer_method_start = None
-    _stager = None
+    _validator = None
     context = None
     log = logger
     env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
     tcex = None
-    _staged_tc_data = []
-    _tc_output_variables = {}
 
     def _exit(self, code):
         """Log and return exit code"""
         self.log.info('[run] Exit Code: {}'.format(code))
-        self.tcex.log.info('Exit Code: {}'.format(code))
         return code
 
     @staticmethod
@@ -57,7 +57,17 @@ class TestCase(object):
         """Return an instance of App."""
         from app import App  # pylint: disable=import-error
 
-        return App(self.get_tcex(args))
+        # return App(self.get_tcex(args))
+        args = args or {}
+
+        # update default args with app args
+        app_args = dict(self.default_args)
+        app_args.update(args)
+        app_args['tc_log_file'] = self.tc_log_file
+        app_args['tc_logger_name'] = self.context
+
+        tcex = TcEx(config=app_args)
+        return App(tcex)
 
     @property
     def default_args(self):
@@ -98,31 +108,26 @@ class TestCase(object):
             variable_name = variable_name + '}'
         return variable_name
 
-    def get_tcex(self, args=None):
-        """Return an instance of App."""
-        args = args or {}
-        app_args = self.default_args
-        app_args.update(args)
-        # if (
-        #     self.tcex is not None and
-        #     self.context == self.tcex.default_args.tc_playbook_db_context
-        # ):
-        #     self.tcex.inputs.config(app_args)  # during run this is required
-        #     return self.tcex
+    # def get_tcex(self, args=None, tc_log_file=None, tc_log_level=None, set_tcex=True):
+    #     """Return an instance of App."""
+    #     if self.tcex is not None:
+    #         self.tcex.logger.log.handlers = []
 
-        # sys.argv = [
-        #     sys.argv[0],
-        #     '--tc_log_path',
-        #     'log',
-        #     '--tc_log_file',
-        #     '{}/app.log'.format(self.context),
-        # ]
-        app_args['tc_log_path'] = 'log'
-        app_args['tc_log_file'] = '{}/app.log'.format(self.context)
-        self.tcex = TcEx(config=app_args)
-        # TODO: validate this
-        self.tcex.logger.update_handler_level('error')
-        return self.tcex
+    #     args = args or {}
+    #     app_args = self.default_args
+    #     app_args.update(args)
+
+    #     # override default log level if profiled
+    #     app_args['tc_log_level'] = tc_log_level or app_args['tc_log_level']
+
+    #     # set log path to be the feature and test case name
+    #     app_args['tc_log_file'] = tc_log_file or self.tc_log_file
+
+    #     # get new instance of tcex
+    #     tcex = TcEx(config=app_args)
+    #     if set_tcex:
+    #         self.tcex = tcex
+    #     return tcex
 
     @property
     def install_json(self):
@@ -162,7 +167,7 @@ class TestCase(object):
         try:
             with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
                 profile = json.load(fh)
-        except FileExistsError:
+        except IOError:
             self.log.error('No profile {} provided.'.format(profile_name))
             return self._exit(1)
         profile['name'] = profile_name
@@ -248,6 +253,22 @@ class TestCase(object):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 
+    def run_app_method(self, app, method):
+        """Run the provided App method."""
+        try:
+            getattr(app, method)()
+        except SystemExit as e:
+            self.log.info('[run] Exit Code: {}'.format(e.code))
+            self.log.error('App failed in {}() method ({}).'.format(method, e))
+            app.tcex.log.info('Exit Code: {}'.format(e.code))
+            return e.code
+        except Exception:
+            self.log.error(
+                'App encountered except in {}() method ({}).'.format(method, traceback.format_exc())
+            )
+            return 1
+        return 0
+
     @classmethod
     def setup_class(cls):
         """Run once before all test cases."""
@@ -262,13 +283,54 @@ class TestCase(object):
         self._current_test = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0]
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
         self.log_data('setup method', 'started', datetime.now().isoformat())
+
+        # create and log current context
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
         self.log_data('setup method', 'context', self.context)
+
+        # setup per method instance of tcex
+        args = dict(self.default_args)
+        args['tc_log_file'] = os.path.join(self.test_case_feature, 'setup.log')
+        args['tc_logger_name'] = 'tcex-{}-{}'.format(self.test_case_feature, self.test_case_name)
+        self.tcex = TcEx(config=args)
+
+        # initialize new stager instance
+        self._stager = self.stager_init()
+
+        # initialize new validator instance
+        self._validator = self.validator_init()
 
     @property
     def stager(self):
         """Return instance of Stager class."""
-        return Stager(self.get_tcex(self.default_args), logger, self.log_data)
+        return self._stager
+
+    def stager_init(self):
+        """Return instance of Stager class."""
+        tc_log_file = os.path.join(self.test_case_feature, 'stage.log')
+
+        # args data
+        args = dict(self.default_args)
+
+        # override default log level if profiled
+        args['tc_log_level'] = 'warning'
+
+        # set log path to be the feature and test case name
+        args['tc_log_file'] = tc_log_file
+
+        # set a logger name to have a logger specific for stager
+        args['tc_logger_name'] = 'tcex-stager'
+
+        tcex = TcEx(config=args)
+        return Stager(tcex, logger, self.log_data)
+
+    @property
+    def tc_log_file(self):
+        """Return config file name for current test case."""
+        # test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
+        # test_feature = test_data[0].split('/')[1].replace('/', '-')
+        # test_name = test_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
+        return os.path.join(self.test_case_feature, '{}.log'.format(self.test_case_name))
 
     @classmethod
     def teardown_class(cls):
@@ -285,22 +347,40 @@ class TestCase(object):
         self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)
 
     @property
+    def test_case_data(self):
+        """Return partially parsed test case data."""
+        return os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
+
+    @property
+    def test_case_feature(self):
+        """Return partially parsed test case data."""
+        return self.test_case_data[0].split('/')[1].replace('/', '-')
+
+    @property
+    def test_case_name(self):
+        """Return partially parsed test case data."""
+        return self.test_case_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
+
+    @property
     def validator(self):
         """Return instance of Stager class."""
-        return Validator(self.get_tcex(self.default_args), logger, self.log_data)
+        return self._validator
 
-    def run_app_method(self, app, method):
-        """Run the provided App method."""
-        try:
-            getattr(app, method)()
-        except SystemExit as e:
-            self.log.info('[run] Exit Code: {}'.format(e.code))
-            self.log.error('App failed in {}() method ({}).'.format(method, e))
-            self.tcex.log.info('Exit Code: {}'.format(e.code))
-            return e.code
-        except Exception:
-            self.log.error(
-                'App encountered except in {}() method ({}).'.format(method, traceback.format_exc())
-            )
-            return 1
-        return 0
+    def validator_init(self):
+        """Return instance of Stager class."""
+        tc_log_file = os.path.join(self.test_case_feature, 'validate.log')
+
+        # args data
+        args = dict(self.default_args)
+
+        # override default log level if profiled
+        args['tc_log_level'] = 'warning'
+
+        # set log path to be the feature and test case name
+        args['tc_log_file'] = tc_log_file
+
+        # set a logger name to have a logger specific for stager
+        args['tc_logger_name'] = 'tcex-validator'
+
+        tcex = TcEx(config=args)
+        return Validator(tcex, logger, self.log_data)

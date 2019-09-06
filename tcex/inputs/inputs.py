@@ -9,7 +9,7 @@ from .argument_parser import TcArgumentParser
 class Inputs(object):
     """Module for handling inputs passed to App from CLI, Config, SecureParams, and AOT"""
 
-    def __init__(self, tcex, config=None, config_file=None):
+    def __init__(self, tcex, config, config_file=None):
         """Initialize Class Properties.
 
         Input Options:
@@ -24,17 +24,18 @@ class Inputs(object):
             tcex (tcex.TcEx): Instance of TcEx class.
         """
         self.tcex = tcex
-
         # properties
         self._parsed = False
         self._parsed_resolved = False
 
+        # parser
         self.parser = TcArgumentParser()
-        config = config or {}
+
+        # handle config and config_file
         config_file_data = self.config_file(config_file)
         config.update(config_file_data)  # config_file params update config
 
-        # set and update self._default_args
+        # set self._default_args
         self._default_args = Namespace()
         self._default_args_resolved = Namespace()
 
@@ -48,6 +49,9 @@ class Inputs(object):
 
         # update tcex default_args for all dependent modules
         self.tcex._default_args = self._default_args
+
+        # when running locally retrieve any args from the results.tc file
+        self._results_tc_args()
 
         # register token as soon as possible
         self.register_token()
@@ -162,18 +166,10 @@ class Inputs(object):
             args, self._unknown_args = self.parser.parse_known_args(namespace=self._default_args)
             self.config(args.__dict__)
 
-            # when running locally retrieve any args from the results.tc file.  when running in
-            # platform this is done automatically.
-            self._results_tc_args()
-
-            # add api handler
-            if self._default_args.tc_token is not None and self._default_args.tc_log_to_api:
-                self.tcex.logger.add_api_handler()
-
             # set parsed bool to ensure args are only parsed once
             self._parsed = True
 
-            # log unknown arguments only once
+            # log unknown arguments
             self.unknown_args()
 
         return self._default_args
@@ -234,6 +230,7 @@ class Inputs(object):
     def params(self):
         """Return input params."""
         # return self._default_args.__dict__
+        self.args()  # ensure all args are parsed
         return self._default_args
 
     def register_token(self):
@@ -244,7 +241,7 @@ class Inputs(object):
                 'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
             )
 
-    def resolved_args(self):
+    def resolved_args(self, parse=False):
         """Return namespace of args that have all PB variable automatically resolved.
 
         .. Note:: Accessing args should only be done directly in the App.
@@ -252,7 +249,7 @@ class Inputs(object):
         Returns:
             (namespace): ArgParser parsed arguments with Playbook variables automatically resolved.
         """
-        if not self._parsed_resolved:  # only resolve once
+        if not self._parsed_resolved or parse:  # only resolve once
             self.args()
 
             # create new args Namespace for resolved args
@@ -268,7 +265,6 @@ class Inputs(object):
 
             # set parsed bool to ensure args are only parsed once
             self._parsed_resolved = True
-
         return self._default_args_resolved
 
     @property
@@ -343,15 +339,25 @@ class Inputs(object):
 
     def update_logging(self):
         """Mark args as parsed."""
+        if self._default_args.tc_log_level is None:
+            # some Apps use logging while other us tc_log_level. ensure tc_log_level is always
+            # available.
+            self._default_args.tc_log_level = self._default_args.logging
+
         self.tcex.logger.log_info(self._default_args)
+
+        # add api handler
+        if self._default_args.tc_token is not None and self._default_args.tc_log_to_api:
+            self.tcex.logger.add_api_handler(level=self.tcex.default_args.tc_log_level)
 
         # add rotating log handler
         self.tcex.logger.add_rotating_file_handler(
             name='rfh',
-            filename=self.default_args.tc_log_file,
-            path=self.default_args.tc_log_path,
-            backup_count=self.default_args.tc_log_backup_count,
-            max_bytes=self.default_args.tc_log_max_bytes,
+            filename=self._default_args.tc_log_file,
+            path=self._default_args.tc_log_path,
+            backup_count=self._default_args.tc_log_backup_count,
+            max_bytes=self._default_args.tc_log_max_bytes,
+            level=self.tcex.default_args.tc_log_level,
         )
 
         # replay cached log events
