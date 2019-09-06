@@ -4,9 +4,9 @@ Modules
 .. toctree::
    :maxdepth: 3
 
-   tcex.args
    tcex.batch
    tcex.decorators
+   tcex.inputs
    tcex.logger
    tcex.tcex
    tcex.bin

@@ -1,0 +1,619 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.inputs.inputs &mdash; TcEx 1.1.3 documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                1.1.3
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.inputs.inputs</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.inputs.inputs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;TcEx Framework Inputs module&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="k">import</span> <span class="n">Namespace</span>
+<span class="kn">from</span> <span class="nn">.argument_parser</span> <span class="k">import</span> <span class="n">TcArgumentParser</span>
+
+
+<div class="viewcode-block" id="Inputs"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs">[docs]</a><span class="k">class</span> <span class="nc">Inputs</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Module for handling inputs passed to App from CLI, Config, SecureParams, and AOT</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (tcex.TcEx): Instance of TcEx class.</span>
+<span class="sd">        config (dict): A dictionary containing the configuration data for tcex and App.</span>
+<span class="sd">        config_file (str, optional): An filename containing JSON configuration data. Defaults to</span>
+<span class="sd">            None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">config_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Input Options:</span>
+
+<span class="sd">        1. All inputs from CLI args</span>
+<span class="sd">        2. Inputs from CLI arg and from AOT params</span>
+<span class="sd">        3. Inputs from CLI arg and from secure params</span>
+<span class="sd">        4. All inputs from Config params</span>
+<span class="sd">        5. Inputs from Config params and from AOT params</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parsed_resolved</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">TcArgumentParser</span><span class="p">()</span>
+
+        <span class="c1"># handle config and config_file</span>
+        <span class="n">config_file_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_file_data</span><span class="p">)</span>  <span class="c1"># config_file params update config</span>
+
+        <span class="c1"># create empty namespaces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span>
+
+        <span class="c1"># update default_args namespace with config data using dict interface - for option #4 and #5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="c1"># parse CLI args - for option #1, #2, and #3 (additional parsing done in args() method)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span>
+            <span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span>
+        <span class="p">)</span>
+
+        <span class="c1"># update tcex default_args property for all dependent modules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">_default_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span>
+
+        <span class="c1"># when running locally retrieve any args from the results.tc file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results_tc_args</span><span class="p">()</span>
+
+        <span class="c1"># register token as soon as possible (required for the any API call including secure params)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_token</span><span class="p">()</span>
+
+        <span class="c1"># load aot params from redis (blocking) - for options #2 and #5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_aot_params</span><span class="p">()</span>
+
+        <span class="c1"># load secure params from API - for options #3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_secure_params</span><span class="p">()</span>
+
+        <span class="c1"># add default args namespace to parser for add_argument() method</span>
+        <span class="c1"># used to covert any required args in Apps to default values from namespace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span>
+
+        <span class="c1"># update logging now that all required tcex logging parameters are loaded</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_logging</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Inputs._get_secure_params"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._get_secure_params">[docs]</a>    <span class="k">def</span> <span class="nf">_get_secure_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load secure params from the API.</span>
+
+<span class="sd">        # API Response:</span>
+
+<span class="sd">        .. code-block:: javascript</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :lineno-start: 1</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;inputs&quot;:</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;tc_playbook_db_type&quot;: &quot;Redis&quot;,</span>
+<span class="sd">                        &quot;fail_on_error&quot;: true,</span>
+<span class="sd">                        &quot;api_default_org&quot;: &quot;TCI&quot;</span>
+<span class="sd">                    }</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Parameters (&quot;inputs&quot;) from the TC API.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading secure params.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve secure params from API</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/internal/job/execution/parameters&#39;</span><span class="p">)</span>
+
+        <span class="c1"># check for bad status code and response that is not JSON</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Error retrieving secure params from API (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+
+        <span class="n">secure_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">secure_params</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;inputs&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Error retrieving secure params from API (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">secure_params</span></div>
+
+<div class="viewcode-block" id="Inputs._load_aot_params"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._load_aot_params">[docs]</a>    <span class="k">def</span> <span class="nf">_load_aot_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Block and retrieve params from Redis.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_aot_enabled</span><span class="p">:</span>
+            <span class="c1"># update default_args with AOT params</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">aot_blpop</span><span class="p">()</span>
+            <span class="n">updated_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">updated_params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Inputs._load_secure_params"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._load_secure_params">[docs]</a>    <span class="k">def</span> <span class="nf">_load_secure_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse args and return default args.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_secure_params</span><span class="p">:</span>
+            <span class="c1"># update default_args with secure params from API</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_secure_params</span><span class="p">()</span>
+            <span class="n">updated_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">updated_params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Inputs._results_tc_args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._results_tc_args">[docs]</a>    <span class="k">def</span> <span class="nf">_results_tc_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="sd">&quot;&quot;&quot;Read data from results_tc file from previous run of app.</span>
+
+<span class="sd">        This method is only required when not running from within the TcEX platform and is only</span>
+<span class="sd">        intended for testing apps locally.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">result_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rh</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">rh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">result_file</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">or</span> <span class="s1">&#39; = &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; = &#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Inputs.args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.args">[docs]</a>    <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse args if they have not already been parsed and return the Namespace for args.</span>
+
+<span class="sd">        .. Note:: Accessing args should only be done directly in the App.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (namespace): ArgParser parsed arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="ow">or</span> <span class="n">parse</span><span class="p">:</span>
+            <span class="c1"># initialize default args</span>
+            <span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+            <span class="c1"># set parsed bool to ensure args are only parsed once</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># log unknown arguments</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unknown_args</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span></div>
+
+<div class="viewcode-block" id="Inputs.config"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.config">[docs]</a>    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add configuration data to update default_args.</span>
+
+<span class="sd">        Below are the default args that the TcEx frameworks supports. Any App specific args</span>
+<span class="sd">        should be included in the provided data.</span>
+
+<span class="sd">        .. code-block:: javascript</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;api_access_id&quot;: &quot;$env.API_ACCESS_ID&quot;,</span>
+<span class="sd">              &quot;api_default_org&quot;: &quot;$env.API_DEFAULT_ORG&quot;,</span>
+<span class="sd">              &quot;api_secret_key&quot;: &quot;$envs.API_SECRET_KEY&quot;,</span>
+<span class="sd">              &quot;tc_api_path&quot;: &quot;$env.TC_API_PATH&quot;,</span>
+<span class="sd">              &quot;tc_log_level&quot;: &quot;debug&quot;,</span>
+<span class="sd">              &quot;tc_log_path&quot;: &quot;log&quot;,</span>
+<span class="sd">              &quot;tc_owner&quot;: &quot;MyOwner&quot;,</span>
+<span class="sd">              &quot;tc_proxy_host&quot;: &quot;$env.TC_PROXY_HOST&quot;,</span>
+<span class="sd">              &quot;tc_proxy_password&quot;: &quot;$envs.TC_PROXY_PASSWORD&quot;,</span>
+<span class="sd">              &quot;tc_proxy_port&quot;: &quot;$env.TC_PROXY_PORT&quot;,</span>
+<span class="sd">              &quot;tc_proxy_tc&quot;: false,</span>
+<span class="sd">              &quot;tc_proxy_username&quot;: &quot;$env.TC_PROXY_USERNAME&quot;</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (dict): A dictionary of configuration values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># update the arg Namespace via dict</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_data</span><span class="p">)</span>
+
+            <span class="c1"># register token as soon as possible</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_token</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Inputs.config_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.config_file">[docs]</a>    <span class="k">def</span> <span class="nf">config_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load configuration data from provided file and update default_args.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (str): The configuration file name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not load configuration file &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse args and return default args.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return input params.&quot;&quot;&quot;</span>
+        <span class="c1"># return self._default_args.__dict__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">()</span>  <span class="c1"># ensure all args are parsed</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span>
+
+<div class="viewcode-block" id="Inputs.register_token"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.register_token">[docs]</a>    <span class="k">def</span> <span class="nf">register_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register token if provided in args (non-service Apps)&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: swap MainThread with threading.current_thread().name ?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">register_token</span><span class="p">(</span>
+                <span class="s1">&#39;MainThread&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token_expires</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Inputs.resolved_args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.resolved_args">[docs]</a>    <span class="k">def</span> <span class="nf">resolved_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return namespace of args that have all playbook variables automatically resolved.</span>
+
+<span class="sd">        .. Note:: Accessing resolved_args should only be done directly in the App.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (namespace): ArgParser parsed arguments with Playbook variables automatically resolved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsed_resolved</span> <span class="ow">or</span> <span class="n">parse</span><span class="p">:</span>  <span class="c1"># only resolve once</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">()</span>
+
+            <span class="c1"># create new args Namespace for resolved args</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span>
+
+            <span class="c1"># iterate over args and resolve any playbook variables</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">):</span>
+                <span class="n">arg_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_reserved_args</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_val</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">)):</span>
+                        <span class="n">arg_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">arg_val</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">arg_val</span><span class="p">)</span>
+
+            <span class="c1"># set parsed bool to ensure args are only parsed once</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parsed_resolved</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">resolved_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return input params.&quot;&quot;&quot;</span>
+        <span class="c1"># return self._default_args_resolved.__dict__</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tc_bool_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of default ThreatConnect Args that are booleans.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;apply_proxy_external&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;apply_proxy_ext&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;apply_proxy_tc&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_halt_on_error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_aot_enabled&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_log_to_api&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_external&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_tc&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_secure_params&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_verify&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tc_reserved_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of *all* ThreatConnect reserved arg values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;tc_token&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_token_expires&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;api_access_id&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;api_secret_key&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_action&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_chunk&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_halt_on_error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_poll_interval&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_interval_max&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_write_type&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_type&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_context&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_port&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_out_variables&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;api_default_org&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_api_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_in_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_log_file&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_log_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_out_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_secure_params&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_temp_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_user_id&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_host&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_port&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_username&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_password&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_external&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_proxy_tc&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_log_to_api&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_log_level&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;logging&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+<div class="viewcode-block" id="Inputs.unknown_args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.unknown_args">[docs]</a>    <span class="k">def</span> <span class="nf">unknown_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log argparser unknown arguments.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args (list): List of unknown arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Unsupported arg found (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Inputs.update_logging"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.update_logging">[docs]</a>    <span class="k">def</span> <span class="nf">update_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the TcEx logger with appropriate handlers.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_log_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># some Apps use logging while other us tc_log_level. ensure tc_log_level is always</span>
+            <span class="c1"># available.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_log_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">logging</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">)</span>
+
+        <span class="c1"># add api handler</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">add_api_handler</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_level</span><span class="p">)</span>
+
+        <span class="c1"># add rotating log handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">add_rotating_file_handler</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;rfh&#39;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_log_file</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">,</span>
+            <span class="n">backup_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_log_backup_count</span><span class="p">,</span>
+            <span class="n">max_bytes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_log_max_bytes</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_level</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># replay cached log events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">replay_cached_events</span><span class="p">(</span><span class="n">handler_name</span><span class="o">=</span><span class="s1">&#39;cache&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Inputs.update_params"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.update_params">[docs]</a>    <span class="k">def</span> <span class="nf">update_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update params provided by AOT and Secure Params to be of the proper value and type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params (dict): A dictionary containing params to update default_args</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">updated_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># ThreatConnect secure/AOT params could be updated in the future to proper JSON format.</span>
+            <span class="c1"># MultiChoice data should be represented as JSON array and Boolean values should be a</span>
+            <span class="c1"># JSON boolean and not a string.</span>
+            <span class="n">param_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">param_type</span> <span class="o">=</span> <span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">param_allow_multiple</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allowMultiple&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">param_type</span> <span class="o">==</span> <span class="s1">&#39;multichoice&#39;</span> <span class="ow">or</span> <span class="n">param_allow_multiple</span><span class="p">:</span>
+                <span class="c1"># update delimited value to an array for params that have type of MultiChoice.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">list_delimiter</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">param_type</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
+                <span class="c1"># convert boolean input that are passed in as a string (&quot;true&quot; -&gt; True)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_bool_args</span><span class="p">:</span>
+                <span class="c1"># convert default boolean args that are passed in as a string (&quot;true&quot; -&gt; True)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># add args and updated value to dict</span>
+            <span class="n">updated_params</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># update args</span>
+        <span class="k">return</span> <span class="n">updated_params</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Logger Module &mdash; TcEx 1.1.2 documentation</title>
+  <title>Logger Module &mdash; TcEx 1.1.3 documentation</title>
 
 
 
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="TcEx" href="tcex.tcex.html" />
-    <link rel="prev" title="Decorators" href="tcex.decorators.html" />
+    <link rel="prev" title="Inputs Module" href="tcex.inputs.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.2
+                1.1.3
               </div>
 
 
@@ -116,9 +116,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">Modules</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="tcex.args.html">Args Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.batch.html">Batch Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.decorators.html">Decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.inputs.html">Inputs Module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Logger Module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#module-tcex.logger.logger">logger.logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-tcex.logger.api_handler">logger.api_handler</a></li>
@@ -220,7 +220,7 @@
 <p>TcEx Framework Logger module</p>
 <dl class="class">
 <dt id="tcex.logger.logger.Logger">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.logger.</code><code class="sig-name descname">Logger</code><span class="sig-paren">(</span><em class="sig-param">tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.logger.</code><code class="sig-name descname">Logger</code><span class="sig-paren">(</span><em class="sig-param">tcex</em>, <em class="sig-param">logger_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Framework logger module.</p>
 <dl class="method">
@@ -243,7 +243,7 @@
 
 <dl class="method">
 <dt id="tcex.logger.logger.Logger._log_tc_proxy">
-<code class="sig-name descname">_log_tc_proxy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_tc_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_tc_proxy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_log_tc_proxy</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_tc_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_tc_proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the proxy settings.</p>
 </dd></dl>
 
@@ -255,7 +255,7 @@
 
 <dl class="method">
 <dt id="tcex.logger.logger.Logger.add_api_handler">
-<code class="sig-name descname">add_api_handler</code><span class="sig-paren">(</span><em class="sig-param">name='api'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_api_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_api_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_api_handler</code><span class="sig-paren">(</span><em class="sig-param">name='api'</em>, <em class="sig-param">level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_api_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_api_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add API logging handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -265,18 +265,30 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.logger.logger.Logger.add_cache_handler">
+<code class="sig-name descname">add_cache_handler</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_cache_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_cache_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add cache logging handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the handler.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.logger.logger.Logger.add_rotating_file_handler">
-<code class="sig-name descname">add_rotating_file_handler</code><span class="sig-paren">(</span><em class="sig-param">name='rfh'</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">level=None</em>, <em class="sig-param">formatter=None</em>, <em class="sig-param">backup_count=None</em>, <em class="sig-param">max_bytes=None</em>, <em class="sig-param">mode=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_rotating_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_rotating_file_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_rotating_file_handler</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">filename</em>, <em class="sig-param">path</em>, <em class="sig-param">backup_count</em>, <em class="sig-param">max_bytes</em>, <em class="sig-param">level</em>, <em class="sig-param">formatter=None</em>, <em class="sig-param">mode='a'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_rotating_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_rotating_file_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a rotating file handler</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the handler. Defaults to ‘rfh’.</p></li>
 <li><p><strong>filename</strong> (<em>str</em>) – The name of the logfile.</p></li>
-<li><p><strong>level</strong> (<em>int</em><em>, </em><em>optional</em>) – The logging level. Defaults to None.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – The path for the logfile.</p></li>
+<li><p><strong>backup_count</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum # of backup files. Defaults to 0.</p></li>
+<li><p><strong>max_bytes</strong> (<em>int</em>) – The max file size before rotating. Defaults to 0.</p></li>
+<li><p><strong>level</strong> (<em>str</em>) – The logging level. Defaults to None.</p></li>
 <li><p><strong>formatter</strong> (<em>str</em><em>, </em><em>optional</em>) – The logging formatter to use. Defaults to None.</p></li>
-<li><p><strong>backupCount</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum # of backup files. Defaults to 0.</p></li>
-<li><p><strong>max_bytes</strong> (<em>int</em><em>, </em><em>optional</em>) – The max file size before rotating. Defaults to 0.</p></li>
 <li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – The write mode for the file. Defaults to ‘a’.</p></li>
 </ul>
 </dd>
@@ -300,15 +312,16 @@
 
 <dl class="method">
 <dt id="tcex.logger.logger.Logger.add_thread_file_handler">
-<code class="sig-name descname">add_thread_file_handler</code><span class="sig-paren">(</span><em class="sig-param">name='fh'</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">formatter=None</em>, <em class="sig-param">level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_thread_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_thread_file_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_thread_file_handler</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">filename</em>, <em class="sig-param">level</em>, <em class="sig-param">path</em>, <em class="sig-param">formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_thread_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_thread_file_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add File logging handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the handler. Defaults to ‘sh’.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the handler.</p></li>
 <li><p><strong>filename</strong> (<em>str</em>) – The name of the logfile.</p></li>
-<li><p><strong>formatter</strong> (<em>str</em><em>, </em><em>optional</em>) – The logging formatter to use. Defaults to None.</p></li>
 <li><p><strong>level</strong> (<em>int</em><em>, </em><em>optional</em>) – The logging level. Defaults to None.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – The path for the logfile.</p></li>
+<li><p><strong>formatter</strong> (<em>str</em><em>, </em><em>optional</em>) – The logging formatter to use. Defaults to None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -322,14 +335,19 @@
 
 <dl class="method">
 <dt id="tcex.logger.logger.Logger.log_info">
-<code class="sig-name descname">log_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.log_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.log_info" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log_info</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.log_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.log_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send System and App data to logs.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.logger.logger.Logger.logging_level">
-<em class="property">property </em><code class="sig-name descname">logging_level</code><a class="headerlink" href="#tcex.logger.logger.Logger.logging_level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the configured logging level.</p>
+<dt id="tcex.logger.logger.Logger.log_level">
+<em class="property">static </em><code class="sig-name descname">log_level</code><span class="sig-paren">(</span><em class="sig-param">level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.log_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.log_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return proper level from string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> (<em>str</em>) – The logging level. Default to ‘debug’.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -344,8 +362,14 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.logger.logger.Logger.replay_cached_events">
+<code class="sig-name descname">replay_cached_events</code><span class="sig-paren">(</span><em class="sig-param">handler_name='cache'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.replay_cached_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.replay_cached_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replay cached log events and remove handler.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.logger.logger.Logger.update_handler_level">
-<code class="sig-name descname">update_handler_level</code><span class="sig-paren">(</span><em class="sig-param">level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.update_handler_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.update_handler_level" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_handler_level</code><span class="sig-paren">(</span><em class="sig-param">level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.update_handler_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.update_handler_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update all handlers log level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -508,7 +532,7 @@
         <a href="tcex.tcex.html" class="btn btn-neutral float-right" title="TcEx" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="tcex.decorators.html" class="btn btn-neutral float-left" title="Decorators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.inputs.html" class="btn btn-neutral float-left" title="Inputs Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
