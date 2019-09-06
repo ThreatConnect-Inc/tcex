@@ -219,7 +219,7 @@ class Logger(object):
             self.log.info('App Version: {}'.format(self.tcex.ij.program_version))
             if self.tcex.ij.commit_hash is not None:
                 self.log.info('App Commit Hash: {}'.format(self.tcex.ij.commit_hash))
-        except Exception:
+        except Exception:  # pragma: no cover
             pass
 
     def _log_platform(self):

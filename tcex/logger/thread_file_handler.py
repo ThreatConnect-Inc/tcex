@@ -17,7 +17,7 @@ class ThreadFileHandler(logging.FileHandler):
             encoding (str, optional): The log file encoding. Defaults to None.
             delay (int, optional): The delay period. Defaults to 0.
         """
-        if not os.path.exists(os.path.dirname(filename)):
+        if not os.path.exists(os.path.dirname(filename)):  # pragma: no cover
             try:
                 # pylint: disable=unexpected-keyword-arg
                 os.makedirs(os.path.dirname(filename), exist_ok=True)

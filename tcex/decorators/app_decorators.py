@@ -82,11 +82,10 @@ class Debug(object):
             Args:
                 app (class): The instance of the App class "self".
             """
-
             data = fn(app, *args, **kwargs)
             app.tcex.log.debug(
                 'function: "{}", args: "{}", kwargs: "{}"'.format(
-                    self.__class__.__name__, vars(args), kwargs
+                    self.__class__.__name__, args, kwargs
                 )
             )
             return data
@@ -341,7 +340,7 @@ class IterateOnArg(object):
                 # Add logging for debug/troubleshooting
                 if (
                     arg_type not in ['Binary', 'BinaryArray']
-                    and app.tcex.log.getEffectiveLevel() == 10
+                    and app.tcex.log.getEffectiveLevel() <= 10
                 ):
                     log_string = str(s)
                     if len(log_string) > 100:

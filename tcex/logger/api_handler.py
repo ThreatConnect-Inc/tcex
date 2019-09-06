@@ -31,7 +31,7 @@ class ApiHandler(logging.Handler):
         Args:
             record (obj): The record to be logged.
         """
-        if threading.current_thread().name != 'MainThread':
+        if threading.current_thread().name != 'MainThread':  # pragma: no cover
             return
 
         # queue log events

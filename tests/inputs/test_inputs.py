@@ -52,6 +52,8 @@ class TestInputsConfig:
         """
         # update config data
         config_data['name'] = 'pytest'
+        # test apps that use logging over tc_log_level
+        config_data['logging'] = config_data.pop('tc_log_level')
         config_data['tc_log_file'] = tc_log_file
         config_data['tc_log_to_api'] = True
 
