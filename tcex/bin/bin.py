@@ -283,7 +283,8 @@ class Bin(object):
                 except ValueError as e:
                     self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
             else:
-                self.handle_error('File "{}" could not be found.'.format(file_fqpn))
+                # self.handle_error('File "{}" could not be found.'.format(file_fqpn))
+                self._tcex_json = {}
         return self._tcex_json
 
     @staticmethod

@@ -45,7 +45,7 @@ if __name__ == '__main__':
     from tcex import TcEx
     from app import App
 
-    tcex = TcEx()
+    tcex = TcEx(config_file='app_config.json')
 
     try:
         # load App class

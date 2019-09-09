@@ -12,7 +12,6 @@ class ExternalApp(object):
         self.tcex = _tcex
         self.args = None
         self.exit_message = 'Success'
-        self.tcex.tcex_args.config_file('app_config.json')
         self.args = self.tcex.args
 
     def done(self):
