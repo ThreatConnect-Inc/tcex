@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Notification Module."""
 
-from ..tcex_init import tcex
-
 
 # pylint: disable=W0201
 class TestNotification:
@@ -12,7 +10,7 @@ class TestNotification:
         """Configure setup before all tests."""
 
     @staticmethod
-    def test_notification_organization():
+    def test_notification_organization(tcex):
         """Test org notification."""
         notification = tcex.notification()
         notification.org(notification_type='PyTest notification', priority='Low')
@@ -20,7 +18,7 @@ class TestNotification:
         assert status.get('status') == 'Success'
 
     @staticmethod
-    def test_notification_recipients():
+    def test_notification_recipients(tcex):
         """Test org notification."""
         notification = tcex.notification()
         notification.recipients(
@@ -30,3 +28,15 @@ class TestNotification:
         )
         status = notification.send(message='High alert send to recipients.')
         assert status.get('status') == 'Success'
+
+    @staticmethod
+    def test_notification_invalid_recipients(tcex):
+        """Test org notification."""
+        notification = tcex.notification()
+        notification.recipients(
+            notification_type='PyTest recipients notification',
+            recipients='bob@tci.ninja',
+            priority='High',
+        )
+        status = notification.send(message='High alert send to recipients.')
+        assert status.get('status') == 'Failure'

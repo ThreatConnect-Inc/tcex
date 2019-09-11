@@ -14,19 +14,20 @@ from .trace_logger import TraceLogger
 class Logger(object):
     """Framework logger module."""
 
-    def __init__(self, tcex):
+    def __init__(self, tcex, logger_name):
         """Initialize Class Properties.
 
         Args:
             tcex (tcex.TcEx): Instance of TcEx class.
         """
         self.tcex = tcex
+        self.logger_name = logger_name
 
     @property
     def _logger(self):
         """Return the logger. The default_args property is not available in init."""
         logging.setLoggerClass(TraceLogger)
-        logger = logging.getLogger('tcex')
+        logger = logging.getLogger(self.logger_name)
         logger.setLevel(logging.TRACE)
         return logger
 
@@ -53,16 +54,16 @@ class Logger(object):
         """Return logger."""
         return self._logger
 
-    @property
-    def logging_level(self):
-        """Return the configured logging level."""
-        level = 'DEBUG'
-        if hasattr(self.tcex, 'tcex_args'):
-            if self.tcex.default_args.logging is not None:
-                level = self.tcex.default_args.logging.upper()  # pragma: no cover
-            elif self.tcex.default_args.tc_log_level is not None:
-                level = self.tcex.default_args.tc_log_level.upper()
-        return logging.getLevelName(level)
+    @staticmethod
+    def log_level(level):
+        """Return proper level from string.
+
+        Args:
+            level (str): The logging level. Default to 'debug'.
+        """
+        if level is None:
+            level = 'debug'
+        return logging.getLevelName(level.upper())
 
     def remove_handler_by_name(self, handler_name):
         """Remove a file handler by name.
@@ -79,31 +80,29 @@ class Logger(object):
         """Replay cached log events and remove handler."""
         for h in self._logger.handlers:
             if h.get_name() == handler_name:
-                for event in h.events:
-                    self._logger.handle(event)
+                events = h.events
                 self._logger.removeHandler(h)
+                for event in events:
+                    self._logger.handle(event)
                 break
 
-    def update_handler_level(self, level=None):
+    def update_handler_level(self, level):
         """Update all handlers log level.
 
         Args:
             level (int, optional): The logging level. Defaults to None.
         """
-        updated_level = self.logging_level
-        if level is not None:
-            # if level is not provided get level from args
-            updated_level = logging.getLevelName(level.upper())
+        level = self.log_level(level)
 
         # update all handler logging levels
         for h in self._logger.handlers:
-            h.setLevel(updated_level)
+            h.setLevel(level)
 
     #
     # handlers
     #
 
-    def add_api_handler(self, name='api'):
+    def add_api_handler(self, name='api', level=None):
         """Add API logging handler.
 
         Args:
@@ -112,7 +111,7 @@ class Logger(object):
         self.remove_handler_by_name(name)
         api = ApiHandler(self.tcex.session)
         api.set_name(name)
-        api.setLevel(self.logging_level)
+        api.setLevel(self.log_level(level))
         api.setFormatter(ApiHandlerFormatter())
         self._logger.addHandler(api)
 
@@ -127,12 +126,12 @@ class Logger(object):
         cache.set_name(name)
         # set logging level to INFO as event will typically be only those that happen before args
         # are processed
-        cache.setLevel('INFO')
+        cache.setLevel(self.log_level('trace'))
         cache.setFormatter(self._formatter)
         self._logger.addHandler(cache)
 
     def add_rotating_file_handler(
-        self, name, filename, path, backup_count, max_bytes, formatter=None, level=None, mode='a'
+        self, name, filename, path, backup_count, max_bytes, level, formatter=None, mode='a'
     ):
         """Add a rotating file handler
 
@@ -141,21 +140,21 @@ class Logger(object):
             filename (str): The name of the logfile.
             path (str): The path for the logfile.
             backup_count (int, optional): The maximum # of backup files. Defaults to 0.
-            max_bytes (int, optional): The max file size before rotating. Defaults to 0.
+            max_bytes (int): The max file size before rotating. Defaults to 0.
+            level (str): The logging level. Defaults to None.
             formatter (str, optional): The logging formatter to use. Defaults to None.
-            level (int, optional): The logging level. Defaults to None.
             mode (str, optional): The write mode for the file. Defaults to 'a'.
         """
         self.remove_handler_by_name(name)
         formatter = formatter or self._formatter_thread_name
-        level = level or self.logging_level
+
         # create customized handler
         fh = RotatingFileHandlerCustom(
             os.path.join(path, filename), backupCount=backup_count, maxBytes=max_bytes, mode=mode
         )
         fh.set_name(name)
         fh.setFormatter(formatter)
-        fh.setLevel(level)
+        fh.setLevel(self.log_level(level))
         self._logger.addHandler(fh)
 
     def add_stream_handler(self, name='sh', formatter=None, level=None):
@@ -168,32 +167,30 @@ class Logger(object):
         """
         self.remove_handler_by_name(name)
         formatter = formatter or self._formatter
-        level = level or self.logging_level
         # create handler
         sh = logging.StreamHandler()
         sh.set_name(name)
         sh.setFormatter(formatter)
-        sh.setLevel(level)
+        sh.setLevel(self.log_level(level))
         self._logger.addHandler(sh)
 
-    def add_thread_file_handler(self, name, filename, path, formatter=None, level=None):
+    def add_thread_file_handler(self, name, filename, level, path, formatter=None):
         """Add File logging handler.
 
         Args:
             name (str): The name of the handler.
             filename (str): The name of the logfile.
+            level (int, optional): The logging level. Defaults to None.
             path (str): The path for the logfile.
             formatter (str, optional): The logging formatter to use. Defaults to None.
-            level (int, optional): The logging level. Defaults to None.
         """
         self.remove_handler_by_name(name)
         formatter = formatter or self._formatter
-        level = level or self.logging_level
         # create customized handler
         fh = ThreadFileHandler(os.path.join(path, filename))
         fh.set_name(name)
         fh.setFormatter(formatter)
-        fh.setLevel(level)
+        fh.setLevel(self.log_level(level))
         self._logger.addHandler(fh)
 
     #
@@ -222,7 +219,7 @@ class Logger(object):
             self.log.info('App Version: {}'.format(self.tcex.ij.program_version))
             if self.tcex.ij.commit_hash is not None:
                 self.log.info('App Commit Hash: {}'.format(self.tcex.ij.commit_hash))
-        except Exception:
+        except Exception:  # pragma: no cover
             pass
 
     def _log_platform(self):

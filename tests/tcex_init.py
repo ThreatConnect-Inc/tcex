@@ -12,15 +12,15 @@ tc_token = TcToken()
 
 
 # a token in required for DataStore testing
-if not os.getenv('TC_TOKEN'):
-    raise RuntimeError('A Token is required to run tests.')
+# if not os.getenv('TC_TOKEN'):
+#     raise RuntimeError('A Token is required to run tests.')
 
 config_data = {
     # connection
     'api_default_org': os.getenv('API_DEFAULT_ORG'),
     # 'tc_token': tc_token.service_token,
-    # 'tc_token': tc_token.api_token,
-    'tc_token': os.getenv('TC_TOKEN'),
+    'tc_token': tc_token.api_token,
+    # 'tc_token': os.getenv('TC_TOKEN'),
     'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
     'tc_owner': os.getenv('TC_OWNER', 'TCI'),
     # hmac auth (for session tests)

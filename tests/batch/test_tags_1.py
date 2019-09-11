@@ -10,7 +10,7 @@ class TestTags1:
     def setup_class(self):
         """Configure setup before all tests."""
 
-    @pytest.mark.parametrize('name,description,tag', [('pytest-adversary-i1-001', 'PyTest1')])
+    @pytest.mark.parametrize('name,tag', [('pytest-adversary-i1-001', 'PyTest1')])
     def test_tag(self, name, tag, tcex):
         """Test adversary creation"""
         import os

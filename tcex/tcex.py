@@ -14,7 +14,7 @@ try:
 except ImportError:
     from urllib.parse import quote  # Python 3
 
-from .args import Args
+from .inputs import Inputs
 from .logger import Logger
 from .app_config_object import InstallJson
 from .tokens import Tokens
@@ -41,6 +41,8 @@ class TcEx(object):
         signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Property defaults
+        self._config = kwargs.get('config', {})
+        self._default_args = None
         self._error_codes = None
         self._exit_code = 0
         self._indicator_associations_types_data = {}
@@ -60,10 +62,7 @@ class TcEx(object):
         self._log = kwargs.get('logger')
 
         # init args (needs logger)
-        self.tcex_args = Args(self)
-        self.tcex_args.config(kwargs.get('config'))
-        self.tcex_args.config_file(kwargs.get('config_file'))
-        self.default_args = self.tcex_args.default_args
+        self.inputs = Inputs(self, self._config, kwargs.get('config_file'))
 
         # include resources module
         self._resources()
@@ -189,7 +188,7 @@ class TcEx(object):
     @property
     def args(self):
         """Argparser args Namespace."""
-        return self.tcex_args.args()
+        return self.inputs.args()
 
     def batch(
         self,
@@ -262,6 +261,11 @@ class TcEx(object):
         from .datastore import DataStore
 
         return DataStore(self, domain, data_type, mapping)
+
+    @property
+    def default_args(self):
+        """Argparser args Namespace."""
+        return self._default_args
 
     @property
     def error_codes(self):
@@ -498,7 +502,8 @@ class TcEx(object):
     def logger(self):
         """Return logger."""
         if self._logger is None:
-            self._logger = Logger(self)
+            logger_name = self._config.get('tc_logger_name', 'tcex')
+            self._logger = Logger(self, logger_name)
             self._logger.add_cache_handler('cache')
         return self._logger
 
@@ -556,7 +561,7 @@ class TcEx(object):
     @property
     def parser(self):
         """Instance tcex args parser."""
-        return self.tcex_args.parser
+        return self.inputs.parser
 
     @property
     def playbook(self):
@@ -617,7 +622,7 @@ class TcEx(object):
     @property
     def rargs(self):
         """Return argparser args Namespace with Playbook args automatically resolved."""
-        return self.tcex_args.resolved_args()
+        return self.inputs.resolved_args()
 
     def request(self, session=None):
         """Return an instance of the Request Class.

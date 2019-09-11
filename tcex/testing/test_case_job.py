@@ -56,6 +56,7 @@ class TestCaseJob(TestCase):
         if exit_code != 0:
             return exit_code
 
+        app.tcex.log.info('Exit Code: {}'.format(app.tcex.exit_code))
         return self._exit(app.tcex.exit_code)
 
     def run_profile(self, profile):
@@ -73,4 +74,4 @@ class TestCaseJob(TestCase):
         # run the App
         exit_code = self.run(args)
 
-        return self._exit(exit_code)
+        return exit_code

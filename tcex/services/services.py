@@ -165,6 +165,7 @@ class Services(object):
         self.tcex.logger.add_thread_file_handler(
             name=self.thread_name,
             filename=self.session_logfile,
+            level=self.tcex.default_args.tc_log_level,
             path=self.tcex.default_args.tc_log_path,
         )
         self.tcex.log.info('Handling fire event trigger ({})'.format(self.thread_name))
@@ -727,6 +728,7 @@ class Services(object):
         self.tcex.logger.add_thread_file_handler(
             name=self.thread_name,
             filename=self.session_logfile,
+            level=self.tcex.default_args.tc_log_level,
             path=self.tcex.default_args.tc_log_path,
         )
         self.tcex.log.trace('Process webhook event trigger')

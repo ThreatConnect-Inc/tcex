@@ -4,7 +4,7 @@ import time
 
 
 # pylint: disable=W0201
-class TestDataStore:
+class TestCache:
     """Test the TcEx DataStore Module."""
 
     def setup_class(self):
@@ -12,12 +12,13 @@ class TestDataStore:
         self.data_type = 'pytest'
 
     @staticmethod
-    def expired_data_callback(rid):
+    def expired_data_callback(rid):  # pylint: disable=unused-argument
         """Return dummy data for cache callback."""
-        return {'dummy-data': rid}
+        return {'results': 'not-cached'}
 
-    def test_cache_add(self, tcex, rid='cache-one', data=None, expire=1):
+    def test_cache_add(self, tcex, rid='cache-one', data=None, expire=10):
         """Test data store add."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         if data is None:
             data = {'one': 1}
         cache = tcex.cache('local', self.data_type, expire)
@@ -27,33 +28,46 @@ class TestDataStore:
 
     def test_cache_delete(self, tcex, rid='cache-delete'):
         """Test data store add."""
-        self.test_cache_add(rid, {'delete': 'delete'})
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        cache = tcex.cache('local', self.data_type, 10)
 
-        cache = tcex.cache('local', self.data_type, 1)
+        # add entry to be deleted
+        cache.add(rid=rid, data={'one': 1})
+
+        # delete cache entry
         results = cache.delete(rid=rid)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
-    def test_cache_get(self, tcex, rid='cache-get'):
+    def test_cache_get_cached(self, tcex, rid='cache-get'):
         """Test data store add."""
-        self.test_cache_add(rid, {'get': 'get'})
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        cache = tcex.cache('local', self.data_type, 30)
 
-        cache = tcex.cache('local', self.data_type, 1)
+        # add entry to get
+        cache.add(rid=rid, data={'results': 'cached'})
+
+        # get cache entry
         results = cache.get(rid=rid)
-        assert results.get('get') == 'get'
+        assert results.get('results') == 'cached'
 
     def test_cache_get_expired(self, tcex, rid='cache-get-expire'):
         """Test data store add."""
-        self.test_cache_add(rid, {'get': 'get'}, expire=1)
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        cache = tcex.cache('local', self.data_type, 10)
 
-        time.sleep(61)
-        cache = tcex.cache('local', self.data_type, 1)
+        # add entry to be retrieved
+        results = cache.add(rid=rid, data={'one': 5}, ttl_seconds=5)
+
+        time.sleep(10)
         results = cache.get(rid=rid, data_callback=self.expired_data_callback)
-        assert results.get('dummy-data') == 'cache-get-expire'
+        print('results', results)
+        assert results.get('results') == 'not-cached'
 
-    def test_cache_update(self, tcex, rid='cache-one', data=None, expire=1):
+    def test_cache_update(self, tcex, rid='cache-one', data=None, expire=10):
         """Test data store add."""
+        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         if data is None:
             data = {'one': 1}
         cache = tcex.cache('local', self.data_type, expire)

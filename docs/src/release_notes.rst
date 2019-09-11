@@ -8,9 +8,10 @@ Release Notes
 + Added cache handler to logging module.
 + Updated args module to use dict input over sys.argv when possible.
 + Updated args module replaced required args with a default value when possible.
-+ Removed reference to args in logging module where possible.
-+ Updated testing module to work with changes to args module.
++ Updated testing module for args changes and more.
 + Updated logging add handler calls in multiple modules.
++ Renamed args module to inputs.
++ Removed reference to args in logging module.
 
 1.1.2
 =====

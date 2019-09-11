@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
-import os
 import threading
 import time
-
-# from ..tcex_init import tcex
-
-# define thread logfile
-logfile = os.path.join('pytest', 'pytest.log')
 
 
 class TestLogs:
@@ -102,7 +96,7 @@ class TestLogs:
         """Testing token setters."""
         args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         tcex.token.token = tc_api_token
-        tcex.token.token_expires = os.getenv('TC_TOKEN_EXPIRES')
+        tcex.token.token_expires = '1700000000'
 
         try:
             r = tcex.session.get('/v2/owners')
@@ -130,7 +124,7 @@ class TestLogs:
         tcex.token.unregister_token(token_key)
 
     def token_thread_fail(self, tcex, key):
-        """Method to test token failure."""
+        """Test token failure."""
         tcex.token.register_thread(key, self.thread_name)
 
         # sleep until token renewal
@@ -144,7 +138,7 @@ class TestLogs:
         tcex.token.unregister_thread(key, self.thread_name)
 
     def token_thread_pass(self, tcex, key, sleep=True, register_thread=True):
-        """Method to ensure token is valid."""
+        """Test token is pass."""
         if register_thread:
             tcex.token.register_thread(key, self.thread_name)
 

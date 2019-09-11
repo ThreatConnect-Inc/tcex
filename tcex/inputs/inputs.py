@@ -1,37 +1,80 @@
 # -*- coding: utf-8 -*-
-"""TcEx Framework"""
+"""TcEx Framework Inputs module"""
 import json
 import os
 from argparse import Namespace
 from .argument_parser import TcArgumentParser
 
 
-class Args(object):
-    """Module for handling args passed to App from CLI, SecureParams, and AOT"""
+class Inputs(object):
+    """Module for handling inputs passed to App from CLI, Config, SecureParams, and AOT
 
-    def __init__(self, tcex):
+    Args:
+        tcex (tcex.TcEx): Instance of TcEx class.
+        config (dict): A dictionary containing the configuration data for tcex and App.
+        config_file (str, optional): An filename containing JSON configuration data. Defaults to
+            None.
+    """
+
+    def __init__(self, tcex, config, config_file=None):
         """Initialize Class Properties.
 
-        Args:
-            tcex (tcex.TcEx): Instance of TcEx class.
+        Input Options:
+
+        1. All inputs from CLI args
+        2. Inputs from CLI arg and from AOT params
+        3. Inputs from CLI arg and from secure params
+        4. All inputs from Config params
+        5. Inputs from Config params and from AOT params
         """
         self.tcex = tcex
 
-        # track optional arg input to only parse once
-        self._loaded_aot = False
-        self._loaded_secure_params = False
-
+        # properties
         self._parsed = False
         self._parsed_resolved = False
 
-        # parser and arg properties
+        # parser
         self.parser = TcArgumentParser()
-        self._default_args, self._unknown_args = self.parser.parse_known_args()
-        self.register_token()  # register token as soon as possible
+
+        # handle config and config_file
+        config_file_data = self.config_file(config_file)
+        config.update(config_file_data)  # config_file params update config
+
+        # create empty namespaces
+        self._default_args = Namespace()
         self._default_args_resolved = Namespace()
+
+        # update default_args namespace with config data using dict interface - for option #4 and #5
+        self._default_args.__dict__.update(config)
+
+        # parse CLI args - for option #1, #2, and #3 (additional parsing done in args() method)
+        self._default_args, self._unknown_args = self.parser.parse_known_args(
+            namespace=self._default_args
+        )
+
+        # update tcex default_args property for all dependent modules
+        self.tcex._default_args = self._default_args
+
+        # when running locally retrieve any args from the results.tc file
+        self._results_tc_args()
+
+        # register token as soon as possible (required for the any API call including secure params)
+        self.register_token()
+
+        # load aot params from redis (blocking) - for options #2 and #5
+        self._load_aot_params()
+
+        # load secure params from API - for options #3
+        self._load_secure_params()
+
+        # add default args namespace to parser for add_argument() method
+        # used to covert any required args in Apps to default values from namespace
         self.parser.namespace = self._default_args
 
-    def _load_secure_params(self):
+        # update logging now that all required tcex logging parameters are loaded
+        self.update_logging()
+
+    def _get_secure_params(self):
         """Load secure params from the API.
 
         # API Response:
@@ -53,7 +96,8 @@ class Args(object):
             dict: Parameters ("inputs") from the TC API.
         """
         self.tcex.log.info('Loading secure params.')
-        # Retrieve secure params
+
+        # Retrieve secure params from API
         r = self.tcex.session.get('/internal/job/execution/parameters')
 
         # check for bad status code and response that is not JSON
@@ -70,14 +114,27 @@ class Args(object):
 
         return secure_params
 
+    def _load_aot_params(self):
+        """Block and retrieve params from Redis."""
+        if self._default_args.tc_aot_enabled:
+            # update default_args with AOT params
+            params = self.tcex.playbook.aot_blpop()
+            updated_params = self.update_params(params)
+            self.config(updated_params)
+
+    def _load_secure_params(self):
+        """Parse args and return default args."""
+        if self._default_args.tc_secure_params:
+            # update default_args with secure params from API
+            params = self._get_secure_params()
+            updated_params = self.update_params(params)
+            self.config(updated_params)
+
     def _results_tc_args(self):  # pragma: no cover
         """Read data from results_tc file from previous run of app.
 
-        This method is only required when not running from the with the
-        TcEX platform and is only intended for testing apps locally.
-
-        Returns:
-            (dictionary): A dictionary of values written to results_tc.
+        This method is only required when not running from within the TcEX platform and is only
+        intended for testing apps locally.
         """
         results = []
         if os.access(self.default_args.tc_out_path, os.W_OK):
@@ -100,7 +157,7 @@ class Args(object):
                 value = None
             setattr(self._default_args, key, value)
 
-    def args(self):
+    def args(self, parse=False):
         """Parse args if they have not already been parsed and return the Namespace for args.
 
         .. Note:: Accessing args should only be done directly in the App.
@@ -108,27 +165,20 @@ class Args(object):
         Returns:
             (namespace): ArgParser parsed arguments.
         """
-        if not self._parsed:  # only resolve once
-            self.init_default_args()
-
+        if not self._parsed or parse:
             # initialize default args
             args, self._unknown_args = self.parser.parse_known_args(namespace=self._default_args)
             self.config(args.__dict__)
 
-            # when running locally retrieve any args from the results.tc file.  when running in
-            # platform this is done automatically.
-            self._results_tc_args()
-
-            # add api handler
-            if self._default_args.tc_token is not None and self._default_args.tc_log_to_api:
-                self.tcex.logger.add_api_handler()
-
             # set parsed bool to ensure args are only parsed once
             self._parsed = True
 
+            # log unknown arguments
+            self.unknown_args()
+
         return self._default_args
 
-    def config(self, config_data, complete=True, replace=False):
+    def config(self, config_data):
         """Add configuration data to update default_args.
 
         Below are the default args that the TcEx frameworks supports. Any App specific args
@@ -155,18 +205,11 @@ class Args(object):
             config (dict): A dictionary of configuration values.
         """
         if isinstance(config_data, dict):
-            if replace:
-                # start with fresh args for pytest cases
-                self._default_args, self._unknown_args = self.parser.parse_known_args()
-                self._parsed = False
-
             # update the arg Namespace via dict
             self._default_args.__dict__.update(config_data)
-            self.register_token()  # register token as soon as possible
 
-            if complete:
-                # mark arg parsing as done
-                self.parsing_complete()
+            # register token as soon as possible
+            self.register_token()
 
     def config_file(self, filename):
         """Load configuration data from provided file and update default_args.
@@ -177,54 +220,40 @@ class Args(object):
         if filename is not None:
             if os.path.isfile(filename):
                 with open(filename, 'r') as fh:
-                    self.config(json.load(fh))
+                    return json.load(fh)
             else:
                 self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
+        return {}
 
     @property
     def default_args(self):
         """Parse args and return default args."""
         return self._default_args
 
-    def parsing_complete(self):
-        """Mark args as parsed."""
-        # add rotating log handler
-        self.tcex.logger.add_rotating_file_handler(
-            name='rfh',
-            filename=self.default_args.tc_log_file,
-            path=self.default_args.tc_log_path,
-            backup_count=self.default_args.tc_log_backup_count,
-            max_bytes=self.default_args.tc_log_max_bytes,
-        )
-
-        # replay cached log events
-        self.tcex.logger.replay_cached_events(handler_name='cache')
-
-        # remove cache handler
-        self.tcex.logger.remove_handler_by_name('cache')
-
-        # log unknown arguments only once
-        self.unknown_args()
+    @property
+    def params(self):
+        """Return input params."""
+        # return self._default_args.__dict__
+        self.args()  # ensure all args are parsed
+        return self._default_args
 
     def register_token(self):
         """Register token if provided in args (non-service Apps)"""
         # TODO: swap MainThread with threading.current_thread().name ?
         if self._default_args.tc_token is not None:
-            self.tcex.default_args = self._default_args
             self.tcex.token.register_token(
                 'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
             )
 
-    def resolved_args(self):
-        """Return namespace of args that have all PB variable automatically resolved.
+    def resolved_args(self, parse=False):
+        """Return namespace of args that have all playbook variables automatically resolved.
 
-        .. Note:: Accessing args should only be done directly in the App.
+        .. Note:: Accessing resolved_args should only be done directly in the App.
 
         Returns:
             (namespace): ArgParser parsed arguments with Playbook variables automatically resolved.
         """
-
-        if not self._parsed_resolved:  # only resolve once
+        if not self._parsed_resolved or parse:  # only resolve once
             self.args()
 
             # create new args Namespace for resolved args
@@ -240,26 +269,13 @@ class Args(object):
 
             # set parsed bool to ensure args are only parsed once
             self._parsed_resolved = True
-
         return self._default_args_resolved
 
-    def init_default_args(self):
-        """Parse args and return default args."""
-        # log system and App data
-        self.tcex.logger.log_info(self._default_args)
-
-        if self._default_args.tc_aot_enabled and not self._loaded_aot:
-            # update default_args with AOT params
-            params = self.tcex.playbook.aot_blpop()
-            updated_params = self.update_params(params)
-            self.config(updated_params, False)
-            self._loaded_aot = True  # only load once
-        elif self._default_args.tc_secure_params and not self._loaded_secure_params:
-            # update default_args with secure params from API
-            params = self._load_secure_params()
-            updated_params = self.update_params(params)
-            self.config(updated_params, False)
-            self._loaded_secure_params = True  # only load once
+    @property
+    def resolved_params(self):
+        """Return input params."""
+        # return self._default_args_resolved.__dict__
+        return self._default_args_resolved
 
     @property
     def tc_bool_args(self):
@@ -325,8 +341,34 @@ class Args(object):
         for u in self._unknown_args:
             self.tcex.log.warning(u'Unsupported arg found ({}).'.format(u))
 
+    def update_logging(self):
+        """Update the TcEx logger with appropriate handlers."""
+        if self._default_args.tc_log_level is None:
+            # some Apps use logging while other us tc_log_level. ensure tc_log_level is always
+            # available.
+            self._default_args.tc_log_level = self._default_args.logging
+
+        self.tcex.logger.log_info(self._default_args)
+
+        # add api handler
+        if self._default_args.tc_token is not None and self._default_args.tc_log_to_api:
+            self.tcex.logger.add_api_handler(level=self.tcex.default_args.tc_log_level)
+
+        # add rotating log handler
+        self.tcex.logger.add_rotating_file_handler(
+            name='rfh',
+            filename=self._default_args.tc_log_file,
+            path=self._default_args.tc_log_path,
+            backup_count=self._default_args.tc_log_backup_count,
+            max_bytes=self._default_args.tc_log_max_bytes,
+            level=self.tcex.default_args.tc_log_level,
+        )
+
+        # replay cached log events
+        self.tcex.logger.replay_cached_events(handler_name='cache')
+
     def update_params(self, params):
-        """Update params provided by AOT and Secure Params to be of the proper value
+        """Update params provided by AOT and Secure Params to be of the proper value and type.
 
         Args:
             params (dict): A dictionary containing params to update default_args
