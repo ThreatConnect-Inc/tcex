@@ -6,10 +6,9 @@ import os
 import re
 import time
 import uuid
-
-# import sys
 import traceback
 from datetime import datetime
+import pytest
 from tcex import TcEx
 from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
@@ -68,6 +67,18 @@ class TestCase(object):
 
         tcex = TcEx(config=app_args)
         return App(tcex)
+
+    @staticmethod
+    def check_environment(environments):
+        """Check if test case matches current environments, else skip test.
+
+        Args:
+            environments (list): The test case environments.
+        """
+        test_envs = environments or ['build']
+        os_envs = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
+        if not os_envs.intersection(set(test_envs)):
+            pytest.skip('Profile skipped based on current environment.')
 
     @property
     def default_args(self):

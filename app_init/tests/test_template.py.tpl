@@ -47,11 +47,11 @@ class TestFeature(${parent_class}):
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
-        if profile_name in skip_profiles:
-            pytest.skip('Profile skipped based on current environment.')
-
         # get profile
         pd = self.profile(profile_name)
+
+        # check profile env
+        self.check_environment(pd.get('environments', ['build']))
 
         # uncomment to start using the monkey patch annotations
         # register_monkeypatches(monkeypatch, pd)
