@@ -59,12 +59,10 @@ class TestCaseJob(TestCase):
         app.tcex.log.info('Exit Code: {}'.format(app.tcex.exit_code))
         return self._exit(app.tcex.exit_code)
 
-    def run_profile(self, profile_name):
+    def run_profile(self, profile):
         """Run an App using the profile name."""
-        profile = self.profile(profile_name)
-        if not profile:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
+        if isinstance(profile, str):
+            profile = self.init_profile(profile)
 
         args = {'tc_temp_path': os.path.join(self._app_path, 'log', self.context)}
         self.create_shelf_dir(args['tc_temp_path'])
@@ -72,9 +70,6 @@ class TestCaseJob(TestCase):
         # build args from install.json
         args.update(profile.get('inputs', {}).get('required', {}))
         args.update(profile.get('inputs', {}).get('optional', {}))
-        if not args:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
 
         # run the App
         exit_code = self.run(args)
