@@ -17,7 +17,9 @@ if sys.version_info[0] == 2:
     sys.setdefaultencoding('utf-8')  # pylint: disable=no-member
 
 # get profile names
-profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d'))
+profile_names, skip_profiles = profiles(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d')
+)
 
 
 # pylint: disable=W0235,too-many-function-args
@@ -45,6 +47,10 @@ class TestFeature(${parent_class}):
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
+        if profile_name in skip_profiles:
+            pytest.skip('Profile skipped based on current environment.')
+
+        # get profile
         pd = self.profile(profile_name)
 
         # uncomment to start using the monkey patch annotations

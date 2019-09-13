@@ -5,6 +5,7 @@ import json
 import os
 import re
 import shutil
+import uuid
 import zipfile
 from builtins import range
 
@@ -41,7 +42,7 @@ class Package(Bin):
         self.validation_data = {}
 
     def _update_install_json(self, install_json):
-        """Write install.json file.
+        """Update install.json file.
 
         Args:
             install_json (dict): The contents of the install.json file.
@@ -61,6 +62,15 @@ class Package(Bin):
                 self.package_data['updates'].append(
                     {'action': 'Updated Feature:', 'output': feature}
                 )
+
+        # all App should have an appId to uniquely identify the App. this is not used by core to
+        # identify an App.  using appId + major Version could be used for unique App identification
+        # in core.
+        if install_json.get('appId') is None:
+            install_json['appId'] = str(
+                uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
+            )
+            updated = True
 
         return install_json, updated
 
