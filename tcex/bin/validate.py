@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Validate Module."""
 import ast
-import imp
 import importlib
 import json
 import os
@@ -167,32 +166,28 @@ class Validate(Bin):
         Returns:
             bool: True if the module can be imported, False otherwise.
         """
-        imported = True
-        module_info = ('', '', '')
         # TODO: if possible, update to a cleaner method that doesn't require importing the module
         # and running inline code.
         try:
-            importlib.import_module(module)
-            module_info = imp.find_module(module)
-        except ImportError:
-            imported = False
+            imported_module = importlib.import_module(module)
+            module_path = imported_module.__path__
+        except [ImportError, AttributeError]:
+            return False
 
-        # get module path
-        module_path = module_info[1]
-        description = module_info[2]
+        description = None
+        if hasattr(imported_module, '__description__'):
+            description = imported_module.__description__
 
+        # TODO: Is this really a valid check? I can often see cases where a module doesnt have
+        #  __description__` in the __init__.py file. Should those modules really fail?
         if not description:
-            # if description is None or empty string the module could not be imported
-            imported = False
-        elif not description and not module_path:
-            # if description/module_path are None or empty string the module could not be imported
-            imported = False
-        elif module_path is not None and (
+            return False
+        if module_path is not None and (
             'dist-packages' in module_path or 'site-packages' in module_path
         ):
             # if dist-packages|site-packages in module_path the import doesn't count
-            imported = False
-        return imported
+            return False
+        return True
 
     def check_install_json(self):
         """Check all install.json files for valid schema."""
