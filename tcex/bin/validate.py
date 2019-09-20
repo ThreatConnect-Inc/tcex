@@ -166,27 +166,30 @@ class Validate(Bin):
         Returns:
             bool: True if the module can be imported, False otherwise.
         """
+        if module == 'tcex':
+            try:
+                del sys.modules['tcex']
+            except AttributeError:
+                pass
+
         # TODO: if possible, update to a cleaner method that doesn't require importing the module
         # and running inline code.
         try:
             imported_module = importlib.import_module(module)
             module_path = imported_module.__path__
-        except [ImportError, AttributeError]:
+        except (AttributeError, ImportError):
             return False
 
-        description = None
-        if hasattr(imported_module, '__description__'):
-            description = imported_module.__description__
-
-        # TODO: Is this really a valid check? I can often see cases where a module doesnt have
-        #  __description__` in the __init__.py file. Should those modules really fail?
-        if not description:
+        if module_path is None:
             return False
-        if module_path is not None and (
-            'dist-packages' in module_path or 'site-packages' in module_path
-        ):
+
+        for m_path in module_path:
             # if dist-packages|site-packages in module_path the import doesn't count
-            return False
+            if 'dist-packages' in m_path:
+                return False
+            if 'site-packages' in m_path:
+                return False
+
         return True
 
     def check_install_json(self):
