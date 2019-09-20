@@ -1461,10 +1461,11 @@ class Batch(object):
             halt_on_error = self.halt_on_batch_error
 
         content = self.data
-        if self.debug:
-            # special code for debugging App using batchV2.
-            self.write_batch_json(content)
         if content.get('group') or content.get('indicator'):
+            if self.debug:
+                # special code for debugging App using batchV2.
+                self.write_batch_json(content)
+
             # store the length of the batch data to use for poll interval calculations
             self.tcex.log.info('Batch Group Size: {:,}.'.format(len(content.get('group'))))
             self.tcex.log.info('Batch Indicator Size {:,}.'.format(len(content.get('indicator'))))
