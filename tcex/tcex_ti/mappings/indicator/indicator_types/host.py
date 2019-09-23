@@ -65,3 +65,30 @@ class Host(Indicator):
         return self.tc_requests.dns_resolution(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
+
+    def set_dns_resolution(self, value):
+        """
+        Updates the Host DNS resolution
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.set_dns_resolution(
+            self.api_type, self.api_branch, self.unique_id, value, owner=self.owner
+        )
+
+    def set_whois(self, value):
+        """
+        Updates the Indicators WhoIs
+
+        Args:
+            value:
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+        return self.tc_requests.set_whois(
+            self.api_type, self.api_branch, self.unique_id, value, owner=self.owner
+        )

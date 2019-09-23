@@ -4,6 +4,11 @@ import json
 from tcex.tcex_ti.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
+try:
+    from urllib import unquote  # Python 2
+except ImportError:
+    from urllib.parse import unquote  # Python
+
 
 class TIMappings(object):
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
@@ -860,6 +865,25 @@ class TIMappings(object):
     def is_task():
         """ Determines if the object is a Task. """
         return False
+
+    @staticmethod
+    def is_encoded(uri):
+        """Determines if a uri is currently encoded"""
+        uri = uri or ''
+
+        return uri != unquote(uri)
+
+    def fully_decode_uri(self, uri):
+        """Decodes a url till it is no longer encoded."""
+        saftey_valve = 0
+
+        while self.is_encoded(uri):
+            uri = unquote(uri)
+            saftey_valve += 1
+            if saftey_valve > 10:
+                break
+
+        return uri
 
     def _set_unique_id(self, json_response):
         """ Sets the Unique Id given a json """

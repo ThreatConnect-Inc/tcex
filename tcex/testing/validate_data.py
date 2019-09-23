@@ -209,7 +209,7 @@ class Validator(object):
         if len(paths) == 1:
             dict_1.pop(path_0, None)
             return dict_1
-        self.remove_excludes(dict_1.get(path_0), paths[1:])
+        self.remove_excludes(dict_1.get(path_0, {}), paths[1:])
         return dict_1
 
     def operator_eq(self, app_data, tests_data):

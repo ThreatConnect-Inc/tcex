@@ -79,6 +79,7 @@ class TiTcRequest:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
+
         return self.tcex.session.put(url, params=params, json=data)
 
     def mine(self):
@@ -397,6 +398,78 @@ class TiTcRequest:
             url = '/v2/{}/{}/{}/dnsResolution'.format(main_type, sub_type, unique_id)
 
         return self.tcex.session.get(url, params=params)
+
+    def set_dns_resolution(self, main_type, sub_type, unique_id, value, owner=None):
+        """
+
+         Args:
+             value:
+             owner:
+             main_type:
+             sub_type:
+             unique_id:
+
+         Return:
+
+         """
+        params = {'owner': owner} if owner else {}
+
+        data = {}
+        if self.is_true(value) or self.is_false(value):
+            data['dnsActive'] = self.is_true(value)
+        else:
+            self.tcex.handle_error(925, ['option', 'dns value', 'value', value])
+
+        if not sub_type:
+            url = '/v2/{}/{}'.format(main_type, unique_id)
+        else:
+            url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
+
+        return self.tcex.session.put(url, params=params, json=data)
+
+    def set_whois(self, main_type, sub_type, unique_id, value, owner=None):
+        """
+
+          Args:
+              value:
+              owner:
+              main_type:
+              sub_type:
+              unique_id:
+
+          Return:
+
+          """
+        params = {'owner': owner} if owner else {}
+
+        data = {}
+        if self.is_true(value) or self.is_false(value):
+            data['whoisActive'] = self.is_true(value)
+        else:
+            self.tcex.handle_error(925, ['option', 'whois value', 'value', value])
+
+        if not sub_type:
+            url = '/v2/{}/{}'.format(main_type, unique_id)
+        else:
+            url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
+
+        return self.tcex.session.put(url, params=params, json=data)
+
+    @staticmethod
+    def is_false(value):
+        """checks to see if a string is False"""
+        if not value:
+            return False
+        value = str(value)
+        return value.lower() in ['false', '0', 'f', 'n', 'no']
+
+    @staticmethod
+    def is_true(value):
+        """checks to see if a string is True"""
+        if not value:
+            return False
+        value = str(value)
+        return value.lower() in ['true', '1', 't', 'y', 'yes']
 
     def deleted(self, main_type, sub_type, deleted_since, owner=None, filters=None, params=None):
         """

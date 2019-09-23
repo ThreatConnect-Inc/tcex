@@ -185,7 +185,8 @@ class TestCase(object):
 
         profile = self.populate_system_variables(profile)
         self._staged_tc_data = self.stager.threatconnect.entities(
-            profile.get('stage', {}).get('threatconnect', {}), 'TCI'
+            profile.get('stage', {}).get('threatconnect', {}),
+            profile.get('inputs', {}).get('required', {}).get('owner', None),
         )
         self.generate_tc_output_variables(self._staged_tc_data)
         profile = self.populate_threatconnect_variables(profile)

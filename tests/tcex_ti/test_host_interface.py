@@ -12,6 +12,21 @@ class TestHostIndicators:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
+    @staticmethod
+    def test_host_attribute_create(hostname='www.hostname-title-42355.com'):
+        """Tests that attributes can be appropriately added to hosts"""
+        ti = tcex.ti.indicator(
+            indicator_type='Host',
+            owner=tcex.args.tc_owner,
+            hostname=hostname,
+            dns_active=True,
+            whois_active=True,
+        )
+        ti.create()
+
+        r = ti.add_attribute(attribute_type='External Date Created', attribute_value='blah')
+        assert r.ok
+
     def test_host_get(self, hostname='www.hostname-title-42353.com'):
         """Test host get."""
         # create

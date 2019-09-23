@@ -107,7 +107,7 @@ class ThreatConnect(object):
         entities = self._convert_to_entities(file)
         return self.entities(entities, owner, batch=batch)
 
-    def entities(self, entities, owner, batch=False):
+    def entities(self, entities, owner=None, batch=False):
         """Stages all of the provided entities"""
         response = []
         if batch:
@@ -144,9 +144,10 @@ class ThreatConnect(object):
                 response.append(self.entity(entity, owner))
         return response if not batch else None
 
-    def entity(self, entity, owner):
+    def entity(self, entity, owner=None):
         """Stage data in ThreatConnect"""
         outputs = entity.pop('outputs', {})
+        owner = entity.pop('owner', None) or owner
         created_entity = self.provider.tcex.ti.create_entity(entity, owner)
         created_entity['outputs'] = outputs
         return created_entity
@@ -161,14 +162,16 @@ class ThreatConnect(object):
             ti = None
             if entity_type == 'Group':
                 ti = self.provider.tcex.ti.group(
-                    data.get('sub_type'), unique_id=data.get('unique_id')
+                    data.get('sub_type'), unique_id=data.get('unique_id'), owner=data.get('owner')
                 )
             elif entity_type == 'Indicator':
                 ti = self.provider.tcex.ti.indicator(
-                    data.get('sub_type'), unique_id=data.get('unique_id')
+                    data.get('sub_type'), unique_id=data.get('unique_id'), owner=data.get('owner')
                 )
             elif entity_type == 'Task':
-                ti = self.provider.tcex.ti.group(entity_type, unique_id=data.get('unique_id'))
+                ti = self.provider.tcex.ti.group(
+                    entity_type, unique_id=data.get('unique_id'), owner=data.get('owner')
+                )
             ti.delete()
 
     def clear(self, owner):

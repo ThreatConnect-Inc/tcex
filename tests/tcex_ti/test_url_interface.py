@@ -12,6 +12,31 @@ class TestUrlIndicators:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
+    def test_get_group_associations(self, text='https://url-title-42353.com'):
+        """
+        In regards to INT-1343 now testing for double encoding
+        """
+        # create
+        self.url_create(text)
+
+        # get
+        ti = self.ti.url(text, tcex.args.tc_owner)
+        target = self.ti.signature(
+            'signature-name-65341',
+            'signature-file-name-fdasr',
+            'Snort',
+            'signature-file-content-t5r32',
+            owner=tcex.args.tc_owner,
+        )
+        target.create()
+        ti.add_association(target)
+
+        for group in ti.group_associations():
+            assert group.get('name') == 'signature-name-65341'
+
+        target.delete()
+        ti.delete()
+
     def test_url_get(self, text='https://url-title-42353.com'):
         """Test url get."""
         # create
