@@ -244,6 +244,10 @@ class Playbooks(object):
         Returns:
             (string): Result string of DB write.
         """
+        #  This is if no downstream variables are requested then nothing should be returned.
+        if not self.output_variables_type:
+            return None
+
         results = None
         if key is not None:
             key = key.strip()
