@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.bin &mdash; TcEx 1.1.3 documentation</title>
+  <title>tcex.bin.bin &mdash; TcEx 1.1.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.3
+                1.1.4
               </div>
 
 
@@ -461,7 +461,8 @@
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Failed to load &quot;</span><span class="si">{}</span><span class="s1">&quot; file (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_fqpn</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;File &quot;</span><span class="si">{}</span><span class="s1">&quot; could not be found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_fqpn</span><span class="p">))</span>
+                <span class="c1"># self.handle_error(&#39;File &quot;{}&quot; could not be found.&#39;.format(file_fqpn))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span>
 
 <div class="viewcode-block" id="Bin.update_system_path"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.update_system_path">[docs]</a>    <span class="nd">@staticmethod</span>

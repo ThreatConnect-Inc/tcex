@@ -127,9 +127,34 @@ app.py
 External App Templates
 ----------------------
 
-The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two methods of injecting CLI args are supported.  The first method ,``self.tcex.tcex_args.config_file()``, takes a JSON file as input for the App configuration file. The second method, ``self.tcex.tcex_args.config()``, takes a dictionary of configuration data.  Either method will load the data and make it accessible via the ``self.args`` namespace.
+The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two init params are supported during the initialization of TcEx.  The first param ,``config_file=``, takes a JSON file as input for the App configuration file. The second param, ``config=``, takes a dictionary of configuration data.  Either param will load the data and make it accessible via the ``self.args`` namespace.
 
 The ``run()`` method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the **app.py** file, if required.
+
+.. Important: If not using the template simply initialize the TcEx class by passing either a configuration dictionary or a JSON file containing the configuration data (e.g., tcex = TcEx(config=my_config_dict)).
+
+~~~~~~~~~~~~~~~~~~~
+Example Config data
+~~~~~~~~~~~~~~~~~~~
+
+.. code:: javascript
+
+    {
+      "api_access_id": "API_ACCESS_ID",
+      "api_default_org": "API_DEFAULT_ORG",
+      "api_secret_key": "API_SECRET_KEY",
+      "tc_api_path": "TC_API_PATH",
+      "tc_log_level": "debug",
+      "tc_log_path": "log",
+      "tc_owner": "MyOwner",
+      "tc_proxy_host": "TC_PROXY_HOST",
+      "tc_proxy_password": "TC_PROXY_PASSWORD",
+      "tc_proxy_port": "TC_PROXY_PORT",
+      "tc_proxy_tc": false,
+      "tc_proxy_username": "TC_PROXY_USERNAME"
+    }
+
+In the example above the proxy configuration is only required if using a proxy server in the environment.
 
 External (external)
 ~~~~~~~~~~~~~~~~~~~
