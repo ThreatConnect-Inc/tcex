@@ -24,7 +24,9 @@ class TestHostIndicators:
         )
         ti.create()
 
-        r = ti.add_attribute(attribute_type='External Date Created', attribute_value='blah')
+        r = ti.add_attribute(
+            attribute_type='External Date Created', attribute_value='2017-05-03T14:38:02Z'
+        )
         assert r.ok
 
     def test_host_get(self, hostname='www.hostname-title-42353.com'):
