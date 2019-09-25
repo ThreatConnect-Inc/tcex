@@ -4,10 +4,8 @@ import json
 
 try:
     from urllib import quote_plus  # Python 2
-    from urllib import unquote  # Python 2
 except ImportError:
     from urllib.parse import quote_plus  # Python
-    from urllib.parse import unquote  # Python
 
 from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 
@@ -206,25 +204,6 @@ class Indicator(TIMappings):
     def owner(self):
         return self._owner
 
-    @staticmethod
-    def is_encoded(uri):
-        """Determines if a uri is currently encoded"""
-        uri = uri or ''
-
-        return uri != unquote(uri)
-
-    def fully_decode_uri(self, uri):
-        """Decodes a url till it is no longer encoded."""
-        saftey_valve = 0
-
-        while self.is_encoded(uri):
-            uri = unquote(uri)
-            saftey_valve += 1
-            if saftey_valve > 10:
-                break
-
-        return uri
-
     def can_create(self):
         """
         Overridden by other indicator classes.
@@ -268,6 +247,39 @@ class Indicator(TIMappings):
             self._unique_id = quote_plus(self.fully_decode_uri(value))
         else:
             self._data[key] = value
+
+    def status(self, status=None, cal_status=None):
+        """
+        Updates the Indicators status
+        Args:
+            status:  Valid values to set to active are ['active', '2', '1' ] while
+            ['inactive', '-2', '-1', 0] will set it to inactive
+            cal_status:  Valid values to set to locked are ['locked', 'lock', '1' ] while
+            ['unlock', 'unlocked', '0'] will set it to inactive
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+        if not status and not cal_status:
+            return None
+        request_data = {}
+        if status:
+            status = str(status)
+            if status.lower() in ['active', '2', '1']:
+                request_data['active'] = 2
+            elif status.lower() in ['inactive', '-2', '-1', '0']:
+                request_data['active'] = -2
+        if cal_status:
+            cal_status = str(cal_status)
+            if cal_status.lower() in ['locked', 'lock', '1']:
+                request_data['activeLocked'] = 1
+            elif cal_status.lower() in ['unlock', 'unlocked', '0']:
+                request_data['activeLocked'] = 0
+        return self.tc_requests.update(
+            self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
+        )
 
     def rating(self, value):
         """
@@ -322,7 +334,7 @@ class Indicator(TIMappings):
 
         data = {
             'count': count,
-            'dataObserved': self._utils.format_datetime(
+            'dateObserved': self._utils.format_datetime(
                 date_observed, date_format='%Y-%m-%dT%H:%M:%SZ'
             ),
         }

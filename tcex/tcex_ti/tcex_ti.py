@@ -441,6 +441,7 @@ class TcExTi(object):
             'unique_id': ti.unique_id,
             'api_entity': ti.api_entity,
             'api_branch': ti.api_branch,
+            'owner': owner,
             'attributes': [],
             'tags': [],
             'security_labels': [],
@@ -590,7 +591,9 @@ class TcExTi(object):
             if 'summary' in d:
                 values.append(d.get('summary'))
             else:
-                values.append(value)
+                if resource_type.lower() in ['file']:
+                    value = r.build_summary(d.get('md5'), d.get('sha1'), d.get('sha256'))
+                values.append(r.fully_decode_uri(value))
             entity['value'] = ' : '.join(values)
 
             if r.is_group() or r.is_indicator():
@@ -609,6 +612,10 @@ class TcExTi(object):
                 entity['threatAssessConfidence'] = d.get('threatAssessConfidence')
                 entity['threatAssessRating'] = d.get('threatAssessRating')
                 entity['dateLastModified'] = d.get('lastModified')
+                if 'whoisActive' in keys:
+                    entity['whoisActive'] = d.get('whoisActive')
+                if 'dnsActive' in keys:
+                    entity['dnsActive'] = d.get('dnsActive')
 
             if r.is_task():
                 entity['status'] = d.get('status')
