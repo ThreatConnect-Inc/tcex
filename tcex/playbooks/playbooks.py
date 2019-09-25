@@ -677,16 +677,18 @@ class Playbooks(object):
         if key is not None and value is not None:
             value_encoded = []
             for v in value:
-                try:
-                    # py2
-                    # convert to bytes as required for b64encode
-                    # decode bytes for json serialization as required for json dumps
-                    value_encoded.append(base64.b64encode(bytes(v)).decode('utf-8'))
-                except TypeError:
-                    # py3
-                    # set encoding on string and convert to bytes as required for b64encode
-                    # decode bytes for json serialization as required for json dumps
-                    value_encoded.append(base64.b64encode(bytes(v, 'utf-8')).decode('utf-8'))
+                if v is not None:
+                    try:
+                        # py2
+                        # convert to bytes as required for b64encode
+                        # decode bytes for json serialization as required for json dumps
+                        v = base64.b64encode(bytes(v)).decode('utf-8')
+                    except TypeError:
+                        # py3
+                        # set encoding on string and convert to bytes as required for b64encode
+                        # decode bytes for json serialization as required for json dumps
+                        v = base64.b64encode(bytes(v, 'utf-8')).decode('utf-8')
+                value_encoded.append(v)
             data = self.db.create(key.strip(), json.dumps(value_encoded))
         else:
             self.tcex.log.warning(u'The key or value field was None.')
@@ -709,20 +711,21 @@ class Playbooks(object):
             if data is not None:
                 data_decoded = []
                 for d in json.loads(data, object_pairs_hook=OrderedDict):
-                    if b64decode:
-                        # if requested decode the base64 string
-                        dd = base64.b64decode(d)
-                        if decode:
-                            # if requested decode bytes to a string
-                            try:
-                                dd = dd.decode('utf-8')
-                            except UnicodeDecodeError:
-                                # for data written an upstream java App
-                                dd = dd.decode('latin-1')
-                        data_decoded.append(dd)
-                    else:
-                        # for validation in tcrun it's easier to validate the base64 data
-                        data_decoded.append(d)
+                    if d is not None:
+                        if b64decode:
+                            # if requested decode the base64 string
+                            d = base64.b64decode(d)
+                            if decode:
+                                # if requested decode bytes to a string
+                                try:
+                                    d = d.decode('utf-8')
+                                except UnicodeDecodeError:
+                                    # for data written an upstream java App
+                                    d = d.decode('latin-1')
+                        else:
+                            # for validation in tcrun it's easier to validate the base64 data
+                            data_decoded.append(d)
+                    data_decoded.append(d)
                 data = data_decoded
         else:
             self.tcex.log.warning(u'The key field was None.')
