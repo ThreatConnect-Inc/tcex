@@ -489,6 +489,12 @@ class Redis(object):
         Returns:
             [type]: [description]
         """
+        # remove comment field from kwargs if it exists
+        try:
+            del kwargs['comment']
+        except KeyError:
+            pass
+
         op = op or 'eq'
         if not variable:
             self.provider.log.error('NoneError: Redis Variable not provided')

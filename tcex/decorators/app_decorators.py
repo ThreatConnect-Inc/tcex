@@ -15,7 +15,7 @@ class Benchmark(object):
 
         import time
 
-        @Debug()
+        @Benchmark()
         def my_method():
             time.sleep(1)
     """
