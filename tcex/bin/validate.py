@@ -159,29 +159,37 @@ class Validate(Bin):
     @staticmethod
     def check_imported(module):
         """Check whether the provide module can be imported (package installed).
-
         Args:
             module (str): The name of the module to check availability.
-
         Returns:
             bool: True if the module can be imported, False otherwise.
         """
-        if module == 'tcex':
-            try:
-                del sys.modules['tcex']
-            except AttributeError:
-                pass
-
+        try:
+            del sys.modules[module]
+        except (AttributeError, KeyError):
+            pass
         # TODO: if possible, update to a cleaner method that doesn't require importing the module
         # and running inline code.
+        module_path = None
         try:
             imported_module = importlib.import_module(module)
+        except ImportError:
+            return False
+        if hasattr(imported_module, '__path__'):
+            # module in lib directory
             module_path = imported_module.__path__
-        except (AttributeError, ImportError):
+        elif hasattr(imported_module, '__file__'):
+            # module in base App directory
+            module_path = imported_module.__file__
+        else:
             return False
 
+        # possible unneeded check
         if module_path is None:
             return False
+
+        if isinstance(module_path, str):
+            module_path = [module_path]
 
         for m_path in module_path:
             # if dist-packages|site-packages in module_path the import doesn't count
@@ -189,7 +197,6 @@ class Validate(Bin):
                 return False
             if 'site-packages' in m_path:
                 return False
-
         return True
 
     def check_install_json(self):
