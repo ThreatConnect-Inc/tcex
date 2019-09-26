@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+1.1.5
+=====
++ Updated validation module to handle local imports and shared modules.
+
 1.1.4
 =====
 + Added additional support for v2 API endpoints.
