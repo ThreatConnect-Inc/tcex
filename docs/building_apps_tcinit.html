@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 1.1.3 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 1.1.4 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.3
+                1.1.4
               </div>
 
 
@@ -787,8 +787,25 @@ optional arguments:
 </div>
 <div class="section" id="external-app-templates">
 <h2>External App Templates<a class="headerlink" href="#external-app-templates" title="Permalink to this headline">¶</a></h2>
-<p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two methods of injecting CLI args are supported.  The first method ,``self.tcex.tcex_args.config_file()``, takes a JSON file as input for the App configuration file. The second method, <code class="docutils literal notranslate"><span class="pre">self.tcex.tcex_args.config()</span></code>, takes a dictionary of configuration data.  Either method will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
+<p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two init params are supported during the initialization of TcEx.  The first param ,``config_file=``, takes a JSON file as input for the App configuration file. The second param, <code class="docutils literal notranslate"><span class="pre">config=</span></code>, takes a dictionary of configuration data.  Either param will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the <strong>app.py</strong> file, if required.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;api_access_id&quot;</span><span class="o">:</span> <span class="s2">&quot;API_ACCESS_ID&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;api_default_org&quot;</span><span class="o">:</span> <span class="s2">&quot;API_DEFAULT_ORG&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;api_secret_key&quot;</span><span class="o">:</span> <span class="s2">&quot;API_SECRET_KEY&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_api_path&quot;</span><span class="o">:</span> <span class="s2">&quot;TC_API_PATH&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_log_level&quot;</span><span class="o">:</span> <span class="s2">&quot;debug&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_log_path&quot;</span><span class="o">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_owner&quot;</span><span class="o">:</span> <span class="s2">&quot;MyOwner&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_host&quot;</span><span class="o">:</span> <span class="s2">&quot;TC_PROXY_HOST&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_password&quot;</span><span class="o">:</span> <span class="s2">&quot;TC_PROXY_PASSWORD&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_port&quot;</span><span class="o">:</span> <span class="s2">&quot;TC_PROXY_PORT&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_tc&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_username&quot;</span><span class="o">:</span> <span class="s2">&quot;TC_PROXY_USERNAME&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In the example above the proxy configuration is only required if using a proxy server in the environment.</p>
 <div class="section" id="external-external">
 <h3>External (external)<a class="headerlink" href="#external-external" title="Permalink to this headline">¶</a></h3>
 <p>This basic template provides the structure for an External App without any logic.  This template is intended for advanced users that only require the App structure.</p>

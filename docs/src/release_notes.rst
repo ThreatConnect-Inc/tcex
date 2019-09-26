@@ -3,6 +3,17 @@
 Release Notes
 #############
 
+1.1.4
+=====
++ Added additional support for v2 API endpoints.
++ Added support for new appId field in the install.json.
++ Updated validation command to better handle packages with nested modules.
++ Updated PB module to handle execution with no requested output variables.
++ Updated PB module to handle null values in BinaryArray.
++ Updated TI modules to better handle conversion to and from TCEntity.
++ Updated external App template to allow passing configuration in on TcEx() initialization.
++ Multiple updates for testing framework.
+
 1.1.3
 =====
 + Added cache handler to logging module.

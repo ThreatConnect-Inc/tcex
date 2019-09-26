@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti.tcex_ti &mdash; TcEx 1.1.3 documentation</title>
+  <title>tcex.tcex_ti.tcex_ti &mdash; TcEx 1.1.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.3
+                1.1.4
               </div>
 
 
@@ -619,6 +619,7 @@
             <span class="s1">&#39;unique_id&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
             <span class="s1">&#39;api_entity&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">api_entity</span><span class="p">,</span>
             <span class="s1">&#39;api_branch&#39;</span><span class="p">:</span> <span class="n">ti</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">,</span>
             <span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="p">[],</span>
             <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[],</span>
             <span class="s1">&#39;security_labels&#39;</span><span class="p">:</span> <span class="p">[],</span>
@@ -768,7 +769,9 @@
             <span class="k">if</span> <span class="s1">&#39;summary&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
                 <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">build_summary</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;md5&#39;</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sha1&#39;</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sha256&#39;</span><span class="p">))</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">fully_decode_uri</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
             <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; : &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">is_group</span><span class="p">()</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">is_indicator</span><span class="p">():</span>
@@ -787,6 +790,10 @@
                 <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;threatAssessConfidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;threatAssessConfidence&#39;</span><span class="p">)</span>
                 <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;threatAssessRating&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;threatAssessRating&#39;</span><span class="p">)</span>
                 <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;dateLastModified&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lastModified&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;whoisActive&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                    <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;dnsActive&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                    <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">is_task</span><span class="p">():</span>
                 <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>

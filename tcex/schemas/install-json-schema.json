@@ -10,6 +10,9 @@
     "apiUserTokenParam": {
       "type": "boolean"
     },
+    "appId": {
+      "type": "string"
+    },
     "commitHash": {
       "type": "string"
     },
