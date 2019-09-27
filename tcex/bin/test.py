@@ -416,7 +416,7 @@ class Test(Bin):
             # }
             test_template_variables = {
                 'validate_batch_method': (
-                    'self.validator.threatconnect.batch(self.context, pd.get(\'owner\'),'
+                    'self.validator.threatconnect.batch(self.context, pd[\'inputs\'][\'optional\'][\'owner\'], '
                     'pd.get(\'validation_criteria\', {}))'
                 ),
                 'parent_class': 'TestCaseJob',
