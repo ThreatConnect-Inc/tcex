@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Bin Module &mdash; TcEx 1.1.4 documentation</title>
+  <title>Bin Module &mdash; TcEx 1.1.5 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.4
+                1.1.5
               </div>
 
 
@@ -2278,16 +2278,15 @@ provided “type”.</p></li>
 <dl class="method">
 <dt id="tcex.bin.validate.Validate.check_imported">
 <em class="property">static </em><code class="sig-name descname">check_imported</code><span class="sig-paren">(</span><em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_imported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_imported" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check whether the provide module can be imported (package installed).</p>
+<dd><p>Check whether the provide module can be imported (package installed).
+:param module: The name of the module to check availability.
+:type module: str</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – The name of the module to check availability.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the module can be imported, False otherwise.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if the module can be imported, False otherwise.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
