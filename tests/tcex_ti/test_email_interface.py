@@ -12,6 +12,57 @@ class TestEmailGroups:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
+    def test_attributes(
+        self,
+        name='email-name-42353',
+        to='email-to-asdf@gmail.com',
+        from_addr='email-from-fdsav@gmail.com',
+        subject='email-subject-bfd21',
+        body='email-body-fdsab',
+        header='email-header-bfd32r',
+    ):
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        # create
+        email_id = self.email_create(name, to, from_addr, subject, body, header)
+
+        # get
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )  # pylint: disable=E1121
+
+        # assert that attribute is created.
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+
+        # assert that attribute data is correct
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+
+        # fetch the attribute id
+        attribute_id = json.get('id')
+
+        # assert that attribute is updated
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+
+        # assert that updated attribute data is correct
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+
+        # assert that attribute is deleted
+        r = ti.delete_attribute(attribute_id)
+        assert r.ok
+
+        # assert that no attributes remain for this indicator/group/victim
+        for attribute in ti.attributes():
+            assert False
+
+        # remove indicator/group/victim
+        self.email_delete(email_id)
+
     def test_email_get(
         self,
         name='email-name-42353',

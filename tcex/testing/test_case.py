@@ -185,13 +185,21 @@ class TestCase(object):
 
         profile = self.populate_system_variables(profile)
         self._staged_tc_data = self.stager.threatconnect.entities(
-            profile.get('stage', {}).get('threatconnect', {}),
-            profile.get('inputs', {}).get('required', {}).get('owner', None),
+            profile.get('stage', {}).get('threatconnect', {}), self.owner(profile)
         )
         self.generate_tc_output_variables(self._staged_tc_data)
         profile = self.populate_threatconnect_variables(profile)
         self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
         return profile
+
+    @staticmethod
+    def owner(profile):
+        """Gets the owner provided a profile"""
+        return (
+            profile.get('required', {}).get('owner')
+            or profile.get('optional', {}).get('owner')
+            or profile.get('owner')
+        )
 
     @staticmethod
     def populate_system_variables(profile):

@@ -13,6 +13,51 @@ class TestHostIndicators:
         self.ti = tcex.ti
 
     @staticmethod
+    def test_attributes(hostname='www.hostname-title-42353.com'):
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        ti = tcex.ti.indicator(
+            indicator_type='Host',
+            owner=tcex.args.tc_owner,
+            hostname=hostname,
+            dns_active=True,
+            whois_active=True,
+        )
+        ti.create()
+
+        # assert that attribute is created.
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+
+        # assert that attribute data is correct
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+
+        # fetch the attribute id
+        attribute_id = json.get('id')
+
+        # assert that attribute is updated
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+
+        # assert that updated attribute data is correct
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+
+        # assert that attribute is deleted
+        r = ti.delete_attribute(attribute_id)
+        assert r.ok
+
+        # assert that no attributes remain for this indicator/group/victim
+        for attribute in ti.attributes():
+            assert False
+
+        # remove indicator/group/victim
+        ti.delete()
+
+    @staticmethod
     def test_host_attribute_create(hostname='www.hostname-title-42355.com'):
         """Tests that attributes can be appropriately added to hosts"""
         ti = tcex.ti.indicator(
@@ -27,6 +72,11 @@ class TestHostIndicators:
         r = ti.add_attribute(
             attribute_type='External Date Created', attribute_value='2017-05-03T14:38:02Z'
         )
+        assert r.ok
+
+        attribute_data = r.json()
+        attribute_id = attribute_data.get('data').get('attribute').get('id')
+        r = ti.delete_attribute(attribute_id)
         assert r.ok
 
     def test_host_get(self, hostname='www.hostname-title-42353.com'):

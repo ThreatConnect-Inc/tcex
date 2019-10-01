@@ -24,6 +24,44 @@ class TestCIDRIndicators:
             ti = self.ti.indicator(indicator_type='CIDR', owner=tcex.args.tc_owner, Block=block)
             ti.delete()
 
+    def test_attributes(self, block='1.1.1.6/8'):
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        ti = self.ti.indicator(indicator_type='CIDR', owner=tcex.args.tc_owner, block=block)
+        ti.create()
+
+        # assert that attribute is created.
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+
+        # assert that attribute data is correct
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+
+        # fetch the attribute id
+        attribute_id = json.get('id')
+
+        # assert that attribute is updated
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+
+        # assert that updated attribute data is correct
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+
+        # assert that attribute is deleted
+        r = ti.delete_attribute(attribute_id)
+        assert r.ok
+
+        # assert that no attributes remain for this indicator/group/victim
+        for attribute in ti.attributes():
+            assert False
+
+        # remove indicator/group/victim
+        ti.delete()
+
     def test_cidr_association(self, block='1.1.1.1/8'):
         """Test cidr associations."""
         cidr = self.ti.indicator(indicator_type='CIDR', owner=tcex.args.tc_owner, block=block)

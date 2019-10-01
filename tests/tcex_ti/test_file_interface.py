@@ -21,6 +21,48 @@ class TestFileIndicators:
             ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=unique_id)
             ti.delete()
 
+    def test_attributes(self, file_uuid=None, md5='A4', sha1='A4', sha256='A4'):
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        # create
+        if not file_uuid:
+            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
+
+        # get
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
+
+        # assert that attribute is created.
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+
+        # assert that attribute data is correct
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+
+        # fetch the attribute id
+        attribute_id = json.get('id')
+
+        # assert that attribute is updated
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+
+        # assert that updated attribute data is correct
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+
+        # assert that attribute is deleted
+        r = ti.delete_attribute(attribute_id)
+        assert r.ok
+
+        # assert that no attributes remain for this indicator/group/victim
+        for attribute in ti.attributes():
+            assert False
+
+        # remove indicator/group/victim
+        self.test_file_delete(file_uuid)
+
     def test_file_get(self, file_uuid=None, md5='A4', sha1='A4', sha256='A4'):
         """Test file get."""
         # create

@@ -25,6 +25,47 @@ class TestAddressIndicators:
             ti = self.ti.indicator(indicator_type='Address', owner=tcex.args.tc_owner, ip=ip)
             ti.delete()
 
+    def test_attributes(self, ip='11.21.31.41'):
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        # create
+        self.address_create(ip)
+
+        # get
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
+
+        # assert that attribute is created.
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+
+        # assert that attribute data is correct
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+
+        # fetch the attribute id
+        attribute_id = json.get('id')
+
+        # assert that attribute is updated
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+
+        # assert that updated attribute data is correct
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+
+        # assert that attribute is deleted
+        r = ti.delete_attribute(attribute_id)
+        assert r.ok
+
+        # assert that no attributes remain for this indicator/group/victim
+        for attribute in ti.attributes():
+            assert False
+
+        # remove indicator/group/victim
+        ti.delete()
+
     def test_address_get(self, ip='17.15.30.41'):
         """Test address get."""
         # create
