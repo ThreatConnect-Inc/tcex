@@ -685,6 +685,7 @@ class TIMappings(object):
         """
         if params is None:
             params = {}
+        action = action.upper()
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
@@ -739,6 +740,59 @@ class TIMappings(object):
             displayed=displayed,
             owner=self.owner,
             params=params,
+        )
+
+    def update_attribute(
+        self, attribute_value, attribute_id, source=None, displayed=None, params=None
+    ):
+        """
+        Adds a attribute to a Group/Indicator or Victim
+
+
+        Args:
+            source:
+            displayed:
+            params:
+            attribute_type:
+            attribute_value:
+
+        Returns: attribute json
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        if params is None:
+            params = {}
+
+        return self.tc_requests.update_attribute(
+            self.api_type,
+            self.api_branch,
+            self.unique_id,
+            attribute_value,
+            attribute_id,
+            source=source,
+            displayed=displayed,
+            owner=self.owner,
+            params=params,
+        )
+
+    def delete_attribute(self, attribute_id):
+        """
+        Deletes a attribute from a Group/Indicator or Victim
+
+
+        Args:
+            attribute_id:
+
+        Returns: attribute json
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.delete_attribute(
+            self.api_type, self.api_branch, self.unique_id, attribute_id, owner=self.owner
         )
 
     def attribute_labels(self, attribute_id, params=None):

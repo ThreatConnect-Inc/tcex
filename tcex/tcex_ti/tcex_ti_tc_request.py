@@ -1970,6 +1970,53 @@ class TiTcRequest:
 
         return self.tcex.session.post(url, json=json, params=params)
 
+    def update_attribute(
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        attribute_value,
+        attribute_id,
+        source=None,
+        displayed=None,
+        owner=None,
+        params=None,
+    ):
+        """
+
+        Args:
+            displayed:
+            source:
+            params:
+            owner:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_type:
+            attribute_value:
+
+        Return:
+
+        """
+        if params is None:
+            params = {}
+        if owner:
+            params['owner'] = owner
+        if not sub_type:
+            url = '/v2/{}/{}/attributes/{}'.format(main_type, unique_id, attribute_id)
+        else:
+            url = '/v2/{}/{}/{}/attributes/{}'.format(main_type, sub_type, unique_id, attribute_id)
+
+        json = {'value': attribute_value}
+
+        if source:
+            json['source'] = source
+
+        if displayed:
+            json['displayed'] = displayed
+
+        return self.tcex.session.put(url, json=json, params=params)
+
     def attribute_labels(
         self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None
     ):

@@ -13,6 +13,36 @@ class TestHostIndicators:
         self.ti = tcex.ti
 
     @staticmethod
+    def test_attributes():
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        hostname = 'www.hostname-title-42355.com'
+        ti = tcex.ti.indicator(
+            indicator_type='Host',
+            owner=tcex.args.tc_owner,
+            hostname=hostname,
+            dns_active=True,
+            whois_active=True,
+        )
+        ti.create()
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+        attribute_id = json.get('id')
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+        r = ti.delete_attribute(id)
+        assert r.ok
+        for attribute in ti.attributes():
+            assert False
+        ti.delete()
+
+    @staticmethod
     def test_host_attribute_create(hostname='www.hostname-title-42355.com'):
         """Tests that attributes can be appropriately added to hosts"""
         ti = tcex.ti.indicator(
