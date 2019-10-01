@@ -416,8 +416,8 @@ class Test(Bin):
             # }
             test_template_variables = {
                 'validate_batch_method': (
-                    'self.validator.threatconnect.batch(self.context, self.owner(pd))),'
-                    'pd.get(\'validation_criteria\', {}))'
+                    'self.validator.threatconnect.batch(self.context, self.owner(pd)), '
+                    'pd.get(\'validation_criteria\', {})'
                 ),
                 'parent_class': 'TestCaseJob',
                 'parent_import': 'from tcex.testing import TestCaseJob',
