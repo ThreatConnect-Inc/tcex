@@ -27,7 +27,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         args.update(
             {
                 'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
-                'tc_svc_broker_port': os.getenv('TC_SVC_BROKER_PORT', '1883'),
+                'tc_svc_broker_port': int(os.getenv('TC_SVC_BROKER_PORT', '1883')),
                 'tc_svc_broker_service': os.getenv('TC_SVC_BROKER_SERVICE', 'mqtt'),
                 'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
                 'tc_svc_client_topic': self.client_topic,
@@ -64,7 +64,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
 
     def patch_service(self):
         """Patch the micro-service."""
-        from tcex.service import Service  # pylint: disable=import-error,no-name-in-module
+        from tcex.services import Services  # pylint: disable=import-error,no-name-in-module
 
         current_context = self.context
 
@@ -85,9 +85,9 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             self.tcex.log.trace('using monkeypatch method')
             return '{0}/{0}.log'.format(current_context)
 
-        MonkeyPatch().setattr(Service, 'mqtt_client', mqtt_client)
-        MonkeyPatch().setattr(Service, 'session_id', session_id)
-        MonkeyPatch().setattr(Service, 'session_logfile', session_logfile)
+        MonkeyPatch().setattr(Services, 'mqtt_client', mqtt_client)
+        MonkeyPatch().setattr(Services, 'session_id', session_id)
+        MonkeyPatch().setattr(Services, 'session_logfile', session_logfile)
 
     def publish(self, message, topic=None):
         """Publish message on server channel."""
