@@ -197,7 +197,7 @@ class TestCase(object):
         """Gets the owner provided a profile"""
         return (
             profile.get('required', {}).get('owner')
-            or profile.get('required', {}).get('owner')
+            or profile.get('optional', {}).get('owner')
             or profile.get('owner')
         )
 
