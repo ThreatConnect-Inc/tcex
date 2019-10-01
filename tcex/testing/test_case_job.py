@@ -46,11 +46,6 @@ class TestCaseJob(TestCase):
         if exit_code != 0:
             return exit_code
 
-        # Write Output
-        exit_code = self.run_app_method(app, 'write_output')
-        if exit_code != 0:
-            return exit_code
-
         # Done
         exit_code = self.run_app_method(app, 'done')
         if exit_code != 0:
