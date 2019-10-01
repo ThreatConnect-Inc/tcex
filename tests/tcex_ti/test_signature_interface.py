@@ -12,6 +12,62 @@ class TestAdversaryGroups:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
+    def test_attributes(
+        self,
+        signature_id=None,
+        name='signature-name-42353',
+        file_name='signature-file-name-fdasr',
+        file_type='Snort',
+        file_content='signature-file-content-t5r32',
+    ):
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        # create
+        if not signature_id:
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
+
+        # get
+        ti = self.ti.signature(
+            name,
+            file_name,
+            file_type,
+            file_content,
+            owner=tcex.args.tc_owner,
+            unique_id=signature_id,
+        )
+
+        # assert that attribute is created.
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+
+        # assert that attribute data is correct
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+
+        # fetch the attribute id
+        attribute_id = json.get('id')
+
+        # assert that attribute is updated
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+
+        # assert that updated attribute data is correct
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+
+        # assert that attribute is deleted
+        r = ti.delete_attribute(attribute_id)
+        assert r.ok
+
+        # assert that no attributes remain for this indicator/group/victim
+        for attribute in ti.attributes():
+            assert False
+
+        # remove indicator/group/victim
+        self.signature_delete(signature_id)
+
     def test_signature_get(
         self,
         signature_id=None,

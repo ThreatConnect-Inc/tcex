@@ -12,6 +12,47 @@ class TestThreatGroups:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
+    def test_attributes(self, name='threat-name-42353'):
+        """Tests adding, fetching, updating, and deleting host attributes"""
+        # create
+        threat_id = self.threat_create(name)
+
+        # get
+        ti = self.ti.threat(name, owner=tcex.args.tc_owner, unique_id=threat_id)
+
+        # assert that attribute is created.
+        r = ti.add_attribute('description', 'description1')
+        assert r.ok
+
+        # assert that attribute data is correct
+        json = r.json().get('data', {}).get('attribute', {})
+        assert json.get('type').lower() == 'description'
+        assert json.get('value').lower() == 'description1'
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description1'
+
+        # fetch the attribute id
+        attribute_id = json.get('id')
+
+        # assert that attribute is updated
+        r = ti.update_attribute('description2', attribute_id)
+        assert r.ok
+
+        # assert that updated attribute data is correct
+        for attribute in ti.attributes():
+            assert attribute.get('value') == 'description2'
+
+        # assert that attribute is deleted
+        r = ti.delete_attribute(attribute_id)
+        assert r.ok
+
+        # assert that no attributes remain for this indicator/group/victim
+        for attribute in ti.attributes():
+            assert False
+
+        # remove indicator/group/victim
+        self.threat_delete(threat_id)
+
     def test_threat_get(self, threat_id=None, name='threat-name-42353'):
         """Test threat get."""
         # create
