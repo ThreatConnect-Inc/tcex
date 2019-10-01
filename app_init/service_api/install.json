@@ -1,6 +1,7 @@
 {
   "allowOnDemand": true,
-  "displayName": "Webhook",
+  "displayName": "ApiService",
+  "displayPath": "myapi",
   "features": [
     "appBuilderCompliant",
     "secureParams"
@@ -10,12 +11,8 @@
   "listDelimiter": "|",
   "note": "",
   "params": [],
-  "playbook": {
-    "outputVariables": [],
-    "type": ""
-  },
   "programLanguage": "PYTHON",
   "programMain": "run",
   "programVersion": "1.0.0",
-  "runtimeLevel": "WebhookTriggerService"
+  "runtimeLevel": "ApiService"
 }

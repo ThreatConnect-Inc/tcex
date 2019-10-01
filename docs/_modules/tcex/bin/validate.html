@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.validate &mdash; TcEx 1.1.4 documentation</title>
+  <title>tcex.bin.validate &mdash; TcEx 1.1.5 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.4
+                1.1.5
               </div>
 
 
@@ -337,29 +337,37 @@
 <div class="viewcode-block" id="Validate.check_imported"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.check_imported">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_imported</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check whether the provide module can be imported (package installed).</span>
-
 <span class="sd">        Args:</span>
 <span class="sd">            module (str): The name of the module to check availability.</span>
-
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the module can be imported, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">module</span> <span class="o">==</span> <span class="s1">&#39;tcex&#39;</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s1">&#39;tcex&#39;</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span>
-
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="k">pass</span>
         <span class="c1"># TODO: if possible, update to a cleaner method that doesn&#39;t require importing the module</span>
         <span class="c1"># and running inline code.</span>
+        <span class="n">module_path</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__path__&#39;</span><span class="p">):</span>
+            <span class="c1"># module in lib directory</span>
             <span class="n">module_path</span> <span class="o">=</span> <span class="n">imported_module</span><span class="o">.</span><span class="n">__path__</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ImportError</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__file__&#39;</span><span class="p">):</span>
+            <span class="c1"># module in base App directory</span>
+            <span class="n">module_path</span> <span class="o">=</span> <span class="n">imported_module</span><span class="o">.</span><span class="vm">__file__</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
+        <span class="c1"># possible unneeded check</span>
         <span class="k">if</span> <span class="n">module_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">module_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">module_path</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">m_path</span> <span class="ow">in</span> <span class="n">module_path</span><span class="p">:</span>
             <span class="c1"># if dist-packages|site-packages in module_path the import doesn&#39;t count</span>
@@ -367,7 +375,6 @@
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="s1">&#39;site-packages&#39;</span> <span class="ow">in</span> <span class="n">m_path</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
-
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="Validate.check_install_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.check_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">check_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

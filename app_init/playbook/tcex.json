@@ -1,7 +1,7 @@
 {
   "package": {
     "app_name": "TCPB_-_",
-    "app_version": "v1.0",
+    "app_version": "v1",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",

@@ -2,7 +2,6 @@
   "allowOnDemand": true,
   "displayName": "",
   "features": [
-    "aotExecutionEnabled",
     "appBuilderCompliant",
     "secureParams"
   ],
@@ -18,5 +17,5 @@
   "programLanguage": "PYTHON",
   "programMain": "run",
   "programVersion": "1.0.0",
-  "runtimeLevel": "Playbook"
+  "runtimeLevel": "TriggerService"
 }

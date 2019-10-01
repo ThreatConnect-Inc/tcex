@@ -404,13 +404,14 @@ class Playbooks(object):
         Returns:
             (any): Results retrieved from DB
         """
-        self.tcex.log.debug('read variable {}'.format(key))
         # if a non-variable value is passed it should be the default
         data = key
         if key is not None:
             key = key.strip()
             key_type = self.variable_type(key)
             if re.match(self._variable_match, key):
+                # only log key if it's a variable
+                self.tcex.log.debug('read variable {}'.format(key))
                 if key_type in self.read_data_types:
                     # handle types with embedded variable
                     if key_type in ['Binary', 'BinaryArray']:
