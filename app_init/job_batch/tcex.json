@@ -1,7 +1,7 @@
 {
   "package": {
     "app_name": "TC_-_Batch_Template",
-    "app_version": "v1.0",
+    "app_version": "v1",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
