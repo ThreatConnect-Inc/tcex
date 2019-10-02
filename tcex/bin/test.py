@@ -135,11 +135,13 @@ class Validation:
             with open(validation_file, 'a') as f:
                 f.write(rendered_template)
 
-    def generate_test_template(self, variables, feature, file_):
+    def generate_test_template(self, variables, feature, file_, app_type):
         """If not currently exist, generates the test file file."""
         validation_file = os.path.join(self.base_dir, feature, file_)
         if not os.path.isfile(validation_file):
             template = Template(self.test_template)
+            if app_type in ['triggerservice', 'webhooktriggerservice']:
+                template = Template(self.test_template_service)
             rendered_template = template.render(**variables)
             with open(validation_file, 'a') as f:
                 f.write(rendered_template)
@@ -186,6 +188,17 @@ class Validation:
     def test_template(self):
         """Return template file"""
         url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'test_template.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+    @property
+    def test_template_service(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(
+            BASE_URL, self.branch, 'test_template_service.py.tpl'
+        )
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -404,16 +417,6 @@ class Test(Bin):
             'parent_import': 'from tcex.testing import TestCasePlaybook',
         }
         if self.ij.runtime_level.lower() == 'organization':
-            # TODO: remove this after validating
-            # test_template_variables = {
-            #     'validate_batch_method': 'self.validator.threatconnect.batch('
-            #     'self.context, '
-            #     'pd.get(\'owner\'),'
-            #     'pd.get(\'validation_criteria\', {})'
-            #     ')',
-            #     'parent_class': 'TestCaseJob',
-            #     'parent_import': 'from tcex.testing import TestCaseJob',
-            # }
             test_template_variables = {
                 'validate_batch_method': (
                     'self.validator.threatconnect.batch(self.context, self.owner(pd)), '
@@ -422,8 +425,23 @@ class Test(Bin):
                 'parent_class': 'TestCaseJob',
                 'parent_import': 'from tcex.testing import TestCaseJob',
             }
+        elif self.ij.runtime_level.lower() == 'triggerservice':
+            test_template_variables = {
+                'validate_batch_method': '',
+                'parent_class': 'TestCaseTriggerService',
+                'parent_import': 'from tcex.testing import TestCaseTriggerService',
+            }
+        elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
+            test_template_variables = {
+                'validate_batch_method': '',
+                'parent_class': 'TestCaseWebhookTriggerService',
+                'parent_import': 'from tcex.testing import TestCaseWebhookTriggerService',
+            }
         self.validation.generate_test_template(
-            test_template_variables, self.args.feature, self.test_file
+            test_template_variables,
+            self.args.feature,
+            self.test_file,
+            self.ij.runtime_level.lower(),
         )
 
     @property
