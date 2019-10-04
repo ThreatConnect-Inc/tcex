@@ -12,6 +12,18 @@ class TestAdversaryGroups:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
+    def test_update_name(self, name='adversary-name-42353'):
+        """Testing changing the adversary name before sending save request to TC"""
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner)
+        name = 'adversary-name-42352'
+        ti.set(name=name)
+        r = ti.create()
+        assert r.ok
+        ti_data = r.json()
+        assert ti_data.get('status') == 'Success'
+        assert ti_data.get('data').get('adversary').get('name') == name
+        ti.delete()
+
     def test_attributes(self, name='adversary-name-42353'):
         """Tests adding, fetching, updating, and deleting host attributes"""
         adversary_id = self.adversary_create(name)
