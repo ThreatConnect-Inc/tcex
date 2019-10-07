@@ -86,10 +86,12 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             self.tcex.log.trace('using monkeypatch method')
             return current_context
 
+        test_case_feature = self.test_case_feature
+
         @property
         def session_logfile(session_id):  # pylint: disable=unused-argument
             self.tcex.log.trace('using monkeypatch method')
-            return '{0}/{0}.log'.format(current_context)
+            return '{}/{}.log'.format(test_case_feature, current_context)
 
         MonkeyPatch().setattr(Services, 'mqtt_client', mqtt_client)
         MonkeyPatch().setattr(Services, 'session_id', session_id)
