@@ -53,7 +53,6 @@ class Services(object):
         self.api_event_callback = None
         self.create_config_callback = None
         self.delete_config_callback = None
-        self.update_config_callback = None
         self.shutdown_callback = None
         self.webhook_event_callback = None
 

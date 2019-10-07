@@ -36,7 +36,6 @@ class TestCaseTriggerService(TestCaseServiceCommon):
             # configure custom trigger message handler
             app.tcex.service.create_config_callback = app.create_config_callback
             app.tcex.service.delete_config_callback = app.delete_config_callback
-            app.tcex.service.update_config_callback = app.update_config_callback
             app.tcex.service.shutdown_callback = app.shutdown_callback
 
             app.tcex.service.listen()
