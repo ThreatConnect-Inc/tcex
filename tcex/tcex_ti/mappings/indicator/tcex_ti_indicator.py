@@ -226,6 +226,7 @@ class Indicator(TIMappings):
             'block': 'Block',
             'mutex': 'Mutex',
             'as_number': 'AS Number',
+            'hostname': 'hostName',
         }
 
     def add_key_value(self, key, value):
