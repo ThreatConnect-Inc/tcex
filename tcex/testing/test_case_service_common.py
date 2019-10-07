@@ -67,12 +67,18 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         from tcex.services import Services  # pylint: disable=import-error,no-name-in-module
 
         current_context = self.context
+        tc_svc_broker_host = self.default_args.get('tc_svc_broker_host', 'localhost')
+        tc_svc_broker_port = int(self.default_args.get('tc_svc_broker_port', 1883))
+        tc_svc_broker_timeout = int(self.default_args.get('tc_svc_hb_timeout_seconds', 60))
 
         @property
         def mqtt_client(self):
             self.tcex.log.trace('using monkeypatch method')
             if self._mqtt_client is None:
                 self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
+                self.mqtt_client.connect(
+                    tc_svc_broker_host, tc_svc_broker_port, tc_svc_broker_timeout
+                )
             return self._mqtt_client
 
         @property
@@ -80,7 +86,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             self.tcex.log.trace('using monkeypatch method')
             return current_context
 
-        @staticmethod
+        @property
         def session_logfile(session_id):  # pylint: disable=unused-argument
             self.tcex.log.trace('using monkeypatch method')
             return '{0}/{0}.log'.format(current_context)
