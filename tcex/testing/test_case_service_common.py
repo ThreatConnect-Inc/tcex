@@ -111,24 +111,25 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             self.redis_client.publish(topic, message)
 
-    def publish_create_config(self, trigger_id, config):
+    def publish_create_config(self, message):
         """Send create config message.
 
         Args:
             trigger_id (str): The trigger id for the config message.
-            config (dict): The data for the config message.
+            message (dict): The entire message with trigger_id and config.
         """
-        config_msg = {'command': 'CreateConfig', 'triggerId': trigger_id, 'config': config}
-        config_msg['config']['tc_playbook_out_variables'] = self.output_variables
-        self.publish(json.dumps(config_msg))
+        message['command'] = 'CreateConfig'
+        message['config']['tc_playbook_out_variables'] = self.output_variables
+        self.publish(json.dumps(message))
         time.sleep(0.5)
 
-    def publish_delete_config(self, trigger_id):
+    def publish_delete_config(self, message):
         """Send delete config message.
 
         Args:
             trigger_id (str): The trigger id for the config message.
         """
+        trigger_id = message.get('triggerId')
         config_msg = {'command': 'DeleteConfig', 'triggerId': trigger_id}
         self.publish(json.dumps(config_msg))
 

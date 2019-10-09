@@ -10,6 +10,7 @@ import pytest
 from ..profiles import profiles
 ${parent_import}  # pylint: disable=C0411
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
+from .trigger import trigger
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -56,12 +57,14 @@ class TestFeature(${parent_class}):
         # profile data
         pd = self.profile(profile_name)
 
+        trigger(pd.get('trigger').get('pre-config))
+
         # publish createConfig
         for config in pd.get('configs'):
-            self.publish_create_config(config.get('trigger_id'), config.get('config'))
+            self.publish_create_config(config)
 
         # !! trigger custom event here !!
-        # self.trigger_event()
+        trigger(pd.get('trigger'))
 
         # !! webhook trigger event !!
         # event = {
@@ -72,11 +75,11 @@ class TestFeature(${parent_class}):
         #     'body': 'body123',
         #     'requestKey': 'abc123',
         # }
-        # self.publish(json.dumps(event)
+        # self.publish(json.dumps(event))
 
         # publish deleteConfig
         for config in pd.get('configs'):
-            self.publish_delete_config(config.get('trigger_id'))
+            self.publish_delete_config(config)
 
         # populate output variables (if not already populated)
         self.populate_output_variables(pd)
