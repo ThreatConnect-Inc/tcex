@@ -18,6 +18,7 @@ from .inputs import Inputs
 from .logger import Logger
 from .app_config_object import InstallJson
 from .tokens import Tokens
+from .case_management.case_management import CaseManagement
 
 
 class TcEx(object):
@@ -222,6 +223,14 @@ class TcEx(object):
         from .datastore import Cache
 
         return Cache(self, domain, data_type, ttl_minutes, mapping)
+
+    @property
+    def case_management(self):
+        return CaseManagement(self)
+
+    @property
+    def cm(self):
+        self.case_management
 
     # TODO: remove this method and use JMESPath instead.
     def data_filter(self, data):
