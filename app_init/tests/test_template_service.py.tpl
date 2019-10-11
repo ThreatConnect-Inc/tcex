@@ -50,7 +50,7 @@ class TestFeature(${parent_class}):
     def trigger_event(self, **kwargs):
         """Add custom code here to trigger event."""
         trigger_event = TriggerEventFeature(**kwargs)
-        trigger_event.trigger(**kwargs
+        trigger_event.trigger(**kwargs)
 
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name):

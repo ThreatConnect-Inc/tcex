@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Trigger EVent feature class."""
-from ..trigger_event import TriggerEvent
+from ..trigger_event import TriggerEvent  # pylint: disable=relative-beyond-top-level
 
 
 class TriggerEventFeature(TriggerEvent):

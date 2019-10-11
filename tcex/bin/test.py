@@ -167,6 +167,26 @@ class Validation:
         return output_data
 
     @property
+    def trigger_event_template(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'trigger_event.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+    @property
+    def trigger_event_feature_template(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(
+            BASE_URL, self.branch, 'trigger_event_feature.py.tpl'
+        )
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+    @property
     def validation_template(self):
         """Return template file"""
         url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate.py.tpl')
@@ -405,6 +425,46 @@ class Test(Bin):
 
             # print download status
             self._print_results(local_filename, status)
+
+    def download_trigger_event(self):
+        """Download conftest.py file from github."""
+        if self.ij.runtime_level.lower() == 'triggerservice':
+            # TODO: combine all download methods
+            status = 'Failed'
+            local_filename = os.path.join('tests', 'trigger_event.py')
+            if not os.path.isfile(local_filename):
+                url = '{}/{}/app_init/tests/{}'.format(
+                    BASE_URL, self.args.branch, 'trigger_event.py'
+                )
+                r = requests.get(url, allow_redirects=True)
+                if r.ok:
+                    open(local_filename, 'wb').write(r.content)
+                    status = 'Success'
+                else:
+                    self.handle_error('Error requesting: {}'.format(url), False)
+
+                # print download status
+                self._print_results(local_filename, status)
+
+    def download_trigger_event_feature(self):
+        """Download conftest.py file from github."""
+        if self.ij.runtime_level.lower() == 'triggerservice':
+            # TODO: combine all download methods
+            status = 'Failed'
+            local_filename = os.path.join('tests', self.args.feature, 'trigger_event_feature.py')
+            if not os.path.isfile(local_filename):
+                url = '{}/{}/app_init/tests/{}'.format(
+                    BASE_URL, self.args.branch, 'trigger_event_feature.py'
+                )
+                r = requests.get(url, allow_redirects=True)
+                if r.ok:
+                    open(local_filename, 'wb').write(r.content)
+                    status = 'Success'
+                else:
+                    self.handle_error('Error requesting: {}'.format(url), False)
+
+                # print download status
+                self._print_results(local_filename, status)
 
     def generate_validation_file(self):
         """Generate the validation file."""
