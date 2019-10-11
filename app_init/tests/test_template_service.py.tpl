@@ -64,7 +64,7 @@ class TestFeature(${parent_class}):
             self.publish_create_config(config)
 
         # trigger custom event
-        trigger_event(pd.get('event_data'))
+        self.trigger_event(**pd.get('event_data'))
 
         # publish deleteConfig
         for config in pd.get('configs'):
