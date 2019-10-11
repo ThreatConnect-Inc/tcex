@@ -130,7 +130,7 @@ class Services(object):
             try:
                 self.tcex.log.trace('triggering callback for config id: {}'.format(trigger_id))
                 # get a session_id specifically for this thread
-                session_id = self.session_id
+                session_id = self.session_id(trigger_id)
 
                 # get instance of playbook specifically for this thread
                 playbook = self.tcex.playbook
@@ -839,20 +839,24 @@ class Services(object):
             self.tcex.log.info('LoggingChange - level: {}'.format(level))
             self.tcex.logger.update_handler_level(level)
         elif command.lower() == 'runservice':
-            self.message_thread(self.session_id, self.process_run_service, (message,))
+            self.message_thread(self.session_id(), self.process_run_service, (message,))
         elif command.lower() == 'shutdown':
             # {"command": "Shutdown", "reason": "Service disabled by user."}
             reason = message.get('reason')
             self.process_shutdown(reason)
         elif command.lower() == 'webhookevent':
-            self.message_thread(self.session_id, self.process_webhook, (message,))
+            self.message_thread(self.session_id(), self.process_webhook, (message,))
         else:
             # any other message is a config message
             self.message_thread('process-config', self.process_config, (message,))
 
-    @property
-    def session_id(self):
-        """Return a uuid4 session id."""
+    @staticmethod
+    def session_id(trigger_id=None):  # pylint: disable=unused-argument
+        """Return a uuid4 session id.
+
+        Args:
+            trigger_id (str): Optional trigger_id value used in testing framework.
+        """
         return str(uuid.uuid4())
 
     @property

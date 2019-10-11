@@ -174,7 +174,14 @@ class TestCase(object):
         getattr(self.log, level)(msg)
 
     def init_profile(self, profile_name):
-        """Get a profile from the profiles.json file by name"""
+        """Get a profile from the profiles.json file by name
+
+        Args:
+            profile_name (str): The profile name.
+
+        Returns:
+            dict: The profile data.
+        """
         try:
             with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
                 profile = json.load(fh)
@@ -194,7 +201,7 @@ class TestCase(object):
 
     @staticmethod
     def owner(profile):
-        """Gets the owner provided a profile"""
+        """Get the owner provided a profile"""
         return (
             profile.get('required', {}).get('owner')
             or profile.get('optional', {}).get('owner')
@@ -380,6 +387,15 @@ class TestCase(object):
     def test_case_name(self):
         """Return partially parsed test case data."""
         return self.test_case_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
+
+    @property
+    def profile_name(self):
+        """Return partially parsed test case data."""
+        name_pattern = r'^test_[a-zA-Z0-9_]+\[(.+)\]$'
+        try:
+            return re.search(name_pattern, self.test_case_data[-1]).group(1)
+        except AttributeError:
+            return None
 
     @property
     def validator(self):

@@ -9,6 +9,7 @@ class TestCasePlaybookCommon(TestCase):
     """Playbook TestCase Class"""
 
     _output_variables = None
+    context_tracker = []
     redis_client = None
     redis_staging_data = {
         '#App:1234:empty!String': '',
@@ -56,44 +57,62 @@ class TestCasePlaybookCommon(TestCase):
             variables.append('#App:{}:{}!{}'.format(job_id, p.get('name'), p.get('type')))
         return variables
 
-    def populate_output_variables(self, profile):
+    def populate_output_variables(self):
         """Generate validation rules from App outputs."""
-        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile.get('name')))
-        profile_name = profile.get('name')
+        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(self.profile_name))
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
             pov = profile_data.get('permutation_output_variables')
             if pov is not None:
                 pov = self.output_variable_creator(pov)
 
-            redis_data = self.redis_client.hgetall(self.context)
             outputs = {}
-            for variable in self.output_variables:
-                if pov is not None and variable not in pov:
-                    # variable is not in permutation output variables
-                    continue
+            # for context in self.context_tracker:
+            while self.context_tracker:
+                context = self.context_tracker.pop(0)
+                # get all current keys in current context
+                redis_data = self.redis_client.hgetall(context)
+                trigger_id = self.redis_client.hget(context, '_trigger_id')
 
-                data = redis_data.get(variable.encode('utf-8'))
+                for variable in self.output_variables:
+                    if pov is not None and variable not in pov:
+                        # variable is not in permutation output variables
+                        continue
 
-                # validate redis variables
-                if data is None:
-                    # log warning missing output data
-                    self.log.error(
-                        '[{}] Missing redis output for variable {}'.format(profile_name, variable)
-                    )
-                else:
-                    data = json.loads(data.decode('utf-8'))
+                    # get data from redis for current context
+                    data = redis_data.get(variable.encode('utf-8'))
 
-                # validate validation variables
-                validation_output = (profile_data.get('outputs') or {}).get(variable)
-                if validation_output is None and profile_data.get('outputs') is not None:
-                    self.log.error(
-                        '[{}] Missing validations rule: {}'.format(profile_name, variable)
-                    )
-                outputs[variable] = {'expected_output': data, 'op': 'eq'}
+                    # validate redis variables
+                    if data is None:
+                        # log error for missing output data
+                        self.log.error(
+                            '[{}] Missing redis output for variable {}'.format(
+                                self.profile_name, variable
+                            )
+                        )
+                    else:
+                        data = json.loads(data.decode('utf-8'))
 
-                if variable.endswith('json.raw!String'):
-                    outputs[variable] = {'expected_output': data, 'op': 'jeq'}
+                    # validate validation variables
+                    validation_output = (profile_data.get('outputs') or {}).get(variable)
+                    if validation_output is None and profile_data.get('outputs') is not None:
+                        self.log.error(
+                            '[{}] Missing validations rule: {}'.format(self.profile_name, variable)
+                        )
+                    output_data = {'expected_output': data, 'op': 'eq'}
+
+                    # make business rules based on data type or content
+                    if variable.endswith('json.raw!String'):
+                        output_data = {'expected_output': data, 'op': 'jeq'}
+
+                    # get trigger id for service Apps
+                    if trigger_id is not None:
+                        if isinstance(trigger_id, bytes):
+                            trigger_id = trigger_id.decode('utf-8')
+                        outputs.setdefault(trigger_id, {})
+                        outputs[trigger_id][variable] = output_data
+                    else:
+                        outputs[variable] = output_data
 
             if profile_data.get('outputs') is None:
                 # update the profile
@@ -111,3 +130,10 @@ class TestCasePlaybookCommon(TestCase):
         """Stage the data in the profile."""
         for key, value in list(staged_data.get('redis', {}).items()):
             self.stager.redis.stage(key, value)
+
+    def teardown_method(self):
+        """Run after each test method runs."""
+        if self.profile_name is not None:
+            self.populate_output_variables()
+        self.context_tracker = []
+        super(TestCasePlaybookCommon, self).teardown_method()

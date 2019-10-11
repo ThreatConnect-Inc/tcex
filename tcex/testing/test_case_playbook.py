@@ -80,10 +80,6 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         # run the App
         exit_code = self.run(args)
 
-        # populate the output variables
-        if exit_code == 0:
-            self.populate_output_variables(profile)
-
         return exit_code
 
     def setup_method(self):
