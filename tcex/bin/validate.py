@@ -289,9 +289,25 @@ class Validate(Bin):
                 with open('install.json') as fh:
                     ij = json.loads(fh.read())
                 for p in ij.get('params', []):
-                    ij_input_names.append(p.get('name'))
+                    if p.get('name') in ij_input_names:
+                        # update validation data errors
+                        self.validation_data['errors'].append(
+                            'Duplicate input name found in install.json ({})'.format(p.get('name'))
+                        )
+                        status = False
+                    else:
+                        ij_input_names.append(p.get('name'))
                 for o in ij.get('playbook', {}).get('outputVariables', []):
-                    ij_output_names.append(o.get('name'))
+                    if o.get('name') in ij_output_names:
+                        # update validation data errors
+                        self.validation_data['errors'].append(
+                            'Duplicate output variable name found in install.json ({})'.format(
+                                o.get('name')
+                            )
+                        )
+                        status = False
+                    else:
+                        ij_output_names.append(o.get('name'))
             except Exception:
                 # checking parameters isn't possible if install.json can't be parsed
                 return
@@ -311,6 +327,8 @@ class Validate(Bin):
                         'layout.json, but not found in install.json).'.format(p.get('name'))
                     )
                     status = False
+                else:
+                    ij_input_names.pop(p.get('name'))
 
                 if 'sqlite3' in sys.modules:
                     if p.get('display'):
@@ -328,6 +346,15 @@ class Validate(Bin):
 
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'inputs', 'status': status})
+
+        if ij_input_names:
+            input_names = ','.join(ij_input_names)
+            # update validation data errors
+            self.validation_data['errors'].append(
+                'Layouts input.parameters[].name validations failed ("{}" values from install.json '
+                'were not included in layout.json.'.format(input_names)
+            )
+            status = False
 
         # outputs
         status = True
