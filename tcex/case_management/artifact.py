@@ -2,22 +2,31 @@
 from .notes import Notes
 from .artifact_type import ArtifactType
 from .note import Note
+from .common_case_management import CommonCaseManagement
+from .common_case_management_collection import CommonCaseManagementCollection
 
 
-class Artifact(object):
-    def __init__(self, entity=None):
-        if entity is None:
-            entity = {}
-        self._case_id = entity.get('caseId', None)
-        self._case_xid = entity.get('caseId', None)
-        self._file_data = entity.get('caseId', None)
-        self._intel_type = entity.get('caseId', None)
-        self._notes = Notes(entity.get('notes', {}).get('data'))
-        self._source = entity.get('source', None)
-        self._summary = entity.get('summary', None)
-        self._task_id = entity.get('taskId', None)
-        self._task_xid = entity.get('taskXid', None)
-        self._type = ArtifactType(entity.get('type', None))
+class Artifacts(CommonCaseManagementCollection):
+    def __init__(self):
+        super().__init__('v3/artifacts')
+
+    def __iter__(self):
+        return Artifact(**self.iterate().get('data'))
+
+
+class Artifact(CommonCaseManagement):
+    def __init__(self, **kwargs):
+        super().__init__('v3/artifacts', **kwargs)
+        self._case_id = kwargs.get('case_id', None)
+        self._case_xid = kwargs.get('case_xid', None)
+        self._file_data = kwargs.get('file_data', None)
+        self._intel_type = kwargs.get('intel_type', None)
+        self._notes = Notes(kwargs.get('notes', {}).get('data'))
+        self._source = kwargs.get('source', None)
+        self._summary = kwargs.get('summary', None)
+        self._task_id = kwargs.get('task_id', None)
+        self._task_xid = kwargs.get('task_xid', None)
+        self._type = ArtifactType(kwargs.get('type', None))
 
     def note(self, **kwargs):
         note = Note(**kwargs)
@@ -107,3 +116,4 @@ class Artifact(object):
     @type.setter
     def type(self, artifact_type):
         self._type = artifact_type
+
