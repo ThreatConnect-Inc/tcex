@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 class CommonCaseManagement(object):
-
     def __init__(self, api_endpoint, **kwargs):
         kwargs = self._transform_kwargs(**kwargs)
         self.api_endpoint = api_endpoint
@@ -17,11 +16,7 @@ class CommonCaseManagement(object):
 
     @staticmethod
     def _metadata_map():
-        return {
-            'case_id': 'caseId',
-            'case_xid': 'caseXid',
-            'date_added': 'dateAdded',
-        }
+        return {'case_id': 'caseId', 'case_xid': 'caseXid', 'date_added': 'dateAdded'}
 
     def get(self):
         ...

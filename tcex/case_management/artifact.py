@@ -116,4 +116,3 @@ class Artifact(CommonCaseManagement):
     @type.setter
     def type(self, artifact_type):
         self._type = artifact_type
-

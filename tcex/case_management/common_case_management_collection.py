@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 class CommonCaseManagementCollection(object):
-
     def __init__(self, api_endpoint):
         self._next = None
         self._previous = None
@@ -8,6 +7,7 @@ class CommonCaseManagementCollection(object):
 
     def iterate(self):
         return {}
+
     # def json(self):
     #    generator with built in API call and pagination
     # def stix2(self):
