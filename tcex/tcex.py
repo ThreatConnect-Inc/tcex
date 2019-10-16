@@ -309,6 +309,9 @@ class TcEx(object):
             # push exit message
             self.playbook.aot_rpush(code)
 
+        # exit token renewal thread
+        self.token.shutdown = True
+
         self.log.info(u'Exit Code: {}'.format(code))
         sys.exit(code)
 
