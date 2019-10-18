@@ -19,7 +19,6 @@ from .inputs import Inputs
 from .logger import Logger
 from .app_config_object import InstallJson
 from .tokens import Tokens
-from .case_management.case_management import CaseManagement
 
 
 class TcEx(object):
@@ -45,6 +44,7 @@ class TcEx(object):
 
         # Property defaults
         self._config = kwargs.get('config', {})
+        self._cm = None
         self._default_args = None
         self._error_codes = None
         self._exit_code = 0
@@ -228,11 +228,19 @@ class TcEx(object):
 
     @property
     def case_management(self):
-        return CaseManagement(self)
+        """Include the Threat Intel Module.
+
+        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
+        """
+        if self._cm is None:
+            from .case_management import CaseManagement
+
+            self._cm = CaseManagement(self)
+        return self._cm
 
     @property
     def cm(self):
-        self.case_management
+        return self.case_management
 
     # TODO: remove this method and use JMESPath instead.
     def data_filter(self, data):

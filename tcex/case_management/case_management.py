@@ -1,69 +1,66 @@
 # -*- coding: utf-8 -*-
-from .artifact import Artifact
-from .artifacts import Artifacts
-from .artifact_type import ArtifactType
-from .case import Case
-from .task import Task
-from .note import Note
-from .tag import Tag
-from .workflow_event import WorkflowEvent
-from .workflow_template import WorkflowTemplate
+from .artifact import Artifact, Artifacts
+from .artifact_type import ArtifactType, ArtifactTypes
+from .case import Case, Cases
+from .task import Task, Tasks
+from .note import Note, Notes
+from .tag import Tag, Tags
+from .workflow_event import WorkflowEvent, WorkflowEvents
+from .workflow_template import WorkflowTemplate, WorkflowTemplates
 
 
 class CaseManagement(object):
+    def __init__(self, tcex):
+        """
+        Args:
+            tcex (obj): An instance of TcEx.
+        """
+        self.tcex = tcex
+
     def artifacts(self):
-        return Artifacts()
+        return Artifacts(self.tcex)
 
     def artifact(self):
-        return Artifact()
+        return Artifact(self.tcex)
 
     def artifact_types(self):
-        return ArtifactTypes()
+        return ArtifactTypes(self.tcex)
 
     def artifact_type(self):
-        return ArtifactType()
+        return ArtifactType(self.tcex)
 
     def cases(self):
-        return Cases()
+        return Cases(self.tcex)
 
-    def case(self):
-        return Case()
+    def case(self, **kwargs):
+        return Case(self.tcex, **kwargs)
 
     def note(self):
-        return Note()
+        return Note(self.tcex)
 
     def notes(self):
-        return Notes()
+        return Notes(self.tcex)
 
     def task(self):
-        return Task()
+        return Task(self.tcex)
 
     def tasks(self):
-        return Tasks()
+        return Tasks(self.tcex)
 
     def workflow_event(self):
-        return WorkflowEvent()
+        return WorkflowEvent(self.tcex)
 
     def workflow_events(self):
-        return WorkflowEvents()
+        return WorkflowEvents(self.tcex)
+
+    def workflow_template(self):
+        return WorkflowTemplate(self.tcex)
 
     def workflow_templates(self):
-        return WorkflowTemplate()
-
-    def workflow_templates(self):
-        return WorkflowTemplates()
+        return WorkflowTemplates(self.tcex)
 
     def tag(self):
-        return Tag()
+        return Tag(self.tcex)
 
     def tags(self):
-        return Tags()
-
-
-# artifact = self.tcex.v3.cm.add_artifact(count, date_observed)
-#
-# this will return a tiny artifact object using the __stub__ feature.
-#
-# then the user would
-#
-# artifact.submit()
+        return Tags(self.tcex)

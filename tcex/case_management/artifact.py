@@ -1,37 +1,51 @@
 # -*- coding: utf-8 -*-
-from .notes import Notes
+from .note import Note, Notes
 from .artifact_type import ArtifactType
 from .note import Note
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 
+api_endpoint = 'v3/artifacts'
+
 
 class Artifacts(CommonCaseManagementCollection):
-    def __init__(self):
-        super().__init__('v3/artifacts')
+    def __init__(self, tcex, initial_response=None):
+        super().__init__(tcex, api_endpoint, initial_response)
 
     def __iter__(self):
-        return Artifact(**self.iterate().get('data'))
+        return self.iterate(initial_response=self.initial_response)
+
+    def entity_map(self, entity):
+        return Artifact(self.tcex, **entity)
 
 
 class Artifact(CommonCaseManagement):
-    def __init__(self, **kwargs):
-        super().__init__('v3/artifacts', **kwargs)
+    def __init__(self, tcex, **kwargs):
+        super().__init__(tcex, api_endpoint, **kwargs)
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._file_data = kwargs.get('file_data', None)
         self._intel_type = kwargs.get('intel_type', None)
-        self._notes = Notes(kwargs.get('notes', {}).get('data'))
+        self._notes = Notes(self.tcex, kwargs.get('notes', {}).get('data'))
         self._source = kwargs.get('source', None)
         self._summary = kwargs.get('summary', None)
         self._task_id = kwargs.get('task_id', None)
         self._task_xid = kwargs.get('task_xid', None)
         self._type = ArtifactType(kwargs.get('type', None))
+        self._xid = None
 
     def note(self, **kwargs):
         note = Note(**kwargs)
         self.notes.append(note)
         return Note
+
+    @property
+    def xid(self):
+        return self._xid
+
+    @xid.setter
+    def xid(self, xid):
+        self._xid = xid
 
     @property
     def notes(self):
