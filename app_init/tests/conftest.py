@@ -4,6 +4,11 @@ import os
 import shutil
 import sys
 
+import pytest
+
+# Add assert introspection (actual vs expected logging) for ALL files in the `helpers` folder.
+pytest.register_assert_rewrite('tests.helpers')
+
 
 # clear log directory
 def clear_log_directory():
