@@ -38,10 +38,8 @@ class Task(CommonCaseManagement):
         self._status = kwargs.get('status', None)
         self._notes = Notes(kwargs.get('notes', {}).get('data'))
 
-    def note(self, **kwargs):
-        note = Note(**kwargs)
-        self.notes.append(note)
-        return Note
+    def add_note(self, **kwargs):
+        self._notes.add_note(Note(self.tcex, **kwargs))
 
     @property
     def name(self):

@@ -11,12 +11,21 @@ api_endpoint = 'v3/artifacts'
 class Artifacts(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None):
         super().__init__(tcex, api_endpoint, initial_response)
+        
+        self.added_artifacts = []
 
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response)
 
     def entity_map(self, entity):
         return Artifact(self.tcex, **entity)
+    
+    def add_artifact(self, artifact):
+        self.added_artifacts.append(artifact)
+
+    @property
+    def as_dict(self):
+        return super().as_dict(self.added_artifacts)
 
 
 class Artifact(CommonCaseManagement):
@@ -34,10 +43,8 @@ class Artifact(CommonCaseManagement):
         self._type = ArtifactType(kwargs.get('type', None))
         self._xid = None
 
-    def note(self, **kwargs):
-        note = Note(**kwargs)
-        self.notes.append(note)
-        return Note
+    def add_note(self, **kwargs):
+        self._notes.add_note(Note(self.tcex, **kwargs))
 
     @property
     def xid(self):

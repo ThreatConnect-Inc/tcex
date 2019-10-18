@@ -33,22 +33,25 @@ class Case(CommonCaseManagement):
         self._tags = Tags(self.tcex, kwargs.get('tags', {}))
         self._notes = Notes(self.tcex, kwargs.get('notes', {}))
 
-    @property
-    def required_properties(self):
-        return ['status', 'severity', 'name']
+    def add_tag(self, **kwargs):
+        self._tags.add_tag(Tag(self.tcex, **kwargs))
 
-    def add_tag(self, name, description):
-        self._tags.add_tag(Tag(self.tcex, name=name, description=description))
+    def add_note(self, **kwargs):
+        self._notes.add_note(Note(self.tcex, **kwargs))
 
-    def add_note(self, text, summary):
-        self._notes.add_note(Note(self.tcex, text=text, summary=summary))
+    def add_task(self, **kwargs):
+        self._tasks.add_task(Task(self.tcex, **kwargs))
 
-    def add_task(self, name, description, **kwargs):
-        self._tasks.add_task(Task(self.tcex, name=name, description=description, **kwargs))
+    def add_artifact(self, **kwargs):
+        self._artifacts.add_artifact(Artifact(self.tcex, **kwargs))
 
     def entity_mapper(self, entity):
         new_case = Case(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
+
+    @property
+    def required_properties(self):
+        return ['status', 'severity', 'name']
 
     @property
     def name(self):

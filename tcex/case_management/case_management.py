@@ -17,50 +17,50 @@ class CaseManagement(object):
         """
         self.tcex = tcex
 
-    def artifacts(self):
-        return Artifacts(self.tcex)
+    def artifacts(self, **kwargs):
+        return Artifacts(self.tcex, **kwargs)
 
-    def artifact(self):
-        return Artifact(self.tcex)
+    def artifact(self, **kwargs):
+        return Artifact(self.tcex, **kwargs)
 
-    def artifact_types(self):
-        return ArtifactTypes(self.tcex)
+    def artifact_types(self, **kwargs):
+        return ArtifactTypes(self.tcex, **kwargs)
 
-    def artifact_type(self):
-        return ArtifactType(self.tcex)
+    def artifact_type(self, **kwargs):
+        return ArtifactType(self.tcex, **kwargs)
 
-    def cases(self):
-        return Cases(self.tcex)
+    def cases(self, **kwargs):
+        return Cases(self.tcex, **kwargs)
 
     def case(self, **kwargs):
         return Case(self.tcex, **kwargs)
 
-    def note(self):
-        return Note(self.tcex)
+    def note(self, **kwargs):
+        return Note(self.tcex, **kwargs)
 
-    def notes(self):
-        return Notes(self.tcex)
+    def notes(self, **kwargs):
+        return Notes(self.tcex, **kwargs)
 
-    def task(self):
-        return Task(self.tcex)
+    def task(self, **kwargs):
+        return Task(self.tcex, **kwargs)
 
-    def tasks(self):
-        return Tasks(self.tcex)
+    def tasks(self, **kwargs):
+        return Tasks(self.tcex, **kwargs)
 
-    def workflow_event(self):
-        return WorkflowEvent(self.tcex)
+    def workflow_event(self, **kwargs):
+        return WorkflowEvent(self.tcex, **kwargs)
 
-    def workflow_events(self):
-        return WorkflowEvents(self.tcex)
+    def workflow_events(self, **kwargs):
+        return WorkflowEvents(self.tcex, **kwargs)
 
-    def workflow_template(self):
-        return WorkflowTemplate(self.tcex)
+    def workflow_template(self, **kwargs):
+        return WorkflowTemplate(self.tcex, **kwargs)
 
-    def workflow_templates(self):
-        return WorkflowTemplates(self.tcex)
+    def workflow_templates(self, **kwargs):
+        return WorkflowTemplates(self.tcex, **kwargs)
 
-    def tag(self):
-        return Tag(self.tcex)
+    def tag(self, **kwargs):
+        return Tag(self.tcex, **kwargs)
 
-    def tags(self):
-        return Tags(self.tcex)
+    def tags(self, **kwargs):
+        return Tags(self.tcex, **kwargs)

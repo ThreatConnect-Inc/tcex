@@ -19,7 +19,7 @@ class TestArtifactIndicators:
         case = self.cm.case(name='Case Name', status='Open', severity='Low')
         case.add_tag(name='tag1', description='tags_description')
         case.add_note(text='text', summary='summary')
-        # case.add_task(name='name', description='descipriont')
+        case.add_task(name='name', description='description')
         case.submit()
         # artifact = self.artifact_create(
         #     summary=summary, intel_type=self.intel_type, type='Date artifact type', case_id=case.id

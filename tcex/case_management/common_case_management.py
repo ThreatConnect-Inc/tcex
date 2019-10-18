@@ -36,6 +36,8 @@ class CommonCaseManagement(object):
                 continue
             try:
                 value = value.as_dict
+                if key == 'artifacts':
+                    print(value)
             except AttributeError:
                 pass
             if value is None:
