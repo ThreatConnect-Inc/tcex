@@ -65,14 +65,18 @@ class CommonCaseManagement(object):
             'createdBy': 'created_by',
         }
 
-    def get(self, case_management_id=None, retry_count=0):
+    def get(self, all_available_fields=True, case_management_id=None, retry_count=0):
         cm_id = case_management_id or self.id
         url = '{}/{}'.format(self.api_endpoint, cm_id)
         current_retries = -1
         entity = None
+        parameters = {'fields': []}
+        if all_available_fields:
+            for field in self.available_fields:
+                parameters['fields'].append(field)
 
         while current_retries < retry_count:
-            response = self.tcex.session.get(url)
+            response = self.tcex.session.get(url, params=parameters)
             if not self.success(response):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -84,6 +88,10 @@ class CommonCaseManagement(object):
             break
         cm_object = self.entity_mapper(entity)
         return cm_object
+
+    @property
+    def available_fields(self):
+        return []
 
     def submit(self):
         """

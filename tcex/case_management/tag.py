@@ -31,6 +31,14 @@ class Tag(CommonCaseManagement):
         self._description = kwargs.get('description', None)
 
     @property
+    def required_properties(self):
+        return ['name', 'description']
+
+    @property
+    def available_fields(self):
+        return ['case']
+
+    @property
     def name(self):
         return self._name
 

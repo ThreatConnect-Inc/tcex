@@ -27,6 +27,14 @@ class WorkflowEvent(CommonCaseManagement):
         self._link = kwargs.get('link', None)
 
     @property
+    def required_properties(self):
+        return ['summary', 'case_id']
+
+    @property
+    def available_fields(self):
+        return ['user', 'parentCase']
+
+    @property
     def event_date(self):
         return self._event_date
 

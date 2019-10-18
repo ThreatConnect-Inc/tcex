@@ -54,6 +54,10 @@ class Case(CommonCaseManagement):
         return ['status', 'severity', 'name']
 
     @property
+    def available_fields(self):
+        return ['artifacts', 'events', 'notes', 'related', 'tags', 'tasks']
+
+    @property
     def name(self):
         return self._name
 

@@ -36,6 +36,14 @@ class Note(CommonCaseManagement):
         self._edited = kwargs.get('edited', None)
 
     @property
+    def required_properties(self):
+        return ['text']
+
+    @property
+    def available_fields(self):
+        return ['artifacts', 'caseId', 'task', 'parentCase']
+
+    @property
     def case_id(self):
         return self._case_id
 

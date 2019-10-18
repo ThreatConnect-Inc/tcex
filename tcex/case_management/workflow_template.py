@@ -25,6 +25,14 @@ class WorkflowTemplate(CommonCaseManagement):
         self._version = kwargs.get('version', None)
 
     @property
+    def required_properties(self):
+        return ['name', 'description', 'active', 'version']
+
+    @property
+    def available_fields(self):
+        return ['assignees', 'cases', 'organizations', 'user']
+
+    @property
     def name(self):
         return self._name
 

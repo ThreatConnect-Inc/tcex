@@ -47,6 +47,20 @@ class Artifact(CommonCaseManagement):
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     @property
+    def required_properties(self):
+        return ['summary', 'type', 'intel_type', 'case_id']
+
+    @property
+    def available_fields(self):
+        return [
+            'caseXid', 'caseId',
+            'fileData', 'intelType',
+            'notes', 'source',
+            'summary', 'taskId',
+            'taskXid'
+        ]
+
+    @property
     def xid(self):
         return self._xid
 

@@ -42,6 +42,19 @@ class Task(CommonCaseManagement):
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     @property
+    def required_properties(self):
+        return [
+            'name', 'description',
+            'is_workflow', 'workflow_step',
+            'workflow_phase', 'case_id',
+            'required', 'status'
+        ]
+
+    @property
+    def available_fields(self):
+        return ['artifacts', 'assignee', 'caseId', 'notes', 'parentCase']
+
+    @property
     def name(self):
         return self._name
 
