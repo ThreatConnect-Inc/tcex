@@ -3,12 +3,12 @@
 # flake8: noqa: F401
 import os
 import sys
-import time
 
 import paho.mqtt.client as mqtt
 import pytest
 from ..profiles import profiles
 ${parent_import}  # pylint: disable=C0411
+from .trigger_event_feature import TriggerEventFeature
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
 # Python 2 unicode
@@ -48,6 +48,8 @@ class TestFeature(${parent_class}):
 
     def trigger_event(self, **kwargs):
         """Add custom code here to trigger event."""
+        trigger_event = TriggerEventFeature(**kwargs)
+        trigger_event.trigger(**kwargs)
 
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name):
@@ -58,31 +60,22 @@ class TestFeature(${parent_class}):
 
         # publish createConfig
         for config in pd.get('configs'):
-            self.publish_create_config(config.get('trigger_id'), config.get('config'))
+            self.publish_create_config(config)
 
-        # !! trigger custom event here !!
-        # self.trigger_event()
-
-        # !! webhook trigger event !!
-        # event = {
-        #     'command': 'WebhookEvent',
-        #     'method': 'GET',
-        #     'queryParams': {'name': 'level', 'value': 'DEBUG'},
-        #     'headers': {'name': 'content-type', 'value': 'application/json'},
-        #     'body': 'body123',
-        #     'requestKey': 'abc123',
-        # }
-        # self.publish(json.dumps(event)
+        # trigger custom event
+        self.trigger_event(**pd.get('event_data'))
 
         # publish deleteConfig
         for config in pd.get('configs'):
-            self.publish_delete_config(config.get('trigger_id'))
-
-        # populate output variables (if not already populated)
-        self.populate_output_variables(pd)
+            self.publish_delete_config(config)
 
         # run output variable validation
-        ValidateFeature(self.validator).validate(pd.get('outputs'))
+        for context in self.context_tracker:
+            self.validator.tcex.default_args.tc_playbook_db_context = context
+            trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
+            output_data = (pd.get('outputs') or {}).get(trigger_id)
+            if output_data is not None:
+                ValidateFeature(self.validator).validate(output_data)
 
     def test_shutdown(self):
         """Run shutdown command."""

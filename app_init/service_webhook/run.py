@@ -54,7 +54,6 @@ if __name__ == '__main__':
         # configure custom trigger message handler
         tcex.service.create_config_callback = app.create_config_callback
         tcex.service.delete_config_callback = app.delete_config_callback
-        tcex.service.update_config_callback = app.update_config_callback
         tcex.service.shutdown_callback = app.shutdown_callback
         tcex.service.webhook_event_callback = app.webhook_event_callback
 

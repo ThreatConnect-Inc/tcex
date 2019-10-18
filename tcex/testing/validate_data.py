@@ -35,9 +35,12 @@ class Validator(object):
     @staticmethod
     def _string_to_int_float(x):
         """Take string input and return float or int."""
+        if isinstance(x, bytes):
+            x = x.decode('utf-8')
+
         try:
             f = float(x)
-            i = int(x)
+            i = int(f)
         except ValueError:
             return x  # return original value
         else:

@@ -81,8 +81,12 @@ if __name__ == '__main__':
             tc_test.add_profile()
             # download conftest.py
             tc_test.download_conftest()
-            # download conftest.py
+            # download profiles.py
             tc_test.download_profile()
+            # download trigger_event.py for TriggerService Apps
+            tc_test.download_trigger_event()
+            # download trigger_event_feature.py for TriggerService Apps
+            tc_test.download_trigger_event_feature()
         else:
             print('Invalid options.')
 

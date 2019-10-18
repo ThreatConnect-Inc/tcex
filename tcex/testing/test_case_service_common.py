@@ -4,6 +4,7 @@ import json
 import os
 import threading
 import time
+import uuid
 from multiprocessing import Process
 from random import randint
 
@@ -66,24 +67,41 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """Patch the micro-service."""
         from tcex.services import Services  # pylint: disable=import-error,no-name-in-module
 
-        current_context = self.context
+        tc_svc_broker_host = self.default_args.get('tc_svc_broker_host', 'localhost')
+        tc_svc_broker_port = int(self.default_args.get('tc_svc_broker_port', 1883))
+        tc_svc_broker_timeout = int(self.default_args.get('tc_svc_hb_timeout_seconds', 60))
 
         @property
         def mqtt_client(self):
             self.tcex.log.trace('using monkeypatch method')
             if self._mqtt_client is None:
                 self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
+                self.mqtt_client.connect(
+                    tc_svc_broker_host, tc_svc_broker_port, tc_svc_broker_timeout
+                )
             return self._mqtt_client
 
-        @property
-        def session_id(self):  # pylint: disable=unused-argument
-            self.tcex.log.trace('using monkeypatch method')
-            return current_context
+        redis_client = self.redis_client
 
         @staticmethod
+        def session_id(trigger_id=None):  # pylint: disable=unused-argument
+            """Patch session_id method to track trigger id -> session_id for validation."""
+            # write to redis
+            context = str(uuid.uuid4())  # create unique uuid for event trigger
+            self.context_tracker.append(context)  # add context/session_id to tracker
+
+            self.tcex.log.trace('using monkeypatch method')
+            if trigger_id is not None:
+                redis_client.hset(context, '_trigger_id', trigger_id)
+            return context
+
+        # the current test case feature
+        test_case_feature = self.test_case_feature
+
+        @property
         def session_logfile(session_id):  # pylint: disable=unused-argument
             self.tcex.log.trace('using monkeypatch method')
-            return '{0}/{0}.log'.format(current_context)
+            return '{}/{}.log'.format(test_case_feature, session_id)
 
         MonkeyPatch().setattr(Services, 'mqtt_client', mqtt_client)
         MonkeyPatch().setattr(Services, 'session_id', session_id)
@@ -103,25 +121,30 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             self.redis_client.publish(topic, message)
 
-    def publish_create_config(self, trigger_id, config):
+    def publish_create_config(self, message):
         """Send create config message.
 
         Args:
             trigger_id (str): The trigger id for the config message.
-            config (dict): The data for the config message.
+            message (dict): The entire message with trigger_id and config.
         """
-        config_msg = {'command': 'CreateConfig', 'triggerId': trigger_id, 'config': config}
-        config_msg['config']['tc_playbook_out_variables'] = self.output_variables
-        self.publish(json.dumps(config_msg))
+        # build config message
+        message['apiToken'] = '000000000'
+        message['expireSeconds'] = int(time.time() + 86400)
+        message['command'] = 'CreateConfig'
+        message['config']['tc_playbook_out_variables'] = self.output_variables
+        message['triggerId'] = message.pop('trigger_id')
+        self.publish(json.dumps(message))
         time.sleep(0.5)
 
-    def publish_delete_config(self, trigger_id):
+    def publish_delete_config(self, message):
         """Send delete config message.
 
         Args:
             trigger_id (str): The trigger id for the config message.
         """
-        config_msg = {'command': 'DeleteConfig', 'triggerId': trigger_id}
+        # using triggerId here instead of trigger_id do to pop in publish_create_config
+        config_msg = {'command': 'DeleteConfig', 'triggerId': message.get('triggerId')}
         self.publish(json.dumps(config_msg))
 
     def publish_shutdown(self):
