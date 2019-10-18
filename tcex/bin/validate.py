@@ -56,11 +56,12 @@ class Validate(Bin):
 
         if 'pkg_resources' in sys.modules:
             # only set these if pkg_resource module is available
-            self.install_json_schema_file = pkg_resources.resource_filename(
-                __name__, '/'.join(['schemas', 'install-json-schema.json'])
+            pkg_path = pkg_resources.resource_filename(__name__, '').rstrip('bin')
+            self.install_json_schema_file = os.path.join(
+                pkg_path, 'schemas', 'install-json-schema.json'
             )
-            self.layout_json_schema_file = pkg_resources.resource_filename(
-                __name__, '/'.join(['schemas', 'layout-json-schema.json'])
+            self.layout_json_schema_file = os.path.join(
+                pkg_path, 'schemas', 'layout-json-schema.json'
             )
         else:
             self.install_json_schema_file = None
@@ -283,12 +284,14 @@ class Validate(Bin):
         """
 
         ij_input_names = []
+        ij_output_name_type = []
         ij_output_names = []
         if os.path.isfile('install.json'):
             try:
                 with open('install.json') as fh:
                     ij = json.loads(fh.read())
                 for p in ij.get('params', []):
+                    print('name', p.get('name'))
                     if p.get('name') in ij_input_names:
                         # update validation data errors
                         self.validation_data['errors'].append(
@@ -298,7 +301,9 @@ class Validate(Bin):
                     else:
                         ij_input_names.append(p.get('name'))
                 for o in ij.get('playbook', {}).get('outputVariables', []):
-                    if o.get('name') in ij_output_names:
+                    # build name type to ensure check for duplicates on name-type value
+                    name_type = '{}-{}'.format(o.get('name'), o.get('type'))
+                    if name_type in ij_output_name_type:
                         # update validation data errors
                         self.validation_data['errors'].append(
                             'Duplicate output variable name found in install.json ({})'.format(
@@ -307,6 +312,7 @@ class Validate(Bin):
                         )
                         status = False
                     else:
+                        ij_output_name_type.append(name_type)
                         ij_output_names.append(o.get('name'))
             except Exception:
                 # checking parameters isn't possible if install.json can't be parsed
@@ -328,7 +334,7 @@ class Validate(Bin):
                     )
                     status = False
                 else:
-                    ij_input_names.pop(p.get('name'))
+                    ij_input_names.remove(p.get('name'))
 
                 if 'sqlite3' in sys.modules:
                     if p.get('display'):
