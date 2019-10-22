@@ -10,6 +10,13 @@ class Custom(object):
 
     def setup_class(self, test_feature):
         """Run setup class code."""
+        % if app_type in ['triggerservice', 'webhooktriggerservice']:
+        test_feature.args = {}
+
+        # uncomment the following line to use static topics
+        # self.client_topic = 'client-topic-123'
+        # self.server_topic = 'server-topic-123'
+        % endif
 
     def setup_method(self, test_feature):
         """Run setup method code."""

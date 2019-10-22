@@ -894,9 +894,10 @@ class Playbooks(object):
                 value = u'{}'.format(value)
             # data = self.db.create(key.strip(), str(json.dumps(value)))
             data = self.db.create(key.strip(), u'{}'.format(json.dumps(value)))
-            self.tcex.log.trace(
-                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            )
+            # TODO: update for env servers
+            # self.tcex.log.trace(
+            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            # )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data

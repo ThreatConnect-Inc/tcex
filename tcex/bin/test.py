@@ -139,7 +139,7 @@ class TestProfileTemplates:
 
     def render_template(self, feature, app_type):
         """Render the templates and write to disk conditionally."""
-        variables = {'app_type': app_type, 'class': self.app_type_to_class.get(app_type)}
+        variables = {'app_type': app_type, 'class_name': self.app_type_to_class.get(app_type)}
 
         test_profiles_file = os.path.join(self.base_dir, feature, 'test_profiles.py')
         template = Template(self.test_profiles_template)
