@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Custom test method Class."""
+"""Custom test method Class for app_type -> ${app_type}."""
 
 
 class Custom(object):
