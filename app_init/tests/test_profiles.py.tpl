@@ -35,12 +35,6 @@ class TestProfiles(${class_name}):
         if os.getenv('SETUP_CLASS') is None:
             self.custom.setup_class(self)
 
-        % if app_type=='triggerservice':
-        # uncomment the following line to use static topics
-        self.client_topic = 'client-topic-123'
-        self.server_topic = 'server-topic-123'
-        % endif
-
     def setup_method(self):
         """Run setup logic before test method runs."""
         super(TestProfiles, self).setup_method()
