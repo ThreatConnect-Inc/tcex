@@ -19,6 +19,51 @@ from .bin import Bin
 BASE_URL = 'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex'
 
 
+class CustomTemplates:
+    """Custom method Template Class"""
+
+    def __init__(self, base_dir, branch='master'):
+        """Initialize class properties."""
+        self.branch = branch
+        self.base_dir = base_dir
+
+    @property
+    def feature_template(self):
+        """Return the feature template file for custom methods"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'custom_feature.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+    @property
+    def parent_template(self):
+        """Return the parent template file for custom methods"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'custom.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+    def render_templates(self, feature, app_type):
+        """Render the templates and write to disk conditionally."""
+        variables = {'app_type': app_type}
+
+        parent_file = os.path.join(self.base_dir, 'custom.py')
+        if not os.path.isfile(parent_file):
+            template = Template(self.parent_template)
+            rendered_template = template.render(**variables)
+            with open(parent_file, 'a') as f:
+                f.write(rendered_template)
+
+        feature_file = os.path.join(self.base_dir, feature, 'custom_feature.py')
+        if not os.path.isfile(feature_file):
+            template = Template(self.feature_template)
+            rendered_template = template.render(**variables)
+            with open(feature_file, 'a') as f:
+                f.write(rendered_template)
+
+
 class Profiles:
     """Profile Class
 
@@ -76,8 +121,36 @@ class Profiles:
         raise NotImplementedError('The update method is not currently implemented.')
 
 
-class Validation:
-    """Validation Class
+class TestProfileTemplates:
+    """TestProfile Template Class"""
+
+    def __init__(self, base_dir, branch='master'):
+        """Initialize class properties."""
+        self.branch = branch
+        self.base_dir = base_dir
+
+    def render_template(self, feature, app_type):
+        """Render the templates and write to disk conditionally."""
+        variables = {'app_type': app_type}
+
+        test_profiles_file = os.path.join(self.base_dir, feature, 'test_profiles.py')
+        template = Template(self.test_profiles_template)
+        rendered_template = template.render(**variables)
+        with open(test_profiles_file, 'w') as f:
+            f.write(rendered_template)
+
+    @property
+    def test_profiles_template(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'test_profiles.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+
+class ValidationTemplates:
+    """Validation Template Class
 
     Raises:
         NotImplementedError: The delete method is not currently implemented.
@@ -124,37 +197,35 @@ class Validation:
         variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
         return variable_pattern
 
-    def generate(self, output_variables):
-        """If not currently exist, generates the validation file."""
-        validation_file = os.path.join(self.base_dir, 'validate.py')
-        if not os.path.isfile(validation_file):
-            template = Template(self.validation_template)
-            output_data = self.output_data(output_variables)
-            template_data = {'output_data': output_data}
-            rendered_template = template.render(**template_data)
-            with open(validation_file, 'a') as f:
-                f.write(rendered_template)
+    @property
+    def feature_template(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_feature.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
 
-    def generate_test_template(self, variables, feature, file_, app_type):
-        """If not currently exist, generates the test file file."""
-        validation_file = os.path.join(self.base_dir, feature, file_)
-        if not os.path.isfile(validation_file):
-            template = Template(self.test_template)
-            if app_type in ['triggerservice', 'webhooktriggerservice']:
-                template = Template(self.test_template_service)
-            rendered_template = template.render(**variables)
-            with open(validation_file, 'a') as f:
-                f.write(rendered_template)
+    # def generate(self, output_variables):
+    #     """If not currently exist, generates the validation file."""
+    #     validation_file = os.path.join(self.base_dir, 'validate.py')
+    #     if not os.path.isfile(validation_file):
+    #         template = Template(self.parent_template)
+    #         output_data = self.output_data(output_variables)
+    #         template_data = {'output_data': output_data}
+    #         rendered_template = template.render(**template_data)
+    #         with open(validation_file, 'a') as f:
+    #             f.write(rendered_template)
 
-    def generate_feature(self, feature, file_):
-        """If not currently exist, generates the validation file."""
-        validation_file = os.path.join(self.base_dir, feature, 'validate_feature.py')
-        if not os.path.isfile(validation_file):
-            template = Template(self.validation_feature_template)
-            template_data = {'feature': feature, 'file': file_}
-            rendered_template = template.render(**template_data)
-            with open(validation_file, 'a') as f:
-                f.write(rendered_template)
+    # def generate_feature(self, feature, file_):
+    #     """If not currently exist, generates the validation file."""
+    #     validation_file = os.path.join(self.base_dir, feature, 'validate_feature.py')
+    #     if not os.path.isfile(validation_file):
+    #         template = Template(self.feature_template)
+    #         template_data = {'feature': feature, 'file': file_}
+    #         rendered_template = template.render(**template_data)
+    #         with open(validation_file, 'a') as f:
+    #             f.write(rendered_template)
 
     def output_data(self, output_variables):
         """Return formatted output data.
@@ -167,27 +238,7 @@ class Validation:
         return output_data
 
     @property
-    def trigger_event_template(self):
-        """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'trigger_event.py.tpl')
-        r = requests.get(url, allow_redirects=True)
-        if not r.ok:
-            raise RuntimeError('Could not download template file.')
-        return r.content
-
-    @property
-    def trigger_event_feature_template(self):
-        """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(
-            BASE_URL, self.branch, 'trigger_event_feature.py.tpl'
-        )
-        r = requests.get(url, allow_redirects=True)
-        if not r.ok:
-            raise RuntimeError('Could not download template file.')
-        return r.content
-
-    @property
-    def validation_template(self):
+    def parent_template(self):
         """Return template file"""
         url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate.py.tpl')
         r = requests.get(url, allow_redirects=True)
@@ -195,34 +246,27 @@ class Validation:
             raise RuntimeError('Could not download template file.')
         return r.content
 
-    @property
-    def validation_feature_template(self):
-        """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_feature.py.tpl')
-        r = requests.get(url, allow_redirects=True)
-        if not r.ok:
-            raise RuntimeError('Could not download template file.')
-        return r.content
+    def render_templates(self, feature, app_type, output_variables):
+        """Render the templates and write to disk conditionally."""
+        variables = {
+            'app_type': app_type,
+            'feature': feature,
+            'output_data': self.output_data(output_variables),
+        }
 
-    @property
-    def test_template(self):
-        """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'test_template.py.tpl')
-        r = requests.get(url, allow_redirects=True)
-        if not r.ok:
-            raise RuntimeError('Could not download template file.')
-        return r.content
+        parent_file = os.path.join(self.base_dir, 'validate.py')
+        if not os.path.isfile(parent_file):
+            template = Template(self.parent_template)
+            rendered_template = template.render(**variables)
+            with open(parent_file, 'a') as f:
+                f.write(rendered_template)
 
-    @property
-    def test_template_service(self):
-        """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(
-            BASE_URL, self.branch, 'test_template_service.py.tpl'
-        )
-        r = requests.get(url, allow_redirects=True)
-        if not r.ok:
-            raise RuntimeError('Could not download template file.')
-        return r.content
+        feature_file = os.path.join(self.base_dir, feature, 'validate_feature.py')
+        if not os.path.isfile(feature_file):
+            template = Template(self.feature_template)
+            rendered_template = template.render(**variables)
+            with open(feature_file, 'a') as f:
+                f.write(rendered_template)
 
 
 class Test(Bin):
@@ -243,12 +287,16 @@ class Test(Bin):
 
         # properties
         if not self.args.permutations:
+            self._output_variables = None
+
             self.base_dir = os.path.join(self.app_path, 'tests')
             self.feature_dir = os.path.join(self.base_dir, self.args.feature)
             self.feature_profile_dir = os.path.join(self.base_dir, self.args.feature, 'profiles.d')
+
+            self.custom_templates = CustomTemplates(self.base_dir, self.args.branch)
             self.profiles = Profiles(self.profiles_dir)
-            self.validation = Validation(self.base_dir, self.args.branch)
-            self._output_variables = None
+            self.test_profile_template = TestProfileTemplates(self.base_dir, self.args.branch)
+            self.validation_templates = ValidationTemplates(self.base_dir, self.args.branch)
 
     @staticmethod
     def _print_results(file, status):
@@ -414,94 +462,30 @@ class Test(Bin):
         # TODO: combine all download methods
         status = 'Failed'
         local_filename = os.path.join('tests', 'profiles.py')
-        if not os.path.isfile(local_filename):
-            url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, 'profiles.py')
-            r = requests.get(url, allow_redirects=True)
-            if r.ok:
-                open(local_filename, 'wb').write(r.content)
-                status = 'Success'
-            else:
-                self.handle_error('Error requesting: {}'.format(url), False)
 
-            # print download status
-            self._print_results(local_filename, status)
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, 'profiles.py')
+        r = requests.get(url, allow_redirects=True)
+        if r.ok:
+            open(local_filename, 'wb').write(r.content)
+            status = 'Success'
+        else:
+            self.handle_error('Error requesting: {}'.format(url), False)
 
-    def download_trigger_event(self):
-        """Download conftest.py file from github."""
-        if self.ij.runtime_level.lower() == 'triggerservice':
-            # TODO: combine all download methods
-            status = 'Failed'
-            local_filename = os.path.join('tests', 'trigger_event.py')
-            if not os.path.isfile(local_filename):
-                url = '{}/{}/app_init/tests/{}'.format(
-                    BASE_URL, self.args.branch, 'trigger_event.py'
-                )
-                r = requests.get(url, allow_redirects=True)
-                if r.ok:
-                    open(local_filename, 'wb').write(r.content)
-                    status = 'Success'
-                else:
-                    self.handle_error('Error requesting: {}'.format(url), False)
+        # print download status
+        self._print_results(local_filename, status)
 
-                # print download status
-                self._print_results(local_filename, status)
+    def generate_custom_files(self):
+        """Generate the custom.py and custom_feature.py files."""
+        self.custom_templates.render_templates(self.args.feature, self.ij.runtime_level.lower())
 
-    def download_trigger_event_feature(self):
-        """Download conftest.py file from github."""
-        if self.ij.runtime_level.lower() == 'triggerservice':
-            # TODO: combine all download methods
-            status = 'Failed'
-            local_filename = os.path.join('tests', self.args.feature, 'trigger_event_feature.py')
-            if not os.path.isfile(local_filename):
-                url = '{}/{}/app_init/tests/{}'.format(
-                    BASE_URL, self.args.branch, 'trigger_event_feature.py'
-                )
-                r = requests.get(url, allow_redirects=True)
-                if r.ok:
-                    open(local_filename, 'wb').write(r.content)
-                    status = 'Success'
-                else:
-                    self.handle_error('Error requesting: {}'.format(url), False)
+    def generate_test_profile_file(self):
+        """Generate the test_profiles.py file."""
+        self.test_profile_template.render_template(self.args.feature, self.ij.runtime_level.lower())
 
-                # print download status
-                self._print_results(local_filename, status)
-
-    def generate_validation_file(self):
-        """Generate the validation file."""
-        self.validation.generate(self.output_variables)
-        self.validation.generate_feature(self.args.feature, self.args.file)
-
-        test_template_variables = {
-            'validate_batch_method': '',
-            'parent_class': 'TestCasePlaybook',
-            'parent_import': 'from tcex.testing import TestCasePlaybook',
-        }
-        if self.ij.runtime_level.lower() == 'organization':
-            test_template_variables = {
-                'validate_batch_method': (
-                    'self.validator.threatconnect.batch(self.context, self.owner(pd)), '
-                    'pd.get(\'validation_criteria\', {})'
-                ),
-                'parent_class': 'TestCaseJob',
-                'parent_import': 'from tcex.testing import TestCaseJob',
-            }
-        elif self.ij.runtime_level.lower() == 'triggerservice':
-            test_template_variables = {
-                'validate_batch_method': '',
-                'parent_class': 'TestCaseTriggerService',
-                'parent_import': 'from tcex.testing import TestCaseTriggerService',
-            }
-        elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
-            test_template_variables = {
-                'validate_batch_method': '',
-                'parent_class': 'TestCaseWebhookTriggerService',
-                'parent_import': 'from tcex.testing import TestCaseWebhookTriggerService',
-            }
-        self.validation.generate_test_template(
-            test_template_variables,
-            self.args.feature,
-            self.test_file,
-            self.ij.runtime_level.lower(),
+    def generate_validation_files(self):
+        """Generate the validation.py and validation_feature.py files."""
+        self.validation_templates.render_templates(
+            self.args.feature, self.ij.runtime_level.lower(), self.output_variables
         )
 
     @property
