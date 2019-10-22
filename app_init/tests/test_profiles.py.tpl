@@ -10,7 +10,7 @@ import paho.mqtt.client as mqtt
 
 import pytest
 from ..profiles import profiles
-from tcex.testing import ${class}
+from tcex.testing import ${class_name}
 
 from .custom_feature import CustomFeature  # pylint: disable=E0402
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
@@ -25,7 +25,7 @@ profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__))
 
 
 # pylint: disable=W0235,too-many-function-args
-class TestProfiles(${class}):
+class TestProfiles(${class_name}):
     """TcEx App Testing Template."""
 
     def setup_class(self):
