@@ -5,7 +5,7 @@ Release Notes
 
 1.1.6
 =====
-+
++ Update deleted() method of TI module to yield results instead of returning raw response.
 
 1.1.5
 =====
