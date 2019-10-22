@@ -24,6 +24,7 @@ class Custom(object):
         """Run test method code."""
 
 % if app_type=='CustomTrigger':
-    def trigger(self, **kwargs):
+    def trigger(self, test_feature, profile_data):
         """Perform action to trigger the event."""
+        event_data = pd.get('event_data')
 % endif

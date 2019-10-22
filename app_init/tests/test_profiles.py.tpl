@@ -32,16 +32,12 @@ if sys.version_info[0] == 2:
 # get profile names
 profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d'))
 
-# TODO: move this
-# instance of custom
-custom = CustomFeature()
-
 
 # pylint: disable=W0235,too-many-function-args
 % if app_type=='organization':
 class TestFeature(TestCaseJob):
 % elif app_type=='playbook':
-class TestFeature(TestPlaybook):
+class TestFeature(TestCasePlaybook):
 % elif app_type=='triggerservice':
 class TestFeature(TestCaseTriggerService):
 % elif app_type=='webhooktriggerservice':
@@ -49,37 +45,36 @@ class TestFeature(TestCaseWebhookTriggerService):
 % endif
     """TcEx App Testing Template."""
 
-    @classmethod
-    def setup_class(cls):
+    def setup_class(self):
         """Run setup logic before all test cases in this module."""
-        super(TestFeature, cls).setup_class()
+        super(TestFeature, self).setup_class()
+        self.custom = CustomFeature()
         if os.getenv('SETUP_CLASS') is None:
-            custom.setup_class()
+            self.custom.setup_class(self)
 
         % if app_type=='triggerservice':
         # uncomment the following line to use static topics
-        cls.client_topic = 'client-topic-123'
-        cls.server_topic = 'server-topic-123'
+        self.client_topic = 'client-topic-123'
+        self.server_topic = 'server-topic-123'
         % endif
 
     def setup_method(self):
         """Run setup logic before test method runs."""
         super(TestFeature, self).setup_method()
         if os.getenv('SETUP_METHOD') is None:
-            custom.setup_method(self)
+            self.custom.setup_method(self)
 
-    @classmethod
-    def teardown_class(cls):
+    def teardown_class(self):
         """Run setup logic after all test cases in this module."""
-        super(TestFeature, cls).teardown_class()
+        super(TestFeature, self).teardown_class()
         if os.getenv('TEARDOWN_CLASS') is None:
-            custom.teardown_class()
+            self.custom.teardown_class(self)
 
     def teardown_method(self):
         """Run teardown logic after test method completes."""
         super(TestFeature, self).teardown_method()
         if os.getenv('TEARDOWN_METHOD') is None:
-            custom.teardown_method(self)
+            self.custom.teardown_method(self)
 
     % if app_type=='triggerservice':
     @pytest.mark.parametrize('profile_name', profile_names)
@@ -94,7 +89,7 @@ class TestFeature(TestCaseWebhookTriggerService):
             self.publish_create_config(config)
 
         # trigger custom event
-        self.trigger_event(**pd.get('event_data'))
+        self.custom.trigger(self, pd)
 
         # publish deleteConfig
         for config in pd.get('configs'):

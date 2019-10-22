@@ -3,7 +3,7 @@
 from ..custom import Custom  # pylint: disable=relative-beyond-top-level
 
 
-class CustomFeature(TriggerEvent):
+class CustomFeature(Custom):
     """Custom test method class Apps."""
 
     def __init__(self, **kwargs):  # pylint: disable=useless-super-delegation
