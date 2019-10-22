@@ -11,15 +11,15 @@ import paho.mqtt.client as mqtt
 import pytest
 from ..profiles import profiles
 % if app_type=='organization':
-from tcex.testing import TestCaseJob
+<% class = TestCaseJob%>
 % elif app_type=='playbook':
-from tcex.testing import TestCasePlaybook
+<% class = TestCasePlaybook%>
 % elif app_type=='triggerservice':
-from tcex.testing import TestCaseTriggerService
+<% class = TestCaseTriggerService%>
 % elif app_type=='webhooktriggerservice':
-from tcex.testing import TestCaseWebhookTriggerService
+<% class = TestCaseWebhookTriggerService%>
 % endif
-
+from tcex.testing import ${class}
 
 from .custom_feature import CustomFeature  # pylint: disable=E0402
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
@@ -34,20 +34,13 @@ profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__))
 
 
 # pylint: disable=W0235,too-many-function-args
-% if app_type=='organization':
-class TestFeature(TestCaseJob):
-% elif app_type=='playbook':
-class TestFeature(TestCasePlaybook):
-% elif app_type=='triggerservice':
-class TestFeature(TestCaseTriggerService):
-% elif app_type=='webhooktriggerservice':
-class TestFeature(TestCaseWebhookTriggerService):
+class TestProfiles(${class}):
 % endif
     """TcEx App Testing Template."""
 
     def setup_class(self):
         """Run setup logic before all test cases in this module."""
-        super(TestFeature, self).setup_class()
+        super(TestProfiles, self).setup_class()
         self.custom = CustomFeature()
         if os.getenv('SETUP_CLASS') is None:
             self.custom.setup_class(self)
@@ -60,19 +53,19 @@ class TestFeature(TestCaseWebhookTriggerService):
 
     def setup_method(self):
         """Run setup logic before test method runs."""
-        super(TestFeature, self).setup_method()
+        super(TestProfiles, self).setup_method()
         if os.getenv('SETUP_METHOD') is None:
             self.custom.setup_method(self)
 
     def teardown_class(self):
         """Run setup logic after all test cases in this module."""
-        super(TestFeature, self).teardown_class()
+        super(TestProfiles, self).teardown_class()
         if os.getenv('TEARDOWN_CLASS') is None:
             self.custom.teardown_class(self)
 
     def teardown_method(self):
         """Run teardown logic after test method completes."""
-        super(TestFeature, self).teardown_method()
+        super(TestProfiles, self).teardown_method()
         if os.getenv('TEARDOWN_METHOD') is None:
             self.custom.teardown_method(self)
 
