@@ -20,11 +20,11 @@ class Custom(object):
     def teardown_method(self, test_feature):
         """Run teardown method code."""
 
-    def test_method(self, test_feature, profile_data):
-        """Run test method code."""
-
-% if app_type=='CustomTrigger':
-    def trigger(self, test_feature, profile_data):
+    % if app_type=='triggerservice':
+    def trigger_method(self, test_feature, profile_data):
         """Perform action to trigger the event."""
         event_data = pd.get('event_data')
-% endif
+    % else:
+    def test_method(self, test_feature, profile_data):
+        """Run test method code."""
+    % endif

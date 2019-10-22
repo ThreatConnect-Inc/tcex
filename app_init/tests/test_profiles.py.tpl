@@ -72,7 +72,7 @@ class TestProfiles(${class_name}):
             self.publish_create_config(config)
 
         # trigger custom event
-        self.custom.trigger(self, pd)
+        self.custom.trigger_method(self, pd)
 
         # publish deleteConfig
         for config in pd.get('configs'):
