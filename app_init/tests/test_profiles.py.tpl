@@ -26,7 +26,6 @@ profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__))
 
 # pylint: disable=W0235,too-many-function-args
 class TestProfiles(${class}):
-% endif
     """TcEx App Testing Template."""
 
     def setup_class(self):
