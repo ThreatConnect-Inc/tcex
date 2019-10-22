@@ -14,8 +14,8 @@ class Custom(object):
         test_feature.args = {}
 
         # uncomment the following line to use static topics
-        # self.client_topic = 'client-topic-123'
-        # self.server_topic = 'server-topic-123'
+        # tests_feature.client_topic = 'client-topic-123'
+        # tests_feature.server_topic = 'server-topic-123'
         % endif
 
     def setup_method(self, test_feature):
@@ -30,7 +30,7 @@ class Custom(object):
     % if app_type=='triggerservice':
     def trigger_method(self, test_feature, profile_data):
         """Perform action to trigger the event."""
-        event_data = pd.get('event_data')
+        # event_data = profile_data.get('event_data')
     % else:
     def test_method(self, test_feature, profile_data):
         """Run test method code."""

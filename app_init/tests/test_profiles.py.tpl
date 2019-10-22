@@ -9,8 +9,8 @@ import paho.mqtt.client as mqtt
 % endif
 
 import pytest
-from ..profiles import profiles
 from tcex.testing import ${class_name}
+from ..profiles import profiles
 
 from .custom_feature import CustomFeature  # pylint: disable=E0402
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
@@ -31,7 +31,7 @@ class TestProfiles(${class_name}):
     def setup_class(self):
         """Run setup logic before all test cases in this module."""
         super(TestProfiles, self).setup_class()
-        self.custom = CustomFeature()
+        self.custom = CustomFeature()  # pylint: disable=attribute-defined-outside-init
         if os.getenv('SETUP_CLASS') is None:
             self.custom.setup_class(self)
 
