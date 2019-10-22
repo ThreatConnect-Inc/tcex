@@ -100,7 +100,7 @@ class TestProfiles(${class_name}):
         self.check_environment(pd.get('environments', ['build']))
 
         # run custom test method
-        custom.test_method(self, pd)
+        self.custom.test_method(self, pd)
 
         assert self.run_profile(pd) in pd.get('exit_codes', [0])
         ValidateFeature(self.validator).validate(pd.get('outputs'))
