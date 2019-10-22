@@ -129,9 +129,17 @@ class TestProfileTemplates:
         self.branch = branch
         self.base_dir = base_dir
 
+        # map of app_type to class
+        self.app_type_to_class = {
+            'organization': 'TestCaseJob',
+            'playbook': 'TestCasePlaybook',
+            'triggerservice': 'TestCaseTriggerService',
+            'webhooktriggerservice': 'TestCaseWebhookTriggerService',
+        }
+
     def render_template(self, feature, app_type):
         """Render the templates and write to disk conditionally."""
-        variables = {'app_type': app_type}
+        variables = {'app_type': app_type, 'class': self.app_type_to_class.get(app_type)}
 
         test_profiles_file = os.path.join(self.base_dir, feature, 'test_profiles.py')
         template = Template(self.test_profiles_template)
@@ -205,27 +213,6 @@ class ValidationTemplates:
         if not r.ok:
             raise RuntimeError('Could not download template file.')
         return r.content
-
-    # def generate(self, output_variables):
-    #     """If not currently exist, generates the validation file."""
-    #     validation_file = os.path.join(self.base_dir, 'validate.py')
-    #     if not os.path.isfile(validation_file):
-    #         template = Template(self.parent_template)
-    #         output_data = self.output_data(output_variables)
-    #         template_data = {'output_data': output_data}
-    #         rendered_template = template.render(**template_data)
-    #         with open(validation_file, 'a') as f:
-    #             f.write(rendered_template)
-
-    # def generate_feature(self, feature, file_):
-    #     """If not currently exist, generates the validation file."""
-    #     validation_file = os.path.join(self.base_dir, feature, 'validate_feature.py')
-    #     if not os.path.isfile(validation_file):
-    #         template = Template(self.feature_template)
-    #         template_data = {'feature': feature, 'file': file_}
-    #         rendered_template = template.render(**template_data)
-    #         with open(validation_file, 'a') as f:
-    #             f.write(rendered_template)
 
     def output_data(self, output_variables):
         """Return formatted output data.

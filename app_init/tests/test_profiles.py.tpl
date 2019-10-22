@@ -10,15 +10,6 @@ import paho.mqtt.client as mqtt
 
 import pytest
 from ..profiles import profiles
-% if app_type=='organization':
-<% class = "TestCaseJob"%>
-% elif app_type=='playbook':
-<% class = "TestCasePlaybook"%>
-% elif app_type=='triggerservice':
-<% class = "TestCaseTriggerService"%>
-% elif app_type=='webhooktriggerservice':
-<% class = "TestCaseWebhookTriggerService"%>
-% endif
 from tcex.testing import ${class}
 
 from .custom_feature import CustomFeature  # pylint: disable=E0402
