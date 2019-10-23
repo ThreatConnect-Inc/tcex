@@ -6,6 +6,7 @@ Release Notes
 1.1.6
 =====
 + Update deleted() method of TI module to yield results instead of returning raw response.
++ Updates to testing framework for custom methods when testing profiles.
 
 1.1.5
 =====
