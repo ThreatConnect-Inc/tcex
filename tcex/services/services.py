@@ -751,9 +751,26 @@ class Services(object):
             method = message.get('method')
             params = message.get('queryParams')
             trigger_id = message.get('triggerId')
-            if self.webhook_event_callback(  # pylint: disable=not-callable
+            callback_response = self.webhook_event_callback(  # pylint: disable=not-callable
                 playbook, method, headers, params, body, config
-            ):
+            )
+            if isinstance(callback_response, dict):
+                # webhook responses are for providers that require a subscription req/resp.
+                webhook_event_response = {
+                    'sessionId': self.thread_name,  # session/context
+                    'requestKey': request_key,
+                    'command': 'WebHookEventResponse',
+                    'triggerId': trigger_id,
+                    'bodyVariable': 'response.body',
+                    'headers': callback_response.get('headers', []),
+                    'statusCode': callback_response.get('statusCode', 200),
+                }
+                # write response body to redis
+                playbook.create_output('response.body', webhook_event_response.get('body'))
+
+                # publish the WebHookEventResponse message
+                self.publish(json.dumps(webhook_event_response))
+            elif isinstance(callback_response, bool) and callback_response:
                 self.increment_metric('hits')
                 self.fire_event_publish(trigger_id, self.thread_name, request_key)
             else:
