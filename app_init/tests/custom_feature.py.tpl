@@ -10,28 +10,28 @@ class CustomFeature(Custom):
         """Initialize class properties."""
         super(CustomFeature, self).__init__(**kwargs)
 
-    def setup_class(self, test_feature):
+    def setup_class(self, test_feature):  # pylint: disable=useless-super-delegation
         """Run setup class code."""
         super(CustomFeature, self).setup_class(test_feature)
 
-    def setup_method(self, test_feature):
+    def setup_method(self, test_feature):  # pylint: disable=useless-super-delegation
         """Run setup method code."""
         super(CustomFeature, self).setup_method(test_feature)
 
-    def teardown_class(self, test_feature):
+    def teardown_class(self, test_feature):  # pylint: disable=useless-super-delegation
         """Run teardown class code."""
         super(CustomFeature, self).teardown_class(test_feature)
 
-    def teardown_method(self, test_feature):
+    def teardown_method(self, test_feature):  # pylint: disable=useless-super-delegation
         """Run teardown method code."""
         super(CustomFeature, self).teardown_method(test_feature)
 
     % if app_type=='triggerservice':
-    def trigger_method(self, test_feature, profile_data):
+    def trigger_method(self, test_feature, profile_data):  # pylint: disable=useless-super-delegation
         """Perform action to trigger the event."""
         super(CustomFeature, self).trigger_method(test_feature, profile_data)
     % else:
-    def test_method(self, test_feature, profile_data):
+    def test_method(self, test_feature, profile_data):  # pylint: disable=useless-super-delegation
         """Run test method code."""
         super(CustomFeature, self).test_method(test_feature, profile_data)
     % endif
