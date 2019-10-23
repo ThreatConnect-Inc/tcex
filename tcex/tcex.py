@@ -55,6 +55,7 @@ class TcEx(object):
         self._playbook = None
         self._service = None
         self._session = None
+        self._session_external = None
         self._utils = None
         self._ti = None
         self._token = None
@@ -866,6 +867,22 @@ class TcEx(object):
 
             self._session = TcSession(self)
         return self._session
+
+    @property
+    def session_external(self):
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
+        if self._session_external is None:
+            from requests import Session
+
+            self._session_external = Session()
+            if self.default_args.tc_proxy_external:
+                self.log.info(
+                    'Using proxy server for external connectivity ({}:{}).'.format(
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                    )
+                )
+                self._session_external.proxies = self.proxies
+        return self._session_external
 
     @property
     def ti(self):
