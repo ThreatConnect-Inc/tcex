@@ -43,6 +43,8 @@ class Tokens(object):
         self.log = logger
         # session with retry for token renewal
         self.session = retry_session()
+        # shutdown boolean
+        self.shutdown = False
         # token monitor sleep interval
         self.sleep_interval = sleep_interval
         # token map for storing keys -> tokens -> threads
@@ -239,6 +241,8 @@ class Tokens(object):
                             except KeyError:  # pragma: no cover
                                 pass
             time.sleep(self.sleep_interval)
+            if self.shutdown:
+                break
 
     def unregister_thread(self, key, thread_name):
         """Unregister a thread name for a key.

@@ -46,10 +46,6 @@ class ServiceApp(object):
         """Perform cleanup operations and gracefully exit the App."""
         self.tcex.log.trace('teardown')
 
-    def update_config_callback(self, trigger_id, config):
-        """Handle update config messages."""
-        self.tcex.log.trace('update config callback')
-
     def write_output(self):
         """Write the Playbook output variables."""
         self.tcex.log.info('No output variables written.')

@@ -41,6 +41,10 @@ epilog = (
     '  external_ingress - This template provides a working example of downloading remote threat \n'
     '                     intel (md5 hash indicators) and writing the data in the ThreatConnect \n'
     '                     Platform using the tcex batch module.\n'
+    '\nService App Templates:\n'
+    '  service_api      - This template provides the structure for a API Service App.\n'
+    '  service_trigger  - This template provides the structure for a Trigger Service App.\n'
+    '  service_webhook  - This template provides the structure for a Webhook Trigger Service App.\n'
 )
 
 parser = argparse.ArgumentParser(
@@ -69,6 +73,9 @@ parser.add_argument(
         'playbook_actions',
         # 'playbook_enrichment',
         'playbook_utility',
+        'service_api',
+        'service_trigger',
+        'service_webhook',
     ],
     default='playbook',
     help='Choose an appropriate App template for the current project.',
@@ -113,6 +120,9 @@ if __name__ == '__main__':
                 tci.download_file('__main__.py')
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
+            elif args.template.startswith('service'):
+                tci.download_file('service/service_app.py', 'service_app.py')
+                tci.download_file('{}/run.py'.format(args.template), 'run.py')
 
             # download template specific files
             tci.download_file('{}/app.py'.format(args.template), 'app.py')
@@ -148,6 +158,8 @@ if __name__ == '__main__':
                 tci.download_file('__main__.py')
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
+            elif args.template.startswith('playbook'):
+                tci.download_file('service/service_app.py', 'service_app.py')
 
             # update tcex.json file
             tci.update_tcex_json()

@@ -43,9 +43,6 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--branch', default='master', help='Git branch.')
 parser.add_argument('--feature', help='The sub directory under tests for this test logic')
 parser.add_argument(
-    '--file', default='test_cases.py', help='The test file name to generate (default: test_case.py)'
-)
-parser.add_argument(
     '--permutation_id',
     help='The ID from the "--permutations" option to use for generating the profile.',
     type=int,
@@ -75,13 +72,17 @@ if __name__ == '__main__':
         elif args.feature and (args.profile_name or args.profile_file):
             # generates the tests and feature dir
             tc_test.create_dirs()
-            # generates the validation file if it does not exist
-            tc_test.generate_validation_file()
+            # generates the custom.py and custom_feature.py files
+            tc_test.generate_custom_files()
+            # generates the test_profile.py file
+            tc_test.generate_test_profile_file()
+            # generates the validation.py and validation_feature.py files
+            tc_test.generate_validation_files()
             # adds the profile to the json
             tc_test.add_profile()
             # download conftest.py
             tc_test.download_conftest()
-            # download conftest.py
+            # download profiles.py
             tc_test.download_profile()
         else:
             print('Invalid options.')

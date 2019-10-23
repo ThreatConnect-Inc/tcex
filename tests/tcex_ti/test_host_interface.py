@@ -13,6 +13,25 @@ class TestHostIndicators:
         self.ti = tcex.ti
 
     @staticmethod
+    def test_update_hostname(hostname='www.hostname-title-42353.com'):
+        """Testing changing the hostname before sending save request to TC"""
+        ti = tcex.ti.indicator(
+            indicator_type='Host',
+            owner=tcex.args.tc_owner,
+            hostname=hostname,
+            dns_active=True,
+            whois_active=True,
+        )
+        hostname = 'www.hostname-title-42333.com'
+        ti.set(hostname=hostname)
+        r = ti.create()
+        assert r.ok
+        ti_data = r.json()
+        assert ti_data.get('status') == 'Success'
+        assert ti_data.get('data').get('host').get('hostName') == hostname
+        ti.delete()
+
+    @staticmethod
     def test_attributes(hostname='www.hostname-title-42353.com'):
         """Tests adding, fetching, updating, and deleting host attributes"""
         ti = tcex.ti.indicator(

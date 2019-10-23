@@ -172,6 +172,21 @@ class TIMappings(object):
         if not self.unique_id:
             self._set_unique_id(data)
 
+    def set(self, **kwargs):
+        """
+        A generic way to update the attributes of a TC data object.
+        Args:
+            **kwargs:
+
+        Returns:
+
+        """
+        for arg, value in kwargs.items():
+            if hasattr(self, 'add_key_value'):
+                self.add_key_value(arg, value)  # pylint: disable=E1101
+            else:
+                self._data[arg] = value
+
     def create(self):
         """
         Creates the Indicator/Group/Victim or Security Label given Owner

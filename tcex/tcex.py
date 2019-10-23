@@ -8,6 +8,7 @@ import os
 import re
 import signal
 import sys
+import threading
 
 try:
     from urllib import quote  # Python 2
@@ -35,10 +36,11 @@ class TcEx(object):
     def __init__(self, **kwargs):
         """Initialize Class Properties."""
         # catch interupt signals
-        signal.signal(signal.SIGINT, self._signal_handler)
-        if platform.system() != 'Windows':
-            signal.signal(signal.SIGHUP, self._signal_handler)
-        signal.signal(signal.SIGTERM, self._signal_handler)
+        if threading.current_thread().name == 'MainThread':
+            signal.signal(signal.SIGINT, self._signal_handler)
+            if platform.system() != 'Windows':
+                signal.signal(signal.SIGHUP, self._signal_handler)
+            signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Property defaults
         self._config = kwargs.get('config', {})
@@ -306,6 +308,9 @@ class TcEx(object):
         if self.default_args.tc_aot_enabled:
             # push exit message
             self.playbook.aot_rpush(code)
+
+        # exit token renewal thread
+        self.token.shutdown = True
 
         self.log.info(u'Exit Code: {}'.format(code))
         sys.exit(code)

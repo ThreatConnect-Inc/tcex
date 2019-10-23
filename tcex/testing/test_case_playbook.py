@@ -80,9 +80,8 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         # run the App
         exit_code = self.run(args)
 
-        # populate the output variables
-        if exit_code == 0:
-            self.populate_output_variables(profile)
+        # add context for populating output variables
+        self.context_tracker.append(self.context)
 
         return exit_code
 
