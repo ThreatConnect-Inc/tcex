@@ -50,20 +50,6 @@ https://docs.threatconnect.com/en/latest/tcex/tcex.html
 
 https://docs.threatconnect.com/en/latest/tcex/release_notes.html
 
-## Running Tests
-
-All tests should be run in python2. The instructions below assume you have python2 on your system and have tcex installed.
-
-To run the tests, you will need to:
-
-0. Move into `tests` directory (`cd tests`)
-1. Configure the following environmental variables:
-   - `API_ACCESS_ID` (e.g. `123456789987654321`)
-   - `TC_API_PATH` (e.g. `https://sandbox.threatconnect.com/api`)
-   - `API_DEFAULT_ORG` (e.g. `My Organization`)
-   - `API_SECRET_KEY` (e.g. `abcdefg.....`)
-2. Run `pytest` (you may have to run `python2.7 -m pytest` depending on how your system is setup)
-
 ## Contact
 
 If you have any questions, bugs, or requests please contact support@threatconnect.com

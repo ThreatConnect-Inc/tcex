@@ -180,6 +180,23 @@ def tcex():
     return TcEx(config=config_data_)
 
 
+@pytest.fixture()
+def tcex_proxy_external():
+    """Return an instance of tcex.
+
+    mitmproxy -p 4242 --ssl-insecure
+    """
+    # create log structure for feature/test (e.g., args/test_args.log)
+    config_data_ = dict(_config_data)
+    config_data_['tc_proxy_external'] = True
+    config_data_['tc_proxy_host'] = 'localhost'
+    config_data_['tc_proxy_port'] = '4242'
+
+    # clear sys.argv to avoid invalid arguments
+    sys.argv = sys.argv[:1]
+    return TcEx(config=config_data_)
+
+
 #
 # misc functions
 #

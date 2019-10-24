@@ -202,8 +202,11 @@ class Package(Bin):
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
+            'artifacts',  # pytest in BB Pipelines
+            'assets',  # pytest in BB Pipelines
             'local-*',  # log directory
             'log',  # log directory
+            'test-reports',  # pytest in BB Pipelines
             'tests',  # pytest test directory
         ]
         excludes.extend(self.args.exclude)
