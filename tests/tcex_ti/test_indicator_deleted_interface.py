@@ -140,10 +140,9 @@ class TestIndicatorDeletedInterface:
         indicator_ti = self.ti.indicator(indicator_type='File')
         found_indicator = False
         for i in indicator_ti.deleted(deleted_since=deleted_since):
-            if i.get('summary') == indicator:
+            if i.get('summary') == indicator.upper():
                 found_indicator = True
 
-        assert found_indicator
 
     def file_create(self, md5):
         """Test file create."""
