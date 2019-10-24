@@ -74,22 +74,22 @@ class TestCase(object):
 
         # update App paths
         args['tc_in_path'] = os.path.join(
-            self.default_args.get('tc_in_path'), self.test_case_feature
+            self.default_args.get('tc_in_path'), self.test_case_feature, self.test_case_name
         )
         args['tc_log_path'] = os.path.join(
-            self.default_args.get('tc_log_path'), self.test_case_feature
+            self.default_args.get('tc_log_path'), self.test_case_feature, self.test_case_name
         )
         args['tc_out_path'] = os.path.join(
-            self.default_args.get('tc_out_path'), self.test_case_feature
+            self.default_args.get('tc_out_path'), self.test_case_feature, self.test_case_name
         )
         args['tc_temp_path'] = os.path.join(
-            self.default_args.get('tc_temp_path'), self.test_case_feature
+            self.default_args.get('tc_temp_path'), self.test_case_feature, self.test_case_name
         )
 
         # update default args with app args
         app_args = dict(self.default_args)
         app_args.update(args)
-        app_args['tc_log_file'] = '{}.log'.format(self.test_case_name)
+        # app_args['tc_log_file'] = '{}.log'.format(self.test_case_name)
         app_args['tc_logger_name'] = self.context
 
         tcex = TcEx(config=app_args)
@@ -231,7 +231,10 @@ class TestCase(object):
     def populate_exit_message(self):
         """Generate validation rules from App outputs."""
         message_tc_file = os.path.join(
-            self.default_args.get('tc_out_path'), self.test_case_feature, 'message.tc'
+            self.default_args.get('tc_out_path'),
+            self.test_case_feature,
+            self.test_case_name,
+            'message.tc',
         )
         message_tc = None
         if os.path.isfile(message_tc_file):
@@ -341,7 +344,7 @@ class TestCase(object):
 
         # setup per method instance of tcex
         args = dict(self.default_args)
-        args['tc_log_file'] = os.path.join(self.test_case_feature, 'setup.log')
+        args['tc_log_file'] = os.path.join(self.test_case_feature, self.test_case_name, 'setup.log')
         args['tc_logger_name'] = 'tcex-{}-{}'.format(self.test_case_feature, self.test_case_name)
         self.tcex = TcEx(config=args)
 
@@ -358,7 +361,7 @@ class TestCase(object):
 
     def stager_init(self):
         """Return instance of Stager class."""
-        tc_log_file = os.path.join(self.test_case_feature, 'stage.log')
+        tc_log_file = os.path.join(self.test_case_feature, self.test_case_name, 'stage.log')
 
         # args data
         args = dict(self.default_args)
@@ -409,7 +412,10 @@ class TestCase(object):
     def validate_exit_message(self, test_exit_message):
         """Validate App exit message."""
         message_tc_file = os.path.join(
-            self.default_args.get('tc_out_path'), self.test_case_feature, 'message.tc'
+            self.default_args.get('tc_out_path'),
+            self.test_case_feature,
+            self.test_case_name,
+            'message.tc',
         )
         app_exit_message = None
         if os.path.isfile(message_tc_file):
@@ -429,7 +435,7 @@ class TestCase(object):
 
     def validator_init(self):
         """Return instance of Stager class."""
-        tc_log_file = os.path.join(self.test_case_feature, 'validate.log')
+        tc_log_file = os.path.join(self.test_case_feature, self.test_case_name, 'validate.log')
 
         # args data
         args = dict(self.default_args)

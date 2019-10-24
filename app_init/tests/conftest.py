@@ -76,5 +76,18 @@ def update_system_path():
     sys.path.insert(0, cwd)
 
 
+def pytest_unconfigure(config):  # pylint: disable=unused-argument
+    """Execute uncofigure logic before test process is exited."""
+    directory = os.path.join(os.getcwd(), 'log')
+    for root, dirs, files in os.walk(directory):  # pylint: disable=unused-variable
+        for f in files:
+            f = os.path.join(root, f)
+            try:
+                if os.path.getsize(f) == 0:
+                    os.remove(f)
+            except OSError:
+                continue
+
+
 clear_log_directory()
 update_system_path()
