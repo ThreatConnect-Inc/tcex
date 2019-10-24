@@ -2,6 +2,7 @@
 """TcEx Framework Inputs module"""
 import json
 import os
+import sys
 from argparse import Namespace
 from .argument_parser import TcArgumentParser
 
@@ -168,7 +169,17 @@ class Inputs(object):
         if not self._parsed or parse:
             # initialize default args
             args, self._unknown_args = self.parser.parse_known_args(namespace=self._default_args)
-            self.config(args.__dict__)
+            self.config(args.__dict__, False)
+
+            # special case for service Apps
+            if self._default_args.tc_svc_client_topic is not None:
+                # get the service id as third part of the service
+                # --tc_svc_client_topic svc-client-cc66d36344787779ccaa8dbb5e09a7ab
+                setattr(
+                    self._default_args,
+                    'service_id',
+                    self._default_args.tc_svc_client_topic.split('-')[2],
+                )
 
             # set parsed bool to ensure args are only parsed once
             self._parsed = True
@@ -178,7 +189,7 @@ class Inputs(object):
 
         return self._default_args
 
-    def config(self, config_data):
+    def config(self, config_data, preserve=True):
         """Add configuration data to update default_args.
 
         Below are the default args that the TcEx frameworks supports. Any App specific args
@@ -203,8 +214,17 @@ class Inputs(object):
 
         Args:
             config (dict): A dictionary of configuration values.
+            preserve (bool): Don't overwrite arg values define in sys.argv
         """
         if isinstance(config_data, dict):
+            if preserve:
+                # on env server core doesn't send all required values on cli. inputs that
+                # come in via secureParams need to be updated, but not all of them (e.g. log_path).
+                # this code will only update new inputs that are not provided via sys argv.
+                for key in list(config_data):
+                    if '--{}'.format(key) in sys.argv:
+                        del config_data[key]
+
             # update the arg Namespace via dict
             self._default_args.__dict__.update(config_data)
 

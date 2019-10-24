@@ -4,10 +4,6 @@
 import os
 import sys
 
-% if app_type=='triggerservice':
-import paho.mqtt.client as mqtt
-% endif
-
 import pytest
 from tcex.testing import ${class_name}
 from ..profiles import profiles

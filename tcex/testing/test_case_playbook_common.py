@@ -62,6 +62,7 @@ class TestCasePlaybookCommon(TestCase):
         profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(self.profile_name))
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
+            # get current permutations to ensure only valid output variables are included.
             pov = profile_data.get('permutation_output_variables')
             if pov is not None:
                 pov = self.output_variable_creator(pov)
@@ -136,4 +137,9 @@ class TestCasePlaybookCommon(TestCase):
         if self.profile_name is not None:
             self.populate_output_variables()
         self.context_tracker = []
+        # delete redis context data after populate_output_variable
+        r = self.stager.redis.delete_context(self.context)
+        self.log_data('teardown method', 'delete count', r)
+        # delete threatconnect staged data
+        self.stager.threatconnect.delete_staged(self._staged_tc_data)
         super(TestCasePlaybookCommon, self).teardown_method()

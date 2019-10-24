@@ -90,10 +90,3 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         super(TestCasePlaybook, self).setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex.playbook.db.r
-
-    def teardown_method(self):
-        """Run after each test method runs."""
-        r = self.stager.redis.delete_context(self.context)
-        self.stager.threatconnect.delete_staged(self._staged_tc_data)
-        self.log_data('teardown method', 'delete count', r)
-        super(TestCasePlaybook, self).teardown_method()
