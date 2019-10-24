@@ -323,7 +323,7 @@ class Services(object):
             self.mqtt_client.loop_forever()
         except Exception as e:
             self.tcex.log.trace('error in listen_mqtt: {}'.format(e))
-            self.tcex.log.trace(traceback.format_exc())
+            self.tcex.log.error(traceback.format_exc())
 
     def listen_redis(self):
         """Listen for message coming from broker."""
@@ -766,7 +766,7 @@ class Services(object):
                     'statusCode': callback_response.get('statusCode', 200),
                 }
                 # write response body to redis
-                playbook.create_output('response.body', webhook_event_response.get('body'))
+                playbook.create_output('response.body', callback_response.get('body'))
 
                 # publish the WebHookEventResponse message
                 self.publish(json.dumps(webhook_event_response))

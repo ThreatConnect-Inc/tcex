@@ -535,24 +535,25 @@ class TcEx(object):
 
         This method is used to set and exit message in the ThreatConnect Platform.
         ThreatConnect only supports files of max_message_length.  Any data exceeding
-        this limit will be truncated by this method.
+        this limit will be truncated. The last <max_length> characters will be preserved.
 
         Args:
             message (string): The message to add to message_tc file
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
-            message_file = '{}/message.tc'.format(self.default_args.tc_out_path)
+            message_file = os.path.join(self.default_args.tc_out_path, 'message.tc')
         else:
             message_file = 'message.tc'
 
-        message = '{}\n'.format(message)
-        if max_length - len(message) > 0:
-            with open(message_file, 'a') as mh:
-                mh.write(message)
-        elif max_length > 0:
-            with open(message_file, 'a') as mh:
-                mh.write(message[:max_length])
-        max_length -= len(message)
+        if os.path.isfile(message_file):
+            with open(message_file, 'r') as mh:
+                message = mh.read() + message
+
+        if not message.endswith('\n'):
+            message += '\n'
+        with open(message_file, 'w') as mh:
+            # write last <max_length> characters to file
+            mh.write(message[-max_length:])
 
     def notification(self):
         """Get instance of the Notification module.

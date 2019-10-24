@@ -92,6 +92,7 @@ class Profiles:
 
         profile = {
             'exit_codes': profile_data.get('exit_codes', [0]),
+            'exit_message': None,
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
         }

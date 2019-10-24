@@ -64,6 +64,12 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         if exit_code != 0:
             return exit_code
 
+        try:
+            # call exit for message_tc output, but don't exit
+            app.tcex.playbook.exit(msg=app.exit_message)
+        except SystemExit:
+            pass
+
         app.tcex.log.info('Exit Code: {}'.format(app.tcex.exit_code))
         return self._exit(app.tcex.exit_code)
 

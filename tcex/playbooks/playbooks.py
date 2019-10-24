@@ -716,20 +716,16 @@ class Playbooks(object):
             if data is not None:
                 data_decoded = []
                 for d in json.loads(data, object_pairs_hook=OrderedDict):
-                    if d is not None:
-                        if b64decode:
-                            # if requested decode the base64 string
-                            d = base64.b64decode(d)
-                            if decode:
-                                # if requested decode bytes to a string
-                                try:
-                                    d = d.decode('utf-8')
-                                except UnicodeDecodeError:
-                                    # for data written an upstream java App
-                                    d = d.decode('latin-1')
-                        else:
-                            # for validation in tcrun it's easier to validate the base64 data
-                            data_decoded.append(d)
+                    if d is not None and b64decode:
+                        # if requested decode the base64 string
+                        d = base64.b64decode(d)
+                        if decode:
+                            # if requested decode bytes to a string
+                            try:
+                                d = d.decode('utf-8')
+                            except UnicodeDecodeError:
+                                # for data written an upstream java App
+                                d = d.decode('latin-1')
                     data_decoded.append(d)
                 data = data_decoded
         else:

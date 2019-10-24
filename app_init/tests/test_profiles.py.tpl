@@ -93,10 +93,14 @@ class TestProfiles(${class_name}):
         self.custom.test_method(self, pd)
 
         assert self.run_profile(pd) in pd.get('exit_codes', [0])
-        ValidateFeature(self.validator).validate(pd.get('outputs'))
         % if app_type=='organization':
         self.validator.threatconnect.batch(
             self.context, self.owner(pd), pd.get('validation_criteria', {})
         )
+        % else
+        ValidateFeature(self.validator).validate(pd.get('outputs'))
         % endif
+
+        # validate exit message
+        self.validate_exit_message(pd.get('exit_message'))
     % endif

@@ -184,6 +184,7 @@ class Validator(object):
 
     def remove_excludes(self, dict_1, paths):
         """Removes a list of paths from a given dict
+
         ex:
             dict_1: {
                 'result': {
@@ -207,7 +208,7 @@ class Validator(object):
                 },
                 'status': 'Uploaded
             }
-            """
+        """
         path_0 = paths[0]
         if len(paths) == 1:
             dict_1.pop(path_0, None)

@@ -42,6 +42,15 @@ class TestCase(object):
     env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
     tcex = None
 
+    @staticmethod
+    def _convert_variable_name(variable_name):
+        """Convert a TC output variable to the correct name"""
+        if not variable_name.startswith('${tcenv.'):
+            variable_name = '${tcenv.' + variable_name
+        if not variable_name.endswith('}'):
+            variable_name = variable_name + '}'
+        return variable_name
+
     def _exit(self, code):
         """Log and return exit code"""
         self.log.info('[run] Exit Code: {}'.format(code))
@@ -52,6 +61,10 @@ class TestCase(object):
         """Return bool value from int or string."""
         return str(value).lower() in ['1', 'true']
 
+    def add_tc_output_variable(self, variable_name, variable_value):
+        """Add a TC output variable to the output variable dict"""
+        self._tc_output_variables[self._convert_variable_name(variable_name)] = variable_value
+
     def app(self, args):
         """Return an instance of App."""
         from app import App  # pylint: disable=import-error
@@ -59,10 +72,24 @@ class TestCase(object):
         # return App(self.get_tcex(args))
         args = args or {}
 
+        # update App paths
+        args['tc_in_path'] = os.path.join(
+            self.default_args.get('tc_in_path'), self.test_case_feature
+        )
+        args['tc_log_path'] = os.path.join(
+            self.default_args.get('tc_log_path'), self.test_case_feature
+        )
+        args['tc_out_path'] = os.path.join(
+            self.default_args.get('tc_out_path'), self.test_case_feature
+        )
+        args['tc_temp_path'] = os.path.join(
+            self.default_args.get('tc_temp_path'), self.test_case_feature
+        )
+
         # update default args with app args
         app_args = dict(self.default_args)
         app_args.update(args)
-        app_args['tc_log_file'] = self.tc_log_file
+        app_args['tc_log_file'] = '{}.log'.format(self.test_case_name)
         app_args['tc_logger_name'] = self.context
 
         tcex = TcEx(config=app_args)
@@ -106,39 +133,40 @@ class TestCase(object):
             args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
         return args
 
-    def add_tc_output_variable(self, variable_name, variable_value):
-        """Add a TC output variable to the output variable dict"""
-        self._tc_output_variables[self._convert_variable_name(variable_name)] = variable_value
+    def generate_tc_output_variables(self, staged_tc_data):
+        """Generate all of the TC output variables given the profiles staged data"""
+        for staged_data in staged_tc_data:
+            for key, value in staged_data.get('outputs', {}).items():
+                paths = key.split('.')
+                for path in paths:
+                    data = staged_data[path]
+                    self.add_tc_output_variable(value, data)
 
-    @staticmethod
-    def _convert_variable_name(variable_name):
-        """Convert a TC output variable to the correct name"""
-        if not variable_name.startswith('${tcenv.'):
-            variable_name = '${tcenv.' + variable_name
-        if not variable_name.endswith('}'):
-            variable_name = variable_name + '}'
-        return variable_name
+    def init_profile(self, profile_name):
+        """Get a profile from the profiles.json file by name
 
-    # def get_tcex(self, args=None, tc_log_file=None, tc_log_level=None, set_tcex=True):
-    #     """Return an instance of App."""
-    #     if self.tcex is not None:
-    #         self.tcex.logger.log.handlers = []
+        Args:
+            profile_name (str): The profile name.
 
-    #     args = args or {}
-    #     app_args = self.default_args
-    #     app_args.update(args)
+        Returns:
+            dict: The profile data.
+        """
+        try:
+            with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
+                profile = json.load(fh)
+        except IOError:
+            self.log.error('No profile {} provided.'.format(profile_name))
+            return self._exit(1)
+        profile['name'] = profile_name
 
-    #     # override default log level if profiled
-    #     app_args['tc_log_level'] = tc_log_level or app_args['tc_log_level']
-
-    #     # set log path to be the feature and test case name
-    #     app_args['tc_log_file'] = tc_log_file or self.tc_log_file
-
-    #     # get new instance of tcex
-    #     tcex = TcEx(config=app_args)
-    #     if set_tcex:
-    #         self.tcex = tcex
-    #     return tcex
+        profile = self.populate_system_variables(profile)
+        self._staged_tc_data = self.stager.threatconnect.entities(
+            profile.get('stage', {}).get('threatconnect', {}), self.owner(profile)
+        )
+        self.generate_tc_output_variables(self._staged_tc_data)
+        profile = self.populate_threatconnect_variables(profile)
+        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
+        return profile
 
     @property
     def install_json(self):
@@ -173,32 +201,6 @@ class TestCase(object):
         msg = '{!s:>20} : {!s:<15}: {!s:<50}'.format('[{}]'.format(stage), label, data)
         getattr(self.log, level)(msg)
 
-    def init_profile(self, profile_name):
-        """Get a profile from the profiles.json file by name
-
-        Args:
-            profile_name (str): The profile name.
-
-        Returns:
-            dict: The profile data.
-        """
-        try:
-            with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
-                profile = json.load(fh)
-        except IOError:
-            self.log.error('No profile {} provided.'.format(profile_name))
-            return self._exit(1)
-        profile['name'] = profile_name
-
-        profile = self.populate_system_variables(profile)
-        self._staged_tc_data = self.stager.threatconnect.entities(
-            profile.get('stage', {}).get('threatconnect', {}), self.owner(profile)
-        )
-        self.generate_tc_output_variables(self._staged_tc_data)
-        profile = self.populate_threatconnect_variables(profile)
-        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
-        return profile
-
     @staticmethod
     def owner(profile):
         """Get the owner provided a profile"""
@@ -226,14 +228,27 @@ class TestCase(object):
             profile_str = profile_str.replace(output_variable, str(value))
         return json.loads(profile_str)
 
-    def generate_tc_output_variables(self, staged_tc_data):
-        """Generate all of the TC output variables given the profiles staged data"""
-        for staged_data in staged_tc_data:
-            for key, value in staged_data.get('outputs', {}).items():
-                paths = key.split('.')
-                for path in paths:
-                    data = staged_data[path]
-                    self.add_tc_output_variable(value, data)
+    def populate_exit_message(self):
+        """Generate validation rules from App outputs."""
+        message_tc_file = os.path.join(
+            self.default_args.get('tc_out_path'), self.test_case_feature, 'message.tc'
+        )
+        message_tc = None
+        if os.path.isfile(message_tc_file):
+            with open(message_tc_file, 'r') as mh:
+                message_tc = mh.read()
+
+        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(self.profile_name))
+        with open(profile_filename, 'r+') as fh:
+            profile_data = json.load(fh)
+
+            if profile_data.get('exit_message') is None:
+                # update the profile
+                profile_data['exit_message'] = message_tc
+
+                fh.seek(0)
+                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
+                fh.truncate()
 
     def profile(self, profile_name):
         """Stages and sets up the profile given a profile name"""
@@ -244,6 +259,15 @@ class TestCase(object):
         """Return profile fully qualified filename."""
         feature_path = os.path.dirname(self._current_test.split('::')[0])
         return os.path.join(self._app_path, feature_path, 'profiles.d')
+
+    @property
+    def profile_name(self):
+        """Return partially parsed test case data."""
+        name_pattern = r'^test_[a-zA-Z0-9_]+\[(.+)\]$'
+        try:
+            return re.search(name_pattern, self.test_case_data[-1]).group(1)
+        except AttributeError:
+            return None
 
     @property
     def profile_names(self):
@@ -351,14 +375,6 @@ class TestCase(object):
         tcex = TcEx(config=args)
         return Stager(tcex, logger, self.log_data)
 
-    @property
-    def tc_log_file(self):
-        """Return config file name for current test case."""
-        # test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
-        # test_feature = test_data[0].split('/')[1].replace('/', '-')
-        # test_name = test_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
-        return os.path.join(self.test_case_feature, '{}.log'.format(self.test_case_name))
-
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
@@ -370,6 +386,8 @@ class TestCase(object):
 
     def teardown_method(self):
         """Run after each test method runs."""
+        if self.profile_name is not None:
+            self.populate_exit_message()
         self.log_data('teardown method', 'finished', datetime.now().isoformat())
         self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)
 
@@ -388,14 +406,21 @@ class TestCase(object):
         """Return partially parsed test case data."""
         return self.test_case_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
 
-    @property
-    def profile_name(self):
-        """Return partially parsed test case data."""
-        name_pattern = r'^test_[a-zA-Z0-9_]+\[(.+)\]$'
-        try:
-            return re.search(name_pattern, self.test_case_data[-1]).group(1)
-        except AttributeError:
-            return None
+    def validate_exit_message(self, test_exit_message):
+        """Validate App exit message."""
+        message_tc_file = os.path.join(
+            self.default_args.get('tc_out_path'), self.test_case_feature, 'message.tc'
+        )
+        app_exit_message = None
+        if os.path.isfile(message_tc_file):
+            with open(message_tc_file, 'r') as mh:
+                app_exit_message = mh.read()
+
+        assert (
+            app_exit_message == test_exit_message
+        ), 'App exit message ({}) does not match expected exit message ({})'.format(
+            app_exit_message, test_exit_message
+        )
 
     @property
     def validator(self):
