@@ -617,7 +617,9 @@ class Redis(object):
 
         self.log_data('validate', 'App Data', '({}), Type: [{}]'.format(app_data, type(app_data)))
         self.log_data('validate', 'Operator', op)
-        self.log_data('validate', 'Test Data', '({}), Type: [{}]'.format(test_data, type(app_data)))
+        self.log_data(
+            'validate', 'Test Data', '({}), Type: [{}]'.format(test_data, type(test_data))
+        )
 
         if passed:
             self.log_data('validate', 'Result', 'Passed')
