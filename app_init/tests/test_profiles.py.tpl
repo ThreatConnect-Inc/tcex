@@ -30,6 +30,8 @@ class TestProfiles(${class_name}):
         self.custom = CustomFeature()  # pylint: disable=attribute-defined-outside-init
         if os.getenv('SETUP_CLASS') is None:
             self.custom.setup_class(self)
+        # enable auto-update of profile data
+        self.enable_auto_outputs = True
 
     def setup_method(self):
         """Run setup logic before test method runs."""
@@ -39,15 +41,17 @@ class TestProfiles(${class_name}):
 
     def teardown_class(self):
         """Run setup logic after all test cases in this module."""
-        super(TestProfiles, self).teardown_class()
         if os.getenv('TEARDOWN_CLASS') is None:
             self.custom.teardown_class(self)
+        super(TestProfiles, self).teardown_class()
+        # disable auto-update of profile data
+        self.enable_auto_outputs = False
 
     def teardown_method(self):
         """Run teardown logic after test method completes."""
-        super(TestProfiles, self).teardown_method()
         if os.getenv('TEARDOWN_METHOD') is None:
             self.custom.teardown_method(self)
+        super(TestProfiles, self).teardown_method()
 
     % if app_type=='triggerservice':
     @pytest.mark.parametrize('profile_name', profile_names)

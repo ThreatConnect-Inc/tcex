@@ -38,6 +38,7 @@ class TestCase(object):
     _timer_method_start = None
     _validator = None
     context = None
+    enable_update_profile = False
     log = logger
     env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
     tcex = None
@@ -389,7 +390,7 @@ class TestCase(object):
 
     def teardown_method(self):
         """Run after each test method runs."""
-        if self.profile_name is not None:
+        if self.enable_update_profile:
             self.populate_exit_message()
         self.log_data('teardown method', 'finished', datetime.now().isoformat())
         self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)

@@ -134,7 +134,7 @@ class TestCasePlaybookCommon(TestCase):
 
     def teardown_method(self):
         """Run after each test method runs."""
-        if self.profile_name is not None:
+        if self.enable_update_profile:
             self.populate_output_variables()
         self.context_tracker = []
         # delete redis context data after populate_output_variable
