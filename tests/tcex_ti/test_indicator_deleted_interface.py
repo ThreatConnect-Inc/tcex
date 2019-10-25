@@ -143,6 +143,7 @@ class TestIndicatorDeletedInterface:
             if i.get('summary') == indicator.upper():
                 found_indicator = True
 
+        assert found_indicator
 
     def file_create(self, md5):
         """Test file create."""
@@ -209,42 +210,42 @@ class TestIndicatorDeletedInterface:
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
 
-        """
-             Test URL Branch
-         """
-        def test_url_deleted(self, indicator='https://www.go0gle.co.uk/virus'):
-            deleted_since = tcex.utils.format_datetime(
-                '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
-            )
-            self.url_delete(indicator)
+    """
+         Test URL Branch
+     """
+    def test_url_deleted(self, indicator='https://www.go0gle.co.uk/virus'):
+        deleted_since = tcex.utils.format_datetime(
+            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
+        )
+        self.url_delete(indicator)
 
-            indicator_ti = self.ti.indicator(indicator_type='URL')
-            found_indicator = False
-            for i in indicator_ti.deleted(deleted_since=deleted_since):
-                if i.get('summary') == indicator:
-                    found_indicator = True
+        indicator_ti = self.ti.indicator(indicator_type='URL')
+        found_indicator = False
+        for i in indicator_ti.deleted(deleted_since=deleted_since):
+            if i.get('summary') == indicator:
+                found_indicator = True
 
-            assert found_indicator
+        assert found_indicator
 
-        def url_create(self, url):
-            """Test file create."""
-            ti = self.ti.url(
-                owner=tcex.args.tc_owner, url=host
-            )
-            r = ti.create()
-            assert r.status_code == 201
-            ti_data = r.json()
-            assert ti_data.get('status') == 'Success'
-            assert ti_data.get('data').get('url').get('url', None) == url
+    def url_create(self, url):
+        """Test file create."""
+        ti = self.ti.url(
+            owner=tcex.args.tc_owner, url=url
+        )
+        r = ti.create()
+        assert r.status_code == 201
+        ti_data = r.json()
+        assert ti_data.get('status') == 'Success'
+        assert ti_data.get('data').get('url', {}).get('text') == url
 
-        def url_delete(self, url):
-            """Test email_address delete."""
-            # create indicator
-            self.url_create(url)
+    def url_delete(self, url):
+        """Test email_address delete."""
+        # create indicator
+        self.url_create(url)
 
-            # delete indicator
-            ti = self.ti.url(url=url, owner=tcex.args.tc_owner)
-            r = ti.delete()
-            ti_data = r.json()
-            assert r.status_code == 200
-            assert ti_data.get('status') == 'Success'
+        # delete indicator
+        ti = self.ti.url(url=url, owner=tcex.args.tc_owner)
+        r = ti.delete()
+        ti_data = r.json()
+        assert r.status_code == 200
+        assert ti_data.get('status') == 'Success'
