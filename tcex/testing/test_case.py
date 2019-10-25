@@ -248,7 +248,7 @@ class TestCase(object):
 
             if profile_data.get('exit_message') is None:
                 # update the profile
-                profile_data['exit_message'] = message_tc
+                profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
 
                 fh.seek(0)
                 fh.write(json.dumps(profile_data, indent=2, sort_keys=True))

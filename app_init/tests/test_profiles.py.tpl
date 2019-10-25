@@ -106,5 +106,10 @@ class TestProfiles(${class_name}):
         % endif
 
         # validate exit message
-        self.validate_exit_message(pd.get('exit_message'))
+        exit_message_data = pd.get('exit_message')
+        self.validate_exit_message(
+            exit_message_data.pop('expected_output'),
+            exit_message_data.pop('op'),
+            exit_message_data
+        )
     % endif

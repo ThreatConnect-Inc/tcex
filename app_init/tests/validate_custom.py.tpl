@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Validate custom test case class."""
-from ..validate import Validate
+from .validate import Validate
 
 
 class ValidateCustom(Validate):

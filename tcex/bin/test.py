@@ -254,21 +254,21 @@ class ValidationTemplates:
         parent_file = os.path.join(self.base_dir, 'validate.py')
         template = Template(self.parent_template)
         rendered_template = template.render(**variables)
-        with open(parent_file, 'a') as f:
+        with open(parent_file, 'w') as f:
             f.write(rendered_template)
 
         custom_file = os.path.join(self.base_dir, 'validate_custom.py')
         if not os.path.isfile(custom_file):
             template = Template(self.custom_template)
             rendered_template = template.render(**variables)
-            with open(custom_file, 'a') as f:
+            with open(custom_file, 'w') as f:
                 f.write(rendered_template)
 
         feature_file = os.path.join(self.base_dir, feature, 'validate_feature.py')
         if not os.path.isfile(feature_file):
             template = Template(self.feature_template)
             rendered_template = template.render(**variables)
-            with open(feature_file, 'a') as f:
+            with open(feature_file, 'w') as f:
                 f.write(rendered_template)
 
 
