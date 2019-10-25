@@ -246,7 +246,9 @@ class TestCase(object):
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
 
-            if profile_data.get('exit_message') is None:
+            if profile_data.get('exit_message') is None or isinstance(
+                profile_data.get('exit_message'), str
+            ):
                 # update the profile
                 profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
 
