@@ -207,6 +207,15 @@ class ValidationTemplates:
         return variable_pattern
 
     @property
+    def custom_template(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_custom.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+    @property
     def feature_template(self):
         """Return template file"""
         url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_feature.py.tpl')
@@ -243,10 +252,16 @@ class ValidationTemplates:
         }
 
         parent_file = os.path.join(self.base_dir, 'validate.py')
-        if not os.path.isfile(parent_file):
-            template = Template(self.parent_template)
+        template = Template(self.parent_template)
+        rendered_template = template.render(**variables)
+        with open(parent_file, 'a') as f:
+            f.write(rendered_template)
+
+        custom_file = os.path.join(self.base_dir, 'validate_custom.py')
+        if not os.path.isfile(custom_file):
+            template = Template(self.custom_template)
             rendered_template = template.render(**variables)
-            with open(parent_file, 'a') as f:
+            with open(custom_file, 'a') as f:
                 f.write(rendered_template)
 
         feature_file = os.path.join(self.base_dir, feature, 'validate_feature.py')

@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+1.1.7
+=====
++ Updates to testing framework for custom validation.
+
 1.1.6
 =====
 + Updated deleted() method of TI module to yield results instead of returning raw response.

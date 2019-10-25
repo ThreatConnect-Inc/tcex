@@ -31,7 +31,7 @@ class TestProfiles(${class_name}):
         if os.getenv('SETUP_CLASS') is None:
             self.custom.setup_class(self)
         # enable auto-update of profile data
-        self.enable_update_profile = True
+        self.enable_update_profile = True  # pylint: disable=attribute-defined-outside-init
 
     def setup_method(self):
         """Run setup logic before test method runs."""
@@ -45,7 +45,7 @@ class TestProfiles(${class_name}):
             self.custom.teardown_class(self)
         super(TestProfiles, self).teardown_class()
         # disable auto-update of profile data
-        self.enable_update_profile = False
+        self.enable_update_profile = False  # pylint: disable=attribute-defined-outside-init
 
     def teardown_method(self):
         """Run teardown logic after test method completes."""

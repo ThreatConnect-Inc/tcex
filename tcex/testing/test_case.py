@@ -410,29 +410,29 @@ class TestCase(object):
         """Return partially parsed test case data."""
         return self.test_case_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
 
-    def validate_exit_message(self, test_exit_message):
+    def validate_exit_message(self, test_exit_message, op='eq', **kwargs):
         """Validate App exit message."""
-        message_tc_file = os.path.join(
-            self.default_args.get('tc_out_path'),
-            self.test_case_feature,
-            self.test_case_name,
-            'message.tc',
-        )
-        app_exit_message = None
-        if os.path.isfile(message_tc_file):
-            with open(message_tc_file, 'r') as mh:
-                app_exit_message = mh.read()
+        if test_exit_message is not None:
+            message_tc_file = os.path.join(
+                self.default_args.get('tc_out_path'),
+                self.test_case_feature,
+                self.test_case_name,
+                'message.tc',
+            )
+            app_exit_message = None
+            if os.path.isfile(message_tc_file):
+                with open(message_tc_file, 'r') as mh:
+                    app_exit_message = mh.read()
 
-            if app_exit_message:
-                assert (
-                    app_exit_message == test_exit_message
-                ), 'App exit message ({}) does not match expected exit message ({})'.format(
-                    app_exit_message, test_exit_message
-                )
+                if app_exit_message:
+                    passed, details = self.validator.get_operator(op)(
+                        app_exit_message, test_exit_message, **kwargs
+                    )
+                    assert passed, details
+                else:
+                    assert False, 'The message.tc file was empty.'
             else:
-                assert False, 'The message.tc file was empty.'
-        else:
-            assert False, 'No message.tc file found at ({}).'.format(message_tc_file)
+                assert False, 'No message.tc file found at ({}).'.format(message_tc_file)
 
     @property
     def validator(self):
