@@ -97,7 +97,7 @@ class TestProfiles(${class_name}):
         self.validator.threatconnect.batch(
             self.context, self.owner(pd), pd.get('validation_criteria', {})
         )
-        % else
+        % else:
         ValidateFeature(self.validator).validate(pd.get('outputs'))
         % endif
 

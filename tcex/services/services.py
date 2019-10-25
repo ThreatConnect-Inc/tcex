@@ -759,7 +759,7 @@ class Services(object):
                 webhook_event_response = {
                     'sessionId': self.thread_name,  # session/context
                     'requestKey': request_key,
-                    'command': 'WebHookEventResponse',
+                    'command': 'WebhookEventResponse',
                     'triggerId': trigger_id,
                     'bodyVariable': 'response.body',
                     'headers': callback_response.get('headers', []),
@@ -768,7 +768,7 @@ class Services(object):
                 # write response body to redis
                 playbook.create_output('response.body', callback_response.get('body'))
 
-                # publish the WebHookEventResponse message
+                # publish the WebhookEventResponse message
                 self.publish(json.dumps(webhook_event_response))
             elif isinstance(callback_response, bool) and callback_response:
                 self.increment_metric('hits')

@@ -236,7 +236,7 @@ class TestCase(object):
             self.test_case_name,
             'message.tc',
         )
-        message_tc = None
+        message_tc = ''
         if os.path.isfile(message_tc_file):
             with open(message_tc_file, 'r') as mh:
                 message_tc = mh.read()
@@ -422,11 +422,16 @@ class TestCase(object):
             with open(message_tc_file, 'r') as mh:
                 app_exit_message = mh.read()
 
-        assert (
-            app_exit_message == test_exit_message
-        ), 'App exit message ({}) does not match expected exit message ({})'.format(
-            app_exit_message, test_exit_message
-        )
+            if app_exit_message:
+                assert (
+                    app_exit_message == test_exit_message
+                ), 'App exit message ({}) does not match expected exit message ({})'.format(
+                    app_exit_message, test_exit_message
+                )
+            else:
+                assert False, 'The message.tc file was empty.'
+        else:
+            assert False, 'No message.tc file found at ({}).'.format(message_tc_file)
 
     @property
     def validator(self):
