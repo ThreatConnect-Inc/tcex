@@ -110,6 +110,6 @@ class TestProfiles(${class_name}):
         self.validate_exit_message(
             exit_message_data.pop('expected_output'),
             exit_message_data.pop('op'),
-            exit_message_data
+            **exit_message_data
         )
     % endif
