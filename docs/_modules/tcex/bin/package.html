@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.package &mdash; TcEx 1.1.5 documentation</title>
+  <title>tcex.bin.package &mdash; TcEx 1.1.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.5
+                1.1.6
               </div>
 
 
@@ -380,8 +380,11 @@
             <span class="s1">&#39;*.pyc&#39;</span><span class="p">,</span>  <span class="c1"># any pyc file</span>
             <span class="s1">&#39;.python-version&#39;</span><span class="p">,</span>  <span class="c1"># pyenv</span>
             <span class="s1">&#39;.vscode&#39;</span><span class="p">,</span>  <span class="c1"># Visual Studio Code</span>
+            <span class="s1">&#39;artifacts&#39;</span><span class="p">,</span>  <span class="c1"># pytest in BB Pipelines</span>
+            <span class="s1">&#39;assets&#39;</span><span class="p">,</span>  <span class="c1"># pytest in BB Pipelines</span>
             <span class="s1">&#39;local-*&#39;</span><span class="p">,</span>  <span class="c1"># log directory</span>
             <span class="s1">&#39;log&#39;</span><span class="p">,</span>  <span class="c1"># log directory</span>
+            <span class="s1">&#39;test-reports&#39;</span><span class="p">,</span>  <span class="c1"># pytest in BB Pipelines</span>
             <span class="s1">&#39;tests&#39;</span><span class="p">,</span>  <span class="c1"># pytest test directory</span>
         <span class="p">]</span>
         <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 1.1.5 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 1.1.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.5
+                1.1.6
               </div>
 
 
@@ -1900,6 +1900,89 @@
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">groups</span><span class="p">,</span> <span class="s1">&#39;indicators&#39;</span><span class="p">:</span> <span class="n">indicators</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+    <span class="c1"># def batch_error_report(self):</span>
+    <span class="c1">#     error_code_report = {</span>
+    <span class="c1">#         &#39;0x100a&#39;: {&#39;count&#39;: 0, &#39;type&#39;: &#39;Duplicate indicator&#39;, &#39;errors&#39;: []},</span>
+    <span class="c1">#         &#39;0x1005&#39;: {&#39;count&#39;: 0, &#39;type&#39;: &#39;Exclusion List&#39;, &#39;errors&#39;: []},</span>
+    <span class="c1">#         &#39;0x1006&#39;: {&#39;count&#39;: 0, &#39;type&#39;: &#39;Value to long&#39;, &#39;errors&#39;: []},</span>
+    <span class="c1">#         &#39;0x2002&#39;: {&#39;count&#39;: 0, &#39;type&#39;: &#39;Attribute Value&#39;, &#39;errors&#39;: []},</span>
+    <span class="c1">#     }</span>
+    <span class="c1">#</span>
+    <span class="c1">#     for filename in os.listdir(os.getcwd()):</span>
+    <span class="c1">#         if not filename.startswith(&#39;errors-&#39;):</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#</span>
+    <span class="c1">#         with open(filename, &#39;r&#39;) as fh:</span>
+    <span class="c1">#             error_data = json.load(fh)</span>
+    <span class="c1">#</span>
+    <span class="c1">#         if not isinstance(error_data, list):</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#</span>
+    <span class="c1">#         for error in error_data:</span>
+    <span class="c1">#             reason = error.get(&#39;errorReason&#39;)</span>
+    <span class="c1">#             code_pattern = r&#39;\((0x[a-z0-9]{4})\):\s&#39;</span>
+    <span class="c1">#             try:</span>
+    <span class="c1">#                 code = re.search(code_pattern, reason).group(1)</span>
+    <span class="c1">#             except Exception:</span>
+    <span class="c1">#                 print(f&#39;Failed to retrieve error code from reason - {reason}&#39;)</span>
+    <span class="c1">#                 continue</span>
+    <span class="c1">#</span>
+    <span class="c1">#             error_code_report[code][&#39;count&#39;] += 1</span>
+    <span class="c1">#             if code == &#39;0x100a&#39;:</span>
+    <span class="c1">#                 pass</span>
+    <span class="c1">#             elif code == &#39;0x1005&#39;:</span>
+    <span class="c1">#                 error = None</span>
+    <span class="c1">#                 error_patterns = [</span>
+    <span class="c1">#                     r&#39;(This\sindicator\sis\scontained\son\sa\ssystem-wide\sexclusion\slist.$)&#39;,</span>
+    <span class="c1">#                     r&#39;(The indicator\s\&#39;.*\&#39;\scould\snot\sbe\sprocessed.+$)&#39;,</span>
+    <span class="c1">#                     r&#39;Error\s\(0x1005\):\s(.+$)&#39;,</span>
+    <span class="c1">#                 ]</span>
+    <span class="c1">#</span>
+    <span class="c1">#                 for error_pattern in error_patterns:</span>
+    <span class="c1">#                     try:</span>
+    <span class="c1">#                         error = re.search(error_pattern, reason, re.DOTALL).group(1)</span>
+    <span class="c1">#                         break</span>
+    <span class="c1">#                     except Exception:</span>
+    <span class="c1">#                         pass</span>
+    <span class="c1">#                 else:</span>
+    <span class="c1">#                     print(f&#39;No valid error pattern for current error {reason}&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#                 if error is not None and error not in error_code_report[code][&#39;errors&#39;]:</span>
+    <span class="c1">#                     error_code_report[code][&#39;errors&#39;].append(error)</span>
+    <span class="c1">#             elif code == &#39;0x1006&#39;:</span>
+    <span class="c1">#                 error = None</span>
+    <span class="c1">#                 error_patterns = [r&#39;Error\s\(0x1006\):\s(.+$)&#39;]</span>
+    <span class="c1">#                 for error_pattern in error_patterns:</span>
+    <span class="c1">#                     try:</span>
+    <span class="c1">#                         error = re.search(error_pattern, reason).group(1)</span>
+    <span class="c1">#                         break</span>
+    <span class="c1">#                     except Exception:</span>
+    <span class="c1">#                         pass</span>
+    <span class="c1">#                 else:</span>
+    <span class="c1">#                     print(f&#39;No valid error pattern for current error {reason}&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#                 if error is not None and error not in error_code_report[code][&#39;errors&#39;]:</span>
+    <span class="c1">#                     error_code_report[code][&#39;errors&#39;].append(error)</span>
+    <span class="c1">#             elif code == &#39;0x2002&#39;:</span>
+    <span class="c1">#                 error = None</span>
+    <span class="c1">#                 error_patterns = [</span>
+    <span class="c1">#                     r&#39;(Value\s\&#39;.+\&#39;\s.+)\s\(Ex&#39;,</span>
+    <span class="c1">#                     r&#39;(The\svalue\sfor\san\sattribute\sof\stype\s\&#39;.+\&#39;.+$)&#39;,</span>
+    <span class="c1">#                     # r&#39;(Value\s\&#39;.+\&#39;\snot\sone\sof\sthe\savailable\soptions\sfor\s\&#39;.+\&#39;.)\s\(&#39;,</span>
+    <span class="c1">#                 ]</span>
+    <span class="c1">#</span>
+    <span class="c1">#                 for error_pattern in error_patterns:</span>
+    <span class="c1">#                     try:</span>
+    <span class="c1">#                         error = re.search(error_pattern, reason).group(1)</span>
+    <span class="c1">#                         break</span>
+    <span class="c1">#                     except Exception:</span>
+    <span class="c1">#                         pass</span>
+    <span class="c1">#                 else:</span>
+    <span class="c1">#                     print(f&#39;No valid error pattern for current error {reason}&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#                 if error is not None and error not in error_code_report[code][&#39;errors&#39;]:</span>
+    <span class="c1">#                     error_code_report[code][&#39;errors&#39;].append(error)</span>
 </pre></div>
 
            </div>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Bin Module &mdash; TcEx 1.1.5 documentation</title>
+  <title>Bin Module &mdash; TcEx 1.1.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.5
+                1.1.6
               </div>
 
 
@@ -2010,6 +2010,31 @@ provided “type”.</p></li>
 <span id="bin-test"></span><h2>bin.test<a class="headerlink" href="#module-tcex.bin.test" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Profile Generation Module.</p>
 <dl class="class">
+<dt id="tcex.bin.test.CustomTemplates">
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">CustomTemplates</code><span class="sig-paren">(</span><em class="sig-param">base_dir</em>, <em class="sig-param">branch='master'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#CustomTemplates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.CustomTemplates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Custom method Template Class</p>
+<dl class="method">
+<dt id="tcex.bin.test.CustomTemplates.feature_template">
+<em class="property">property </em><code class="sig-name descname">feature_template</code><a class="headerlink" href="#tcex.bin.test.CustomTemplates.feature_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the feature template file for custom methods</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.test.CustomTemplates.parent_template">
+<em class="property">property </em><code class="sig-name descname">parent_template</code><a class="headerlink" href="#tcex.bin.test.CustomTemplates.parent_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the parent template file for custom methods</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.test.CustomTemplates.render_templates">
+<code class="sig-name descname">render_templates</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">app_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#CustomTemplates.render_templates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.CustomTemplates.render_templates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the templates and write to disk conditionally.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="tcex.bin.test.Profiles">
 <em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">Profiles</code><span class="sig-paren">(</span><em class="sig-param">profile_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -2114,9 +2139,21 @@ provided “type”.</p></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Test.generate_validation_file">
-<code class="sig-name descname">generate_validation_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.generate_validation_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.generate_validation_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the validation file.</p>
+<dt id="tcex.bin.test.Test.generate_custom_files">
+<code class="sig-name descname">generate_custom_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.generate_custom_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.generate_custom_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the custom.py and custom_feature.py files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.test.Test.generate_test_profile_file">
+<code class="sig-name descname">generate_test_profile_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.generate_test_profile_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.generate_test_profile_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the test_profiles.py file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.test.Test.generate_validation_files">
+<code class="sig-name descname">generate_validation_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.generate_validation_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.generate_validation_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the validation.py and validation_feature.py files.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2164,10 +2201,29 @@ provided “type”.</p></li>
 </dd></dl>
 
 <dl class="class">
-<dt id="tcex.bin.test.Validation">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">Validation</code><span class="sig-paren">(</span><em class="sig-param">base_dir</em>, <em class="sig-param">branch='master'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Validation" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.bin.test.TestProfileTemplates">
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">TestProfileTemplates</code><span class="sig-paren">(</span><em class="sig-param">base_dir</em>, <em class="sig-param">branch='master'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#TestProfileTemplates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.TestProfileTemplates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Validation Class</p>
+<p>TestProfile Template Class</p>
+<dl class="method">
+<dt id="tcex.bin.test.TestProfileTemplates.render_template">
+<code class="sig-name descname">render_template</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">app_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#TestProfileTemplates.render_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.TestProfileTemplates.render_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the templates and write to disk conditionally.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.test.TestProfileTemplates.test_profiles_template">
+<em class="property">property </em><code class="sig-name descname">test_profiles_template</code><a class="headerlink" href="#tcex.bin.test.TestProfileTemplates.test_profiles_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return template file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.bin.test.ValidationTemplates">
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">ValidationTemplates</code><span class="sig-paren">(</span><em class="sig-param">base_dir</em>, <em class="sig-param">branch='master'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Validation Template Class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2177,8 +2233,8 @@ provided “type”.</p></li>
 </dd>
 </dl>
 <dl class="method">
-<dt id="tcex.bin.test.Validation._method_name">
-<code class="sig-name descname">_method_name</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Validation._method_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Validation._method_name" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.bin.test.ValidationTemplates._method_name">
+<code class="sig-name descname">_method_name</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates._method_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates._method_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert variable name to a valid method name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2194,46 +2250,28 @@ provided “type”.</p></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Validation.generate">
-<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Validation.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Validation.generate" title="Permalink to this definition">¶</a></dt>
-<dd><p>If not currently exist, generates the validation file.</p>
+<dt id="tcex.bin.test.ValidationTemplates.feature_template">
+<em class="property">property </em><code class="sig-name descname">feature_template</code><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.feature_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return template file</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Validation.generate_feature">
-<code class="sig-name descname">generate_feature</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">file_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Validation.generate_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Validation.generate_feature" title="Permalink to this definition">¶</a></dt>
-<dd><p>If not currently exist, generates the validation file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Validation.generate_test_template">
-<code class="sig-name descname">generate_test_template</code><span class="sig-paren">(</span><em class="sig-param">variables</em>, <em class="sig-param">feature</em>, <em class="sig-param">file_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Validation.generate_test_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Validation.generate_test_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>If not currently exist, generates the test file file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Validation.output_data">
-<code class="sig-name descname">output_data</code><span class="sig-paren">(</span><em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Validation.output_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Validation.output_data" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.bin.test.ValidationTemplates.output_data">
+<code class="sig-name descname">output_data</code><span class="sig-paren">(</span><em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates.output_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.output_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return formatted output data.</p>
 <p>#App:9876:http.content!Binary</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Validation.test_template">
-<em class="property">property </em><code class="sig-name descname">test_template</code><a class="headerlink" href="#tcex.bin.test.Validation.test_template" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.bin.test.ValidationTemplates.parent_template">
+<em class="property">property </em><code class="sig-name descname">parent_template</code><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.parent_template" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return template file</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Validation.validation_feature_template">
-<em class="property">property </em><code class="sig-name descname">validation_feature_template</code><a class="headerlink" href="#tcex.bin.test.Validation.validation_feature_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return template file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Validation.validation_template">
-<em class="property">property </em><code class="sig-name descname">validation_template</code><a class="headerlink" href="#tcex.bin.test.Validation.validation_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return template file</p>
+<dt id="tcex.bin.test.ValidationTemplates.render_templates">
+<code class="sig-name descname">render_templates</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">app_type</em>, <em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates.render_templates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.render_templates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the templates and write to disk conditionally.</p>
 </dd></dl>
 
 </dd></dl>

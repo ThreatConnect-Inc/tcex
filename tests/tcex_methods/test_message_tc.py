@@ -13,10 +13,14 @@ class TestUtils:
     @staticmethod
     def test_message_tc(tcex):
         """Test token renewal"""
+        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
+
+        # cleanup any previous message.tc file
+        os.remove(message_tc_file)
+
         message = 'test'
         tcex.message_tc(message)
 
-        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
         with open(message_tc_file, 'r') as fh:
             message_tc = fh.read()
 
@@ -26,12 +30,14 @@ class TestUtils:
 
         assert message == message_tc, 'message.tc did not match message'
 
-        # cleanup
-        os.remove(message_tc_file)
-
     @staticmethod
     def test_message_tc_long_message(tcex):
         """Test token renewal"""
+        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
+
+        # cleanup any previous message.tc file
+        os.remove(message_tc_file)
+
         message = (
             'word word word word word word word word word word word word word word word word word '
             'word word word word word word word word word word word word word word word word word '
@@ -40,7 +46,6 @@ class TestUtils:
         )
         tcex.message_tc(message)
 
-        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
         with open(message_tc_file, 'r') as fh:
             message_tc = fh.read()
 
@@ -50,12 +55,14 @@ class TestUtils:
 
         assert message[-255:] == message_tc, 'message.tc did not match message'
 
-        # cleanup
-        os.remove(message_tc_file)
-
     @staticmethod
     def test_message_tc_multiple_messages(tcex):
         """Test token renewal"""
+        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
+
+        # cleanup any previous message.tc file
+        os.remove(message_tc_file)
+
         message = (
             'word word word word word word word word word word word word word word word word word '
         )
@@ -74,6 +81,3 @@ class TestUtils:
             message += '\n'
 
         assert message[-255:] == message_tc, 'message.tc did not match message'
-
-        # cleanup
-        os.remove(message_tc_file)

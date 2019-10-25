@@ -27,7 +27,9 @@ class TcToken(object):
         """Get a valid TC api token."""
         r = self.session.post('{}{}api'.format(self.tc_api_path, self.tc_token_url), verify=False)
         if r.status_code != 200:
-            raise RuntimeError('This feature requires ThreatConnect 6.0 or higher.')
+            raise RuntimeError(
+                'This feature requires ThreatConnect 6.0 or higher ({})'.format(r.text)
+            )
         return r.json().get('data')
 
     @property
@@ -42,5 +44,7 @@ class TcToken(object):
             '{}{}svc'.format(self.tc_api_path, self.tc_token_url), json=data, verify=False
         )
         if r.status_code != 200:
-            raise RuntimeError('This feature requires ThreatConnect 6.0 or higher.')
+            raise RuntimeError(
+                'This feature requires ThreatConnect 6.0 or higher ({})'.format(r.text)
+            )
         return r.json().get('data')
