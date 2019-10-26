@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Validate Data Testing Module"""
+import datetime
 import difflib
 import hashlib
 import json
@@ -31,6 +32,7 @@ class Validator(object):
         self._redis = None
         self._threatconnect = None
         self.max_diff = 10
+        self.truncate = 500
 
     @staticmethod
     def _string_to_int_float(x):
@@ -47,6 +49,44 @@ class Validator(object):
             if f != i:
                 return f  # return float
             return i  # return int
+
+    def compare(self, app_data, test_data, op=None, **kwargs):
+        """Compare app_data to test data.
+
+        Args:
+            app_data (dict, list, str): The data from the App.
+            test_data (dict, list, str): The validation data from the test case.
+            op (str, optional): The comparison operator expression. Defaults to "eq".
+
+        Returns:
+            [type]: [description]
+        """
+        # remove comment field from kwargs if it exists
+        try:
+            del kwargs['comment']
+        except KeyError:
+            pass
+
+        op = op or 'eq'
+        if not self.get_operator(op):
+            self.log.error('Invalid operator provided ({})'.format(op))
+            return False
+
+        # logging header
+        self.log.info('{0} {1} {0}'.format('-' * 10, app_data))
+
+        # run operator
+        passed, details = self.get_operator(op)(app_data, test_data, **kwargs)
+
+        # log validation data in a readable format
+        self.validate_log_output(passed, app_data, test_data, details.strip(), op)
+
+        # build assert error
+        assert_error = (
+            '\n App Data     : {}\n Operator     : {}\n Expected Data: {}\n '
+            'Details      : {}\n'.format(app_data, op, test_data, details)
+        )
+        return passed, assert_error
 
     def details(self, app_data, test_data, op):
         """Return details about the validation."""
@@ -78,6 +118,8 @@ class Validator(object):
     def get_operator(self, op):
         """Get the corresponding operator"""
         operators = {
+            'date_format': self.operator_date_format,
+            'df': self.operator_date_format,
             'dd': self.operator_deep_diff,
             'is_date': self.operator_is_date,
             'length_eq': self.operator_length_eq,
@@ -102,30 +144,24 @@ class Validator(object):
         }
         return operators.get(op, None)
 
-    def operator_is_date(self, app_data, test_data):
-        """Checks if the test_data is a known date."""
-        if not isinstance(test_data, list):
-            test_data = [test_data]
-        for data in test_data:
-            try:
-                self.tcex.utils.any_to_datetime(data)
-            except RuntimeError:
-                details = data + ' is not a recognized date field'
-                return False, details
-        return True, self.details(app_data, test_data, 'is_date')
+    def operator_date_format(self, app_data, test_data):
+        """Check if date or dates match the provide format.
 
-    def operator_length_eq(self, app_data, test_data):
+        Args:
+            app_data: (list,str): One or more date strings.
+            test_data: (str): A strptime string for comparision.
         """
-        If data passed in is 2 lists, validates length lists are the same.
-        If data passed in is 2 strings, validates length strings are the same.
-        If data passed in is 1 list and 1 int, validates length array and int value are the same.
-        If data passed in is 1 str and 1 int, validates length str and int value are the same.
-        """
-        if isinstance(test_data, (list, str)):
-            results = operator.eq(len(app_data), len(test_data))
-        else:
-            results = operator.eq(len(app_data), test_data)
-        return results, self.details(app_data, test_data, 'length_eq')
+        if not isinstance(app_data, list):
+            app_data = [app_data]
+        bad_data = []
+        passed = True
+        for data in app_data:
+            try:
+                datetime.datetime.strptime(data, test_data)
+            except ValueError:
+                bad_data.append(data)
+                passed = False
+        return passed, self.details(bad_data, test_data, 'date_format')
 
     def operator_deep_diff(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -182,40 +218,6 @@ class Validator(object):
             return False, str(ddiff)
         return True, ''
 
-    def remove_excludes(self, dict_1, paths):
-        """Removes a list of paths from a given dict
-
-        ex:
-            dict_1: {
-                'result': {
-                    'sys_id': 123,
-                    'owner': {
-                        'id': 5,
-                        'name': 'System'
-                    },
-                    'name': results
-                },
-                'status': 'Uploaded
-            paths: ['result', 'owner', 'id']
-
-            returns: {
-                'result': {
-                    sys_id': 123,
-                        'owner': {
-                            'name': 'System'
-                        },
-                    'name': results
-                },
-                'status': 'Uploaded
-            }
-        """
-        path_0 = paths[0]
-        if len(paths) == 1:
-            dict_1.pop(path_0, None)
-            return dict_1
-        self.remove_excludes(dict_1.get(path_0, {}), paths[1:])
-        return dict_1
-
     def operator_eq(self, app_data, tests_data):
         """Compare app data is equal to tests data.
 
@@ -268,6 +270,20 @@ class Validator(object):
                 app_data, type(app_data), test_data, type(test_data)
             )
         return results, details
+
+    def operator_is_date(self, app_data, test_data):
+        """Check if the app_data is a known date."""
+        if not isinstance(app_data, list):
+            app_data = [app_data]
+        bad_data = []
+        passed = True
+        for data in app_data:
+            try:
+                self.tcex.utils.any_to_datetime(data)
+            except RuntimeError:
+                bad_data.append(data)
+                passed = False
+        return passed, self.details(bad_data, test_data, 'is_date')
 
     def operator_json_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -359,6 +375,20 @@ class Validator(object):
             )
         return results, details
 
+    def operator_length_eq(self, app_data, test_data):
+        """Check length of app_data.
+
+        If data passed in is 2 lists, validates length lists are the same.
+        If data passed in is 2 strings, validates length strings are the same.
+        If data passed in is 1 list and 1 int, validates length array and int value are the same.
+        If data passed in is 1 str and 1 int, validates length str and int value are the same.
+        """
+        if isinstance(test_data, (list, str)):
+            results = operator.eq(len(app_data), len(test_data))
+        else:
+            results = operator.eq(len(app_data), test_data)
+        return results, self.details(app_data, test_data, 'length_eq')
+
     def operator_lt(self, app_data, test_data):
         """Compare app data is less than tests data.
 
@@ -414,6 +444,40 @@ class Validator(object):
             self._redis = Redis(self)
         return self._redis
 
+    def remove_excludes(self, dict_1, paths):
+        """Removes a list of paths from a given dict
+
+        ex:
+            dict_1: {
+                'result': {
+                    'sys_id': 123,
+                    'owner': {
+                        'id': 5,
+                        'name': 'System'
+                    },
+                    'name': results
+                },
+                'status': 'Uploaded
+            paths: ['result', 'owner', 'id']
+
+            returns: {
+                'result': {
+                    sys_id': 123,
+                        'owner': {
+                            'name': 'System'
+                        },
+                    'name': results
+                },
+                'status': 'Uploaded
+            }
+        """
+        path_0 = paths[0]
+        if len(paths) == 1:
+            dict_1.pop(path_0, None)
+            return dict_1
+        self.remove_excludes(dict_1.get(path_0, {}), paths[1:])
+        return dict_1
+
     @property
     def threatconnect(self):
         """Get the current instance of ThreatConnect for validating data"""
@@ -421,14 +485,62 @@ class Validator(object):
             self._threatconnect = ThreatConnect(self)
         return self._threatconnect
 
+    def validate_log_output(self, passed, app_data, test_data, details, op):
+        """Format the validation log output to be easier to read.
+
+        Args:
+            passed (bool): The results of the validation test.
+            app_data (str): The data store in Redis.
+            test_data (str): The user provided data.
+            op (str): The comparison operator.
+
+        Raises:
+            RuntimeError: Raise error on validation failure if halt_on_fail is True.
+        """
+        truncate = self.truncate
+        if app_data is not None and passed:
+            if isinstance(app_data, (string_types)) and len(app_data) > truncate:
+                app_data = app_data[:truncate]
+            elif isinstance(app_data, (list)):
+                db_data_truncated = []
+                for d in app_data:
+                    if d is not None and isinstance(d, string_types) and len(d) > truncate:
+                        db_data_truncated.append('{} ...'.format(d[: self.truncate]))
+                    else:
+                        db_data_truncated.append(d)
+                app_data = db_data_truncated
+
+        if test_data is not None and passed:
+            if isinstance(test_data, (string_types)) and len(test_data) > truncate:
+                test_data = test_data[: self.truncate]
+            elif isinstance(test_data, (list)):
+                user_data_truncated = []
+                for u in test_data:
+                    if isinstance(app_data, (string_types)) and len(u) > truncate:
+                        user_data_truncated.append('{} ...'.format(u[: self.truncate]))
+                    else:
+                        user_data_truncated.append(u)
+                test_data = user_data_truncated
+
+        self.log_data('validate', 'App Data', '({}), Type: [{}]'.format(app_data, type(app_data)))
+        self.log_data('validate', 'Operator', op)
+        self.log_data(
+            'validate', 'Test Data', '({}), Type: [{}]'.format(test_data, type(test_data))
+        )
+
+        if passed:
+            self.log_data('validate', 'Result', 'Passed')
+        else:
+            self.log_data('validate', 'Result', 'Failed', 'error')
+            self.log_data('validate', 'Details', details, 'error')
+
 
 class Redis(object):
     """Validates Redis data"""
 
-    def __init__(self, provider, truncate=50):
+    def __init__(self, provider):
         """Initialize class properties."""
         self.provider = provider
-        self.truncate = truncate
 
         # Properties
         self.log_data = self.provider.log_data
@@ -522,11 +634,12 @@ class Redis(object):
         passed, details = self.provider.get_operator(op)(app_data, test_data, **kwargs)
 
         # log validation data in a readable format
-        self.validate_log_output(passed, app_data, test_data, details.strip(), op)
+        self.provider.validate_log_output(passed, app_data, test_data, details.strip(), op)
 
         # build assert error
-        assert_error = '\n App Data     : {}\n Expected Data: {}\n Details      : {}\n'.format(
-            app_data, test_data, details
+        assert_error = (
+            '\n App Data     : {}\n Operator     : {}\n Expected Data: {}\n '
+            'Details      : {}\n'.format(app_data, op, test_data, details)
         )
         return passed, assert_error
 
@@ -577,55 +690,6 @@ class Redis(object):
     def rex(self, variable, data):
         """Test App data with regex"""
         return self.data(variable, r'{}'.format(data), op='rex')
-
-    def validate_log_output(self, passed, app_data, test_data, details, op):
-        """Format the validation log output to be easier to read.
-
-        Args:
-            passed (bool): The results of the validation test.
-            app_data (str): The data store in Redis.
-            test_data (str): The user provided data.
-            op (str): The comparison operator.
-
-        Raises:
-            RuntimeError: Raise error on validation failure if halt_on_fail is True.
-        """
-        truncate = self.truncate
-        if app_data is not None and passed:
-            if isinstance(app_data, (string_types)) and len(app_data) > truncate:
-                app_data = app_data[:truncate]
-            elif isinstance(app_data, (list)):
-                db_data_truncated = []
-                for d in app_data:
-                    if d is not None and isinstance(d, string_types) and len(d) > truncate:
-                        db_data_truncated.append('{} ...'.format(d[: self.truncate]))
-                    else:
-                        db_data_truncated.append(d)
-                app_data = db_data_truncated
-
-        if test_data is not None and passed:
-            if isinstance(test_data, (string_types)) and len(test_data) > truncate:
-                test_data = test_data[: self.truncate]
-            elif isinstance(test_data, (list)):
-                user_data_truncated = []
-                for u in test_data:
-                    if isinstance(app_data, (string_types)) and len(u) > truncate:
-                        user_data_truncated.append('{} ...'.format(u[: self.truncate]))
-                    else:
-                        user_data_truncated.append(u)
-                test_data = user_data_truncated
-
-        self.log_data('validate', 'App Data', '({}), Type: [{}]'.format(app_data, type(app_data)))
-        self.log_data('validate', 'Operator', op)
-        self.log_data(
-            'validate', 'Test Data', '({}), Type: [{}]'.format(test_data, type(test_data))
-        )
-
-        if passed:
-            self.log_data('validate', 'Result', 'Passed')
-        else:
-            self.log_data('validate', 'Result', 'Failed', 'error')
-            self.log_data('validate', 'Details', details, 'error')
 
 
 class ThreatConnect(object):

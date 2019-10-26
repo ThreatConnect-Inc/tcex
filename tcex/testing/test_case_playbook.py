@@ -70,7 +70,6 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         except SystemExit:
             pass
 
-        app.tcex.log.info('Exit Code: {}'.format(app.tcex.exit_code))
         return self._exit(app.tcex.exit_code)
 
     def run_profile(self, profile):

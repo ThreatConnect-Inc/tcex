@@ -232,7 +232,7 @@ class ValidationTemplates:
         output_data = []
         for ov in output_variables:
             output_data.append({'method': self._method_name(ov), 'variable': ov})
-        return output_data
+        return sorted(output_data, key=lambda i: i['method'])
 
     @property
     def parent_template(self):

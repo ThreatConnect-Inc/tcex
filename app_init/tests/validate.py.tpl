@@ -29,7 +29,6 @@ class Validate(object):
                 assert False, 'Unknown output variable found in profile: {}'.format(k)
 
     % for data in output_data:
-
     def ${data['method']}(self, data):
         """Assert for ${data['variable']}."""
         output_var = '${data['variable']}'
