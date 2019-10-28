@@ -427,10 +427,10 @@ class TestCase(object):
                     app_exit_message = mh.read()
 
                 if app_exit_message:
-                    passed, details = self.validator.get_operator(op)(
-                        app_exit_message, test_exit_message, **kwargs
+                    passed, assert_error = self.validator.compare(
+                        app_exit_message, test_exit_message, op=op, **kwargs
                     )
-                    assert passed, details
+                    assert passed, assert_error
                 else:
                     assert False, 'The message.tc file was empty.'
             else:

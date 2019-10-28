@@ -766,7 +766,7 @@ class Services(object):
                     'statusCode': callback_response.get('statusCode', 200),
                 }
                 # write response body to redis
-                playbook.create_output('response.body', callback_response.get('body'))
+                playbook.create_string('response.body', callback_response.get('body'))
 
                 # publish the WebhookEventResponse message
                 self.publish(json.dumps(webhook_event_response))

@@ -36,4 +36,5 @@ class Validate(object):
             output_var, data.pop('expected_output'), data.pop('op', '='), **data
         )
         assert passed, assert_error
+
     % endfor
