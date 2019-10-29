@@ -77,7 +77,6 @@ parser.add_argument(
         'service_trigger',
         'service_webhook',
     ],
-    default='playbook',
     help='Choose an appropriate App template for the current project.',
 )
 parser.add_argument(
@@ -100,6 +99,13 @@ if __name__ == '__main__':
 
         # create a new app OR migrate an app of a different form to the new app format
         if args.action == 'create' or args.action == 'migrate':
+
+            # TODO: in updated command tool this should not be a default.
+            template = tci.args.template
+            if template is None:
+                template = 'playbook'
+                print('{}No template provided, defaulting to {}.'.format(c.Fore.YELLOW, template))
+
             # download common files
             tci.download_file('.pre-commit-config.yaml')
             tci.download_file('gitignore', '.gitignore')
@@ -109,35 +115,48 @@ if __name__ == '__main__':
             tci.download_file('setup.cfg')
 
             # download type specific files
-            if args.template.startswith('external'):
+            if template.startswith('external'):
                 tci.download_file('external/external_app.py', 'external_app.py')
                 tci.download_file('external/run.py', 'run.py')
-            elif args.template.startswith('job'):
+            elif template.startswith('job'):
                 tci.download_file('__main__.py')
                 tci.download_file('job/job_app.py', 'job_app.py')
                 tci.download_file('job/run.py', 'run.py')
-            elif args.template.startswith('playbook'):
+            elif template.startswith('playbook'):
                 tci.download_file('__main__.py')
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
-            elif args.template.startswith('service'):
+            elif template.startswith('service'):
                 tci.download_file('service/service_app.py', 'service_app.py')
-                tci.download_file('{}/run.py'.format(args.template), 'run.py')
+                tci.download_file('{}/run.py'.format(template), 'run.py')
 
             # download template specific files
-            tci.download_file('{}/app.py'.format(args.template), 'app.py')
-            if args.template.startswith('external'):
-                tci.download_file('{}/app_config.json'.format(args.template), 'app_config.json')
+            tci.download_file('{}/app.py'.format(template), 'app.py')
+            if template.startswith('external'):
+                tci.download_file('{}/app_config.json'.format(template), 'app_config.json')
             else:
-                tci.download_file('{}/args.py'.format(args.template), 'args.py')
-                tci.download_file('{}/install.json'.format(args.template), 'install.json')
-                tci.download_file('{}/tcex.json'.format(args.template), 'tcex.json')
+                tci.download_file('{}/args.py'.format(template), 'args.py')
+                tci.download_file('{}/install.json'.format(template), 'install.json')
+                tci.download_file('{}/tcex.json'.format(template), 'tcex.json')
 
             # if we are migrating, update the install.json
-            if not args.template.startswith('external') and args.action == 'migrate':
+            if not template.startswith('external') and args.action == 'migrate':
                 tci.update_install_json()
 
         elif args.action == 'update':
+            template_map = {
+                'organization': 'job',
+                'playbook': 'playbook',
+                'apiservice': 'service_api',
+                'triggerservice': 'service_trigger',
+                'webhooktriggerservice': 'service_webhook',
+            }
+            # TODO: test on external App
+            template = tci.args.template
+            if template is None:
+                template = template_map.get(tci.ij.runtime_level.lower(), 'external')
+                print('{}Using template "{}" for updates.'.format(c.Fore.CYAN, template))
+
             # update common files
             tci.download_file('.pre-commit-config.yaml')
             tci.download_file('gitignore', '.gitignore')
@@ -147,18 +166,18 @@ if __name__ == '__main__':
             tci.download_file('setup.cfg')
 
             # update type specific files
-            if args.template.startswith('external'):
+            if template.startswith('external'):
                 tci.download_file('external/external_app.py', 'external_app.py')
                 tci.download_file('external/run.py', 'run.py')
-            elif args.template.startswith('job'):
+            elif template.startswith('job'):
                 tci.download_file('__main__.py')
                 tci.download_file('job/job_app.py', 'job_app.py')
                 tci.download_file('job/run.py', 'run.py')
-            elif args.template.startswith('playbook'):
+            elif template.startswith('playbook'):
                 tci.download_file('__main__.py')
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
-            elif args.template.startswith('playbook'):
+            elif template.startswith('service'):
                 tci.download_file('service/service_app.py', 'service_app.py')
 
             # update tcex.json file

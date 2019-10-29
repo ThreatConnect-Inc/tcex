@@ -3,9 +3,18 @@
 Release Notes
 #############
 
+1.1.7
+=====
++ Updates to testing framework for custom validation.
+
 1.1.6
 =====
-+
++ Updated deleted() method of TI module to yield results instead of returning raw response.
++ Updates to testing framework for custom methods when testing profiles.
++ Updated inputs to ensure args provided via sys.argv take precedent over all other args.
++ Added new service_id arg for service Apps.
++ Added POC of session_external. Python requests session with auto-proxy configuration.
++ Updated excludes for tcpackage command for pytest report folders.
 
 1.1.5
 =====

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Inputs Module &mdash; TcEx 1.1.5 documentation</title>
+  <title>Inputs Module &mdash; TcEx 1.1.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.5
+                1.1.6
               </div>
 
 
@@ -302,7 +302,7 @@ intended for testing apps locally.</p>
 
 <dl class="method">
 <dt id="tcex.inputs.inputs.Inputs.config">
-<code class="sig-name descname">config</code><span class="sig-paren">(</span><em class="sig-param">config_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">config</code><span class="sig-paren">(</span><em class="sig-param">config_data</em>, <em class="sig-param">preserve=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add configuration data to update default_args.</p>
 <p>Below are the default args that the TcEx frameworks supports. Any App specific args
 should be included in the provided data.</p>
@@ -324,7 +324,10 @@ should be included in the provided data.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config</strong> (<em>dict</em>) – A dictionary of configuration values.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>dict</em>) – A dictionary of configuration values.</p></li>
+<li><p><strong>preserve</strong> (<em>bool</em>) – Don’t overwrite arg values define in sys.argv</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

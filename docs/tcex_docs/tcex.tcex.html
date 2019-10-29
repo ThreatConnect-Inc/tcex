@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TcEx &mdash; TcEx 1.1.5 documentation</title>
+  <title>TcEx &mdash; TcEx 1.1.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.5
+                1.1.6
               </div>
 
 
@@ -498,7 +498,7 @@ during the call of this method.</p>
 <dd><p>Write data to message_tc file in TcEX specified directory.</p>
 <p>This method is used to set and exit message in the ThreatConnect Platform.
 ThreatConnect only supports files of max_message_length.  Any data exceeding
-this limit will be truncated by this method.</p>
+this limit will be truncated. The last &lt;max_length&gt; characters will be preserved.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> (<em>string</em>) – The message to add to message_tc file</p>
@@ -783,6 +783,12 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.session">
 <em class="property">property </em><code class="sig-name descname">session</code><a class="headerlink" href="#tcex.tcex.TcEx.session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex.TcEx.session_external">
+<em class="property">property </em><code class="sig-name descname">session_external</code><a class="headerlink" href="#tcex.tcex.TcEx.session_external" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
 </dd></dl>
 

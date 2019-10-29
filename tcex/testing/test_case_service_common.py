@@ -244,12 +244,10 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         super(TestCaseServiceCommon, cls).teardown_class()
         try:
             os.remove(cls.service_file)
-        except FileNotFoundError:
+        except OSError:
             pass
 
     def teardown_method(self):
         """Run after each test method runs."""
         time.sleep(0.5)
-        r = self.stager.redis.delete_context(self.context)
-        self.log_data('teardown method', 'delete count', r)
         super(TestCaseServiceCommon, self).teardown_method()

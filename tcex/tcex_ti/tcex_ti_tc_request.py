@@ -499,7 +499,17 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/deleted'.format(main_type, sub_type)
 
-        return self.tcex.session.get(url, params=params)
+        r = self.tcex.session.get(url, params=params)
+
+        if not self.success(r):
+            err = r.text or r.reason
+            self.tcex.handle_error(950, [r.status_code, err, r.url])
+
+        # currently, only indicators have an implemented 'deleted' endpoint, so hardcode the api entity name
+        data = r.json().get('data', {}).get('indicator', [])
+
+        for result in data:
+            yield result
 
     def pivot_from_tag(self, target, tag_name, filters=None, owner=None, params=None):
         """

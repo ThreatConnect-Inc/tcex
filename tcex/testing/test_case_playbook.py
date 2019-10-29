@@ -64,7 +64,12 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         if exit_code != 0:
             return exit_code
 
-        app.tcex.log.info('Exit Code: {}'.format(app.tcex.exit_code))
+        try:
+            # call exit for message_tc output, but don't exit
+            app.tcex.playbook.exit(msg=app.exit_message)
+        except SystemExit:
+            pass
+
         return self._exit(app.tcex.exit_code)
 
     def run_profile(self, profile):
@@ -93,4 +98,7 @@ class TestCasePlaybook(TestCasePlaybookCommon):
 
     def teardown_method(self):
         """Run after each test method runs."""
+        r = self.stager.redis.delete_context(self.context)
+        self.stager.threatconnect.delete_staged(self._staged_tc_data)
+        self.log_data('teardown method', 'delete count', r)
         super(TestCasePlaybook, self).teardown_method()
