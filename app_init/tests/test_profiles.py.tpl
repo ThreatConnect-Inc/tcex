@@ -82,6 +82,7 @@ class TestProfiles(${class_name}):
 
     def test_shutdown(self):
         """Run shutdown command."""
+        self.enable_update_profile = False  # pylint: disable=attribute-defined-outside-init
         self.publish_shutdown()
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
@@ -97,6 +98,7 @@ class TestProfiles(${class_name}):
         self.custom.test_pre_run(self, profile_data, monkeypatch)
 
         assert self.run_profile(profile_data) in profile_data.get('exit_codes', [0])
+
         % if app_type=='organization':
         self.validator.threatconnect.batch(
             self.context, self.owner(profile_data), profile_data.get('validation_criteria', {})

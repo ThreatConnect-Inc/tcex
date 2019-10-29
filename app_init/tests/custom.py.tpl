@@ -14,8 +14,8 @@ class Custom(object):
         test_feature.args = {}
 
         # uncomment the following line to use static topics
-        # tests_feature.client_topic = 'client-topic-123'
-        # tests_feature.server_topic = 'server-topic-123'
+        # test_feature.client_topic = 'client-topic-123'
+        # test_feature.server_topic = 'server-topic-123'
         % endif
 
     def setup_method(self, test_feature):

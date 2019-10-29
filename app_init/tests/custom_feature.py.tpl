@@ -29,7 +29,7 @@ class CustomFeature(Custom):
     % if app_type=='triggerservice':
     def trigger_method(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Perform action to trigger the event."""
-        super(CustomFeature, self).trigger_method(test_feature, profile_data)
+        super(CustomFeature, self).trigger_method(test_feature, profile_data, monkeypatch)
     % else:
     def test_pre_run(self, test_feature, profile_data, monkeypatch):
         """Run test method code before App run method."""
