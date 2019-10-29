@@ -28,7 +28,7 @@ class Custom(object):
         """Run teardown method code."""
 
     % if app_type=='triggerservice':
-    def trigger_method(self, test_feature, profile_data):
+    def trigger_method(self, test_feature, profile_data, monkeypatch):
         """Perform action to trigger the event."""
         # event_data = profile_data.get('event_data')
     % else:

@@ -66,7 +66,7 @@ class TestProfiles(${class_name}):
             self.publish_create_config(config)
 
         # trigger custom event
-        self.custom.trigger_method(self, pd)
+        self.custom.trigger_method(self, pd, monkeypatch)
 
         # publish deleteConfig
         for config in pd.get('configs'):
@@ -85,7 +85,7 @@ class TestProfiles(${class_name}):
         self.publish_shutdown()
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name):  # pylint: disable=unused-argument
+    def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
         # get profile
         pd = self.profile(profile_name)
