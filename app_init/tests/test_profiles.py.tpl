@@ -59,24 +59,24 @@ class TestProfiles(${class_name}):
         """Run pre-created testing profiles."""
 
         # profile data
-        pd = self.profile(profile_name)
+        profile_data = self.profile(profile_name)
 
         # publish createConfig
-        for config in pd.get('configs'):
+        for config in profile_data.get('configs'):
             self.publish_create_config(config)
 
         # trigger custom event
-        self.custom.trigger_method(self, pd, monkeypatch)
+        self.custom.trigger_method(self, profile_data, monkeypatch)
 
         # publish deleteConfig
-        for config in pd.get('configs'):
+        for config in profile_data.get('configs'):
             self.publish_delete_config(config)
 
         # run output variable validation
         for context in self.context_tracker:
             self.validator.tcex.default_args.tc_playbook_db_context = context
             trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
-            output_data = (pd.get('outputs') or {}).get(trigger_id)
+            output_data = (profile_data.get('outputs') or {}).get(trigger_id)
             if output_data is not None:
                 ValidateFeature(self.validator).validate(output_data)
 
@@ -88,28 +88,28 @@ class TestProfiles(${class_name}):
     def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
         # get profile
-        pd = self.profile(profile_name)
+        profile_data = self.profile(profile_name)
 
         # check profile env
-        self.check_environment(pd.get('environments', ['build']))
+        self.check_environment(profile_data.get('environments', ['build']))
 
         # run custom test method before run method
-        self.custom.test_pre_run(self, pd, monkeypatch)
+        self.custom.test_pre_run(self, profile_data, monkeypatch)
 
-        assert self.run_profile(pd) in pd.get('exit_codes', [0])
+        assert self.run_profile(profile_data) in profile_data.get('exit_codes', [0])
         % if app_type=='organization':
         self.validator.threatconnect.batch(
-            self.context, self.owner(pd), pd.get('validation_criteria', {})
+            self.context, self.owner(profile_data), profile_data.get('validation_criteria', {})
         )
         % else:
         # run custom test method before validation
-        self.custom.test_pre_validate(self, pd)
+        self.custom.test_pre_validate(self, profile_data)
 
-        ValidateFeature(self.validator).validate(pd.get('outputs'))
+        ValidateFeature(self.validator).validate(profile_data.get('outputs'))
         % endif
 
         # validate exit message
-        exit_message_data = pd.get('exit_message')
+        exit_message_data = profile_data.get('exit_message')
         if exit_message_data:
             self.validate_exit_message(
                 exit_message_data.pop('expected_output'),
