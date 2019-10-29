@@ -16,6 +16,39 @@
     "commitHash": {
       "type": "string"
     },
+    "deprecation": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "actionAtMinimum": {
+            "type": "string"
+          },
+          "confidenceAmount": {
+            "type": "integer"
+          },
+          "deleteAtMinimum": {
+            "type": "boolean"
+          },
+          "indicatorType": {
+            "type": "string"
+          },
+          "intervalDays": {
+            "type": "integer"
+          },
+          "percentage": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "indicatorType",
+          "intervalDays",
+          "percentage"
+        ],
+        "type": "object"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
     "displayName": {
       "minLength": 3,
       "type": "string"

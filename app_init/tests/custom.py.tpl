@@ -32,6 +32,9 @@ class Custom(object):
         """Perform action to trigger the event."""
         # event_data = profile_data.get('event_data')
     % else:
-    def test_method(self, test_feature, profile_data):
-        """Run test method code."""
+    def test_pre_run(self, test_feature, profile_data, monkeypatch):
+        """Run test method code before App run method."""
+
+    def test_post_validate(self, test_feature, profile_data):
+        """Run test method code after test validation."""
     % endif

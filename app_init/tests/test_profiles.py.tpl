@@ -55,7 +55,7 @@ class TestProfiles(${class_name}):
 
     % if app_type=='triggerservice':
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name):
+    def test_profiles(self, profile_name, monkeypatch):
         """Run pre-created testing profiles."""
 
         # profile data
@@ -93,8 +93,8 @@ class TestProfiles(${class_name}):
         # check profile env
         self.check_environment(pd.get('environments', ['build']))
 
-        # run custom test method
-        self.custom.test_method(self, pd)
+        # run custom test method before run method
+        self.custom.test_pre_run(self, pd, monkeypatch)
 
         assert self.run_profile(pd) in pd.get('exit_codes', [0])
         % if app_type=='organization':
@@ -103,6 +103,9 @@ class TestProfiles(${class_name}):
         )
         % else:
         ValidateFeature(self.validator).validate(pd.get('outputs'))
+
+        # run custom test method after validation
+        self.custom.test_post_validate(self, pd)
         % endif
 
         # validate exit message

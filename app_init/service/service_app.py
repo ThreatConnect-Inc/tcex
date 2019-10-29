@@ -26,12 +26,13 @@ class ServiceApp(object):
         self.args = self.tcex.args
         self.tcex.log.info('Parsed Args.')
 
-    def create_config_callback(self, trigger_id, config):
+    def create_config_callback(self, trigger_id, config, **kwargs):
         """Handle create config messages.
 
         Args:
             trigger_id (str): The ID of the playbook.
             config (dict): The playbook config inputs.
+            url (str, kwargs): The URL for a webhook trigger.
         """
         self.tcex.log.trace('create config callback')
 
