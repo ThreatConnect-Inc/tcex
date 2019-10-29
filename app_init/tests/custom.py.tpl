@@ -35,6 +35,6 @@ class Custom(object):
     def test_pre_run(self, test_feature, profile_data, monkeypatch):
         """Run test method code before App run method."""
 
-    def test_post_validate(self, test_feature, profile_data):
-        """Run test method code after test validation."""
+    def test_pre_validate(self, test_feature, profile_data):
+        """Run test method code before test validation."""
     % endif

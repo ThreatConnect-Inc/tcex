@@ -102,10 +102,10 @@ class TestProfiles(${class_name}):
             self.context, self.owner(pd), pd.get('validation_criteria', {})
         )
         % else:
-        ValidateFeature(self.validator).validate(pd.get('outputs'))
+        # run custom test method before validation
+        self.custom.test_pre_validate(self, pd)
 
-        # run custom test method after validation
-        self.custom.test_post_validate(self, pd)
+        ValidateFeature(self.validator).validate(pd.get('outputs'))
         % endif
 
         # validate exit message
