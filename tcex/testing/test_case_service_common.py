@@ -84,7 +84,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         redis_client = self.redis_client
 
         @staticmethod
-        def session_id(trigger_id=None):  # pylint: disable=unused-argument
+        def session_id_(trigger_id=None):  # pylint: disable=unused-argument
             """Patch session_id method to track trigger id -> session_id for validation."""
             # write to redis
             context = str(uuid.uuid4())  # create unique uuid for event trigger
@@ -95,17 +95,8 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 redis_client.hset(context, '_trigger_id', trigger_id)
             return context
 
-        # the current test case feature
-        test_case_feature = self.test_case_feature
-
-        @property
-        def session_logfile(session_id):  # pylint: disable=unused-argument
-            self.tcex.log.trace('using monkeypatch method')
-            return '{}/{}.log'.format(test_case_feature, session_id)
-
         MonkeyPatch().setattr(Services, 'mqtt_client', mqtt_client)
-        MonkeyPatch().setattr(Services, 'session_id', session_id)
-        MonkeyPatch().setattr(Services, 'session_logfile', session_logfile)
+        MonkeyPatch().setattr(Services, 'session_id', session_id_)
 
     def publish(self, message, topic=None):
         """Publish message on server channel."""

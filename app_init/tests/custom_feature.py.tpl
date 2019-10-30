@@ -31,11 +31,11 @@ class CustomFeature(Custom):
         """Perform action to trigger the event."""
         super(CustomFeature, self).trigger_method(test_feature, profile_data, monkeypatch)
     % else:
-    def test_pre_run(self, test_feature, profile_data, monkeypatch):
+    def test_pre_run(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Run test method code before App run method."""
         super(CustomFeature, self).test_pre_run(test_feature, profile_data, monkeypatch)
 
-    def test_pre_validate(self, test_feature, profile_data):
+    def test_pre_validate(self, test_feature, profile_data):  # pylint: disable=useless-super-delegation
         """Run test method code before test validation."""
         super(CustomFeature, self).test_pre_validate(test_feature, profile_data)
     % endif
