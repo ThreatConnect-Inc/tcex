@@ -33,7 +33,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
                 'tc_svc_client_topic': self.client_topic,
                 'tc_svc_server_topic': self.server_topic,
-                'tc_svc_hb_timeout_seconds': int(os.getenv('TC_SVC_HB_TIMEOUT_SECONDS', '60')),
+                'tc_svc_hb_timeout_seconds': int(os.getenv('TC_SVC_HB_TIMEOUT_SECONDS', '300')),
             }
         )
         return args
@@ -143,6 +143,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         Args:
             trigger_id (str): The trigger id for the config message.
         """
+        time.sleep(0.5)
         # using triggerId here instead of trigger_id do to pop in publish_create_config
         config_msg = {'command': 'DeleteConfig', 'triggerId': message.get('triggerId')}
         self.publish(json.dumps(config_msg))
