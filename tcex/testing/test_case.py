@@ -75,7 +75,7 @@ class TestCase(object):
 
         # update App paths
         args['tc_in_path'] = os.path.join(
-            self.default_args.get('tc_in_path'), self.test_case_feature, self.test_case_name
+            self.default_args.get('tc_in_path'), self.test_case_feature
         )
         args['tc_log_path'] = os.path.join(
             self.default_args.get('tc_log_path'), self.test_case_feature, self.test_case_name
