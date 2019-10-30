@@ -37,5 +37,5 @@ class CustomFeature(Custom):
 
     def test_pre_validate(self, test_feature, profile_data):
         """Run test method code before test validation."""
-        super(CustomFeature, self).test_post_validate(test_feature, profile_data)
+        super(CustomFeature, self).test_pre_validate(test_feature, profile_data)
     % endif
