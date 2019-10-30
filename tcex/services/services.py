@@ -755,7 +755,7 @@ class Services(object):
             params = message.get('queryParams')
             trigger_id = message.get('triggerId')
             callback_response = self.webhook_event_callback(  # pylint: disable=not-callable
-                playbook, method, headers, params, body, config
+                trigger_id, playbook, method, headers, params, body, config
             )
             if isinstance(callback_response, dict):
                 # webhook responses are for providers that require a subscription req/resp.
