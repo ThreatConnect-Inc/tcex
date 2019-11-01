@@ -1,18 +1,66 @@
 # -*- coding: utf-8 -*-
-from .note import Note, Notes
 from .artifact_type import ArtifactType
-from .note import Note
+from .note import Note, Notes
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .tql import TQL
 
-api_endpoint = 'v3/artifacts'
+api_endpoint = '/v3/artifacts'
 
 
 class Artifacts(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None):
         super().__init__(tcex, api_endpoint, initial_response)
-        
+        self.tql = TQL()
         self.added_artifacts = []
+
+    def summary_filter(self, operator, summary):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('summary', operator, summary)
+
+    def case_id_filter(self, operator, case_id):
+        """
+            The ID of the case associated with this artifact
+        """
+        self.tql.add_filter('caseid', operator, case_id)
+
+    def comment_id_filter(self, operator, comment_id):
+        """
+            The ID of the comment associated with this artifact
+        """
+        self.tql.add_filter('commentid', operator, comment_id)
+
+    def id_filter(self, operator, id):
+        """
+            The ID of the artifact
+        """
+        self.tql.add_filter('id', operator, id)
+
+    def source_filter(self, operator, source):
+        """
+            The source of the artifact
+        """
+        self.tql.add_filter('source', operator, source)
+
+    def case_filter(self, operator, case):
+        """
+            A nested query for association to other cases
+        """
+        self.tql.add_filter('case', operator, case)
+
+    def task_id_filter(self, operator, task_id):
+        """
+            The ID of the task associated with this artifact
+        """
+        self.tql.add_filter('taskid', operator, task_id)
+
+    def type_name_filter(self, operator, type_name):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('typename', operator, type_name)
 
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response)

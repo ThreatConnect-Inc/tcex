@@ -5,6 +5,7 @@ from .artifact import Artifact, Artifacts
 from .task import Task, Tasks
 from .note import Note, Notes
 from .tag import Tag, Tags
+from .tql import TQL
 
 api_endpoint = '/v3/cases'
 
@@ -12,9 +13,101 @@ api_endpoint = '/v3/cases'
 class Cases(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None):
         super().__init__(tcex, api_endpoint, initial_response)
+        self.tql = TQL()
 
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response)
+
+    def severity_filter(self, operator, severity):
+        """
+            The severity of the case
+        """
+        self.tql.add_filter('severity', operator, severity)
+
+    def target_id_filter(self, operator, target_id):
+        """
+            The assigned user or group ID for the case
+        """
+        self.tql.add_filter('targetid', operator, target_id)
+
+    def target_type_filter(self, operator, target_type):
+        """
+            The target type for this case (either User or Group)
+        """
+        self.tql.add_filter('targettype', operator, target_type)
+
+    def tag_filter(self, operator, tag):
+        """
+            A nested query for association to labels
+        """
+        self.tql.add_filter('hastag', operator, tag)
+
+    def owner_name_filter(self, operator, owner_name):
+        """
+            The name of the case owner
+        """
+        self.tql.add_filter('ownername', operator, owner_name)
+
+    def task_filter(self, operator, task):
+        """
+            A nested query for association to tasks
+        """
+        self.tql.add_filter('hastask', operator, task)
+
+    def description_filter(self, operator, description):
+        """
+            The description of the case
+        """
+        self.tql.add_filter('description', operator, description)
+
+    def created_by_id_filter(self, operator, created_by_id):
+        """
+            The user ID for the creator of the case
+        """
+        self.tql.add_filter('createdbyid', operator, created_by_id)
+
+    def resolution_filter(self, operator, resolution):
+        """
+            The resolution of the case
+        """
+        self.tql.add_filter('resolution', operator, resolution)
+
+    def artifact_filter(self, operator, artifact):
+        """
+            A nested query for association to artifacts
+        """
+        self.tql.add_filter('hasartifact', operator, artifact)
+
+    def xid_filter(self, operator, xid):
+        """
+            The XID of the case
+        """
+        self.tql.add_filter('xid', operator, xid)
+
+    def name_filter(self, operator, name):
+        """
+            The name of the case
+        """
+        self.tql.add_filter('name', operator, name)
+
+    def id_filter(self, operator, id):
+        """
+            The ID of the case
+        """
+        self.tql.add_filter('id', operator, id)
+
+    #What is the difference between this and hastag?
+    def tag_filter(self, operator, tag):
+        """
+            The name of a tag applied to a case
+        """
+        self.tql.add_filter('tag', operator, tag)
+
+    def status_filter(self, operator, status):
+        """
+            The status of the case
+        """
+        self.tql.add_filter('status', operator, status)
 
     def entity_map(self, entity):
         return Case(self.tcex, **entity)

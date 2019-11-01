@@ -1,16 +1,97 @@
 # -*- coding: utf-8 -*-
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .tql import TQL
 
-api_endpoint = 'v3/workflowTemplates'
+api_endpoint = '/v3/workflowTemplates'
+
+
+class CommonWorkflowTemplate(object):
+    def __init__(self):
+        self.api_endpoint = '/v3/workflowTemplates'
+
+
 
 
 class WorkflowTemplates(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None):
         super().__init__(tcex, api_endpoint, initial_response)
+        self.tql = TQL()
 
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response)
+
+    def organization_id_filter(self, operator, organization_id):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('organizationid', operator, organization_id)
+
+    def assigned_user_id_filter(self, operator, assigned_user_id):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('assigneduserid', operator, assigned_user_id)
+
+    def target_id_filter(self, operator, target_id):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('targetid', operator, target_id)
+
+    def target_type_filter(self, operator, target_type):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('targettype', operator, target_type)
+
+    def config_artifact_filter(self, operator, config_artifact):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('configartifact', operator, config_artifact)
+
+    def name_filter(self, operator, name):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('name', operator, name)
+
+    def description_filter(self, operator, description):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('description', operator, description)
+
+    def config_task_filter(self, operator, config_task):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('configtask', operator, config_task)
+
+    def active_filter(self, operator, active):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('active', operator, active)
+
+    def id_filter(self, operator, id):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('id', operator, id)
+
+    def config_playbook_filter(self, operator, config_playbook):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('configplaybook', operator, config_playbook)
+
+    def version_filter(self, operator, version):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('version', operator, version)
 
     def entity_map(self, entity):
         return WorkflowTemplate(self.tcex, **entity)

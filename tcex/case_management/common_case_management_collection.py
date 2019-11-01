@@ -13,7 +13,7 @@ class CommonCaseManagementCollection(object):
         timeout=1000,
         initial_response=None,
     ):
-        self._api_endpoint = api_endpoint
+        self.api_endpoint = api_endpoint
         self._next_url = next_url
         self._previous_url = previous_url
         self._page_size = page_size
@@ -31,14 +31,6 @@ class CommonCaseManagementCollection(object):
     @property
     def tcex(self):
         return self._tcex
-
-    @property
-    def api_endpoint(self):
-        return self._api_endpoint
-
-    @api_endpoint.setter
-    def api_endpoint(self, api_endpoint):
-        self._api_endpoint = api_endpoint
 
     @property
     def next_url(self):
@@ -89,6 +81,7 @@ class CommonCaseManagementCollection(object):
             added_entities = []
 
         url = self.api_endpoint
+        parameters = {'fields': [], 'tql': self.tql.as_str}
         current_retries = 0
         if initial_response:
             url = initial_response.get('next_url', None)
@@ -99,7 +92,8 @@ class CommonCaseManagementCollection(object):
                 return
 
         while True:
-            r = self.tcex.session.get(url)
+            r = self.tcex.session.get(url, params=parameters)
+            parameters = {}
             if not self.success(r):
                 current_retries += 1
                 if current_retries > self.retry_count:

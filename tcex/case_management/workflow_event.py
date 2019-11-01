@@ -1,19 +1,95 @@
 # -*- coding: utf-8 -*-
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .tql import TQL
 
-api_endpoint = 'v3/workflowEvents'
+api_endpoint = '/v3/workflowEvents'
 
 
 class WorkflowEvents(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None):
         super().__init__(tcex, api_endpoint, initial_response)
+        self.tql = TQL()
+        self.added_tags = []
 
     def __iter__(self):
-        return self.iterate(initial_response=self.initial_response)
+        return self.iterate(initial_response=self.initial_response, added_entities=self.added_tags)
+
+    def summary_filter(self, operator, summary):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('summary', operator, summary)
+
+    def deleted_filter(self, operator, deleted):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('deleted', operator, deleted)
+
+    def case_id_filter(self, operator, case_id):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('caseid', operator, case_id)
+
+    def link_filter(self, operator, link):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('link', operator, link)
+
+    def deleted_reason_filter(self, operator, deleted_reason):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('deletedreason', operator, deleted_reason)
+
+    def system_generated_filter(self, operator, system_generated):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('systemgenerated', operator, system_generated)
+
+    def id_filter(self, operator, id):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('id', operator, id)
+
+    def link_text_filter(self, operator, link_text):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('link_text', operator, link_text)
+
+    def date_added_filter(self, operator, date_added):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('dateadded', operator, date_added)
+
+    def event_date_filter(self, operator, event_date):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('eventdate', operator, event_date)
+
+    def username_filter(self, operator, username):
+        """
+            The summary of the artifact
+        """
+        self.tql.add_filter('username', operator, username)
 
     def entity_map(self, entity):
         return WorkflowEvent(self.tcex, **entity)
+
+    def add_tag(self, tag):
+        self.added_tags.append(tag)
+
+    @property
+    def as_dict(self):
+        return super().as_dict(self.added_tags)
 
 
 class WorkflowEvent(CommonCaseManagement):

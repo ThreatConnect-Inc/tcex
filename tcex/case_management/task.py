@@ -2,17 +2,109 @@
 from .note import Note, Notes
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .tql import TQL
 
-api_endpoint = 'v3/artifacts'
+api_endpoint = '/v3/tasks'
 
 
 class Tasks(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None):
         super().__init__(tcex, api_endpoint, initial_response)
+        self.tql = TQL()
         self.added_tasks = []
 
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response)
+
+    def target_id_filter(self, operator, target_id):
+        """
+            The target_id of the artifact
+        """
+        self.tql.add_filter('targetid', operator, target_id)
+
+    def target_type_filter(self, operator, target_type):
+        """
+            The ID of the description associated with this artifact
+        """
+        self.tql.add_filter('targettype', operator, target_type)
+
+    def intel_type_filter(self, operator, intel_type):
+        """
+            The ID of the comment associated with this artifact
+        """
+        self.tql.add_filter('inteltype', operator, intel_type)
+
+    def id_filter(self, operator, id):
+        """
+            The ID of the artifact
+        """
+        self.tql.add_filter('id', operator, id)
+
+    def name_filter(self, operator, name):
+        """
+            The name of the artifact
+        """
+        self.tql.add_filter('name', operator, name)
+
+    def description_filter(self, operator, description):
+        """
+            A nested query for association to other descriptions
+        """
+        self.tql.add_filter('description', operator, description)
+
+    def config_playbook_filter(self, operator, config_playbook):
+        """
+            The ID of the task associated with this artifact
+        """
+        self.tql.add_filter('configplaybook', operator, config_playbook)
+
+    def duration_filter(self, operator, duration):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('duration', operator, duration)
+
+    def xid_filter(self, operator, xid):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('xid', operator, xid)
+
+    def due_date_filter(self, operator, due_date):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('duedate', operator, due_date)
+
+    def case_id_filter(self, operator, case_id):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('caseid', operator, case_id)
+
+    def config_task_filter(self, operator, config_task):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('configtask', operator, config_task)
+
+    def case_filter(self, operator, case):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('hascase', operator, case)
+
+    def completed_date_filter(self, operator, completed_date):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('completeddate', operator, completed_date)
+
+    def status_filter(self, operator, status):
+        """
+            The type name of the artifact
+        """
+        self.tql.add_filter('status', operator, status)
 
     def entity_map(self, entity):
         return Task(self.tcex, **entity)

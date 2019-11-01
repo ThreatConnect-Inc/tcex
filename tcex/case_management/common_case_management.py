@@ -36,8 +36,6 @@ class CommonCaseManagement(object):
                 continue
             try:
                 value = value.as_dict
-                if key == 'artifacts':
-                    print(value)
             except AttributeError:
                 pass
             if value is None:
@@ -54,7 +52,6 @@ class CommonCaseManagement(object):
             #     transformed_value = self._utils.format_datetime(value,
             #                                                   date_format='%Y-%m-%dT%H:%M:%SZ')
             kwargs[new_key] = kwargs.pop(key)
-        print(kwargs)
 
     @property
     def _metadata_map(self):
@@ -86,8 +83,8 @@ class CommonCaseManagement(object):
                     continue
             entity = response.json()
             break
-        cm_object = self.entity_mapper(entity)
-        return cm_object
+        self.entity_mapper(entity.get('data', {}))
+        return self
 
     @property
     def available_fields(self):
@@ -114,9 +111,6 @@ class CommonCaseManagement(object):
             as_dict = self.as_dict
             r = self.tcex.session.post(url, json=as_dict)
 
-        print('r: ', r)
-        print('r.text: ', r.text)
-        print('as_dict: ', as_dict)
         if r.ok:
             self.entity_mapper(r.json().get('data'))
 

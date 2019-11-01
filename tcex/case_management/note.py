@@ -1,17 +1,73 @@
 # -*- coding: utf-8 -*-
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .tql import TQL
 
-api_endpoint = 'v3/notes'
+api_endpoint = '/v3/notes'
 
 
 class Notes(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None):
         super().__init__(tcex, api_endpoint, initial_response)
+        self.tql = TQL()
         self.added_notes = []
 
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response)
+
+    def owner_filter(self, operator, owner):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('owner', operator, owner)
+
+    def summary_filter(self, operator, summary):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('summary', operator, summary)
+
+    def author_filter(self, operator, author):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('author', operator, author)
+
+    def last_modified_filter(self, operator, last_modified):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('lastmodified', operator, last_modified)
+
+    def case_id_filter(self, operator, case_id):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('caseid', operator, case_id)
+
+    def artifact_id_filter(self, operator, artifact_id):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('artifactid', operator, artifact_id)
+
+    def id_filter(self, operator, id):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('id', operator, id)
+
+    def date_added_filter(self, operator, date_added):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('dateadded', operator, date_added)
+
+    def task_id_filter(self, operator, task_id):
+        """
+            The owner of the artifact
+        """
+        self.tql.add_filter('taskid', operator, task_id)
 
     def entity_map(self, entity):
         return Note(self.tcex, **entity)
