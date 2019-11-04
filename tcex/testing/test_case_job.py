@@ -34,30 +34,30 @@ class TestCaseJob(TestCase):
                 args[k] = self.resolve_env_args(v)
 
         self.log_data('run', 'args', args)
-        app = self.app(args)
+        self.app = self.app_init(args)
 
         # Start
-        exit_code = self.run_app_method(app, 'start')
+        exit_code = self.run_app_method(self.app, 'start')
         if exit_code != 0:
             return exit_code
 
         # Run
-        exit_code = self.run_app_method(app, 'run')
+        exit_code = self.run_app_method(self.app, 'run')
         if exit_code != 0:
             return exit_code
 
         # Done
-        exit_code = self.run_app_method(app, 'done')
+        exit_code = self.run_app_method(self.app, 'done')
         if exit_code != 0:
             return exit_code
 
         try:
             # call exit for message_tc output, but don't exit
-            app.tcex.playbook.exit(msg=app.exit_message)
+            self.app.tcex.playbook.exit(msg=self.app.exit_message)
         except SystemExit:
             pass
 
-        return self._exit(app.tcex.exit_code)
+        return self._exit(self.app.tcex.exit_code)
 
     def run_profile(self, profile):
         """Run an App using the profile name."""
