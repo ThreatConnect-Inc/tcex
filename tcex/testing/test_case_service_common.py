@@ -157,14 +157,16 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.publish(json.dumps(config_msg))
         time.sleep(0.5)
 
-    def publish_webhook_event(self, body=None, headers=None, method='GET', query_params=None):
+    def publish_webhook_event(
+        self, trigger_id, body=None, headers=None, method='GET', query_params=None
+    ):
         """Send create config message.
 
         Args:
-            body (str or dict, optional): [description]. Defaults to None.
-            headers (list, optional): [description]. Defaults to None.
-            method (str, optional): [description]. Defaults to 'GET'.
-            query_params (list, optional): [description]. Defaults to None.
+            trigger_id (str): The trigger ID.
+            headers (list, optional): A list of headers name/value pairs. Defaults to [].
+            method (str, optional): The method. Defaults to 'GET'.
+            query_params (list, optional): A list of query param name/value pairs. Defaults to [].
         """
         if isinstance(body, dict):
             body = json.dumps(body)
@@ -175,6 +177,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             'headers': headers or [],
             'body': body,
             'requestKey': 'abc123',
+            'triggerId': trigger_id,
         }
         self.publish(json.dumps(event))
         time.sleep(0.5)
