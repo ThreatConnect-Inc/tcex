@@ -69,7 +69,8 @@ class TestProfiles(${class_name}):
         self.custom.trigger_method(self, profile_data, monkeypatch)
 
         % if app_type == 'webhooktriggerservice':
-            self.publish_webhook_event(**profile_data.get('webhook_event'))
+        # send webhook trigger
+        self.publish_webhook_event(**profile_data.get('webhook_event'))
         % endif
 
         # publish deleteConfig
