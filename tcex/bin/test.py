@@ -96,9 +96,12 @@ class Profiles:
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': []}),
         }
-        if profile_data.get('runtime_level').lower() in ['triggerservice', 'webhooktriggerservice']:
+        if profile_data.get('runtime_level').lower() == 'triggerservice':
             profile['configs'] = profile_data.get('configs')
             profile['trigger'] = profile_data.get('trigger')
+        elif profile_data.get('runtime_level').lower() == 'webhooktriggerservice':
+            profile['configs'] = profile_data.get('configs')
+            profile['webhook_event'] = profile_data.get('webhook_event')
         else:
             profile['inputs'] = profile_data.get('inputs')
 
