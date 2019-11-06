@@ -53,7 +53,7 @@ class TestProfiles(${class_name}):
             self.custom.teardown_method(self)
         super(TestProfiles, self).teardown_method()
 
-    % if app_type in ('triggerservice', 'webhooktriggerservice'):
+    % if app_type in ['triggerservice', 'webhooktriggerservice']:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name, monkeypatch):
         """Run pre-created testing profiles."""
