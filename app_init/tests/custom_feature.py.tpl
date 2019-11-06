@@ -26,7 +26,7 @@ class CustomFeature(Custom):
         """Run teardown method code."""
         super(CustomFeature, self).teardown_method(test_feature)
 
-    % if app_type=='triggerservice':
+    % if app_type in ('triggerservice', 'webhooktriggerservice')
     def trigger_method(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Perform action to trigger the event."""
         super(CustomFeature, self).trigger_method(test_feature, profile_data, monkeypatch)

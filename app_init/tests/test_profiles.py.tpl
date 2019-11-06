@@ -53,7 +53,7 @@ class TestProfiles(${class_name}):
             self.custom.teardown_method(self)
         super(TestProfiles, self).teardown_method()
 
-    % if app_type=='triggerservice':
+    % if app_type in ('triggerservice', 'webhooktriggerservice'):
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name, monkeypatch):
         """Run pre-created testing profiles."""
@@ -67,6 +67,9 @@ class TestProfiles(${class_name}):
 
         # trigger custom event
         self.custom.trigger_method(self, profile_data, monkeypatch)
+
+        % if app_type == 'webhooktriggerservice':
+            self.publish_webhook_event(**profile_data.get('webhook_event'))
 
         # publish deleteConfig
         for config in profile_data.get('configs'):

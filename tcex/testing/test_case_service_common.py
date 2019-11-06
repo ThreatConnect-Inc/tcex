@@ -157,6 +157,28 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.publish(json.dumps(config_msg))
         time.sleep(0.5)
 
+    def publish_webhook_event(self, method='GET', query_params=None, headers=None, body=None):
+        """Send create config message.
+
+        Args:
+            method (str, optional): [description]. Defaults to 'GET'.
+            query_params (list, optional): [description]. Defaults to None.
+            headers (list, optional): [description]. Defaults to None.
+            body (str or dict, optional): [description]. Defaults to None.
+        """
+        if isinstance(body, dict):
+            body = json.dumps(body)
+        event = {
+            'command': 'WebhookEvent',
+            'method': method,
+            'queryParams': query_params or [],
+            'headers': headers or [],
+            'body': body,
+            'requestKey': 'abc123',
+        }
+        self.publish(json.dumps(event))
+        time.sleep(0.5)
+
     def run(self, args):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')

@@ -231,7 +231,7 @@ class Playbooks(object):
         }
 
     def create_output(self, key, value, variable_type=None):
-        """Wrapper for Create method of CRUD operation for working with KeyValue DB.
+        """Alias for Create method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if provided variable was requested by
         a downstream app and if so create the data in the KeyValue DB.
@@ -364,7 +364,7 @@ class Playbooks(object):
         return self._output_variables_type
 
     def parse_variable(self, variable):
-        """Method to parse an input or output variable.
+        """Parse an input or output variable.
 
         **Example Variable**::
 
@@ -444,8 +444,7 @@ class Playbooks(object):
         return data
 
     def read_array(self, key, embedded=True):
-        """Alias for read method that will read any type (e.g., String, KeyValue) and always
-           return array.
+        """Read playbook variable and return array for any variable type.
 
         Args:
             key (string): The variable to read from the DB.
