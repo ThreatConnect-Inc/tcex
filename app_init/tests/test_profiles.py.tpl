@@ -70,6 +70,7 @@ class TestProfiles(${class_name}):
 
         % if app_type == 'webhooktriggerservice':
             self.publish_webhook_event(**profile_data.get('webhook_event'))
+        % endif
 
         # publish deleteConfig
         for config in profile_data.get('configs'):
