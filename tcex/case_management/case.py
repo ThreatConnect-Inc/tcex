@@ -11,8 +11,9 @@ api_endpoint = '/v3/cases'
 
 
 class Cases(CommonCaseManagementCollection):
-    def __init__(self, tcex, initial_response=None):
-        super().__init__(tcex, api_endpoint, initial_response)
+    def __init__(self, tcex, initial_response=None, tql_filters=None):
+        super().__init__(tcex, api_endpoint, initial_response=initial_response,
+                         tql_filters=tql_filters)
         self.tql = TQL()
 
     def __iter__(self):
@@ -116,15 +117,25 @@ class Cases(CommonCaseManagementCollection):
 class Case(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         super().__init__(tcex, api_endpoint, kwargs)
+        case_filter = [{'keyword': 'caseid', 'operator': '=', 'value': self.id, 'type': 'integer'}]
+
         self._name = kwargs.get('name', None)
         self._severity = kwargs.get('severity', None)
         self._status = kwargs.get('status', None)
         self._resolution = kwargs.get('resolution', None)
         self._created_by = Creator(**kwargs.get('created_by', {}))
-        self._tasks = Tasks(self.tcex, kwargs.get('tasks', {}))
-        self._artifacts = Artifacts(self.tcex, kwargs.get('artifacts', {}))
-        self._tags = Tags(self.tcex, kwargs.get('tags', {}))
-        self._notes = Notes(self.tcex, kwargs.get('notes', {}))
+        self._tasks = Tasks(self.tcex, kwargs.get('tasks', {}), tql_filters=case_filter)
+        self._artifacts = Artifacts(self.tcex, kwargs.get('artifacts', {}), tql_filters=case_filter)
+        self._tags = Tags(self.tcex, kwargs.get('tags', {}), tql_filters=case_filter)
+        self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
+
+    def entity_mapper(self, entity):
+        new_case = Case(self.tcex, **entity)
+        self.__dict__.update(new_case.__dict__)
+
+    @property
+    def available_fields(self):
+        return ['artifacts', 'events', 'notes', 'related', 'tags', 'tasks']
 
     def add_tag(self, **kwargs):
         self._tags.add_tag(Tag(self.tcex, **kwargs))
@@ -137,10 +148,6 @@ class Case(CommonCaseManagement):
 
     def add_artifact(self, **kwargs):
         self._artifacts.add_artifact(Artifact(self.tcex, **kwargs))
-
-    def entity_mapper(self, entity):
-        new_case = Case(self.tcex, **entity)
-        self.__dict__.update(new_case.__dict__)
 
     @property
     def required_properties(self):

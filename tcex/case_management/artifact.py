@@ -9,8 +9,9 @@ api_endpoint = '/v3/artifacts'
 
 
 class Artifacts(CommonCaseManagementCollection):
-    def __init__(self, tcex, initial_response=None):
-        super().__init__(tcex, api_endpoint, initial_response)
+    def __init__(self, tcex, initial_response=None, tql_filters=None):
+        super().__init__(tcex, api_endpoint, initial_response=initial_response,
+                         tql_filters=tql_filters)
         self.tql = TQL()
         self.added_artifacts = []
 
@@ -78,7 +79,7 @@ class Artifacts(CommonCaseManagementCollection):
 
 class Artifact(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
-        super().__init__(tcex, api_endpoint, **kwargs)
+        super().__init__(tcex, api_endpoint, kwargs)
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._file_data = kwargs.get('file_data', None)
@@ -88,11 +89,16 @@ class Artifact(CommonCaseManagement):
         self._summary = kwargs.get('summary', None)
         self._task_id = kwargs.get('task_id', None)
         self._task_xid = kwargs.get('task_xid', None)
-        self._type = ArtifactType(kwargs.get('type', None))
+        self._type = kwargs.get('type', None)
         self._xid = None
 
     def add_note(self, **kwargs):
         self._notes.add_note(Note(self.tcex, **kwargs))
+
+    def entity_mapper(self, entity):
+        new_case = Artifact(self.tcex, **entity)
+        print('entity: ', entity)
+        self.__dict__.update(new_case.__dict__)
 
     @property
     def required_properties(self):

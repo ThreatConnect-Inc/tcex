@@ -12,11 +12,15 @@ class TQL(object):
                 values = value
                 if not isinstance(value, list):
                     values = [value]
-                values = ['"{0}"'.format(value) for value in values]
+                if filter.get('type') in ['string', 'str']:
+                    values = ['"{0}"'.format(value) for value in values]
                 value = '({})'.format(','.join(values))
-            filters.append('{} {} "{}"'.format(
+            if filter.get('type') in ['string', 'str']:
+                value = '"{}"'.format(value)
+            filters.append('{} {} {}'.format(
                 filter.get('keyword'), filter.get('operator'), value
             ))
+
         return ' and '.join(filters)
 
     @property
@@ -27,15 +31,17 @@ class TQL(object):
     def filters(self, filters):
         self._filters = filters
 
-    def add_filter(self, keyword, operator, value):
+    def add_filter(self, keyword, operator, value, type='string'):
+        type = type.lower()
         operator = operator.upper()
         if operator not in self.operators:
             # Log a error
             return None
         self.filters.append(
-            {'keyword': keyword, 'operator': operator, 'value': value}
+            {'keyword': keyword, 'operator': operator, 'value': value, 'type': type}
         )
 
+    #TODO: Change to Enum
     @property
     def operators(self):
         return [

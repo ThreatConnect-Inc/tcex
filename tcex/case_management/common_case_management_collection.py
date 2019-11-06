@@ -3,16 +3,19 @@
 
 class CommonCaseManagementCollection(object):
     def __init__(
-        self,
-        tcex,
-        api_endpoint,
-        page_size=1000,
-        next_url=None,
-        previous_url=None,
-        retry_count=5,
-        timeout=1000,
-        initial_response=None,
+            self,
+            tcex,
+            api_endpoint,
+            tql_filters=None,
+            page_size=1000,
+            next_url=None,
+            previous_url=None,
+            retry_count=5,
+            timeout=1000,
+            initial_response=None,
     ):
+        if tql_filters is None:
+            tql_filters = []
         self.api_endpoint = api_endpoint
         self._next_url = next_url
         self._previous_url = previous_url
@@ -21,6 +24,7 @@ class CommonCaseManagementCollection(object):
         self._timeout = timeout
         self._tcex = tcex
         self._initial_response = initial_response
+        self._tql_filters = tql_filters
 
     def as_dict(self, added_items):
         as_dict = {'data': []}
@@ -81,6 +85,7 @@ class CommonCaseManagementCollection(object):
             added_entities = []
 
         url = self.api_endpoint
+        self.tql.filters = self._tql_filters + self.tql.filters
         parameters = {'fields': [], 'tql': self.tql.as_str}
         current_retries = 0
         if initial_response:
@@ -124,6 +129,12 @@ class CommonCaseManagementCollection(object):
     def entity_map(self, entity):
 
         return None
+
+    def __len__(self):
+        count = 0
+        for cm in self:
+            count += 1
+        return count
 
     @staticmethod
     def success(r):

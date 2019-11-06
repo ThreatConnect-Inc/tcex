@@ -7,8 +7,9 @@ api_endpoint = '/v3/tags'
 
 
 class Tags(CommonCaseManagementCollection):
-    def __init__(self, tcex, initial_response=None):
-        super().__init__(tcex, api_endpoint, initial_response)
+    def __init__(self, tcex, initial_response=None, tql_filters=None):
+        super().__init__(tcex, api_endpoint, initial_response=initial_response,
+                         tql_filters=tql_filters)
         self.tql = TQL()
         self.added_tags = []
 
@@ -19,7 +20,7 @@ class Tags(CommonCaseManagementCollection):
         """
             The ID of the tag's Organization
         """
-        self.tql.add_filter('owner', operator, owner)
+        self.tql.add_filter('owner', operator, owner, 'int')
 
     def owner_name_filter(self, operator, owner_name):
         """
@@ -31,7 +32,7 @@ class Tags(CommonCaseManagementCollection):
         """
             The ID of the case the tag is applied to
         """
-        self.tql.add_filter('case_id', operator, case_id)
+        self.tql.add_filter('case_id', operator, case_id, 'int')
 
     def name_filter(self, operator, name):
         """
@@ -43,13 +44,13 @@ class Tags(CommonCaseManagementCollection):
         """
             The ID of the tag
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, 'int')
 
     def case_filter(self, operator, case):
         """
             A nested query for association to other cases
         """
-        self.tql.add_filter('hascase', operator, case)
+        self.tql.add_filter('hascase', operator, case, 'int')
 
     def entity_map(self, entity):
         return Tag(self.tcex, **entity)
@@ -78,7 +79,7 @@ class Tag(CommonCaseManagement):
 
     @property
     def available_fields(self):
-        return ['case']
+        return ['case', 'description']
 
     @property
     def name(self):

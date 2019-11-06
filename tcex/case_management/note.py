@@ -7,8 +7,9 @@ api_endpoint = '/v3/notes'
 
 
 class Notes(CommonCaseManagementCollection):
-    def __init__(self, tcex, initial_response=None):
-        super().__init__(tcex, api_endpoint, initial_response)
+    def __init__(self, tcex, initial_response=None, tql_filters=None):
+        super().__init__(tcex, api_endpoint, initial_response=initial_response,
+                         tql_filters=tql_filters)
         self.tql = TQL()
         self.added_notes = []
 

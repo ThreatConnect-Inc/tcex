@@ -7,8 +7,9 @@ api_endpoint = '/v3/artifactTypes'
 
 
 class ArtifactTypes(CommonCaseManagementCollection):
-    def __init__(self, tcex, initial_response=None):
-        super().__init__(tcex, api_endpoint, initial_response)
+    def __init__(self, tcex, initial_response=None, tql_filters=None):
+        super().__init__(tcex, api_endpoint, initial_response=initial_response,
+                         tql_filters=tql_filters)
         self.tql = TQL()
 
     def __iter__(self):
@@ -24,7 +25,7 @@ class ArtifactTypes(CommonCaseManagementCollection):
         """
             The ID of the description associated with this artifact
         """
-        self.tql.add_filter('managed', operator, managed)
+        self.tql.add_filter('managed', operator, managed, 'boolean')
 
     def intel_type_filter(self, operator, intel_type):
         """
@@ -36,7 +37,7 @@ class ArtifactTypes(CommonCaseManagementCollection):
         """
             The ID of the artifact
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, 'integer')
 
     def name_filter(self, operator, name):
         """
@@ -54,7 +55,7 @@ class ArtifactTypes(CommonCaseManagementCollection):
         """
             The ID of the task associated with this artifact
         """
-        self.tql.add_filter('active', operator, active)
+        self.tql.add_filter('active', operator, active, 'boolean')
 
     def ui_element_filter(self, operator, ui_element):
         """
@@ -68,11 +69,15 @@ class ArtifactTypes(CommonCaseManagementCollection):
 
 class ArtifactType(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
-        super().__init__(tcex, api_endpoint, **kwargs)
-        self._name = kwargs.get('managed', None)
-        self._description = kwargs.get('description_xid', None)
-        self._date_type = kwargs.get('file_data', None)
+        super().__init__(tcex, api_endpoint, kwargs)
+        self._name = kwargs.get('name', None)
+        self._description = kwargs.get('description', None)
+        self._date_type = kwargs.get('data_type', None)
         self._intel_type = kwargs.get('intel_type', None)
+
+    def entity_mapper(self, entity):
+        new_case = ArtifactType(self.tcex, **entity)
+        self.__dict__.update(new_case.__dict__)
 
     @property
     def name(self):

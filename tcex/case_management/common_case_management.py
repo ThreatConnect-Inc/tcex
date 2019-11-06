@@ -60,7 +60,26 @@ class CommonCaseManagement(object):
             'caseXid': 'case_xid',
             'dateAdded': 'date_added',
             'createdBy': 'created_by',
+            'dataType': 'data_type',
+            'intelType': 'intel_type',
         }
+
+    def delete(self, retry_count=0):
+        if not self.id:
+            return
+        url = '{}/{}'.format(self.api_endpoint, self.id)
+        current_retries = -1
+        while current_retries < retry_count:
+            response = self.tcex.session.delete(url)
+            if not self.success(response):
+                current_retries += 1
+                if current_retries >= retry_count:
+                    err = response.text or response.reason
+                    self.tcex.handle_error(950, [response.status_code, err, response.url])
+                else:
+                    continue
+            break
+        return None
 
     def get(self, all_available_fields=True, case_management_id=None, retry_count=0):
         cm_id = case_management_id or self.id
@@ -90,6 +109,40 @@ class CommonCaseManagement(object):
     def available_fields(self):
         return []
 
+    def _reverse_transform(self, kwargs):
+        reversed_transform_mapping = dict((v,k) for k,v in self._metadata_map.items())
+
+        def reverse_transform(kwargs):
+            reversed_mappings = {}
+            for key, value in kwargs.items():
+                if isinstance(value, dict):
+                    value = reverse_transform(value)
+                elif isinstance(value, list):
+                    values = []
+                    for entry in value:
+                        values.append(self._reverse_transform(entry))
+                    reversed_mappings[key] = values
+                    return reversed_mappings
+                new_key = reversed_transform_mapping.get(key, key)
+                reversed_mappings[new_key] = value
+            return reversed_mappings
+        return reverse_transform(kwargs)
+
+        # for key, value in dict(kwargs).items():
+        #     if isinstance(value, dict):
+        #     if isinstance(value, list):
+        #         for entry in value:
+        #             value = self._reverse_transform(entry)
+        #         if value:
+        #             reversed_mappings[key] = [value]
+        #     else:
+        #         for mapped_key, mapped_value in self._metadata_map.items():
+        #             if key == mapped_value:
+        #                 key = mapped_key
+        #
+        # return reversed_mappings
+
+
     def submit(self):
         """
 
@@ -109,10 +162,16 @@ class CommonCaseManagement(object):
             return self.tcex.session.put(url, json=self.as_dict)
         else:
             as_dict = self.as_dict
+            as_dict = self._reverse_transform(as_dict)
             r = self.tcex.session.post(url, json=as_dict)
 
         if r.ok:
-            self.entity_mapper(r.json().get('data'))
+            r_id = self.id
+            if not r_id:
+                r_id = r.json().get('data').get('id')
+            self.id = r_id
+            self.get()
+            # self.entity_mapper(r.json().get('data'))
 
     @staticmethod
     def success(r):
