@@ -367,7 +367,7 @@ class Test(Bin):
                     'runtime_level': self.ij.runtime_level,
                 }
             }
-        elif self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        elif self.ij.runtime_level.lower() == 'triggerservice':
             profile_data = {
                 self.args.profile_name: {
                     'configs': [
@@ -378,6 +378,24 @@ class Test(Bin):
                     ],
                     'runtime_level': self.ij.runtime_level,
                     'trigger': {},
+                }
+            }
+        elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
+            profile_data = {
+                self.args.profile_name: {
+                    'configs': [
+                        {
+                            'trigger_id': str(randint(1000, 9999)),
+                            'config': self.ij.params_to_args(service_config=False),
+                        }
+                    ],
+                    'runtime_level': self.ij.runtime_level,
+                    'webhook_event': {
+                        'body': '',
+                        'headers': [],
+                        'method': 'GET',
+                        'query_params': [],
+                    },
                 }
             }
         else:

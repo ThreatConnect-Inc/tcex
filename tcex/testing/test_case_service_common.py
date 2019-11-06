@@ -157,14 +157,14 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.publish(json.dumps(config_msg))
         time.sleep(0.5)
 
-    def publish_webhook_event(self, method='GET', query_params=None, headers=None, body=None):
+    def publish_webhook_event(self, body=None, headers=None, method='GET', query_params=None):
         """Send create config message.
 
         Args:
+            body (str or dict, optional): [description]. Defaults to None.
+            headers (list, optional): [description]. Defaults to None.
             method (str, optional): [description]. Defaults to 'GET'.
             query_params (list, optional): [description]. Defaults to None.
-            headers (list, optional): [description]. Defaults to None.
-            body (str or dict, optional): [description]. Defaults to None.
         """
         if isinstance(body, dict):
             body = json.dumps(body)
