@@ -234,6 +234,7 @@ class Utils:
         if filename is None:
             filename = str(uuid.uuid4())
         fqpn = os.path.join(self.tcex.default_args.tc_temp_path, filename)
+        os.makedirs(os.path.dirname(fqpn), exist_ok=True)
         with open(fqpn, mode) as fh:
             fh.write(content)
         return fqpn

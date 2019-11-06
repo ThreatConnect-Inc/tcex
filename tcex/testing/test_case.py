@@ -37,6 +37,7 @@ class TestCase(object):
     _timer_class_start = None
     _timer_method_start = None
     _validator = None
+    app = None
     context = None
     enable_update_profile = False
     log = logger
@@ -66,7 +67,7 @@ class TestCase(object):
         """Add a TC output variable to the output variable dict"""
         self._tc_output_variables[self._convert_variable_name(variable_name)] = variable_value
 
-    def app(self, args):
+    def app_init(self, args):
         """Return an instance of App."""
         from app import App  # pylint: disable=import-error
 
@@ -75,7 +76,7 @@ class TestCase(object):
 
         # update App paths
         args['tc_in_path'] = os.path.join(
-            self.default_args.get('tc_in_path'), self.test_case_feature, self.test_case_name
+            self.default_args.get('tc_in_path'), self.test_case_feature
         )
         args['tc_log_path'] = os.path.join(
             self.default_args.get('tc_log_path'), self.test_case_feature, self.test_case_name

@@ -96,9 +96,12 @@ class Profiles:
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': []}),
         }
-        if profile_data.get('runtime_level').lower() in ['triggerservice', 'webhooktriggerservice']:
+        if profile_data.get('runtime_level').lower() == 'triggerservice':
             profile['configs'] = profile_data.get('configs')
             profile['trigger'] = profile_data.get('trigger')
+        elif profile_data.get('runtime_level').lower() == 'webhooktriggerservice':
+            profile['configs'] = profile_data.get('configs')
+            profile['webhook_event'] = profile_data.get('webhook_event')
         else:
             profile['inputs'] = profile_data.get('inputs')
 
@@ -367,7 +370,7 @@ class Test(Bin):
                     'runtime_level': self.ij.runtime_level,
                 }
             }
-        elif self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        elif self.ij.runtime_level.lower() == 'triggerservice':
             profile_data = {
                 self.args.profile_name: {
                     'configs': [
@@ -378,6 +381,24 @@ class Test(Bin):
                     ],
                     'runtime_level': self.ij.runtime_level,
                     'trigger': {},
+                }
+            }
+        elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
+            profile_data = {
+                self.args.profile_name: {
+                    'configs': [
+                        {
+                            'trigger_id': str(randint(1000, 9999)),
+                            'config': self.ij.params_to_args(service_config=False),
+                        }
+                    ],
+                    'runtime_level': self.ij.runtime_level,
+                    'webhook_event': {
+                        'body': '',
+                        'headers': [],
+                        'method': 'GET',
+                        'query_params': [],
+                    },
                 }
             }
         else:

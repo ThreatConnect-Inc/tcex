@@ -20,6 +20,11 @@ class TestEmbedded:
             {'variable': '#App:0001:string.4!String', 'data': 'one\ntwo\n'},
             {'variable': '#App:0001:string.5!String', 'data': r'\snow or later\s'},
             {'variable': '#App:0001:string.6!String', 'data': r'\snow is not \\snow.\s'},
+            {'variable': '#App:0001:string.7!String', 'data': r'invalid json char " \\'},
+            {
+                'variable': '#App:0001:string.8!String',
+                'data': r'Json Reserved Characters: \\\\" \n \r \f \b \t \\',
+            },
         ]
         for i in string_inputs:
             tcex.playbook.create_string(i.get('variable'), i.get('data'))
@@ -72,6 +77,18 @@ class TestEmbedded:
     @pytest.mark.parametrize(
         'embedded_value,resolved_value',
         [
+            (
+                (
+                    '{\n\"trackingID\": 12345,\n\"title\": \"#App:0001:string.7!String\",\n'
+                    '\"comments\": \"#App:0001:string.8!String\",\n\"requestor\": '
+                    '\"ThreatConnect Playbook\"}'
+                ),
+                (
+                    '{\n\"trackingID\": 12345,\n\"title\": \"invalid json char \\" \\\\",\n'
+                    '\"comments\": \"Json Reserved Characters: \\\\\\\\\\" \\n \\r \\f \\b \\t '
+                    '\\\\",\n\"requestor\": \"ThreatConnect Playbook\"}'
+                ),
+            ),
             # test \s replacement
             (r'\stest', r' test'),
             (r'test\s', r'test '),
@@ -147,13 +164,18 @@ class TestEmbedded:
     )
     def test_embedded_read_string(self, tcex, embedded_value, resolved_value):
         """Test playbook embedded string in string"""
+        print('\nredis    : <{}>'.format(repr(tcex.playbook.read(embedded_value))))
+        print('\nresolved : <{}>'.format(repr(resolved_value)))
+        print('redis (type)   : {}'.format(type(tcex.playbook.read(embedded_value))))
+        print('resolved (type): {}'.format(type(resolved_value)))
+
+        # import json
+
+        # embedded = json.loads(tcex.playbook.read(embedded_value))
+        # print(json.dumps(embedded, indent=2))
+
         self.stage_data(tcex)
         assert tcex.playbook.read(embedded_value) == resolved_value
-
-        # print('redis    : <{}>'.format(tcex.playbook.read(embedded_value)))
-        # print(' resolved : <{}>'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(embedded_value))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
 
     @pytest.mark.parametrize(
         'variable,embedded_value,resolved_value',
@@ -166,7 +188,7 @@ class TestEmbedded:
             (
                 '#App:0001:embedded.string.1!String',
                 '#App:0001:string.2!String inside a string.',
-                r'This is \"a string\" inside a string.',
+                'This is "a string" inside a string.',
             ),
             (
                 '#App:0001:embedded.string.1!String',
@@ -181,7 +203,7 @@ class TestEmbedded:
         tcex.playbook.create_string(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
-        # print('redis    : {}'.format(tcex.playbook.read(variable)))
+        # print('\nredis    : {}'.format(tcex.playbook.read(variable)))
         # print('resolved : {}'.format(resolved_value))
         # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
         # print('resolved (type): {}'.format(type(resolved_value)))

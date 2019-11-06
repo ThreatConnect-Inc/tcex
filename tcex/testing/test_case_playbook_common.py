@@ -96,7 +96,11 @@ class TestCasePlaybookCommon(TestCase):
 
                     # validate validation variables
                     validation_output = (profile_data.get('outputs') or {}).get(variable)
-                    if validation_output is None and profile_data.get('outputs') is not None:
+                    if (
+                        trigger_id is None
+                        and validation_output is None
+                        and profile_data.get('outputs') is not None
+                    ):
                         self.log.error(
                             '[{}] Missing validations rule: {}'.format(self.profile_name, variable)
                         )

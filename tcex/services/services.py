@@ -488,20 +488,23 @@ class Services(object):
             )
 
             if callable(self.create_config_callback):
-                message = 'Config created'
+                msg = 'Config created'
+                kwargs = {}
+                if self.tcex.ij.runtime_level.lower() == 'webhooktriggerservice':
+                    kwargs['url'] = message.get('url')
                 try:
                     # call callback for create config and handle exceptions to protect thread
-                    self.create_config_callback(trigger_id, config)  # pylint: disable=not-callable
-                except Exception as e:
-                    message = 'The create config callback method encountered an error ({}).'.format(
-                        e
+                    self.create_config_callback(  # pylint: disable=not-callable
+                        trigger_id, config, **kwargs
                     )
-                    self.tcex.log.error(message)
+                except Exception as e:
+                    msg = 'The create config callback method encountered an error ({}).'.format(e)
+                    self.tcex.log.error(msg)
                     self.tcex.log.trace(traceback.format_exc())
                     status = 'Failed'
 
             # create config after callback to report status and message
-            self.create_config(trigger_id, config, message, status)
+            self.create_config(trigger_id, config, msg, status)
         elif command.lower() == 'deleteconfig':
             self.tcex.log.info('DeleteConfig - trigger_id: {}'.format(trigger_id))
 
@@ -752,7 +755,7 @@ class Services(object):
             params = message.get('queryParams')
             trigger_id = message.get('triggerId')
             callback_response = self.webhook_event_callback(  # pylint: disable=not-callable
-                playbook, method, headers, params, body, config
+                trigger_id, playbook, method, headers, params, body, config
             )
             if isinstance(callback_response, dict):
                 # webhook responses are for providers that require a subscription req/resp.

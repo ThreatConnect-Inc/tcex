@@ -24,23 +24,23 @@ class TestCaseTriggerService(TestCaseServiceCommon):
 
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
         self.log_data('run', 'args', args)
-        app = self.app(args)
+        self.app = self.app_init(args)
 
         # Setup
-        exit_code = self.run_app_method(app, 'setup')
+        exit_code = self.run_app_method(self.app, 'setup')
         if exit_code != 0:
             return exit_code
 
         # Trigger
         try:
             # configure custom trigger message handler
-            app.tcex.service.create_config_callback = app.create_config_callback
-            app.tcex.service.delete_config_callback = app.delete_config_callback
-            app.tcex.service.shutdown_callback = app.shutdown_callback
+            self.app.tcex.service.create_config_callback = self.app.create_config_callback
+            self.app.tcex.service.delete_config_callback = self.app.delete_config_callback
+            self.app.tcex.service.shutdown_callback = self.app.shutdown_callback
 
-            app.tcex.service.listen()
-            app.tcex.service.heartbeat()
-            app.tcex.service.ready = True
+            self.app.tcex.service.listen()
+            self.app.tcex.service.heartbeat()
+            self.app.tcex.service.ready = True
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
             return self._exit(e.code)
@@ -51,13 +51,13 @@ class TestCaseTriggerService(TestCaseServiceCommon):
             return self._exit(1)
 
         # Run
-        exit_code = self.run_app_method(app, 'run')
+        exit_code = self.run_app_method(self.app, 'run')
         if exit_code != 0:
             return exit_code
 
         # Teardown
-        exit_code = self.run_app_method(app, 'teardown')
+        exit_code = self.run_app_method(self.app, 'teardown')
         if exit_code != 0:
             return exit_code
 
-        return self._exit(app.tcex.exit_code)
+        return self._exit(self.app.tcex.exit_code)

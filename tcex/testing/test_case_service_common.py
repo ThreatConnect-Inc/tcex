@@ -33,7 +33,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
                 'tc_svc_client_topic': self.client_topic,
                 'tc_svc_server_topic': self.server_topic,
-                'tc_svc_hb_timeout_seconds': int(os.getenv('TC_SVC_HB_TIMEOUT_SECONDS', '60')),
+                'tc_svc_hb_timeout_seconds': int(os.getenv('TC_SVC_HB_TIMEOUT_SECONDS', '300')),
             }
         )
         return args
@@ -84,7 +84,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         redis_client = self.redis_client
 
         @staticmethod
-        def session_id(trigger_id=None):  # pylint: disable=unused-argument
+        def session_id_(trigger_id=None):  # pylint: disable=unused-argument
             """Patch session_id method to track trigger id -> session_id for validation."""
             # write to redis
             context = str(uuid.uuid4())  # create unique uuid for event trigger
@@ -95,17 +95,8 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 redis_client.hset(context, '_trigger_id', trigger_id)
             return context
 
-        # the current test case feature
-        test_case_feature = self.test_case_feature
-
-        @property
-        def session_logfile(session_id):  # pylint: disable=unused-argument
-            self.tcex.log.trace('using monkeypatch method')
-            return '{}/{}.log'.format(test_case_feature, session_id)
-
         MonkeyPatch().setattr(Services, 'mqtt_client', mqtt_client)
-        MonkeyPatch().setattr(Services, 'session_id', session_id)
-        MonkeyPatch().setattr(Services, 'session_logfile', session_logfile)
+        MonkeyPatch().setattr(Services, 'session_id', session_id_)
 
     def publish(self, message, topic=None):
         """Publish message on server channel."""
@@ -143,6 +134,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         Args:
             trigger_id (str): The trigger id for the config message.
         """
+        time.sleep(0.5)
         # using triggerId here instead of trigger_id do to pop in publish_create_config
         config_msg = {'command': 'DeleteConfig', 'triggerId': message.get('triggerId')}
         self.publish(json.dumps(config_msg))
@@ -163,6 +155,28 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         config_msg = {'command': 'UpdateConfig', 'triggerId': trigger_id, 'config': config}
         config_msg['config']['outputVariables'] = self.output_variables
         self.publish(json.dumps(config_msg))
+        time.sleep(0.5)
+
+    def publish_webhook_event(self, body=None, headers=None, method='GET', query_params=None):
+        """Send create config message.
+
+        Args:
+            body (str or dict, optional): [description]. Defaults to None.
+            headers (list, optional): [description]. Defaults to None.
+            method (str, optional): [description]. Defaults to 'GET'.
+            query_params (list, optional): [description]. Defaults to None.
+        """
+        if isinstance(body, dict):
+            body = json.dumps(body)
+        event = {
+            'command': 'WebhookEvent',
+            'method': method,
+            'queryParams': query_params or [],
+            'headers': headers or [],
+            'body': body,
+            'requestKey': 'abc123',
+        }
+        self.publish(json.dumps(event))
         time.sleep(0.5)
 
     def run(self, args):
