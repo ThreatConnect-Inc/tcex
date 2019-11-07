@@ -175,11 +175,12 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             method (str, optional): The method. Defaults to 'GET'.
             query_params (list, optional): A list of query param name/value pairs. Defaults to [].
         """
+        body = body or ''
         if isinstance(body, dict):
             body = json.dumps(body)
 
         body = self.redis_client.hset(
-            request_key, 'request.body', base64.b64encode(bytes(body, 'utf-8')).decode('utf-8')
+            request_key, 'request.body', base64.b64encode(json.dumps(body).encode('utf-8'))
         )
         event = {
             'command': 'WebhookEvent',
