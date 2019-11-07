@@ -95,7 +95,7 @@ class Cases(CommonCaseManagementCollection):
         """
             The ID of the case
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     #What is the difference between this and hastag?
     def tag_filter(self, operator, tag):
@@ -152,10 +152,6 @@ class Case(CommonCaseManagement):
     @property
     def required_properties(self):
         return ['status', 'severity', 'name']
-
-    @property
-    def available_fields(self):
-        return ['artifacts', 'events', 'notes', 'related', 'tags', 'tasks']
 
     @property
     def name(self):

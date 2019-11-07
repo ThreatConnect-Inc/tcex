@@ -1,4 +1,30 @@
+from enum import Enum
+
+
 class TQL(object):
+    class Operator(Enum):
+        EQ = '='
+        NE = '!='
+        GT = '>'
+        LT = '<'
+        LEQ = '<='
+        GEQ = '>='
+        NOT_IN = 'NOT IN'
+        IN = 'IN'
+        NOT_LIKE = 'NOT LIKE'
+        LIKE = 'LIKE'
+        NOT_CONTAINS = 'NOT CONTAINS'
+        CONTAINS = 'CONTAINS'
+        NOT_STARTS_WITH = 'NOT STARTSWITH'
+        STARTS_WITH = 'STARTSWITH'
+        NOT_ENDS_WITH = 'NOT ENDSWITH'
+        ENDS_WITH = 'ENDSWITH'
+
+    class Type(Enum):
+        STRING = 'String'
+        INTEGER = 'Integer'
+        BOOLEAN = 'Boolean'
+
     def __init__(self):
         self._filters = []
 
@@ -18,7 +44,7 @@ class TQL(object):
             if filter.get('type') in ['string', 'str']:
                 value = '"{}"'.format(value)
             filters.append('{} {} {}'.format(
-                filter.get('keyword'), filter.get('operator'), value
+                filter.get('keyword'), filter.get('operator').name, value
             ))
 
         return ' and '.join(filters)
@@ -31,29 +57,7 @@ class TQL(object):
     def filters(self, filters):
         self._filters = filters
 
-    def add_filter(self, keyword, operator, value, type='string'):
-        type = type.lower()
-        operator = operator.upper()
-        if operator not in self.operators:
-            # Log a error
-            return None
+    def add_filter(self, keyword, operator, value, type=Operator.EQ):
         self.filters.append(
             {'keyword': keyword, 'operator': operator, 'value': value, 'type': type}
         )
-
-    #TODO: Change to Enum
-    @property
-    def operators(self):
-        return [
-            '=', '==', 'EQ', 'EQUALS',
-            '!=', 'NE',
-            '>', 'GT',
-            '<', 'LT',
-            '<=', 'LEQ',
-            '>=', 'GEQ',
-            'NOT IN', 'IN',
-            'NOT LIKE', 'LIKE',
-            'NOT CONTAINS', 'CONTAINS',
-            'NOT STARTSWITH', 'STARTSWITH',
-            'NOT ENDSWITH', 'ENDSWITH'
-        ]

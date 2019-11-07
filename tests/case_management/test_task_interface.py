@@ -2,6 +2,7 @@
 """Test the TcEx Threat Intel Module."""
 
 from ..tcex_init import tcex
+from tcex.case_management.tql import TQL
 
 
 # pylint: disable=W0201
@@ -25,7 +26,7 @@ class TestTaskIndicators:
         if create:
             self.test_create(name, delete=False)
         tags = self.cm.tags()
-        tags.name_filter('=', name)
+        tags.name_filter(TQL.Operator.EQ, name)
         for tag in tags:
             tag.delete()
 

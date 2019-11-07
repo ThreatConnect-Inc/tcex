@@ -20,7 +20,7 @@ class Tags(CommonCaseManagementCollection):
         """
             The ID of the tag's Organization
         """
-        self.tql.add_filter('owner', operator, owner, 'int')
+        self.tql.add_filter('owner', operator, owner, TQL.Type.INTEGER)
 
     def owner_name_filter(self, operator, owner_name):
         """
@@ -32,7 +32,7 @@ class Tags(CommonCaseManagementCollection):
         """
             The ID of the case the tag is applied to
         """
-        self.tql.add_filter('case_id', operator, case_id, 'int')
+        self.tql.add_filter('case_id', operator, case_id, TQL.Type.INTEGER)
 
     def name_filter(self, operator, name):
         """
@@ -44,13 +44,13 @@ class Tags(CommonCaseManagementCollection):
         """
             The ID of the tag
         """
-        self.tql.add_filter('id', operator, id, 'int')
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def case_filter(self, operator, case):
         """
             A nested query for association to other cases
         """
-        self.tql.add_filter('hascase', operator, case, 'int')
+        self.tql.add_filter('hascase', operator, case, TQL.Type.INTEGER)
 
     def entity_map(self, entity):
         return Tag(self.tcex, **entity)

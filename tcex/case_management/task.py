@@ -39,7 +39,7 @@ class Tasks(CommonCaseManagementCollection):
         """
             The ID of the artifact
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def name_filter(self, operator, name):
         """
@@ -81,7 +81,7 @@ class Tasks(CommonCaseManagementCollection):
         """
             The type name of the artifact
         """
-        self.tql.add_filter('caseid', operator, case_id)
+        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def config_task_filter(self, operator, config_task):
         """

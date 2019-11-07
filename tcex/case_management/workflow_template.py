@@ -26,19 +26,19 @@ class WorkflowTemplates(CommonCaseManagementCollection):
         """
             The summary of the artifact
         """
-        self.tql.add_filter('organizationid', operator, organization_id)
+        self.tql.add_filter('organizationid', operator, organization_id, TQL.Type.INTEGER)
 
     def assigned_user_id_filter(self, operator, assigned_user_id):
         """
             The summary of the artifact
         """
-        self.tql.add_filter('assigneduserid', operator, assigned_user_id)
+        self.tql.add_filter('assigneduserid', operator, assigned_user_id, TQL.Type.INTEGER)
 
     def target_id_filter(self, operator, target_id):
         """
             The summary of the artifact
         """
-        self.tql.add_filter('targetid', operator, target_id)
+        self.tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
 
     def target_type_filter(self, operator, target_type):
         """
@@ -80,7 +80,7 @@ class WorkflowTemplates(CommonCaseManagementCollection):
         """
             The summary of the artifact
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def config_playbook_filter(self, operator, config_playbook):
         """

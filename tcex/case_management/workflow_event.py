@@ -32,7 +32,7 @@ class WorkflowEvents(CommonCaseManagementCollection):
         """
             The summary of the artifact
         """
-        self.tql.add_filter('caseid', operator, case_id)
+        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def link_filter(self, operator, link):
         """
@@ -56,7 +56,7 @@ class WorkflowEvents(CommonCaseManagementCollection):
         """
             The summary of the artifact
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def link_text_filter(self, operator, link_text):
         """

@@ -2,6 +2,7 @@
 """Test the TcEx Threat Intel Module."""
 
 from ..tcex_init import tcex
+from tcex.case_management.tql import TQL
 
 
 # pylint: disable=W0201
@@ -30,13 +31,13 @@ class TestArtifactTypeIndicators:
         artifact_types = self.cm.artifact_types()
 
         # Test Name Filter
-        artifact_types.name_filter('!=', 'New Artifact Type')
+        artifact_types.name_filter(TQL.Operator.NE, 'New Artifact Type')
         assert len(artifact_types) == 2
         for artifact_type in artifact_types:
             assert artifact_type.id in [2, 3]
 
         # Test AND functionality
-        artifact_types.data_type_filter('=', 'TimeStamp')
+        artifact_types.data_type_filter(TQL.Operator.EQ, 'TimeStamp')
         assert len(artifact_types) == 1
         for artifact_type in artifact_types:
             assert artifact_type.id == 3
@@ -48,7 +49,7 @@ class TestArtifactTypeIndicators:
         # Clear Filters
         artifact_types.tql.filters = []
 
-        artifact_types.active_filter('=', True)
+        artifact_types.active_filter(TQL.Operator.EQ, True)
         assert len(artifact_types) == 2
         for artifact_type in artifact_types:
             assert artifact_type.id in [1, 2]
@@ -56,7 +57,7 @@ class TestArtifactTypeIndicators:
         # Clear Filters
         artifact_types.tql.filters = []
 
-        artifact_types.description_filter('CONTAINS', 'Random')
+        artifact_types.description_filter(TQL.Operator.CONTAINS, 'Random')
         assert len(artifact_types) == 1
         for artifact_type in artifact_types:
             assert artifact_type.id == 1

@@ -2,7 +2,7 @@
 """Test the TcEx Threat Intel Module."""
 
 from ..tcex_init import tcex
-
+from tcex.case_management.tql import TQL
 
 # pylint: disable=W0201
 class TestCaseIndicators:
@@ -13,7 +13,15 @@ class TestCaseIndicators:
         self.cm = tcex.cm
 
     def test_get_single(self):
-        ...
+        case = self.test_create('case_name', delete=False)
+        self.test_create('case_name_2', delete=False)
+
+        case = self.cm.case(id=case.id)
+        case.get()
+        assert case.name == 'case_name'
+
+        self.test_delete('case_name', create=False)
+        self.test_delete('case_name_2', create=False)
 
     def test_get_many(self):
         ...
@@ -25,7 +33,7 @@ class TestCaseIndicators:
         if create:
             self.test_create(name, delete=False)
         cases = self.cm.cases()
-        cases.name_filter('=', name)
+        cases.name_filter(TQL.Operator.EQ, name)
         for case in cases:
             case.delete()
 

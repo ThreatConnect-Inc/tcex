@@ -25,7 +25,7 @@ class ArtifactTypes(CommonCaseManagementCollection):
         """
             The ID of the description associated with this artifact
         """
-        self.tql.add_filter('managed', operator, managed, 'boolean')
+        self.tql.add_filter('managed', operator, managed, TQL.Type.BOOLEAN)
 
     def intel_type_filter(self, operator, intel_type):
         """
@@ -37,7 +37,7 @@ class ArtifactTypes(CommonCaseManagementCollection):
         """
             The ID of the artifact
         """
-        self.tql.add_filter('id', operator, id, 'integer')
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def name_filter(self, operator, name):
         """
@@ -55,7 +55,7 @@ class ArtifactTypes(CommonCaseManagementCollection):
         """
             The ID of the task associated with this artifact
         """
-        self.tql.add_filter('active', operator, active, 'boolean')
+        self.tql.add_filter('active', operator, active, TQL.Type.INTEGER)
 
     def ui_element_filter(self, operator, ui_element):
         """

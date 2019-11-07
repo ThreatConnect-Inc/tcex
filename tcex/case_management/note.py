@@ -44,19 +44,19 @@ class Notes(CommonCaseManagementCollection):
         """
             The owner of the artifact
         """
-        self.tql.add_filter('caseid', operator, case_id)
+        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def artifact_id_filter(self, operator, artifact_id):
         """
             The owner of the artifact
         """
-        self.tql.add_filter('artifactid', operator, artifact_id)
+        self.tql.add_filter('artifactid', operator, artifact_id, TQL.Type.INTEGER)
 
     def id_filter(self, operator, id):
         """
             The owner of the artifact
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def date_added_filter(self, operator, date_added):
         """
@@ -68,7 +68,7 @@ class Notes(CommonCaseManagementCollection):
         """
             The owner of the artifact
         """
-        self.tql.add_filter('taskid', operator, task_id)
+        self.tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
 
     def entity_map(self, entity):
         return Note(self.tcex, **entity)

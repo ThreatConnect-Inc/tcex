@@ -25,19 +25,19 @@ class Artifacts(CommonCaseManagementCollection):
         """
             The ID of the case associated with this artifact
         """
-        self.tql.add_filter('caseid', operator, case_id)
+        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def comment_id_filter(self, operator, comment_id):
         """
             The ID of the comment associated with this artifact
         """
-        self.tql.add_filter('commentid', operator, comment_id)
+        self.tql.add_filter('commentid', operator, comment_id, TQL.Type.INTEGER)
 
     def id_filter(self, operator, id):
         """
             The ID of the artifact
         """
-        self.tql.add_filter('id', operator, id)
+        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def source_filter(self, operator, source):
         """
@@ -55,7 +55,7 @@ class Artifacts(CommonCaseManagementCollection):
         """
             The ID of the task associated with this artifact
         """
-        self.tql.add_filter('taskid', operator, task_id)
+        self.tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
 
     def type_name_filter(self, operator, type_name):
         """
@@ -97,7 +97,6 @@ class Artifact(CommonCaseManagement):
 
     def entity_mapper(self, entity):
         new_case = Artifact(self.tcex, **entity)
-        print('entity: ', entity)
         self.__dict__.update(new_case.__dict__)
 
     @property
@@ -111,7 +110,7 @@ class Artifact(CommonCaseManagement):
             'fileData', 'intelType',
             'notes', 'source',
             'summary', 'taskId',
-            'taskXid'
+            'taskXid', 'type'
         ]
 
     @property

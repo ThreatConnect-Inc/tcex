@@ -2,6 +2,7 @@
 """Test the TcEx Threat Intel Module."""
 
 from ..tcex_init import tcex
+from tcex.case_management.tql import TQL
 
 
 # pylint: disable=W0201
@@ -29,25 +30,25 @@ class TestTagIndicators:
         tags = self.cm.tags()
 
         # Test id tql filter
-        tags.id_filter('=', test_tag_1.id)
+        tags.id_filter(TQL.Operator.EQ, test_tag_1.id)
         assert len(tags) == 1
         for tag in tags:
             assert tag.id == test_tag_1.id
 
         # Test AND functionality
-        tags.name_filter('=', 'does not exist')
+        tags.name_filter(TQL.Operator.EQ, 'does not exist')
         assert len(tags) == 0
 
         # Clear Filters
         tags.tql.filters = []
 
         # Test Name filter
-        tags.name_filter('!=', 'does not exist')
+        tags.name_filter(TQL.Operator.NE, 'does not exist')
         assert len(tags) == 2
         for tag in tags:
             assert tag.name in ['tag_name', 'tag_name_2']
 
-        tags.name_filter('=', 'tag_name')
+        tags.name_filter(TQL.Operator.EQ, 'tag_name')
         assert len(tags) == 1
         for tag in tags:
             assert tag.name == test_tag_1.name
@@ -55,7 +56,7 @@ class TestTagIndicators:
         # Clear Filters
         tags.tql.filters = []
 
-        tags.owner_name_filter('=', tcex.args.tc_owner)
+        tags.owner_name_filter(TQL.Operator.EQ, tcex.args.tc_owner)
         # assert len(tags) == 2
 
         self.test_delete('tag_name', create=False)
@@ -65,7 +66,7 @@ class TestTagIndicators:
         if create:
             self.test_create(name, delete=False)
         tags = self.cm.tags()
-        tags.name_filter('=', name)
+        tags.name_filter(TQL.Operator.EQ, name)
         for tag in tags:
             tag.delete()
 
