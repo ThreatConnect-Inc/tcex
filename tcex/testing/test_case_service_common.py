@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
+import base64
 import json
 import os
 import threading
@@ -158,7 +159,13 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         time.sleep(0.5)
 
     def publish_webhook_event(
-        self, trigger_id, body=None, headers=None, method='GET', query_params=None
+        self,
+        trigger_id,
+        body=None,
+        headers=None,
+        method='GET',
+        query_params=None,
+        request_key='abc123',
     ):
         """Send create config message.
 
@@ -170,13 +177,17 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """
         if isinstance(body, dict):
             body = json.dumps(body)
+
+        body = self.redis_client.hset(
+            request_key, 'request.body', base64.b64encode(bytes(body, 'utf-8')).decode('utf-8')
+        )
         event = {
             'command': 'WebhookEvent',
             'method': method,
             'queryParams': query_params or [],
             'headers': headers or [],
-            'body': body,
-            'requestKey': 'abc123',
+            'body': 'request.body',
+            'requestKey': request_key,
             'triggerId': trigger_id,
         }
         self.publish(json.dumps(event))
