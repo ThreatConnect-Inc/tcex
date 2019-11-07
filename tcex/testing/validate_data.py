@@ -314,8 +314,7 @@ class Validator(object):
 
         return self.operator_deep_diff(app_data, test_data, **kwargs)
 
-    @staticmethod
-    def operator_json_eq_exclude(data, exclude):
+    def operator_json_eq_exclude(self, data, exclude):
         """Remove excluded field from dictionary.
 
         Args:
@@ -330,8 +329,8 @@ class Validator(object):
         for e in exclude:
             try:
                 del data[e]
-            except KeyError:
-                pass
+            except (KeyError, TypeError) as err:
+                self.log.error('Invalid validation configuration: ({})'.format(err))
         return data
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
