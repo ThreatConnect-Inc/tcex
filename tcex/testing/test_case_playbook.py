@@ -45,6 +45,11 @@ class TestCasePlaybook(TestCasePlaybookCommon):
                     self.app.tc_action_map.get(
                         self.app.args.tc_action
                     )()  # pylint: disable=no-member
+                else:
+                    self.log.error(
+                        'Action method ({}) was not found.'.format(self.app.args.tc_action)
+                    )
+                    self._exit(1)
             else:
                 self.app.run()
         except SystemExit as e:
