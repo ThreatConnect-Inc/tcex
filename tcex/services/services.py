@@ -859,13 +859,17 @@ class Services(object):
             self.tcex.log.info('LoggingChange - level: {}'.format(level))
             self.tcex.logger.update_handler_level(level)
         elif command.lower() == 'runservice':
-            self.message_thread(self.session_id(), self.process_run_service, (message,))
+            self.message_thread(
+                self.session_id(message.get('triggerId')), self.process_run_service, (message,)
+            )
         elif command.lower() == 'shutdown':
             # {"command": "Shutdown", "reason": "Service disabled by user."}
             reason = message.get('reason')
             self.process_shutdown(reason)
         elif command.lower() == 'webhookevent':
-            self.message_thread(self.session_id(), self.process_webhook, (message,))
+            self.message_thread(
+                self.session_id(message.get('triggerId')), self.process_webhook, (message,)
+            )
         else:
             # any other message is a config message
             self.message_thread('process-config', self.process_config, (message,))

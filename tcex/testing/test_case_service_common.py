@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
+import base64
 import json
 import os
 import threading
@@ -157,24 +158,38 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.publish(json.dumps(config_msg))
         time.sleep(0.5)
 
-    def publish_webhook_event(self, body=None, headers=None, method='GET', query_params=None):
+    def publish_webhook_event(
+        self,
+        trigger_id,
+        body=None,
+        headers=None,
+        method='GET',
+        query_params=None,
+        request_key='abc123',
+    ):
         """Send create config message.
 
         Args:
-            body (str or dict, optional): [description]. Defaults to None.
-            headers (list, optional): [description]. Defaults to None.
-            method (str, optional): [description]. Defaults to 'GET'.
-            query_params (list, optional): [description]. Defaults to None.
+            trigger_id (str): The trigger ID.
+            headers (list, optional): A list of headers name/value pairs. Defaults to [].
+            method (str, optional): The method. Defaults to 'GET'.
+            query_params (list, optional): A list of query param name/value pairs. Defaults to [].
         """
+        body = body or ''
         if isinstance(body, dict):
             body = json.dumps(body)
+
+        body = self.redis_client.hset(
+            request_key, 'request.body', base64.b64encode(json.dumps(body).encode('utf-8'))
+        )
         event = {
             'command': 'WebhookEvent',
             'method': method,
             'queryParams': query_params or [],
             'headers': headers or [],
-            'body': body,
-            'requestKey': 'abc123',
+            'body': 'request.body',
+            'requestKey': request_key,
+            'triggerId': trigger_id,
         }
         self.publish(json.dumps(event))
         time.sleep(0.5)

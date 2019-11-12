@@ -314,8 +314,7 @@ class Validator(object):
 
         return self.operator_deep_diff(app_data, test_data, **kwargs)
 
-    @staticmethod
-    def operator_json_eq_exclude(data, exclude):
+    def operator_json_eq_exclude(self, data, exclude):
         """Remove excluded field from dictionary.
 
         Args:
@@ -330,8 +329,8 @@ class Validator(object):
         for e in exclude:
             try:
                 del data[e]
-            except KeyError:
-                pass
+            except (KeyError, TypeError) as err:
+                self.log.error('Invalid validation configuration: ({})'.format(err))
         return data
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
@@ -423,20 +422,28 @@ class Validator(object):
         results = operator.ne(app_data, tests_data)
         return results, self.details(app_data, tests_data, 'eq')
 
-    @staticmethod
-    def operator_regex_match(app_data, test_data):
-        """Compare app data equals tests data.
+    def operator_regex_match(self, app_data, test_data):
+        """Compare app data matches test regex data.
 
         Args:
-            app_data (dict|str|list): The data created by the App.
-            test_data (dict|str|list): The data provided in the test case.
+            app_data (str, list): The data created by the App.
+            test_data (str): The data provided in the test case.
 
         Returns:
             bool: The results of the operator.
         """
-        if re.match(test_data, app_data) is None:
-            return False, 'app_data id not match regex ({})'.format(test_data)
-        return True, ''
+        if isinstance(app_data, dict):
+            return False, 'Invalid app_data, dict type is not supported.'
+
+        if not isinstance(app_data, list):
+            app_data = [app_data]
+        bad_data = []
+        passed = True
+        for data in app_data:
+            if re.match(test_data, data) is None:
+                bad_data.append(data)
+                passed = False
+        return passed, self.details(bad_data, test_data, 'rex')
 
     @property
     def redis(self):
