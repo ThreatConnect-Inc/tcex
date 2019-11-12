@@ -262,7 +262,7 @@ Creating an Indicator and adding Associations and metadata are all separate API 
     :linenos:
     :lineno-start: 1
 
-    ti = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', ip='12.13.14.15')
+    ti = self.tcex.ti.indicator(indicator_type='Host', owner='MyOrg', hostname='example.com')
     response = ti.create()
 
     # add associations
@@ -286,7 +286,7 @@ Updating an Indicator is similar to creating an Indicator, with the addition of 
     :linenos:
     :lineno-start: 1
 
-    ti = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', ip='12.13.14.15')
+    ti = self.tcex.ti.indicator(indicator_type='Host', owner='MyOrg', hostname='example.com', dns_active=True, whois_active=True, active=True)
     response = ti.update()
 
 Delete an Indicator

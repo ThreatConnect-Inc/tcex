@@ -6,6 +6,8 @@ Release Notes
 1.1.7
 =====
 + Updates to testing framework for custom validation.
++ Updates to the docs for multiple modules.
++ Multiple updates to testing framework.
 
 1.1.6
 =====
