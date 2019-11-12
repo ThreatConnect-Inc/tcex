@@ -7,7 +7,7 @@
 Module: Resources
 ==================
 
-The ThreatConnect TcEx Framework provides access to the ThreatConnect API using the :py:mod:`~tcex.tcex_resources` module.  The Resource Classes can be accessed directly via the ``tcex.resources`` property of the TcEx Framework or indirectly via the ``tcex.resource()`` method.
+The ThreatConnect TcEx Framework provides access to the ThreatConnect API using the :py:mod:`~tcex.resources` module.  The Resource Classes can be accessed directly via the ``tcex.resources`` property of the TcEx Framework or indirectly via the ``tcex.resource()`` method.
 
 **Direct Access**
 
@@ -56,7 +56,7 @@ The TcEx Resource Module provides Access to the ``customMetric`` API endpoint to
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Custom Metric          | :py:class:`~tcex.tcex_resources.CustomMetric`            |
+| Custom Metric          | :py:class:`~tcex.resources.CustomMetric`                 |
 +------------------------+----------------------------------------------------------+
 
 Examples
@@ -71,13 +71,13 @@ The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to th
 +------------------------+----------------------------------------------------------+
 | Db Method              | Method                                                   |
 +========================+==========================================================+
-| Create                 | :py:meth:`~tcex.tcex_resources.DataStore.create`         |
+| Create                 | :py:meth:`~tcex.resources.DataStore.create`              |
 +------------------------+----------------------------------------------------------+
-| Read                   | :py:meth:`~tcex.tcex_resources.DataStore.read`           |
+| Read                   | :py:meth:`~tcex.resources.DataStore.read`                |
 +------------------------+----------------------------------------------------------+
-| Update                 | :py:meth:`~tcex.tcex_resources.DataStore.update`         |
+| Update                 | :py:meth:`~tcex.resources.DataStore.update`              |
 +------------------------+----------------------------------------------------------+
-| Delete                 | :py:meth:`~tcex.tcex_resources.DataStore.delete`         |
+| Delete                 | :py:meth:`~tcex.resources.DataStore.delete`              |
 +------------------------+----------------------------------------------------------+
 
 Examples
@@ -90,21 +90,21 @@ Group Resources
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Group (Base)           | :py:class:`~tcex.tcex_resources.Group`                   |
+| Group (Base)           | :py:class:`~tcex.resources.Group`                        |
 +------------------------+----------------------------------------------------------+
-| Adversary              | :py:class:`~tcex.tcex_resources.Adversary`               |
+| Adversary              | :py:class:`~tcex.resources.Adversary`                    |
 +------------------------+----------------------------------------------------------+
-| Campaign               | :py:class:`~tcex.tcex_resources.Campaign`                |
+| Campaign               | :py:class:`~tcex.resources.Campaign`                     |
 +------------------------+----------------------------------------------------------+
-| Document               | :py:class:`~tcex.tcex_resources.Document`                |
+| Document               | :py:class:`~tcex.resources.Document`                     |
 +------------------------+----------------------------------------------------------+
-| Email                  | :py:class:`~tcex.tcex_resources.Email`                   |
+| Email                  | :py:class:`~tcex.resources.Email`                        |
 +------------------------+----------------------------------------------------------+
-| Incident               | :py:class:`~tcex.tcex_resources.Incident`                |
+| Incident               | :py:class:`~tcex.resources.Incident`                     |
 +------------------------+----------------------------------------------------------+
-| Signature              | :py:class:`~tcex.tcex_resources.Signature`               |
+| Signature              | :py:class:`~tcex.resources.Signature`                    |
 +------------------------+----------------------------------------------------------+
-| Threat                 | :py:class:`~tcex.tcex_resources.Threat`                  |
+| Threat                 | :py:class:`~tcex.resources.Threat`                       |
 +------------------------+----------------------------------------------------------+
 
 Indicator Resources
@@ -113,17 +113,17 @@ Indicator Resources
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Indicator (Base)       | :py:class:`~tcex.tcex_resources.Indicator`               |
+| Indicator (Base)       | :py:class:`~tcex.resources.Indicator`                    |
 +------------------------+----------------------------------------------------------+
-| Address                | :py:class:`~tcex.tcex_resources.Address`                 |
+| Address                | :py:class:`~tcex.resources.Address`                      |
 +------------------------+----------------------------------------------------------+
-| EmailAddress           | :py:class:`~tcex.tcex_resources.EmailAddress`            |
+| EmailAddress           | :py:class:`~tcex.resources.EmailAddress`                 |
 +------------------------+----------------------------------------------------------+
-| File                   | :py:class:`~tcex.tcex_resources.File`                    |
+| File                   | :py:class:`~tcex.resources.File`                         |
 +------------------------+----------------------------------------------------------+
-| Host                   | :py:class:`~tcex.tcex_resources.Host`                    |
+| Host                   | :py:class:`~tcex.resources.Host`                         |
 +------------------------+----------------------------------------------------------+
-| URL                    | :py:class:`~tcex.tcex_resources.URL`                     |
+| URL                    | :py:class:`~tcex.resources.URL`                          |
 +------------------------+----------------------------------------------------------+
 
 Examples
@@ -138,7 +138,7 @@ Owner Resources
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Owner                  | :py:class:`~tcex.tcex_resources.Owner`                   |
+| Owner                  | :py:class:`~tcex.resources.Owner`                        |
 +------------------------+----------------------------------------------------------+
 
 Security Label Resources
@@ -147,7 +147,7 @@ Security Label Resources
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| SecurityLabel          | :py:class:`~tcex.tcex_resources.SecurityLabel`           |
+| SecurityLabel          | :py:class:`~tcex.resources.SecurityLabel`                |
 +------------------------+----------------------------------------------------------+
 
 Examples
@@ -160,7 +160,7 @@ Tag Resources
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Tag                    | :py:class:`~tcex.tcex_resources.Tag`                     |
+| Tag                    | :py:class:`~tcex.resources.Tag`                          |
 +------------------------+----------------------------------------------------------+
 
 Examples
@@ -173,7 +173,7 @@ Task Resources
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Task                   | :py:class:`~tcex.tcex_resources.Task`                    |
+| Task                   | :py:class:`~tcex.resources.Task`                         |
 +------------------------+----------------------------------------------------------+
 
 Victim Resources
@@ -182,5 +182,5 @@ Victim Resources
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Victim                 | :py:class:`~tcex.tcex_resources.Victim`                  |
+| Victim                 | :py:class:`~tcex.resources.Victim`                       |
 +------------------------+----------------------------------------------------------+

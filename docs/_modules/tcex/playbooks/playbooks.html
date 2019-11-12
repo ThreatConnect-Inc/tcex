@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks &mdash; TcEx 1.1.6 documentation</title>
+  <title>tcex.playbooks.playbooks &mdash; TcEx 1.1.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
 
 
@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
@@ -409,7 +410,7 @@
         <span class="p">}</span>
 
 <div class="viewcode-block" id="Playbooks.create_output"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_output">[docs]</a>    <span class="k">def</span> <span class="nf">create_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">variable_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wrapper for Create method of CRUD operation for working with KeyValue DB.</span>
+        <span class="sd">&quot;&quot;&quot;Alias for Create method of CRUD operation for working with KeyValue DB.</span>
 
 <span class="sd">        This method will automatically check to see if provided variable was requested by</span>
 <span class="sd">        a downstream app and if so create the data in the KeyValue DB.</span>
@@ -542,7 +543,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables_type</span>
 
 <div class="viewcode-block" id="Playbooks.parse_variable"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.parse_variable">[docs]</a>    <span class="k">def</span> <span class="nf">parse_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method to parse an input or output variable.</span>
+        <span class="sd">&quot;&quot;&quot;Parse an input or output variable.</span>
 
 <span class="sd">        **Example Variable**::</span>
 
@@ -622,8 +623,7 @@
         <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="Playbooks.read_array"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.read_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Alias for read method that will read any type (e.g., String, KeyValue) and always</span>
-<span class="sd">           return array.</span>
+        <span class="sd">&quot;&quot;&quot;Read playbook variable and return array for any variable type.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>

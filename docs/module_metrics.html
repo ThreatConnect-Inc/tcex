@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Metrics &mdash; TcEx 1.1.6 documentation</title>
+  <title>Module: Metrics &mdash; TcEx 1.1.7 documentation</title>
 
 
 
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Module: Notifications" href="module_notifications.html" />
-    <link rel="prev" title="Module: Batch" href="module_batch.html" />
+    <link rel="prev" title="Module: Datastore" href="module_datastore.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
 
 
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Metrics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#metrics-instance">Metrics Instance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#add-metrics">Add Metrics</a></li>
@@ -184,7 +185,7 @@
 
   <div class="section" id="module-metrics">
 <span id="id1"></span><h1>Module: Metrics<a class="headerlink" href="#module-metrics" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect TcEx App Framework provides a simple interface for creating and adding Metrics in Apps.  The <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExMetricsV2</span></code> module will automatically create the Metric if it does not already exist in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics, see the documents at <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics">https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics</a>.</p>
+<p>The ThreatConnect TcEx App Framework provides a simple interface for creating and adding Metrics in Apps.  The <code class="xref py py-mod docutils literal notranslate"><span class="pre">Metrics</span></code> module will automatically create the Metric if it does not already exist in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics, see the documents at <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics">https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics</a>.</p>
 <div class="section" id="metrics-instance">
 <h2>Metrics Instance<a class="headerlink" href="#metrics-instance" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">tcex.metrics()</span></code> method has required fields of <strong>name</strong>, <strong>description</strong>, <strong>data_type</strong>, <strong>interval</strong>, and <strong>keyed</strong> as parameters.</p>
@@ -194,7 +195,7 @@
 </div>
 <div class="section" id="add-metrics">
 <h2>Add Metrics<a class="headerlink" href="#add-metrics" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code> method has a required field of <strong>value</strong>. It also accepts an option field for <strong>date</strong>, <strong>return_value</strong>, and <strong>key</strong>.  If no date is provided, the current <strong>datetime</strong> will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.  The <strong>key</strong> arg is only used for Keyed Metrics; otehrwise, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">add_keyed()</span></code> method can be used.</p>
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code> method has a required field of <strong>value</strong>. It also accepts an option field for <strong>date</strong>, <strong>return_value</strong>, and <strong>key</strong>.  If no date is provided, the current <strong>datetime</strong> will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.  The <strong>key</strong> arg is only used for Keyed Metrics; otherwise, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">add_keyed()</span></code> method can be used.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metric&#39;</span><span class="p">,</span> <span class="s1">&#39;TcEx Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
 <span class="n">metrics</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
@@ -225,7 +226,7 @@
         <a href="module_notifications.html" class="btn btn-neutral float-right" title="Module: Notifications" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="module_batch.html" class="btn btn-neutral float-left" title="Module: Batch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="module_datastore.html" class="btn btn-neutral float-left" title="Module: Datastore" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
