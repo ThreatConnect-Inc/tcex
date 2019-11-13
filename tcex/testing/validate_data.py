@@ -145,7 +145,8 @@ class Validator(object):
         }
         return operators.get(op, None)
 
-    def operator_date_format(self, app_data, test_data):
+    @staticmethod
+    def operator_date_format(app_data, test_data):
         """Check if date or dates match the provide format.
 
         Args:
@@ -162,7 +163,7 @@ class Validator(object):
             except ValueError:
                 bad_data.append(data)
                 passed = False
-        return passed, self.details(bad_data, test_data, 'date_format')
+        return passed, bad_data
 
     def operator_deep_diff(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -219,7 +220,7 @@ class Validator(object):
             return False, str(ddiff)
         return True, ''
 
-    def operator_eq(self, app_data, tests_data):
+    def operator_eq(self, app_data, test_data):
         """Compare app data is equal to tests data.
 
         Args:
@@ -229,8 +230,8 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.eq(app_data, tests_data)
-        return results, self.details(app_data, tests_data, 'eq')
+        results = operator.eq(app_data, test_data)
+        return results, self.details(app_data, test_data, 'eq')
 
     def operator_ge(self, app_data, test_data):
         """Compare app data is greater than or equal to tests data.
@@ -272,7 +273,7 @@ class Validator(object):
             )
         return results, details
 
-    def operator_is_date(self, app_data, test_data):
+    def operator_is_date(self, app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
         if not isinstance(app_data, list):
             app_data = [app_data]
@@ -284,7 +285,7 @@ class Validator(object):
             except RuntimeError:
                 bad_data.append(data)
                 passed = False
-        return passed, self.details(bad_data, test_data, 'is_date')
+        return passed, bad_data
 
     def operator_json_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -387,6 +388,7 @@ class Validator(object):
             results = operator.eq(len(app_data), len(test_data))
         else:
             results = operator.eq(len(app_data), test_data)
+        # TODO: fix response as self.details should be correct for this use case.
         return results, self.details(app_data, test_data, 'length_eq')
 
     def operator_lt(self, app_data, test_data):
@@ -409,7 +411,7 @@ class Validator(object):
             )
         return results, details
 
-    def operator_ne(self, app_data, tests_data):
+    def operator_ne(self, app_data, test_data):
         """Compare app data is not equal to tests data.
 
         Args:
@@ -419,10 +421,11 @@ class Validator(object):
         Returns:
             bool, str: The results of the operator and any error message
         """
-        results = operator.ne(app_data, tests_data)
-        return results, self.details(app_data, tests_data, 'eq')
+        results = operator.ne(app_data, test_data)
+        return results, self.details(app_data, test_data, 'eq')
 
-    def operator_regex_match(self, app_data, test_data):
+    @staticmethod
+    def operator_regex_match(app_data, test_data):
         """Compare app data matches test regex data.
 
         Args:
@@ -443,7 +446,7 @@ class Validator(object):
             if re.match(test_data, data) is None:
                 bad_data.append(data)
                 passed = False
-        return passed, self.details(bad_data, test_data, 'rex')
+        return passed, bad_data
 
     @property
     def redis(self):

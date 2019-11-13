@@ -12,6 +12,7 @@ DataStore Instance
 ==================
 The ``tcex.datastore()`` module provides persistent storage for Apps. The domain value specifies access level for the data as described in the following section.
 
+-------
 Domains
 -------
 * local - limited to the specific App.
@@ -60,6 +61,7 @@ The ``get()`` method allows record data to be retrieved using the **rid** (resou
     response = ds.get(rid='one')
 
 
+------
 Search
 ------
 The ``get()`` method also allows a search to be performed.
