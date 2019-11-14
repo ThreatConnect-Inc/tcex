@@ -16,6 +16,7 @@ if not version:
 
 install_requires = [
     'colorama>=0.3.9',
+    'cryptography',
     'future',
     'hvac>=0.3.0',
     'inflect>=0.2.5',
