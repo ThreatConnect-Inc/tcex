@@ -123,7 +123,7 @@ class Inputs(object):
 
     def _load_aot_params(self):
         """Block and retrieve params from Redis."""
-        if self._default_args.tc_aot_enabled:
+        if self._default_args.tc_aot_enabled is True:
             # update default_args with AOT params
             params = self.tcex.playbook.aot_blpop()
             updated_params = self.update_params(params)
@@ -131,7 +131,7 @@ class Inputs(object):
 
     def _load_secure_params(self):
         """Parse args and return default args."""
-        if self._default_args.tc_secure_params:
+        if self._default_args.tc_secure_params is True:
             # update default_args with secure params from API
             params = self._get_secure_params()
             updated_params = self.update_params(params)
@@ -255,7 +255,11 @@ class Inputs(object):
                     backend = default_backend()
                     cipher = Cipher(algorithms.AES(key.encode()), modes.ECB(), backend=backend)
                     decryptor = cipher.decryptor()
-                    file_content = json.loads(decryptor.update(encrypted_contents).decode('utf-8'))
+                    file_content = json.loads(
+                        decryptor.update(encrypted_contents)
+                        .decode('utf-8', errors='ignore')
+                        .strip('\x07')
+                    )
                 except Exception:
                     self.tcex.log.error(
                         'Could not read or decrypt configuration file "{}".'.format(filename)
