@@ -243,6 +243,9 @@ class Inputs(object):
         Args:
             config (str): The configuration file name.
             key (str): The configuration file encryption key.
+
+        Returns:
+            dict: The JSON contents of the file as a dict.
         """
         file_content = {}
         if filename is not None and os.path.isfile(filename):
@@ -260,6 +263,8 @@ class Inputs(object):
                         .decode('utf-8', errors='ignore')
                         .strip('\x07')
                     )
+                    # fix bad types in JSON provided by core
+                    file_content = self.update_params(file_content)
                 except Exception:
                     self.tcex.log.error(
                         'Could not read or decrypt configuration file "{}".'.format(filename)
