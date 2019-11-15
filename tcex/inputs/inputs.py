@@ -4,9 +4,8 @@ import json
 import os
 import sys
 from argparse import Namespace
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
 from .argument_parser import TcArgumentParser
+from .file_params import FileParams
 
 
 class Inputs(object):
@@ -237,7 +236,7 @@ class Inputs(object):
             # register token as soon as possible
             self.register_token()
 
-    def config_file(self, filename, key):
+    def config_file(self, filename, key=None):
         """Load configuration data from provided file and update default_args.
 
         Args:
@@ -255,16 +254,14 @@ class Inputs(object):
                     with open(filename, 'rb') as fh:
                         encrypted_contents = fh.read()
 
-                    backend = default_backend()
-                    cipher = Cipher(algorithms.AES(key.encode()), modes.ECB(), backend=backend)
-                    decryptor = cipher.decryptor()
-                    file_content = json.loads(
-                        decryptor.update(encrypted_contents)
-                        .decode('utf-8', errors='ignore')
-                        .strip('\x07')
-                    )
-                    # fix bad types in JSON provided by core
+                    fp = FileParams()
+                    fp.EVP_DecryptInit(fp.EVP_aes_128_cbc(), key.encode(), b'\0' * 16)
+                    result = fp.EVP_DecryptUpdate(encrypted_contents) + fp.EVP_DecryptFinal()
+                    file_content = json.loads(result.decode('utf-8'))
                     file_content = self.update_params(file_content)
+
+                    # delete file
+                    os.unlink(filename)
                 except Exception:
                     self.tcex.log.error(
                         'Could not read or decrypt configuration file "{}".'.format(filename)
