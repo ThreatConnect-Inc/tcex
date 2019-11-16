@@ -110,7 +110,7 @@ class TestCase(object):
             encrypted_data = fp.EVP_EncryptUpdate(data) + fp.EVP_EncryptFinal()
 
             app_params_json = os.path.join(self.test_case_feature_dir, '.app_params.json')
-            with open(app_params_json, 'rb') as fh:
+            with open(app_params_json, 'wb') as fh:
                 fh.write(encrypted_data)
 
             # create environment variable for tcex inputs method to pick up to read encrypted file
@@ -436,12 +436,12 @@ class TestCase(object):
     @property
     def test_case_feature_dir(self):
         """Return profile fully qualified filename."""
-        return os.path.join(self._app_path, self.test_case_feature)
+        return os.path.join(self._app_path, 'tests', self.test_case_feature)
 
     @property
     def test_case_profile_dir(self):
         """Return profile fully qualified filename."""
-        return os.path.join(self._app_path, self.test_case_feature, 'profiles.d')
+        return os.path.join(self._app_path, 'tests', self.test_case_feature, 'profiles.d')
 
     @property
     def test_case_name(self):
