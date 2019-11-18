@@ -4,11 +4,12 @@ import datetime
 import difflib
 import hashlib
 import json
+import math
 import operator
 import os
-import re
-import math
 import random
+import re
+
 from six import string_types
 
 try:
@@ -163,7 +164,7 @@ class Validator(object):
             except ValueError:
                 bad_data.append(data)
                 passed = False
-        return passed, bad_data
+        return passed, ','.join(bad_data)
 
     def operator_deep_diff(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -285,7 +286,7 @@ class Validator(object):
             except RuntimeError:
                 bad_data.append(data)
                 passed = False
-        return passed, bad_data
+        return passed, ','.join(bad_data)
 
     def operator_json_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
@@ -446,7 +447,7 @@ class Validator(object):
             if re.match(test_data, data) is None:
                 bad_data.append(data)
                 passed = False
-        return passed, bad_data
+        return passed, ','.join(bad_data)
 
     @property
     def redis(self):
