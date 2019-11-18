@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Batch &mdash; TcEx 1.1.6 documentation</title>
+  <title>Module: Batch &mdash; TcEx 1.1.7 documentation</title>
 
 
 
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module: Metrics" href="module_metrics.html" />
+    <link rel="next" title="Module: Datastore" href="module_datastore.html" />
     <link rel="prev" title="App-Directory Structure" href="app_directory_structure.html" />
 </head>
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
 
 
@@ -124,6 +124,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
@@ -219,18 +220,18 @@
 <p class="admonition-title">Important</p>
 <p>It is best practice to provide a unique and reproducible xid value when creating Groups. If the xid created for a new Group matches the xid for an existing Group, the existing Group will be overwritten.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In all of the examples below, the code to create the content is removed. Read more on how to create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">Submit section</a>.</p>
-</div>
 </div>
 <div class="section" id="groups">
 <h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In all of the examples below, the code to create the content is removed. Read more on how to create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/module_batch.html#submit">Submit section</a>.</p>
+</div>
 <p>There are three interfaces to add Group Threat Intelligence data to the Batch Module.</p>
 <div class="section" id="group-interface-1">
 <h3>Group Interface 1<a class="headerlink" href="#group-interface-1" title="Permalink to this headline">¶</a></h3>
 <p>The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.</p>
-<p>The example below passes all supported fields to the``adversary()`` method.</p>
+<p>The example below passes all supported fields to the <code class="docutils literal notranslate"><span class="pre">adversary()</span></code> method.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -689,7 +690,7 @@
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="module_metrics.html" class="btn btn-neutral float-right" title="Module: Metrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="module_datastore.html" class="btn btn-neutral float-right" title="Module: Datastore" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
         <a href="app_directory_structure.html" class="btn btn-neutral float-left" title="App-Directory Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Playbooks Module &mdash; TcEx 1.1.6 documentation</title>
+  <title>Playbooks Module &mdash; TcEx 1.1.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
 
 
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
@@ -434,7 +435,7 @@ type is provided the data will be written as RAW data.</p>
 <dl class="method">
 <dt id="tcex.playbooks.playbooks.Playbooks.create_output">
 <code class="sig-name descname">create_output</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">variable_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for Create method of CRUD operation for working with KeyValue DB.</p>
+<dd><p>Alias for Create method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if provided variable was requested by
 a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="field-list simple">
@@ -726,7 +727,7 @@ it a partial success instead.</p>
 <dl class="method">
 <dt id="tcex.playbooks.playbooks.Playbooks.parse_variable">
 <code class="sig-name descname">parse_variable</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.parse_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.parse_variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to parse an input or output variable.</p>
+<dd><p>Parse an input or output variable.</p>
 <p><strong>Example Variable</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#App:1234:output!String</span>
 </pre></div>
@@ -771,10 +772,7 @@ automatically determine the variable type to read.</p>
 <dl class="method">
 <dt id="tcex.playbooks.playbooks.Playbooks.read_array">
 <code class="sig-name descname">read_array</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_array" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Alias for read method that will read any type (e.g., String, KeyValue) and always</dt><dd><p>return array.</p>
-</dd>
-</dl>
+<dd><p>Read playbook variable and return array for any variable type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

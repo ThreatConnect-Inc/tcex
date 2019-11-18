@@ -3,13 +3,16 @@
 import json
 import logging
 import os
+import random
 import re
+import string
 import time
-import uuid
 import traceback
+import uuid
 from datetime import datetime
 import pytest
 from tcex import TcEx
+from tcex.inputs import FileParams
 from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
 from .validate_data import Validator
@@ -94,7 +97,31 @@ class TestCase(object):
         # app_args['tc_log_file'] = '{}.log'.format(self.test_case_name)
         app_args['tc_logger_name'] = self.context
 
-        tcex = TcEx(config=app_args)
+        if self.install_json.get('runtimeLevel').lower() in [
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
+            # service Apps will get their args/params from encrypted file in the "in" directory
+            data = json.dumps(app_args, sort_keys=True).encode('utf-8')
+            key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
+
+            fp = FileParams()
+            fp.EVP_EncryptInit(fp.EVP_aes_128_cbc(), key.encode('utf-8'), b'\0' * 16)
+            encrypted_data = fp.EVP_EncryptUpdate(data) + fp.EVP_EncryptFinal()
+
+            app_params_json = os.path.join(self.test_case_feature_dir, '.app_params.json')
+            with open(app_params_json, 'wb') as fh:
+                fh.write(encrypted_data)
+
+            # create environment variable for tcex inputs method to pick up to read encrypted file
+            os.environ['TC_APP_PARAM_KEY'] = key
+            os.environ['TC_APP_PARAM_FILE'] = app_params_json
+
+            # tcex will read args/params from encrypted file
+            tcex = TcEx()
+        else:
+            tcex = TcEx(config=app_args)
+
         return App(tcex)
 
     @staticmethod
@@ -154,7 +181,9 @@ class TestCase(object):
             dict: The profile data.
         """
         try:
-            with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
+            with open(
+                os.path.join(self.test_case_profile_dir, '{}.json'.format(profile_name)), 'r'
+            ) as fh:
                 profile = json.load(fh)
         except IOError:
             self.log.error('No profile {} provided.'.format(profile_name))
@@ -243,7 +272,9 @@ class TestCase(object):
             with open(message_tc_file, 'r') as mh:
                 message_tc = mh.read()
 
-        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(self.profile_name))
+        profile_filename = os.path.join(
+            self.test_case_profile_dir, '{}.json'.format(self.profile_name)
+        )
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
 
@@ -262,12 +293,6 @@ class TestCase(object):
         return self.init_profile(profile_name)
 
     @property
-    def profiles_dir(self):
-        """Return profile fully qualified filename."""
-        feature_path = os.path.dirname(self._current_test.split('::')[0])
-        return os.path.join(self._app_path, feature_path, 'profiles.d')
-
-    @property
     def profile_name(self):
         """Return partially parsed test case data."""
         name_pattern = r'^test_[a-zA-Z0-9_]+\[(.+)\]$'
@@ -280,7 +305,7 @@ class TestCase(object):
     def profile_names(self):
         """Get a profile from the profiles.json file by name"""
         profile_names = []
-        for filename in sorted(os.listdir(self.profiles_dir)):
+        for filename in sorted(os.listdir(self.test_case_profile_dir)):
             if filename.endswith('.json'):
                 profile_names.append(filename.replace('.json', ''))
         return profile_names
@@ -407,6 +432,16 @@ class TestCase(object):
     def test_case_feature(self):
         """Return partially parsed test case data."""
         return self.test_case_data[0].split('/')[1].replace('/', '-')
+
+    @property
+    def test_case_feature_dir(self):
+        """Return profile fully qualified filename."""
+        return os.path.join(self._app_path, 'tests', self.test_case_feature)
+
+    @property
+    def test_case_profile_dir(self):
+        """Return profile fully qualified filename."""
+        return os.path.join(self._app_path, 'tests', self.test_case_feature, 'profiles.d')
 
     @property
     def test_case_name(self):

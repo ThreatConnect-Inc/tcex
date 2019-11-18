@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
-import datetime
 import random
 
 from ..tcex_init import tcex
@@ -14,13 +13,13 @@ class TestIndicatorDeletedInterface:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
-    """
-        Test Address branch
-    """
+    #
+    #    Test Address branch
+    #
+
     def test_address_deleted(self, ip='14.111.14.15'):
-        deleted_since = tcex.utils.format_datetime(
-            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
-        )
+        """Test address delete."""
+        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
         self.address_delete(ip)
 
         indicator_ti = self.ti.indicator(indicator_type='Address')
@@ -52,13 +51,13 @@ class TestIndicatorDeletedInterface:
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
 
-    """
-        Test CIDR Branch
-    """
+    #
+    # Test CIDR Branch
+    #
+
     def test_cidr_deleted(self, block='1.1.1.7/8'):
-        deleted_since = tcex.utils.format_datetime(
-            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
-        )
+        """Test cidr delete."""
+        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
         self.cidr_delete(block)
 
         indicator_ti = self.ti.indicator(indicator_type='CIDR')
@@ -90,13 +89,13 @@ class TestIndicatorDeletedInterface:
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
 
-    """
-        Test Email Address Branch
-    """
+    #
+    # Test Email Address Branch
+    #
+
     def test_email_address_deleted(self, indicator='foo@badwebsite.com'):
-        deleted_since = tcex.utils.format_datetime(
-            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
-        )
+        """Test email address delete."""
+        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
         self.email_address_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='EMAILADDRESS')
@@ -128,13 +127,13 @@ class TestIndicatorDeletedInterface:
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
 
-    """
-        Test File Branch
-    """
+    #
+    # Test File Branch
+    #
+
     def test_file_deleted(self, indicator='1d59bb787ae38a1dda90cf82d09e3648'):
-        deleted_since = tcex.utils.format_datetime(
-            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
-        )
+        """Test file delete."""
+        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
         self.file_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='File')
@@ -148,9 +147,7 @@ class TestIndicatorDeletedInterface:
     def file_create(self, md5):
         """Test file create."""
         random_size = random.randint(1, 101)
-        ti = self.ti.file(
-            owner=tcex.args.tc_owner, md5=md5, size=random_size
-        )
+        ti = self.ti.file(owner=tcex.args.tc_owner, md5=md5, size=random_size)
         r = ti.create()
         assert r.status_code == 201
         ti_data = r.json()
@@ -170,13 +167,13 @@ class TestIndicatorDeletedInterface:
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
 
-    """
-        Test Host Branch
-    """
+    #
+    # Test Host Branch
+    #
+
     def test_host_deleted(self, indicator='www.go0gle.co.uk'):
-        deleted_since = tcex.utils.format_datetime(
-            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
-        )
+        """Test host delete."""
+        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
         self.host_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='Host')
@@ -189,9 +186,7 @@ class TestIndicatorDeletedInterface:
 
     def host_create(self, host):
         """Test file create."""
-        ti = self.ti.host(
-            owner=tcex.args.tc_owner, hostname=host
-        )
+        ti = self.ti.host(owner=tcex.args.tc_owner, hostname=host)
         r = ti.create()
         assert r.status_code == 201
         ti_data = r.json()
@@ -210,13 +205,13 @@ class TestIndicatorDeletedInterface:
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
 
-    """
-         Test URL Branch
-     """
+    #
+    # Test URL Branch
+    #
+
     def test_url_deleted(self, indicator='https://www.go0gle.co.uk/virus'):
-        deleted_since = tcex.utils.format_datetime(
-            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
-        )
+        """Test url delete."""
+        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
         self.url_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='URL')
@@ -229,9 +224,7 @@ class TestIndicatorDeletedInterface:
 
     def url_create(self, url):
         """Test file create."""
-        ti = self.ti.url(
-            owner=tcex.args.tc_owner, url=url
-        )
+        ti = self.ti.url(owner=tcex.args.tc_owner, url=url)
         r = ti.create()
         assert r.status_code == 201
         ti_data = r.json()

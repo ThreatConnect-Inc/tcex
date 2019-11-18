@@ -5,6 +5,7 @@ import os
 import sys
 from argparse import Namespace
 from .argument_parser import TcArgumentParser
+from .file_params import FileParams
 
 
 class Inputs(object):
@@ -37,8 +38,12 @@ class Inputs(object):
         # parser
         self.parser = TcArgumentParser()
 
+        # a single config file is supported, typically from and external App or service App using
+        # fileParam feature
+        config_file = os.getenv('TC_APP_PARAM_FILE') or config_file
+
         # handle config and config_file
-        config_file_data = self.config_file(config_file)
+        config_file_data = self.config_file(config_file, os.getenv('TC_APP_PARAM_KEY'))
         config.update(config_file_data)  # config_file params update config
 
         # create empty namespaces
@@ -117,7 +122,7 @@ class Inputs(object):
 
     def _load_aot_params(self):
         """Block and retrieve params from Redis."""
-        if self._default_args.tc_aot_enabled:
+        if self._default_args.tc_aot_enabled is True:
             # update default_args with AOT params
             params = self.tcex.playbook.aot_blpop()
             updated_params = self.update_params(params)
@@ -125,7 +130,7 @@ class Inputs(object):
 
     def _load_secure_params(self):
         """Parse args and return default args."""
-        if self._default_args.tc_secure_params:
+        if self._default_args.tc_secure_params is True:
             # update default_args with secure params from API
             params = self._get_secure_params()
             updated_params = self.update_params(params)
@@ -231,19 +236,45 @@ class Inputs(object):
             # register token as soon as possible
             self.register_token()
 
-    def config_file(self, filename):
+    def config_file(self, filename, key=None):
         """Load configuration data from provided file and update default_args.
 
         Args:
             config (str): The configuration file name.
+            key (str): The configuration file encryption key.
+
+        Returns:
+            dict: The JSON contents of the file as a dict.
         """
-        if filename is not None:
-            if os.path.isfile(filename):
-                with open(filename, 'r') as fh:
-                    return json.load(fh)
+        file_content = {}
+        if filename is not None and os.path.isfile(filename):
+            if key is not None:
+                try:
+                    # read encrypted file from "in" directory
+                    with open(filename, 'rb') as fh:
+                        encrypted_contents = fh.read()
+
+                    fp = FileParams()
+                    fp.EVP_DecryptInit(fp.EVP_aes_128_cbc(), key.encode(), b'\0' * 16)
+                    result = fp.EVP_DecryptUpdate(encrypted_contents) + fp.EVP_DecryptFinal()
+                    file_content = json.loads(result.decode('utf-8'))
+                    file_content = self.update_params(file_content)
+
+                    # delete file
+                    os.unlink(filename)
+                except Exception:
+                    self.tcex.log.error(
+                        'Could not read or decrypt configuration file "{}".'.format(filename)
+                    )
             else:
-                self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
-        return {}
+                try:
+                    with open(filename, 'r') as fh:
+                        file_content = json.load(fh)
+                except ValueError:
+                    self.tcex.log.error('Could not parse configuration file "{}".'.format(filename))
+        else:
+            self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
+        return file_content
 
     @property
     def default_args(self):

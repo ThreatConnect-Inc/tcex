@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ThreatConnect App Framework (TcEx) &mdash; TcEx 1.1.6 documentation</title>
+  <title>ThreatConnect App Framework (TcEx) &mdash; TcEx 1.1.7 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
 
 
@@ -97,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
@@ -178,7 +179,7 @@
 
   <div class="section" id="threatconnect-app-framework-tcex">
 <h1>ThreatConnect App Framework (TcEx)<a class="headerlink" href="#threatconnect-app-framework-tcex" title="Permalink to this headline">¶</a></h1>
-<p>Release 1.1.6.</p>
+<p>Release 1.1.7.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
@@ -258,6 +259,14 @@
 <li class="toctree-l2"><a class="reference internal" href="module_batch.html#indicators">Indicators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module_batch.html#associations">Associations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module_batch.html#submit">Submit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="module_datastore.html#datastore-instance">DataStore Instance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_datastore.html#add-record">Add Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_datastore.html#delete-record">Delete Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_datastore.html#get-record">Get Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_datastore.html#update-record">Update Record</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a><ul>
@@ -343,31 +352,32 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id2">1.1.6</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id3">1.1.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id4">1.1.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id5">1.1.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id6">1.1.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id7">1.1.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id8">1.1.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id9">1.0.7</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id10">1.0.6</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id11">1.0.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id12">1.0.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id13">1.0.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id14">1.0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id15">1.0.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id16">1.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id2">1.1.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id3">1.1.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id4">1.1.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id5">1.1.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id6">1.1.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id7">1.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id8">1.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id9">1.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id10">1.0.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id11">1.0.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id12">1.0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id13">1.0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id14">1.0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id15">1.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id16">1.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id17">1.0.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="release_notes.html#x">0.9.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id31">0.8.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id60">0.7.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id83">0.6.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id88">0.5.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id113">0.4.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id126">0.3.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id135">0.2.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id148">0.1.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id156">0.0.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id32">0.8.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id61">0.7.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id84">0.6.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id89">0.5.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id114">0.4.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id127">0.3.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id136">0.2.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id149">0.1.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id157">0.0.x</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">TcEx Package</a><ul>

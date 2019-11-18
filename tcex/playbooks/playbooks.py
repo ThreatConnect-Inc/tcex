@@ -210,7 +210,7 @@ class Playbooks(object):
             # self.tcex.log.debug(u'variable value: {}'.format(value))
             parsed_key = self.parse_variable(key.strip())
             variable_type = parsed_key['type']
-            if variable_type in self.read_data_types:
+            if variable_type in self.create_data_types:
                 data = self.create_data_types[variable_type](key, value)
             else:
                 data = self.create_raw(key, value)
@@ -228,6 +228,8 @@ class Playbooks(object):
             'StringArray': self.create_string_array,
             'TCEntity': self.create_tc_entity,
             'TCEntityArray': self.create_tc_entity_array,
+            'TCEnhancedEntity': self.create_tc_entity,
+            'TCEnhancedEntityArray': self.create_tc_entity_array,
         }
 
     def create_output(self, key, value, variable_type=None):
@@ -467,6 +469,8 @@ class Playbooks(object):
             'StringArray': self.read_string_array,
             'TCEntity': self.read_tc_entity,
             'TCEntityArray': self.read_tc_entity_array,
+            'TCEnhancedEntity': self.read_tc_entity,
+            'TCEnhancedEntityArray': self.read_tc_entity_array,
         }
 
     def read_embedded(self, data, parent_var_type):
