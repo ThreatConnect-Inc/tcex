@@ -180,7 +180,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             body = json.dumps(body)
 
         body = self.redis_client.hset(
-            request_key, 'request.body', base64.b64encode(json.dumps(body).encode('utf-8'))
+            request_key, 'request.body', base64.b64encode(body.encode('utf-8'))
         )
         event = {
             'command': 'WebhookEvent',
