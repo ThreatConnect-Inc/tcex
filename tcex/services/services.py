@@ -277,7 +277,8 @@ class Services(object):
         """Publish heartbeat on timer."""
         while True:
             if self.heartbeat_watchdog > (
-                self.tcex.default_args.tc_svc_hb_timeout_seconds / self.heartbeat_sleep_time
+                int(self.tcex.default_args.tc_svc_hb_timeout_seconds)
+                / int(self.heartbeat_sleep_time)
             ):
                 self.tcex.log.error('Missed server heartbeat message. Service is shutting down.')
                 self.process_shutdown('Missed heartbeat commands.')

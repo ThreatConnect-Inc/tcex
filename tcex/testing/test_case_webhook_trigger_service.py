@@ -42,7 +42,10 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
             self.app.tcex.service.listen()
             self.app.tcex.service.heartbeat()
             self.app.tcex.service.ready = True
-            self.app.tcex.service.loop_forever()
+            if hasattr(self.app, 'loop_forever'):
+                self.app.loop_forever()
+            else:
+                self.app.tcex.service.loop_forever()
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
             return self._exit(e.code)
