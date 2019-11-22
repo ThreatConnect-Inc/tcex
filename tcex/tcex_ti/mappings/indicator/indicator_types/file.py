@@ -39,11 +39,11 @@ class File(Indicator):
             or kwargs.get('sha1', None)
             or kwargs.get('sha256', None)
         )
-        if md5:
+        if self.unique_id:
             self.data['md5'] = md5 or self._hash_from_unique_id(hash_type='md5')
-        if sha1:
+        if self.unique_id:
             self.data['sha1'] = sha1 or self._hash_from_unique_id(hash_type='sha1')
-        if sha256:
+        if self.unique_id:
             self.data['sha256'] = sha256 or self._hash_from_unique_id(hash_type='sha256')
         if 'size' not in self.data:
             self.data['size'] = 0
