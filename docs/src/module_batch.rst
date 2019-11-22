@@ -83,9 +83,9 @@ The second and more dynamic interface uses the more generic :py:meth:`~tcex.tcex
     :emphasize-lines: 2-6
 
     batch = tcex.batch('MyOrg')
-    event = batch.group('Event', 'My event name', date_added='event-001', xid='my-xid-0001')
+    event = batch.group('Event', 'My event name', date_added='2008-12-12T12:12:12', xid='my-xid-0001')
     event.add_key_value('eventDate', 'yesterday')
-    event.add_key_value('status', 'New')
+    event.add_key_value('status', 'Needs Review')
     event.attribute('Description', 'Example Description 2', True, 'source')
     event.tag('Example Tag')
 
@@ -329,7 +329,7 @@ There are few options for submitting the batch job, all with an option to **halt
 
 In some cases, handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload` and then to retrieve data from a remote endpoint while ThreatConnect processes the batch job.  Next, poll by using :py:meth:`~tcex.tcex_ti_batch.TcExBatch.poll` for status, and when the job is completed, the next job request can be submitted. If batch errors are reported in the Batch status, the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.errors` method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_files` method.
 
-.. note:: The **synchronousBatchSaveLimit** setting, configured in the **System Settings** screeen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit` method provides logic for handling this so that the developer is not required to check if the job was queued.
+.. note:: The **synchronousBatchSaveLimit** setting, configured in the **System Settings** screen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit` method provides logic for handling this so that the developer is not required to check if the job was queued.
 
 Option 1
 --------

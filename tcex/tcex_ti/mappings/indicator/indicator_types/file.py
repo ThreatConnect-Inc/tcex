@@ -22,6 +22,14 @@ class File(Indicator):
             size (str, kwargs): The file size for this Indicator.
         """
         super(File, self).__init__(tcex, 'File', 'file', 'files', owner, **kwargs)
+
+        if len(kwargs.get('unique_id', '')) == 32:
+            md5 = kwargs.get('unique_id')
+        if len(kwargs.get('unique_id', '')) == 40:
+            sha1 = kwargs.get('unique_id')
+        if len(kwargs.get('unique_id', '')) == 64:
+            sha256 = kwargs.get('unique_id')
+
         self.unique_id = (
             kwargs.get('unique_id', None)
             or md5
@@ -61,7 +69,12 @@ class File(Indicator):
         Returns:
 
         """
-        if self.data.get('md5') or self.data.get('sha1') or self.data.get('sha256'):
+        if (
+            self.unique_id
+            or self.data.get('md5')
+            or self.data.get('sha1')
+            or self.data.get('sha256')
+        ):
             return True
         return False
 

@@ -277,7 +277,8 @@ class Services(object):
         """Publish heartbeat on timer."""
         while True:
             if self.heartbeat_watchdog > (
-                self.tcex.default_args.tc_svc_hb_timeout_seconds / self.heartbeat_sleep_time
+                int(self.tcex.default_args.tc_svc_hb_timeout_seconds)
+                / int(self.heartbeat_sleep_time)
             ):
                 self.tcex.log.error('Missed server heartbeat message. Service is shutting down.')
                 self.process_shutdown('Missed heartbeat commands.')
@@ -562,7 +563,7 @@ class Services(object):
             if body_variable is not None:
                 body = self.redis_client.hget(request_key, message.get('bodyVariable'))
                 if body is not None:
-                    body = StringIO(json.loads(base64.b64decode(body)))
+                    body = StringIO(base64.b64decode(body)).decode('utf-8')
         except Exception as e:
             self.tcex.log.error('Failed reading body to Redis ({})'.format(e))
             self.tcex.log.trace(traceback.format_exc())
@@ -749,7 +750,7 @@ class Services(object):
             request_key = message.get('requestKey')
             body = self.redis_client.hget(request_key, 'request.body')
             if body is not None:
-                body = json.loads(base64.b64decode(body))
+                body = base64.b64decode(body).decode()
             headers = message.get('headers')
             method = message.get('method')
             params = message.get('queryParams')
@@ -769,7 +770,13 @@ class Services(object):
                     'statusCode': callback_response.get('statusCode', 200),
                 }
                 # write response body to redis
-                playbook.create_string('response.body', callback_response.get('body'))
+                if callback_response.get('body') is not None:
+                    playbook.create_string(
+                        'response.body',
+                        base64.b64encode(callback_response.get('body').encode('utf-8')).decode(
+                            'utf-8'
+                        ),
+                    )
 
                 # publish the WebhookEventResponse message
                 self.publish(json.dumps(webhook_event_response))

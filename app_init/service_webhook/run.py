@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Playbook App"""
 import os
-import traceback
 import sys
+import traceback
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -70,7 +70,10 @@ if __name__ == '__main__':
         tcex.service.ready = True
 
         # loop until exit
-        tcex.service.loop_forever()
+        if hasattr(app, 'loop_forever'):
+            app.loop_forever()
+        else:
+            tcex.service.loop_forever()
 
         # perform cleanup/teardown operations
         app.teardown()
