@@ -81,7 +81,10 @@ class CommonCaseManagement(object):
             break
         return None
 
-    def get(self, all_available_fields=True, case_management_id=None, retry_count=0):
+    def get(self, all_available_fields=False, fields=None, case_management_id=None, retry_count=0):
+        if fields is None:
+            fields = []
+
         cm_id = case_management_id or self.id
         url = '{}/{}'.format(self.api_endpoint, cm_id)
         current_retries = -1
@@ -89,6 +92,9 @@ class CommonCaseManagement(object):
         parameters = {'fields': []}
         if all_available_fields:
             for field in self.available_fields:
+                parameters['fields'].append(field)
+        elif fields:
+            for field in fields:
                 parameters['fields'].append(field)
 
         while current_retries < retry_count:
@@ -159,7 +165,7 @@ class CommonCaseManagement(object):
         url = self.api_endpoint
         if self.id:
             url = '{}/{}'.format(self.api_endpoint, self.id)
-            return self.tcex.session.put(url, json=self.as_dict)
+            r = self.tcex.session.put(url, json=self.as_dict)
         else:
             as_dict = self.as_dict
             as_dict = self._reverse_transform(as_dict)
@@ -170,7 +176,8 @@ class CommonCaseManagement(object):
             if not r_id:
                 r_id = r.json().get('data').get('id')
             self.id = r_id
-            self.get()
+            return self.get()
+        return r
             # self.entity_mapper(r.json().get('data'))
 
     @staticmethod

@@ -81,12 +81,17 @@ class CommonCaseManagementCollection(object):
         return self._initial_response
 
     def iterate(self, initial_response=None, added_entities=None):
+        print('bp entering iterate')
         if added_entities is None:
             added_entities = []
 
         url = self.api_endpoint
-        self.tql.filters = self._tql_filters + self.tql.filters
-        parameters = {'fields': [], 'tql': self.tql.as_str}
+        if self.tql.raw_tql:
+            tql_string = self.tql.raw_tql
+        else:
+            self.tql.filters = self._tql_filters + self.tql.filters
+            tql_string = self.tql.as_str
+        parameters = {'fields': [], 'tql': tql_string}
         current_retries = 0
         if initial_response:
             url = initial_response.get('next_url', None)

@@ -137,11 +137,12 @@ class Task(CommonCaseManagement):
     @property
     def required_properties(self):
         return [
-            'name', 'description',
-            'is_workflow', 'workflow_step',
-            'workflow_phase', 'case_id',
-            'required', 'status'
+            'name', 'case_id'
         ]
+
+    def entity_mapper(self, entity):
+        new_case = Task(self.tcex, **entity)
+        self.__dict__.update(new_case.__dict__)
 
     @property
     def available_fields(self):
