@@ -107,5 +107,6 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         """Run after each test method runs."""
         r = self.stager.redis.delete_context(self.context)
         self.stager.threatconnect.delete_staged(self._staged_tc_data)
+        self._staged_tc_data = []
         self.log_data('teardown method', 'delete count', r)
         super(TestCasePlaybook, self).teardown_method()
