@@ -7,6 +7,7 @@ from .note import Note, Notes
 from .tag import Tag, Tags
 from .workflow_event import WorkflowEvent, WorkflowEvents
 from .workflow_template import WorkflowTemplate, WorkflowTemplates
+import requests
 
 
 class CaseManagement(object):
@@ -64,3 +65,61 @@ class CaseManagement(object):
 
     def tags(self, **kwargs):
         return Tags(self.tcex, **kwargs)
+
+    def obj_from_type(self, obj_type):
+        if obj_type == 'tag':
+            return Tag(self.tcex, **{})
+        elif obj_type == 'case':
+            return Case(self.tcex, **{})
+        elif obj_type == 'note':
+            return Note(self.tcex, **{})
+        elif obj_type == 'artifact':
+            return Artifact(self.tcex, **{})
+        elif obj_type == 'task':
+            return Task(self.tcex, **{})
+        elif obj_type == 'workflow_event' or obj_type == 'workflowevent':
+            return WorkflowEvent(self.tcex, **{})
+        elif obj_type == 'workflow_template' or obj_type == 'workflowtemplate':
+            return WorkflowTemplate(self.tcex, **{})
+
+        return None
+
+    def obj_from_entity(self, entity):
+        obj_type = entity.pop('type').lower()
+        if obj_type == 'tag':
+            return Tag(self.tcex, **entity)
+        elif obj_type == 'case':
+            return Case(self.tcex, **entity)
+        elif obj_type == 'note':
+            return Note(self.tcex, **entity)
+        elif obj_type == 'artifact':
+            return Artifact(self.tcex, **entity)
+        elif obj_type == 'task':
+            return Task(self.tcex, **entity)
+        elif obj_type == 'workflow_event' or obj_type == 'workflowevent':
+            return WorkflowEvent(self.tcex, **entity)
+        elif obj_type == 'workflow_template' or obj_type == 'workflowtemplate':
+            return WorkflowTemplate(self.tcex, **entity)
+
+        return None
+
+    def create_entity(self, entity, owner):
+        entity_type = entity.get('type').lower()
+        obj = self.obj_from_entity(entity)
+        if obj is None:
+            return None
+
+        r = obj.submit()
+        response = {}
+        if isinstance(r, requests.models.Response):
+            response['status_code'] = r.status_code
+        else:
+            response['status_code'] = 201
+            response['unique_id'] = r.as_dict.get('id')
+
+        response['main_type'] = 'Case_Management'
+        response['sub_type'] = entity_type
+        response['owner'] = owner
+
+        return response
+
