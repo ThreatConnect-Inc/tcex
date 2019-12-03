@@ -62,6 +62,10 @@ class CommonCaseManagement(object):
             'createdBy': 'created_by',
             'dataType': 'data_type',
             'intelType': 'intel_type',
+            'isWorkflow': 'is_workflow',
+            'workflowId': 'workflow_id',
+            'workflowPhase': 'workflow_phase',
+            'workflowStep': 'workflow_step',
         }
 
     def delete(self, retry_count=0):
