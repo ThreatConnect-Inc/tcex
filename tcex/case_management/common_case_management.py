@@ -101,7 +101,7 @@ class CommonCaseManagement(object):
                 current_retries += 1
                 if current_retries >= retry_count:
                     err = response.text or response.reason
-                    self.tcex.handle_error(950, [response.status_code, err, response.url])
+                    self.tcex.handle_error(951, ['GET', response.status_code, err, response.url])
                 else:
                     continue
             entity = response.json()
@@ -148,22 +148,26 @@ class CommonCaseManagement(object):
 
     def submit(self):
         url = self.api_endpoint
+        as_dict = self.as_dict
         if self.id:
             url = '{}/{}'.format(self.api_endpoint, self.id)
-            return self.tcex.session.put(url, json=self.as_dict)
+            r = self.tcex.session.put(url, json=as_dict)
         else:
-            as_dict = self.as_dict
-            as_dict = self._reverse_transform(as_dict)
-            r = self.tcex.session.post(url, json=as_dict)
+            r = self.tcex.session.post(url, json=self._reverse_transform(as_dict))
 
         if r.ok:
             r_json = r.json()
-            r_id = self.id
-            if not r_id:
-                r_id = r_json.get('data').get('id')
-            self.id = r_id
-            self.entity_mapper(r_json.get('data', {}))
+            if not self.id:
+                self.id = r_json.get('data', {}).get('id')
+            as_dict['id'] = self.id
+            self.entity_mapper(self.get().as_dict)
             return self
+        else:
+            err = r.text or r.reason
+            if self.id:
+                self.tcex.handle_error(951, ['PUT', r.status_code, err, r.url])
+            else:
+                self.tcex.handle_error(951, ['POST', r.status_code, err, r.url])
         return r
 
     @staticmethod

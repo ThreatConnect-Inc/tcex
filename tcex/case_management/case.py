@@ -122,10 +122,11 @@ class Case(CommonCaseManagement):
         self._name = kwargs.get('name', None)
         self._severity = kwargs.get('severity', None)
         self._status = kwargs.get('status', None)
+        self._date_added = kwargs.get('date_added', None)
         self._resolution = kwargs.get('resolution', None)
         self._created_by = Creator(**kwargs.get('created_by', {}))
         self._tasks = Tasks(self.tcex, kwargs.get('tasks', {}), tql_filters=case_filter)
-        self._artifacts = Artifacts(self.tcex, kwargs.get('artifacts', {}), tql_filters=case_filter)
+        self._artifacts = Artifacts(self.tcex, kwargs.get('artifacts', None), tql_filters=case_filter)
         self._tags = Tags(self.tcex, kwargs.get('tags', {}), tql_filters=case_filter)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
 
@@ -225,13 +226,36 @@ class Case(CommonCaseManagement):
     def artifacts(self, artifacts):
         self._artifacts = artifacts
 
+    @property
+    def date_added(self):
+        return self._date_added
+
+    @date_added.setter
+    def date_added(self, date_added):
+        self._date_added = date_added
+
 
 class Creator(object):
     def __init__(self, **kwargs):
+        self._transform_kwargs(kwargs)
         self._id = kwargs.get('id', None)
         self._user_name = kwargs.get('user_name', None)
         self._first_name = kwargs.get('first_name', None)
         self._pseudonym = kwargs.get('pseudonym', None)
+        self._role = kwargs.get('role', None)
+
+    def _transform_kwargs(self, kwargs):
+        for key, value in dict(kwargs).items():
+            new_key = self._metadata_map.get(key, key)
+            kwargs[new_key] = kwargs.pop(key)
+
+    @property
+    def _metadata_map(self):
+        return {
+            'dateAdded': 'date_added',
+            'firstName': 'first_name',
+            'userName': 'user_name',
+        }
 
     @property
     def as_dict(self):
@@ -279,3 +303,11 @@ class Creator(object):
     @pseudonym.setter
     def pseudonym(self, pseudonym):
         self._pseudonym = pseudonym
+
+    @property
+    def role(self):
+        return self._pseudonym
+
+    @role.setter
+    def role(self, role):
+        self._role = role
