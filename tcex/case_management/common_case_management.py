@@ -81,7 +81,7 @@ class CommonCaseManagement(object):
             break
         return None
 
-    def get(self, all_available_fields=True, case_management_id=None, retry_count=0):
+    def get(self, all_available_fields=False, case_management_id=None, retry_count=0):
         cm_id = case_management_id or self.id
         url = '{}/{}'.format(self.api_endpoint, cm_id)
         current_retries = -1
@@ -142,20 +142,7 @@ class CommonCaseManagement(object):
         #
         # return reversed_mappings
 
-
     def submit(self):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            data:
-            owner:
-
-        Returns:
-
-        """
-        # ex groups/adversary (will need to map them to the actual string value of them)
         url = self.api_endpoint
         if self.id:
             url = '{}/{}'.format(self.api_endpoint, self.id)
@@ -166,10 +153,12 @@ class CommonCaseManagement(object):
             r = self.tcex.session.post(url, json=as_dict)
 
         if r.ok:
+            r_json = r.json()
             r_id = self.id
             if not r_id:
-                r_id = r.json().get('data').get('id')
+                r_id = r_json.get('data').get('id')
             self.id = r_id
+            self.entity_mapper(r_json.get('data', {}))
             return self
         return r
 
