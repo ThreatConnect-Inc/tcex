@@ -398,6 +398,7 @@ class Test(Bin):
                         'headers': [],
                         'method': 'GET',
                         'query_params': [],
+                        'trigger_id': '',
                     },
                 }
             }

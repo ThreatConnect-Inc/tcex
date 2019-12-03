@@ -68,13 +68,16 @@ Release Notes
 + Moved token renewal from session to new token module.
 + Updated multiple module to simplify testing.
 
-1.0.7
+1.0.x
 =====
+
+1.0.7
+-----
 + Updated logging formatter for issue in py2.
 + Updated test_case to automatically create profile output.
 
 1.0.6
-=====
+-----
 + Reworked logging for the TcEx framework to provide better flexibility.
 + Updated logging of batch sizes to not log when there is not content.
 + Moved the logging of App info to the args call.
@@ -82,35 +85,35 @@ Release Notes
 + Added new testing module using pytest.
 
 1.0.5
-=====
+-----
 + Updated arg parsing to better handle delimited input strings for secureParams/AOT input.
 + Updated TI module to better handle filters and retrieving generic indicator/group types.
 + Updated logging initialization to ensure user provided log path is available before adding file handler.
 
 1.0.4
-=====
+-----
 + Updated datastore module to prevent creating of empty record on index creation.
 + Updated batch module to support additional debugging features.
 
 1.0.3
-=====
+-----
 + Updated playbook read for ``\s`` replacement issue in Python 3.7.
 + Updated utils ``unix_time_to_datetime()`` method to handle unix timestamps with milliseconds that are not floats.
 + Updated TI module with changes for indicators data.
 + Updated tcinit for temporary proxy fields names.
 
 1.0.2
-=====
+-----
 + Updated **read_embedded** to escape newline characters in embedded string values
 
 1.0.1
-=====
+-----
 + Updated **install.json** schema validation to ensure that **displayName** contains a minimum of three characters
 + Updated **read_embedded** to cast data value to a string
 + Made minor updates to the TI module
 
 1.0.0
-=====
+-----
 + Added new Threat Intel (TI) module to interact with ThreatConnect REST API
 + Added support of "\s" characters to be replaced automatically with a space (" ") character on user string input in Playbook Apps
 + Added templates for external Apps

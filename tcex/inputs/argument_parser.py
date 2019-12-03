@@ -226,6 +226,7 @@ class TcArgumentParser(ArgumentParser):
         --tc_svc_broker_host host                   The Broker service hostname.
         --tc_svc_broker_jks_file file               Unused.
         --tc_svc_broker_jks_pwd password            Unused.
+        --tc_svc_broker_loop_sleep seconds          The Broker service sleep interval (seconds).
         --tc_svc_broker_port port                   The Broker service port.
         --tc_svc_broker_service service             The Broker service (mqtt/redis).
         --tc_svc_broker_timeout seconds             The Broker service timeout (tcex only).
@@ -239,6 +240,12 @@ class TcArgumentParser(ArgumentParser):
         self.add_argument('--tc_svc_broker_host', help='Broker service host')
         self.add_argument('--tc_svc_broker_jks_file', help='Unused')
         self.add_argument('--tc_svc_broker_jks_pwd', help='Unused')
+        self.add_argument(
+            '--tc_svc_broker_loop_sleep',
+            default=0.1,
+            help='Broker service loop sleep (seconds)',
+            type=float,
+        )
         self.add_argument('--tc_svc_broker_port', help='Broker service port', type=int)
         self.add_argument(
             '--tc_svc_broker_service', default='mqtt', help='Broker service (mqtt/redis)'
