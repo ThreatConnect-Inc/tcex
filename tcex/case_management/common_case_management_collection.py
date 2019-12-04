@@ -3,16 +3,16 @@
 
 class CommonCaseManagementCollection(object):
     def __init__(
-            self,
-            tcex,
-            api_endpoint,
-            tql_filters=None,
-            page_size=1000,
-            next_url=None,
-            previous_url=None,
-            retry_count=5,
-            timeout=1000,
-            initial_response=None,
+        self,
+        tcex,
+        api_endpoint,
+        tql_filters=None,
+        page_size=1000,
+        next_url=None,
+        previous_url=None,
+        retry_count=5,
+        timeout=1000,
+        initial_response=None,
     ):
         if tql_filters is None:
             tql_filters = []
@@ -81,7 +81,6 @@ class CommonCaseManagementCollection(object):
         return self._initial_response
 
     def iterate(self, initial_response=None, added_entities=None):
-        print('bp entering iterate')
         if added_entities is None:
             added_entities = []
 
@@ -103,7 +102,6 @@ class CommonCaseManagementCollection(object):
 
         while True:
             r = self.tcex.session.get(url, params=parameters)
-            parameters = {}
             if not self.success(r):
                 current_retries += 1
                 if current_retries > self.retry_count:
@@ -111,6 +109,9 @@ class CommonCaseManagementCollection(object):
                     self.tcex.handle_error(950, [r.status_code, err, r.url])
                 else:
                     continue
+
+            # reset some vars
+            parameters = {}
             current_retries = 0
 
             data = r.json().get('data', [])
