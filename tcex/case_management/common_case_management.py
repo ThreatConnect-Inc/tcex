@@ -114,7 +114,7 @@ class CommonCaseManagement(object):
         return []
 
     def _reverse_transform(self, kwargs):
-        reversed_transform_mapping = dict((v,k) for k,v in self._metadata_map.items())
+        reversed_transform_mapping = dict((v, k) for k, v in self._metadata_map.items())
 
         def reverse_transform(kwargs):
             reversed_mappings = {}
@@ -130,6 +130,7 @@ class CommonCaseManagement(object):
                 new_key = reversed_transform_mapping.get(key, key)
                 reversed_mappings[new_key] = value
             return reversed_mappings
+
         return reverse_transform(kwargs)
 
         # for key, value in dict(kwargs).items():
@@ -149,9 +150,11 @@ class CommonCaseManagement(object):
     def submit(self):
         url = self.api_endpoint
         as_dict = self.as_dict
+
+        # if the ID is included, its an update
         if self.id:
             url = '{}/{}'.format(self.api_endpoint, self.id)
-            r = self.tcex.session.put(url, json=as_dict)
+            r = self.tcex.session.put(url, json=self._reverse_transform(as_dict))
         else:
             r = self.tcex.session.post(url, json=self._reverse_transform(as_dict))
 
