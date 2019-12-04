@@ -313,36 +313,25 @@ class Services(object):
         try:
             self.mqtt_client.on_connect = self.on_connect
             self.mqtt_client.on_message = self.on_message_mqtt
-            self.mqtt_client.on_log = self.on_log
 
             # only needed when debugging
             # if self.tcex.log.getEffectiveLevel() == 5:
             #     # self.mqtt_client.on_disconnect = self.on_disconnect
+            #     self.mqtt_client.on_log = self.on_log
             #     self.mqtt_client.on_publish = self.on_publish
             #     self.mqtt_client.on_subscribe = self.on_subscribe
             #     # self.mqtt_client.on_unsubscribe = self.on_unsubscribe
-            # self.mqtt_client.loop_forever()
 
             # handle connection issues by not using loop_forever. give the service X seconds to
-            # connect to core, else timeout and log generic connection error.
-            client_connection_timeout = 10
-            client_connection_counter = 0
-            self.mqtt_client.loop_start()
+            # connect to message broker, else timeout and log generic connection error.
+            deadline = time.time() + self.tcex.args.tc_svc_broker_conn_timeout
             while True:
-                if self._connected:
-                    break
-                elif client_connection_counter > client_connection_timeout:
-                    self.mqtt_client.loop_stop()
+                if not self._connected and deadline < time.time():
                     raise ConnectionError(
                         host=self.tcex.args.tc_svc_broker_host,
                         port=self.tcex.args.tc_svc_broker_port,
                     )
-                client_connection_counter += 1
-                time.sleep(1)
-
-            # loop_forever() replacement
-            while True:
-                time.sleep(self.tcex.args.tc_svc_broker_loop_sleep)
+                self.mqtt_client.loop(timeout=1)
 
         except Exception as e:
             self.tcex.log.trace('error in listen_mqtt: {}'.format(e))
