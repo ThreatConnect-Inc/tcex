@@ -316,22 +316,25 @@ class Services(object):
 
             # only needed when debugging
             # if self.tcex.log.getEffectiveLevel() == 5:
-            #     # self.mqtt_client.on_disconnect = self.on_disconnect
+            #     self.mqtt_client.on_disconnect = self.on_disconnect
             #     self.mqtt_client.on_log = self.on_log
             #     self.mqtt_client.on_publish = self.on_publish
             #     self.mqtt_client.on_subscribe = self.on_subscribe
-            #     # self.mqtt_client.on_unsubscribe = self.on_unsubscribe
+            #     self.mqtt_client.on_unsubscribe = self.on_unsubscribe
 
             # handle connection issues by not using loop_forever. give the service X seconds to
             # connect to message broker, else timeout and log generic connection error.
+            self.mqtt_client.loop_start()
             deadline = time.time() + self.tcex.args.tc_svc_broker_conn_timeout
             while True:
                 if not self._connected and deadline < time.time():
+                    self.mqtt_client.loop_stop()
                     raise ConnectionError(
-                        host=self.tcex.args.tc_svc_broker_host,
-                        port=self.tcex.args.tc_svc_broker_port,
+                        f'failed to connect to message broker host '
+                        f'{self.tcex.args.tc_svc_broker_host} on port '
+                        f'{self.tcex.args.tc_svc_broker_port}.'
                     )
-                self.mqtt_client.loop(timeout=1)
+                time.sleep(1)
 
         except Exception as e:
             self.tcex.log.trace('error in listen_mqtt: {}'.format(e))
