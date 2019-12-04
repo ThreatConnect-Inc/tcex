@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 1.1.7 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 1.1.8 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.7
+                1.1.8
               </div>
 
 
@@ -369,31 +369,39 @@ nbproject
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
-<span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fix-encoding-pragma</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
-        <span class="nt">args</span><span class="p">:</span>
-        <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">--autofix</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
-<span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/ambv/black</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">stable</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
-<span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-pylint</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="s">&#39;master&#39;</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
-        <span class="nt">args</span><span class="p">:</span>
-        <span class="p p-Indicator">-</span>    <span class="l l-Scalar l-Scalar-Plain">--disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202</span>
+25
+26
+27
+28
+29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
+      <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
+      <span class="nt">hooks</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fix-encoding-pragma</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
+            <span class="nt">args</span><span class="p">:</span>
+                <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--autofix</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
+    <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/ambv/black</span>
+      <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">stable</span>
+      <span class="nt">hooks</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
+    <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-isort</span>
+      <span class="nt">rev</span><span class="p">:</span> <span class="s">&quot;master&quot;</span>
+      <span class="nt">hooks</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">isort</span>
+    <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-pylint</span>
+      <span class="nt">rev</span><span class="p">:</span> <span class="s">&quot;master&quot;</span>
+      <span class="nt">hooks</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
+            <span class="nt">args</span><span class="p">:</span>
+                <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202</span>
 </pre></div>
 </td></tr></table></div>
 </div>

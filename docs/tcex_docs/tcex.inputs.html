@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Inputs Module &mdash; TcEx 1.1.7 documentation</title>
+  <title>Inputs Module &mdash; TcEx 1.1.8 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.7
+                1.1.8
               </div>
 
 
@@ -335,11 +335,20 @@ should be included in the provided data.</p>
 
 <dl class="method">
 <dt id="tcex.inputs.inputs.Inputs.config_file">
-<code class="sig-name descname">config_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">config_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load configuration data from provided file and update default_args.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config</strong> (<em>str</em>) – The configuration file name.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>str</em>) – The configuration file name.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The configuration file encryption key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The JSON contents of the file as a dict.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -549,6 +558,9 @@ completion.</p>
 </dd>
 <dt><kbd><span class="option">--tc_svc_broker_cert_file <var>file</var></span></kbd></dt>
 <dd><p>The Broker SSL Server certificate.</p>
+</dd>
+<dt><kbd><span class="option">--tc_svc_broker_conn_timeout <var>seconds</var></span></kbd></dt>
+<dd><p>The Broker service conn timeout (seconds).</p>
 </dd>
 <dt><kbd><span class="option">--tc_svc_broker_host <var>host</var></span></kbd></dt>
 <dd><p>The Broker service hostname.</p>

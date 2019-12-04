@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 1.1.7 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 1.1.8 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.7
+                1.1.8
               </div>
 
 
@@ -788,7 +788,7 @@ optional arguments:
 </div>
 <div class="section" id="external-app-templates">
 <h2>External App Templates<a class="headerlink" href="#external-app-templates" title="Permalink to this headline">¶</a></h2>
-<p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two init params are supported during the initialization of TcEx.  The first option, <code class="docutils literal notranslate"><span class="pre">tcex(config_file='app_config.json)</span></code>, takes a JSON file as input for the App configuration file. The second option, <code class="docutils literal notranslate"><span class="pre">tcex(config=app_config_dict)</span></code>, takes a dictionary of configuration data.  Either param will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
+<p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two init params are supported during the initialization of TcEx.  The first option, <code class="docutils literal notranslate"><span class="pre">TcEx(config_file='app_config.json)</span></code>, takes a JSON file as input for the App configuration file. The second option, <code class="docutils literal notranslate"><span class="pre">TcEx(config=app_config_dict)</span></code>, takes a dictionary of configuration data.  Either param will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the <strong>app.py</strong> file, if required.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;api_access_id&quot;</span><span class="o">:</span> <span class="s2">&quot;API_ACCESS_ID&quot;</span><span class="p">,</span>

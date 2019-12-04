@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.inputs &mdash; TcEx 1.1.7 documentation</title>
+  <title>tcex.inputs.inputs &mdash; TcEx 1.1.8 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.7
+                1.1.8
               </div>
 
 
@@ -184,6 +184,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="k">import</span> <span class="n">Namespace</span>
 <span class="kn">from</span> <span class="nn">.argument_parser</span> <span class="k">import</span> <span class="n">TcArgumentParser</span>
+<span class="kn">from</span> <span class="nn">.file_params</span> <span class="k">import</span> <span class="n">FileParams</span>
 
 
 <div class="viewcode-block" id="Inputs"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs">[docs]</a><span class="k">class</span> <span class="nc">Inputs</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -216,8 +217,12 @@
         <span class="c1"># parser</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">TcArgumentParser</span><span class="p">()</span>
 
+        <span class="c1"># a single config file is supported, typically from and external App or service App using</span>
+        <span class="c1"># fileParam feature</span>
+        <span class="n">config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TC_APP_PARAM_FILE&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">config_file</span>
+
         <span class="c1"># handle config and config_file</span>
-        <span class="n">config_file_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="n">config_file_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TC_APP_PARAM_KEY&#39;</span><span class="p">))</span>
         <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_file_data</span><span class="p">)</span>  <span class="c1"># config_file params update config</span>
 
         <span class="c1"># create empty namespaces</span>
@@ -296,7 +301,7 @@
 
 <div class="viewcode-block" id="Inputs._load_aot_params"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._load_aot_params">[docs]</a>    <span class="k">def</span> <span class="nf">_load_aot_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Block and retrieve params from Redis.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_aot_enabled</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_aot_enabled</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># update default_args with AOT params</span>
             <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">aot_blpop</span><span class="p">()</span>
             <span class="n">updated_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -304,7 +309,7 @@
 
 <div class="viewcode-block" id="Inputs._load_secure_params"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._load_secure_params">[docs]</a>    <span class="k">def</span> <span class="nf">_load_secure_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse args and return default args.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_secure_params</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_secure_params</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># update default_args with secure params from API</span>
             <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_secure_params</span><span class="p">()</span>
             <span class="n">updated_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -410,19 +415,45 @@
             <span class="c1"># register token as soon as possible</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register_token</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Inputs.config_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.config_file">[docs]</a>    <span class="k">def</span> <span class="nf">config_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="Inputs.config_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.config_file">[docs]</a>    <span class="k">def</span> <span class="nf">config_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load configuration data from provided file and update default_args.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (str): The configuration file name.</span>
+<span class="sd">            key (str): The configuration file encryption key.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The JSON contents of the file as a dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+        <span class="n">file_content</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># read encrypted file from &quot;in&quot; directory</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                        <span class="n">encrypted_contents</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                    <span class="n">fp</span> <span class="o">=</span> <span class="n">FileParams</span><span class="p">()</span>
+                    <span class="n">fp</span><span class="o">.</span><span class="n">EVP_DecryptInit</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">EVP_aes_128_cbc</span><span class="p">(),</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">EVP_DecryptUpdate</span><span class="p">(</span><span class="n">encrypted_contents</span><span class="p">)</span> <span class="o">+</span> <span class="n">fp</span><span class="o">.</span><span class="n">EVP_DecryptFinal</span><span class="p">()</span>
+                    <span class="n">file_content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                    <span class="n">file_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
+
+                    <span class="c1"># delete file</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="s1">&#39;Could not read or decrypt configuration file &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not load configuration file &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">{}</span></div>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                        <span class="n">file_content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not parse configuration file &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not load configuration file &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">file_content</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

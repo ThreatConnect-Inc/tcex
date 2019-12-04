@@ -6,6 +6,7 @@ Release Notes
 1.1.8
 =====
 + Improved support for TI module to support creating files given a unique_id.
++ Updates to playbook modules to remove logging affecting environment servers.
 
 1.1.7
 =====
