@@ -36,6 +36,9 @@ class Playbooks(object):
         **Example Variable Format**::
 
             #App:1234:status!String,#App:1234:status_code!String
+
+        Args:
+            variables (list|str]): A list or string of output variables.
         """
         if variables is None:
             return
