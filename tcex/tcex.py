@@ -1239,7 +1239,7 @@ class TcEx(object):
         if tag is not None:
             try:
                 # handle unicode characters and url encode tag value
-                tag = quote(self.s(tag, errors=errors), safe='~')[:128]
+                tag = quote(self.s(tag[:128], errors=errors), safe='~')
             except KeyError as e:
                 warn = 'Failed converting tag to safetag ({})'.format(e)
                 self.log.warning(warn)
