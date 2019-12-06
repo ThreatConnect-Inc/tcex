@@ -67,6 +67,7 @@ class CaseManagement(object):
         return Tags(self.tcex, **kwargs)
 
     def obj_from_type(self, obj_type):
+        obj_type = obj_type.lower()
         if obj_type == 'tag':
             return Tag(self.tcex, **{})
         elif obj_type == 'case':
@@ -77,9 +78,9 @@ class CaseManagement(object):
             return Artifact(self.tcex, **{})
         elif obj_type == 'task':
             return Task(self.tcex, **{})
-        elif obj_type == 'workflow_event' or obj_type == 'workflowevent':
+        elif obj_type in ['workflow_event', 'workflowevent', 'workflow event']:
             return WorkflowEvent(self.tcex, **{})
-        elif obj_type == 'workflow_template' or obj_type == 'workflowtemplate':
+        elif obj_type in ['workflow_template', 'workflowtemplate', 'workflow template']:
             return WorkflowTemplate(self.tcex, **{})
 
         return None
@@ -96,9 +97,9 @@ class CaseManagement(object):
             return Artifact(self.tcex, **entity)
         elif obj_type == 'task':
             return Task(self.tcex, **entity)
-        elif obj_type == 'workflow_event' or obj_type == 'workflowevent':
+        elif obj_type in ['workflow_event', 'workflowevent', 'workflow event']:
             return WorkflowEvent(self.tcex, **entity)
-        elif obj_type == 'workflow_template' or obj_type == 'workflowtemplate':
+        elif obj_type in ['workflow_template', 'workflowtemplate', 'workflow template']:
             return WorkflowTemplate(self.tcex, **entity)
 
         return None

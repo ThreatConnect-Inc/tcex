@@ -178,6 +178,10 @@ class ThreatConnect(object):
                 ti.delete()
             if entity_type == 'Case_Management':
                 cm = self.provider.tcex.cm.obj_from_type(data.get('sub_type'))
+                if data.get('sub_type').lower() in [
+                    'workflow_event', 'workflowevent', 'workflow event'
+                ]:
+                    continue
                 cm.id = data.get('unique_id')
                 cm.delete()
 

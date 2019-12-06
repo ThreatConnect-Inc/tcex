@@ -58,7 +58,11 @@ class CommonCaseManagement(object):
         return {
             'caseId': 'case_id',
             'caseXid': 'case_xid',
+            'taskId': 'task_id',
+            'artifactId': 'artifact_id',
             'dateAdded': 'date_added',
+            'lastModified': 'last_modified',
+            'userName': 'user_name',
             'createdBy': 'created_by',
             'dataType': 'data_type',
             'intelType': 'intel_type',
@@ -66,6 +70,10 @@ class CommonCaseManagement(object):
             'workflowId': 'workflow_id',
             'workflowPhase': 'workflow_phase',
             'workflowStep': 'workflow_step',
+            'artifact_type': 'type',
+            'artifactType': 'type',
+            'fileData': 'file_data',
+            'parentCase': 'parent_case'
         }
 
     def delete(self, retry_count=0):
@@ -85,7 +93,9 @@ class CommonCaseManagement(object):
             break
         return None
 
-    def get(self, all_available_fields=False, case_management_id=None, retry_count=0):
+    def get(self, all_available_fields=False, case_management_id=None, retry_count=0, fields=None):
+        if fields is None:
+            fields = []
         cm_id = case_management_id or self.id
         url = '{}/{}'.format(self.api_endpoint, cm_id)
         current_retries = -1
@@ -93,6 +103,9 @@ class CommonCaseManagement(object):
         parameters = {'fields': []}
         if all_available_fields:
             for field in self.available_fields:
+                parameters['fields'].append(field)
+        elif fields:
+            for field in fields:
                 parameters['fields'].append(field)
 
         while current_retries < retry_count:
@@ -128,6 +141,8 @@ class CommonCaseManagement(object):
                     reversed_mappings[key] = values
                     return reversed_mappings
                 new_key = reversed_transform_mapping.get(key, key)
+                if key in ['type']:
+                    new_key = key
                 reversed_mappings[new_key] = value
             return reversed_mappings
 

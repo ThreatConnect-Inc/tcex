@@ -100,7 +100,7 @@ class WorkflowTemplates(CommonCaseManagementCollection):
 
 class WorkflowTemplate(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
-        super().__init__(tcex, api_endpoint, **kwargs)
+        super().__init__(tcex, api_endpoint, kwargs)
         self._name = kwargs.get('name', None)
         self._description = kwargs.get('description', None)
         self._active = kwargs.get('active', True)

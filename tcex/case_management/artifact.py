@@ -81,6 +81,7 @@ class Artifact(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         super().__init__(tcex, api_endpoint, kwargs)
         self._case_id = kwargs.get('case_id', None)
+        self._date_added = kwargs.get('date_added', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._file_data = kwargs.get('file_data', None)
         self._intel_type = kwargs.get('intel_type', None)
@@ -90,6 +91,7 @@ class Artifact(CommonCaseManagement):
         self._task_id = kwargs.get('task_id', None)
         self._task_xid = kwargs.get('task_xid', None)
         self._type = kwargs.get('type', None)
+        self._parent_case_id = kwargs.get('parent_case', {}).get('id', None)
         self._xid = None
 
     def add_note(self, **kwargs):
@@ -132,6 +134,14 @@ class Artifact(CommonCaseManagement):
     @case_id.setter
     def case_id(self, case_id):
         self._case_id = case_id
+
+    @property
+    def parent_case_id(self):
+        return self._parent_case_id
+
+    @parent_case_id.setter
+    def parent_case_id(self, parent_case_id):
+        self._parent_case_id = parent_case_id
 
     @property
     def case_xid(self):
@@ -196,6 +206,14 @@ class Artifact(CommonCaseManagement):
     @task_xid.setter
     def task_xid(self, task_xid):
         self._task_id = task_xid
+
+    @property
+    def date_added(self):
+        return self._date_added
+
+    @date_added.setter
+    def date_added(self, date_added):
+        self._date_added = date_added
 
     @property
     def type(self):

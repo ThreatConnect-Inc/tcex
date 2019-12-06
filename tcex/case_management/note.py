@@ -85,6 +85,8 @@ class Note(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         super().__init__(tcex, api_endpoint, kwargs)
         self._case_id = kwargs.get('case_id', None)
+        self._artifact_id = kwargs.get('artifact_id', None)
+        self._task_id = kwargs.get('task_id', None)
         self._text = kwargs.get('text', None)
         self._summary = kwargs.get('summary', None)
         self._user_name = kwargs.get('user_name', None)
@@ -100,13 +102,34 @@ class Note(CommonCaseManagement):
     def available_fields(self):
         return ['artifacts', 'caseId', 'task', 'parentCase']
 
+    def entity_mapper(self, entity):
+        new_note = Note(self.tcex, **entity)
+        self.__dict__.update(new_note.__dict__)
+
     @property
     def case_id(self):
         return self._case_id
 
     @case_id.setter
     def case_id(self, case_id):
+        print('getting here: ', case_id)
         self._case_id = case_id
+
+    @property
+    def task_id(self):
+        return self._task_id
+
+    @task_id.setter
+    def task_id(self, task_id):
+        self._task_id = task_id
+
+    @property
+    def artifact_id(self):
+        return self._artifact_id
+
+    @artifact_id.setter
+    def artifact_id(self, artifact_id):
+        self._artifact_id = artifact_id
 
     @property
     def text(self):

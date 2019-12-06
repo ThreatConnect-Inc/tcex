@@ -2,6 +2,7 @@
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .tql import TQL
+from .note import Note, Notes
 
 api_endpoint = '/v3/workflowEvents'
 
@@ -95,13 +96,23 @@ class WorkflowEvents(CommonCaseManagementCollection):
 
 class WorkflowEvent(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
-        super().__init__(tcex, api_endpoint, **kwargs)
+        super().__init__(tcex, api_endpoint, kwargs)
         self._event_date = kwargs.get('event_date', None)
         self._date_added = kwargs.get('date_added', None)
         self._summary = kwargs.get('summary', None)
         self._deleted = kwargs.get('deleted', None)
         self._system_generated = kwargs.get('system_generated', None)
+        self._case_id = kwargs.get('case_id', None)
         self._link = kwargs.get('link', None)
+        self._notes = Notes(self.tcex, kwargs.get('notes', {}).get('data'))
+        self._parent_case_id = kwargs.get('parent_case', {}).get('id', None)
+
+    def add_note(self, **kwargs):
+        self._notes.add_note(Note(self.tcex, **kwargs))
+
+    def entity_mapper(self, entity):
+        new_case = WorkflowEvent(self.tcex, **entity)
+        self.__dict__.update(new_case.__dict__)
 
     @property
     def required_properties(self):
@@ -114,6 +125,22 @@ class WorkflowEvent(CommonCaseManagement):
     @property
     def event_date(self):
         return self._event_date
+
+    @property
+    def case_id(self):
+        return self._case_id
+
+    @case_id.setter
+    def case_id(self, case_id):
+        self._case_id = case_id
+
+    @property
+    def parent_case_id(self):
+        return self._parent_case_id
+
+    @parent_case_id.setter
+    def parent_case_id(self, parent_case_id):
+        self._parent_case_id = parent_case_id
 
     @event_date.setter
     def event_date(self, event_date):
