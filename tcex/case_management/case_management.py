@@ -13,6 +13,8 @@ import requests
 class CaseManagement(object):
     def __init__(self, tcex):
         """
+        Initialize CaseManagement Class.
+
         Args:
             tcex (obj): An instance of TcEx.
         """
@@ -123,4 +125,3 @@ class CaseManagement(object):
         response['owner'] = owner
 
         return response
-

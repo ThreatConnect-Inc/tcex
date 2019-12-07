@@ -8,8 +8,9 @@ api_endpoint = '/v3/artifactTypes'
 
 class ArtifactTypes(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
-        super().__init__(tcex, api_endpoint, initial_response=initial_response,
-                         tql_filters=tql_filters)
+        super().__init__(
+            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+        )
         self.tql = TQL()
 
     def __iter__(self):
@@ -76,6 +77,12 @@ class ArtifactType(CommonCaseManagement):
         self._intel_type = kwargs.get('intel_type', None)
 
     def entity_mapper(self, entity):
+        """
+         Maps a dict to a Artifact Type then updates self.
+
+         Args:
+             entity (dict): The dict to map self too.
+         """
         new_case = ArtifactType(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 

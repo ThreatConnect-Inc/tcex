@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 class CommonCaseManagement(object):
     def __init__(self, tcex, api_endpoint, kwargs):
+        """
+        Initialize CommonCaseManagement Class
+        """
         self._tcex = tcex
         self._id = kwargs.get('id', None)
         self._transform_kwargs(kwargs)
@@ -75,7 +78,7 @@ class CommonCaseManagement(object):
             'fileData': 'file_data',
             'eventDate': 'event_date',
             'systemGenerated': 'system_generated',
-            'parentCase': 'parent_case'
+            'parentCase': 'parent_case',
         }
 
     def delete(self, retry_count=0):

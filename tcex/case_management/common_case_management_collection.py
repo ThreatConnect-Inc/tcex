@@ -14,6 +14,9 @@ class CommonCaseManagementCollection(object):
         timeout=1000,
         initial_response=None,
     ):
+        """
+        Initialize CommonCaseManagementCollection Class
+        """
         if tql_filters is None:
             tql_filters = []
         self.api_endpoint = api_endpoint

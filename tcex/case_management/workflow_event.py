@@ -9,8 +9,9 @@ api_endpoint = '/v3/workflowEvents'
 
 class WorkflowEvents(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
-        super().__init__(tcex, api_endpoint, initial_response=initial_response,
-                         tql_filters=tql_filters)
+        super().__init__(
+            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+        )
         self.tql = TQL()
         self.added_tags = []
 
@@ -111,6 +112,12 @@ class WorkflowEvent(CommonCaseManagement):
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     def entity_mapper(self, entity):
+        """
+         Maps a dict to a Workflow Event then updates self.
+
+         Args:
+             entity (dict): The dict to map self too.
+         """
         new_case = WorkflowEvent(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 

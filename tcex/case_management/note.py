@@ -8,8 +8,9 @@ api_endpoint = '/v3/notes'
 
 class Notes(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
-        super().__init__(tcex, api_endpoint, initial_response=initial_response,
-                         tql_filters=tql_filters)
+        super().__init__(
+            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+        )
         self.tql = TQL()
         self.added_notes = []
 
@@ -103,6 +104,12 @@ class Note(CommonCaseManagement):
         return ['artifacts', 'caseId', 'task', 'parentCase']
 
     def entity_mapper(self, entity):
+        """
+         Maps a dict to a Note then updates self.
+
+         Args:
+             entity (dict): The dict to map self too.
+         """
         new_note = Note(self.tcex, **entity)
         self.__dict__.update(new_note.__dict__)
 

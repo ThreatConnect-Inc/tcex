@@ -8,8 +8,9 @@ api_endpoint = '/v3/tags'
 
 class Tags(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
-        super().__init__(tcex, api_endpoint, initial_response=initial_response,
-                         tql_filters=tql_filters)
+        super().__init__(
+            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+        )
         self.tql = TQL()
         self.added_tags = []
 
@@ -70,6 +71,12 @@ class Tag(CommonCaseManagement):
         self._description = kwargs.get('description', None)
 
     def entity_mapper(self, entity):
+        """
+         Maps a dict to a Tag then updates self.
+
+         Args:
+             entity (dict): The dict to map self too.
+         """
         new_case = Tag(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 

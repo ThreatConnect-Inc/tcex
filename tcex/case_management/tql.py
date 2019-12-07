@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from enum import Enum
 
 
@@ -23,8 +24,22 @@ class TQL(object):
         @staticmethod
         def supported():
             return [
-                '=', '!=', '>', '<', '<=', '>=', 'NOT IN', 'IN', 'NOT LIKE', 'LIKE', 'NOT CONTAINS',
-                'CONTAINS', 'NOT STARTSWITH', 'STARTSWITH', 'NOT ENDSWITH', 'ENDSWITH',
+                '=',
+                '!=',
+                '>',
+                '<',
+                '<=',
+                '>=',
+                'NOT IN',
+                'IN',
+                'NOT LIKE',
+                'LIKE',
+                'NOT CONTAINS',
+                'CONTAINS',
+                'NOT STARTSWITH',
+                'STARTSWITH',
+                'NOT ENDSWITH',
+                'ENDSWITH',
             ]
 
         def get(self, operator):
@@ -88,9 +103,9 @@ class TQL(object):
                 value = '({})'.format(','.join(values))
             if filter.get('type') == self.Type.STRING:
                 value = '"{}"'.format(value)
-            filters.append('{} {} {}'.format(
-                filter.get('keyword'), filter.get('operator').name, value
-            ))
+            filters.append(
+                '{} {} {}'.format(filter.get('keyword'), filter.get('operator').name, value)
+            )
 
         return ' and '.join(filters)
 
@@ -103,6 +118,15 @@ class TQL(object):
         self._filters = filters
 
     def add_filter(self, keyword, operator, value, type=Type.STRING):
+        """
+         Adds a filter to the current obj
+
+         Args:
+             keyword (str): the field to search on
+             operator (str): the operator to use
+             value (str): the value to compare
+             type (Type): How to treat the value (defaults to String)
+         """
         self.filters.append(
             {'keyword': keyword, 'operator': operator, 'value': value, 'type': type}
         )

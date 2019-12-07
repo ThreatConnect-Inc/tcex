@@ -6,17 +6,11 @@ from .tql import TQL
 api_endpoint = '/v3/workflowTemplates'
 
 
-class CommonWorkflowTemplate(object):
-    def __init__(self):
-        self.api_endpoint = '/v3/workflowTemplates'
-
-
-
-
 class WorkflowTemplates(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
-        super().__init__(tcex, api_endpoint, initial_response=initial_response,
-                         tql_filters=tql_filters)
+        super().__init__(
+            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+        )
         self.tql = TQL()
 
     def __iter__(self):
@@ -113,6 +107,16 @@ class WorkflowTemplate(CommonCaseManagement):
     @property
     def available_fields(self):
         return ['assignees', 'cases', 'organizations', 'user']
+
+    def entity_mapper(self, entity):
+        """
+         Maps a dict to a Workflow Template then updates self.
+
+         Args:
+             entity (dict): The dict to map self too.
+         """
+        new_case = WorkflowTemplate(self.tcex, **entity)
+        self.__dict__.update(new_case.__dict__)
 
     @property
     def name(self):

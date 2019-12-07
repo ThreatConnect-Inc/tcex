@@ -12,8 +12,9 @@ api_endpoint = '/v3/cases'
 
 class Cases(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
-        super().__init__(tcex, api_endpoint, initial_response=initial_response,
-                         tql_filters=tql_filters)
+        super().__init__(
+            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+        )
         self.tql = TQL()
 
     def __iter__(self):
@@ -97,7 +98,7 @@ class Cases(CommonCaseManagementCollection):
         """
         self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
-    #What is the difference between this and hastag?
+    # What is the difference between this and hastag?
     def tag_filter(self, operator, tag):
         """
             The name of a tag applied to a case
@@ -126,11 +127,19 @@ class Case(CommonCaseManagement):
         self._resolution = kwargs.get('resolution', None)
         self._created_by = Creator(**kwargs.get('created_by', {}))
         self._tasks = Tasks(self.tcex, kwargs.get('tasks', {}), tql_filters=case_filter)
-        self._artifacts = Artifacts(self.tcex, kwargs.get('artifacts', None), tql_filters=case_filter)
+        self._artifacts = Artifacts(
+            self.tcex, kwargs.get('artifacts', None), tql_filters=case_filter
+        )
         self._tags = Tags(self.tcex, kwargs.get('tags', {}), tql_filters=case_filter)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
 
     def entity_mapper(self, entity):
+        """
+         Maps a dict to a Case then updates self.
+
+         Args:
+             entity (dict): The dict to map self too.
+         """
         new_case = Case(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 
@@ -251,11 +260,7 @@ class Creator(object):
 
     @property
     def _metadata_map(self):
-        return {
-            'dateAdded': 'date_added',
-            'firstName': 'first_name',
-            'userName': 'user_name',
-        }
+        return {'dateAdded': 'date_added', 'firstName': 'first_name', 'userName': 'user_name'}
 
     @property
     def as_dict(self):
