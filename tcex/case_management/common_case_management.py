@@ -73,6 +73,8 @@ class CommonCaseManagement(object):
             'artifact_type': 'type',
             'artifactType': 'type',
             'fileData': 'file_data',
+            'eventDate': 'event_date',
+            'systemGenerated': 'system_generated',
             'parentCase': 'parent_case'
         }
 
