@@ -103,12 +103,14 @@ class WorkflowEvent(CommonCaseManagement):
         self._summary = kwargs.get('summary', None)
         self._deleted = kwargs.get('deleted', None)
         self._system_generated = kwargs.get('system_generated', None)
-        self._case_id = kwargs.get('case_id', None)
+        self._case_id = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get('id', None)
         self._link = kwargs.get('link', None)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}).get('data'))
-        self._parent_case_id = kwargs.get('parent_case', {}).get('id', None)
 
     def add_note(self, **kwargs):
+        """
+        Adds a note to the workflow event.
+        """
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     def entity_mapper(self, entity):
@@ -118,77 +120,121 @@ class WorkflowEvent(CommonCaseManagement):
          Args:
              entity (dict): The dict to map self too.
          """
-        new_case = WorkflowEvent(self.tcex, **entity)
-        self.__dict__.update(new_case.__dict__)
+        new_workflow_event = WorkflowEvent(self.tcex, **entity)
+        self.__dict__.update(new_workflow_event.__dict__)
 
     @property
     def required_properties(self):
+        """
+        The required fields for a workflow event
+        Returns:
+            list of required fields for a workflow event.
+        """
         return ['summary', 'case_id']
 
     @property
     def available_fields(self):
+        """
+        The available fields to fetch for the workflow event.
+        Returns:
+            list of available fields to fetch for the workflow event.
+        """
         return ['user', 'parentCase']
 
     @property
     def event_date(self):
+        """
+         Returns the event date for the Workflow Event.
+         """
         return self._event_date
+
+    @event_date.setter
+    def event_date(self, event_date):
+        """
+        Sets the event date for the Workflow Event.
+        """
+        self._event_date = event_date
 
     @property
     def case_id(self):
+        """
+         Returns the case id for the Workflow Event.
+         """
         return self._case_id
 
     @case_id.setter
     def case_id(self, case_id):
+        """
+        Sets the case id for the Workflow Event.
+        """
         self._case_id = case_id
 
     @property
-    def parent_case_id(self):
-        return self._parent_case_id
-
-    @parent_case_id.setter
-    def parent_case_id(self, parent_case_id):
-        self._parent_case_id = parent_case_id
-
-    @event_date.setter
-    def event_date(self, event_date):
-        self._event_date = event_date
-
-    @property
     def date_added(self):
+        """
+        Returns the date added for the Workflow Event.
+        """
         return self._date_added
 
     @date_added.setter
     def date_added(self, date_added):
+        """
+        Sets the date added for the Workflow Event.
+        """
         self._date_added = date_added
 
     @property
     def summary(self):
+        """
+        Returns the summary for the Workflow Event.
+        """
         return self._summary
 
     @summary.setter
     def summary(self, summary):
+        """
+        Sets the summary for the Workflow Event.
+        """
         self._summary = summary
 
     @property
     def deleted(self):
+        """
+        Returns if the Workflow Event is deleted.
+        """
         return self._deleted
 
     @deleted.setter
     def deleted(self, deleted):
+        """
+        Sets if the Workflow Event is deleted.
+        """
         self._deleted = deleted
 
     @property
     def system_generated(self):
+        """
+        Returns if the Workflow Event is system generated.
+        """
         return self._system_generated
 
     @system_generated.setter
     def system_generated(self, system_generated):
+        """
+        Sets if the Workflow Event is system generated.
+        """
         self._system_generated = system_generated
 
     @property
     def link(self):
+        """
+        Returns the link for the Workflow Event.
+        """
         return self._link
 
-    @event_date.setter
+    @link.setter
     def link(self, link):
+        """
+        Sets the link for the Workflow Event.
+        """
         self._link = link

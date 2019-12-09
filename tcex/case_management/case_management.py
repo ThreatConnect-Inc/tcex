@@ -11,6 +11,10 @@ import requests
 
 
 class CaseManagement(object):
+    """
+    Interacts with TC V3 api endpoints.
+    """
+
     def __init__(self, tcex):
         """
         Initialize CaseManagement Class.
@@ -21,54 +25,105 @@ class CaseManagement(object):
         self.tcex = tcex
 
     def artifacts(self, **kwargs):
+        """
+        Returns a instance of Artifacts populated with the provided kwargs
+        """
         return Artifacts(self.tcex, **kwargs)
 
     def artifact(self, **kwargs):
+        """
+        Returns a instance of a Artifact populated with the provided kwargs
+        """
         return Artifact(self.tcex, **kwargs)
 
     def artifact_types(self, **kwargs):
+        """
+        Returns a instance of Artifact Types populated with the provided kwargs
+        """
         return ArtifactTypes(self.tcex, **kwargs)
 
     def artifact_type(self, **kwargs):
+        """
+        Returns a instance of a Artifact Type populated with the provided kwargs
+        """
         return ArtifactType(self.tcex, **kwargs)
 
     def cases(self, **kwargs):
+        """
+        Returns a instance of Cases populated with the provided kwargs
+        """
         return Cases(self.tcex, **kwargs)
 
     def case(self, **kwargs):
+        """
+        Returns a instance of a Case populated with the provided kwargs
+        """
         return Case(self.tcex, **kwargs)
 
     def note(self, **kwargs):
+        """
+        Returns a instance of a Note populated with the provided kwargs
+        """
         return Note(self.tcex, **kwargs)
 
     def notes(self, **kwargs):
+        """
+        Returns a instance of Notes populated with the provided kwargs
+        """
         return Notes(self.tcex, **kwargs)
 
     def task(self, **kwargs):
+        """
+        Returns a instance of a Task populated with the provided kwargs
+        """
         return Task(self.tcex, **kwargs)
 
     def tasks(self, **kwargs):
+        """
+        Returns a instance of Tasks populated with the provided kwargs
+        """
         return Tasks(self.tcex, **kwargs)
 
     def workflow_event(self, **kwargs):
+        """
+        Returns a instance of a Workflow Event populated with the provided kwargs
+        """
         return WorkflowEvent(self.tcex, **kwargs)
 
     def workflow_events(self, **kwargs):
+        """
+        Returns a instance of Workflow Events populated with the provided kwargs
+        """
         return WorkflowEvents(self.tcex, **kwargs)
 
     def workflow_template(self, **kwargs):
+        """
+        Returns a instance of a Workflow Template populated with the provided kwargs
+        """
         return WorkflowTemplate(self.tcex, **kwargs)
 
     def workflow_templates(self, **kwargs):
+        """
+        Returns a instance of Workflow Templates populated with the provided kwargs
+        """
         return WorkflowTemplates(self.tcex, **kwargs)
 
     def tag(self, **kwargs):
+        """
+        Returns a instance of a Tag populated with the provided kwargs
+        """
         return Tag(self.tcex, **kwargs)
 
     def tags(self, **kwargs):
+        """
+        Returns a instance of Tags populated with the provided kwargs
+        """
         return Tags(self.tcex, **kwargs)
 
     def obj_from_type(self, obj_type):
+        """
+        Returns a instance of the appropriate object for the given type.
+        """
         obj_type = obj_type.lower()
         if obj_type == 'tag':
             return Tag(self.tcex, **{})
@@ -88,6 +143,9 @@ class CaseManagement(object):
         return None
 
     def obj_from_entity(self, entity):
+        """
+        Returns a instance of the appropriate object populated with the kwargs of the provided dict.
+        """
         obj_type = entity.pop('type').lower()
         if obj_type == 'tag':
             return Tag(self.tcex, **entity)
@@ -107,6 +165,9 @@ class CaseManagement(object):
         return None
 
     def create_entity(self, entity, owner):
+        """
+        Creates a CM objected provided a dict and owner.
+        """
         entity_type = entity.get('type').lower()
         obj = self.obj_from_entity(entity)
         if obj is None:

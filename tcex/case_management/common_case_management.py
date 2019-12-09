@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 class CommonCaseManagement(object):
+    """Common Case Management object that encapsalates common methods used by children classes."""
+
     def __init__(self, tcex, api_endpoint, kwargs):
         """
         Initialize CommonCaseManagement Class
@@ -11,26 +13,44 @@ class CommonCaseManagement(object):
 
     @property
     def required_properties(self):
+        """
+        Returns a list of required fields.
+        """
         return []
 
     @property
     def _excluded_properties(self):
+        """
+        Returns a list of properties to exclude when creating a dict of the children Classes.
+        """
         return ['tcex', 'kwargs', 'api_endpoint']
 
     @property
     def tcex(self):
+        """
+        Returns the tcex of the case management object.
+        """
         return self._tcex
 
     @property
     def id(self):
+        """
+        Returns the id of the case management object.
+        """
         return self._id
 
     @id.setter
     def id(self, cm_id):
+        """
+        Sets the id of the case management object.
+        """
         self._id = cm_id
 
     @property
     def as_dict(self):
+        """
+        Returns the dict representation of the case management object.
+        """
         properties = vars(self)
         as_dict = {}
         for key, value in properties.items():
@@ -49,6 +69,9 @@ class CommonCaseManagement(object):
         return as_dict
 
     def _transform_kwargs(self, kwargs):
+        """
+        Maps the provided kwargs to expected arguments.
+        """
         for key, value in dict(kwargs).items():
             new_key = self._metadata_map.get(key, key)
             # if key in ['date_added', 'eventDate', 'firstSeen', 'publishDate']:
@@ -58,6 +81,7 @@ class CommonCaseManagement(object):
 
     @property
     def _metadata_map(self):
+        """ Returns a mapping of kwargs to expected args. """
         return {
             'caseId': 'case_id',
             'caseXid': 'case_xid',
@@ -82,6 +106,9 @@ class CommonCaseManagement(object):
         }
 
     def delete(self, retry_count=0):
+        """
+        Deletes the Case Management Object. If no id is present in the obj then returns immediently.
+        """
         if not self.id:
             return
         url = '{}/{}'.format(self.api_endpoint, self.id)
@@ -99,6 +126,14 @@ class CommonCaseManagement(object):
         return None
 
     def get(self, all_available_fields=False, case_management_id=None, retry_count=0, fields=None):
+        """
+        Gets the Case Management Object.
+
+        Args:
+            all_available_fields (bool): determins if all fields should be returned.
+            fields (list): A list of the fields that should be returned.
+            case_management_id (int): The id of the case management object to be returned.
+        """
         if fields is None:
             fields = []
         cm_id = case_management_id or self.id
@@ -129,9 +164,17 @@ class CommonCaseManagement(object):
 
     @property
     def available_fields(self):
+        """All of the available fields for the case management object"""
         return []
 
+    def entity_mapper(self, entity):
+        """Maps the entity to the current object. This method is overridden in children classes"""
+        return {}
+
     def _reverse_transform(self, kwargs):
+        """
+        reverse mapping of the _metadata_map method.
+        """
         reversed_transform_mapping = dict((v, k) for k, v in self._metadata_map.items())
 
         def reverse_transform(kwargs):
@@ -153,21 +196,11 @@ class CommonCaseManagement(object):
 
         return reverse_transform(kwargs)
 
-        # for key, value in dict(kwargs).items():
-        #     if isinstance(value, dict):
-        #     if isinstance(value, list):
-        #         for entry in value:
-        #             value = self._reverse_transform(entry)
-        #         if value:
-        #             reversed_mappings[key] = [value]
-        #     else:
-        #         for mapped_key, mapped_value in self._metadata_map.items():
-        #             if key == mapped_value:
-        #                 key = mapped_key
-        #
-        # return reversed_mappings
-
     def submit(self):
+        """
+        Either creates or updates the Case Management object. This is determined based on if the id
+        is already present in the object.
+        """
         url = self.api_endpoint
         as_dict = self.as_dict
 

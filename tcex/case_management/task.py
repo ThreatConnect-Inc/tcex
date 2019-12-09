@@ -130,13 +130,22 @@ class Task(CommonCaseManagement):
         self._workflow_phase = kwargs.get('workflow_phase', None)
         self._workflow_step = kwargs.get('workflow_step', None)
         self._status = kwargs.get('status', None)
+        self._source = kwargs.get('source', None)
         self._notes = Notes(kwargs.get('notes', {}).get('data'))
 
     def add_note(self, **kwargs):
+        """
+        Adds a note to the task
+        """
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     @property
     def required_properties(self):
+        """
+        The required fields for a task
+        Returns:
+            list of required fields for a task.
+        """
         return ['name', 'case_id']
 
     def entity_mapper(self, entity):
@@ -151,96 +160,163 @@ class Task(CommonCaseManagement):
 
     @property
     def available_fields(self):
+        """
+        The available fields to fetch for the task.
+        Returns:
+            list of available fields to fetch for the task.
+        """
         return ['artifacts', 'assignee', 'caseId', 'notes', 'parentCase']
 
     @property
     def name(self):
+        """
+         Returns the name for the Task
+         """
         return self._name
 
     @name.setter
     def name(self, name):
+        """
+        Sets the name for the Task
+        """
         self._name = name
 
     @property
-    def notes(self):
-        return self._notes
-
-    @property
     def case_id(self):
+        """
+        Returns the case id for the Task
+        """
         return self._case_id
 
     @case_id.setter
     def case_id(self, case_id):
+        """
+        Sets the case id for the Task
+        """
         self._case_id = case_id
 
     @property
     def description(self):
+        """
+        Returns the description for the Task
+        """
         return self._description
 
     @description.setter
     def description(self, description):
+        """
+        Sets the description for the Task
+        """
         self._description = description
 
     @property
     def is_workflow(self):
+        """
+        Returns if the Task is part of a workflow.
+        """
         return self._is_workflow
 
     @is_workflow.setter
     def is_workflow(self, is_workflow):
+        """
+        Sets if the Task is part of a workflow.
+        """
         self._is_workflow = is_workflow
 
     @property
     def workflow_id(self):
+        """
+        Returns the workflow id for the Task
+        """
         return self._workflow_id
 
     @workflow_id.setter
     def workflow_id(self, workflow_id):
+        """
+        Sets the workflow id for the Task
+        """
         self._workflow_id = workflow_id
 
     @property
     def notes(self):
+        """
+        Returns the notes for the Task
+        """
         return self._notes
 
     @notes.setter
     def notes(self, notes):
+        """
+        Sets the notes for the Task
+        """
         self._notes = notes
 
     @property
     def source(self):
+        """
+        Returns the source for the Task
+        """
         return self._source
 
     @source.setter
     def source(self, source):
+        """
+        Sets the source for the Task
+        """
         self._source = source
 
     @property
     def workflow_phase(self):
+        """
+        Returns the workflow phase for the Task
+        """
         return self._workflow_phase
 
     @workflow_phase.setter
     def workflow_phase(self, workflow_phase):
+        """
+        Sets the workflow phase for the Task
+        """
         self._workflow_phase = workflow_phase
 
     @property
     def workflow_step(self):
+        """
+        Returns the workflow step for the Task
+        """
         return self._workflow_step
 
     @workflow_step.setter
     def workflow_step(self, workflow_step):
+        """
+        Sets the workflow step for the Task
+        """
         self._workflow_step = workflow_step
 
     @property
     def status(self):
+        """
+        Returns the status for the Task
+        """
         return self._workflow_step
 
     @status.setter
     def status(self, status):
+        """
+        Sets the status for the Task
+        """
         self._workflow_step = status
 
-    @property
-    def type(self):
-        return self._type
-
-    @type.setter
-    def type(self, artifact_type):
-        self._type = artifact_type
+    # @property
+    # def type(self):
+    #     """
+    #     Returns the type for the Task
+    #     """
+    #     return self._type
+    #
+    # @type.setter
+    # def type(self, artifact_type):
+    #     """
+    #     Sets the type for the Task
+    #     """
+    #     self._type = artifact_type
