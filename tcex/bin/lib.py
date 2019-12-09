@@ -112,8 +112,9 @@ class Lib(Bin):
 
     def _create_lib_latest(self):
         """Create the lib_latest symlink for App Builder."""
-        # TODO: Update this method to copy latest lib directory on Windows.
-        if platform.system() != 'Windows':
+        if platform.system() == 'Windows':
+            shutil.copytree('lib_{}'.format(self.latest_version),  self.static_lib_dir)
+        else:
             if os.path.islink(self.static_lib_dir):
                 os.unlink(self.static_lib_dir)
             os.symlink('lib_{}'.format(self.latest_version), self.static_lib_dir)
