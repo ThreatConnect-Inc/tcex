@@ -45,9 +45,9 @@ class Services(object):
 
         # default metrics per service type
         if self.tcex.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-            self._metrics = {'active playbooks': 0, 'errors': 0, 'hits': 0, 'misses': 0}
+            self._metrics = {'Active Playbooks': 0, 'Errors': 0, 'Hits': 0, 'Misses': 0}
         else:
-            self._metrics = {'errors': 0, 'requests': 0, 'responses': 0}
+            self._metrics = {'Errors': 0, 'Requests': 0, 'Responses': 0}
 
         # config callbacks
         self.api_event_callback = None
@@ -172,13 +172,13 @@ class Services(object):
         try:
             if callback(playbook, trigger_id, config, **kwargs):
                 # self.tcex.log.info('Trigger ID {} hit.'.format(trigger_id))
-                self.increment_metric('hits')
+                self.increment_metric('Hits')
                 self.fire_event_publish(trigger_id, self.thread_name)
             else:
-                self.increment_metric('misses')
+                self.increment_metric('Misses')
                 self.tcex.log.info('Trigger ID {} missed.'.format(trigger_id))
         except Exception as e:
-            self.increment_metric('errors')
+            self.increment_metric('Errors')
             self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
             self.tcex.log.trace(traceback.format_exc())
         finally:
@@ -316,12 +316,26 @@ class Services(object):
 
             # only needed when debugging
             # if self.tcex.log.getEffectiveLevel() == 5:
-            #     # self.mqtt_client.on_disconnect = self.on_disconnect
+            #     self.mqtt_client.on_disconnect = self.on_disconnect
+            #     self.mqtt_client.on_log = self.on_log
             #     self.mqtt_client.on_publish = self.on_publish
             #     self.mqtt_client.on_subscribe = self.on_subscribe
-            #     # self.mqtt_client.on_unsubscribe = self.on_unsubscribe
-            #     self.mqtt_client.on_log = self.on_log
-            self.mqtt_client.loop_forever()
+            #     self.mqtt_client.on_unsubscribe = self.on_unsubscribe
+
+            # handle connection issues by not using loop_forever. give the service X seconds to
+            # connect to message broker, else timeout and log generic connection error.
+            self.mqtt_client.loop_start()
+            deadline = time.time() + self.tcex.args.tc_svc_broker_conn_timeout
+            while True:
+                if not self._connected and deadline < time.time():
+                    self.mqtt_client.loop_stop()
+                    raise ConnectionError(
+                        f'failed to connect to message broker host '
+                        f'{self.tcex.args.tc_svc_broker_host} on port '
+                        f'{self.tcex.args.tc_svc_broker_port}.'
+                    )
+                time.sleep(1)
+
         except Exception as e:
             self.tcex.log.trace('error in listen_mqtt: {}'.format(e))
             self.tcex.log.error(traceback.format_exc())
@@ -363,8 +377,8 @@ class Services(object):
     @property
     def metrics(self):
         """Return current metrics."""
-        # update default active playbook metric
-        self.update_metric('active playbooks', len(self.configs))
+        if self._metrics.get('Active Playbooks') is not None:
+            self.update_metric('Active Playbooks', len(self.configs))
         return self._metrics
 
     @metrics.setter
@@ -391,6 +405,8 @@ class Services(object):
                     cert_reqs=ssl.CERT_REQUIRED,
                     tls_version=ssl.PROTOCOL_TLSv1_2,
                 )
+                # add logger
+                self.mqtt_client.enable_logger(logger=self.tcex.log)
                 # username must be a empty string
                 self._mqtt_client.username_pw_set('', password=self.tcex.args.tc_svc_broker_token)
                 self._mqtt_client.tls_insecure_set(False)
@@ -410,6 +426,7 @@ class Services(object):
         )
         self.mqtt_client.subscribe(self.tcex.default_args.tc_svc_server_topic)
         self._connected = True
+        self.mqtt_client.disable_logger()
 
     def on_log(self, client, userdata, level, buf):  # pylint: disable=unused-argument
         """Handle MQTT on_log events."""
@@ -611,11 +628,11 @@ class Services(object):
             if headers.get('content-length') is not None:
                 environ['CONTENT_LENGTH'] = headers.get('content-length')
             self.tcex.log.trace('environ: {}'.format(environ))
-            self.increment_metric('requests')
+            self.increment_metric('Requests')
         except Exception as e:
             self.tcex.log.error('Failed building environ ({})'.format(e))
             self.tcex.log.trace(traceback.format_exc())
-            self.increment_metric('errors')
+            self.increment_metric('Errors')
             return  # stop processing
 
         def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
@@ -651,7 +668,7 @@ class Services(object):
                     'The api event callback method encountered and error ({}).'.format(e)
                 )
                 self.tcex.log.trace(traceback.format_exc())
-                self.increment_metric('errors')
+                self.increment_metric('Errors')
 
         # unregister config apiToken
         self.tcex.token.unregister_token(self.thread_name)
@@ -677,11 +694,11 @@ class Services(object):
             }
             self.tcex.log.info('API response sent')
             self.publish(json.dumps(response))
-            self.increment_metric('responses')
+            self.increment_metric('Responses')
         except Exception as e:
             self.tcex.log.error('Failed creating response body ({})'.format(e))
             self.tcex.log.trace(traceback.format_exc())
-            self.increment_metric('errors')
+            self.increment_metric('Errors')
 
     def process_shutdown(self, reason):
         """Handle a shutdown message.
@@ -781,14 +798,14 @@ class Services(object):
                 # publish the WebhookEventResponse message
                 self.publish(json.dumps(webhook_event_response))
             elif isinstance(callback_response, bool) and callback_response:
-                self.increment_metric('hits')
+                self.increment_metric('Hits')
                 self.fire_event_publish(trigger_id, self.thread_name, request_key)
             else:
-                self.increment_metric('misses')
+                self.increment_metric('Misses')
         except Exception as e:
             self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
             self.tcex.log.trace(traceback.format_exc())
-            self.increment_metric('errors')
+            self.increment_metric('Errors')
         finally:
             # remove temporary logging file handler
             self.tcex.logger.remove_handler_by_name(self.thread_name)

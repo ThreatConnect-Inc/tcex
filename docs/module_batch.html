@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Batch &mdash; TcEx 1.1.7 documentation</title>
+  <title>Module: Batch &mdash; TcEx 1.1.8 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.7
+                1.1.8
               </div>
 
 
@@ -299,9 +299,9 @@
 4
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;My event name&#39;</span><span class="p">,</span> <span class="n">date_added</span><span class="o">=</span><span class="s1">&#39;event-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;My event name&#39;</span><span class="p">,</span> <span class="n">date_added</span><span class="o">=</span><span class="s1">&#39;2008-12-12T12:12:12&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;yesterday&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;New&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;Needs Review&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span></pre></div>
@@ -623,7 +623,7 @@
 <p>In some cases, handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_create_and_upload()</span></code> and then to retrieve data from a remote endpoint while ThreatConnect processes the batch job.  Next, poll by using <code class="xref py py-meth docutils literal notranslate"><span class="pre">poll()</span></code> for status, and when the job is completed, the next job request can be submitted. If batch errors are reported in the Batch status, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">errors()</span></code> method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_files()</span></code> method.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <strong>synchronousBatchSaveLimit</strong> setting, configured in the <strong>System Settings</strong> screeen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit()</span></code> method provides logic for handling this so that the developer is not required to check if the job was queued.</p>
+<p>The <strong>synchronousBatchSaveLimit</strong> setting, configured in the <strong>System Settings</strong> screen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit()</span></code> method provides logic for handling this so that the developer is not required to check if the job was queued.</p>
 </div>
 <div class="section" id="option-1">
 <h3>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h3>

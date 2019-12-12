@@ -248,7 +248,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """Run once before all test cases."""
         super(TestCaseServiceCommon, cls).setup_class()
         cls.args = {}
-        cls.service_file = 'SERVICE_STARTED'
+        cls.service_file = 'SERVICE_STARTED'  # started file flag
 
     def setup_method(self):
         """Run before each test method runs."""
@@ -256,10 +256,12 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex.playbook.db.r
 
+        # patch service for each profile (test case)
         self.patch_service()
+
+        # only start service if it hasn't been started already base on file flag.
         if not os.path.isfile(self.service_file):
-            with open(self.service_file, 'w+') as f:  # noqa: F841; pylint: disable=unused-variable
-                pass
+            open(self.service_file, 'w+').close()  # create service started file flag
             self.run_service()
 
     def stage_data(self, staged_data):

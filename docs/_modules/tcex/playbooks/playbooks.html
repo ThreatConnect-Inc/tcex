@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks &mdash; TcEx 1.1.7 documentation</title>
+  <title>tcex.playbooks.playbooks &mdash; TcEx 1.1.8 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.7
+                1.1.8
               </div>
 
 
@@ -389,7 +389,7 @@
             <span class="c1"># self.tcex.log.debug(u&#39;variable value: {}&#39;.format(value))</span>
             <span class="n">parsed_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_variable</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
             <span class="n">variable_type</span> <span class="o">=</span> <span class="n">parsed_key</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data_types</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_data_types</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_data_types</span><span class="p">[</span><span class="n">variable_type</span><span class="p">](</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_raw</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -407,6 +407,8 @@
             <span class="s1">&#39;StringArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_string_array</span><span class="p">,</span>
             <span class="s1">&#39;TCEntity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tc_entity</span><span class="p">,</span>
             <span class="s1">&#39;TCEntityArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tc_entity_array</span><span class="p">,</span>
+            <span class="s1">&#39;TCEnhancedEntity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tc_entity</span><span class="p">,</span>
+            <span class="s1">&#39;TCEnhancedEntityArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tc_entity_array</span><span class="p">,</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="Playbooks.create_output"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_output">[docs]</a>    <span class="k">def</span> <span class="nf">create_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">variable_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -646,6 +648,8 @@
             <span class="s1">&#39;StringArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_string_array</span><span class="p">,</span>
             <span class="s1">&#39;TCEntity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_tc_entity</span><span class="p">,</span>
             <span class="s1">&#39;TCEntityArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_tc_entity_array</span><span class="p">,</span>
+            <span class="s1">&#39;TCEnhancedEntity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_tc_entity</span><span class="p">,</span>
+            <span class="s1">&#39;TCEnhancedEntityArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_tc_entity_array</span><span class="p">,</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="Playbooks.read_embedded"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.read_embedded">[docs]</a>    <span class="k">def</span> <span class="nf">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">parent_var_type</span><span class="p">):</span>
@@ -927,9 +931,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># used to save raw value with embedded variables</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
-                <span class="s1">&#39;pb create: context: </span><span class="si">{}</span><span class="s1">, key: </span><span class="si">{}</span><span class="s1">, value: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="c1"># TODO: update for env servers</span>
+            <span class="c1"># self.tcex.log.trace(</span>
+            <span class="c1">#     &#39;pb create: context: {}, key: {}, value: {}&#39;.format(self.db.key, key, value)</span>
+            <span class="c1"># )</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
@@ -981,9 +986,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># used to save raw value with embedded variables</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
-                <span class="s1">&#39;pb create: context: </span><span class="si">{}</span><span class="s1">, key: </span><span class="si">{}</span><span class="s1">, value: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="c1"># for MEO server there is no key value</span>
+            <span class="c1"># self.tcex.log.trace(</span>
+            <span class="c1">#     &#39;pb create: context: {}, key: {}, value: {}&#39;.format(self.db.key, key, value)</span>
+            <span class="c1"># )</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
@@ -1125,9 +1131,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># used to save raw value with embedded variables</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
-                <span class="s1">&#39;pb create: context: </span><span class="si">{}</span><span class="s1">, key: </span><span class="si">{}</span><span class="s1">, value: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="c1"># TODO: update for env servers</span>
+            <span class="c1"># self.tcex.log.trace(</span>
+            <span class="c1">#     &#39;pb create: context: {}, key: {}, value: {}&#39;.format(self.db.key, key, value)</span>
+            <span class="c1"># )</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
@@ -1174,9 +1181,10 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
-                <span class="s1">&#39;pb create: context: </span><span class="si">{}</span><span class="s1">, key: </span><span class="si">{}</span><span class="s1">, value: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="c1"># TODO: update for env servers</span>
+            <span class="c1"># self.tcex.log.trace(</span>
+            <span class="c1">#     &#39;pb create: context: {}, key: {}, value: {}&#39;.format(self.db.key, key, value)</span>
+            <span class="c1"># )</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
@@ -1224,9 +1232,10 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
-                <span class="s1">&#39;pb create: context: </span><span class="si">{}</span><span class="s1">, key: </span><span class="si">{}</span><span class="s1">, value: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="c1"># TODO: update for env servers</span>
+            <span class="c1"># self.tcex.log.trace(</span>
+            <span class="c1">#     &#39;pb create: context: {}, key: {}, value: {}&#39;.format(self.db.key, key, value)</span>
+            <span class="c1"># )</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>

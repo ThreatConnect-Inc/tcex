@@ -457,7 +457,7 @@ class Validator(object):
         return self._redis
 
     def remove_excludes(self, dict_1, paths):
-        """Removes a list of paths from a given dict
+        """Remove a list of paths from a given dict
 
         ex:
             dict_1: {
@@ -1143,7 +1143,7 @@ class ThreatConnect(object):
 
     @staticmethod
     def success(r):
-        """
+        """Success method.
 
         Args:
             r:

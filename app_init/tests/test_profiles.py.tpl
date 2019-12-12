@@ -61,17 +61,26 @@ class TestProfiles(${class_name}):
         # profile data
         profile_data = self.profile(profile_name)
 
+        # call pre-configuration setup per test
+        self.custom.test_pre_create_config(self, profile_data, monkeypatch)
+
         # publish createConfig
         for config in profile_data.get('configs'):
             self.publish_create_config(config)
 
-        # trigger custom event
-        self.custom.trigger_method(self, profile_data, monkeypatch)
-
         % if app_type == 'webhooktriggerservice':
+        # call pre-configuration setup per test
+        self.custom.test_pre_webhook(self, profile_data, monkeypatch)
+
         # send webhook event
         self.publish_webhook_event(**profile_data.get('webhook_event'))
+        % else:
+        # trigger custom event
+        self.custom.trigger_method(self, profile_data, monkeypatch)
         % endif
+
+        # call pre-configuration setup or validation per test
+        self.custom.test_pre_delete_config(self, profile_data, monkeypatch)
 
         # publish deleteConfig
         for config in profile_data.get('configs'):

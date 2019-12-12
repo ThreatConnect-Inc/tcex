@@ -36,6 +36,9 @@ class Playbooks(object):
         **Example Variable Format**::
 
             #App:1234:status!String,#App:1234:status_code!String
+
+        Args:
+            variables (list|str]): A list or string of output variables.
         """
         if variables is None:
             return
@@ -752,9 +755,10 @@ class Playbooks(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
-            self.tcex.log.trace(
-                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            )
+            # TODO: update for env servers
+            # self.tcex.log.trace(
+            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            # )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -806,9 +810,10 @@ class Playbooks(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
-            self.tcex.log.trace(
-                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            )
+            # for MEO server there is no key value
+            # self.tcex.log.trace(
+            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            # )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -950,9 +955,10 @@ class Playbooks(object):
             else:
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
-            self.tcex.log.trace(
-                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            )
+            # TODO: update for env servers
+            # self.tcex.log.trace(
+            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            # )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -999,9 +1005,10 @@ class Playbooks(object):
         data = None
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
-            self.tcex.log.trace(
-                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            )
+            # TODO: update for env servers
+            # self.tcex.log.trace(
+            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            # )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -1049,9 +1056,10 @@ class Playbooks(object):
         data = None
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
-            self.tcex.log.trace(
-                'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            )
+            # TODO: update for env servers
+            # self.tcex.log.trace(
+            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
+            # )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data

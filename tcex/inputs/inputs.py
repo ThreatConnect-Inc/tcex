@@ -272,7 +272,7 @@ class Inputs(object):
                         file_content = json.load(fh)
                 except ValueError:
                     self.tcex.log.error('Could not parse configuration file "{}".'.format(filename))
-        else:
+        elif filename is not None:
             self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
         return file_content
 
