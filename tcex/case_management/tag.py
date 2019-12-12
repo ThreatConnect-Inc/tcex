@@ -14,6 +14,13 @@ class Tags(CommonCaseManagementCollection):
         self.tql = TQL()
         self.added_tags = []
 
+        # For tags, we could be passing in a bunch of existing
+        # tags (used when associating to a case) so we handle
+        # appending them here
+        if initial_response:
+            for t in initial_response:
+                self.added_tags.append(t)
+
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response, added_entities=self.added_tags)
 
