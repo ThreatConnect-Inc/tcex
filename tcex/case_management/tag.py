@@ -33,7 +33,7 @@ class Tags(CommonCaseManagementCollection):
         """
             The ID of the case the tag is applied to
         """
-        self.tql.add_filter('case_id', operator, case_id, TQL.Type.INTEGER)
+        self.tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
     def name_filter(self, operator, name):
         """
