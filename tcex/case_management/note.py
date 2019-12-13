@@ -79,7 +79,7 @@ class Notes(CommonCaseManagementCollection):
 
     @property
     def as_dict(self):
-        return super().as_dict(self.added_notes)
+        return super().list_as_dict(self.added_notes)
 
 
 class Note(CommonCaseManagement):
@@ -119,7 +119,6 @@ class Note(CommonCaseManagement):
 
     @case_id.setter
     def case_id(self, case_id):
-        print('getting here: ', case_id)
         self._case_id = case_id
 
     @property

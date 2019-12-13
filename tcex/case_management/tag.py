@@ -18,7 +18,7 @@ class Tags(CommonCaseManagementCollection):
         # tags (used when associating to a case) so we handle
         # appending them here
         if initial_response:
-            for t in initial_response:
+            for t in initial_response.get('data', []):
                 self.added_tags.append(t)
 
     def __iter__(self):
@@ -68,7 +68,7 @@ class Tags(CommonCaseManagementCollection):
 
     @property
     def as_dict(self):
-        return super().as_dict(self.added_tags)
+        return super().list_as_dict(self.added_tags)
 
 
 class Tag(CommonCaseManagement):

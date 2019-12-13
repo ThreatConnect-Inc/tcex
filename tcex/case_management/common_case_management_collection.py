@@ -34,7 +34,7 @@ class CommonCaseManagementCollection(object):
         self._initial_response = initial_response
         self._tql_filters = tql_filters
 
-    def as_dict(self, added_items):
+    def list_as_dict(self, added_items):
         """
         Returns the dict representation of the case management collection object.
         """

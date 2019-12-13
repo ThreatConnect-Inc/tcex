@@ -96,7 +96,7 @@ class Artifacts(CommonCaseManagementCollection):
         """
         Returns a dict version of this object.
         """
-        return super().as_dict(self.added_artifacts)
+        return super().list_as_dict(self.added_artifacts)
 
 
 class Artifact(CommonCaseManagement):

@@ -116,7 +116,7 @@ class Tasks(CommonCaseManagementCollection):
 
     @property
     def as_dict(self):
-        return super().as_dict(self.added_tasks)
+        return super().list_as_dict(self.added_tasks)
 
 
 class Task(CommonCaseManagement):
