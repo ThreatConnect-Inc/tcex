@@ -103,6 +103,7 @@ class CommonCaseManagement(object):
             'eventDate': 'event_date',
             'systemGenerated': 'system_generated',
             'parentCase': 'parent_case',
+            'workflowTemplate': 'workflow_template',
         }
 
     def delete(self, retry_count=0):
