@@ -25,6 +25,10 @@ class Artifacts(CommonCaseManagementCollection):
         self.tql = TQL()
         self.added_artifacts = []
 
+        if initial_response:
+            for t in initial_response.get('data', []):
+                self.added_artifacts.append(t)
+
     def summary_filter(self, operator, summary):
         """
             The summary of the artifact
