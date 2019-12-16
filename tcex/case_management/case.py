@@ -7,6 +7,7 @@ from .note import Note, Notes
 from .tag import Tag, Tags
 from .tql import TQL
 
+
 api_endpoint = '/v3/cases'
 
 
@@ -141,7 +142,7 @@ class Case(CommonCaseManagement):
                notes (dict): The notes for the case.
        """
         super().__init__(tcex, api_endpoint, kwargs)
-        case_filter = [{'keyword': 'caseid', 'operator': '=', 'value': self.id, 'type': 'integer'}]
+        case_filter = [{'keyword': 'caseid', 'operator': TQL.Operator.EQ, 'value': self.id, 'type': 'integer'}]
 
         self._name = kwargs.get('name', None)
         self._severity = kwargs.get('severity', None)
@@ -163,6 +164,7 @@ class Case(CommonCaseManagement):
          Args:
              entity (dict): The dict to map self too.
          """
+        print('entity: ', entity)
         new_case = Case(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 

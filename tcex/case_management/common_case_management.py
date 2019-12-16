@@ -217,7 +217,7 @@ class CommonCaseManagement(object):
             if not self.id:
                 self.id = r_json.get('data', {}).get('id')
             as_dict['id'] = self.id
-            self.entity_mapper(self.get().as_dict)
+            self.entity_mapper(r_json.get('data', r_json))
             return self
         else:
             err = r.text or r.reason

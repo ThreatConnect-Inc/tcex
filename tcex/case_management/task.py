@@ -298,14 +298,14 @@ class Task(CommonCaseManagement):
         """
         Returns the status for the Task
         """
-        return self._workflow_step
+        return self._status
 
     @status.setter
     def status(self, status):
         """
         Sets the status for the Task
         """
-        self._workflow_step = status
+        self._status = status
 
     # @property
     # def type(self):

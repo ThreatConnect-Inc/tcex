@@ -75,15 +75,14 @@ class TestCaseIndicators:
         for tag in case.tags:
             assert tag.name in ['New Tag 1', 'New Tag 2']
 
-        assert len(case.tags) == 1
+        assert len(case.notes) == 1
         for note in case.notes:
             assert note.text == 'Note Text'
-            assert note.summary == 'Note Summary'
 
         assert len(case.tasks) == 1
         for task in case.tasks:
             assert task.name == 'Task Name'
-            assert task.description == 'Description of the Task'
+            assert task.description == 'Task Description'
             assert task.status == 'Pending'
 
 

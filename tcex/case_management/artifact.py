@@ -77,7 +77,7 @@ class Artifacts(CommonCaseManagementCollection):
         """
         Iterates over the artifacts using the provided or applied tql filters.
         """
-        return self.iterate(initial_response=self.initial_response)
+        return self.iterate(initial_response=self.initial_response, added_entities=self.added_artifacts)
 
     def entity_map(self, entity):
         """
