@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Case"""
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .artifact import Artifact, Artifacts
@@ -26,7 +27,6 @@ class Cases(CommonCaseManagementCollection):
         super().__init__(
             tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.tql = TQL()
 
     def __iter__(self):
         """
@@ -142,7 +142,9 @@ class Case(CommonCaseManagement):
                notes (dict): The notes for the case.
        """
         super().__init__(tcex, api_endpoint, kwargs)
-        case_filter = [{'keyword': 'caseid', 'operator': TQL.Operator.EQ, 'value': self.id, 'type': 'integer'}]
+        case_filter = [
+            {'keyword': 'caseid', 'operator': TQL.Operator.EQ, 'value': self.id, 'type': 'integer'}
+        ]
 
         self._name = kwargs.get('name', None)
         self._severity = kwargs.get('severity', None)
@@ -368,7 +370,7 @@ class Creator(object):
         """
         Maps the provided kwargs to expected arguments.
         """
-        for key, value in dict(kwargs).items():
+        for key in dict(kwargs):
             new_key = self._metadata_map.get(key, key)
             kwargs[new_key] = kwargs.pop(key)
 

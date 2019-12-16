@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Artifact"""
 from .note import Note, Notes
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
@@ -22,7 +23,6 @@ class Artifacts(CommonCaseManagementCollection):
         super().__init__(
             tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.tql = TQL()
         self.added_artifacts = []
 
         if initial_response:
@@ -81,7 +81,9 @@ class Artifacts(CommonCaseManagementCollection):
         """
         Iterates over the artifacts using the provided or applied tql filters.
         """
-        return self.iterate(initial_response=self.initial_response, added_entities=self.added_artifacts)
+        return self.iterate(
+            initial_response=self.initial_response, added_entities=self.added_artifacts
+        )
 
     def entity_map(self, entity):
         """

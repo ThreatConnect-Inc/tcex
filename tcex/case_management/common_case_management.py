@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Common Case Management"""
+
+
 class CommonCaseManagement(object):
     """Common Case Management object that encapsalates common methods used by children classes."""
 

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Case Management Collection"""
+from .tql import TQL
 
 
 class CommonCaseManagementCollection(object):
@@ -24,6 +26,7 @@ class CommonCaseManagementCollection(object):
         """
         if tql_filters is None:
             tql_filters = []
+        self.tql = TQL()
         self.api_endpoint = api_endpoint
         self._next_url = next_url
         self._previous_url = previous_url
@@ -34,7 +37,8 @@ class CommonCaseManagementCollection(object):
         self._initial_response = initial_response
         self._tql_filters = tql_filters
 
-    def list_as_dict(self, added_items):
+    @staticmethod
+    def list_as_dict(added_items):
         """
         Returns the dict representation of the case management collection object.
         """

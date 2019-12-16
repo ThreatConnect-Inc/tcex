@@ -4,6 +4,7 @@
 from ..tcex_init import tcex
 from tcex.case_management.tql import TQL
 
+
 # pylint: disable=W0201
 class TestCaseIndicators:
     """Test TcEx Address Indicators."""
@@ -52,8 +53,12 @@ class TestCaseIndicators:
 
     def test_create_1(self):
         case = self.cm.case(name='case_1', status='Open', severity='Low')
-        case.add_artifact(summary='Artifact Summary 1', type='Artifact 2', intel_type='indicator-ASN')
-        case.add_artifact(summary='Artifact Summary 2', type='Artifact 2', intel_type='indicator-ASN')
+        case.add_artifact(
+            summary='Artifact Summary 1', type='Artifact 2', intel_type='indicator-ASN'
+        )
+        case.add_artifact(
+            summary='Artifact Summary 2', type='Artifact 2', intel_type='indicator-ASN'
+        )
         case.add_tag(name='New Tag 1')
         case.add_tag(name='New Tag 2')
         case.add_note(text='Note Text', summary='Note Summary')
@@ -84,6 +89,3 @@ class TestCaseIndicators:
             assert task.name == 'Task Name'
             assert task.description == 'Task Description'
             assert task.status == 'Pending'
-
-
-

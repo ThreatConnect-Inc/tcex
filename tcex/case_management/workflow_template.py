@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Workflow Template"""
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .tql import TQL
@@ -11,7 +12,6 @@ class WorkflowTemplates(CommonCaseManagementCollection):
         super().__init__(
             tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.tql = TQL()
 
     def __iter__(self):
         return self.iterate(initial_response=self.initial_response)

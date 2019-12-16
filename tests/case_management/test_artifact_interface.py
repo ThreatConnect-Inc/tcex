@@ -14,6 +14,9 @@ class TestArtifactIndicators:
         self.cm = tcex.cm
 
     def test_get_single(self):
+        """
+        Tests Artifact Get by Id
+        """
         artifact = self.test_create(summary='asn4324', delete=False)
         self.test_create(summary='asn4442', delete=False)
 
@@ -25,9 +28,14 @@ class TestArtifactIndicators:
         self.test_delete('artifact_name_2', create=False)
 
     def test_get_many(self):
-        ...
+        """Tests getting all artifacts"""
+        artifact = self.cm.artifact()
+        assert len(artifact) > 0
 
     def test_tql(self):
+        """
+        Tests Artifact Get by TQL's
+        """
         artifact = self.test_create(summary='asn5433')
         self.test_create(summary='asn5432', case_id=1)
         self.test_create(summary='asn5434', case_id=1)
@@ -53,6 +61,9 @@ class TestArtifactIndicators:
         artifacts.case_filter(TQL.Operator.EQ, 1)
 
     def test_delete(self, summary='artifact_name', create=True):
+        """
+        Tests Artifact Deletion
+        """
         if create:
             self.test_create(summary, delete=False)
         artifacts = self.cm.artifacts()
@@ -60,8 +71,17 @@ class TestArtifactIndicators:
         for artifact in artifacts:
             artifact.delete()
 
-    def test_create(self, summary='asn4354', type='New Artifact Type',
-                    intel_type='ArtifactType intelType', case_id=None, delete=True):
+    def test_create(
+        self,
+        summary='asn4354',
+        type='New Artifact Type',
+        intel_type='ArtifactType intelType',
+        case_id=None,
+        delete=True,
+    ):
+        """
+        Tests Artifact Creation
+        """
         if not case_id:
             case = self.cm.case(name='artifact_name', status='Open', severity='Low')
             case.submit()
@@ -81,4 +101,3 @@ class TestArtifactIndicators:
             self.test_delete(summary, create=False)
 
         return artifact
-

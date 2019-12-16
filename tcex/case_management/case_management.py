@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Case Management"""
+import requests
 from .artifact import Artifact, Artifacts
 from .artifact_type import ArtifactType, ArtifactTypes
 from .case import Case, Cases
@@ -7,7 +9,6 @@ from .note import Note, Notes
 from .tag import Tag, Tags
 from .workflow_event import WorkflowEvent, WorkflowEvents
 from .workflow_template import WorkflowTemplate, WorkflowTemplates
-import requests
 
 
 class CaseManagement(object):
@@ -125,22 +126,23 @@ class CaseManagement(object):
         Returns a instance of the appropriate object for the given type.
         """
         obj_type = obj_type.lower()
+        cm = None
         if obj_type == 'tag':
-            return Tag(self.tcex, **{})
+            cm = Tag(self.tcex, **{})
         elif obj_type == 'case':
-            return Case(self.tcex, **{})
+            cm = Case(self.tcex, **{})
         elif obj_type == 'note':
-            return Note(self.tcex, **{})
+            cm = Note(self.tcex, **{})
         elif obj_type == 'artifact':
-            return Artifact(self.tcex, **{})
+            cm = Artifact(self.tcex, **{})
         elif obj_type == 'task':
-            return Task(self.tcex, **{})
+            cm = Task(self.tcex, **{})
         elif obj_type in ['workflow_event', 'workflowevent', 'workflow event']:
-            return WorkflowEvent(self.tcex, **{})
+            cm = WorkflowEvent(self.tcex, **{})
         elif obj_type in ['workflow_template', 'workflowtemplate', 'workflow template']:
-            return WorkflowTemplate(self.tcex, **{})
+            cm = WorkflowTemplate(self.tcex, **{})
 
-        return None
+        return cm
 
     def obj_from_entity(self, entity):
         """

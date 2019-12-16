@@ -4,6 +4,7 @@
 from ..tcex_init import tcex
 from tcex.case_management.tql import TQL
 
+
 # pylint: disable=W0201
 class TestNoteIndicators:
     """Test TcEx Address Indicators."""
@@ -40,5 +41,3 @@ class TestNoteIndicators:
             self.test_delete(name, create=False)
 
         return tag
-
-

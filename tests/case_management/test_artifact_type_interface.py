@@ -14,6 +14,9 @@ class TestArtifactTypeIndicators:
         self.cm = tcex.cm
 
     def test_get_single(self):
+        """
+        Tests Artifact Type Get by Id
+        """
         artifact_type = self.cm.artifact_type(id=1)
         artifact_type.get()
 
@@ -24,10 +27,14 @@ class TestArtifactTypeIndicators:
         assert artifact_type.intel_type == 'indicator-ASN'
 
     def test_get_many(self):
+        """Tests getting all artifact types"""
         artifact_types = self.cm.artifact_types()
         assert len(artifact_types) == 3
 
     def test_tql(self):
+        """
+        Tests Artifact Type Get by TQL's
+        """
         artifact_types = self.cm.artifact_types()
 
         # Test Name Filter
@@ -65,4 +72,3 @@ class TestArtifactTypeIndicators:
             assert artifact_type.description == 'Random Description'
             assert artifact_type.data_type == 'String'
             assert artifact_type.intel_type == 'indicator-ASN'
-

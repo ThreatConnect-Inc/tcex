@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Tag"""
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .tql import TQL
@@ -11,7 +12,6 @@ class Tags(CommonCaseManagementCollection):
         super().__init__(
             tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.tql = TQL()
         self.added_tags = []
 
         # For tags, we could be passing in a bunch of existing

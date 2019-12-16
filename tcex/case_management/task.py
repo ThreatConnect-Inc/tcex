@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect Task"""
 from .note import Note, Notes
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
@@ -12,7 +13,6 @@ class Tasks(CommonCaseManagementCollection):
         super().__init__(
             tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.tql = TQL()
         self.added_tasks = []
 
     def __iter__(self):

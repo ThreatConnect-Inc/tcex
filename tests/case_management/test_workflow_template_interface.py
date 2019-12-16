@@ -41,5 +41,3 @@ class TestWorkflowTemplateIndicators:
             self.test_delete(name, create=False)
 
         return tag
-
-

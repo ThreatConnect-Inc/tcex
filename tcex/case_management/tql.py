@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+"""ThreatConnect TQL"""
 from enum import Enum
 
 
 class TQL(object):
+    """ThreatConnect TQL"""
+
     class Operator(Enum):
+        """Available TQL Operators"""
+
         EQ = '='
         NE = '!='
         GT = '>'
@@ -23,6 +28,7 @@ class TQL(object):
 
         @staticmethod
         def supported():
+            """Supported operation strings"""
             return [
                 '=',
                 '!=',
@@ -43,78 +49,85 @@ class TQL(object):
             ]
 
         def get(self, operator):
+            """Get Enum OBJ from string"""
             operator = operator.upper()
+            operator_obj = None
             if operator == '=':
-                return self.EQ
+                operator_obj = self.EQ
             elif operator == '!=':
-                return self.NE
+                operator_obj = self.NE
             elif operator == '>':
-                return self.GT
+                operator_obj = self.GT
             elif operator == '<':
-                return self.LT
+                operator_obj = self.LT
             elif operator == '<=':
-                return self.LEQ
+                operator_obj = self.LEQ
             elif operator == '>=':
-                return self.GEQ
+                operator_obj = self.GEQ
             elif operator == 'NOT IN':
-                return self.NOT_IN
+                operator_obj = self.NOT_IN
             elif operator == 'IN':
-                return self.IN
+                operator_obj = self.IN
             elif operator == 'NOT LIKE':
-                return self.NOT_LIKE
+                operator_obj = self.NOT_LIKE
             elif operator == 'LIKE':
-                return self.LIKE
+                operator_obj = self.LIKE
             elif operator == 'NOT CONTAINS':
-                return self.NOT_CONTAINS
+                operator_obj = self.NOT_CONTAINS
             elif operator == 'CONTAINS':
-                return self.CONTAINS
-            elif operator == 'NOT STARTSWITH' or operator == 'STARTS WITH':
-                return self.NOT_STARTS_WITH
-            elif operator == 'STARTSWITH' or operator == 'STARTS WITH':
-                return self.STARTS_WITH
-            elif operator == 'NOT ENDSWITH' or operator == 'NOT ENDS WITH':
-                return self.NOT_ENDS_WITH
-            elif operator == 'ENDSWITH' or operator == 'ENDS WITH':
-                return self.ENDS_WITH
-            else:
-                return None
+                operator_obj = self.CONTAINS
+            elif operator in ['NOT STARTSWITH', 'NOT STARTS WITH']:
+                operator_obj = self.NOT_STARTS_WITH
+            elif operator in ['STARTSWITH', 'STARTS WITH']:
+                operator_obj = self.STARTS_WITH
+            elif operator in ['NOT ENDSWITH', 'NOT ENDS WITH']:
+                operator_obj = self.NOT_ENDS_WITH
+            elif operator in ['ENDSWITH', 'ENDS WITH']:
+                operator_obj = self.ENDS_WITH
+            return operator_obj
 
     class Type(Enum):
+        """Enum representing available value types"""
+
         STRING = 'String'
         INTEGER = 'Integer'
         BOOLEAN = 'Boolean'
 
     def __init__(self):
+        """Initializing the Object"""
         self._filters = []
         self.raw_tql = None
 
     @property
     def as_str(self):
+        """Converts the TQL obj to a string"""
         filters = []
-        for filter in self.filters:
-            value = filter.get('value')
-            keyword = filter.get('keyword')
+        for tql_filter in self.filters:
+            value = tql_filter.get('value')
+            keyword = tql_filter.get('keyword')
             if keyword.startswith('has'):
                 values = value
                 if not isinstance(value, list):
                     values = [value]
-                if filter.get('type') == self.Type.STRING:
+                if tql_filter.get('type') == self.Type.STRING:
                     values = ['"{0}"'.format(value) for value in values]
                 value = '({})'.format(','.join(values))
-            if filter.get('type') == self.Type.STRING:
+            if tql_filter.get('type') == self.Type.STRING:
                 value = '"{}"'.format(value)
             filters.append(
-                '{} {} {}'.format(filter.get('keyword'), filter.get('operator').name, value)
+                '{} {} {}'.format(tql_filter.get('keyword'), tql_filter.get('operator').name, value)
             )
 
         return ' and '.join(filters)
 
     @property
     def filters(self):
+        """Return the filters"""
         return self._filters
 
     @filters.setter
     def filters(self, filters):
+        """Set the filters"""
         self._filters = filters
 
     def add_filter(self, keyword, operator, value, type=Type.STRING):
@@ -132,41 +145,43 @@ class TQL(object):
         )
 
     def set_raw_tql(self, tql):
+        """Set a raw TQL filter"""
         self.raw_tql = tql
 
     def get_operator(self, operator):
+        """Get Enum OBJ from string"""
         operator = operator.upper()
+        operator_obj = None
         if operator == '=':
-            return self.Operator.EQ
+            operator_obj = self.Operator.EQ
         elif operator == '!=':
-            return self.Operator.NE
+            operator_obj = self.Operator.NE
         elif operator == '>':
-            return self.Operator.GT
+            operator_obj = self.Operator.GT
         elif operator == '<':
-            return self.Operator.LT
+            operator_obj = self.Operator.LT
         elif operator == '<=':
-            return self.Operator.LEQ
+            operator_obj = self.Operator.LEQ
         elif operator == '>=':
-            return self.Operator.GEQ
+            operator_obj = self.Operator.GEQ
         elif operator == 'NOT IN':
-            return self.Operator.NOT_IN
+            operator_obj = self.Operator.NOT_IN
         elif operator == 'IN':
-            return self.Operator.IN
+            operator_obj = self.Operator.IN
         elif operator == 'NOT LIKE':
-            return self.Operator.NOT_LIKE
+            operator_obj = self.Operator.NOT_LIKE
         elif operator == 'LIKE':
-            return self.Operator.LIKE
+            operator_obj = self.Operator.LIKE
         elif operator == 'NOT CONTAINS':
-            return self.Operator.NOT_CONTAINS
+            operator_obj = self.Operator.NOT_CONTAINS
         elif operator == 'CONTAINS':
-            return self.Operator.CONTAINS
-        elif operator == 'NOT STARTSWITH' or operator == 'STARTS WITH':
-            return self.Operator.NOT_STARTS_WITH
-        elif operator == 'STARTSWITH' or operator == 'STARTS WITH':
-            return self.Operator.STARTS_WITH
-        elif operator == 'NOT ENDSWITH' or operator == 'NOT ENDS WITH':
-            return self.Operator.NOT_ENDS_WITH
-        elif operator == 'ENDSWITH' or operator == 'ENDS WITH':
-            return self.Operator.ENDS_WITH
-        else:
-            return None
+            operator_obj = self.Operator.CONTAINS
+        elif operator in ['NOT STARTSWITH', 'NOT STARTS WITH']:
+            operator_obj = self.Operator.NOT_STARTS_WITH
+        elif operator in ['STARTSWITH', 'STARTS WITH']:
+            operator_obj = self.Operator.STARTS_WITH
+        elif operator in ['NOT ENDSWITH', 'NOT ENDS WITH']:
+            operator_obj = self.Operator.NOT_ENDS_WITH
+        elif operator in ['ENDSWITH', 'ENDS WITH']:
+            operator_obj = self.Operator.ENDS_WITH
+        return operator_obj
