@@ -712,7 +712,7 @@ class Services(object):
         self.tcex.log.info('Shutdown - reason: {}'.format(reason))
 
         # acknowledge shutdown command
-        self.publish(json.dumps({'status': 'Acknowledged', 'command': 'Shutdown'}))
+        self.publish(json.dumps({'command': 'Acknowledged', 'type': 'Shutdown'}))
 
         # call App shutdown callback
         if callable(self.shutdown_callback):
@@ -752,6 +752,18 @@ class Services(object):
             path=self.tcex.default_args.tc_log_path,
         )
         self.tcex.log.trace('Process webhook event trigger')
+
+        # acknowledge webhook event
+        self.publish(
+            json.dumps(
+                {
+                    'command': 'Acknowledged',
+                    'requestKey': message.get('requestKey'),
+                    'triggerId': message.get('triggerId'),
+                    'type': 'WebhookEvent',
+                }
+            )
+        )
 
         # get config using triggerId passed in WebhookEvent data
         config = self.configs.get(message.get('triggerId'))
