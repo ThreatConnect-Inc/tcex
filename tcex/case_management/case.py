@@ -166,7 +166,6 @@ class Case(CommonCaseManagement):
          Args:
              entity (dict): The dict to map self too.
          """
-        print('entity: ', entity)
         new_case = Case(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 
