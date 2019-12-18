@@ -505,7 +505,6 @@ class TiTcRequest:
             err = r.text or r.reason
             self.tcex.handle_error(950, [r.status_code, err, r.url])
 
-        # currently, only indicators have an implemented 'deleted' endpoint, so hardcode the api entity name
         data = r.json().get('data', {}).get('indicator', [])
 
         for result in data:

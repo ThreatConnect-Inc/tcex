@@ -44,6 +44,7 @@ class TcEx(object):
 
         # Property defaults
         self._config = kwargs.get('config', {})
+        self._cm = None
         self._default_args = None
         self._error_codes = None
         self._exit_code = 0
@@ -225,6 +226,22 @@ class TcEx(object):
         from .datastore import Cache
 
         return Cache(self, domain, data_type, ttl_minutes, mapping)
+
+    @property
+    def case_management(self):
+        """Include the Threat Intel Module.
+
+        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
+        """
+        if self._cm is None:
+            from .case_management import CaseManagement
+
+            self._cm = CaseManagement(self)
+        return self._cm
+
+    @property
+    def cm(self):
+        return self.case_management
 
     # TODO: remove this method and use JMESPath instead.
     def data_filter(self, data):

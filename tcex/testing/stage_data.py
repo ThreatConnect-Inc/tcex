@@ -148,7 +148,9 @@ class ThreatConnect(object):
         """Stage data in ThreatConnect"""
         outputs = entity.pop('outputs', {})
         owner = entity.pop('owner', None) or owner
-        created_entity = self.provider.tcex.ti.create_entity(entity, owner)
+        created_entity = self.provider.tcex.cm.create_entity(entity, owner)
+        if created_entity is None:
+            created_entity = self.provider.tcex.ti.create_entity(entity, owner)
         created_entity['outputs'] = outputs
         return created_entity
 
@@ -172,7 +174,16 @@ class ThreatConnect(object):
                 ti = self.provider.tcex.ti.group(
                     entity_type, unique_id=data.get('unique_id'), owner=data.get('owner')
                 )
-            ti.delete()
+            if ti:
+                ti.delete()
+            if entity_type == 'Case_Management':
+                cm = self.provider.tcex.cm.obj_from_type(data.get('sub_type'))
+                if data.get('sub_type').lower() in [
+                    'workflow_event', 'workflowevent', 'workflow event'
+                ]:
+                    continue
+                cm.id = data.get('unique_id')
+                cm.delete()
 
     def clear(self, owner):
         """delete and recreate the owner"""
