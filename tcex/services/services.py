@@ -391,7 +391,7 @@ class Services(object):
 
     @property
     def mqtt_client(self):
-        """Return the correct KV store for this execution."""
+        """Return a configured instance of mqtt client."""
         if self._mqtt_client is None:
             try:
                 self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
