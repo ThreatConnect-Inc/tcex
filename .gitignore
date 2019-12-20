@@ -8,7 +8,11 @@
 # Language Exclusions
 #-------------------------------------------------
 __pycache__
+*.env
 *.pyc
+.coverage
+.pytest_cache
+.tox
 
 #-------------------------------------------------
 # Build Exclusions
@@ -58,6 +62,7 @@ threatconnect*
 #-------------------------------------------------
 bcs*
 local*
+*template*
 
 #-------------------------------------------------
 # Tests Exclusions
@@ -67,5 +72,6 @@ local*
 !tests/*
 tests/lib*
 tests/log*
+tests/report*
 tests/__pycache__
 tests/*.pyc

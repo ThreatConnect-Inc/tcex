@@ -23,6 +23,7 @@ class Resource(object):
 
         # request
         self._request = self.tcex.request(self.tcex.session)
+        self._request.add_payload('createActivityLog', 'false')
         # set default. can be overwritten for individual requests.
         self._request.content_type = 'application/json'
 
@@ -520,6 +521,7 @@ class Resource(object):
         # workaround for bytes/str issue in Py3 with copy of instance
         # TypeError: a bytes-like object is required, not 'str' (ssl.py)
         resource._request = self.tcex.request(self.tcex.session)
+        self._request.add_payload('createActivityLog', 'false')
 
         # reset properties of resource
         resource.copy_reset()
@@ -722,12 +724,14 @@ class Resource(object):
             (dictionary): Response/Results data.
         """
         # self._request.authorization_method(self._authorization_method)
+        self._request.add_payload('createActivityLog', 'false')
         self._request.url = '{}/v2/{}'.format(self.tcex.default_args.tc_api_path, self._request_uri)
         self._apply_filters()
-        self.tcex.log.debug(u'Resource URL: ({})'.format(self._request.url))
+        # self.tcex.log.debug(u'Resource URL: ({})'.format(self._request.url))
 
         response = self._request.send(stream=self._stream)
         data, status = self._request_process(response)
+        self.tcex.log.debug(u'Response URL: ({})'.format(response.url))
 
         # # bcs - to reset or not to reset?
         # self._request.body = None

@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.28
+------
++ Updated ``resource`` module to turn off activity logging.
+
 0.8.27
 ------
 + Updated ``safetag`` method to truncate before encoding.
