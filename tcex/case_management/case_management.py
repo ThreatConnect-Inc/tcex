@@ -168,7 +168,7 @@ class CaseManagement(object):
 
     def create_entity(self, entity, owner):
         """
-        Creates a CM objected provided a dict and owner.
+        Creates a CM object provided a dict and owner.
         """
         entity_type = entity.get('type').lower()
         obj = self.obj_from_entity(entity)
