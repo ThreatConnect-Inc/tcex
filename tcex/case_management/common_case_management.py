@@ -3,7 +3,7 @@
 
 
 class CommonCaseManagement(object):
-    """Common Case Management object that encapsalates common methods used by children classes."""
+    """Common Case Management object that encapsulates common methods used by children classes."""
 
     def __init__(self, tcex, api_endpoint, kwargs):
         """
@@ -118,6 +118,7 @@ class CommonCaseManagement(object):
         url = '{}/{}'.format(self.api_endpoint, self.id)
         current_retries = -1
         while current_retries < retry_count:
+            self.tcex.log.debug('Resource URL: ({})'.format(url))
             response = self.tcex.session.delete(url)
             if not self.success(response):
                 current_retries += 1
@@ -153,6 +154,7 @@ class CommonCaseManagement(object):
                 parameters['fields'].append(field)
 
         while current_retries < retry_count:
+            self.tcex.log.debug('Resource URL: ({})'.format(url))
             response = self.tcex.session.get(url, params=parameters)
             if not self.success(response):
                 current_retries += 1
@@ -211,8 +213,10 @@ class CommonCaseManagement(object):
         # if the ID is included, its an update
         if self.id:
             url = '{}/{}'.format(self.api_endpoint, self.id)
+            self.tcex.log.debug('Resource URL: ({})'.format(url))
             r = self.tcex.session.put(url, json=self._reverse_transform(as_dict))
         else:
+            self.tcex.log.debug('Resource URL: ({})'.format(url))
             r = self.tcex.session.post(url, json=self._reverse_transform(as_dict))
 
         if r.ok:

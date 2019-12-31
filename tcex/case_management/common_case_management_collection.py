@@ -5,7 +5,7 @@ from .tql import TQL
 
 class CommonCaseManagementCollection(object):
     """
-    Common Case Management Collection object that encapsalates common methods used by
+    Common Case Management Collection object that encapsulates common methods used by
      children classes.
      """
 
