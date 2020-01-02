@@ -8,36 +8,35 @@ module = __import__(__name__)
 
 
 class TiTcRequest:
-    """Common API calls to ThreatConnect"""
+    """Common API calls to ThreatConnect
+
+    Args:
+        tcex ([type]): [description]
+    """
 
     def __init__(self, tcex):
-        """
-
-        Args:
-            tcex:
-        """
+        """Initialize Class properites."""
         self.tcex = tcex
         self.result_limit = 10000
 
     def create(self, main_type, sub_type, data, owner):
-        """
+        """[summary]
 
         Args:
-            main_type:
-            sub_type:
-            data:
-            owner:
+            main_type ([type]): [description]
+            sub_type ([type]): [description]
+            data (dict): The body for the POST.
+            owner (str): The name of the TC owner.
 
         Returns:
-
+            request.Response: The response from the API call.
         """
         if not owner:
             pass
 
         # ex groups/adversary (will need to map them to the actual string value of them)
-        if not sub_type:
-            url = f'/v2/{main_type}'
-        else:
+        url = f'/v2/{main_type}'
+        if sub_type:
             url = f'/v2/{main_type}/{sub_type}'
 
         return self.tcex.session.post(url, json=data, params={'owner': owner})

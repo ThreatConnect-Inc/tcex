@@ -581,7 +581,7 @@ class Batch:
         """Process Indicator data."""
         data = []
         # process indicator objects
-        for xid, indicator_data in indicators.items():
+        for xid, indicator_data in list(indicators.items()):
             entity_count += 1
             if isinstance(indicator_data, dict):
                 data.append(indicator_data)
@@ -1522,7 +1522,7 @@ class Batch:
             halt_on_error = self.halt_on_file_error
 
         upload_status = []
-        for xid, content_data in self._files.items():
+        for xid, content_data in list(self._files.items()):
             del self._files[xid]  # win or loose remove the entry
             status = True
 

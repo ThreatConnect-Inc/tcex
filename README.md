@@ -10,7 +10,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * inflect (https://pypi.python.org/pypi/inflect)
  * jsonschema (https://pypi.python.org/pypi/jsonschema)
  * parsedatetime (https://pypi.python.org/pypi/parsedatetime)
- * python-datetuil (https://pypi.python.org/pypi/python-dateutil)
+ * python-dateutil (https://pypi.python.org/pypi/python-dateutil)
  * pytz (https://pypi.python.org/pypi/pytz)
  * redis (https://pypi.python.org/pypi/redis)
  * requests (http://docs.python-requests.org/en/latest)

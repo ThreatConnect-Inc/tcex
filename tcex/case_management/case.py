@@ -157,6 +157,7 @@ class Case(CommonCaseManagement):
         )
         self._tags = Tags(self.tcex, kwargs.get('tags', {}), tql_filters=case_filter)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
+        self._xid = kwargs.get('xid', None)
 
     def entity_mapper(self, entity):
         """

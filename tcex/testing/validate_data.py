@@ -1113,13 +1113,13 @@ class ThreatConnect:
 
     @staticmethod
     def success(r):
-        """Success method.
+        """[summary]
 
         Args:
-            r:
+            r ([type]): [description]
 
-        Return:
-
+        Returns:
+            [type]: [description]
         """
         status = True
         if r.ok:

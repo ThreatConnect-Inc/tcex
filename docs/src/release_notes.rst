@@ -5,6 +5,8 @@ Release Notes
 
 2.0.0
 =====
++ Added support for ThreatConnect Case Management.
++ Added support for ThreatConnect Playbook Service Apps.
 + Updated code to support Python 3.6+, removing support for all older versions of Python.
 + Breaking Change: Removed ``tcex.s()`` method.
 + Breaking Change: Removed ``tcex.safetag()`` method.

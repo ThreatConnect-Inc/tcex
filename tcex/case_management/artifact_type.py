@@ -84,6 +84,11 @@ class ArtifactTypes(CommonCaseManagementCollection):
         """
         return ArtifactType(self.tcex, **entity)
 
+    @property
+    def as_dict(self):
+        """Returns a dict version of this object."""
+        return super().list_as_dict([])
+
 
 class ArtifactType(CommonCaseManagement):
     """Unique API calls for Artifact Type API Endpoints"""

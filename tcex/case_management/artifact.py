@@ -109,8 +109,8 @@ class Artifact(CommonCaseManagement):
     """Unique API calls for Artifact API Endpoints"""
 
     def __init__(self, tcex, **kwargs):
-        """
-        Initializes the Artifacts class:
+        """Initializes the Artifacts class:
+
         Args:
             tcex:
             case_id (int): The Case ID for the artifact.
