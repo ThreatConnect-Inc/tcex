@@ -7,7 +7,6 @@ import re
 import shutil
 import uuid
 import zipfile
-from builtins import range
 
 import colorama as c
 
@@ -31,7 +30,7 @@ class Package(Bin):
         Args:
             _args (namespace): The argparser args Namespace.
         """
-        super(Package, self).__init__(_args)
+        super().__init__(_args)
 
         # properties
         self.features = ['aotExecutionEnabled', 'secureParams']
@@ -89,7 +88,7 @@ class Package(Bin):
             with open(filename, 'w') as fh:
                 json.dump(install_json, fh, indent=4, sort_keys=True)
         else:
-            err = 'Could not write file: {}.'.format(filename)
+            err = f'Could not write file: {filename}.'
             # update package data
             self.package_data['errors'].append(err)
 
@@ -125,9 +124,7 @@ class Package(Bin):
             bundle_name (str): The output name of the bundle zip file.
             bundle_apps (list): A list of Apps to include in the bundle.
         """
-        bundle_file = os.path.join(
-            self.app_path, self.args.outdir, '{}-bundle.zip'.format(bundle_name)
-        )
+        bundle_file = os.path.join(self.app_path, self.args.outdir, f'{bundle_name}-bundle.zip')
         z = zipfile.ZipFile(bundle_file, 'w')
         for app in bundle_apps:
             # update package data
@@ -163,7 +160,7 @@ class Package(Bin):
 
             # get commit hash
             if branch:
-                hash_file = '.git/refs/heads/{}'.format(branch)
+                hash_file = f'.git/refs/heads/{branch}'
                 if os.path.isfile(hash_file):
                     with open(hash_file, 'r') as f:
                         commit_hash = f.read().strip()
@@ -251,12 +248,12 @@ class Package(Bin):
 
             # update package data
             self.package_data['package'].append(
-                {'action': 'App Version:', 'output': '{}'.format(app_version)}
+                {'action': 'App Version:', 'output': f'{app_version}'}
             )
 
             # !!! The name of the folder in the zip is the *key* for an App. This value must
             # !!! remain consistent for the App to upgrade successfully.
-            app_name_version = '{}_{}'.format(app_name, app_version)
+            app_name_version = f'{app_name}_{app_version}'
 
             # build app directory
             tmp_app_path = os.path.join(tmp_path, app_name_version)
@@ -308,11 +305,8 @@ class Package(Bin):
         2. Use major version from programVersion field in install.json if available.
         3. Default to '1.0.0' updated to major version only ('v1').
         """
-        program_version = ij.get('programVersion', '1.0.0').split('.')
-        major_version = program_version[0]
-        return '{}'.format(
-            self.tcex_json.get('package', {}).get('app_version', 'v{}'.format(major_version))
-        )
+        major_version = ij.get('programVersion', '1.0.0').split('.')[0]
+        return str(self.tcex_json.get('package', {}).get('app_version', f'v{major_version}'))
 
     def print_json(self):
         """Print JSON output containing results of the package command."""
@@ -324,50 +318,39 @@ class Package(Bin):
         """Print results of the package command."""
         # Updates
         if self.package_data.get('updates'):
-            print('\n{}{}Updates:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+            print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Updates:')
             for p in self.package_data['updates']:
                 print(
-                    '{!s:<20}{}{} {!s:<50}'.format(
-                        p.get('action'), c.Style.BRIGHT, c.Fore.CYAN, p.get('output')
-                    )
+                    f"{p.get('action')!s:<20}{c.Style.BRIGHT}{c.Fore.CYAN} {p.get('output')!s:<50}"
                 )
 
         # Packaging
-        print('\n{}{}Package:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+        print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Package:')
         for p in self.package_data['package']:
             if isinstance(p.get('output'), list):
                 n = 5
                 list_data = p.get('output')
                 print(
-                    '{!s:<20}{}{} {!s:<50}'.format(
-                        p.get('action'), c.Style.BRIGHT, c.Fore.CYAN, ', '.join(p.get('output')[:n])
-                    )
+                    f"{p.get('action'):<20}{c.Style.BRIGHT}{c.Fore.CYAN} "
+                    f"{', '.join(p.get('output')[:n]):<50}"
                 )
                 del list_data[:n]
                 for data in [
                     list_data[i : i + n] for i in range(0, len(list_data), n)  # noqa: E203
                 ]:
-                    print(
-                        '{!s:<20}{}{} {!s:<50}'.format(
-                            '', c.Style.BRIGHT, c.Fore.CYAN, ', '.join(data)
-                        )
-                    )
+                    print(f"{''!s:<20}{c.Style.BRIGHT}{c.Fore.CYAN} {', '.join(data)!s:<50}")
 
             else:
                 print(
-                    '{!s:<20}{}{} {!s:<50}'.format(
-                        p.get('action'), c.Style.BRIGHT, c.Fore.CYAN, p.get('output')
-                    )
+                    f"{p.get('action')!s:<20}{c.Style.BRIGHT}{c.Fore.CYAN} {p.get('output')!s:<50}"
                 )
 
         # Bundle
         if self.package_data.get('bundle'):
-            print('\n{}{}Bundle:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+            print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Bundle:')
             for p in self.package_data['bundle']:
                 print(
-                    '{!s:<20}{}{} {!s:<50}'.format(
-                        p.get('action'), c.Style.BRIGHT, c.Fore.CYAN, p.get('output')
-                    )
+                    f"{p.get('action')!s:<20}{c.Style.BRIGHT}{c.Fore.CYAN} {p.get('output')!s:<50}"
                 )
 
         # ignore exit code
@@ -375,7 +358,7 @@ class Package(Bin):
             print('\n')  # separate errors from normal output
             # print all errors
             for error in self.package_data.get('errors'):
-                print('{}{}'.format(c.Fore.RED, error))
+                print(f'{c.Fore.RED}{error}')
                 self.exit_code = 1
 
     def zip_file(self, app_path, app_name, tmp_path):
@@ -388,8 +371,8 @@ class Package(Bin):
         """
         # zip build directory
         zip_file = os.path.join(app_path, self.args.outdir, app_name)
-        zip_file_zip = '{}.zip'.format(zip_file)
-        zip_file_tcx = '{}.tcx'.format(zip_file)
+        zip_file_zip = f'{zip_file}.zip'
+        zip_file_tcx = f'{zip_file}.tcx'
         shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
         shutil.move(zip_file_zip, zip_file_tcx)
         self._app_packages.append(zip_file_tcx)

@@ -26,7 +26,7 @@ class Incident(Group):
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
         """
-        super(Incident, self).__init__(
+        super().__init__(
             tcex, 'Incident', 'incident', 'incidents', owner=owner, name=name, **kwargs
         )
 

@@ -20,10 +20,12 @@
 import os
 import sys
 
+import sphinx_rtd_theme  # pylint: disable=C0413
+from tcex import __version__  # pylint: disable=C0413
+
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../../'))
 
-from tcex import __version__  # pylint: disable=C0413
 
 # -- General configuration ------------------------------------------------
 
@@ -145,7 +147,6 @@ todo_include_todos = False
 
 # -- Options for HTML output ----------------------------------------------
 
-import sphinx_rtd_theme  # pylint: disable=C0413
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.

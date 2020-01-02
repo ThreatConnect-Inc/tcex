@@ -26,7 +26,7 @@ class Validate(object):
             if method is not None:
                 method(v)
             else:
-                assert False, 'Unknown output variable found in profile: {}'.format(k)
+                assert False, f'Unknown output variable found in profile: {k}'
 
     % for data in output_data:
     def ${data['method']}(self, data):

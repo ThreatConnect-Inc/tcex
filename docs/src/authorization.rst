@@ -16,7 +16,7 @@ Token-ased authorization requires that the token be renewed upon expiration.  Th
 
 HMAC Authorization
 ------------------
-HMAC authorization is typically only used for running Apps outside the ThreatConnect platform.  Generation of the authorization headers when using HMAC will utilize the ``api_access_id`` and ``api_secret_key`` arguments.  These arguments are not automatically sent by the ThreatConnect platform and are required to be added to the **:ref:install_json** file.  In the ThreatConnect UI, these inputs will  automatically be hidden in favor of token-based authorization.  However, on certain versions of the Environment server these arguments may be required. 
+HMAC authorization is typically only used for running Apps outside the ThreatConnect platform.  Generation of the authorization headers when using HMAC will utilize the ``api_access_id`` and ``api_secret_key`` arguments.  These arguments are not automatically sent by the ThreatConnect platform and are required to be added to the **:ref:install_json** file.  In the ThreatConnect UI, these inputs will  automatically be hidden in favor of token-based authorization.  However, on certain versions of the Environment server these arguments may be required.
 
 Example **install.json** param section::
 

@@ -7,8 +7,8 @@ import sys
 
 import pytest
 from tcex import TcEx
-from .tc_token import TcToken
 
+from .tc_token import TcToken
 
 # instance of tc token to retrieve testing token from API
 tc_token = TcToken()
@@ -207,4 +207,4 @@ def _tc_log_file():
     test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
     test_feature = test_data[0].split('/')[1].replace('/', '-')
     test_name = test_data[-1].replace('/', '-').replace('[', '-')
-    return os.path.join(test_feature, '{}.log'.format(test_name))
+    return os.path.join(test_feature, f'{test_name}.log')

@@ -2,6 +2,7 @@
 """TcEx Playbook Common module"""
 import json
 import os
+
 from .test_case import TestCase
 
 
@@ -20,7 +21,7 @@ class TestCasePlaybookCommon(TestCase):
     @property
     def default_args(self):
         """Return App default args."""
-        args = super(TestCasePlaybookCommon, self).default_args
+        args = super().default_args
         args.update(
             {
                 'tc_playbook_db_context': self.context,
@@ -54,14 +55,12 @@ class TestCasePlaybookCommon(TestCase):
 
         for p in output_variables:
             # "#App:9876:app.data.count!String"
-            variables.append('#App:{}:{}!{}'.format(job_id, p.get('name'), p.get('type')))
+            variables.append(f"#App:{job_id}:{p.get('name')}!{p.get('type')}")
         return variables
 
     def populate_output_variables(self):
         """Generate validation rules from App outputs."""
-        profile_filename = os.path.join(
-            self.test_case_profile_dir, '{}.json'.format(self.profile_name)
-        )
+        profile_filename = os.path.join(self.test_case_profile_dir, f'{self.profile_name}.json')
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
             # get current permutations to ensure only valid output variables are included.
@@ -89,9 +88,7 @@ class TestCasePlaybookCommon(TestCase):
                     if data is None:
                         # log error for missing output data
                         self.log.error(
-                            '[{}] Missing redis output for variable {}'.format(
-                                self.profile_name, variable
-                            )
+                            f'[{self.profile_name}] Missing redis output for variable {variable}'
                         )
                     else:
                         data = json.loads(data.decode('utf-8'))
@@ -104,7 +101,7 @@ class TestCasePlaybookCommon(TestCase):
                         and profile_data.get('outputs') is not None
                     ):
                         self.log.error(
-                            '[{}] Missing validations rule: {}'.format(self.profile_name, variable)
+                            f'[{self.profile_name}] Missing validations rule: {variable}'
                         )
                     output_data = {'expected_output': data, 'op': 'eq'}
 
@@ -148,4 +145,4 @@ class TestCasePlaybookCommon(TestCase):
         self.log_data('teardown method', 'delete count', r)
         # delete threatconnect staged data
         self.stager.threatconnect.delete_staged(self._staged_tc_data)
-        super(TestCasePlaybookCommon, self).teardown_method()
+        super().teardown_method()

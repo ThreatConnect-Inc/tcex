@@ -8,14 +8,12 @@ import time
 import traceback
 import uuid
 from datetime import datetime
-
-# py2to3 will convert this to "from io"
-from StringIO import StringIO  # pylint: disable=import-error
+from io import StringIO
 
 import paho.mqtt.client as mqtt
 
 
-class Services(object):
+class Services:
     """Service methods for customer Service (e.g., Triggers).
 
     Args:
@@ -90,7 +88,7 @@ class Services(object):
             }
             self.publish(json.dumps(response))
         except Exception as e:
-            self.tcex.log.error('Could not create config for Id {} ({}).'.format(trigger_id, e))
+            self.tcex.log.error(f'Could not create config for Id {trigger_id} ({e}).')
             self.tcex.log.trace(traceback.format_exc())
 
     def delete_config(self, trigger_id, message, status):
@@ -115,7 +113,7 @@ class Services(object):
             }
             self.publish(json.dumps(response))
         except Exception as e:
-            self.tcex.log.error('Could not delete config for Id {} ({}).'.format(trigger_id, e))
+            self.tcex.log.error(f'Could not delete config for Id {trigger_id} ({e}).')
 
     def fire_event(self, callback, **kwargs):
         """Trigger a FireEvent command.
@@ -128,7 +126,7 @@ class Services(object):
 
         for trigger_id, config in self.configs.items():
             try:
-                self.tcex.log.trace('triggering callback for config id: {}'.format(trigger_id))
+                self.tcex.log.trace(f'triggering callback for config id: {trigger_id}')
                 # get a session_id specifically for this thread
                 session_id = self.session_id(trigger_id)
 
@@ -138,7 +136,7 @@ class Services(object):
                 playbook.db.key = session_id
                 playbook.output_variables = config.get('tc_playbook_out_variables', [])
 
-                self.tcex.log.info('Trigger Session ID: {}'.format(session_id))
+                self.tcex.log.info(f'Trigger Session ID: {session_id}')
 
                 args = (callback, playbook, trigger_id, config)
                 # current thread has session_id as name
@@ -167,19 +165,19 @@ class Services(object):
             level=self.tcex.default_args.tc_log_level,
             path=self.tcex.default_args.tc_log_path,
         )
-        self.tcex.log.info('Handling fire event trigger ({})'.format(self.thread_name))
+        self.tcex.log.info(f'Handling fire event trigger ({self.thread_name})')
 
         try:
             if callback(playbook, trigger_id, config, **kwargs):
-                # self.tcex.log.info('Trigger ID {} hit.'.format(trigger_id))
+                # self.tcex.log.info(f'Trigger ID {trigger_id} hit.')
                 self.increment_metric('Hits')
                 self.fire_event_publish(trigger_id, self.thread_name)
             else:
                 self.increment_metric('Misses')
-                self.tcex.log.info('Trigger ID {} missed.'.format(trigger_id))
+                self.tcex.log.info(f'Trigger ID {trigger_id} missed.')
         except Exception as e:
             self.increment_metric('Errors')
-            self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
+            self.tcex.log.error(f'The callback method encountered and error ({e}).')
             self.tcex.log.trace(traceback.format_exc())
         finally:
             # remove temporary logging file handler
@@ -203,7 +201,7 @@ class Services(object):
         }
         if request_key is not None:
             msg['requestKey'] = request_key  # reference for a specific playbook execution
-        self.tcex.log.info('Firing Event ({})'.format(msg))
+        self.tcex.log.info(f'Firing Event ({msg})')
 
         # publish FireEvent command to client topic
         self.publish(json.dumps(msg))
@@ -220,9 +218,9 @@ class Services(object):
         query_string = []
         try:
             for q in params:
-                query_string.append('{}={}'.format(q.get('name'), q.get('value')))
+                query_string.append(f"{q.get('name')}={q.get('value')}")
         except AttributeError as e:
-            self.tcex.log.error('Bad params data provided {} ({})'.format(params, e))
+            self.tcex.log.error(f'Bad params data provided {params} ({e})')
             self.tcex.log.trace(traceback.format_exc())
         return '&'.join(query_string)
 
@@ -243,7 +241,7 @@ class Services(object):
                 headers_.setdefault(h.get('name').lower(), str(h.get('value')))
 
         except AttributeError as e:
-            self.tcex.log.error('Bad header data provided {} ({})'.format(headers, e))
+            self.tcex.log.error(f'Bad header data provided {headers} ({e})')
             self.tcex.log.trace(traceback.format_exc())
         return headers_
 
@@ -261,7 +259,7 @@ class Services(object):
             for h in headers:
                 headers_.append({'name': h[0], 'value': h[1]})
         except AttributeError as e:
-            self.tcex.log.error('Bad header data provided {} ({})'.format(headers, e))
+            self.tcex.log.error(f'Bad header data provided {headers} ({e})')
             self.tcex.log.trace(traceback.format_exc())
         return headers_
 
@@ -298,7 +296,7 @@ class Services(object):
 
     def listen(self):
         """List for message coming from broker."""
-        self.tcex.log.trace('listen with {} broker'.format(self.tcex.args.tc_svc_broker_service))
+        self.tcex.log.trace(f'listen with {self.tcex.args.tc_svc_broker_service} broker')
         if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             target = self.listen_mqtt
         elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
@@ -337,14 +335,12 @@ class Services(object):
                 time.sleep(1)
 
         except Exception as e:
-            self.tcex.log.trace('error in listen_mqtt: {}'.format(e))
+            self.tcex.log.trace(f'error in listen_mqtt: {e}')
             self.tcex.log.error(traceback.format_exc())
 
     def listen_redis(self):
         """Listen for message coming from broker."""
-        self.tcex.log.info(
-            'Listening Redis topic {}'.format(self.tcex.default_args.tc_svc_server_topic)
-        )
+        self.tcex.log.info(f'Listening Redis topic {self.tcex.default_args.tc_svc_server_topic}')
         p = self.redis_client.pubsub(ignore_subscribe_messages=True)
         p.subscribe(self.tcex.default_args.tc_svc_server_topic)
         for message in p.listen():
@@ -366,7 +362,7 @@ class Services(object):
             target (callable): The method to call for the thread.
             args (tuple): The args to pass to the target method.
         """
-        # self.tcex.log.trace('message thread: {} - {}'.format(type(target), args))
+        # self.tcex.log.trace(f'message thread: {type(target)} - {args}')
         try:
             t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs)
             t.daemon = True  # use setter for py2
@@ -411,7 +407,7 @@ class Services(object):
                 self._mqtt_client.username_pw_set('', password=self.tcex.args.tc_svc_broker_token)
                 self._mqtt_client.tls_insecure_set(False)
             except Exception as e:
-                self.tcex.log.error('Failed connection to MQTT service ({})'.format(e))
+                self.tcex.log.error(f'Failed connection to MQTT service ({e})')
                 self.tcex.log.trace(traceback.format_exc())
                 self.process_shutdown('Failure connecting to mqtt')
 
@@ -419,28 +415,26 @@ class Services(object):
 
     def on_connect(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
         """On connect method for mqtt broker."""
-        self.tcex.log.info('Message broker connection status: {}'.format(str(rc)))
+        self.tcex.log.info(f'Message broker connection status: {str(rc)}')
 
-        self.tcex.log.info(
-            'Subscribing to topic: {}'.format(self.tcex.default_args.tc_svc_server_topic)
-        )
+        self.tcex.log.info(f'Subscribing to topic: {self.tcex.default_args.tc_svc_server_topic}')
         self.mqtt_client.subscribe(self.tcex.default_args.tc_svc_server_topic)
         self._connected = True
         self.mqtt_client.disable_logger()
 
     def on_log(self, client, userdata, level, buf):  # pylint: disable=unused-argument
         """Handle MQTT on_log events."""
-        self.tcex.log.trace('on_log - buf: {}, level: {}'.format(buf, level))
+        self.tcex.log.trace(f'on_log - buf: {buf}, level: {level}')
 
     def on_message_mqtt(self, client, userdata, message):  # pylint: disable=unused-argument
         """On message for mqtt."""
-        self.tcex.log.trace('on_message - message.payload: {}'.format(message.payload))
-        self.tcex.log.trace('on_message - message.topic: {}'.format(message.topic))
+        self.tcex.log.trace(f'on_message - message.payload: {message.payload}')
+        self.tcex.log.trace(f'on_message - message.topic: {message.topic}')
         try:
             # messages on server topic must be json objects
             m = json.loads(message.payload)
         except ValueError:
-            self.tcex.log.warning('Cannot parse message ({}).'.format(m))
+            self.tcex.log.warning(f'Cannot parse message ({m}).')
             return
 
         if message.topic == self.tcex.default_args.tc_svc_server_topic:
@@ -448,7 +442,7 @@ class Services(object):
 
     def on_message_redis(self, message):  # pylint: disable=unused-argument
         """Subscribe and listen to "message" on Redis topic."""
-        self.tcex.log.trace('on_message - message {}'.format(message))
+        self.tcex.log.trace(f'on_message - message {message}')
         # only process "message" on topic (exclude subscriptions, etc)
         if message.get('type') != 'message':
             return
@@ -457,17 +451,17 @@ class Services(object):
             # load message data
             m = json.loads(message.get('data'))
         except ValueError:
-            self.tcex.log.warning('Cannot parse message ({}).'.format(message))
+            self.tcex.log.warning(f'Cannot parse message ({message}).')
             return
         self.server_topic(m)
 
     def on_publish(self, client, userdata, result):  # pylint: disable=unused-argument
         """Handle MQTT on_log events."""
-        self.tcex.log.trace('on_publish - {}'.format(result))
+        self.tcex.log.trace(f'on_publish - {result}')
 
     def on_subscribe(self, client, userdata, mid, granted_qos):  # pylint: disable=unused-argument
         """Handle MQTT on_log events."""
-        self.tcex.log.trace('on_subscribe - mid: {}, granted_qos: {}'.format(mid, granted_qos))
+        self.tcex.log.trace(f'on_subscribe - mid: {mid}, granted_qos: {granted_qos}')
 
     def playbook(self, session_id, variables):
         """Return a configure playbook instance.
@@ -496,9 +490,7 @@ class Services(object):
         trigger_id = message.get('triggerId')
 
         if command.lower() == 'createconfig':
-            self.tcex.log.info(
-                'CreateConfig - trigger_id: {} config : {}'.format(trigger_id, config)
-            )
+            self.tcex.log.info(f'CreateConfig - trigger_id: {trigger_id} config : {config}')
 
             # register config apiToken
             self.tcex.token.register_token(
@@ -516,7 +508,7 @@ class Services(object):
                         trigger_id, config, **kwargs
                     )
                 except Exception as e:
-                    msg = 'The create config callback method encountered an error ({}).'.format(e)
+                    msg = f'The create config callback method encountered an error ({e}).'
                     self.tcex.log.error(msg)
                     self.tcex.log.trace(traceback.format_exc())
                     status = 'Failed'
@@ -524,7 +516,7 @@ class Services(object):
             # create config after callback to report status and message
             self.create_config(trigger_id, config, msg, status)
         elif command.lower() == 'deleteconfig':
-            self.tcex.log.info('DeleteConfig - trigger_id: {}'.format(trigger_id))
+            self.tcex.log.info(f'DeleteConfig - trigger_id: {trigger_id}')
 
             # unregister config apiToken
             self.tcex.token.unregister_token(trigger_id)
@@ -535,9 +527,7 @@ class Services(object):
                     # call callback for delete config and handle exceptions to protect thread
                     self.delete_config_callback(trigger_id)  # pylint: disable=not-callable
                 except Exception as e:
-                    message = 'The delete config callback method encountered an error ({}).'.format(
-                        e
-                    )
+                    message = f'The delete config callback method encountered an error ({e}).'
                     self.tcex.log.error(message)
                     self.tcex.log.trace(traceback.format_exc())
                     status = 'Failed'
@@ -566,7 +556,7 @@ class Services(object):
             self.thread_name, message.get('apiToken'), message.get('expireSeconds')
         )
         self.tcex.log.info('Processing RunService Command')
-        self.tcex.log.debug('message: {}'.format(message))
+        self.tcex.log.debug(f'message: {message}')
 
         # thread event used to block response until body is written
         e = threading.Event()
@@ -580,9 +570,9 @@ class Services(object):
             if body_variable is not None:
                 body = self.redis_client.hget(request_key, message.get('bodyVariable'))
                 if body is not None:
-                    body = StringIO(base64.b64decode(body)).decode('utf-8')
+                    body = StringIO(base64.b64decode(body).decode('utf-8'))
         except Exception as e:
-            self.tcex.log.error('Failed reading body to Redis ({})'.format(e))
+            self.tcex.log.error(f'Failed reading body to Redis ({e})')
             self.tcex.log.trace(traceback.format_exc())
         headers = self.format_request_headers(message.get('headers'))
         method = message.get('method')
@@ -627,10 +617,10 @@ class Services(object):
                 environ['CONTENT_TYPE'] = (headers.get('content-type'),)
             if headers.get('content-length') is not None:
                 environ['CONTENT_LENGTH'] = headers.get('content-length')
-            self.tcex.log.trace('environ: {}'.format(environ))
+            self.tcex.log.trace(f'environ: {environ}')
             self.increment_metric('Requests')
         except Exception as e:
-            self.tcex.log.error('Failed building environ ({})'.format(e))
+            self.tcex.log.error(f'Failed building environ ({e})')
             self.tcex.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
             return  # stop processing
@@ -664,9 +654,7 @@ class Services(object):
                 self.tcex.log.info('API response body written')
                 e.set()
             except Exception as e:
-                self.tcex.log.error(
-                    'The api event callback method encountered and error ({}).'.format(e)
-                )
+                self.tcex.log.error(f'The api event callback method encountered and error ({e}).')
                 self.tcex.log.trace(traceback.format_exc())
                 self.increment_metric('Errors')
 
@@ -680,7 +668,7 @@ class Services(object):
         """
         self.tcex.log.info('API response received, waiting on body to be written')
         kwargs.get('e').wait(10)  # wait for thread event - (set on body write)
-        self.tcex.log.trace('response args: {}'.format(args))
+        self.tcex.log.trace(f'response args: {args}')
         try:
             status_code, status = args[0].split(' ', 1)
             response = {
@@ -696,7 +684,7 @@ class Services(object):
             self.publish(json.dumps(response))
             self.increment_metric('Responses')
         except Exception as e:
-            self.tcex.log.error('Failed creating response body ({})'.format(e))
+            self.tcex.log.error(f'Failed creating response body ({e})')
             self.tcex.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
 
@@ -709,7 +697,7 @@ class Services(object):
         reason = reason or (
             'A shutdown command was received on server topic. Service is shutting down.'
         )
-        self.tcex.log.info('Shutdown - reason: {}'.format(reason))
+        self.tcex.log.info(f'Shutdown - reason: {reason}')
 
         # acknowledge shutdown command
         self.publish(json.dumps({'command': 'Acknowledged', 'type': 'Shutdown'}))
@@ -720,9 +708,7 @@ class Services(object):
                 # call callback for shutdown and handle exceptions to protect thread
                 self.shutdown_callback()  # pylint: disable=not-callable
             except Exception as e:
-                self.tcex.log.error(
-                    'The shutdown callback method encountered and error ({}).'.format(e)
-                )
+                self.tcex.log.error(f'The shutdown callback method encountered and error ({e}).')
                 self.tcex.log.trace(traceback.format_exc())
 
         # unsubscribe and disconnect from the broker
@@ -768,9 +754,7 @@ class Services(object):
         # get config using triggerId passed in WebhookEvent data
         config = self.configs.get(message.get('triggerId'))
         if config is None:
-            self.tcex.log.error(
-                'Could not find config for triggerId {}'.format(message.get('triggerId'))
-            )
+            self.tcex.log.error(f"Could not find config for triggerId {message.get('triggerId')}")
 
         # get an instance of playbooks for App
         playbook = self.playbook(self.thread_name, config.get('tc_playbook_out_variables'))
@@ -815,7 +799,7 @@ class Services(object):
             else:
                 self.increment_metric('Misses')
         except Exception as e:
-            self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
+            self.tcex.log.error(f'The callback method encountered and error ({e}).')
             self.tcex.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
         finally:
@@ -834,12 +818,12 @@ class Services(object):
         """
         if topic is None:
             topic = self.tcex.default_args.tc_svc_client_topic
-        self.tcex.log.debug('publish topic: ({})'.format(topic))
-        self.tcex.log.debug('publish message: ({})'.format(message))
+        self.tcex.log.debug(f'publish topic: ({topic})')
+        self.tcex.log.debug(f'publish message: ({message})')
 
         if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             r = self.mqtt_client.publish(topic, message)
-            self.tcex.log.trace('publish response: {}'.format(r))
+            self.tcex.log.trace(f'publish response: {r}')
         elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             self.redis_client.publish(topic, message)
 
@@ -875,11 +859,11 @@ class Services(object):
         Args:
             message (dict): The broker message.
         """
-        self.tcex.log.trace('message: {}'.format(message))
+        self.tcex.log.trace(f'message: {message}')
         # parse the command type
         command = message.get('command')
 
-        self.tcex.log.info('Command received: {}'.format(command))
+        self.tcex.log.info(f'Command received: {command}')
         if command.lower() == 'heartbeat':
             self.heartbeat_watchdog = 0
             self.heartbeat_miss_count = 0
@@ -888,11 +872,11 @@ class Services(object):
             response = {'command': 'Heartbeat', 'metric': self.metrics}
             self.publish(json.dumps(response))
             self.tcex.log.info('Heartbeat command sent')
-            self.tcex.log.debug('metrics: {}'.format(self.metrics))
+            self.tcex.log.debug(f'metrics: {self.metrics}')
         elif command.lower() == 'loggingchange':
             # {"command": "LoggingChange", "level": "DEBUG"}
             level = message.get('level')
-            self.tcex.log.info('LoggingChange - level: {}'.format(level))
+            self.tcex.log.info(f'LoggingChange - level: {level}')
             self.tcex.logger.update_handler_level(level)
         elif command.lower() == 'runservice':
             self.message_thread(
@@ -922,7 +906,7 @@ class Services(object):
     @property
     def session_logfile(self):
         """Return a uuid4 session id."""
-        return '{}/{}.log'.format(datetime.today().strftime('%Y%m%d'), self.thread_name)
+        return f"{datetime.today().strftime('%Y%m%d')}/{self.thread_name}.log"
 
     @property
     def thread_name(self):

@@ -6,7 +6,7 @@ from tcex.tcex_ti.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
 
-class Tag(object):
+class Tag:
     """Unique API calls for Tag API Endpoints"""
 
     def __init__(self, tcex, name):
@@ -46,10 +46,9 @@ class Tag(object):
             group_type:
         """
         group = self._tcex.ti.group(group_type)
-        for g in self.tc_requests.groups_from_tag(
+        yield from self.tc_requests.groups_from_tag(
             group, self.name, filters=filters, owner=owner, params=params
-        ):
-            yield g
+        )
 
     def indicators(self, indicator_type=None, filters=None, owner=None, params=None):
         """
@@ -61,20 +60,18 @@ class Tag(object):
             indicator_type:
         """
         indicator = self._tcex.ti.indicator(indicator_type)
-        for i in self.tc_requests.indicators_from_tag(
+        yield from self.tc_requests.indicators_from_tag(
             indicator, self.name, filters=filters, owner=owner, params=params
-        ):
-            yield i
+        )
 
     def victims(self, filters=None, owner=None, params=None):
         """
         Gets all victims from a tag.
         """
         victim = self._tcex.ti.victim(None)
-        for v in self.tc_requests.victims_from_tag(
+        yield from self.tc_requests.victims_from_tag(
             victim, self.name, filters=filters, owner=owner, params=params
-        ):
-            yield v
+        )
 
     @property
     def name(self):

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 
-from ..tcex_init import tcex
 from tcex.case_management.tql import TQL
+
+from ..tcex_init import tcex
 
 
 # pylint: disable=W0201
@@ -14,6 +15,7 @@ class TestCaseIndicators:
         self.cm = tcex.cm
 
     def test_get_single(self):
+        """test get single"""
         case = self.test_create('case_name', delete=False)
         self.test_create('case_name_2', delete=False)
 
@@ -24,13 +26,12 @@ class TestCaseIndicators:
         self.test_delete('case_name', create=False)
         self.test_delete('case_name_2', create=False)
 
-    def test_get_many(self):
-        ...
+    # def test_get_many(self):
 
-    def test_tql(self):
-        ...
+    # def test_tql(self):
 
     def test_delete(self, name='case_name', create=True):
+        """test delete"""
         if create:
             self.test_create(name, delete=False)
         cases = self.cm.cases()
@@ -39,6 +40,7 @@ class TestCaseIndicators:
             case.delete()
 
     def test_create(self, name='case_name', status='Open', severity='Low', delete=True):
+        """test create"""
         case = self.cm.case(name=name, status=status, severity=severity)
         case.submit()
 
@@ -52,6 +54,7 @@ class TestCaseIndicators:
         return case
 
     def test_create_1(self):
+        """test case 1"""
         case = self.cm.case(name='case_1', status='Open', severity='Low')
         case.add_artifact(
             summary='Artifact Summary 1', type='Artifact 2', intel_type='indicator-ASN'

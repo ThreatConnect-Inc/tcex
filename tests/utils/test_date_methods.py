@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
-from datetime import datetime
 import re
+from datetime import datetime
+
 import pytest
 
 
@@ -28,7 +29,7 @@ class TestUtils:
     def test_any_to_datetime(self, tcex, date, tz, results):
         """Test any to datetime"""
         dt = tcex.utils.any_to_datetime(date, tz)
-        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt.isoformat(), results))
+        # print(f"('{date}', '{tz}', '{dt.isoformat()}', '{results}')")
         assert dt.isoformat().startswith(results)
 
     @staticmethod
@@ -61,7 +62,7 @@ class TestUtils:
     def test_date_to_datetime(self, tcex, date, tz, results):
         """Test format datetime"""
         dt = tcex.utils.date_to_datetime(time_input=date, tz=tz)
-        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
+        # print(f"('{date}', '{tz}', '{dt}', '{results}')")
         assert str(dt).startswith(str(results))
 
     @pytest.mark.parametrize(
@@ -80,7 +81,7 @@ class TestUtils:
     def test_format_datetime(self, tcex, date, tz, date_format, results):
         """Test format datetime"""
         dt = tcex.utils.format_datetime(time_input=date, tz=tz, date_format=date_format)
-        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
+        # print(f"('{date}', '{tz}', '{dt}', '{results}')")
         # TODO: replace with regex or date calculated differently
         assert str(dt).startswith(results)
 
@@ -183,11 +184,11 @@ class TestUtils:
     def test_human_date_to_datetime(self, tcex, date, tz, pattern):
         """Test format datetime"""
         dt = tcex.utils.human_date_to_datetime(time_input=date, tz=tz)
-        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, pattern))
+        # print(f"('{date}', '{tz}', '{dt}', '{pattern}')")
         if pattern is None:
             assert dt is None
         elif not re.match(pattern, str(dt)):
-            assert False, 'Results ({}) does not match pattern ({})'.format(str(dt), pattern)
+            assert False, f'Results ({str(dt)}) does not match pattern ({pattern})'
 
     @staticmethod
     def test_human_date_to_datetime_with_source(tcex):
@@ -200,7 +201,7 @@ class TestUtils:
             r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$',
             str(dt),
         ):
-            assert False, 'Results ({}) does not match pattern'.format(str(dt))
+            assert False, f'Results ({str(dt)}) does not match pattern'
 
     @staticmethod
     def test_timedelta(tcex):
@@ -237,5 +238,5 @@ class TestUtils:
         if results is None:
             assert dt is None
         else:
-            # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt.isoformat(), results))
+            # print(f"('{date}', '{tz}', '{dt.isoformat()}', '{results}')")
             assert str(dt.isoformat()).startswith(str(results))

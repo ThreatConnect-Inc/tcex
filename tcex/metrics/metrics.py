@@ -2,13 +2,14 @@
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
 
 
-class Metrics(object):
+class Metrics:
     """TcEx Metrics Class"""
 
     def __init__(self, tcex, name, description, data_type, interval, keyed=False):
         """Initialize the Class properties.
 
         Args:
+            tcex (TcEx): An instance of TcEx class.
             name (str): The name for the metric.
             description (str): The description of the metric.
             data_type (str): The type of metric: Sum, Count, Min, Max, First, Last, and Average.
@@ -52,7 +53,7 @@ class Metrics(object):
             'name': self._metric_name,
             'keyedValues': self._metric_keyed,
         }
-        self.tcex.log.debug('metric body: {}'.format(body))
+        self.tcex.log.debug(f'metric body: {body}')
         r = self.tcex.session.post('/v2/customMetrics', json=body)
 
         if not r.ok:  # pragma: no cover
@@ -60,7 +61,7 @@ class Metrics(object):
 
         data = r.json()
         self._metric_id = data.get('data', {}).get('customMetricConfig', {}).get('id')
-        self.tcex.log.debug('metric data: {}'.format(data))
+        self.tcex.log.debug(f'metric data: {data}')
 
     def metric_find(self):
         """Find the Metric by name.
@@ -95,8 +96,10 @@ class Metrics(object):
             for metric in data.get('data', {}).get('customMetricConfig'):
                 if metric.get('name') == self._metric_name:
                     self._metric_id = metric.get('id')
-                    info = 'found metric with name "{}" and Id {}.'
-                    self.tcex.log.info(info.format(self._metric_name, self._metric_id))
+                    self.tcex.log.info(
+                        f'found metric with name "{self._metric_name}" '
+                        f'and Id {self._metric_id}.'
+                    )
                     return True
             params['resultStart'] += params.get('resultLimit')
         return False
@@ -123,11 +126,11 @@ class Metrics(object):
             body['date'] = self.tcex.utils.format_datetime(date, date_format='%Y-%m-%dT%H:%M:%SZ')
         if key is not None:
             body['name'] = key
-        self.tcex.log.debug('metric data: {}'.format(body))
+        self.tcex.log.debug(f'metric data: {body}')
         params = {}
         if return_value:
             params = {'returnValue': 'true'}
-        url = '/v2/customMetrics/{}/data'.format(self._metric_id)
+        url = f'/v2/customMetrics/{self._metric_id}/data'
         r = self.tcex.session.post(url, json=body, params=params)
         if r.status_code == 200 and 'application/json' in r.headers.get('content-type', ''):
             data = r.json()

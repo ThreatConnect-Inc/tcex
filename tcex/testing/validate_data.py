@@ -9,16 +9,10 @@ import operator
 import os
 import random
 import re
-
-from six import string_types
-
-try:
-    from urllib import unquote  # Python 2
-except ImportError:
-    from urllib.parse import unquote  # Python
+from urllib.parse import unquote  # Python
 
 
-class Validator(object):
+class Validator:
     """Validator"""
 
     def __init__(self, tcex, log, log_data):
@@ -71,11 +65,11 @@ class Validator(object):
         op = op or 'eq'
         variable = kwargs.pop('variable', app_data)  # get optional variable name for log header
         if not self.get_operator(op):
-            self.log.error('Invalid operator provided ({})'.format(op))
+            self.log.error(f'Invalid operator provided ({op})')
             return False
 
         # logging header
-        self.log.info('{0} {1} {0}'.format('-' * 10, app_data))
+        self.log.info(f'{"=" * 10} {app_data} {"=" * 10}')
 
         # run operator
         passed, details = self.get_operator(op)(app_data, test_data, **kwargs)
@@ -85,8 +79,8 @@ class Validator(object):
 
         # build assert error
         assert_error = (
-            '\n App Data     : {}\n Operator     : {}\n Expected Data: {}\n '
-            'Details      : {}\n'.format(app_data, op, test_data, details)
+            f'\n App Data     : {app_data}\n Operator     : {op}\n '
+            f'Expected Data: {test_data}\n Details      : {details}\n'
         )
         return passed, assert_error
 
@@ -99,10 +93,11 @@ class Validator(object):
                 for i, diff in enumerate(difflib.ndiff(app_data, test_data)):
                     if diff[0] == ' ':  # no difference
                         continue
-                    elif diff[0] == '-':
-                        details += '\n    * Missing data at index {}'.format(i)
+
+                    if diff[0] == '-':
+                        details += f'\n    * Missing data at index {i}'
                     elif diff[0] == '+':
-                        details += '\n    * Extra data at index {}'.format(i)
+                        details += f'\n    * Extra data at index {i}'
                     if diff_count > self.max_diff:
                         details += '\n    * Max number of differences reached.'
                         # don't spam the logs if string are vastly different
@@ -249,9 +244,7 @@ class Validator(object):
         results = operator.ge(app_data, test_data)
         details = ''
         if not results:
-            details = '{} {} !(>=) {} {}'.format(
-                app_data, type(app_data), test_data, type(test_data)
-            )
+            details = f'{app_data} {type(app_data)} !(>=) {test_data} {type(test_data)}'
         return results, details
 
     def operator_gt(self, app_data, test_data):
@@ -269,9 +262,7 @@ class Validator(object):
         results = operator.gt(app_data, test_data)
         details = ''
         if not results:
-            details = '{} {} !(>) {} {}'.format(
-                app_data, type(app_data), test_data, type(test_data)
-            )
+            details = f'{app_data} {type(app_data)} !(>) {test_data} {type(test_data)}'
         return results, details
 
     def operator_is_date(self, app_data, test_data):  # pylint: disable=unused-argument
@@ -301,9 +292,9 @@ class Validator(object):
         Returns:
             bool: The results of the operator.
         """
-        if isinstance(app_data, (string_types)):
+        if isinstance(app_data, (str)):
             app_data = json.loads(app_data)
-        if isinstance(test_data, (string_types)):
+        if isinstance(test_data, (str)):
             test_data = json.loads(test_data)
 
         exclude = kwargs.pop('exclude', [])
@@ -326,13 +317,13 @@ class Validator(object):
         Returns:
             dict: The data with excluded values removed.
         """
-        if isinstance(data, (string_types)):
+        if isinstance(data, (str)):
             data = json.loads(data)
         for e in exclude:
             try:
                 del data[e]
             except (KeyError, TypeError) as err:
-                self.log.error('Invalid validation configuration: ({})'.format(err))
+                self.log.error(f'Invalid validation configuration: ({err})')
         return data
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
@@ -372,9 +363,7 @@ class Validator(object):
         results = operator.le(app_data, test_data)
         details = ''
         if not results:
-            details = '{} {} !(<=) {} {}'.format(
-                app_data, type(app_data), test_data, type(test_data)
-            )
+            details = f'{app_data} {type(app_data)} !(<=) {test_data} {type(test_data)}'
         return results, details
 
     def operator_length_eq(self, app_data, test_data):
@@ -407,9 +396,7 @@ class Validator(object):
         results = operator.lt(app_data, test_data)
         details = ''
         if not results:
-            details = '{} {} !(<) {} {}'.format(
-                app_data, type(app_data), test_data, type(test_data)
-            )
+            details = f'{app_data} {type(app_data)} !(<) {test_data} {type(test_data)}'
         return results, details
 
     def operator_ne(self, app_data, test_data):
@@ -511,34 +498,32 @@ class Validator(object):
         """
         truncate = self.truncate
         if app_data is not None and passed:
-            if isinstance(app_data, (string_types)) and len(app_data) > truncate:
+            if isinstance(app_data, (str)) and len(app_data) > truncate:
                 app_data = app_data[:truncate]
             elif isinstance(app_data, (list)):
                 db_data_truncated = []
                 for d in app_data:
-                    if d is not None and isinstance(d, string_types) and len(d) > truncate:
-                        db_data_truncated.append('{} ...'.format(d[: self.truncate]))
+                    if d is not None and isinstance(d, str) and len(d) > truncate:
+                        db_data_truncated.append(f'{d[:self.truncate]} ...')
                     else:
                         db_data_truncated.append(d)
                 app_data = db_data_truncated
 
         if test_data is not None and passed:
-            if isinstance(test_data, (string_types)) and len(test_data) > truncate:
+            if isinstance(test_data, (str)) and len(test_data) > truncate:
                 test_data = test_data[: self.truncate]
             elif isinstance(test_data, (list)):
                 user_data_truncated = []
                 for u in test_data:
-                    if isinstance(app_data, (string_types)) and len(u) > truncate:
-                        user_data_truncated.append('{} ...'.format(u[: self.truncate]))
+                    if isinstance(app_data, (str)) and len(u) > truncate:
+                        user_data_truncated.append(f'{u[:self.truncate]} ...')
                     else:
                         user_data_truncated.append(u)
                 test_data = user_data_truncated
 
-        self.log_data('validate', 'App Data', '({}), Type: [{}]'.format(app_data, type(app_data)))
+        self.log_data('validate', 'App Data', f'({app_data}), Type: [{type(app_data)}]')
         self.log_data('validate', 'Operator', op)
-        self.log_data(
-            'validate', 'Test Data', '({}), Type: [{}]'.format(test_data, type(test_data))
-        )
+        self.log_data('validate', 'Test Data', f'({test_data}), Type: [{type(test_data)}]')
 
         if passed:
             self.log_data('validate', 'Result', 'Passed')
@@ -547,7 +532,7 @@ class Validator(object):
             self.log_data('validate', 'Details', details, 'error')
 
 
-class Redis(object):
+class Redis:
     """Validates Redis data"""
 
     def __init__(self, provider):
@@ -570,9 +555,7 @@ class Redis(object):
             return False
 
         if not variable_data:
-            self.provider.log.error(
-                'NotFoundError: Redis Variable {} was not found.'.format(variable)
-            )
+            self.provider.log.error(f'NotFoundError: Redis Variable {variable} was not found.')
             return False
 
         return True
@@ -593,14 +576,11 @@ class Redis(object):
             redis_type = str
 
         if not variable_data:
-            self.provider.log.error(
-                'NotFoundError: Redis Variable {} was not found.'.format(variable)
-            )
+            self.provider.log.error(f'NotFoundError: Redis Variable {variable} was not found.')
             return False
         if not isinstance(variable_data, redis_type):
             self.provider.log.error(
-                'TypeMismatchError: Redis Type: {} and Variable: {} '
-                'do not match'.format(redis_type, variable)
+                f'TypeMismatchError: Redis Type: {redis_type} and Variable: {variable} do not match'
             )
             return False
 
@@ -629,7 +609,7 @@ class Redis(object):
             return False
 
         if not self.provider.get_operator(op):
-            self.provider.log.error('Invalid operator provided ({})'.format(op))
+            self.provider.log.error(f'Invalid operator provided ({op})')
             return False
 
         if variable.endswith('Binary'):
@@ -640,7 +620,7 @@ class Redis(object):
             app_data = self.provider.tcex.playbook.read(variable)
 
         # logging header
-        self.provider.log.info('{0} {1} {0}'.format('-' * 10, variable))
+        self.provider.log.info(f'{"-" * 10} {variable} {"-" * 10}')
 
         # run operator
         passed, details = self.provider.get_operator(op)(app_data, test_data, **kwargs)
@@ -650,8 +630,8 @@ class Redis(object):
 
         # build assert error
         assert_error = (
-            '\n App Data     : {}\n Operator     : {}\n Expected Data: {}\n '
-            'Details      : {}\n'.format(app_data, op, test_data, details)
+            f'\n App Data     : {app_data}\n Operator     : {op}\n '
+            f'Expected Data: {test_data}\n Details      : {details}\n'
         )
         return passed, assert_error
 
@@ -701,10 +681,10 @@ class Redis(object):
 
     def rex(self, variable, data):
         """Test App data with regex"""
-        return self.data(variable, r'{}'.format(data), op='rex')
+        return self.data(variable, fr'{data}', op='rex')
 
 
-class ThreatConnect(object):
+class ThreatConnect:
     """Validate ThreatConnect data"""
 
     def __init__(self, provider):
@@ -773,16 +753,14 @@ class ThreatConnect(object):
                     batch_error = self._batch_error(name, batch_errors)
                     if batch_error:
                         self.provider.log.error(
-                            'Errors validating {} due to batch '
-                            'submission error: {}'.format(name, batch_error)
+                            f'Errors validating {name} due to batch submission error: {batch_error}'
                         )
                         continue
                     # TODO: Should use pip install pytest-check is_true method so it wont fail after
                     # one failed assert.
-                    assert result.get(
-                        'valid'
-                    ), '{} in ThreatConnect did not match what was submitted. Errors:{}'.format(
-                        name, result.get('errors')
+                    assert result.get('valid'), (
+                        f'{name} in ThreatConnect did not match what was submitted. '
+                        f"Errors:{result.get('errors')}"
                     )
         self._log_batch_submit_details(batch_errors, owner)
 
@@ -822,7 +800,7 @@ class ThreatConnect(object):
         for test_file in os.listdir(directory):
             if not (test_file.endswith('.json') and test_file.startswith('validate_')):
                 continue
-            results.append(self.file('{}/{}'.format(directory, test_file), owner))
+            results.append(self.file(f'{directory}/{test_file}', owner))
         return results
 
     def file(self, file, owner):
@@ -862,8 +840,10 @@ class ThreatConnect(object):
         entity_name = tc_entity.get('name')
         errors = []
         if not self.success(ti_response):
-            error = 'NotFoundError: Provided {}: {} could not be fetched from ThreatConnect'.format(
-                tc_entity.get('type'), tc_entity.get('summary', entity_name)
+            error = (
+                f"NotFoundError: Provided {tc_entity.get('type')}: "
+                f"{tc_entity.get('summary', entity_name)} could not "
+                f'be fetched from ThreatConnect'
             )
             return False, [error]
 
@@ -886,39 +866,36 @@ class ThreatConnect(object):
             provided_rating = tc_entity.get('rating', None)
             expected_rating = ti_response.get('rating', None)
             if not provided_rating == expected_rating:
-                error = 'RatingError: Provided rating {} does not match ' 'actual rating {}'.format(
-                    provided_rating, expected_rating
+                errors += (
+                    f'RatingError: Provided rating {provided_rating} '
+                    f'does not match actual rating {expected_rating}'
                 )
-                errors += error
 
             provided_confidence = tc_entity.get('confidence', None)
             expected_confidence = ti_response.get('confidence', None)
             if not provided_confidence == expected_confidence:
-                error = (
-                    'ConfidenceError: Provided confidence {} does not match '
-                    'actual confidence {}'.format(provided_confidence, expected_confidence)
+                errors += (
+                    f'ConfidenceError: Provided confidence {provided_confidence} '
+                    f'does not match actual confidence {expected_confidence}'
                 )
-                errors += error
 
             provided_summary = unquote(
                 ':'.join([x for x in ti_entity.unique_id.split(':') if x.strip()])
             )
             expected_summary = unquote(ti_response_entity.get('value', ''))
             if provided_summary != expected_summary:
-                error = (
-                    'SummaryError: Provided summary {} does not match '
-                    'actual summary {}'.format(provided_summary, expected_summary)
+                errors += (
+                    f'SummaryError: Provided summary {provided_summary} '
+                    f'does not match actual summary {expected_summary}'
                 )
-                errors += error
         elif ti_entity.type == 'Group':
             provided_summary = tc_entity.get('name', None)
             expected_summary = ti_response_entity.get('value', None)
             if not provided_summary == expected_summary:
-                error = (
-                    'SummaryError: Provided summary {} does not match '
-                    'actual summary {}'.format(provided_summary, expected_summary)
+                errors += (
+                    f'SummaryError: Provided summary {provided_summary} '
+                    f'does not match actual summary {expected_summary}'
                 )
-                errors += error
 
         return not bool(errors), errors
 
@@ -940,22 +917,19 @@ class ThreatConnect(object):
             if item in actual:
                 if str(expected.get(item)) != actual.get(item):
                     errors.append(
-                        '{0}{1} : {2} did not match {1} : {3}'.format(
-                            error_type, item, expected.get(item), actual.get(item)
-                        )
+                        f'{error_type}{item} : {expected.get(item)} '
+                        f'did not match {item} : {actual.get(item)}'
                     )
                 actual.pop(item)
             else:
                 errors.append(
-                    '{}{} : {} was in expected results but not in actual results.'.format(
-                        error_type, item, expected.get(item)
-                    )
+                    f'{error_type}{item} : {expected.get(item)} was '
+                    f'in expected results but not in actual results.'
                 )
         for item in list(actual.items()):
             errors.append(
-                '{}{} : {} was in actual results but not in expected results.'.format(
-                    error_type, item, actual.get(item)
-                )
+                f'{error_type}{item} : {actual.get(item)} was in '
+                f'actual results but not in expected results.'
             )
 
         return bool(errors), errors
@@ -969,14 +943,10 @@ class ThreatConnect(object):
                 actual.remove(item)
             else:
                 errors.append(
-                    '{}{} was in expected results but not in actual results.'.format(
-                        error_type, item
-                    )
+                    f'{error_type}{item} was in expected results but not in actual results.'
                 )
         for item in actual:
-            errors.append(
-                '{}{} was in actual results but not in expected results.'.format(error_type, item)
-            )
+            errors.append(f'{error_type}{item} was in actual results but not in expected results.')
 
         return bool(errors), errors
 
@@ -1136,8 +1106,8 @@ class ThreatConnect(object):
             provided_hash = provided_hash.hexdigest()
             if not provided_hash == actual_hash:
                 errors.append(
-                    'sha256 {} of provided file did not match sha256 of '
-                    'actual file {}'.format(provided_hash, actual_hash)
+                    f'sha256 {provided_hash} of provided file did not '
+                    f'match sha256 of actual file {actual_hash}'
                 )
         return bool(errors), errors
 

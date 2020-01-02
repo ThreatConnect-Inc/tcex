@@ -20,9 +20,7 @@ class RegistryKey(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(RegistryKey, self).__init__(
-            tcex, 'Registry Key', 'registryKey', 'registryKeys', owner, **kwargs
-        )
+        super().__init__(tcex, 'Registry Key', 'registryKey', 'registryKeys', owner, **kwargs)
         self.unique_id = kwargs.get('unique_id', key_name)
         self.data['Key Name'] = key_name or self.unique_id
         self.data['Value Name'] = value_name

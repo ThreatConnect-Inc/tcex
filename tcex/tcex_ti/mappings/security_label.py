@@ -18,7 +18,7 @@ class SecurityLabel(TIMappings):
             name:
             **kwargs:
         """
-        super(SecurityLabel, self).__init__(tcex, 'SecurityLabel', 'securitylabels')
+        super().__init__(tcex, 'SecurityLabel', 'securitylabels')
         self._data['type'] = 'securityLabels'
         self._data['sub_type'] = None
         self._data['name'] = name

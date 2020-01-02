@@ -2,7 +2,7 @@
 """ThreatConnect TI Security Label"""
 
 
-class Filters(object):
+class Filters:
     """Filters object ot handle adding filters to TI URL calls"""
 
     def __init__(self, tcex):

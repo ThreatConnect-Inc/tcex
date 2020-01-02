@@ -11,7 +11,7 @@ class TcArgumentParser(ArgumentParser):
 
     def __init__(self, **kwargs):
         """Initialize the Class properties."""
-        super(TcArgumentParser, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # batch defaults
         self._batch_action = 'Create'
         self._batch_chunk = 25000
@@ -349,4 +349,4 @@ class TcArgumentParser(ArgumentParser):
                     kwargs['default'] = getattr(self.namespace, name, None)
                     del kwargs['required']  # remove required fields to prevent argparser failure
                     break  # first match wins
-        super(TcArgumentParser, self).add_argument(*args, **kwargs)
+        super().add_argument(*args, **kwargs)

@@ -1,20 +1,14 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Group"""
+from urllib.parse import quote_plus
 from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
-
-try:
-    from urllib import quote_plus  # Python 2
-except ImportError:
-    from urllib.parse import quote_plus  # Python
 
 
 class Group(TIMappings):
     """Unique API calls for Group API Endpoints"""
 
     def __init__(self, tcex, sub_type, api_entity, api_branch, owner=None, **kwargs):
-        super(Group, self).__init__(
-            tcex, 'Group', 'groups', sub_type, api_entity, api_branch, owner
-        )
+        super().__init__(tcex, 'Group', 'groups', sub_type, api_entity, api_branch, owner)
         self.name = None
 
         for arg, value in kwargs.items():

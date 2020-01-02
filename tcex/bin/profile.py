@@ -4,14 +4,14 @@
 import json
 import os
 import sys
-from uuid import uuid4
 from collections import OrderedDict
 from random import randint
+from uuid import uuid4
 
 import colorama as c
 
-from .bin import Bin
 from ..app_config_object import InstallJson
+from .bin import Bin
 
 
 class Profile(Bin):
@@ -28,7 +28,7 @@ class Profile(Bin):
             _args (namespace): The argparser args Namespace.
         """
 
-        super(Profile, self).__init__(_args)
+        super().__init__(_args)
 
         # properties
         self.data_dir = os.path.join(self.args.outdir, 'data')
@@ -71,15 +71,12 @@ class Profile(Bin):
             if data.get('profiles') is not None:
                 # no longer supporting profiles in tcex.json
                 print(
-                    '{}{}Migrating profiles from tcex.json to individual files.'.format(
-                        c.Style.BRIGHT, c.Fore.YELLOW
-                    )
+                    f'{c.Style.BRIGHT}{c.Fore.YELLOW}Migrating profiles '
+                    f'from tcex.json to individual files.'
                 )
 
                 for profile in data.get('profiles') or []:
-                    outfile = '{}.json'.format(
-                        profile.get('profile_name').replace(' ', '_').lower()
-                    )
+                    outfile = f"{profile.get('profile_name').replace(' ', '_').lower()}.json"
                     self.profile_write(profile, outfile)
 
                 # remove legacy profile key
@@ -102,7 +99,7 @@ class Profile(Bin):
             fqfn (str): Fully qualified file name.
         """
         if self.args.verbose:
-            print('Loading profiles from File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, fqfn))
+            print(f'Loading profiles from File: {c.Style.BRIGHT}{c.Fore.MAGENTA}{fqfn}')
         with open(fqfn, 'r+') as fh:
             data = json.load(fh)
             for profile in data:
@@ -116,9 +113,7 @@ class Profile(Bin):
 
         for d in data:
             if d.get('profile_name') in self.profiles:
-                self.handle_error(
-                    'Found a duplicate profile name ({}).'.format(d.get('profile_name'))
-                )
+                self.handle_error(f"Found a duplicate profile name ({d.get('profile_name')}).")
             self.profiles.setdefault(
                 d.get('profile_name'),
                 {'data': d, 'ij_filename': d.get('install_json'), 'fqfn': fqfn},
@@ -133,7 +128,7 @@ class Profile(Bin):
 
         include_directory = os.path.join(self.app_path, include_directory)
         if not os.path.isdir(include_directory):
-            msg = 'Provided include directory does not exist ({}).'.format(include_directory)
+            msg = f'Provided include directory does not exist ({include_directory}).'
             sys.exit(msg)
 
         for filename in sorted(os.listdir(include_directory)):
@@ -144,14 +139,12 @@ class Profile(Bin):
     def profile_create(self):
         """Create a profile."""
         if self.args.profile_name in self.profiles:
-            self.handle_error('Profile "{}" already exists.'.format(self.args.profile_name))
+            self.handle_error(f'Profile "{self.args.profile_name}" already exists.')
 
         # load the install.json file defined as a arg (default: install.json)
         ij = InstallJson(self.args.ij, self.app_path)
 
-        print(
-            'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name)
-        )
+        print(f'Building Profile: {c.Style.BRIGHT}{c.Fore.CYAN}{self.args.profile_name}')
         profile = OrderedDict()
         profile['args'] = {}
         profile['args']['app'] = {}
@@ -171,9 +164,9 @@ class Profile(Bin):
         if ij.runtime_level.lower() == 'playbook':
             validations = self.profile_settings_validations
             profile['validations'] = validations.get('rules')
-            profile['args']['default']['tc_playbook_out_variables'] = '{}'.format(
-                ','.join(validations.get('outputs'))
-            )
+            profile['args']['default'][
+                'tc_playbook_out_variables'
+            ] = f"{','.join(validations.get('outputs'))}"
         return profile
 
     def profile_delete(self):
@@ -268,7 +261,7 @@ class Profile(Bin):
         if self.args.permutation_id is not None:
             output_variables = self._output_permutations[self.args.permutation_id]
         for o in output_variables:
-            variable = '#App:{}:{}!{}'.format(job_id, o.get('name'), o.get('type'))
+            variable = f"#App:{job_id}:{o.get('name')}!{o.get('type')}"
             validations['outputs'].append(variable)
 
             # null check
@@ -284,7 +277,7 @@ class Profile(Bin):
             od['variable'] = variable
             validations['rules'].append(od)
 
-            # type check
+            # check the variable type and create dict appropriately
             od = OrderedDict()
             if o.get('type').endswith('Array'):
                 od['data'] = 'array'
@@ -315,9 +308,8 @@ class Profile(Bin):
         # warn about missing install_json parameter
         if profile.get('install_json') is None:
             print(
-                '{}{}Missing install_json parameter for profile {}.'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')
-                )
+                f'{c.Style.BRIGHT}{c.Fore.YELLOW}Missing install_json parameter '
+                f"for profile {profile.get('profile_name')}."
             )
 
         # update args section to v2 schema
@@ -367,15 +359,13 @@ class Profile(Bin):
                     # TODO: prompt to add missing input?
                     if self.args.verbose:
                         print(
-                            '{}{}Input "{}" not found in profile "{}".'.format(
-                                c.Style.BRIGHT, c.Fore.YELLOW, arg, profile.get('profile_name')
-                            )
+                            f"""{c.Style.BRIGHT}{c.Fore.YELLOW}Input "{arg}" not found in """
+                            f"""profile "{profile.get('profile_name')}"."""
                         )
             profile['args']['default'] = _args
             print(
-                '{}{}Updating args section to v2 schema for profile {}.'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')
-                )
+                f'{c.Style.BRIGHT}{c.Fore.YELLOW}Updating args section to v2 '
+                f"schema for profile {profile.get('profile_name')}."
             )
 
     def profile_update_args_v3(self, profile):
@@ -423,14 +413,12 @@ class Profile(Bin):
                 except KeyError:
                     if self.args.verbose:
                         print(
-                            '{}{}Input "{}" not found in profile "{}".'.format(
-                                c.Style.BRIGHT, c.Fore.YELLOW, arg, profile.get('profile_name')
-                            )
+                            f"""{c.Style.BRIGHT}{c.Fore.YELLOW}Input "{arg}" """
+                            f"""not found in profile "{profile.get('profile_name')}"."""
                         )
             print(
-                '{}{}Updating args section to v3 schema for profile {}.'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')
-                )
+                f'{c.Style.BRIGHT}{c.Fore.YELLOW}Updating args section to v3 '
+                f"schema for profile {profile.get('profile_name')}."
             )
 
     @staticmethod
@@ -444,9 +432,7 @@ class Profile(Bin):
         # add new "autoclear" field
         if profile.get('autoclear') is None:
             print(
-                '{}{}Profile Update: Adding new "autoclear" parameter.'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW
-                )
+                f'{c.Style.BRIGHT}{c.Fore.YELLOW}Profile Update: Adding new "autoclear" parameter.'
             )
             profile['autoclear'] = True
 
@@ -454,17 +440,14 @@ class Profile(Bin):
         for validation in profile.get('validations') or []:
             if validation.get('data_type') is None:
                 print(
-                    '{}{}Profile Update: Adding new "data_type" parameter.'.format(
-                        c.Style.BRIGHT, c.Fore.YELLOW
-                    )
+                    f'{c.Style.BRIGHT}{c.Fore.YELLOW}Profile Update: '
+                    'Adding new "data_type" parameter.'
                 )
                 validation['data_type'] = 'redis'
 
         # remove "script" parameter from profile
         if profile.get('install_json') is not None and profile.get('script') is not None:
-            print(
-                '{}{}Removing deprecated "script" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW)
-            )
+            print(f'{c.Style.BRIGHT}{c.Fore.YELLOW}Removing deprecated "script" parameter.')
             profile.pop('script')
 
     def profile_write(self, profile, outfile=None):
@@ -477,24 +460,24 @@ class Profile(Bin):
 
         # fully qualified output file
         if outfile is None:
-            outfile = '{}.json'.format(profile.get('profile_name').replace(' ', '_').lower())
+            outfile = f"{profile.get('profile_name').replace(' ', '_').lower()}.json"
         fqpn = os.path.join(self.profile_dir, outfile)
 
         if os.path.isfile(fqpn):
             # append
-            print('Append to File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, fqpn))
+            print(f'Append to File: {c.Style.BRIGHT}{c.Fore.CYAN}{fqpn}')
             with open(fqpn, 'r+') as fh:
                 try:
                     data = json.load(fh, object_pairs_hook=OrderedDict)
                 except ValueError as e:
-                    self.handle_error('Can not parse JSON data ({}).'.format(e))
+                    self.handle_error(f'Can not parse JSON data ({e}).')
 
                 data.append(profile)
                 fh.seek(0)
                 fh.write(json.dumps(data, indent=2, sort_keys=True))
                 fh.truncate()
         else:
-            print('Create File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, fqpn))
+            print(f'Create File: {c.Style.BRIGHT}{c.Fore.CYAN}{fqpn}')
             with open(fqpn, 'w') as fh:
                 data = [profile]
                 fh.write(json.dumps(data, indent=2, sort_keys=True))
@@ -521,7 +504,7 @@ class Profile(Bin):
         # load data
         data = self.redis.hgetall(redis_hash)
         if data is None:
-            self.handle_error('Could not load data for hash {}.'.format(redis_hash))
+            self.handle_error(f'Could not load data for hash {redis_hash}.')
         validations = {'rules': [], 'outputs': []}
         for v, d in data.items():
             variable = v.decode('utf-8')
@@ -581,13 +564,13 @@ class Profile(Bin):
         """
 
         ij = InstallJson(profile.get('install_json'), self.app_path)
-        print('{}{}Profile: "{}".'.format(c.Style.BRIGHT, c.Fore.BLUE, profile.get('profile_name')))
+        print(f"""{c.Style.BRIGHT}{c.Fore.BLUE}Profile: "{profile.get('profile_name')}".""")
         for arg in ij.params_to_args():
             if profile.get('args', {}).get('app', {}).get(arg) is None:
-                print('{}{}Input "{}" not found.'.format(c.Style.BRIGHT, c.Fore.YELLOW, arg))
+                print(f'{c.Style.BRIGHT}{c.Fore.YELLOW}Input "{arg}" not found.')
 
     def validate_profile_exists(self):
         """Validate the provided profiles name exists."""
 
         if self.args.profile_name not in self.profiles:
-            self.handle_error('Could not find profile "{}"'.format(self.args.profile_name))
+            self.handle_error(f'Could not find profile "{self.args.profile_name}"')

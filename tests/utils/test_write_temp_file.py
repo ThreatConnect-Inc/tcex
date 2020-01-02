@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
 import os
+
 from ..tcex_init import tcex
 
 

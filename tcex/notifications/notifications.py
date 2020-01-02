@@ -3,7 +3,7 @@
 import json
 
 
-class Notifications(object):
+class Notifications:
     """TcEx Notification Class"""
 
     def __init__(self, tcex):
@@ -82,13 +82,13 @@ class Notifications(object):
         if self._recipients:
             body['recipients'] = self._recipients
 
-        self.tcex.log.debug('notification body: {}'.format(json.dumps(body)))
+        self.tcex.log.debug(f'notification body: {json.dumps(body)}')
 
         # create our tcex resource
         r = self.tcex.session.post('/v2/notifications', json=body)
         if r.status_code == 400:
             # specifically handle unknown users
-            self.tcex.log.error('Failed to send notification ({})'.format(r.text))
+            self.tcex.log.error(f'Failed to send notification ({r.text})')
         elif not r.ok:  # pragma: no cover
             self.tcex.handle_error(750, [r.status_code, r.text])
 

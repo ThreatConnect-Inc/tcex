@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 """TcEx Utilities Module"""
-from datetime import datetime
 import calendar
 import math
 import os
 import re
 import time
 import uuid
+from datetime import datetime
 
-from pytz import timezone
+import parsedatetime as pdt
 import pytz
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from tzlocal import get_localzone
-import parsedatetime as pdt
 
 
 class Utils:
@@ -60,7 +59,7 @@ class Utils:
 
         # if all attempt to convert fail raise an error
         if dt_value is None:
-            raise RuntimeError('Could not format input ({}) to datetime string.'.format(time_input))
+            raise RuntimeError(f'Could not format input ({time_input}) to datetime string.')
 
         return dt_value
 
@@ -68,14 +67,14 @@ class Utils:
     def _replace_timezone(dateutil_parser):
         try:
             # try to get the timezone from tzlocal
-            tzinfo = timezone(get_localzone().zone)
+            tzinfo = pytz.timezone(get_localzone().zone)
         except pytz.exceptions.UnknownTimeZoneError:  # pragma: no cover
             try:
                 # try to get the timezone from python's time package
-                tzinfo = timezone(time.tzname[0])
+                tzinfo = pytz.timezone(time.tzname[0])
             except pytz.exceptions.UnknownTimeZoneError:
                 # seeing as all else has failed: use UTC as the timezone
-                tzinfo = timezone('UTC')
+                tzinfo = pytz.timezone('UTC')
         return tzinfo.localize(dateutil_parser)
 
     def date_to_datetime(self, time_input, tz=None):
@@ -96,7 +95,7 @@ class Utils:
             if tz is not None and tz != dt.tzname():
                 if dt.tzinfo is None:
                     dt = self._replace_timezone(dt)
-                dt = dt.astimezone(timezone(tz))
+                dt = dt.astimezone(pytz.timezone(tz))
         except IndexError:  # pragma: no cover
             pass
         except TypeError:
@@ -189,7 +188,7 @@ class Utils:
                     dt = self._replace_timezone(dt)
                 # don't covert timezone if source timezone already in the correct timezone
                 if tz != src_tzname:
-                    dt = dt.astimezone(timezone(tz))
+                    dt = dt.astimezone(pytz.timezone(tz))
             if status == 0:
                 dt = None
         except TypeError:  # pragma: no cover
@@ -315,10 +314,10 @@ class Utils:
             time_input = float(time_input) / dec
 
         if re.compile(r'^[0-9]{9,10}(?:\.[0-9]{0,6})?$').findall(str(time_input)):
-            dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
+            dt = datetime.fromtimestamp(float(time_input), tz=pytz.timezone('UTC'))
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
-                dt = dt.astimezone(timezone(tz))
+                dt = dt.astimezone(pytz.timezone(tz))
 
         return dt
 

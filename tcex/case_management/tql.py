@@ -3,7 +3,7 @@
 from enum import Enum
 
 
-class TQL(object):
+class TQL:
     """ThreatConnect TQL"""
 
     class Operator(Enum):
@@ -94,13 +94,13 @@ class TQL(object):
         BOOLEAN = 'Boolean'
 
     def __init__(self):
-        """Initializing the Object"""
+        """Initialize Class Properties"""
         self._filters = []
         self.raw_tql = None
 
     @property
     def as_str(self):
-        """Converts the TQL obj to a string"""
+        """Convert the TQL obj to a string"""
         filters = []
         for tql_filter in self.filters:
             value = tql_filter.get('value')
@@ -110,13 +110,11 @@ class TQL(object):
                 if not isinstance(value, list):
                     values = [value]
                 if tql_filter.get('type') == self.Type.STRING:
-                    values = ['"{0}"'.format(value) for value in values]
-                value = '({})'.format(','.join(values))
+                    values = [f'"{value}"' for value in values]
+                value = f"({','.join(values)})"
             if tql_filter.get('type') == self.Type.STRING:
-                value = '"{}"'.format(value)
-            filters.append(
-                '{} {} {}'.format(tql_filter.get('keyword'), tql_filter.get('operator').name, value)
-            )
+                value = f'"{value}"'
+            filters.append(f"{tql_filter.get('keyword')} {tql_filter.get('operator').name} {value}")
 
         return ' and '.join(filters)
 
@@ -130,18 +128,17 @@ class TQL(object):
         """Set the filters"""
         self._filters = filters
 
-    def add_filter(self, keyword, operator, value, type=Type.STRING):
-        """
-         Adds a filter to the current obj
+    def add_filter(self, keyword, operator, value, type_=Type.STRING):
+        """Add a filter to the current obj
 
-         Args:
-             keyword (str): the field to search on
-             operator (str): the operator to use
-             value (str): the value to compare
-             type (Type): How to treat the value (defaults to String)
-         """
+        Args:
+            keyword (str): the field to search on
+            operator (str): the operator to use
+            value (str): the value to compare
+            type_ (Type): How to treat the value (defaults to String)
+        """
         self.filters.append(
-            {'keyword': keyword, 'operator': operator, 'value': value, 'type': type}
+            {'keyword': keyword, 'operator': operator, 'value': value, 'type': type_}
         )
 
     def set_raw_tql(self, tql):

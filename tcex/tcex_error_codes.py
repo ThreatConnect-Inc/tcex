@@ -2,7 +2,7 @@
 """ TcEx Error Codes """
 
 
-class TcExErrorCodes(object):
+class TcExErrorCodes:
     """TcEx Framework Error Codes."""
 
     @property

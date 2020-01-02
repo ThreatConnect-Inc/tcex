@@ -45,7 +45,7 @@ class TestTags1:
         attr.displayed = displayed
         attr.source = source
 
-        tcex.log.debug('attribute data: {}'.format(attr))  # cover __str__ method
+        tcex.log.debug(f'attribute data: {attr}')  # cover __str__ method
         assert attr.displayed == displayed
         assert attr.source == source
         assert attr.type == attr_type

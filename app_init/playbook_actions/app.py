@@ -12,7 +12,7 @@ class App(PlaybookApp):
 
     def __init__(self, _tcex):
         """Initialize class properties."""
-        super(App, self).__init__(_tcex)
+        super().__init__(_tcex)
         self.output_strings = []
 
     @IterateOnArg(arg='input_strings')
@@ -74,7 +74,7 @@ class App(PlaybookApp):
     def write_output(self):
         """ Write the Playbook output variables. """
         # output
-        self.tcex.log.debug('output_strings: {}'.format(self.output_strings))
+        self.tcex.log.debug(f'output_strings: {self.output_strings}')
 
         self.tcex.playbook.create_output('string.operation', self.args.tc_action)
         self.tcex.playbook.create_output('string.outputs', self.output_strings)

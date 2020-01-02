@@ -11,7 +11,7 @@ class Victim(TIMappings):
     """Unique API calls for Victim API Endpoints"""
 
     def __init__(self, tcex, name, owner=None, **kwargs):
-        super(Victim, self).__init__(tcex, 'Victim', 'victims', None, 'victim', None, owner)
+        super().__init__(tcex, 'Victim', 'victims', None, 'victim', None, owner)
         self._data['name'] = name
 
         for arg, value in kwargs.items():
@@ -203,33 +203,29 @@ class Victim(TIMappings):
             self._tcex.handle_error(910, [self.type])
 
         if not asset_type:
-            for a in self.tc_requests.victim_assets(self.api_type, self.api_branch, self.unique_id):
-                yield a
+            yield from self.tc_requests.victim_assets(
+                self.api_type, self.api_branch, self.unique_id
+            )
         if asset_type == 'PHONE':
-            for a in self.tc_requests.victim_phone_assets(
+            yield from self.tc_requests.victim_phone_assets(
                 self.api_type, self.api_branch, self.unique_id
-            ):
-                yield a
+            )
         if asset_type == 'EMAIL':
-            for a in self.tc_requests.victim_email_assets(
+            yield from self.tc_requests.victim_email_assets(
                 self.api_type, self.api_branch, self.unique_id
-            ):
-                yield a
+            )
         if asset_type == 'NETWORK':
-            for a in self.tc_requests.victim_network_assets(
+            yield from self.tc_requests.victim_network_assets(
                 self.api_type, self.api_branch, self.unique_id
-            ):
-                yield a
+            )
         if asset_type == 'SOCIAL':
-            for a in self.tc_requests.victim_social_assets(
+            yield from self.tc_requests.victim_social_assets(
                 self.api_type, self.api_branch, self.unique_id
-            ):
-                yield a
+            )
         if asset_type == 'WEB':
-            for a in self.tc_requests.victim_web_assets(
+            yield from self.tc_requests.victim_web_assets(
                 self.api_type, self.api_branch, self.unique_id
-            ):
-                yield a
+            )
 
         self._tcex.handle_error(
             925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
@@ -259,28 +255,23 @@ class Victim(TIMappings):
 
     def phone_assets(self):
         """ Gets Phone assets """
-        for pa in self.assets(asset_type='PHONE'):
-            yield pa
+        yield from self.assets(asset_type='PHONE')
 
     def email_assets(self):
         """ Gets Phone assets """
-        for ea in self.assets(asset_type='EMAIL'):
-            yield ea
+        yield from self.assets(asset_type='EMAIL')
 
     def network_assets(self):
         """ Gets Network assets """
-        for na in self.assets(asset_type='NETWORK'):
-            yield na
+        yield from self.assets(asset_type='NETWORK')
 
     def social_assets(self):
         """ Gets Social assets """
-        for sa in self.assets(asset_type='SOCIAL'):
-            yield sa
+        yield from self.assets(asset_type='SOCIAL')
 
     def web_assets(self):
         """ Gets a Web assets """
-        for wa in self.assets(asset_type='WEB'):
-            yield wa
+        yield from self.assets(asset_type='WEB')
 
     def phone_asset(self, asset_id, action='GET'):
         """ Gets a Phone asset """

@@ -1,19 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx App Init."""
-
 import argparse
 import sys
 import traceback
 
 import colorama as c
-
 from tcex.bin import Init
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -91,7 +84,7 @@ args, extra_args = parser.parse_known_args()
 if __name__ == '__main__':
     try:
         tci = Init(args)
-        print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
+        print(f'{c.Style.BRIGHT}{c.Fore.WHITE}Using files from "{args.branch}" branch')
 
         if args.action == 'update' or args.action == 'migrate':
             # check if the current directory is empty
@@ -104,7 +97,7 @@ if __name__ == '__main__':
             template = tci.args.template
             if template is None:
                 template = 'playbook'
-                print('{}No template provided, defaulting to {}.'.format(c.Fore.YELLOW, template))
+                print(f'{c.Fore.YELLOW}No template provided, defaulting to {template}.')
 
             # download common files
             tci.download_file('.pre-commit-config.yaml')
@@ -128,16 +121,16 @@ if __name__ == '__main__':
                 tci.download_file('playbook/run.py', 'run.py')
             elif template.startswith('service'):
                 tci.download_file('service/service_app.py', 'service_app.py')
-                tci.download_file('{}/run.py'.format(template), 'run.py')
+                tci.download_file(f'{template}/run.py', 'run.py')
 
             # download template specific files
-            tci.download_file('{}/app.py'.format(template), 'app.py')
+            tci.download_file(f'{template}/app.py', 'app.py')
             if template.startswith('external'):
-                tci.download_file('{}/app_config.json'.format(template), 'app_config.json')
+                tci.download_file(f'{template}/app_config.json', 'app_config.json')
             else:
-                tci.download_file('{}/args.py'.format(template), 'args.py')
-                tci.download_file('{}/install.json'.format(template), 'install.json')
-                tci.download_file('{}/tcex.json'.format(template), 'tcex.json')
+                tci.download_file(f'{template}/args.py', 'args.py')
+                tci.download_file(f'{template}/install.json', 'install.json')
+                tci.download_file(f'{template}/tcex.json', 'tcex.json')
 
             # if we are migrating, update the install.json
             if not template.startswith('external') and args.action == 'migrate':
@@ -155,7 +148,7 @@ if __name__ == '__main__':
             template = tci.args.template
             if template is None:
                 template = template_map.get(tci.ij.runtime_level.lower(), 'external')
-                print('{}Using template "{}" for updates.'.format(c.Fore.CYAN, template))
+                print(f'{c.Fore.CYAN}Using template "{template}" for updates.')
 
             # update common files
             tci.download_file('.pre-commit-config.yaml')
@@ -186,5 +179,5 @@ if __name__ == '__main__':
 
     except Exception:
         # TODO: Update this, possibly raise
-        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}')
         sys.exit(1)

@@ -5,7 +5,7 @@ import time
 from datetime import datetime, timedelta
 
 
-class Cache(object):
+class Cache:
     """TcEx Cache Class."""
 
     def __init__(self, tcex, domain, data_type, ttl_seconds=None, mapping=None):
@@ -112,18 +112,18 @@ class Cache(object):
                 if cache_date is not None and int(time.time()) > int(cache_date):
                     cache_data = None
                     expired = True
-                    self.tcex.log.debug('Cached data is expired for ({}).'.format(rid))
+                    self.tcex.log.debug(f'Cached data is expired for ({rid}).')
 
             if expired or ds_data.get('found') is False:
                 # when cache is expired or does not exist use callback to get data if possible
                 if callable(data_callback):
                     # cache_data = self._encode_data(data_callback(rid))
                     cache_data = data_callback(rid)
-                    self.tcex.log.debug('Using callback data for ({}).'.format(rid))
+                    self.tcex.log.debug(f'Using callback data for ({rid}).')
                     if cache_data:
                         self.update(rid, cache_data, raise_on_error)  # update the cache data
             else:
-                self.tcex.log.debug('Using cached data for ({}).'.format(rid))
+                self.tcex.log.debug(f'Using cached data for ({rid}).')
         return cache_data
 
     def update(self, rid, data, ttl_seconds=None, raise_on_error=True):

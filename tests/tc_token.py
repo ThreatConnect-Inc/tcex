@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Token Module."""
 import os
+
 from requests import Session
 from tcex.sessions.tc_session import HmacAuth
 
 
-class TcToken(object):
+class TcToken:
     """ThreatConnect Token App"""
 
     def __init__(self):
@@ -25,11 +26,9 @@ class TcToken(object):
     @property
     def api_token(self):
         """Get a valid TC api token."""
-        r = self.session.post('{}{}api'.format(self.tc_api_path, self.tc_token_url), verify=False)
+        r = self.session.post(f'{self.tc_api_path}{self.tc_token_url}api', verify=False)
         if r.status_code != 200:
-            raise RuntimeError(
-                'This feature requires ThreatConnect 6.0 or higher ({})'.format(r.text)
-            )
+            raise RuntimeError(f'This feature requires ThreatConnect 6.0 or higher ({r.text})')
         return r.json().get('data')
 
     @property
@@ -40,11 +39,7 @@ class TcToken(object):
         TC_TOKEN_URL is the API endpoint to get a TOKEN.
         """
         data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID')}
-        r = self.session.post(
-            '{}{}svc'.format(self.tc_api_path, self.tc_token_url), json=data, verify=False
-        )
+        r = self.session.post(f'{self.tc_api_path}{self.tc_token_url}svc', json=data, verify=False)
         if r.status_code != 200:
-            raise RuntimeError(
-                'This feature requires ThreatConnect 6.0 or higher ({})'.format(r.text)
-            )
+            raise RuntimeError(f'This feature requires ThreatConnect 6.0 or higher ({r.text})')
         return r.json().get('data')

@@ -2,7 +2,7 @@
 """ThreatConnect Common Case Management"""
 
 
-class CommonCaseManagement(object):
+class CommonCaseManagement:
     """Common Case Management object that encapsulates common methods used by children classes."""
 
     def __init__(self, tcex, api_endpoint, kwargs):
@@ -75,7 +75,7 @@ class CommonCaseManagement(object):
         """
         Maps the provided kwargs to expected arguments.
         """
-        for key, value in dict(kwargs).items():
+        for key in dict(kwargs):
             new_key = self._metadata_map.get(key, key)
             # if key in ['date_added', 'eventDate', 'firstSeen', 'publishDate']:
             #     transformed_value = self._utils.format_datetime(value,
@@ -110,15 +110,17 @@ class CommonCaseManagement(object):
         }
 
     def delete(self, retry_count=0):
-        """
-        Deletes the Case Management Object. If no id is present in the obj then returns immediently.
+        """Delete the Case Management Object.
+
+        If no id is present in the obj then returns immediately.
         """
         if not self.id:
-            return
-        url = '{}/{}'.format(self.api_endpoint, self.id)
+            return None
+
+        url = f'{self.api_endpoint}/{self.id}'
         current_retries = -1
         while current_retries < retry_count:
-            self.tcex.log.debug('Resource URL: ({})'.format(url))
+            self.tcex.log.debug(f'Resource URL: ({url})')
             response = self.tcex.session.delete(url)
             if not self.success(response):
                 current_retries += 1
@@ -131,18 +133,21 @@ class CommonCaseManagement(object):
         return None
 
     def get(self, all_available_fields=False, case_management_id=None, retry_count=0, fields=None):
-        """
-        Gets the Case Management Object.
+        """Get the Case Management Object.
 
         Args:
             all_available_fields (bool): determins if all fields should be returned.
-            fields (list): A list of the fields that should be returned.
             case_management_id (int): The id of the case management object to be returned.
+            retry_count (int, optional): [description]. Defaults to 0.
+            fields (list): A list of the fields that should be returned.
+
+        Returns:
+            [type]: [description]
         """
         if fields is None:
             fields = []
         cm_id = case_management_id or self.id
-        url = '{}/{}'.format(self.api_endpoint, cm_id)
+        url = f'{self.api_endpoint}/{cm_id}'
         current_retries = -1
         entity = None
         parameters = {'fields': []}
@@ -154,7 +159,7 @@ class CommonCaseManagement(object):
                 parameters['fields'].append(field)
 
         while current_retries < retry_count:
-            self.tcex.log.debug('Resource URL: ({})'.format(url))
+            self.tcex.log.debug(f'Resource URL: ({url})')
             response = self.tcex.session.get(url, params=parameters)
             if not self.success(response):
                 current_retries += 1
@@ -174,14 +179,12 @@ class CommonCaseManagement(object):
         return []
 
     def entity_mapper(self, entity):
-        """Maps the entity to the current object. This method is overridden in children classes"""
-        return {}
+        """Entity Mapper"""
+        raise NotImplementedError('Child class must implement this method.')
 
     def _reverse_transform(self, kwargs):
-        """
-        reverse mapping of the _metadata_map method.
-        """
-        reversed_transform_mapping = dict((v, k) for k, v in self._metadata_map.items())
+        """Reverse mapping of the _metadata_map method."""
+        reversed_transform_mapping = {v: k for k, v in self._metadata_map.items()}
 
         def reverse_transform(kwargs):
             reversed_mappings = {}
@@ -203,20 +206,20 @@ class CommonCaseManagement(object):
         return reverse_transform(kwargs)
 
     def submit(self):
-        """
-        Either creates or updates the Case Management object. This is determined based on if the id
-        is already present in the object.
+        """Create or Update the Case Management object.
+
+        This is determined based on if the id is already present in the object.
         """
         url = self.api_endpoint
         as_dict = self.as_dict
 
         # if the ID is included, its an update
         if self.id:
-            url = '{}/{}'.format(self.api_endpoint, self.id)
-            self.tcex.log.debug('Resource URL: ({})'.format(url))
+            url = f'{self.api_endpoint}/{self.id}'
+            self.tcex.log.debug(f'Resource URL: ({url})')
             r = self.tcex.session.put(url, json=self._reverse_transform(as_dict))
         else:
-            self.tcex.log.debug('Resource URL: ({})'.format(url))
+            self.tcex.log.debug(f'Resource URL: ({url})')
             r = self.tcex.session.post(url, json=self._reverse_transform(as_dict))
 
         if r.ok:
@@ -226,17 +229,18 @@ class CommonCaseManagement(object):
             as_dict['id'] = self.id
             self.entity_mapper(r_json.get('data', r_json))
             return self
+
+        err = r.text or r.reason
+        if self.id:
+            self.tcex.handle_error(951, ['PUT', r.status_code, err, r.url])
         else:
-            err = r.text or r.reason
-            if self.id:
-                self.tcex.handle_error(951, ['PUT', r.status_code, err, r.url])
-            else:
-                self.tcex.handle_error(951, ['POST', r.status_code, err, r.url])
+            self.tcex.handle_error(951, ['POST', r.status_code, err, r.url])
+
         return r
 
     @staticmethod
     def success(r):
-        """
+        """[summary]
 
         Args:
             r:

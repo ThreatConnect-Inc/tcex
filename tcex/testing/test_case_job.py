@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Runtime App Test Case"""
 import os
-from six import string_types
+
 from .test_case import TestCase
 
 
@@ -30,7 +30,7 @@ class TestCaseJob(TestCase):
         """
         # resolve env vars
         for k, v in list(args.items()):
-            if isinstance(v, string_types):
+            if isinstance(v, str):
                 args[k] = self.resolve_env_args(v)
 
         self.log_data('run', 'args', args)

@@ -5,7 +5,7 @@ import os
 import hvac
 
 
-class Vault(object):
+class Vault:
     """Add Value functionality to TcEx Framework"""
 
     def __init__(self, url=None, token=None, cert=None):

@@ -100,7 +100,7 @@ class TestLogs:
 
         try:
             r = tcex.session.get('/v2/owners')
-            assert r.status_code == 200, 'Failed API call ({})'.format(r.text)
+            assert r.status_code == 200, f'Failed API call ({r.text})'
         except RuntimeError:
             assert False
 
@@ -148,7 +148,7 @@ class TestLogs:
 
         r = tcex.session.get('/v2/owners')
         if not r.ok:
-            raise RuntimeError('API call failed {}'.format(r.text))
+            raise RuntimeError(f'API call failed {r.text}')
 
         if register_thread:
             tcex.token.unregister_thread(key, self.thread_name)

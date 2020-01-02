@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """API Handler Class"""
 import logging
-import time
 import threading
+import time
 
 
 class ApiHandler(logging.Handler):
@@ -15,7 +15,7 @@ class ApiHandler(logging.Handler):
             session (Request.Session): The preconfigured instance of Session for ThreatConnect API.
             flush_limit (int): The limit to flush batch logs to the API.
         """
-        super(ApiHandler, self).__init__()
+        super().__init__()
         self.session = session
         self.flush_limit = flush_limit
         self._entries = []
@@ -63,7 +63,7 @@ class ApiHandlerFormatter(logging.Formatter):
 
     def __init__(self):
         """Initialize Class properties."""
-        super(ApiHandlerFormatter, self).__init__()
+        super().__init__()
 
     def format(self, record):
         """Format log record for ThreatConnect API.

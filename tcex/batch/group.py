@@ -9,7 +9,7 @@ from .security_label import SecurityLabel
 from .tag import Tag
 
 
-class Group(object):
+class Group:
     """ThreatConnect Batch Group Object"""
 
     # TODO: enable when support for py2 is dropped.
@@ -286,7 +286,7 @@ class Adversary(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Adversary, self).__init__('Adversary', name, **kwargs)
+        super().__init__('Adversary', name, **kwargs)
 
 
 class Campaign(Group):
@@ -304,7 +304,7 @@ class Campaign(Group):
             first_seen (str, kwargs): The first seen datetime expression for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Campaign, self).__init__('Campaign', name, **kwargs)
+        super().__init__('Campaign', name, **kwargs)
 
     @property
     def first_seen(self):
@@ -338,7 +338,7 @@ class Document(Group):
             password (bool, kwargs): If malware is true a password for the zip archive is required.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Document, self).__init__('Document', name, **kwargs)
+        super().__init__('Document', name, **kwargs)
         self._group_data['fileName'] = file_name
         # file data/content to upload
         self._file_content = kwargs.get('file_content')
@@ -402,7 +402,7 @@ class Email(Group):
             to_addr (str, kwargs): The **to** address for this Email.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Email, self).__init__('Email', name, **kwargs)
+        super().__init__('Email', name, **kwargs)
         self._group_data['subject'] = subject
         self._group_data['header'] = header
         self._group_data['body'] = body
@@ -461,7 +461,7 @@ class Event(Group):
             status (str, kwargs): The status for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Event, self).__init__('Event', name, **kwargs)
+        super().__init__('Event', name, **kwargs)
 
     @property
     def event_date(self):
@@ -513,7 +513,7 @@ class Incident(Group):
             status (str, kwargs): The status for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Incident, self).__init__('Incident', name, **kwargs)
+        super().__init__('Incident', name, **kwargs)
 
     @property
     def event_date(self):
@@ -564,7 +564,7 @@ class IntrusionSet(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(IntrusionSet, self).__init__('Intrusion Set', name, **kwargs)
+        super().__init__('Intrusion Set', name, **kwargs)
 
 
 class Report(Group):
@@ -585,7 +585,7 @@ class Report(Group):
             publish_date (str, kwargs): The publish datetime expression for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Report, self).__init__('Report', name, **kwargs)
+        super().__init__('Report', name, **kwargs)
         # file data/content to upload
         self._file_content = kwargs.get('file_content')
 
@@ -649,7 +649,7 @@ class Signature(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Signature, self).__init__('Signature', name, **kwargs)
+        super().__init__('Signature', name, **kwargs)
         self._group_data['fileName'] = file_name
         self._group_data['fileType'] = file_type
         self._group_data['fileText'] = file_text
@@ -669,4 +669,4 @@ class Threat(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Threat, self).__init__('Threat', name, **kwargs)
+        super().__init__('Threat', name, **kwargs)

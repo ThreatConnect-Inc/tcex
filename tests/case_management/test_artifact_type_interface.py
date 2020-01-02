@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 
-from ..tcex_init import tcex
 from tcex.case_management.tql import TQL
+
+from ..tcex_init import tcex
 
 
 # pylint: disable=W0201

@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 """Playbook App"""
 import os
-import traceback
 import sys
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
+import traceback
 
 
 def _update_app_path():
@@ -79,6 +74,6 @@ if __name__ == '__main__':
         tcex.playbook.exit(msg=app.exit_message)
 
     except Exception as e:
-        main_err = 'Generic Error.  See logs for more details ({}).'.format(e)
+        main_err = f'Generic Error.  See logs for more details ({e}).'
         tcex.log.error(traceback.format_exc())
         tcex.playbook.exit(1, main_err)

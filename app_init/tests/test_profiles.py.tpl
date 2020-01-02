@@ -11,11 +11,6 @@ from ..profiles import profiles
 from .custom_feature import CustomFeature  # pylint: disable=E0402
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=no-member
-
 # get profile names
 profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d'))
 

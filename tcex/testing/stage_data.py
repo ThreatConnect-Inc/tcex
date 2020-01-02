@@ -2,13 +2,13 @@
 """Stage Data Testing Module"""
 import base64
 import binascii
-import sys
 import json
 import os
+import sys
 
 
 # pylint: disable=R0201
-class Stager(object):
+class Stager:
     """Stage Data class"""
 
     def __init__(self, tcex, log, log_data):
@@ -39,7 +39,7 @@ class Stager(object):
         return self._threatconnect
 
 
-class Redis(object):
+class Redis:
     """Stages the Redis Data"""
 
     def __init__(self, provider):
@@ -79,14 +79,13 @@ class Redis(object):
             data = base64.b64decode(binary_data)
         except binascii.Error:
             print(
-                'The Binary staging data for variable {} is not properly base64 '
-                'encoded.'.format(variable)
+                f'The Binary staging data for variable {variable} is not properly base64 encoded.'
             )
             sys.exit()
         return data
 
 
-class ThreatConnect(object):
+class ThreatConnect:
     """Stages the ThreatConnect Data"""
 
     def __init__(self, provider):
@@ -99,7 +98,7 @@ class ThreatConnect(object):
         for stage_file in os.listdir(directory):
             if not (stage_file.endswith('.json') and stage_file.startswith('tc_stage_')):
                 continue
-            entities.append(self._convert_to_entities('{}/{}'.format(directory, stage_file)))
+            entities.append(self._convert_to_entities(f'{directory}/{stage_file}'))
         return self.entities(entities, owner, batch=batch)
 
     def file(self, file, owner, batch=False):
@@ -179,7 +178,9 @@ class ThreatConnect(object):
             if entity_type == 'Case_Management':
                 cm = self.provider.tcex.cm.obj_from_type(data.get('sub_type'))
                 if data.get('sub_type').lower() in [
-                    'workflow_event', 'workflowevent', 'workflow event'
+                    'workflow_event',
+                    'workflowevent',
+                    'workflow event',
                 ]:
                     continue
                 cm.id = data.get('unique_id')

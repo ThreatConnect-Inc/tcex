@@ -2,101 +2,169 @@
 """ThreatConnect Workflow Event"""
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
-from .tql import TQL
 from .note import Note, Notes
+from .tql import TQL
 
 api_endpoint = '/v3/workflowEvents'
 
 
 class WorkflowEvents(CommonCaseManagementCollection):
+    """[summary]
+
+    Args:
+        tcex ([type]): [description]
+        initial_response ([type], optional): [description]. Defaults to None.
+        tql_filters ([type], optional): [description]. Defaults to None.
+    """
+
     def __init__(self, tcex, initial_response=None, tql_filters=None):
+        """Initialize Class properties"""
         super().__init__(
             tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
         )
         self.added_tags = []
 
     def __iter__(self):
+        """Iterate on Workflow Events."""
         return self.iterate(initial_response=self.initial_response, added_entities=self.added_tags)
 
     def summary_filter(self, operator, summary):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            summary ([type]): [description]
         """
         self.tql.add_filter('summary', operator, summary)
 
     def deleted_filter(self, operator, deleted):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            deleted ([type]): [description]
         """
         self.tql.add_filter('deleted', operator, deleted)
 
     def case_id_filter(self, operator, case_id):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            case_id ([type]): [description]
         """
         self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def link_filter(self, operator, link):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            link ([type]): [description]
         """
         self.tql.add_filter('link', operator, link)
 
     def deleted_reason_filter(self, operator, deleted_reason):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            deleted_reason ([type]): [description]
         """
         self.tql.add_filter('deletedreason', operator, deleted_reason)
 
     def system_generated_filter(self, operator, system_generated):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            system_generated ([type]): [description]
         """
         self.tql.add_filter('systemgenerated', operator, system_generated)
 
-    def id_filter(self, operator, id):
+    def id_filter(self, operator, id_):
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            id ([type]): [description]
         """
-            The summary of the artifact
-        """
-        self.tql.add_filter('id', operator, id, TQL.Type.INTEGER)
+        self.tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
 
     def link_text_filter(self, operator, link_text):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            link_text ([type]): [description]
         """
         self.tql.add_filter('link_text', operator, link_text)
 
     def date_added_filter(self, operator, date_added):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            date_added ([type]): [description]
         """
         self.tql.add_filter('dateadded', operator, date_added)
 
     def event_date_filter(self, operator, event_date):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            event_date ([type]): [description]
         """
         self.tql.add_filter('eventdate', operator, event_date)
 
     def username_filter(self, operator, username):
-        """
-            The summary of the artifact
+        """[summary]
+
+        Args:
+            operator ([type]): [description]
+            username ([type]): [description]
         """
         self.tql.add_filter('username', operator, username)
 
     def entity_map(self, entity):
+        """[summary]
+
+        Args:
+            entity ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         return WorkflowEvent(self.tcex, **entity)
 
     def add_tag(self, tag):
+        """[summary]
+
+        Args:
+            tag ([type]): [description]
+        """
         self.added_tags.append(tag)
 
     @property
     def as_dict(self):
-        return super().as_dict(self.added_tags)
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
+        return super().list_as_dict(self.added_tags)
 
 
 class WorkflowEvent(CommonCaseManagement):
+    """[summary]
+
+    Args:
+        tcex ([type]): [description]
+    """
+
     def __init__(self, tcex, **kwargs):
+        """Initialize Class properties"""
         super().__init__(tcex, api_endpoint, kwargs)
         self._event_date = kwargs.get('event_date', None)
         self._date_added = kwargs.get('date_added', None)
@@ -108,14 +176,11 @@ class WorkflowEvent(CommonCaseManagement):
         self._notes = Notes(self.tcex, kwargs.get('notes', {}).get('data'))
 
     def add_note(self, **kwargs):
-        """
-        Adds a note to the workflow event.
-        """
+        """Add a note to the workflow event."""
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     def entity_mapper(self, entity):
-        """
-         Maps a dict to a Workflow Event then updates self.
+        """Map a dict to a Workflow Event then updates self.
 
          Args:
              entity (dict): The dict to map self too.
@@ -125,8 +190,8 @@ class WorkflowEvent(CommonCaseManagement):
 
     @property
     def required_properties(self):
-        """
-        The required fields for a workflow event
+        """Return the required fields for a workflow event
+
         Returns:
             list of required fields for a workflow event.
         """
@@ -134,8 +199,8 @@ class WorkflowEvent(CommonCaseManagement):
 
     @property
     def available_fields(self):
-        """
-        The available fields to fetch for the workflow event.
+        """Return the available fields to fetch for the workflow event.
+
         Returns:
             list of available fields to fetch for the workflow event.
         """
@@ -143,98 +208,70 @@ class WorkflowEvent(CommonCaseManagement):
 
     @property
     def event_date(self):
-        """
-         Returns the event date for the Workflow Event.
-         """
+        """Return the event date for the Workflow Event."""
         return self._event_date
 
     @event_date.setter
     def event_date(self, event_date):
-        """
-        Sets the event date for the Workflow Event.
-        """
+        """Set the event date for the Workflow Event."""
         self._event_date = event_date
 
     @property
     def case_id(self):
-        """
-         Returns the case id for the Workflow Event.
-         """
+        """Returns the case id for the Workflow Event."""
         return self._case_id
 
     @case_id.setter
     def case_id(self, case_id):
-        """
-        Sets the case id for the Workflow Event.
-        """
+        """Set the case id for the Workflow Event."""
         self._case_id = case_id
 
     @property
     def date_added(self):
-        """
-        Returns the date added for the Workflow Event.
-        """
+        """Return the date added for the Workflow Event."""
         return self._date_added
 
     @date_added.setter
     def date_added(self, date_added):
-        """
-        Sets the date added for the Workflow Event.
-        """
+        """Set the date added for the Workflow Event."""
         self._date_added = date_added
 
     @property
     def summary(self):
-        """
-        Returns the summary for the Workflow Event.
-        """
+        """Return the summary for the Workflow Event."""
         return self._summary
 
     @summary.setter
     def summary(self, summary):
-        """
-        Sets the summary for the Workflow Event.
-        """
+        """Set the summary for the Workflow Event."""
         self._summary = summary
 
     @property
     def deleted(self):
-        """
-        Returns if the Workflow Event is deleted.
-        """
+        """Return if the Workflow Event is deleted."""
         return self._deleted
 
     @deleted.setter
     def deleted(self, deleted):
-        """
-        Sets if the Workflow Event is deleted.
-        """
+        """Set if the Workflow Event is deleted."""
         self._deleted = deleted
 
     @property
     def system_generated(self):
-        """
-        Returns if the Workflow Event is system generated.
-        """
+        """Return if the Workflow Event is system generated."""
         return self._system_generated
 
     @system_generated.setter
     def system_generated(self, system_generated):
-        """
-        Sets if the Workflow Event is system generated.
-        """
+        """Set if the Workflow Event is system generated."""
         self._system_generated = system_generated
 
     @property
     def link(self):
-        """
-        Returns the link for the Workflow Event.
-        """
+        """Return the link for the Workflow Event."""
         return self._link
 
     @link.setter
     def link(self, link):
-        """
-        Sets the link for the Workflow Event.
-        """
+        """Set the link for the Workflow Event."""
         self._link = link

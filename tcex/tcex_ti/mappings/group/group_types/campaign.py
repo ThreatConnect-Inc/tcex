@@ -14,7 +14,7 @@ class Campaign(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             first_seen (str, kwargs): The first seen datetime expression for this Group.
         """
-        super(Campaign, self).__init__(
+        super().__init__(
             tcex, 'Campaign', 'campaign', 'campaigns', owner=owner, name=name, **kwargs
         )
 

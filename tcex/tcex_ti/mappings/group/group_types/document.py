@@ -24,7 +24,7 @@ class Document(Group):
             malware (bool, kwargs): If true the file is considered malware.
             password (bool, kwargs): If malware is true a password for the zip archive is required.
         """
-        super(Document, self).__init__(
+        super().__init__(
             tcex, 'Document', 'document', 'documents', owner=owner, name=name, **kwargs
         )
         self._data['fileName'] = file_name or kwargs.get('file_name')

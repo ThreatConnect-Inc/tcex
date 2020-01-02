@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 """Decrypt file params"""
-from ctypes import c_void_p, c_int, c_ubyte, c_ulong, cdll, byref
-from ctypes import create_string_buffer, c_char_p, Structure
 import ctypes.util
+from ctypes import (
+    Structure,
+    byref,
+    c_char_p,
+    c_int,
+    c_ubyte,
+    c_ulong,
+    c_void_p,
+    cdll,
+    create_string_buffer,
+)
 
 
 class EVP_Context(Structure):  # pylint: disable=invalid-name,too-few-public-methods
@@ -50,7 +59,7 @@ class EVP_Context(Structure):  # pylint: disable=invalid-name,too-few-public-met
     ]
 
 
-class FileParams(object):  # pylint: disable=useless-object-inheritance
+class FileParams:  # pylint: disable=useless-object-inheritance
     """File parameter decoder"""
 
     def __init__(self):

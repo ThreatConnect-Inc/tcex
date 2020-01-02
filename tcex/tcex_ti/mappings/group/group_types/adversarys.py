@@ -12,7 +12,7 @@ class Adversary(Group):
         Args:
             name (str): The name for this Group.
         """
-        super(Adversary, self).__init__(
+        super().__init__(
             tcex, 'Adversary', 'adversary', 'adversaries', owner=owner, name=name, **kwargs
         )
 

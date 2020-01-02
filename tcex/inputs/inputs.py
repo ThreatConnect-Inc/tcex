@@ -4,11 +4,12 @@ import json
 import os
 import sys
 from argparse import Namespace
+
 from .argument_parser import TcArgumentParser
 from .file_params import FileParams
 
 
-class Inputs(object):
+class Inputs:
     """Module for handling inputs passed to App from CLI, Config, SecureParams, and AOT
 
     Args:
@@ -109,14 +110,14 @@ class Inputs(object):
         # check for bad status code and response that is not JSON
         if not r.ok:
             err = r.text or r.reason
-            raise RuntimeError('Error retrieving secure params from API ({}).'.format(err))
+            raise RuntimeError(f'Error retrieving secure params from API ({err}).')
 
         secure_params = {}
         try:
             secure_params = r.json()['inputs']
         except (AttributeError, KeyError, TypeError, ValueError):  # pragma: no cover
             err = r.text or r.reason
-            raise RuntimeError('Error retrieving secure params from API ({}).'.format(err))
+            raise RuntimeError(f'Error retrieving secure params from API ({err}).')
 
         return secure_params
 
@@ -144,7 +145,7 @@ class Inputs(object):
         """
         results = []
         if os.access(self.default_args.tc_out_path, os.W_OK):
-            result_file = '{}/results.tc'.format(self.default_args.tc_out_path)
+            result_file = f'{self.default_args.tc_out_path}/results.tc'
         else:
             result_file = 'results.tc'
         if os.path.isfile(result_file):
@@ -227,7 +228,7 @@ class Inputs(object):
                 # come in via secureParams need to be updated, but not all of them (e.g. log_path).
                 # this code will only update new inputs that are not provided via sys argv.
                 for key in list(config_data):
-                    if '--{}'.format(key) in sys.argv:
+                    if f'--{key}' in sys.argv:
                         del config_data[key]
 
             # update the arg Namespace via dict
@@ -264,16 +265,16 @@ class Inputs(object):
                     os.unlink(filename)
                 except Exception:
                     self.tcex.log.error(
-                        'Could not read or decrypt configuration file "{}".'.format(filename)
+                        f'Could not read or decrypt configuration file "{filename}".'
                     )
             else:
                 try:
                     with open(filename, 'r') as fh:
                         file_content = json.load(fh)
                 except ValueError:
-                    self.tcex.log.error('Could not parse configuration file "{}".'.format(filename))
+                    self.tcex.log.error(f'Could not parse configuration file "{filename}".')
         elif filename is not None:
-            self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
+            self.tcex.log.error(f'Could not load configuration file "{filename}".')
         return file_content
 
     @property
@@ -390,7 +391,7 @@ class Inputs(object):
             args (list): List of unknown arguments
         """
         for u in self._unknown_args:
-            self.tcex.log.warning(u'Unsupported arg found ({}).'.format(u))
+            self.tcex.log.warning(f'Unsupported arg found ({u}).')
 
     def update_logging(self):
         """Update the TcEx logger with appropriate handlers."""

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
-from tcex.case_management.tql import TQL
 
 
 # pylint: disable=W0201
@@ -14,6 +14,7 @@ class TestTagIndicators:
         self.cm = tcex.cm
 
     def test_get_single(self):
+        """[summary]"""
         tag = self.test_create('tag_name', delete=False)
         self.test_create('tag_name_2', delete=False)
 
@@ -25,6 +26,7 @@ class TestTagIndicators:
         self.test_delete('tag_name_2', create=False)
 
     def test_tql(self):
+        """[summary]"""
         test_tag_1 = self.test_create('tag_name', delete=False)
         self.test_create('tag_name_2', delete=False)
         tags = self.cm.tags()
@@ -37,7 +39,7 @@ class TestTagIndicators:
 
         # Test AND functionality
         tags.name_filter(TQL.Operator.EQ, 'does not exist')
-        assert len(tags) == 0
+        assert not tags
 
         # Clear Filters
         tags.tql.filters = []
@@ -63,6 +65,12 @@ class TestTagIndicators:
         self.test_delete('tag_name_2', create=False)
 
     def test_delete(self, name='tag_name', create=True):
+        """[summary]
+
+        Args:
+            name (str, optional): [description]. Defaults to 'tag_name'.
+            create (bool, optional): [description]. Defaults to True.
+        """
         if create:
             self.test_create(name, delete=False)
         tags = self.cm.tags()
@@ -71,6 +79,16 @@ class TestTagIndicators:
             tag.delete()
 
     def test_create(self, name='tag_name', description='Tag Description', delete=True):
+        """[summary]
+
+        Args:
+            name (str, optional): [description]. Defaults to 'tag_name'.
+            description (str, optional): [description]. Defaults to 'Tag Description'.
+            delete (bool, optional): [description]. Defaults to True.
+
+        Returns:
+            [type]: [description]
+        """
         tag = self.cm.tag(name=name, description=description)
         tag.submit()
 

@@ -4,7 +4,7 @@
 # Typically no changes are required to this file.
 
 
-class ExternalApp(object):
+class ExternalApp:
     """Get the owners and indicators in the given owner."""
 
     def __init__(self, _tcex):

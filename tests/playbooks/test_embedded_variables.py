@@ -164,10 +164,10 @@ class TestEmbedded:
     )
     def test_embedded_read_string(self, tcex, embedded_value, resolved_value):
         """Test playbook embedded string in string"""
-        print('\nredis    : <{}>'.format(repr(tcex.playbook.read(embedded_value))))
-        print('\nresolved : <{}>'.format(repr(resolved_value)))
-        print('redis (type)   : {}'.format(type(tcex.playbook.read(embedded_value))))
-        print('resolved (type): {}'.format(type(resolved_value)))
+        print(f'\nredis    : <{repr(tcex.playbook.read(embedded_value))}>')
+        print(f'\nresolved : <{repr(resolved_value)}>')
+        print(f'redis (type)   : {type(tcex.playbook.read(embedded_value))}')
+        print(f'resolved (type): {type(resolved_value)}')
 
         # import json
 
@@ -203,10 +203,10 @@ class TestEmbedded:
         tcex.playbook.create_string(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
-        # print('\nredis    : {}'.format(tcex.playbook.read(variable)))
-        # print('resolved : {}'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
+        # print(f'\nredis    : {tcex.playbook.read(variable)}')
+        # print(f'resolved : {resolved_value}')
+        # print(f'redis (type)   : {type(tcex.playbook.read(variable))}')
+        # print(f'resolved (type): {type(resolved_value)}')
 
         tcex.playbook.delete(variable)
         assert tcex.playbook.read(variable) is None
@@ -227,10 +227,10 @@ class TestEmbedded:
         tcex.playbook.create_string(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
-        # print('redis    : {}'.format(tcex.playbook.read(variable)))
-        # print('resolved : {}'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
+        # print(f'redis    : {tcex.playbook.read(variable)}')
+        # print(f'resolved : {resolved_value}')
+        # print(f'redis (type)   : {type(tcex.playbook.read(variable))}')
+        # print(f'resolved (type): {type(resolved_value)}')
 
         tcex.playbook.delete(variable)
         assert tcex.playbook.read(variable) is None
@@ -251,10 +251,10 @@ class TestEmbedded:
         tcex.playbook.create_string_array(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
-        # print('redis    : {}'.format(tcex.playbook.read(variable)))
-        # print('resolved : {}'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
+        # print(f'redis    : {tcex.playbook.read(variable)}')
+        # print(f'resolved : {resolved_value}')
+        # print(f'redis (type)   : {type(tcex.playbook.read(variable))}')
+        # print(f'resolved (type): {type(resolved_value)}')
 
         tcex.playbook.delete(variable)
         assert tcex.playbook.read(variable) is None
@@ -275,10 +275,10 @@ class TestEmbedded:
         tcex.playbook.create_key_value(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
-        # print('redis    : {}'.format(tcex.playbook.read(variable)))
-        # print('resolved : {}'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
+        # print(f'redis    : {tcex.playbook.read(variable)}')
+        # print(f'resolved : {resolved_value}')
+        # print(f'redis (type)   : {type(tcex.playbook.read(variable))}')
+        # print(f'resolved (type): {type(resolved_value)}')
 
         tcex.playbook.delete(variable)
         assert tcex.playbook.read(variable) is None
@@ -301,10 +301,10 @@ class TestEmbedded:
         tcex.playbook.create_key_value(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
-        # print('redis    : {}'.format(tcex.playbook.read(variable)))
-        # print('resolved : {}'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
+        # print(f'redis    : {tcex.playbook.read(variable)}')
+        # print(f'resolved : {resolved_value}')
+        # print(f'redis (type)   : {type(tcex.playbook.read(variable))}')
+        # print(f'resolved (type): {type(resolved_value)}')
 
         tcex.playbook.delete(variable)
         assert tcex.playbook.read(variable) is None
@@ -325,10 +325,10 @@ class TestEmbedded:
         tcex.playbook.create_key_value(variable, embedded_value)
         assert tcex.playbook.read(variable) == resolved_value
 
-        # print('redis    : {}'.format(tcex.playbook.read(variable)))
-        # print('resolved : {}'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
+        # print(f'redis    : {tcex.playbook.read(variable)}')
+        # print(f'resolved : {resolved_value}')
+        # print(f'redis (type)   : {type(tcex.playbook.read(variable))}')
+        # print(f'resolved (type): {type(resolved_value)}')
 
         tcex.playbook.delete(variable)
         assert tcex.playbook.read(variable) is None

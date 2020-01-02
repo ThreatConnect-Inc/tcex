@@ -3,7 +3,7 @@
 import json
 
 
-class Attribute(object):
+class Attribute:
     """ThreatConnect Batch Attribute Object"""
 
     # TODO: enable when support for py2 is dropped.

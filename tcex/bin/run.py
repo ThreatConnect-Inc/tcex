@@ -16,13 +16,11 @@ import subprocess
 import sys
 from datetime import datetime
 
-from six import string_types
 import colorama as c
-
-
 from tcex import TcEx
-from .bin import Bin
+
 from ..app_config_object import InstallJson
+from .bin import Bin
 
 
 class Run(Bin):
@@ -38,7 +36,7 @@ class Run(Bin):
         Args:
             _args (namespace): The argparser args Namespace.
         """
-        super(Run, self).__init__(_args)
+        super().__init__(_args)
 
         # properties
         self._signal_handler_init()
@@ -91,20 +89,20 @@ class Run(Bin):
         """
         include_directory = os.path.join(self.app_path, include_directory)
         if not os.path.isdir(include_directory):
-            msg = 'Provided include directory does not exist ({}).'.format(include_directory)
+            msg = f'Provided include directory does not exist ({include_directory}).'
             sys.exit(msg)
 
         profiles = []
         for filename in sorted(os.listdir(include_directory)):
             if filename.endswith('.json'):
-                self.log.info('Loading config: {}'.format(filename))
-                print('Include File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, filename))
+                self.log.info(f'Loading config: {filename}')
+                print(f'Include File: {c.Style.BRIGHT}{c.Fore.MAGENTA}{filename}')
                 config_file = os.path.join(include_directory, filename)
                 with open(config_file) as data_file:
                     try:
                         profiles.extend(json.load(data_file))
                     except ValueError as e:
-                        print('Invalid JSON file: {}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
+                        print(f'Invalid JSON file: {c.Style.BRIGHT}{c.Fore.RED}{e}')
                         sys.exit(1)
         return profiles
 
@@ -149,7 +147,7 @@ class Run(Bin):
         log.addHandler(fh)
 
         log.setLevel(level)
-        log.info('Logging Level: {}'.format(logging.getLevelName(level)))
+        log.info(f'Logging Level: {logging.getLevelName(level)}')
         return log
 
     def _signal_handler_init(self):
@@ -166,9 +164,9 @@ class Run(Bin):
             frame ([type]): [Description]
         """
         if self.container is not None:
-            print('{}{}Stopping docker container.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+            print(f'{c.Style.BRIGHT}{c.Fore.YELLOW}Stopping docker container.')
             self.container.stop()
-        print('{}{}Interrupt signal received.'.format(c.Style.BRIGHT, c.Fore.RED))
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}Interrupt signal received.')
         self.log.error('tcrun received an interrupt signal and will now exit.')
         sys.exit(1)
 
@@ -283,8 +281,8 @@ class Run(Bin):
             return
         if not re.match(self._vars_match, variable):
             return
-        self.log.info('[{}] Deleting redis variable: {}.'.format(clear_type, variable))
-        print('Clearing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
+        self.log.info(f'[{clear_type}] Deleting redis variable: {variable}.')
+        print(f'Clearing Variables: {c.Style.BRIGHT}{c.Fore.MAGENTA}{variable}')
         self.tcex.playbook.delete(variable)
         self._clear_redis_tracker.append(variable)
 
@@ -303,16 +301,8 @@ class Run(Bin):
             name = self.tcex.playbook.read(data.get('name'))
             name = self.path_data(name, path)
             if name is not None:
-                print(
-                    'Deleting ThreatConnect Group: {}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.MAGENTA, name
-                    )
-                )
-                self.log.info(
-                    '[{}] Deleting ThreatConnect {} with name: {}.'.format(
-                        clear_type, tc_type, name
-                    )
-                )
+                print(f'Deleting ThreatConnect Group: {c.Style.BRIGHT}{c.Fore.MAGENTA}{name}')
+                self.log.info(f'[{clear_type}] Deleting ThreatConnect {tc_type} with name: {name}.')
                 batch.group(tc_type, name)
         elif tc_type in self.tcex.indicator_types:
             if data.get('summary') is not None:
@@ -323,20 +313,16 @@ class Run(Bin):
             summary = self.path_data(summary, path)
             if summary is not None:
                 print(
-                    'Deleting ThreatConnect Indicator: {}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.MAGENTA, summary
-                    )
+                    f'Deleting ThreatConnect Indicator: {c.Style.BRIGHT}{c.Fore.MAGENTA}{summary}'
                 )
                 self.log.info(
-                    '[{}] Deleting ThreatConnect {} with value: {}.'.format(
-                        clear_type, tc_type, summary
-                    )
+                    f'[{clear_type}] Deleting ThreatConnect {tc_type} with value: {summary}.'
                 )
                 batch.indicator(tc_type, summary)
         batch_results = batch.submit()
-        self.log.debug('[{}] Batch Results: {}'.format(clear_type, batch_results))
+        self.log.debug(f'[{clear_type}] Batch Results: {batch_results}')
         for error in batch_results.get('errors') or []:
-            self.log.error('[{}] Batch Error: {}'.format(clear_type, error))
+            self.log.error(f'[{clear_type}] Batch Error: {error}')
 
     @staticmethod
     def data_endswith(db_data, user_data):
@@ -402,8 +388,8 @@ class Run(Bin):
             'dict': (dict),
             'entity': (dict),
             'list': (list),
-            'str': (string_types),
-            'string': (string_types),
+            'str': ((str,)),
+            'string': ((str,)),
         }
         # user_type_tuple = tuple([data_type[t] for t in user_types])
         # if isinstance(db_data, user_type_tuple):
@@ -515,7 +501,7 @@ class Run(Bin):
         except NameError:
             return False
         if ddiff:
-            self.tcex.log.info(u'[validate] Diff      : {}'.format(ddiff))
+            self.tcex.log.info(f'[validate] Diff      : {ddiff}')
             return False
         return True
 
@@ -537,9 +523,9 @@ class Run(Bin):
         Returns:
             bool: True if the data passed validation.
         """
-        if isinstance(db_data, (string_types)):
+        if isinstance(db_data, (str)):
             db_data = json.loads(db_data)
-        if isinstance(user_data, (string_types)):
+        if isinstance(user_data, (str)):
             user_data = json.loads(user_data)
         return self.deep_diff(db_data, user_data)
 
@@ -553,14 +539,14 @@ class Run(Bin):
             sys.argv.extend(['--tc_log_file', 'tcex.log'])
             sys.argv.extend(['--tc_log_level', 'error'])
             # format key
-            arg = '--{}'.format(arg)
+            arg = f'--{arg}'
             if isinstance(value, (bool)):
                 # handle bool values as flags (e.g., --flag) with no value
                 if value:
                     sys.argv.append(arg)
             else:
                 sys.argv.append(arg)
-                sys.argv.append('{}'.format(value))
+                sys.argv.append(f'{value}')
 
         self.tcex = TcEx()
 
@@ -640,12 +626,12 @@ class Run(Bin):
             print('Could not import jmespath module (try "pip install jmespath").')
             sys.exit(1)
 
-        if isinstance(variable_data, string_types):
+        if isinstance(variable_data, str):
             # try to convert string into list/dict before using expression
             try:
                 variable_data = json.loads(variable_data)
             except Exception:
-                self.log.debug('String value ({}) could not JSON serialized.'.format(variable_data))
+                self.log.debug(f'String value ({variable_data}) could not JSON serialized.')
         if path is not None and isinstance(variable_data, (dict, list)):
             expression = jmespath.compile(path)
             variable_data = expression.search(
@@ -741,20 +727,16 @@ class Run(Bin):
             self.reports.add_profile(config, profile_selected)
 
         if not selected_profiles:
-            print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+            print(f'{c.Style.BRIGHT}{c.Fore.YELLOW}No profiles selected to run.')
 
         return selected_profiles
 
     def report(self):
         """Format and output report data to screen."""
-        print('\n{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Report:'))
+        print(f"\n{c.Style.BRIGHT}{c.Fore.CYAN}{'Report:'}")
         # report headers
-        print('{!s:<85}{!s:<20}'.format('', 'Validations'))
-        print(
-            '{!s:<60}{!s:<25}{!s:<10}{!s:<10}'.format(
-                'Profile:', 'Execution:', 'Passed:', 'Failed:'
-            )
-        )
+        print(f"{''!s:<85}{'Validations'!s:<20}")
+        print(f"{'Profile:'!s:<60}{'Execution:'!s:<25}{'Passed:'!s:<10}{'Failed:'!s:<10}")
         for r in self.reports:
             d = r.data
             if not d.get('selected'):
@@ -778,15 +760,10 @@ class Run(Bin):
 
             # report row
             print(
-                '{!s:<60}{}{!s:<25}{}{!s:<10}{}{!s:<10}'.format(
-                    d.get('name'),
-                    execution_color,
-                    execution_text,
-                    pass_count_color,
-                    pass_count,
-                    fail_count_color,
-                    fail_count,
-                )
+                f"{d.get('name'):<60}"
+                f'{execution_color}{execution_text:<25}'
+                f'{pass_count_color}{pass_count!s:<10}'
+                f'{fail_count_color}{fail_count!s:<10}'
             )
 
         # write report to disk
@@ -802,7 +779,7 @@ class Run(Bin):
         install_json = self.profile.get('install_json')
         program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
 
-        print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
+        print(f"{c.Style.BRIGHT}{'-' * 100}")
 
         if install_json.get('programMain') is not None:
             program_main = install_json.get('programMain').replace('.py', '')
@@ -810,7 +787,7 @@ class Run(Bin):
             # TODO: remove this option on version 1.0.0
             program_main = self.profile.get('script').replace('.py', '')
         else:
-            print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
+            print(f'{c.Style.BRIGHT}{c.Fore.RED}No Program Main or Script defined.')
             sys.exit(1)
 
         self.run_display_profile(program_main)
@@ -819,12 +796,10 @@ class Run(Bin):
 
         # get the commands
         commands = self.run_commands(program_language, program_main)
-        self.log.info('[run] Running command {}'.format(commands.get('print_command')))
+        self.log.info(f"[run] Running command {commands.get('print_command')}")
 
         # output command
-        print(
-            'Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, commands.get('print_command'))
-        )
+        print(f"Executing: {c.Style.BRIGHT}{c.Fore.GREEN}{commands.get('print_command')}")
 
         if self.args.docker:
             return self.run_docker(commands)
@@ -861,7 +836,7 @@ class Run(Bin):
                     '--port',
                     self.args.vscd_port,
                     '--wait',
-                    '{}.py'.format(program_main),
+                    f'{program_main}.py',
                 ]
             else:
                 command = [python_exe, '.', program_main]
@@ -942,9 +917,8 @@ class Run(Bin):
             import docker
         except ImportError:
             print(
-                '{}{}Could not import docker module (try "pip install docker").'.format(
-                    c.Style.BRIGHT, c.Fore.RED
-                )
+                f'{c.Style.BRIGHT}{c.Fore.RED}Could not import docker module '
+                f'(try "pip install docker").'
             )
             sys.exit(1)
 
@@ -957,25 +931,25 @@ class Run(Bin):
 
         # app data
         app_dir = os.getcwd()
-        # app_path = '{}/{}'.format(app_dir, program_main)
+        # app_path = f'{app_dir}/{program_main}'
 
         # ports
         ports = {}
         if self.args.vscd:
-            ports = {'{}/tcp'.format(self.args.vscd_port): self.args.vscd_port}
+            ports = {f'{self.args.vscd_port}/tcp': self.args.vscd_port}
 
         # volumes
         volumes = {}
-        in_path = '{}/{}'.format(app_dir, app_args_data.get('tc_in_path'))
+        in_path = f"{app_dir}/{app_args_data.get('tc_in_path')}"
         if app_args_data.get('tc_in_path') is not None:
             volumes[in_path] = {'bind': in_path}
-        log_path = '{}/{}'.format(app_dir, app_args_data.get('tc_log_path'))
+        log_path = f"{app_dir}/{app_args_data.get('tc_log_path')}"
         if app_args_data.get('tc_log_path') is not None:
             volumes[log_path] = {'bind': log_path}
-        out_path = '{}/{}'.format(app_dir, app_args_data.get('tc_out_path'))
+        out_path = f"{app_dir}/{app_args_data.get('tc_out_path')}"
         if app_args_data.get('tc_out_path') is not None:
             volumes[out_path] = {'bind': out_path}
-        temp_path = '{}/{}'.format(app_dir, app_args_data.get('tc_temp_path'))
+        temp_path = f"{app_dir}/{app_args_data.get('tc_temp_path')}"
         if app_args_data.get('tc_temp_path') is not None:
             volumes[temp_path] = {'bind': temp_path}
         volumes[app_dir] = {'bind': app_dir}
@@ -995,7 +969,7 @@ class Run(Bin):
             self.container = client.containers.run(
                 docker_image,
                 entrypoint=commands.get('cli_command'),
-                environment=['PYTHONPATH={}/lib_latest'.format(app_dir)],
+                environment=[f'PYTHONPATH={app_dir}/lib_latest'],
                 detach=True,
                 # network_mode=install_json.get('docker_host', 'host'),
                 ports=ports,
@@ -1007,9 +981,9 @@ class Run(Bin):
             status_code = results.get('StatusCode')
             error = results.get('Error')
             if error:
-                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, error))
+                print(f'{c.Style.BRIGHT}{c.Fore.RED}{error}')
         except Exception as e:
-            print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
+            print(f'{c.Style.BRIGHT}{c.Fore.RED}{e}')
             sys.exit()
 
         # Exit Code
@@ -1023,8 +997,8 @@ class Run(Bin):
         """
         if err is not None and err:
             for e_ in err.decode('utf-8').split('\n'):
-                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e_))
-                self.log.error('[tcrun] App error: {}'.format(e_))
+                print(f'{c.Style.BRIGHT}{c.Fore.RED}{e_}')
+                self.log.error(f'[tcrun] App error: {e_}')
 
     def run_display_app_output(self, out):
         """Print any App output.
@@ -1035,18 +1009,14 @@ class Run(Bin):
         if not self.profile.get('quiet') and not self.args.quiet:
             print('App Output:')
             for o in out.decode('utf-8').split('\n'):
-                print('  {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, o))
-                self.log.debug('[tcrun] App output: {}'.format(o))
+                print(f'  {c.Style.BRIGHT}{c.Fore.CYAN}{o}')
+                self.log.debug(f'[tcrun] App output: {o}')
 
     def run_display_description(self):
         """Print profile name with programMain."""
         # display description if available
         if self.profile.get('description'):
-            print(
-                'Description: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.MAGENTA, self.profile.get('description')
-                )
-            )
+            print(f"Description: {c.Style.BRIGHT}{c.Fore.MAGENTA}{self.profile.get('description')}")
 
     def run_display_profile(self, program_main):
         """Print profile name with programMain.
@@ -1057,20 +1027,14 @@ class Run(Bin):
         install_json = self.profile.get('install_json')
 
         output = 'Profile: '
-        output += '{}{}{}{} '.format(
-            c.Style.BRIGHT, c.Fore.CYAN, self.profile.get('profile_name'), c.Style.RESET_ALL
+        output += (
+            f"{c.Style.BRIGHT}{c.Fore.CYAN}{self.profile.get('profile_name')}{c.Style.RESET_ALL} "
         )
-        output += '[{}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL
-        )
+        output += f'[{c.Style.BRIGHT}{c.Fore.MAGENTA}{program_main}{c.Style.RESET_ALL}'
         if install_json.get('programVersion') is not None:
-            output += '{}:{}'.format(c.Style.BRIGHT, c.Style.RESET_ALL)
-            output += '{}{}{}{}'.format(
-                c.Style.BRIGHT,
-                c.Fore.MAGENTA,
-                install_json.get('programVersion'),
-                c.Style.RESET_ALL,
-            )
+            output += f'{c.Style.BRIGHT}:{c.Style.RESET_ALL}'
+            output += f'{c.Style.BRIGHT}{c.Fore.MAGENTA}'
+            output += f"{install_json.get('programVersion')}{c.Style.RESET_ALL}"
         output += ']'
         print(output)
 
@@ -1087,7 +1051,7 @@ class Run(Bin):
             bool: True if exit code is a valid exit code, else False.
         """
         exit_status = False
-        self.log.info('[run] Exit Code {}'.format(returncode))
+        self.log.info(f'[run] Exit Code {returncode}')
 
         self.reports.increment_total()  # increment report execution total
         valid_exit_codes = self.profile.get('exit_codes', [0])
@@ -1096,22 +1060,17 @@ class Run(Bin):
         if returncode in valid_exit_codes:
             exit_status = True
             self.reports.profile_execution(True)
-            print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, returncode))
+            print(f'App Exit Code: {c.Style.BRIGHT}{c.Fore.GREEN}{returncode}')
         else:
             print(
-                'App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
-                    c.Style.BRIGHT,
-                    c.Fore.RED,
-                    returncode,
-                    c.Fore.RESET,
-                    self.profile.get('exit_codes', [0]),
-                )
+                f'App Exit Code: {c.Style.BRIGHT}{c.Fore.RED}{returncode}{c.Fore.RESET} '
+                f"(Valid Exit Codes: {self.profile.get('exit_codes', [0])})"
             )
 
             self.reports.profile_execution(False)
             self.exit_code = 1
             if self.args.halt_on_fail:
-                raise RuntimeError('App exited with invalid exit code {}'.format(returncode))
+                raise RuntimeError(f'App exited with invalid exit code {returncode}')
         return exit_status
 
     def run_validate_program_main(self, program_main):
@@ -1121,12 +1080,8 @@ class Run(Bin):
             program_main (str): The executable name.
         """
         program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
-        if program_language == 'python' and not os.path.isfile('{}.py'.format(program_main)):
-            print(
-                '{}{}Could not find program main file ({}).'.format(
-                    c.Style.BRIGHT, c.Fore.RED, program_main
-                )
-            )
+        if program_language == 'python' and not os.path.isfile(f'{program_main}.py'):
+            print(f'{c.Style.BRIGHT}{c.Fore.RED}Could not find program main file ({program_main}).')
             sys.exit(1)
 
     def stage(self):
@@ -1227,7 +1182,7 @@ class Run(Bin):
         for sd in self.staging_data:
             if not isinstance(sd, dict):
                 # reported issue from qa where staging data is invalid
-                msg = 'Invalid staging data provided ({}).'.format(sd)
+                msg = f'Invalid staging data provided ({sd}).'
                 sys.exit(msg)
             data_type = sd.get('data_type', 'redis')
             if data_type == 'redis':
@@ -1268,19 +1223,13 @@ class Run(Bin):
             staging_data = []
             for staging_file in self.profile.get('data_files') or []:
                 if os.path.isfile(staging_file):
-                    print(
-                        'Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file)
-                    )
-                    self.log.info('[stage] Staging data file: {}'.format(staging_file))
+                    print(f'Staging Data: {c.Style.BRIGHT}{c.Fore.MAGENTA}{staging_file}')
+                    self.log.info(f'[stage] Staging data file: {staging_file}')
                     f = open(staging_file, 'r')
                     staging_data.extend(json.load(f))
                     f.close()
                 else:
-                    print(
-                        '{}{}Could not find file {}.'.format(
-                            c.Style.BRIGHT, c.Fore.RED, staging_file
-                        )
-                    )
+                    print(f'{c.Style.BRIGHT}{c.Fore.RED}Could not find file {staging_file}.')
             self._staging_data = staging_data
         return self._staging_data
 
@@ -1298,11 +1247,12 @@ class Run(Bin):
             try:
                 data = base64.b64decode(data)
             except binascii.Error:
-                msg = 'The Binary staging data for variable {} is not properly base64 encoded.'
-                msg = msg.format(variable)
-                sys.exit(msg)
+                sys.exit(
+                    f'The Binary staging data for variable {variable} '
+                    'is not properly base64 encoded.'
+                )
         elif variable.endswith('BinaryArray'):
-            if isinstance(data, string_types):
+            if isinstance(data, str):
                 data = json.loads(data)
 
             try:
@@ -1313,10 +1263,11 @@ class Run(Bin):
                     decoded_data.append(d_decoded)
                 data = decoded_data
             except binascii.Error:
-                msg = 'The BinaryArray staging data for variable {} is not properly base64 encoded.'
-                msg = msg.format(variable)
-                sys.exit(msg)
-        self.log.info(u'[stage] Creating variable {}'.format(variable))
+                sys.exit(
+                    f'The BinaryArray staging data for variable {variable} '
+                    'is not properly base64 encoded.'
+                )
+        self.log.info(f'[stage] Creating variable {variable}')
         self.tcex.playbook.create(variable, data)
 
     def stage_tc(self, owner, staging_data, variable):
@@ -1367,7 +1318,7 @@ class Run(Bin):
             if resource_type == 'Email':
                 resource.add_payload('option', 'createVictims')
 
-            self.log.debug('body: {}'.format(staging_data))
+            self.log.debug(f'body: {staging_data}')
             resource.body = json.dumps(staging_data)
 
             response = resource.request()
@@ -1375,23 +1326,20 @@ class Run(Bin):
                 # add resource id
                 if resource_type in self.tcex.indicator_types:
                     resource_id = resource.summary(response.get('data'))
-                    self.log.info(
-                        '[stage] Creating resource {}:{}'.format(resource_type, resource_id)
-                    )
+                    self.log.info(f'[stage] Creating resource {resource_type}:{resource_id}')
                 elif resource_type in self.tcex.group_types:
                     self.log.info(
-                        '[stage] Creating resource {}:{}'.format(
-                            resource_type, response.get('data', {}).get('name')
-                        )
+                        f'[stage] Creating resource {resource_type}:'
+                        f"{response.get('data', {}).get('name')}"
                     )
                     resource_id = response.get('data', {}).get('id')
-                self.log.debug('[stage] resource_id: {}'.format(resource_id))
+                self.log.debug(f'[stage] resource_id: {resource_id}')
                 resource.resource_id(resource_id)
 
                 entity = self.tcex.playbook.json_to_entity(
                     response.get('data'), resource.value_fields, resource.name, resource.parent
                 )
-                self.log.debug('[stage] Creating Entity: {} ({})'.format(variable, entity[0]))
+                self.log.debug(f'[stage] Creating Entity: {variable} ({entity[0]})')
 
                 self.stage_redis(variable, entity[0])
                 # self.tcex.playbook.create_tc_entity(variable, entity[0])
@@ -1406,7 +1354,7 @@ class Run(Bin):
                 for tag_data in tags:
                     self.stage_tc_create_tag(tag_data.get('name'), resource)
         else:
-            self.log.error('[stage] Unsupported resource type {}.'.format(resource_type))
+            self.log.error(f'[stage] Unsupported resource type {resource_type}.')
 
     def stage_tc_create_attribute(self, attribute_type, attribute_value, resource):
         """Add an attribute to a resource.
@@ -1429,9 +1377,8 @@ class Run(Bin):
         a_response = attrib_resource.request()
         if a_response.get('status') != 'Success':
             self.log.warning(
-                '[stage] Failed adding attribute type "{}":"{}" ({}).'.format(
-                    attribute_type, attribute_value, a_response.get('response').text
-                )
+                f'[stage] Failed adding attribute type "{attribute_type}":"{attribute_value}" '
+                f"({a_response.get('response').text})."
             )
 
     def stage_tc_create_security_label(self, label, resource):
@@ -1446,9 +1393,8 @@ class Run(Bin):
         sl_response = sl_resource.request()
         if sl_response.get('status') != 'Success':
             self.log.warning(
-                '[tcex] Failed adding security label "{}" ({}).'.format(
-                    label, sl_response.get('response').text
-                )
+                f'[tcex] Failed adding security label "{label}" '
+                f"({sl_response.get('response').text})."
             )
 
     def stage_tc_create_tag(self, tag, resource):
@@ -1458,12 +1404,12 @@ class Run(Bin):
             tag (str): The tag to be added to the resource.
             resource (obj): An instance of tcex resource class.
         """
-        tag_resource = resource.tags(self.tcex.safetag(tag))
+        tag_resource = resource.tags(self.tcex.safe_tag(tag))
         tag_resource.http_method = 'POST'
         t_response = tag_resource.request()
         if t_response.get('status') != 'Success':
             self.log.warning(
-                '[tcex] Failed adding tag "{}" ({}).'.format(tag, t_response.get('response').text)
+                f'[tcex] Failed adding tag "{tag}" ' f"({t_response.get('response').text})."
             )
 
     def stage_tc_associations(self, entity1, entity2):
@@ -1505,13 +1451,9 @@ class Run(Bin):
         response = a_resource.request()
         if response.get('status') != 'Success':
             self.log.warning(
-                '[stage] Failed associating "{}:{}" with "{}:{}" ({}).'.format(
-                    entity1_type,
-                    entity1_id,
-                    entity2_type,
-                    entity2_id,
-                    response.get('response').text,
-                )
+                f'[stage] Failed associating "{entity1_type}:{entity1_id}" '
+                f'with "{entity2_type}:{entity2_id}" '
+                f"({response.get('response').text})"
             )
 
     def stage_tc_batch(self, owner, staging_data):
@@ -1557,9 +1499,9 @@ class Run(Bin):
                 self.stage_redis(variable, self.stage_tc_indicator_entity(data))
         # submit batch
         batch_results = batch.submit()
-        self.log.debug('[stage] Batch Results: {}'.format(batch_results))
+        self.log.debug(f'[stage] Batch Results: {batch_results}')
         for error in batch_results.get('errors') or []:
-            self.log.error('[stage] {}'.format(error))
+            self.log.error(f'[stage] {error}')
 
     @staticmethod
     def stage_tc_batch_xid(xid_type, xid_value, owner):
@@ -1573,7 +1515,7 @@ class Run(Bin):
         Returns:
             [type]: [description]
         """
-        xid_string = '{}-{}-{}'.format(xid_type, xid_value, owner)
+        xid_string = f'{xid_type}-{xid_value}-{owner}'
         hash_object = hashlib.sha256(xid_string.encode('utf-8'))
         return hash_object.hexdigest()
 
@@ -1610,11 +1552,9 @@ class Run(Bin):
         """Run the App as a subprocess."""
         lib_path = os.path.join(os.getcwd(), 'lib_latest')
         if 'PYTHONPATH' in os.environ:
-            os.environ['PYTHONPATH'] = '{}{}{}'.format(
-                lib_path, os.pathsep, os.environ['PYTHONPATH']
-            )
+            os.environ['PYTHONPATH'] = f"{lib_path}{os.pathsep}{os.environ['PYTHONPATH']}"
         else:
-            os.environ['PYTHONPATH'] = '{}'.format(lib_path)
+            os.environ['PYTHONPATH'] = f'{lib_path}'
 
     def validate(self):
         """Validate data in Redis."""
@@ -1624,7 +1564,7 @@ class Run(Bin):
             if data_type == 'redis':
                 user_data = data.get('data')
                 user_data_path = data.get('data_path')  # jmespath expression
-                if isinstance(user_data, string_types) and re.match(self._vars_match, user_data):
+                if isinstance(user_data, str) and re.match(self._vars_match, user_data):
                     # if user_data reference a redis variable retrieve the data
                     if user_data.endswith('Binary'):
                         # call specific method and do not decode data
@@ -1656,9 +1596,8 @@ class Run(Bin):
                 oper = data.get('operator', 'eq')
 
                 # validate if possible
-                sep = '-' * 10
-                self.log.info('{0} {1} {0}'.format(sep, variable))
-                # self.log.info('[validate] Variable  : {}'.format(variable))
+                self.log.info(f'{"-" * 10} {variable} {"-" * 10}')
+                # self.log.info(f'[validate] Variable  : {variable}')
                 if not self.validate_redis(db_data, user_data, oper):
                     passed = False
                     self.exit_code = 1  # if any validation fails everything fails
@@ -1698,7 +1637,7 @@ class Run(Bin):
                 pass
 
         if oper not in self.operators:
-            self.log.error('Invalid operator provided ({})'.format(oper))
+            self.log.error(f'Invalid operator provided ({oper})')
             return False
 
         # compare the data
@@ -1727,32 +1666,32 @@ class Run(Bin):
         """
         truncate = self.args.truncate
         if db_data is not None and passed:
-            if isinstance(db_data, (string_types)) and len(db_data) > truncate:
+            if isinstance(db_data, (str)) and len(db_data) > truncate:
                 db_data = db_data[:truncate]
             elif isinstance(db_data, (list)):
                 db_data_truncated = []
                 for d in db_data:
-                    if d is not None and isinstance(d, string_types) and len(d) > truncate:
-                        db_data_truncated.append('{} ...'.format(d[: self.args.truncate]))
+                    if d is not None and isinstance(d, str) and len(d) > truncate:
+                        db_data_truncated.append(f'{d[:self.args.truncate]} ...')
                     else:
                         db_data_truncated.append(d)
                 db_data = db_data_truncated
 
         if user_data is not None and passed:
-            if isinstance(user_data, (string_types)) and len(user_data) > truncate:
+            if isinstance(user_data, (str)) and len(user_data) > truncate:
                 user_data = user_data[: self.args.truncate]
             elif isinstance(user_data, (list)):
                 user_data_truncated = []
                 for u in user_data:
-                    if isinstance(db_data, (string_types)) and len(u) > truncate:
-                        user_data_truncated.append('{} ...'.format(u[: self.args.truncate]))
+                    if isinstance(db_data, (str)) and len(u) > truncate:
+                        user_data_truncated.append(f'{u[:self.args.truncate]} ...')
                     else:
                         user_data_truncated.append(u)
                 user_data = user_data_truncated
 
-        self.log.info('[validate] DB Data   : ({}), Type: [{}]'.format(db_data, type(db_data)))
-        self.log.info('[validate] Operator  : ({})'.format(oper))
-        self.log.info('[validate] User Data : ({}), Type: [{}]'.format(user_data, type(user_data)))
+        self.log.info(f'[validate] DB Data   : ({db_data}), Type: [{type(db_data)}]')
+        self.log.info(f'[validate] Operator  : ({oper})')
+        self.log.info(f'[validate] User Data : ({user_data}), Type: [{type(user_data)}]')
 
         if passed:
             self.log.info('[validate] Results   : Passed')
@@ -1764,12 +1703,12 @@ class Run(Bin):
                     for i, diff in enumerate(difflib.ndiff(db_data, user_data)):
                         if diff[0] == ' ':  # no difference
                             continue
-                        elif diff[0] == '-':
-                            self.log.info(
-                                '[validate] Diff      : Missing data at index {}'.format(i)
-                            )
+
+                        if diff[0] == '-':
+                            self.log.info(f'[validate] Diff      : Missing data at index {i}')
                         elif diff[0] == '+':
-                            self.log.info('[validate] Diff      : Extra data at index {}'.format(i))
+                            self.log.info(f'[validate] Diff      : Extra data at index {i}')
+
                         if diff_count > self.max_diff:
                             # don't spam the logs if string are vastly different
                             self.log.info('Max number of differences reached.')
@@ -1785,7 +1724,7 @@ class Run(Bin):
                 raise RuntimeError('Failed validating data.')
 
 
-class ArgBuilder(object):
+class ArgBuilder:
     """Object container for CLI Args."""
 
     def __init__(self, lang, _args):
@@ -1832,19 +1771,19 @@ class ArgBuilder(object):
             pass
         elif value is True:
             # true boolean values are flags and should not contain a value
-            self._args.append('--{}'.format(key))
-            self._args_quoted.append('--{}'.format(key))
-            self._args_masked.append('--{}'.format(key))
+            self._args.append(f'--{key}')
+            self._args_quoted.append(f'--{key}')
+            self._args_masked.append(f'--{key}')
         else:
-            self._args.append('--{}={}'.format(key, value))
+            self._args.append(f'--{key}={value}')
             if mask:
                 # mask sensitive values
                 value = 'x' * len(str(value))
             else:
                 # quote all values that would get displayed
                 value = self.quote(value)
-            self._args_quoted.append('--{}={}'.format(key, value))
-            self._args_masked.append('--{}={}'.format(key, value))
+            self._args_quoted.append(f'--{key}={value}')
+            self._args_masked.append(f'--{key}={value}')
 
     def _add_arg_java(self, key, value, mask=False):
         """Add CLI Arg formatted specifically for Java.
@@ -1857,11 +1796,11 @@ class ArgBuilder(object):
         if isinstance(value, bool):
             value = int(value)
         self._data[key] = value
-        self._args.append('{}{}={}'.format('-D', key, value))
-        self._args_quoted.append(self.quote('{}{}={}'.format('-D', key, value)))
+        self._args.append(f"{'-D'}{key}={value}")
+        self._args_quoted.append(self.quote(f"{'-D'}{key}={value}"))
         if mask:
             value = 'x' * len(str(value))
-        self._args_masked.append('{}{}={}'.format('-D', key, value))
+        self._args_masked.append(f"{'-D'}{key}={value}")
 
     def _add_arg(self, key, value, mask=False):
         """Add CLI Arg for the correct language.
@@ -1889,7 +1828,7 @@ class ArgBuilder(object):
                 self._add_arg_python(key, val)
         elif isinstance(value, dict):
             err = 'Dictionary types are not currently supported for field.'
-            print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
+            print(f'{c.Style.BRIGHT}{c.Fore.RED}{err}')
         else:
             mask = False
             env_var = re.compile(r'^\$env\.(.*)$')
@@ -1919,7 +1858,7 @@ class ArgBuilder(object):
             quote_char = "'"
 
         if re.findall(r'[!\-\=\s\$\&]{1,}', str(data)):
-            data = '{0}{1}{0}'.format(quote_char, data)
+            data = f'{quote_char}{data}{quote_char}'
         return data
 
     def load(self, profile_args):
@@ -1932,7 +1871,7 @@ class ArgBuilder(object):
             self.add(key, value)
 
 
-class Report(object):
+class Report:
     """Report Object for a single profile."""
 
     def __init__(self, profile):
@@ -1990,13 +1929,13 @@ class Report(object):
         return json.dumps(self._data, indent=2, sort_keys=True)
 
 
-class Reports(object):
+class Reports:
     """Object to hold the run report."""
 
     def __init__(self):
         """Initialize class properties."""
-        python_version = '{}.{}.{}'.format(
-            sys.version_info.major, sys.version_info.minor, sys.version_info.micro
+        python_version = (
+            f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
         )
         self.report = {
             'profiles': {'selected': [], 'unselected': []},
@@ -2075,8 +2014,7 @@ class Reports(object):
 
     def __iter__(self):
         """Interate over all report profiles."""
-        for profile in self.profiles.values():
-            yield profile
+        yield from self.profiles.values()
 
     def __str__(self):
         """Return reports as a string."""

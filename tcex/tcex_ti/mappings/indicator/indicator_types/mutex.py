@@ -18,7 +18,7 @@ class Mutex(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(Mutex, self).__init__(tcex, 'Mutex', 'mutex', 'mutexes', owner, **kwargs)
+        super().__init__(tcex, 'Mutex', 'mutex', 'mutexes', owner, **kwargs)
         self.unique_id = kwargs.get('unique_id', mutex)
         self.data['Mutex'] = mutex or self.unique_id
 

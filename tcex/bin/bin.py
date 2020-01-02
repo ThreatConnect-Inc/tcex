@@ -5,19 +5,19 @@ import json
 import os
 import sys
 
+import colorama as c
+import redis
+
+from ..app_config_object import InstallJson, LayoutJson
+
 try:
     import sqlite3
 except ModuleNotFoundError:
     # this module is only required for certain CLI commands
     pass
 
-import colorama as c
-import redis
 
-from ..app_config_object import InstallJson, LayoutJson
-
-
-class Bin(object):
+class Bin:
     """Base Class for ThreatConnect command line tools.
 
     Args:
@@ -75,12 +75,10 @@ class Bin(object):
         """
         formatted_columns = ''
         for col in set(columns):
-            formatted_columns += '"{}" text, '.format(col.strip('"').strip('\''))
+            formatted_columns += f""""{col.strip('"').strip("'")}" text, """
         formatted_columns = formatted_columns.strip(', ')
 
-        create_table_sql = 'CREATE TABLE IF NOT EXISTS {} ({});'.format(
-            table_name, formatted_columns
-        )
+        create_table_sql = f'CREATE TABLE IF NOT EXISTS {table_name} ({formatted_columns});'
         try:
             cr = self.db_conn.cursor()
             cr.execute(create_table_sql)
@@ -96,7 +94,7 @@ class Bin(object):
         """
         bindings = ('?,' * len(columns)).strip(',')
         values = [None] * len(columns)
-        sql = 'INSERT INTO {} ({}) VALUES ({})'.format(table_name, ', '.join(columns), bindings)
+        sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({bindings})"
         cur = self.db_conn.cursor()
         cur.execute(sql, values)
 
@@ -108,7 +106,7 @@ class Bin(object):
             column (str): The column name in which the value is to be updated.
             value (str): The value to update in the column.
         """
-        sql = 'UPDATE {} SET {} = \'{}\''.format(table_name, column, value)
+        sql = f'UPDATE {table_name} SET {column} = \'{value}\''
         cur = self.db_conn.cursor()
         cur.execute(sql)
 
@@ -135,7 +133,7 @@ class Bin(object):
 
             input_type = self.ij.params_dict.get(name, {}).get('type')
             if input_type is None:
-                self.handle_error('No value found in install.json for "{}".'.format(name))
+                self.handle_error(f'No value found in install.json for "{name}".')
 
             if (
                 self.ij.runtime_level.lower() == 'organization'
@@ -187,7 +185,7 @@ class Bin(object):
             err (str): The error message to print.
             halt (bool, optional): Defaults to True. If True the script will exit.
         """
-        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}{err}')
         if halt:
             sys.exit(1)
 
@@ -257,7 +255,7 @@ class Bin(object):
                     # add type stub for values
                     types = '|'.join(p.get('playbookDataType', []))
                     if types:
-                        profile_args[p.get('name')] = p.get('default', '<{}>'.format(types))
+                        profile_args[p.get('name')] = p.get('default', f'<{types}>')
                     else:
                         profile_args[p.get('name')] = p.get('default', '')
         except IndexError:
@@ -281,9 +279,9 @@ class Bin(object):
                     with open(file_fqpn, 'r') as fh:
                         self._tcex_json = json.load(fh)
                 except ValueError as e:
-                    self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
+                    self.handle_error(f'Failed to load "{file_fqpn}" file ({e}).')
             else:
-                # self.handle_error('File "{}" could not be found.'.format(file_fqpn))
+                # self.handle_error(f'File "{file_fqpn}" could not be found.')
                 self._tcex_json = {}
         return self._tcex_json
 
@@ -321,7 +319,7 @@ class Bin(object):
         if display_condition is None:
             display = True
         else:
-            display_query = 'select count(*) from {} where {}'.format(table, display_condition)
+            display_query = f'select count(*) from {table} where {display_condition}'
             try:
                 cur = self.db_conn.cursor()
                 cur.execute(display_query.replace('"', ''))
@@ -329,6 +327,6 @@ class Bin(object):
                 if rows[0][0] > 0:
                     display = True
             except sqlite3.Error as e:
-                print('"{}" query returned an error: ({}).'.format(display_query, e))
+                print(f'"{display_query}" query returned an error: ({e}).')
                 sys.exit(1)
         return display

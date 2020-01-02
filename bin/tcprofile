@@ -6,13 +6,7 @@ import sys
 import traceback
 
 import colorama as c
-
 from tcex.bin import Profile
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -94,11 +88,7 @@ if __name__ == '__main__':
             tcp.permutations()
         elif args.action == 'create':
             if args.profile_name is None:
-                print(
-                    '{}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.RED, 'For action of create the "--name" is required.'
-                    )
-                )
+                print(f'{c.Style.BRIGHT}{c.Fore.RED}For action of create the "--name" is required.')
                 sys.exit()
             profile_ = tcp.profile_create()
             tcp.profile_write(profile_, args.outfile)
@@ -116,5 +106,5 @@ if __name__ == '__main__':
         # exit
         sys.exit()
     except Exception:
-        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}')
         sys.exit(1)

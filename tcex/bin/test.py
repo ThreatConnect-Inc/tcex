@@ -7,14 +7,16 @@ import re
 import sys
 from random import randint
 
+import colorama as c
+import requests
+
+from .bin import Bin
+
 try:
     from mako.template import Template
 except ImportError:
     pass  # mako is only required for local testing
-import requests
-import colorama as c
 
-from .bin import Bin
 
 BASE_URL = 'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex'
 
@@ -30,7 +32,7 @@ class CustomTemplates:
     @property
     def feature_template(self):
         """Return the feature template file for custom methods"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'custom_feature.py.tpl')
+        url = f"{BASE_URL}/{self.branch}/app_init/tests/{'custom_feature.py.tpl'}"
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -39,7 +41,7 @@ class CustomTemplates:
     @property
     def parent_template(self):
         """Return the parent template file for custom methods"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'custom.py.tpl')
+        url = f"{BASE_URL}/{self.branch}/app_init/tests/{'custom.py.tpl'}"
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -81,12 +83,11 @@ class Profiles:
 
     def add(self, profile_name, profile_data, sort_keys=True):
         """Add a profile."""
-        profile_filename = os.path.join(self.profile_dir, '{}.json'.format(profile_name))
+        profile_filename = os.path.join(self.profile_dir, f'{profile_name}.json')
         if os.path.isfile(profile_filename):
             print(
-                '{}{}A profile with the name ({}) already exists.'.format(
-                    c.Style.BRIGHT, c.Fore.RED, profile_name
-                )
+                f'{c.Style.BRIGHT}{c.Fore.RED}A profile with the name '
+                f'({profile_name}) already exists.'
             )
             sys.exit(1)
 
@@ -154,7 +155,7 @@ class TestProfileTemplates:
     @property
     def test_profiles_template(self):
         """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'test_profiles.py.tpl')
+        url = f"{BASE_URL}/{self.branch}/app_init/tests/{'test_profiles.py.tpl'}"
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -173,7 +174,7 @@ class ValidationTemplates:
         """Initialize class properties."""
         self.branch = branch
         self.base_dir = base_dir
-        self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
+        self._variable_match = re.compile(fr'^{self._variable_pattern}$')
         self._variable_parse = re.compile(self._variable_pattern)
 
     def _method_name(self, variable):
@@ -192,7 +193,7 @@ class ValidationTemplates:
                 var = re.search(self._variable_parse, variable)
                 variable_name = var.group(3).replace('.', '_').lower()
                 variable_type = var.group(4).lower()
-                method_name = '{}_{}'.format(variable_name, variable_type)
+                method_name = f'{variable_name}_{variable_type}'
         return method_name
 
     @property
@@ -212,7 +213,7 @@ class ValidationTemplates:
     @property
     def custom_template(self):
         """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_custom.py.tpl')
+        url = f"{BASE_URL}/{self.branch}/app_init/tests/{'validate_custom.py.tpl'}"
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -221,7 +222,7 @@ class ValidationTemplates:
     @property
     def feature_template(self):
         """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_feature.py.tpl')
+        url = f"{BASE_URL}/{self.branch}/app_init/tests/{'validate_feature.py.tpl'}"
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -240,7 +241,7 @@ class ValidationTemplates:
     @property
     def parent_template(self):
         """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate.py.tpl')
+        url = f"{BASE_URL}/{self.branch}/app_init/tests/{'validate.py.tpl'}"
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -289,7 +290,7 @@ class Test(Bin):
             _args (namespace): The argparser args Namespace.
         """
 
-        super(Test, self).__init__(_args)
+        super().__init__(_args)
 
         # properties
         if not self.args.permutations:
@@ -320,16 +321,8 @@ class Test(Bin):
         elif status == 'Skipped':
             status_color = c.Fore.YELLOW
         print(
-            '{}{!s:<13}{}{!s:<50}\n{}{!s:<13}{}{}'.format(
-                c.Fore.CYAN,
-                'Downloading:',
-                file_color,
-                file,
-                c.Fore.CYAN,
-                'Status:',
-                status_color,
-                status,
-            )
+            f"{c.Fore.CYAN}{'Downloading:'!s:<13}{file_color}{file!s:<50}\n"
+            f"{c.Fore.CYAN}{'Status:'!s:<13}{status_color}{status}"
         )
 
     def add_profile(self):
@@ -346,9 +339,7 @@ class Test(Bin):
                 with open(profile_file, 'r') as fh:
                     data = json.load(fh)
             else:
-                self.handle_error(
-                    'Error reading in profile file: {}'.format(self.args.profile_file), True
-                )
+                self.handle_error(f'Error reading in profile file: {self.args.profile_file}', True)
 
             profile_data = {}
             for d in data:
@@ -454,13 +445,13 @@ class Test(Bin):
         status = 'Failed'
         local_filename = self.test_file
         if not os.path.isfile(local_filename):
-            url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, remote_filename)
+            url = f'{BASE_URL}/{self.args.branch}/app_init/tests/{remote_filename}'
             r = requests.get(url, allow_redirects=True)
             if r.ok:
                 open(local_filename, 'wb').write(r.content)
                 status = 'Success'
             else:
-                self.handle_error('Error requesting: {}'.format(url), False)
+                self.handle_error(f'Error requesting: {url}', False)
 
             # print download status
             self._print_results(local_filename, status)
@@ -471,13 +462,13 @@ class Test(Bin):
         status = 'Failed'
         local_filename = os.path.join('tests', 'conftest.py')
         if not os.path.isfile(local_filename):
-            url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, 'conftest.py')
+            url = f"{BASE_URL}/{self.args.branch}/app_init/tests/{'conftest.py'}"
             r = requests.get(url, allow_redirects=True)
             if r.ok:
                 open(local_filename, 'wb').write(r.content)
                 status = 'Success'
             else:
-                self.handle_error('Error requesting: {}'.format(url), False)
+                self.handle_error(f'Error requesting: {url}', False)
 
             # print download status
             self._print_results(local_filename, status)
@@ -488,13 +479,13 @@ class Test(Bin):
         status = 'Failed'
         local_filename = os.path.join('tests', 'profiles.py')
 
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, 'profiles.py')
+        url = f"{BASE_URL}/{self.args.branch}/app_init/tests/{'profiles.py'}"
         r = requests.get(url, allow_redirects=True)
         if r.ok:
             open(local_filename, 'wb').write(r.content)
             status = 'Success'
         else:
-            self.handle_error('Error requesting: {}'.format(url), False)
+            self.handle_error(f'Error requesting: {url}', False)
 
         # print download status
         self._print_results(local_filename, status)
@@ -525,9 +516,7 @@ class Test(Bin):
                     var_type = 'Trigger'
                 # "#App:9876:app.data.count!String"
                 # "#Trigger:9876:app.data.count!String"
-                self._output_variables.append(
-                    '#{}:{}:{}!{}'.format(var_type, 9876, p.get('name'), p.get('type'))
-                )
+                self._output_variables.append(f"#{var_type}:{9876}:{p.get('name')}!{p.get('type')}")
         return self._output_variables
 
     @property

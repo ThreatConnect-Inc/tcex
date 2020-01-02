@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
 import pytest
+
 from ..tcex_init import tcex
 
 
@@ -31,4 +32,4 @@ class TestInflect:
     def test_inflect(self, string, result):
         """Test any to datetime"""
         plural_string = tcex.utils.inflect.plural(string)
-        assert plural_string == result, 'String {} != {}'.format(plural_string, result)
+        assert plural_string == result, f'String {plural_string} != {result}'

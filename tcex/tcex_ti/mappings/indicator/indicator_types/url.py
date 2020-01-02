@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI URL"""
+from urllib.parse import quote_plus
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
-
-try:
-    from urllib import quote_plus  # Python 2
-except ImportError:
-    from urllib.parse import quote_plus  # Python
 
 
 class URL(Indicator):
@@ -24,7 +20,7 @@ class URL(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(URL, self).__init__(tcex, 'URL', 'url', 'urls', owner, **kwargs)
+        super().__init__(tcex, 'URL', 'url', 'urls', owner, **kwargs)
         self.unique_id = kwargs.get('unique_id', text)
         self.data['text'] = text or self.unique_id
         if self.unique_id:

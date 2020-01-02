@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework KeyValue Module"""
-from builtins import str
-
-try:
-    from urllib import quote  # Python 2
-except ImportError:
-    from urllib.parse import quote  # Python 3
+from urllib.parse import quote
 
 
-class TcExKeyValue(object):
+class TcExKeyValue:
     """Update Redis via ThreatConnect API Wrapper"""
 
     def __init__(self, tcex):
@@ -32,7 +27,7 @@ class TcExKeyValue(object):
         """
         key = quote(key, safe='~')
         headers = {'content-type': 'application/octet-stream'}
-        url = '/internal/playbooks/keyValue/{}'.format(key)
+        url = f'/internal/playbooks/keyValue/{key}'
         r = self.tcex.session.put(url, data=value, headers=headers)
         return r.content
 
@@ -50,7 +45,7 @@ class TcExKeyValue(object):
             (any): The response data from the remote KV store.
         """
         key = quote(key, safe='~')
-        url = '/internal/playbooks/keyValue/{}'.format(key)
+        url = f'/internal/playbooks/keyValue/{key}'
         r = self.tcex.session.get(url)
         data = r.content
         if data is not None and not isinstance(data, str):

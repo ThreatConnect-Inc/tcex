@@ -18,7 +18,7 @@ class ASN(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(ASN, self).__init__(tcex, 'ASN', 'asn', 'asns', owner, **kwargs)
+        super().__init__(tcex, 'ASN', 'asn', 'asns', owner, **kwargs)
         self.unique_id = kwargs.get('unique_id', as_number)
         self._data['AS Number'] = as_number or self.unique_id
 

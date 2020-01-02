@@ -15,7 +15,7 @@ class App(PlaybookApp):
 
         This method can be OPTIONALLY overridden.
         """
-        super(App, self).__init__(_tcex)
+        super().__init__(_tcex)
         self.pretty_json = {}
 
     # def done(self):

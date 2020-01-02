@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Host"""
+from urllib.parse import quote_plus
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
-
-try:
-    from urllib import quote_plus  # Python 2
-except ImportError:
-    from urllib.parse import quote_plus  # Python
 
 
 class Host(Indicator):
@@ -25,7 +21,7 @@ class Host(Indicator):
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
-        super(Host, self).__init__(tcex, 'Host', 'host', 'hosts', owner, **kwargs)
+        super().__init__(tcex, 'Host', 'host', 'hosts', owner, **kwargs)
         self.unique_id = kwargs.get('unique_id', hostname)
         self._data['hostName'] = hostname or self.unique_id
         if self.unique_id:

@@ -1,10 +1,14 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v1.2.3
+    rev: v2.4.0
     hooks:
       - id: check-added-large-files
+      - id: check-builtin-literals
       - id: check-ast
       - id: check-json
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: debug-statements
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
       - id: fix-encoding-pragma
@@ -13,18 +17,30 @@ repos:
         args:
           - --autofix
       - id: trailing-whitespace
-  - repo: https://github.com/ambv/black
-    rev: stable
+  - repo: https://github.com/psf/black
+    rev: 19.10b0
     hooks:
       - id: black
   # - repo: https://github.com/pre-commit/mirrors-isort
-  #   rev: "master"
+  #   rev: v4.3.21
   #   hooks:
-  #       - id: isort
+  #     - id: isort
+  # - repo: https://github.com/pycqa/pydocstyle
+  #   rev: 5.0.1
+  #   hooks:
+  #     - id: pydocstyle
+  #       args:
+  #         - --ignore=D104,D202,D203,D213,D301,D400,D406,D407,D413,D415
+  #         # D104: Missing docstring in public package
+  # - repo: https://github.com/pre-commit/pygrep-hooks
+  #   rev: v1.4.3
+  #   hooks:
+  #     - id: python-use-type-annotations
   - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: "master"
+    rev: v2.4.4
     hooks:
       - id: pylint
         args:
-          - --disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202
+          - --disable=C0103,C0302,C0330,C0415,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202,W1203
+          # C0415 - import-outside-toplevel
           - --ignore-patterns=app_init*

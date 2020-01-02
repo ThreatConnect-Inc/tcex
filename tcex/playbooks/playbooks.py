@@ -6,7 +6,7 @@ import re
 from collections import OrderedDict
 
 
-class Playbooks(object):
+class Playbooks:
     """Playbook methods for accessing key value store."""
 
     def __init__(self, tcex):
@@ -22,13 +22,11 @@ class Playbooks(object):
         self.output_data = {}
 
         # match full variable
-        self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
+        self._variable_match = re.compile(fr'^{self._variable_pattern}$')
         # capture variable parts (exactly a variable)
         self._variable_parse = re.compile(self._variable_pattern)
         # match embedded variables without quotes (#App:7979:variable_name!StringArray)
-        self._vars_keyvalue_embedded = re.compile(
-            r'(?:\"\:\s?)[^\"]?{}'.format(self._variable_pattern)
-        )
+        self._vars_keyvalue_embedded = re.compile(fr'(?:\"\:\s?)[^\"]?{self._variable_pattern}')
 
     def _parse_output_variables(self, variables):
         """Parse the injected output variables or tc_playbook_out_variable arg.
@@ -57,7 +55,7 @@ class Playbooks(object):
             # store the variables in dict by name (e.g. "status_code")
             self._output_variables[variable_name] = {'variable': o}
             # store the variables in dict by name-type (e.g. "status_code-String")
-            vt_key = '{}-{}'.format(variable_name, variable_type)
+            vt_key = f'{variable_name}-{variable_type}'
             self._output_variables_type[vt_key] = {'variable': o}
 
     @property
@@ -118,7 +116,7 @@ class Playbooks(object):
             variable_type (string): The variable type being written.
 
         """
-        index = '{}-{}'.format(key, variable_type)
+        index = f'{key}-{variable_type}'
         self.output_data.setdefault(index, {})
         if value is None:
             return
@@ -159,10 +157,10 @@ class Playbooks(object):
                 elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
                 else:
-                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(msg_type))
+                    self.tcex.log.warn(f'Unsupported AOT message type: ({msg_type}).')
                     res = self.aot_blpop()
             except Exception as e:
-                self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
+                self.tcex.exit(1, f'Exception during AOT subscription ({e}).')
 
             return res
 
@@ -172,7 +170,7 @@ class Playbooks(object):
             try:
                 self.db.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
             except Exception as e:
-                self.tcex.exit(1, 'Exception during AOT exit push ({}).'.format(e))
+                self.tcex.exit(1, f'Exception during AOT exit push ({e}).')
 
     def check_output_variable(self, variable):
         """Check to see if output variable was requested by downstream app.
@@ -208,9 +206,9 @@ class Playbooks(object):
         data = None
         if key is not None:
             key = key.strip()
-            self.tcex.log.debug(u'create variable {}'.format(key))
+            self.tcex.log.debug(f'create variable {key}')
             # bcs - only for debugging or binary might cause issues
-            # self.tcex.log.debug(u'variable value: {}'.format(value))
+            # self.tcex.log.debug(f'variable value: {value}')
             parsed_key = self.parse_variable(key.strip())
             variable_type = parsed_key['type']
             if variable_type in self.create_data_types:
@@ -256,41 +254,31 @@ class Playbooks(object):
         results = None
         if key is not None:
             key = key.strip()
-            key_type = '{}-{}'.format(key, variable_type)
+            key_type = f'{key}-{variable_type}'
             if self.output_variables_type.get(key_type) is not None:
                 # variable key-type has been requested
                 v = self.output_variables_type.get(key_type)
-                self.tcex.log.info(
-                    u'Variable {} was requested by downstream app.'.format(v.get('variable'))
-                )
+                self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
                 if value is not None:
                     results = self.create(v.get('variable'), value)
                 else:
-                    self.tcex.log.info(
-                        u'Variable {} has a none value and will not be written.'.format(key)
-                    )
+                    self.tcex.log.info(f'Variable {key} has a none value and will not be written.')
             elif self.output_variables.get(key) is not None and variable_type is None:
                 # variable key has been requested
                 v = self.output_variables.get(key)
-                self.tcex.log.info(
-                    u'Variable {} was requested by downstream app.'.format(v.get('variable'))
-                )
+                self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
                 if value is not None:
                     results = self.create(v.get('variable'), value)
                 else:
                     self.tcex.log.info(
-                        u'Variable {} has a none value and will not be written.'.format(
-                            v.get('variable')
-                        )
+                        f"Variable {v.get('variable')} has a none value and will not be written."
                     )
             else:
                 var_value = key
                 if variable_type is not None:
                     var_value = key_type
-                self.tcex.log.trace('requested output variables: {}'.format(self.output_variables))
-                self.tcex.log.debug(
-                    u'Variable {} was NOT requested by downstream app.'.format(var_value)
-                )
+                self.tcex.log.trace(f'requested output variables: {self.output_variables}')
+                self.tcex.log.debug(f'Variable {var_value} was NOT requested by downstream app.')
         return results
 
     @property
@@ -310,7 +298,7 @@ class Playbooks(object):
 
                 self._db = TcExKeyValue(self.tcex)
             else:
-                err = u'Invalid DB Type: ({})'.format(self.tcex.default_args.tc_playbook_db_type)
+                err = f'Invalid DB Type: ({self.tcex.default_args.tc_playbook_db_type})'
                 raise RuntimeError(err)
         return self._db
 
@@ -327,7 +315,7 @@ class Playbooks(object):
         if key is not None:
             data = self.db.delete(key.strip())
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     def exit(self, code=None, msg=None):
@@ -342,7 +330,7 @@ class Playbooks(object):
         if code is None:
             code = self.tcex.exit_code
             if code == 3:
-                self.tcex.log.info(u'Changing exit code from 3 to 0.')
+                self.tcex.log.info('Changing exit code from 3 to 0.')
                 code = 0  # playbooks doesn't support partial failure
         elif code not in [0, 1]:
             code = 1
@@ -416,7 +404,7 @@ class Playbooks(object):
             key_type = self.variable_type(key)
             if re.match(self._variable_match, key):
                 # only log key if it's a variable
-                self.tcex.log.debug('read variable {}'.format(key))
+                self.tcex.log.debug(f'read variable {key}')
                 if key_type in self.read_data_types:
                     # handle types with embedded variable
                     if key_type in ['Binary', 'BinaryArray']:
@@ -445,7 +433,6 @@ class Playbooks(object):
                 # and build array externally if None values are required.
                 data = []
 
-        # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))
         return data
 
     def read_array(self, key, embedded=True):
@@ -526,9 +513,7 @@ class Playbooks(object):
 
         # iterate all matching variables
         for var in (v.group(0) for v in re.finditer(self._variable_parse, str(data))):
-            self.tcex.log.debug(
-                'embedded variable: {}, parent_var_type: {}'.format(var, parent_var_type)
-            )
+            self.tcex.log.debug(f'embedded variable: {var}, parent_var_type: {parent_var_type}')
             key_type = self.variable_type(var)
             val = self.read(var)
 
@@ -538,7 +523,7 @@ class Playbooks(object):
                 # SUP-5067 - embedded string needs to have newline escaped and double quotes removed
                 val = json.dumps(val)[1:-1]
             elif key_type != 'String':
-                var = r'"?{}"?'.format(var)  # replace quotes if they exist
+                var = fr'"?{var}"?'  # replace quotes if they exist
                 val = json.dumps(val)
 
             data = re.sub(var, val, data)
@@ -567,7 +552,7 @@ class Playbooks(object):
         var_type = 'String'
         if variable is not None:
             variable = variable.strip()
-            # self.tcex.log.info(u'Variable {}'.format(variable))
+            # self.tcex.log.info(f'Variable {variable}')
             if re.match(self._variable_match, variable):
                 var_type = re.search(self._variable_parse, variable).group(4)
         return var_type
@@ -583,8 +568,8 @@ class Playbooks(object):
         """
         if data is not None:
             try:
-                data = u'{}'.format(data)
-                # variables = re.findall(self._vars_keyvalue_embedded, u'{}'.format(data))
+                data = f'{data}'
+                # variables = re.findall(self._vars_keyvalue_embedded, f'{data}')
             except UnicodeEncodeError:
                 # variables = re.findall(self._vars_keyvalue_embedded, data)
                 pass
@@ -598,7 +583,7 @@ class Playbooks(object):
                 variable_string = re.search(self._variable_parse, var).group(0)
                 # reformat to replace the correct instance only, handling the case where a variable
                 # is embedded multiple times in the same key value array.
-                data = data.replace(var, '": "{}"'.format(variable_string))
+                data = data.replace(var, f'": "{variable_string}"')
         return data
 
     def write_output(self):
@@ -641,7 +626,7 @@ class Playbooks(object):
                     key.strip(), json.dumps(base64.b64encode(bytes(value, 'utf-8')).decode('utf-8'))
                 )
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_binary(self, key, b64decode=True, decode=False):
@@ -671,7 +656,7 @@ class Playbooks(object):
                             # for data written an upstream java App
                             data = data.decode('latin-1')
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     def create_binary_array(self, key, value):
@@ -702,7 +687,7 @@ class Playbooks(object):
                 value_encoded.append(v)
             data = self.db.create(key.strip(), json.dumps(value_encoded))
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_binary_array(self, key, b64decode=True, decode=False):
@@ -735,7 +720,7 @@ class Playbooks(object):
                     data_decoded.append(d)
                 data = data_decoded
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     def create_key_value(self, key, value):
@@ -756,11 +741,9 @@ class Playbooks(object):
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
             # TODO: update for env servers
-            # self.tcex.log.trace(
-            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            # )
+            # self.tcex.log.trace(f'pb create: context: {self.db.key}, key: {key}, value: {value}')
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_key_value(self, key, embedded=True):
@@ -785,12 +768,12 @@ class Playbooks(object):
                 try:
                     data = json.loads(data, object_pairs_hook=OrderedDict)
                 except ValueError as e:
-                    err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    err = f'Failed loading JSON data ({data}). Error: ({e})'
                     self.tcex.log.error(err)
                     self.tcex.message_tc(err)
                     self.tcex.exit(1)
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     def create_key_value_array(self, key, value):
@@ -811,11 +794,9 @@ class Playbooks(object):
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
             # for MEO server there is no key value
-            # self.tcex.log.trace(
-            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            # )
+            # self.tcex.log.trace(f'pb create: context: {self.db.key}, key: {key}, value: {value}')
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_key_value_array(self, key, embedded=True):
@@ -840,12 +821,12 @@ class Playbooks(object):
                 try:
                     data = json.loads(data, object_pairs_hook=OrderedDict)
                 except ValueError as e:
-                    err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    err = f'Failed loading JSON data ({data}). Error: ({e})'
                     self.tcex.log.error(err)
                     self.tcex.message_tc(err)
                     self.tcex.exit(1)
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     def create_raw(self, key, value):
@@ -862,7 +843,7 @@ class Playbooks(object):
         if key is not None and value is not None:
             data = self.db.create(key.strip(), value)
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_raw(self, key):
@@ -878,7 +859,7 @@ class Playbooks(object):
         if key is not None:
             data = self.db.read(key.strip())
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     def create_string(self, key, value):
@@ -895,15 +876,13 @@ class Playbooks(object):
         if key is not None and value is not None:
             if isinstance(value, (bool, list, int, dict)):
                 # value = str(value)
-                value = u'{}'.format(value)
+                value = f'{value}'
             # data = self.db.create(key.strip(), str(json.dumps(value)))
-            data = self.db.create(key.strip(), u'{}'.format(json.dumps(value)))
+            data = self.db.create(key.strip(), f'{json.dumps(value)}')
             # TODO: update for env servers
-            # self.tcex.log.trace(
-            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            # )
+            # self.tcex.log.trace(f'pb create: context: {self.db.key}, key: {key}, value: {value}')
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_string(self, key, embedded=True):
@@ -930,12 +909,12 @@ class Playbooks(object):
                         # reverted the previous change where data was encoded due to issues where
                         # it broke the operator method in py3 (e.g. b'1' ne '1').
                         # data = str(data)
-                        data = u'{}'.format(data)
+                        data = f'{data}'
                 except ValueError as e:
-                    err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    err = f'Failed loading JSON data ({data}). Error: ({e})'
                     self.tcex.log.error(err)
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     def create_string_array(self, key, value):
@@ -956,11 +935,9 @@ class Playbooks(object):
                 # used to save raw value with embedded variables
                 data = self.db.create(key.strip(), value)
             # TODO: update for env servers
-            # self.tcex.log.trace(
-            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            # )
+            # self.tcex.log.trace(f'pb create: context: {self.db.key}, key: {key}, value: {value}')
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_string_array(self, key, embedded=True):
@@ -983,12 +960,12 @@ class Playbooks(object):
                 try:
                     data = json.loads(data, object_pairs_hook=OrderedDict)
                 except ValueError as e:
-                    err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    err = f'Failed loading JSON data ({data}). Error: ({e})'
                     self.tcex.log.error(err)
                     self.tcex.message_tc(err)
                     self.tcex.exit(1)
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     # tc entity
@@ -1006,11 +983,9 @@ class Playbooks(object):
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
             # TODO: update for env servers
-            # self.tcex.log.trace(
-            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            # )
+            # self.tcex.log.trace(f'pb create: context: {self.db.key}, key: {key}, value: {value}')
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_tc_entity(self, key, embedded=True):
@@ -1034,12 +1009,12 @@ class Playbooks(object):
                 try:
                     data = json.loads(data, object_pairs_hook=OrderedDict)
                 except ValueError as e:
-                    err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    err = f'Failed loading JSON data ({data}). Error: ({e})'
                     self.tcex.log.error(err)
                     self.tcex.message_tc(err)
                     self.tcex.exit(1)
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     # tc entity array
@@ -1057,11 +1032,9 @@ class Playbooks(object):
         if key is not None and value is not None:
             data = self.db.create(key.strip(), json.dumps(value))
             # TODO: update for env servers
-            # self.tcex.log.trace(
-            #     'pb create: context: {}, key: {}, value: {}'.format(self.db.key, key, value)
-            # )
+            # self.tcex.log.trace(f'pb create: context: {self.db.key}, key: {key}, value: {value}')
         else:
-            self.tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning('The key or value field was None.')
         return data
 
     def read_tc_entity_array(self, key, embedded=True):
@@ -1085,12 +1058,12 @@ class Playbooks(object):
                 try:
                     data = json.loads(data, object_pairs_hook=OrderedDict)
                 except ValueError as e:
-                    err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    err = f'Failed loading JSON data ({data}). Error: ({e})'
                     self.tcex.log.error(err)
                     self.tcex.message_tc(err)
                     self.tcex.exit(1)
         else:
-            self.tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning('The key field was None.')
         return data
 
     #
@@ -1182,7 +1155,7 @@ class Playbooks(object):
                 d['ownerName'] = d['owner']['name']
                 del d['owner']
 
-            # type
+            # pull the TI type
             if d.get('type') is None:
                 d['type'] = resource_type
 
@@ -1223,7 +1196,7 @@ class Playbooks(object):
                         values.append(d.get(field))
             entity['value'] = ' : '.join(values)
 
-            # type
+            # get the entity type
             if d.get('type') is not None:
                 entity['type'] = d.get('type')
             else:

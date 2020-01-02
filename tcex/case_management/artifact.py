@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Artifact"""
-from .note import Note, Notes
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .note import Note, Notes
 from .tql import TQL
 
 api_endpoint = '/v3/artifacts'

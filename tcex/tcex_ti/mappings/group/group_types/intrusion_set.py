@@ -13,6 +13,6 @@ class IntrusionSet(Group):
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
         """
-        super(IntrusionSet, self).__init__(
+        super().__init__(
             tcex, 'Intrusion Set', 'intrusionSet', 'intrusionSets', owner=owner, name=name, **kwargs
         )

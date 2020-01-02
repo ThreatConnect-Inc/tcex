@@ -2,17 +2,13 @@
 # -*- coding: utf-8 -*-
 """TcEx Library Builder."""
 import os
-import re
 import platform
+import re
 import shutil
 import subprocess
 import sys
 from distutils.version import StrictVersion  # pylint: disable=E0611
-
-try:
-    from urllib import quote  # Python 2
-except ImportError:
-    from urllib.parse import quote  # Python 3
+from urllib.parse import quote
 
 import colorama as c
 
@@ -32,12 +28,12 @@ class Lib(Bin):
         Args:
             _args (namespace): The argparser args Namespace.
         """
-        super(Lib, self).__init__(_args)
+        super().__init__(_args)
 
         # properties
         self.latest_version = None
-        self.lib_directory = 'lib_{}.{}.{}'.format(
-            sys.version_info.major, sys.version_info.minor, sys.version_info.micro
+        self.lib_directory = (
+            f'lib_{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
         )
         self.requirements_file = 'requirements.txt'
         self.static_lib_dir = 'lib_latest'
@@ -92,20 +88,18 @@ class Lib(Bin):
                 proxy_pass = quote(self.args.proxy_pass, safe='~')
 
                 # proxy url with auth
-                proxy_url = '{}:{}@{}:{}'.format(
-                    proxy_user, proxy_pass, self.args.proxy_host, self.args.proxy_port
+                proxy_url = (
+                    f'{proxy_user}:{proxy_pass}@{self.args.proxy_host}:{self.args.proxy_port}'
                 )
             else:
                 # proxy url without auth
-                proxy_url = '{}:{}'.format(self.args.proxy_host, self.args.proxy_port)
+                proxy_url = f'{self.args.proxy_host}:{self.args.proxy_port}'
 
-            os.putenv('HTTP_PROXY', 'http://{}'.format(proxy_url))
-            os.putenv('HTTPS_PROXY', 'https://{}'.format(proxy_url))
+            os.putenv('HTTP_PROXY', f'http://{proxy_url}')
+            os.putenv('HTTPS_PROXY', f'https://{proxy_url}')
 
             print(
-                'Using Proxy Server: {}{}:{}.'.format(
-                    c.Fore.CYAN, self.args.proxy_host, self.args.proxy_port
-                )
+                f'Using Proxy Server: {c.Fore.CYAN}{self.args.proxy_host}:{self.args.proxy_port}.'
             )
             proxy_enabled = True
         return proxy_enabled
@@ -113,11 +107,11 @@ class Lib(Bin):
     def _create_lib_latest(self):
         """Create the lib_latest symlink for App Builder."""
         if platform.system() == 'Windows':
-            shutil.copytree('lib_{}'.format(self.latest_version),  self.static_lib_dir)
+            shutil.copytree(f'lib_{self.latest_version}', self.static_lib_dir)
         else:
             if os.path.islink(self.static_lib_dir):
                 os.unlink(self.static_lib_dir)
-            os.symlink('lib_{}'.format(self.latest_version), self.static_lib_dir)
+            os.symlink(f'lib_{self.latest_version}', self.static_lib_dir)
 
     def _create_temp_requirements(self):
         """Create a temporary requirements.txt.
@@ -129,17 +123,19 @@ class Lib(Bin):
         with open(self.requirements_file, 'r') as fh:
             current_requirements = fh.read().strip().split('\n')
 
-        self.requirements_file = 'temp-{}'.format(self.requirements_file)
+        self.requirements_file = f'temp-{self.requirements_file}'
         with open(self.requirements_file, 'w') as fh:
             new_requirements = ''
             for line in current_requirements:
                 if not line:
                     continue
                 if line.startswith('tcex'):
-                    line = 'git+https://github.com/ThreatConnect-Inc/tcex.git@{}#egg=tcex'
-                    line = line.format(self.args.branch)
+                    line = (
+                        'git+https://github.com/ThreatConnect-Inc/tcex.git@'
+                        f'{self.args.branch}#egg=tcex'
+                    )
                 # print('line', line)
-                new_requirements += '{}\n'.format(line)
+                new_requirements += f'{line}\n'
             fh.write(new_requirements)
 
     def install_libs(self):
@@ -158,7 +154,7 @@ class Lib(Bin):
         # overwrite default with config data
         if self.tcex_json.get('lib_versions'):
             lib_data = self.tcex_json.get('lib_versions')
-            print('{}Using "lib" directories defined in tcex.json file.'.format(c.Style.BRIGHT))
+            print(f'{c.Style.BRIGHT}Using "lib" directories defined in tcex.json file.')
 
         # configure proxy settings
         proxy_enabled = self._configure_proxy()
@@ -175,9 +171,7 @@ class Lib(Bin):
                 env_val = os.environ.get(matches[0])
                 if env_val is None:
                     self.handle_error(
-                        '"{}" env variable set in tcex.json, but could not be resolved.'.format(
-                            matches[0]
-                        )
+                        f'"{matches[0]}" env variable set in tcex.json, but could not be resolved.'
                     )
                 lib_dir = re.sub(env_var, env_val, lib_dir)
             lib_dir_fq = os.path.join(self.app_path, lib_dir)
@@ -193,10 +187,10 @@ class Lib(Bin):
                 env_val = os.environ.get(matches[0])
                 python_executable = re.sub(env_var, env_val, python_executable)
 
-            print('Building Lib Dir: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq))
+            print(f'Building Lib Dir: {c.Style.BRIGHT}{c.Fore.CYAN}{lib_dir_fq}')
             exe_command = self._build_command(python_executable, lib_dir_fq, proxy_enabled)
 
-            print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
+            print(f"Running: {c.Style.BRIGHT}{c.Fore.GREEN}{' '.join(exe_command)}")
             p = subprocess.Popen(
                 exe_command,
                 shell=False,
@@ -207,9 +201,9 @@ class Lib(Bin):
             out, err = p.communicate()  # pylint: disable=W0612
 
             if p.returncode != 0:
-                print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
-                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err.decode('utf-8')))
-                sys.exit('ERROR: {}'.format(err.decode('utf-8')))
+                print(f'{c.Style.BRIGHT}{c.Fore.RED}FAIL')
+                print(f"{c.Style.BRIGHT}{c.Fore.RED}{err.decode('utf-8')}")
+                sys.exit(f"ERROR: {err.decode('utf-8')}")
 
             # version comparison
             try:

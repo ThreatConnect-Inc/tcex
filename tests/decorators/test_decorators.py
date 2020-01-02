@@ -2,8 +2,18 @@
 """Test the TcEx Metrics Module."""
 import os
 import sys
-from tcex import TcEx
-from tcex import Benchmark, Debug, FailOnInput, FailOnOutput, IterateOnArg, OnException, OnSuccess
+
+from tcex import (
+    Benchmark,
+    Debug,
+    FailOnInput,
+    FailOnOutput,
+    IterateOnArg,
+    OnException,
+    OnSuccess,
+    TcEx,
+)
+
 from ..conftest import _config_data
 
 
@@ -36,7 +46,7 @@ class TestDecorators:
         test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
         test_feature = test_data[0].split('/')[1].replace('/', '-')
         test_name = test_data[-1].replace('/', '-').replace('[', '-')
-        return os.path.join(test_feature, '{}.log'.format(test_name))
+        return os.path.join(test_feature, f'{test_name}.log')
 
     def teardown_method(self):
         """Teardown after each test case is called."""

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
 import pytest
+
 from ..tcex_init import tcex
 
 
@@ -27,4 +28,4 @@ class TestBool:
     def test_bool(self, string, result):
         """Test any to datetime"""
         boolean_results = tcex.utils.to_bool(string)
-        assert boolean_results == result, 'Boolean {} != {}'.format(boolean_results, result)
+        assert boolean_results == result, f'Boolean {boolean_results} != {result}'

@@ -38,12 +38,12 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
             setattr(self, k, v)
 
     class_name = indicator_type.replace(' ', '')
-    init_method = locals()['init_{}'.format(value_count)]
+    init_method = locals()[f'init_{value_count}']
     newclass = type(str(class_name), (base_class,), {'__init__': init_method})
     return newclass
 
 
-class Indicator(object):
+class Indicator:
     """ThreatConnect Batch Indicator Object"""
 
     # TODO: enable when support for py2 is dropped.
@@ -392,7 +392,7 @@ class Address(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Address, self).__init__('Address', ip, **kwargs)
+        super().__init__('Address', ip, **kwargs)
 
 
 class ASN(Indicator):
@@ -414,7 +414,7 @@ class ASN(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(ASN, self).__init__('ASN', as_number, **kwargs)
+        super().__init__('ASN', as_number, **kwargs)
 
 
 class CIDR(Indicator):
@@ -436,7 +436,7 @@ class CIDR(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(CIDR, self).__init__('CIDR', block, **kwargs)
+        super().__init__('CIDR', block, **kwargs)
 
 
 class EmailAddress(Indicator):
@@ -458,7 +458,7 @@ class EmailAddress(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(EmailAddress, self).__init__('EmailAddress', address, **kwargs)
+        super().__init__('EmailAddress', address, **kwargs)
 
 
 class File(Indicator):
@@ -484,7 +484,7 @@ class File(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         summary = self.build_summary(md5, sha1, sha256)  # build the indicator summary
-        super(File, self).__init__('File', summary, **kwargs)
+        super().__init__('File', summary, **kwargs)
         # self._file_action = []
 
     def action(self, relationship):
@@ -555,7 +555,7 @@ class Host(Indicator):
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Host, self).__init__('Host', hostname, **kwargs)
+        super().__init__('Host', hostname, **kwargs)
 
     @property
     def dns_active(self):
@@ -597,7 +597,7 @@ class Mutex(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Mutex, self).__init__('Mutex', mutex, **kwargs)
+        super().__init__('Mutex', mutex, **kwargs)
 
 
 class RegistryKey(Indicator):
@@ -622,7 +622,7 @@ class RegistryKey(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         summary = self.build_summary(key_name, value_name, value_type)
-        super(RegistryKey, self).__init__('Registry Key', summary, **kwargs)
+        super().__init__('Registry Key', summary, **kwargs)
 
 
 class URL(Indicator):
@@ -644,7 +644,7 @@ class URL(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(URL, self).__init__('URL', text, **kwargs)
+        super().__init__('URL', text, **kwargs)
 
 
 class UserAgent(Indicator):
@@ -666,10 +666,10 @@ class UserAgent(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(UserAgent, self).__init__('User Agent', text, **kwargs)
+        super().__init__('User Agent', text, **kwargs)
 
 
-class FileAction(object):
+class FileAction:
     """ThreatConnect Batch FileAction Object"""
 
     # TODO: enable when support for py2 is dropped.
@@ -710,7 +710,7 @@ class FileAction(object):
         return json.dumps(self.data, indent=4)
 
 
-class FileOccurrence(object):
+class FileOccurrence:
     """ThreatConnect Batch FileAction Object."""
 
     # TODO: enable when support for py2 is dropped.

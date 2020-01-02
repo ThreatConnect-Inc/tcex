@@ -3,7 +3,7 @@
 import json
 
 
-class Tag(object):
+class Tag:
     """ThreatConnect Batch Tag Object"""
 
     # TODO: enable when support for py2 is dropped.

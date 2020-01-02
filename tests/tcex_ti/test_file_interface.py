@@ -2,6 +2,7 @@
 """Test the TcEx Threat Intel Module."""
 
 import random
+
 from ..tcex_init import tcex
 
 

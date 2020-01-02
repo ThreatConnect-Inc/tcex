@@ -1,27 +1,22 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework"""
-from builtins import str
 import inspect
 import logging
-import platform
 import os
+import platform
 import re
 import signal
 import sys
 import threading
+from urllib.parse import quote
 
-try:
-    from urllib import quote  # Python 2
-except ImportError:
-    from urllib.parse import quote  # Python 3
-
+from .app_config_object import InstallJson
 from .inputs import Inputs
 from .logger import Logger
-from .app_config_object import InstallJson
 from .tokens import Tokens
 
 
-class TcEx(object):
+class TcEx:
     """Provides basic functionality for all types of TxEx Apps.
 
     Args:
@@ -116,13 +111,11 @@ class TcEx(object):
 
             # check for bad status code and response that is not JSON
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.log.warning('Custom Indicators are not supported ({}).'.format(r.text))
+                self.log.warning(f'Custom Indicators are not supported ({r.text}).')
                 return
             response = r.json()
             if response.get('status') != 'Success':
-                self.log.warning(
-                    'Bad Status: Custom Indicators are not supported ({}).'.format(r.text)
-                )
+                self.log.warning(f'Bad Status: Custom Indicators are not supported ({r.text}).')
                 return
 
             try:
@@ -133,7 +126,7 @@ class TcEx(object):
                     # temp fix for API issue where boolean are returned as strings
                     entry['custom'] = self.utils.to_bool(entry.get('custom'))
                     entry['parsable'] = self.utils.to_bool(entry.get('parsable'))
-                    self._indicator_types.append(u'{}'.format(entry.get('name')))
+                    self._indicator_types.append(f"{entry.get('name')}")
                     self._indicator_types_data[entry.get('name')] = entry
                     if not entry['custom']:
                         continue
@@ -152,13 +145,13 @@ class TcEx(object):
                     custom = {
                         '_api_branch': entry['apiBranch'],
                         '_api_entity': entry['apiEntity'],
-                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_api_uri': f"{i.api_branch}/{entry['apiBranch']}",
                         '_case_preference': entry['casePreference'],
                         '_custom': entry['custom'],
                         '_name': name,
                         '_parsable': entry['parsable'],
                         '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_request_uri': f"{i.api_branch}/{entry['apiBranch']}",
                         '_status_codes': {
                             'DELETE': [200],
                             'GET': [200],
@@ -182,9 +175,7 @@ class TcEx(object):
         call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
         call_line = inspect.stack()[1][0].f_lineno
         self.log.error(
-            'App interrupted - file: {}, method: {}, line: {}.'.format(
-                call_file, call_module, call_line
-            )
+            f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
@@ -241,6 +232,7 @@ class TcEx(object):
 
     @property
     def cm(self):
+        """Include the Case Management Module."""
         return self.case_management
 
     # TODO: remove this method and use JMESPath instead.
@@ -263,7 +255,7 @@ class TcEx(object):
 
             return DataFilter(self, data)
         except ImportError as e:
-            self.log.warning('Required Module is not installed ({}).'.format(e))
+            self.log.warning(f'Required Module is not installed ({e}).')
 
     def datastore(self, domain, data_type, mapping=None):
         """Get instance of the DataStore module.
@@ -320,7 +312,7 @@ class TcEx(object):
         elif code in [0, 1, 3]:
             pass
         else:
-            self.log.error(u'Invalid exit code')
+            self.log.error('Invalid exit code')
             code = 1
 
         if self.default_args.tc_aot_enabled:
@@ -330,7 +322,7 @@ class TcEx(object):
         # exit token renewal thread
         self.token.shutdown = True
 
-        self.log.info(u'Exit Code: {}'.format(code))
+        self.log.info(f'Exit Code: {code}')
         sys.exit(code)
 
     @property
@@ -434,6 +426,7 @@ class TcEx(object):
             api_entity:
 
         Returns:
+            str|None: The type value or None.
 
         """
         merged = self.group_types_data.copy()
@@ -449,20 +442,22 @@ class TcEx(object):
         Args:
             code (integer): The error code from API or SDK.
             message (string): The error message from API or SDK.
+            raise_error (bool, optional): Raise a Runtime error. Defaults to True.
+
+        Raises:
+            RuntimeError: Raised a defined error.
         """
         try:
             if message_values is None:
                 message_values = []
             message = self.error_codes.message(code).format(*message_values)
-            self.log.error('Error code: {}, {}'.format(code, message))
+            self.log.error(f'Error code: {code}, {message}')
         except AttributeError:
-            self.log.error('Incorrect error code provided ({}).'.format(code))
+            self.log.error(f'Incorrect error code provided ({code}).')
             raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
         except IndexError:
             self.log.error(
-                'Incorrect message values provided for error code {} ({}).'.format(
-                    code, message_values
-                )
+                f'Incorrect message values provided for error code {code} ({message_values}).'
             )
             raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
         if raise_error:
@@ -556,6 +551,7 @@ class TcEx(object):
 
         Args:
             message (string): The message to add to message_tc file
+            max_length (int, optional): The maximum length of an exit message. Defaults to 255.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
             message_file = os.path.join(self.default_args.tc_out_path, 'message.tc')
@@ -626,21 +622,14 @@ class TcEx(object):
                 tc_proxy_password = quote(self.default_args.tc_proxy_password, safe='~')
 
                 # proxy url with auth
-                proxy_url = '{}:{}@{}:{}'.format(
-                    tc_proxy_username,
-                    tc_proxy_password,
-                    self.default_args.tc_proxy_host,
-                    self.default_args.tc_proxy_port,
+                proxy_url = (
+                    f'{tc_proxy_username}:{tc_proxy_password}'
+                    f'@{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}'
                 )
             else:
                 # proxy url without auth
-                proxy_url = '{}:{}'.format(
-                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                )
-            proxies = {
-                'http': 'http://{}'.format(proxy_url),
-                'https': 'https://{}'.format(proxy_url),
-            }
+                proxy_url = f'{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}'
+            proxies = {'http': f'http://{proxy_url}', 'https': f'https://{proxy_url}'}
         return proxies
 
     @property
@@ -664,9 +653,8 @@ class TcEx(object):
             r = TcExRequest(self, session)
             if session is None and self.default_args.tc_proxy_external:
                 self.log.info(
-                    'Using proxy server for external request {}:{}.'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                    )
+                    f'Using proxy server for external request '
+                    f'{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}.'
                 )
                 r.proxies = self.proxies
             return r
@@ -700,7 +688,7 @@ class TcEx(object):
             value (string): The data value to be stored.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
-            results_file = '{}/results.tc'.format(self.default_args.tc_out_path)
+            results_file = f'{self.default_args.tc_out_path}/results.tc'
         else:
             results_file = 'results.tc'
 
@@ -720,45 +708,15 @@ class TcEx(object):
                     v = value
                     new = False
                 if v is not None:
-                    results += '{} = {}\n'.format(k, v)
+                    results += f'{k} = {v}\n'
             if new and value is not None:  # indicates the key/value pair didn't already exist
-                results += '{} = {}\n'.format(key, value)
+                results += f'{key} = {value}\n'
             fh.seek(0)
             fh.write(results)
             fh.truncate()
 
-    def s(self, data, errors='strict'):
-        """Decode value using correct Python 2/3 method.
-
-        This method is intended to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method with
-        better logic to handle poorly encoded unicode data in Python2 and still work in Python3.
-
-        Args:
-            data (any): Data to ve validated and (de)encoded
-            errors (string): What method to use when dealing with errors.
-
-        Returns:
-            (string): Return decoded data
-        """
-        try:
-            if data is None or isinstance(data, (int, list, dict)):
-                pass  # Do nothing with these types
-            elif isinstance(data, unicode):
-                try:
-                    data.decode('utf-8')
-                except UnicodeEncodeError:  # 2to3 converts unicode to str
-                    # 2to3 converts unicode to str
-                    data = str(data.encode('utf-8').strip(), errors=errors)
-                    self.log.warning('Encoding poorly encoded string ({})'.format(data))
-                except AttributeError:
-                    pass  # Python 3 can't decode a str
-            else:
-                data = str(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
-        except NameError:
-            pass  # Can't decode str in Python 3
-        return data
-
-    def safe_indicator(self, indicator, errors='strict'):
+    @staticmethod
+    def safe_indicator(indicator):
         """Format indicator value for safe HTTP request.
 
         Args:
@@ -769,10 +727,7 @@ class TcEx(object):
             (string): The urlencoded string
         """
         if indicator is not None:
-            try:
-                indicator = quote(self.s(str(indicator), errors=errors), safe='~')
-            except KeyError:
-                indicator = quote(bytes(indicator), safe='~')
+            indicator = quote(indicator, safe='~')
         return indicator
 
     @staticmethod
@@ -819,40 +774,30 @@ class TcEx(object):
             group_name_array = group_name.split(' ')
             group_name = ''
             for word in group_name_array:
-                word = u'{}'.format(word)
+                word = f'{word}'
                 if (len(group_name) + len(word) + len(ellipsis_value)) >= group_max_length:
-                    group_name = '{}{}'.format(group_name, ellipsis_value)
+                    group_name = f'{group_name}{ellipsis_value}'
                     group_name = group_name.lstrip(' ')
                     break
-                group_name += ' {}'.format(word)
+                group_name += f' {word}'
         return group_name
 
-    def safetag(self, tag, errors='strict'):
-        """Preserve safetag method name for older Apps."""
-        return self.safe_tag(tag, errors)
-
-    def safe_tag(self, tag, errors='strict'):
+    @staticmethod
+    def safe_tag(tag):
         """Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
            tag (string): The tag to be truncated
 
         Returns:
-            (string): The truncated tag
+            (string): The truncated and quoted tag
         """
         if tag is not None:
-            try:
-                # handle unicode characters and url encode tag value
-                tag = quote(self.s(tag[:128], errors=errors), safe='~')
-            except KeyError as e:
-                self.log.warning('Failed converting tag to safetag ({})'.format(e))
+            tag = quote(tag[:128], safe='~')
         return tag
 
-    def safeurl(self, url, errors='strict'):
-        """Preserve safeurl method name for older Apps."""
-        return self.safe_url(url, errors)
-
-    def safe_url(self, url, errors='strict'):
+    @staticmethod
+    def safe_url(url):
         """Encode value for safe HTTP request.
 
         Args:
@@ -862,7 +807,7 @@ class TcEx(object):
             (string): The urlencoded string.
         """
         if url is not None:
-            url = quote(self.s(url, errors=errors), safe='~')
+            url = quote(url, safe='~')
         return url
 
     @property
@@ -895,9 +840,8 @@ class TcEx(object):
             self._session_external = Session()
             if self.default_args.tc_proxy_external:
                 self.log.info(
-                    'Using proxy server for external connectivity ({}:{}).'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                    )
+                    'Using proxy server for external connectivity '
+                    f'({self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}).'
                 )
                 self._session_external.proxies = self.proxies
         return self._session_external

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
 import traceback
-from six import string_types
+
 from .test_case_service_common import TestCaseServiceCommon
 
 
@@ -19,7 +19,7 @@ class TestCaseTriggerService(TestCaseServiceCommon):
         """
         # resolve env vars
         for k, v in list(args.items()):
-            if isinstance(v, string_types):
+            if isinstance(v, str):
                 args[k] = self.resolve_env_args(v)
 
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
@@ -42,12 +42,10 @@ class TestCaseTriggerService(TestCaseServiceCommon):
             self.app.tcex.service.heartbeat()
             self.app.tcex.service.ready = True
         except SystemExit as e:
-            self.log.error('App failed in run() method ({}).'.format(e))
+            self.log.error(f'App failed in run() method ({e}).')
             return self._exit(e.code)
         except Exception:
-            self.log.error(
-                'App encountered except in run() method ({}).'.format(traceback.format_exc())
-            )
+            self.log.error(f'App encountered except in run() method ({traceback.format_exc()}).')
             return self._exit(1)
 
         # Run

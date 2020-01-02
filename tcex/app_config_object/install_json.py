@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework InstallJson Object."""
 import json
@@ -6,7 +5,7 @@ import os
 from collections import OrderedDict
 
 
-class InstallJson(object):
+class InstallJson:
     """Object for install.json file."""
 
     def __init__(self, filename=None, path=None):
@@ -33,7 +32,7 @@ class InstallJson(object):
             try:
                 with open(self.filename, 'r') as fh:
                     self._contents = json.load(fh, object_pairs_hook=OrderedDict)
-            except IOError:
+            except OSError:
                 self._contents = {'runtimeLevel': 'external'}
         return self._contents
 
@@ -128,7 +127,7 @@ class InstallJson(object):
                 args[n] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':
                 valid_values = '|'.join(self.expand_valid_values(p.get('validValues', [])))
-                args[n] = '[{}]'.format(valid_values)
+                args[n] = f'[{valid_values}]'
             elif p.get('type').lower() == 'multichoice':
                 args[n] = p.get('validValues', [])
             elif p.get('type').lower() == 'keyvaluelist':
@@ -139,7 +138,7 @@ class InstallJson(object):
             else:
                 types = '|'.join(p.get('playbookDataType', []))
                 if types:
-                    args[n] = p.get('default', '<{}>'.format(types))
+                    args[n] = p.get('default', f'<{types}>')
                 else:
                     args[n] = p.get('default', '')
         return args

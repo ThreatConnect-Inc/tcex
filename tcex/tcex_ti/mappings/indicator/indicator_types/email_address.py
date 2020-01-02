@@ -19,9 +19,7 @@ class EmailAddress(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(EmailAddress, self).__init__(
-            tcex, 'Email Address', 'emailAddress', 'emailAddresses', owner, **kwargs
-        )
+        super().__init__(tcex, 'Email Address', 'emailAddress', 'emailAddresses', owner, **kwargs)
         self.unique_id = kwargs.get('unique_id', address)
         self._data['address'] = address or self.unique_id
 

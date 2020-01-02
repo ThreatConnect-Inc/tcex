@@ -8,12 +8,6 @@ import traceback
 import colorama as c
 from tcex.bin import Test
 
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
-
 # autoreset colorama
 c.init(autoreset=True, strip=False)
 
@@ -90,5 +84,5 @@ if __name__ == '__main__':
         # exit
         sys.exit()
     except Exception:
-        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}')
         sys.exit(1)

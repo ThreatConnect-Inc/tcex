@@ -3,7 +3,7 @@
 import datetime
 
 
-class Benchmark(object):
+class Benchmark:
     """Log benchmarking times.
 
     This decorator will log the time of execution (benchmark_time) to the app.log file. It can be
@@ -37,22 +37,20 @@ class Benchmark(object):
                 app (class): The instance of the App class "self".
             """
 
-            # before = float('{0:.4f}'.format(time.clock()))
+            # before = float('{time.clock():.4f}')
             before = datetime.datetime.now()
             data = fn(app, *args, **kwargs)
-            # after = float('{0:.4f}'.format(time.clock()))
+            # after = float('{time.clock():.4f}')
             after = datetime.datetime.now()
             app.tcex.log.debug(
-                'function: "{}", benchmark_time: "{}"'.format(
-                    self.__class__.__name__, after - before
-                )
+                f'function: "{self.__class__.__name__}", benchmark_time: "{after - before}"'
             )
             return data
 
         return benchmark
 
 
-class Debug(object):
+class Debug:
     """Debug function inputs.
 
     This decorator will log the inputs to the function to assist in debugging an App.
@@ -84,16 +82,14 @@ class Debug(object):
             """
             data = fn(app, *args, **kwargs)
             app.tcex.log.debug(
-                'function: "{}", args: "{}", kwargs: "{}"'.format(
-                    self.__class__.__name__, args, kwargs
-                )
+                f'function: "{self.__class__.__name__}", args: "{args}", kwargs: "{kwargs}"'
             )
             return data
 
         return debug
 
 
-class FailOnInput(object):
+class FailOnInput:
     """Fail App if input value conditions are met.
 
     This decorator allows for the App to exit on conditions defined in the function
@@ -146,10 +142,10 @@ class FailOnInput(object):
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             if isinstance(self.enable, bool):
                 enabled = self.enable
-                app.tcex.log.debug('Fail on input is ({}).'.format(self.enable))
+                app.tcex.log.debug(f'Fail on input is ({self.enable}).')
             else:
                 enabled = getattr(app.args, self.enable)
-                app.tcex.log.debug('Fail on input is ({}) for ({}).'.format(enabled, self.enable))
+                app.tcex.log.debug(f'Fail on input is ({enabled}) for ({self.enable}).')
                 if not isinstance(enabled, bool):
                     app.tcex.playbook.exit(
                         1, 'The enable value must be a boolean for fail on input.'
@@ -169,7 +165,7 @@ class FailOnInput(object):
 
                 if conditional_value in self.values:
                     app.tcex.log.error(
-                        'Invalid value ({}) provided for ({}).'.format(conditional_value, arg_name)
+                        f'Invalid value ({conditional_value}) provided for ({arg_name}).'
                     )
                     app.tcex.exit(1, self.msg)
 
@@ -178,7 +174,7 @@ class FailOnInput(object):
         return fail
 
 
-class FailOnOutput(object):
+class FailOnOutput:
     """Fail App if return value (output) value conditions are met.
 
     This decorator allows for the App to exit on conditions defined in the function
@@ -231,10 +227,10 @@ class FailOnOutput(object):
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             if isinstance(self.enable, bool):
                 enabled = self.enable
-                app.tcex.log.debug('Fail on output is ({}).'.format(self.enable))
+                app.tcex.log.debug(f'Fail on output is ({self.enable}).')
             else:
                 enabled = getattr(app.args, self.enable)
-                app.tcex.log.debug('Fail on output is ({}) for ({}).'.format(enabled, self.enable))
+                app.tcex.log.debug(f'Fail on output is ({enabled}) for ({self.enable}).')
                 if not isinstance(enabled, bool):
                     app.tcex.playbook.exit(
                         1, 'The enable value must be a boolean for fail on output.'
@@ -258,7 +254,7 @@ class FailOnOutput(object):
         return fail
 
 
-class IterateOnArg(object):
+class IterateOnArg:
     """Iterate on values stored in ``self.args`` namespace.
 
     This decorator will iterate over all value of the supplied arg and return results. This feature
@@ -318,23 +314,20 @@ class IterateOnArg(object):
                 arg_data = [arg_data]
 
             if not arg_data:
-                app.tcex.exit(1, 'No data retrieved for arg ({}).'.format(self.arg))
+                app.tcex.exit(1, f'No data retrieved for arg ({self.arg}).')
 
             for s in arg_data:
                 if s is None and self.default is not None:
                     # set value passed to method to default if value is None.
                     s = self.default
                     app.tcex.log.debug(
-                        'a null input was provided, using default value "{}" instead.'.format(s)
+                        f'a null input was provided, using default value "{s}" instead.'
                     )
 
                 if self.fail_on is not None:
                     if s in self.fail_on:
                         app.tcex.playbook.exit(
-                            1,
-                            'Arg value for IterateOnArg matched fail_on value ({}).'.format(
-                                self.fail_on
-                            ),
+                            1, f'Arg value for IterateOnArg matched fail_on value ({self.fail_on}).'
                         )
 
                 # Add logging for debug/troubleshooting
@@ -344,8 +337,8 @@ class IterateOnArg(object):
                 ):
                     log_string = str(s)
                     if len(log_string) > 100:
-                        log_string = '{} ...'.format(log_string[:100])
-                    app.tcex.log.debug('input value: {}'.format(log_string))
+                        log_string = f'{log_string[:100]} ...'
+                    app.tcex.log.debug(f'input value: {log_string}')
 
                 # update the first item in the tuple
                 args_list = list(args)
@@ -360,7 +353,7 @@ class IterateOnArg(object):
         return loop
 
 
-class OnException(object):
+class OnException:
     """Set exit message on failed execution.
 
     This decorator will catch the generic "Exception" error, log the supplied error message, set
@@ -403,13 +396,13 @@ class OnException(object):
             try:
                 return fn(app, *args, **kwargs)
             except Exception as e:
-                app.tcex.log.error('method failure ({})'.format(e))
+                app.tcex.log.error(f'method failure ({e})')
                 app.tcex.exit(1, self.msg)
 
         return exception
 
 
-class OnSuccess(object):
+class OnSuccess:
     """Set exit message on successful execution.
 
     This decorator will set the supplied msg as the App "exit_message". Typically and App would
@@ -455,7 +448,7 @@ class OnSuccess(object):
         return completion
 
 
-class Output(object):
+class Output:
     """Store the method return value in self.<attribute>.
 
     This decorator will write, append, or extend the methods return value to the App attribute
@@ -513,7 +506,7 @@ class Output(object):
         return output
 
 
-class ReadArg(object):
+class ReadArg:
     """Read value of App arg resolving any playbook variables.
 
     This decorator will read the args from Redis, if it is a playbook variable, and pass the
@@ -572,10 +565,7 @@ class ReadArg(object):
                 if self.fail_on is not None:
                     if arg_data in self.fail_on:
                         app.tcex.playbook.exit(
-                            1,
-                            'Arg value for ReadArg matched fail_on value ({}).'.format(
-                                self.fail_on
-                            ),
+                            1, f'Arg value for ReadArg matched fail_on value ({self.fail_on}).'
                         )
                 args_list[0] = arg_data
 
@@ -586,8 +576,8 @@ class ReadArg(object):
                 ):
                     log_string = str(arg_data)
                     if len(log_string) > 100:
-                        log_string = '{} ...'.format(log_string[:100])
-                    app.tcex.log.debug('input value: {}'.format(log_string))
+                        log_string = f'{log_string[:100]} ...'
+                    app.tcex.log.debug(f'input value: {log_string}')
             except IndexError:
                 args_list.append(app.tcex.playbook.read(getattr(app.args, self.arg), self.array))
             args = tuple(args_list)
@@ -597,7 +587,7 @@ class ReadArg(object):
         return read
 
 
-class WriteOutput(object):
+class WriteOutput:
     """Write the App output variables to Redis.
 
     This decorator will take the functions return value and write the data to Redis using the
@@ -652,7 +642,7 @@ class WriteOutput(object):
                 app (class): The instance of the App class "self".
             """
             data = fn(app, *args, **kwargs)
-            index = '{}-{}'.format(self.key, self.variable_type)
+            index = f'{self.key}-{self.variable_type}'
             if self.value is not None:
                 # store user provided data
                 app.tcex.playbook.add_output(self.key, self.value, self.variable_type)

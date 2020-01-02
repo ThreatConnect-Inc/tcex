@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case Management"""
 import requests
+
 from .artifact import Artifact, Artifacts
 from .artifact_type import ArtifactType, ArtifactTypes
 from .case import Case, Cases
-from .task import Task, Tasks
 from .note import Note, Notes
 from .tag import Tag, Tags
+from .task import Task, Tasks
 from .workflow_event import WorkflowEvent, WorkflowEvents
 from .workflow_template import WorkflowTemplate, WorkflowTemplates
 
 
-class CaseManagement(object):
+class CaseManagement:
     """
     Interacts with TC V3 api endpoints.
     """
@@ -148,23 +149,24 @@ class CaseManagement(object):
         """
         Returns a instance of the appropriate object populated with the kwargs of the provided dict.
         """
+        obj = None
         obj_type = entity.pop('type').lower()
         if obj_type == 'tag':
-            return Tag(self.tcex, **entity)
+            obj = Tag(self.tcex, **entity)
         elif obj_type == 'case':
-            return Case(self.tcex, **entity)
+            obj = Case(self.tcex, **entity)
         elif obj_type == 'note':
-            return Note(self.tcex, **entity)
+            obj = Note(self.tcex, **entity)
         elif obj_type == 'artifact':
-            return Artifact(self.tcex, **entity)
+            obj = Artifact(self.tcex, **entity)
         elif obj_type == 'task':
-            return Task(self.tcex, **entity)
+            obj = Task(self.tcex, **entity)
         elif obj_type in ['workflow_event', 'workflowevent', 'workflow event']:
-            return WorkflowEvent(self.tcex, **entity)
+            obj = WorkflowEvent(self.tcex, **entity)
         elif obj_type in ['workflow_template', 'workflowtemplate', 'workflow template']:
-            return WorkflowTemplate(self.tcex, **entity)
+            obj = WorkflowTemplate(self.tcex, **entity)
 
-        return None
+        return obj
 
     def create_entity(self, entity, owner):
         """

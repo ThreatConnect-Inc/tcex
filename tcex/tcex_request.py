@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework Request Module """
-from builtins import str
 import json
 from base64 import b64encode
 
-from requests import adapters, packages, Session
+from requests import Session, adapters, packages
 from requests.packages.urllib3.util.retry import Retry  # pylint: disable=E0401
 
 packages.urllib3.disable_warnings()  # pylint: disable=E1101
@@ -28,7 +27,7 @@ def session_retry(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504
     return session
 
 
-class TcExRequest(object):
+class TcExRequest:
     """Wrapper on Python Requests Module with API logging."""
 
     def __init__(self, tcex, session=None):
@@ -135,8 +134,8 @@ class TcExRequest(object):
 
     def set_basic_auth(self, username, password):
         """Manually set basic auth in the header when normal method does not work."""
-        credentials = str(b64encode('{}:{}'.format(username, password).encode('utf-8')), 'utf-8')
-        self.authorization = 'Basic {}'.format(credentials)
+        credentials = str(b64encode(f'{username}:{password}'.encode('utf-8')), 'utf-8')
+        self.authorization = f'Basic {credentials}'
 
     @property
     def user_agent(self):
@@ -195,9 +194,7 @@ class TcExRequest(object):
             if self._headers.get('Content-Type') is None and data in ['POST', 'PUT']:
                 self.add_header('Content-Type', 'application/json')
         else:
-            raise AttributeError(
-                'Request Object Error: {} is not a valid HTTP method.'.format(data)
-            )
+            raise AttributeError(f'Request Object Error: {data} is not a valid HTTP method.')
 
     #
     # Set Properties
@@ -281,11 +278,11 @@ class TcExRequest(object):
                 timeout=self._timeout,
             )
         except Exception as e:
-            err = 'Failed making HTTP request ({}).'.format(e)
+            err = f'Failed making HTTP request ({e}).'
             raise RuntimeError(err)
 
-        # self.tcex.log.info(u'URL ({}): {}'.format(self._http_method, response.url))
-        self.tcex.log.info(u'Status Code: {}'.format(response.status_code))
+        # self.tcex.log.info(f'URL ({self._http_method}): {response.url}')
+        self.tcex.log.info(f'Status Code: {response.status_code}')
         return response
 
     #
@@ -304,31 +301,31 @@ class TcExRequest(object):
 
     def __str__(self):
         """Print this request instance configuration."""
-        printable_string = '\n{0!s:_^80}\n'.format('Request')
+        printable_string = f"\n{'Request'!s:_^80}\n"
 
         #
         # http settings
         #
-        printable_string += '\n{0!s:40}\n'.format('HTTP Settings')
-        printable_string += '  {0!s:<29}{1!s:<50}\n'.format('HTTP Method', self.http_method)
-        printable_string += '  {0!s:<29}{1!s:<50}\n'.format('Request URL', self.url)
-        printable_string += '  {0!s:<29}{1!s:<50}\n'.format('Content Type', self.content_type)
-        printable_string += '  {0!s:<29}{1!s:<50}\n'.format('Body', self.body)
+        printable_string += f"\n{'HTTP Settings'!s:40}\n"
+        printable_string += f"  {'HTTP Method'!s:<29}{self.http_method!s:<50}\n"
+        printable_string += f"  {'Request URL'!s:<29}{self.url!s:<50}\n"
+        printable_string += f"  {'Content Type'!s:<29}{self.content_type!s:<50}\n"
+        printable_string += f"  {'Body'!s:<29}{self.body!s:<50}\n"
 
         #
         # headers
         #
         if self.headers:
-            printable_string += '\n{0!s:40}\n'.format('Headers')
+            printable_string += f"\n{'Headers'!s:40}\n"
             for k, v in self.headers.items():
-                printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)
+                printable_string += f'  {k!s:<29}{v!s:<50}\n'
 
         #
         # payload
         #
         if self.payload:
-            printable_string += '\n{0!s:40}\n'.format('Payload')
+            printable_string += f"\n{'Payload'!s:40}\n"
             for k, v in self.payload.items():
-                printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)
+                printable_string += f'  {k!s:<29}{v!s:<50}\n'
 
         return printable_string

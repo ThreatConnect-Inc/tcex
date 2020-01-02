@@ -10,7 +10,7 @@ import shutil
 import uuid
 
 
-class Resources(object):
+class Resources:
     """Common settings for All ThreatConnect API Endpoints"""
 
     def __init__(self, tcex):
@@ -52,26 +52,29 @@ class Resources(object):
         self.owner = self.tcex.default_args.api_default_org
 
     def _apply_filters(self):
-        """Apply any filters added to the resource.
-        """
+        """Apply any filters added to the resource."""
         # apply filters
         filters = []
         for f in self._filters:
-            filters.append('{}{}{}'.format(f['name'], f['operator'], f['value']))
-        self.tcex.log.debug(u'filters: {}'.format(filters))
+            filters.append(f"{f['name']}{f['operator']}{f['value']}")
+        self.tcex.log.debug(f'filters: {filters}')
 
         if filters:
             self._request.add_payload('filters', ','.join(filters))
 
     def _request_bulk(self, response):
-        """
+        """[summary]
+
+        Args:
+            response ([type]): [description]
+
+        Returns:
+            [type]: [description]
         """
         try:
             # write bulk download to disk with unique ID
-            temp_file = os.path.join(
-                self.tcex.default_args.tc_temp_path, '{}.json'.format(uuid.uuid4())
-            )
-            self.tcex.log.debug(u'temp json file: {}'.format(temp_file))
+            temp_file = os.path.join(self.tcex.default_args.tc_temp_path, f'{uuid.uuid4()}.json')
+            self.tcex.log.debug(f'temp json file: {temp_file}')
             with open(temp_file, 'wb') as fh:
                 for block in response.iter_content(1024):
                     fh.write(block)
@@ -82,20 +85,26 @@ class Resources(object):
             if self.tcex.default_args.logging == 'debug':
                 try:
                     with open(temp_file, 'rb') as f_in, gzip.open(
-                        '{}.gz'.format(temp_file), 'wb'  # pylint: disable=C0330
+                        f'{temp_file}.gz', 'wb'  # pylint: disable=C0330
                     ) as f_out:
                         shutil.copyfileobj(f_in, f_out)
                 except Exception:
-                    self.tcex.log.warning(u'Could not compress temporary bulk JSON file.')
+                    self.tcex.log.warning('Could not compress temporary bulk JSON file.')
             os.remove(temp_file)
 
-        except IOError as e:
+        except OSError as e:
             self.tcex.handle_error(300, [e])
 
         return data
 
     def _request_process(self, response):
-        """
+        """[summary]
+
+        Args:
+            response ([type]): [description]
+
+        Returns:
+            [type]: [description]
         """
         data = []
         status = None
@@ -113,17 +122,14 @@ class Resources(object):
             elif response.headers['content-type'] == 'text/plain':
                 data, status = self._request_process_text(response)
             else:
-                err = u'Failed Request: {}'.format(response.text)
+                err = f'Failed Request: {response.text}'
                 self.tcex.log.error(err)
         else:
             status = 'Failure'
-            err = u'Failed Request {}: Status Code ({}) not in {}. API Response: "{}".'.format(
-                self._name,
-                response.status_code,
-                self._status_codes[self._http_method],
-                response.text,
+            self.tcex.log.error(
+                f'Failed Request {self._name}: Status Code ({response.status_code}) not in '
+                f'{self._status_codes[self._http_method]}. API Response: "{response.text}".'
             )
-            self.tcex.log.error(err)
 
         return data, status
 
@@ -160,17 +166,17 @@ class Resources(object):
                 if self._result_count is None:
                     self._result_count = response_data.get('data', {}).get('resultCount')
             else:
-                self.tcex.log.error('Failed Request: {}'.format(response.text))
+                self.tcex.log.error(f'Failed Request: {response.text}')
                 status = 'Failure'
         except KeyError as e:
             # TODO: Remove try/except block
             status = 'Failure'
-            msg = u'Error: Invalid key {}. [{}] '.format(e, self.request_entity)
+            msg = f'Error: Invalid key {e}. [{self.request_entity}] '
             self.tcex.log.error(msg)
         except ValueError as e:
             # TODO: Remove try/except block
             status = 'Failure'
-            msg = u'Error: ({})'.format(e)
+            msg = f'Error: ({e})'
             self.tcex.log.error(msg)
 
         return data, status
@@ -274,7 +280,7 @@ class Resources(object):
 
     @property
     def api_branch(self):
-        """The ThreatConnect API branch for this resource.
+        """Return the ThreatConnect API branch for this resource.
 
         Return:
             (str): The **addresses** endpoint from ``/v2/indicators/addresses/``.
@@ -283,7 +289,7 @@ class Resources(object):
 
     @property
     def api_branch_base(self):
-        """The ThreatConnect API branch base (parent branch) for this resource.
+        """Return the ThreatConnect API branch base (parent branch) for this resource.
 
         Return:
             (str): The **indicators** endpoint from ``/v2/indicators`` or
@@ -293,7 +299,7 @@ class Resources(object):
 
     @property
     def api_entity(self):
-        """The ThreatConnect API entity for this resource.
+        """Return the ThreatConnect API entity for this resource.
 
         Return:
             (str): The **address** JSON entity from JSON response to ``/v2/indicators/addresses``.
@@ -302,7 +308,7 @@ class Resources(object):
 
     @property
     def api_uri(self):
-        """The ThreatConnect API URI for this resource.
+        """Return the ThreatConnect API URI for this resource.
 
         Return:
             (string): The API URI endpoint ``/v2/indicators/addresses``.
@@ -310,7 +316,7 @@ class Resources(object):
         return self._api_uri
 
     def association_custom(self, association_name, association_resource=None):
-        """Custom Indicator association for this resource with resource value.
+        """Handle Custom Indicator association for this resource with resource value.
 
         **Example Endpoints URI's**
 
@@ -349,20 +355,18 @@ class Resources(object):
 
         resource._request_entity = 'indicator'
         if association_resource is not None:
-            resource._request_uri = '{}/{}/{}/{}'.format(
-                resource._request_uri,
-                custom_type,
-                association_api_branch,
-                association_resource.request_uri,
+            resource._request_uri = (
+                f'{resource._request_uri}/{custom_type}/{association_api_branch}/'
+                f'{association_resource.request_uri}'
             )
         else:
-            resource._request_uri = '{}/{}/{}/indicators'.format(
-                resource._request_uri, custom_type, association_api_branch
+            resource._request_uri = (
+                f'{resource._request_uri}/{custom_type}/{association_api_branch}/indicators'
             )
         return resource
 
     def association_pivot(self, association_resource):
-        """Pivot point on association for this resource.
+        """Pivot on association for this resource.
 
         This method will return all *resources* (group, indicators, task, victims, etc) for this
         resource that are associated with the provided resource.
@@ -386,12 +390,10 @@ class Resources(object):
         +---------+--------------------------------------------------------------------------------+
 
         Args:
-            resource_api_branch (string): The resource pivot api branch including resource id.
+            association_resource (string): The resource pivot api branch including resource id.
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(
-            association_resource.request_uri, resource._request_uri
-        )
+        resource._request_uri = f'{association_resource.request_uri}/{resource._request_uri}'
         return resource
 
     def associations(self, association_resource):
@@ -420,14 +422,14 @@ class Resources(object):
 
         Args:
             association_resource (Resource Instance): A resource object with optional resource_id.
+
         Return:
             (instance): A copy of this resource instance cleaned and updated for associations.
+
         """
         resource = self.copy()
         resource._request_entity = association_resource.api_entity
-        resource._request_uri = '{}/{}'.format(
-            resource._request_uri, association_resource.request_uri
-        )
+        resource._request_uri = f'{resource._request_uri}/{association_resource.request_uri}'
         return resource
 
     def attributes(self, resource_id=None):
@@ -464,9 +466,9 @@ class Resources(object):
         """
         resource = self.copy()
         resource._request_entity = 'attribute'
-        resource._request_uri = '{}/attributes'.format(resource._request_uri)
+        resource._request_uri = f'{resource._request_uri}/attributes'
         if resource_id is not None:
-            resource._request_uri = '{}/{}'.format(resource._request_uri, resource_id)
+            resource._request_uri = f'{resource._request_uri}/{resource_id}'
         return resource
 
     # def authorization_method(self, method):
@@ -479,7 +481,7 @@ class Resources(object):
 
     @property
     def body(self):
-        """The body for this resource request.
+        """Return the body for this resource request.
 
         Return:
             (any): The HTTP request body.
@@ -488,12 +490,12 @@ class Resources(object):
 
     @body.setter
     def body(self, data):
-        """The POST/PUT body content for this resource request."""
+        """Set the POST/PUT body content for this resource request."""
         self._request.body = data
 
     @property
     def case_preference(self):
-        """String value for Custom Indicators case preference
+        """Return the string value for Custom Indicators case preference
 
         Return:
             (string): Either lower, upper or case sensitive.
@@ -502,12 +504,12 @@ class Resources(object):
 
     @property
     def content_type(self):
-        """The Content-Type header value for this resource request."""
+        """Return the Content-Type header value for this resource request."""
         return self._request.content_type
 
     @content_type.setter
     def content_type(self, data):
-        """The Content-Type header for this resource request."""
+        """Set the Content-Type header for this resource request."""
         self._request.content_type = data
 
     def copy_reset(self):
@@ -581,17 +583,18 @@ class Resources(object):
 
         Args:
             group_resource (Resource Instance): A resource object with optional resource_id.
+
         Return:
             (instance): A copy of this resource instance cleaned and updated for group associations.
 
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(group_resource.request_uri, resource._request_uri)
+        resource._request_uri = f'{group_resource.request_uri}/{resource._request_uri}'
         return resource
 
     @property
     def http_method(self):
-        """The HTTP Method for this resource request.
+        """Return the HTTP Method for this resource request.
 
         Return:
             (string): The HTTP request method (GET, POST, etc.)
@@ -600,7 +603,7 @@ class Resources(object):
 
     @http_method.setter
     def http_method(self, data):
-        """The HTTP Method for this resource request."""
+        """Set the HTTP Method for this resource request."""
         data = data.upper()
         if data in ['DELETE', 'GET', 'POST', 'PUT']:
             self._request.http_method = data
@@ -632,18 +635,15 @@ class Resources(object):
         +--------+---------------------------------------------------------------------------------+
 
         Args:
-            resource_type (string): The resource pivot resource type (indicator type).
-            resource_id (integer): The resource pivot id (indicator value).
+            indicator_resource (string): The resource pivot resource type (indicator type).
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(
-            indicator_resource.request_uri, resource._request_uri
-        )
+        resource._request_uri = f'{indicator_resource.request_uri}/{resource._request_uri}'
         return resource
 
     @property
     def name(self):
-        """The name value for this resource.
+        """Return the name value for this resource.
 
         Return:
             (str): The name of the Resource Type (e.g. Indicator, Task, etc.)
@@ -652,7 +652,7 @@ class Resources(object):
 
     @property
     def owner(self):
-        """The Owner payload value for this resource request.
+        """Return the Owner payload value for this resource request.
 
         Return:
             (str): The ThreatConnect owner name set during request.
@@ -661,15 +661,15 @@ class Resources(object):
 
     @owner.setter
     def owner(self, data):
-        """The Owner payload value for this resource request."""
+        """Set the Owner payload value for this resource request."""
         if data is not None:
             self._request.add_payload('owner', data)
         else:
-            self.tcex.log.warn(u'Provided owner was invalid. ({})'.format(data))
+            self.tcex.log.warn(f'Provided owner was invalid. ({data})')
 
     @property
     def parent(self):
-        """The parent object name for this resource.
+        """Return the parent object name for this resource.
 
         Return:
             (str): The API endpoint parent value (e.g. Indicator for Address or Group
@@ -685,7 +685,7 @@ class Resources(object):
         Return:
             (dictionary): Resource Data
         """
-        self.tcex.log.warning(u'Using deprecated method (paginate).')
+        self.tcex.log.warning('Using deprecated method (paginate).')
         resources = []
         self._request.add_payload('resultStart', self._result_start)
         self._request.add_payload('resultLimit', self._result_limit)
@@ -700,7 +700,7 @@ class Resources(object):
                 self._result_count = data.get('resultCount')
                 # self._result_start = self._result_limit
 
-            self.tcex.log.debug(u'Result Count: {}'.format(self._result_count))
+            self.tcex.log.debug(f'Result Count: {self._result_count}')
 
             while True:
                 if len(resources) >= self._result_count:
@@ -710,7 +710,7 @@ class Resources(object):
                 results = self.request()
                 resources.extend(results['data'])
 
-            self.tcex.log.debug(u'Resource Count: {}'.format(len(resources)))
+            self.tcex.log.debug(f'Resource Count: {len(resources)}')
 
         return resources
 
@@ -735,9 +735,9 @@ class Resources(object):
             (dictionary): Response/Results data.
         """
         # self._request.authorization_method(self._authorization_method)
-        self._request.url = '{}/v2/{}'.format(self.tcex.default_args.tc_api_path, self._request_uri)
+        self._request.url = f'{self.tcex.default_args.tc_api_path}/v2/{self._request_uri}'
         self._apply_filters()
-        self.tcex.log.debug(u'Resource URL: ({})'.format(self._request.url))
+        self.tcex.log.debug(f'Resource URL: ({self._request.url})')
 
         response = self._request.send(stream=self._stream)
         data, status = self._request_process(response)
@@ -753,7 +753,7 @@ class Resources(object):
 
     @property
     def request_entity(self):
-        """The temporary entity name used for the request.
+        """Return the temporary entity name used for the request.
 
         The request entity starts as the resource api_entity and changes
         depending on the pivot resource. This value is reset after the
@@ -766,7 +766,7 @@ class Resources(object):
 
     @property
     def request_uri(self):
-        """The temporary uri used for the request.
+        """Return the temporary uri used for the request.
 
         The request uri starts as the resource api_uri and changes depending on
         the pivot resource. This value is reset after the *request()* method is
@@ -779,7 +779,7 @@ class Resources(object):
 
     @property
     def result_count(self):
-        """Boolean for API pagination when there are previous results to retrieve.
+        """Return the boolean for API pagination when there are previous results to retrieve.
 
         Return:
             (int): The number of results a paginated API call will return.
@@ -826,12 +826,10 @@ class Resources(object):
         +--------------+----------------------------------------------------------------------+
 
         Args:
-            resource_id (string): The resource pivot id (security label name).
+            security_label_resource (string): The resource pivot id (security label name).
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(
-            security_label_resource.request_uri, resource._request_uri
-        )
+        resource._request_uri = f'{security_label_resource.request_uri}/{resource._request_uri}'
         return resource
 
     def security_labels(self, resource_id=None):
@@ -865,9 +863,9 @@ class Resources(object):
         """
         resource = self.copy()
         resource._request_entity = 'securityLabel'
-        resource._request_uri = '{}/securityLabels'.format(resource._request_uri)
+        resource._request_uri = f'{resource._request_uri}/securityLabels'
         if resource_id is not None:
-            resource._request_uri = '{}/{}'.format(resource._request_uri, resource_id)
+            resource._request_uri = f'{resource._request_uri}/{resource_id}'
         return resource
 
     def tag_pivot(self, tag_resource):
@@ -895,10 +893,10 @@ class Resources(object):
         +--------------+------------------------------------------------------------+
 
         Args:
-            resource_id (string): The resource pivot id (tag name).
+            tag_resource (string): The resource pivot id (tag name).
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(tag_resource.request_uri, resource._request_uri)
+        resource._request_uri = f'{tag_resource.request_uri}/{resource._request_uri}'
         return resource
 
     def tags(self, resource_id=None):
@@ -939,11 +937,9 @@ class Resources(object):
         """
         resource = self.copy()
         resource._request_entity = 'tag'
-        resource._request_uri = '{}/tags'.format(resource._request_uri)
+        resource._request_uri = f'{resource._request_uri}/tags'
         if resource_id is not None:
-            resource._request_uri = '{}/{}'.format(
-                resource._request_uri, self.tcex.safetag(resource_id)
-            )
+            resource._request_uri = f'{resource._request_uri}/{self.tcex.safe_tag(resource_id)}'
         return resource
 
     def task_pivot(self, task_resource):
@@ -967,15 +963,15 @@ class Resources(object):
         +--------------+-------------------------------------------------------------+
 
         Args:
-            resource_id (integer): The resource pivot id (task id).
+            task_resource (integer): The resource pivot id (task id).
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(task_resource.request_uri, resource._request_uri)
+        resource._request_uri = f'{task_resource.request_uri}/{resource._request_uri}'
         return resource
 
     @property
     def value_fields(self):
-        """The value fields for this resource.
+        """Return the value fields for this resource.
 
         Returns:
             (list): The fields in the response JSON that have the key value (e.g. ['md5',
@@ -1008,11 +1004,11 @@ class Resources(object):
         +--------------+--------------------------------------------------------------------------+
 
         Args:
-            resource_id (integer): The resource pivot id (victim id).
+            victim_resource (integer): The resource pivot id (victim id).
         """
         resource = self.copy()
         resource._request_entity = 'victim'
-        resource._request_uri = '{}/{}'.format(resource._request_uri, victim_resource.request_uri)
+        resource._request_uri = f'{resource._request_uri}/{victim_resource.request_uri}'
         return resource
 
     def victim_pivot(self, victim_resource):
@@ -1036,10 +1032,10 @@ class Resources(object):
         +--------------+---------------------------------------------------------------+
 
         Args:
-            resource_id (integer): The resource pivot id (victim id).
+            victim_resource (integer): The resource pivot id (victim id).
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(victim_resource.request_uri, resource._request_uri)
+        resource._request_uri = f'{victim_resource.request_uri}/{resource._request_uri}'
         return resource
 
     def victim_assets(self, asset_type=None, asset_id=None):
@@ -1091,12 +1087,12 @@ class Resources(object):
         }
         resource = self.copy()
         resource._request_entity = 'victimAsset'
-        resource._request_uri = '{}/victimAssets'.format(resource._request_uri)
+        resource._request_uri = f'{resource._request_uri}/victimAssets'
         if asset_type is not None:
             resource._request_entity = type_entity_map.get(asset_type, 'victimAsset')
-            resource._request_uri = '{}/{}'.format(resource._request_uri, asset_type)
+            resource._request_uri = f'{resource._request_uri}/{asset_type}'
             if asset_id is not None:
-                resource._request_uri = '{}/{}'.format(resource._request_uri, asset_id)
+                resource._request_uri = f'{resource._request_uri}/{asset_id}'
         return resource
 
     def __iter__(self):
@@ -1130,33 +1126,30 @@ class Resources(object):
 
         return results
 
-    # define next after __next__ for Python 2
-    next = __next__
-
     def __str__(self):
-        """A printable string for this resource.
+        """Return a printable string for this resource.
 
         Return:
             (str): A printable string with Class data.
         """
         # TODO: update to include resource specific data.
-        printable_string = '\n{0!s:_^80}\n'.format('Resource')
+        printable_string = f"\n{'Resource'!s:_^80}\n"
 
         # body
-        printable_string += '\n{0!s:40}\n'.format('Body')
-        printable_string += '  {0!s:<29}{1!s:<50}\n'.format('Body', self._request.body)
+        printable_string += f"\n{'Body'!s:40}\n"
+        printable_string += f"  {'Body'!s:<29}{self._request.body!s:<50}\n"
 
         # headers
         if self._request.headers:
-            printable_string += '\n{0!s:40}\n'.format('Headers')
+            printable_string += f"\n{'Headers'!s:40}\n"
             for k, v in self._request.headers.items():
-                printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)
+                printable_string += f'  {k!s:<29}{v!s:<50}\n'
 
         # payload
         if self._request.payload:
-            printable_string += '\n{0!s:40}\n'.format('Payload')
+            printable_string += f"\n{'Payload'!s:40}\n"
             for k, v in self._request.payload.items():
-                printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)
+                printable_string += f'  {k!s:<29}{v!s:<50}\n'
 
         return printable_string
 
@@ -1171,7 +1164,7 @@ class Batch(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Batch, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'batch'
         self._api_branch_base = self._api_branch  # only on parent
         self._api_entity = 'batchId'
@@ -1184,12 +1177,12 @@ class Batch(Resources):
         # self._value_fields = ['summary']
 
     def batch_id(self, batch_id):
-        """The ID of the batch job used to push data and/or retrieve status.
+        """Set the ID of the batch job used to push data and/or retrieve status.
 
         Args:
             batch_id (integer): The id of the batch job.
         """
-        self._request_uri = '{}/{}'.format(self._api_uri, batch_id)
+        self._request_uri = f'{self._api_uri}/{batch_id}'
         self._request_entity = 'batchStatus'
 
     def errors(self, batch_id):
@@ -1198,7 +1191,7 @@ class Batch(Resources):
         Args:
             batch_id (integer): The id of the batch job.
         """
-        self._request_uri = '{}/{}/errors'.format(self._api_uri, batch_id)
+        self._request_uri = f'{self._api_uri}/{batch_id}/errors'
 
 
 #
@@ -1217,7 +1210,7 @@ class Indicator(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Indicator, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'indicators'
         self._api_branch_base = self._api_branch  # only on parent
         self._api_entity = 'indicator'
@@ -1230,9 +1223,8 @@ class Indicator(Resources):
         self._value_fields = ['summary']
 
     def deleted(self):
-        """Update the request URI to include the deleted endpoint.
-        """
-        self._request_uri = '{}/deleted'.format(self._request_uri)
+        """Update the request URI to include the deleted endpoint."""
+        self._request_uri = f'{self._request_uri}/deleted'
 
     def entity_body(self, data):
         """Alias to :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method.
@@ -1247,7 +1239,7 @@ class Indicator(Resources):
 
     def false_positive(self):
         """Report indicator False Positive"""
-        self._request_uri = '{}/falsePositive'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/falsePositive'
 
     def indicator(self, data):
         """Update the request URI to include the Indicator for specific indicator retrieval.
@@ -1256,9 +1248,7 @@ class Indicator(Resources):
             data (string): The indicator value
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
-            self._request_uri = '{}/{}'.format(
-                self._api_uri, self.tcex.safe_indicator(data, 'ignore')
-            )
+            self._request_uri = f"{self._api_uri}/{self.tcex.safe_indicator(data, 'ignore')}"
 
     def indicator_body(self, indicators):
         """Generate the appropriate dictionary content for POST of a **single** indicator.
@@ -1285,7 +1275,7 @@ class Indicator(Resources):
         return body
 
     def indicators(self, indicator_data):
-        """Generator for indicator values.
+        """Generate indicator values.
 
         Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator
         values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all
@@ -1343,8 +1333,8 @@ class Indicator(Resources):
                         elif hash_patterns['sha256'].match(i):
                             i_type = 'sha256'
                         else:
-                            msg = u'Cannot determine hash type: "{}"'.format(
-                                indicator_data.get('summary')
+                            msg = (
+                                f"""Can't determine hash type: "{indicator_data.get('summary')}"."""
                             )
                             self.tcex.log.warning(msg)
 
@@ -1376,19 +1366,19 @@ class Indicator(Resources):
     def observations(self):
         """Report indicator observations"""
         self._request_entity = 'observation'
-        self._request_uri = '{}/observations'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/observations'
 
     def observation_count(self):
         """Retrieve indicator observation count"""
         self._request_entity = 'observationCount'
-        self._request_uri = '{}/observationCount'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/observationCount'
 
     def observed(self, date_observed=None):
         """Retrieve indicator observations count for top 10"""
         if self.name != 'Indicator':
-            self.tcex.log.warning(u'Observed endpoint only available for "indicator" endpoint.')
+            self.tcex.log.warning('Observed endpoint only available for "indicator" endpoint.')
         else:
-            self._request_uri = '{}/observed'.format(self._request_uri)
+            self._request_uri = f'{self._request_uri}/observed'
             if date_observed is not None:
                 self._request.add_payload('dateObserved', date_observed)
 
@@ -1421,10 +1411,10 @@ class Address(Indicator):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Address, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'addresses'
         self._api_entity = 'address'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Address'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1441,7 +1431,7 @@ class Address(Indicator):
         try:
             ip = ipaddress.ip_address(data)
         except ValueError:
-            ip = ipaddress.ip_address(u'{}'.format(data))
+            ip = ipaddress.ip_address(f'{data}')
         if ip.version == 6:
             data = ip.exploded
             sections = []
@@ -1453,7 +1443,7 @@ class Address(Indicator):
                     s = s.lstrip('0')
                 sections.append(s)
             data = ':'.join(sections)
-        super(Address, self).indicator(data)
+        super().indicator(data)
 
 
 class Bulk(Indicator):
@@ -1483,10 +1473,10 @@ class Bulk(Indicator):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Bulk, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'bulk'
         self._api_entity = 'bulkStatus'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Indicator'  # bcs - should this be bulk?
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1501,7 +1491,7 @@ class Bulk(Indicator):
         Args:
             ondemand (boolean): Enable on demand bulk generation.
         """
-        self._request_uri = '{}/{}'.format(self._api_uri, 'csv')
+        self._request_uri = f"{self._api_uri}/{'csv'}"
         self._stream = True
         if ondemand:
             self._request.add_payload('runNow', True)
@@ -1516,7 +1506,7 @@ class Bulk(Indicator):
             ondemand (boolean): Enable on demand bulk generation.
         """
         self._request_entity = 'indicator'
-        self._request_uri = '{}/{}'.format(self._api_uri, 'json')
+        self._request_uri = f"{self._api_uri}/{'json'}"
         self._stream = True
         if ondemand:
             self._request.add_payload('runNow', True)
@@ -1532,10 +1522,10 @@ class EmailAddress(Indicator):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(EmailAddress, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'emailAddresses'
         self._api_entity = 'emailAddress'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'EmailAddress'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1552,10 +1542,10 @@ class File(Indicator):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(File, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'files'
         self._api_entity = 'file'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'File'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1626,7 +1616,7 @@ class File(Indicator):
         """
         # handle hashes in form md5 : sha1 : sha256
         data = self.get_first_hash(data)
-        super(File, self).indicator(data)
+        super().indicator(data)
 
     @staticmethod
     def indicator_body(indicators):
@@ -1661,9 +1651,9 @@ class File(Indicator):
             indicator (string): The indicator to retrieve file occurrences.
         """
         self._request_entity = 'fileOccurrence'
-        self._request_uri = '{}/fileOccurrences'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/fileOccurrences'
         if indicator is not None:
-            self._request_uri = '{}/{}/fileOccurrences'.format(self._api_uri, indicator)
+            self._request_uri = f'{self._api_uri}/{indicator}/fileOccurrences'
 
     def summary(self, indicator_data):
         """Return a summary value for any given indicator type."""
@@ -1685,10 +1675,10 @@ class Host(Indicator):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Host, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'hosts'
         self._api_entity = 'host'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Host'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1701,9 +1691,9 @@ class Host(Indicator):
             indicator (string): The indicator to retrieve resolutions.
         """
         self._request_entity = 'dnsResolution'
-        self._request_uri = '{}/dnsResolutions'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/dnsResolutions'
         if indicator is not None:
-            self._request_uri = '{}/{}/dnsResolutions'.format(self._api_uri, indicator)
+            self._request_uri = f'{self._api_uri}/{indicator}/dnsResolutions'
 
 
 class URL(Indicator):
@@ -1716,10 +1706,10 @@ class URL(Indicator):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(URL, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'urls'
         self._api_entity = 'url'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'URL'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1741,7 +1731,7 @@ class Group(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Group, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'groups'
         self._api_branch_base = self._api_branch
         self._api_entity = 'group'
@@ -1760,7 +1750,7 @@ class Group(Resources):
             resource_id (string): The group id.
         """
         if self._name != 'group':
-            self._request_uri = '{}/{}'.format(self._api_uri, resource_id)
+            self._request_uri = f'{self._api_uri}/{resource_id}'
 
     def resource_id(self, resource_id):
         """Alias for group_id method
@@ -1781,10 +1771,10 @@ class Adversary(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Adversary, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'adversaries'
         self._api_entity = 'adversary'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Adversary'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1796,7 +1786,7 @@ class Adversary(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
 
 class Campaign(Group):
@@ -1809,10 +1799,10 @@ class Campaign(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Campaign, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'campaigns'
         self._api_entity = 'campaign'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Campaign'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1824,7 +1814,7 @@ class Campaign(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
 
 class Document(Group):
@@ -1841,10 +1831,10 @@ class Document(Group):
         Args:
             tcex (instance): Instance of TcEx Class.
         """
-        super(Document, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'documents'
         self._api_entity = 'document'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Document'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1856,7 +1846,7 @@ class Document(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/download'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/download'
 
     def upload(self, resource_id, data):
         """Update the request URI to upload the a document to this resource.
@@ -1868,7 +1858,7 @@ class Document(Group):
         self.body = data
         self.content_type = 'application/octet-stream'
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/upload'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/upload'
 
 
 class Email(Group):
@@ -1881,10 +1871,10 @@ class Email(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Email, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'emails'
         self._api_entity = 'email'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Email'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1900,10 +1890,10 @@ class Event(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Event, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'events'
         self._api_entity = 'event'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Event'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1915,7 +1905,7 @@ class Event(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
 
 class Incident(Group):
@@ -1928,10 +1918,10 @@ class Incident(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Incident, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'incidents'
         self._api_entity = 'incident'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Incident'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1953,7 +1943,7 @@ class Incident(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
 
 class Intrusion_Set(Group):
@@ -1966,10 +1956,10 @@ class Intrusion_Set(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Intrusion_Set, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'intrusionSets'
         self._api_entity = 'intrusionSet'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Intrusion Set'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -1981,7 +1971,7 @@ class Intrusion_Set(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
 
 class Report(Group):
@@ -1994,10 +1984,10 @@ class Report(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Report, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'reports'
         self._api_entity = 'report'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Report'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -2009,7 +1999,7 @@ class Report(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/download'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/download'
 
     def upload(self, resource_id, data):
         """Update the request URI to upload the a report to this resource.
@@ -2021,7 +2011,7 @@ class Report(Group):
         self.body = data
         self.content_type = 'application/octet-stream'
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/upload'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/upload'
 
 
 class Signature(Group):
@@ -2034,10 +2024,10 @@ class Signature(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Signature, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'signatures'
         self._api_entity = 'signature'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Signature'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -2049,7 +2039,7 @@ class Signature(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/download'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/download'
 
     def pdf(self, resource_id):
         """Update the request URI to get the pdf for this resource.
@@ -2058,7 +2048,7 @@ class Signature(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
 
 class Threat(Group):
@@ -2071,10 +2061,10 @@ class Threat(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Threat, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'threats'
         self._api_entity = 'threat'
-        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._api_uri = f'{self._api_branch_base}/{self._api_branch}'
         self._name = 'Threat'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
@@ -2086,7 +2076,7 @@ class Threat(Group):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
 
 #
@@ -2120,7 +2110,7 @@ class CustomMetric(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(CustomMetric, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'customMetrics'
         self._api_entity = 'customMetricConfig'
         self._api_uri = self._api_branch
@@ -2145,7 +2135,7 @@ class CustomMetric(Resources):
         Args:
             resource_id (string): The metric id.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self._request_uri = f'{self._request_uri}/{resource_id}'
 
     def metric_name(self, resource_name):
         """Update the request URI to include the Metric Name for specific retrieval.
@@ -2161,7 +2151,7 @@ class CustomMetric(Resources):
         Args:
             resource_name (string): The metric name.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_name)
+        self._request_uri = f'{self._request_uri}/{resource_name}'
 
     def resource_id(self, resource_id):
         """Alias for metric_id method
@@ -2188,9 +2178,8 @@ class CustomMetric(Resources):
         | POST         | /v2/customMetrics/{id}|{name}/data |
         +--------------+------------------------------------+
 
-        Example
+        Example:
         -------
-
         The weight value is optional.
 
         .. code-block:: javascript
@@ -2213,12 +2202,13 @@ class CustomMetric(Resources):
             }
 
         Args:
-            resource_name (string): The metric name.
+            resource_value (string): The resource value.
+            return_value (bool): If true add returnValue param.
         """
         if return_value:
             self._request_entity = None
             self._request.add_payload('returnValue', True)
-        self._request_uri = '{}/{}/data'.format(self._request_uri, resource_value)
+        self._request_uri = f'{self._request_uri}/{resource_value}/data'
 
 
 #
@@ -2234,7 +2224,7 @@ class Owner(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Owner, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'owners'
         self._api_entity = 'owner'
         self._api_uri = self._api_branch
@@ -2251,7 +2241,7 @@ class Owner(Resources):
         Args:
             resource_id (string): The owner id.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self._request_uri = f'{self._request_uri}/{resource_id}'
 
     def resource_id(self, resource_id):
         """Alias for owner_id method
@@ -2275,7 +2265,7 @@ class SecurityLabel(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(SecurityLabel, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'securityLabels'
         self._api_entity = 'securityLabel'
         self._api_uri = self._api_branch
@@ -2292,7 +2282,7 @@ class SecurityLabel(Resources):
         Args:
             resource_id (string): The security label.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self._request_uri = f'{self._request_uri}/{resource_id}'
 
     def resource_id(self, resource_id):
         """Alias for label method
@@ -2318,7 +2308,7 @@ class Tag(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Tag, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'tags'
         self._api_entity = 'tag'
         self._api_uri = self._api_branch
@@ -2335,7 +2325,7 @@ class Tag(Resources):
         Args:
             resource_id (string): The tag name.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, self.tcex.safetag(resource_id))
+        self._request_uri = f'{self._request_uri}/{self.tcex.safe_tag(resource_id)}'
 
     def resource_id(self, resource_id):
         """Alias for tag
@@ -2361,7 +2351,7 @@ class Task(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Task, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'tasks'
         self._api_entity = 'task'
         self._api_uri = self._api_branch
@@ -2386,9 +2376,9 @@ class Task(Resources):
         """
         if resource_id is not None:
             self.resource_id(resource_id)
-        self._request_uri = '{}/assignees'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/assignees'
         if assignee is not None:
-            self._request_uri = '{}/{}'.format(self._request_uri, assignee)
+            self._request_uri = f'{self._request_uri}/{assignee}'
 
     def escalatees(self, escalatee=None, resource_id=None):
         """Add an escalatee to a Task
@@ -2404,9 +2394,9 @@ class Task(Resources):
         """
         if resource_id is not None:
             self.resource_id(resource_id)
-        self._request_uri = '{}/escalatees'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/escalatees'
         if escalatee is not None:
-            self._request_uri = '{}/{}'.format(self._request_uri, escalatee)
+            self._request_uri = f'{self._request_uri}/{escalatee}'
 
     def pdf(self, resource_id):
         """Update the request URI to get the pdf for this resource.
@@ -2415,7 +2405,7 @@ class Task(Resources):
             resource_id (integer): The group id.
         """
         self.resource_id(str(resource_id))
-        self._request_uri = '{}/pdf'.format(self._request_uri)
+        self._request_uri = f'{self._request_uri}/pdf'
 
     def resource_id(self, resource_id):
         """Alias for task_id method
@@ -2433,7 +2423,7 @@ class Task(Resources):
         Args:
             resource_id (string): The task id.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self._request_uri = f'{self._request_uri}/{resource_id}'
 
 
 #
@@ -2449,7 +2439,7 @@ class Victim(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Victim, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'victims'
         self._api_entity = 'victim'
         self._api_uri = self._api_branch
@@ -2466,7 +2456,7 @@ class Victim(Resources):
         Args:
             resource_id (string): The victim id.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self._request_uri = f'{self._request_uri}/{resource_id}'
 
     def resource_id(self, resource_id):
         """Alias for victim_id method
@@ -2484,7 +2474,7 @@ class Victim(Resources):
 #
 
 
-class DataStore(object):
+class DataStore:
     """DataStore Class
 
     This resource class will return DataStore.
@@ -2513,7 +2503,7 @@ class DataStore(object):
         """
         headers = {'Content-Type': 'application/json', 'DB-Method': db_method}
         search_command = self._clean_datastore_path(search_command)
-        url = '/v2/exchange/db/{}/{}/{}'.format(domain, type_name, search_command)
+        url = f'/v2/exchange/db/{domain}/{type_name}/{search_command}'
         r = self.tcex.session.post(url, data=body, headers=headers, params=self._params)
 
         data = []
@@ -2617,7 +2607,7 @@ class Notification(Resources):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Notification, self).__init__(tcex)
+        super().__init__(tcex)
         self._api_branch = 'notifications'
         self._api_entity = 'notificationsConfig'
         self._api_uri = self._api_branch
@@ -2635,7 +2625,7 @@ class Notification(Resources):
 
 
 def class_factory(name, base_class, class_dict):
-    """Internal method for dynamically building Custom Indicator classes."""
+    """Generate dynamically built Custom Indicator classes."""
 
     def __init__(self, tcex):
         base_class.__init__(self, tcex)

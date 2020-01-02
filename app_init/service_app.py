@@ -4,7 +4,7 @@ from args import Args
 
 
 # pylint: disable=unused-argument
-class ServiceApp(object):
+class ServiceApp:
     """Playbook App Class"""
 
     def __init__(self, _tcex):

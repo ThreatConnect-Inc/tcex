@@ -3,7 +3,7 @@
 import json
 
 
-class SecurityLabel(object):
+class SecurityLabel:
     """ThreatConnect Batch SecurityLabel Object."""
 
     # TODO: enable when support for py2 is dropped.

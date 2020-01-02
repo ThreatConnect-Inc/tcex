@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Indicator"""
 import json
-
-try:
-    from urllib import quote_plus  # Python 2
-except ImportError:
-    from urllib.parse import quote_plus  # Python
+from urllib.parse import quote_plus
 
 from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 
@@ -168,9 +164,9 @@ def custom_indicator_class_factory(
         return False
 
     class_name = indicator_type.replace(' ', '')
-    init_method = locals()['init_{}'.format(value_count)]
-    set_unique_id_method = locals()['_set_unique_id_{}'.format(value_count)]
-    can_create_method = locals()['can_create_{}'.format(value_count)]
+    init_method = locals()[f'init_{value_count}']
+    set_unique_id_method = locals()[f'_set_unique_id_{value_count}']
+    can_create_method = locals()[f'can_create_{value_count}']
     _metadata_map = locals()['_metadata_map_1']
     new_class = type(
         str(class_name),
@@ -189,9 +185,7 @@ class Indicator(TIMappings):
     """Unique API calls for Indicator API Endpoints"""
 
     def __init__(self, tcex, sub_type, api_entity, api_branch, owner, **kwargs):
-        super(Indicator, self).__init__(
-            tcex, 'Indicator', 'indicators', sub_type, api_entity, api_branch, owner
-        )
+        super().__init__(tcex, 'Indicator', 'indicators', sub_type, api_entity, api_branch, owner)
 
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
@@ -369,11 +363,10 @@ class Indicator(TIMappings):
         )
 
     def observations(self):
-        """
-        Gets the indicators observations.
+        """Return indicator observation data.
 
         Returns:
-
+            [type]: [description]
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
@@ -382,16 +375,16 @@ class Indicator(TIMappings):
         )
 
     def deleted(self, deleted_since, filters=None, params=None):
-        """
-        Gets the indicators deleted.
+        """Return deleted indicators from TC REST API.
 
         Args:
-            params:
-            filters:
-            deleted_since: Date since its been deleted
+            deleted_since ([type]): [description]
+            filters ([type], optional): [description]. Defaults to None.
+            params ([type], optional): [description]. Defaults to None.
 
+        Returns:
+            [type]: [description]
         """
-
         return self.tc_requests.deleted(
             self.api_type,
             self.api_branch,
@@ -403,16 +396,15 @@ class Indicator(TIMappings):
 
     @staticmethod
     def build_summary(val1=None, val2=None, val3=None):
-        """
-        Constructs the summary given va1, va2, val3
+        """Construct an indicator summary given va1, va2, val3.
 
         Args:
-            val1:
-            val2:
-            val3:
+            val1 (str, optional): Indicator value. Defaults to None.
+            val2 (str, optional): Indicator value. Defaults to None.
+            val3 (str, optional): Indicator value. Defaults to None.
 
         Returns:
-
+            str: <space><colon><space> delimeted indicator summary.
         """
         summary = []
         if val1 is not None:

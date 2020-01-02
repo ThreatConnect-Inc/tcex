@@ -10,13 +10,14 @@ import time
 import traceback
 import uuid
 from datetime import datetime
+
 import pytest
 from tcex import TcEx
 from tcex.inputs import FileParams
+
 from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
 from .validate_data import Validator
-
 
 logger = logging.getLogger('TestCase')
 lfh = RotatingFileHandlerCustom(filename='log/tests.log')
@@ -27,7 +28,7 @@ logger.addHandler(lfh)
 logger.setLevel(logging.DEBUG)
 
 
-class TestCase(object):
+class TestCase:
     """Base TestCase Class"""
 
     _app_path = os.getcwd()
@@ -58,7 +59,7 @@ class TestCase(object):
 
     def _exit(self, code):
         """Log and return exit code"""
-        self.log.info('[run] Exit Code: {}'.format(code))
+        self.log.info(f'[run] Exit Code: {code}')
         return code
 
     @staticmethod
@@ -94,7 +95,7 @@ class TestCase(object):
         # update default args with app args
         app_args = dict(self.default_args)
         app_args.update(args)
-        # app_args['tc_log_file'] = '{}.log'.format(self.test_case_name)
+        # app_args['tc_log_file'] = f'{self.test_case_name}.log'
         app_args['tc_logger_name'] = self.context
 
         if self.install_json.get('runtimeLevel').lower() in [
@@ -181,12 +182,10 @@ class TestCase(object):
             dict: The profile data.
         """
         try:
-            with open(
-                os.path.join(self.test_case_profile_dir, '{}.json'.format(profile_name)), 'r'
-            ) as fh:
+            with open(os.path.join(self.test_case_profile_dir, f'{profile_name}.json'), 'r') as fh:
                 profile = json.load(fh)
-        except IOError:
-            self.log.error('No profile {} provided.'.format(profile_name))
+        except OSError:
+            self.log.error(f'No profile {profile_name} provided.')
             return self._exit(1)
         profile['name'] = profile_name
 
@@ -208,7 +207,7 @@ class TestCase(object):
                 with open(file_fqpn, 'r') as fh:
                     self._install_json = json.load(fh)
             else:
-                print(('File "{}" could not be found.'.format(file_fqpn)))
+                print(f'File "{file_fqpn}" could not be found.')
         return self._install_json
 
     def input_params(self):
@@ -229,7 +228,7 @@ class TestCase(object):
 
     def log_data(self, stage, label, data, level='info'):
         """Log validation data."""
-        msg = '{!s:>20} : {!s:<15}: {!s:<50}'.format('[{}]'.format(stage), label, data)
+        msg = f"{f'[{stage}]'!s:>20} : {label!s:<15}: {data!s:<50}"
         getattr(self.log, level)(msg)
 
     @staticmethod
@@ -272,9 +271,7 @@ class TestCase(object):
             with open(message_tc_file, 'r') as mh:
                 message_tc = mh.read()
 
-        profile_filename = os.path.join(
-            self.test_case_profile_dir, '{}.json'.format(self.profile_name)
-        )
+        profile_filename = os.path.join(self.test_case_profile_dir, f'{self.profile_name}.json')
         with open(profile_filename, 'r+') as fh:
             profile_data = json.load(fh)
 
@@ -341,13 +338,13 @@ class TestCase(object):
         try:
             getattr(app, method)()
         except SystemExit as e:
-            self.log.info('[run] Exit Code: {}'.format(e.code))
-            self.log.error('App failed in {}() method ({}).'.format(method, e))
-            app.tcex.log.info('Exit Code: {}'.format(e.code))
+            self.log.info(f'[run] Exit Code: {e.code}')
+            self.log.error(f'App failed in {method}() method ({e}).')
+            app.tcex.log.info(f'Exit Code: {e.code}')
             return e.code
         except Exception:
             self.log.error(
-                'App encountered except in {}() method ({}).'.format(method, traceback.format_exc())
+                f'App encountered except in {method}() method ({traceback.format_exc()}).'
             )
             return 1
         return 0
@@ -356,7 +353,7 @@ class TestCase(object):
     def setup_class(cls):
         """Run once before all test cases."""
         cls._timer_class_start = time.time()
-        cls.log.info('{0} {1} {0}'.format('#' * 10, 'Setup Class'))
+        cls.log.info(f"{'#' * 10} Setup Class {'#' * 10}")
         TestCase.log_data(TestCase(), 'setup class', 'started', datetime.now().isoformat())
         TestCase.log_data(TestCase(), 'setup class', 'local envs', cls.env)
 
@@ -364,7 +361,7 @@ class TestCase(object):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
         self._current_test = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0]
-        self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
+        self.log.info(f"{'=' * 10} {self._current_test} {'=' * 10}")
         self.log_data('setup method', 'started', datetime.now().isoformat())
 
         # create and log current context
@@ -374,7 +371,7 @@ class TestCase(object):
         # setup per method instance of tcex
         args = dict(self.default_args)
         args['tc_log_file'] = os.path.join(self.test_case_feature, self.test_case_name, 'setup.log')
-        args['tc_logger_name'] = 'tcex-{}-{}'.format(self.test_case_feature, self.test_case_name)
+        args['tc_logger_name'] = f'tcex-{self.test_case_feature}-{self.test_case_name}'
         self.tcex = TcEx(config=args)
 
         # initialize new stager instance
@@ -410,7 +407,7 @@ class TestCase(object):
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
-        cls.log.info('{0} {1} {0}'.format('^' * 10, 'Teardown Class'))
+        cls.log.info(f"{'^' * 10} Teardown Class {'^' * 10}")
         TestCase.log_data(TestCase(), 'teardown class', 'finished', datetime.now().isoformat())
         TestCase.log_data(
             TestCase(), 'teardown class', 'elapsed', time.time() - cls._timer_class_start
@@ -470,7 +467,7 @@ class TestCase(object):
                 else:
                     assert False, 'The message.tc file was empty.'
             else:
-                assert False, 'No message.tc file found at ({}).'.format(message_tc_file)
+                assert False, f'No message.tc file found at ({message_tc_file}).'
 
     @property
     def validator(self):

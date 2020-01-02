@@ -4,7 +4,7 @@ from tcex.tcex_ti.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
 
-class Owner(object):
+class Owner:
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
 
     def __init__(self, tcex):
@@ -85,8 +85,7 @@ class Owner(object):
 
         Args:
         """
-        for i in self.tc_requests.many(self.api_type, None, self.api_entity):
-            yield i
+        yield from self.tc_requests.many(self.api_type, None, self.api_entity)
 
     def mine(self):
         """
@@ -102,8 +101,7 @@ class Owner(object):
         Returns:
 
         """
-        for i in self.tc_requests.many(self.api_type, 'mine/members', 'user'):
-            yield i
+        yield from self.tc_requests.many(self.api_type, 'mine/members', 'user')
 
     def metrics(self):
         """
@@ -111,5 +109,4 @@ class Owner(object):
         Returns:
 
         """
-        for i in self.tc_requests.many(self.api_type, 'metrics', 'ownerMetric'):
-            yield i
+        yield from self.tc_requests.many(self.api_type, 'metrics', 'ownerMetric')

@@ -2,7 +2,7 @@
 """Job Args"""
 
 
-class Args(object):
+class Args:
     """Job Args"""
 
     def __init__(self, parser):

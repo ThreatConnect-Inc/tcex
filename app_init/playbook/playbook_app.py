@@ -3,7 +3,7 @@
 from args import Args
 
 
-class PlaybookApp(object):
+class PlaybookApp:
     """Playbook App Class."""
 
     def __init__(self, _tcex):

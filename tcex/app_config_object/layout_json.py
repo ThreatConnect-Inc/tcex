@@ -6,7 +6,7 @@ import os
 from collections import OrderedDict
 
 
-class LayoutJson(object):
+class LayoutJson:
     """Object for layout.json file."""
 
     def __init__(self, filename=None, path=None):

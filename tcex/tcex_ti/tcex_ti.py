@@ -1,31 +1,31 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Module"""
 import inflect
-from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import (
-    custom_indicator_class_factory,
-    Indicator,
-)
-from tcex.tcex_ti.mappings.indicator.indicator_types.address import Address
-from tcex.tcex_ti.mappings.indicator.indicator_types.url import URL
-from tcex.tcex_ti.mappings.indicator.indicator_types.email_address import EmailAddress
-from tcex.tcex_ti.mappings.indicator.indicator_types.file import File
-from tcex.tcex_ti.mappings.indicator.indicator_types.host import Host
+from tcex.tcex_ti.mappings.filters import Filters
 from tcex.tcex_ti.mappings.group.group_types.adversarys import Adversary
 from tcex.tcex_ti.mappings.group.group_types.campaign import Campaign
 from tcex.tcex_ti.mappings.group.group_types.document import Document
 from tcex.tcex_ti.mappings.group.group_types.email import Email
-from tcex.tcex_ti.mappings.task import Task
-from tcex.tcex_ti.mappings.filters import Filters
 from tcex.tcex_ti.mappings.group.group_types.event import Event
 from tcex.tcex_ti.mappings.group.group_types.incident import Incident
 from tcex.tcex_ti.mappings.group.group_types.intrusion_set import IntrusionSet
 from tcex.tcex_ti.mappings.group.group_types.report import Report
 from tcex.tcex_ti.mappings.group.group_types.signature import Signature
 from tcex.tcex_ti.mappings.group.group_types.threat import Threat
-from tcex.tcex_ti.mappings.victim import Victim
-from tcex.tcex_ti.mappings.tag import Tag
 from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
+from tcex.tcex_ti.mappings.indicator.indicator_types.address import Address
+from tcex.tcex_ti.mappings.indicator.indicator_types.email_address import EmailAddress
+from tcex.tcex_ti.mappings.indicator.indicator_types.file import File
+from tcex.tcex_ti.mappings.indicator.indicator_types.host import Host
+from tcex.tcex_ti.mappings.indicator.indicator_types.url import URL
+from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import (
+    Indicator,
+    custom_indicator_class_factory,
+)
+from tcex.tcex_ti.mappings.tag import Tag
+from tcex.tcex_ti.mappings.task import Task
 from tcex.tcex_ti.mappings.tcex_ti_owner import Owner
+from tcex.tcex_ti.mappings.victim import Victim
 
 p = inflect.engine()
 
@@ -33,7 +33,7 @@ p = inflect.engine()
 module = __import__(__name__)
 
 
-class TcExTi(object):
+class TcExTi:
     """ThreatConnect Threat Intelligence Module"""
 
     def __init__(self, tcex):
@@ -199,7 +199,7 @@ class TcExTi(object):
                 kwargs.pop('body', None),
                 kwargs.pop('header', None),
                 owner=owner,
-                **kwargs
+                **kwargs,
             )
         if group_type == 'INCIDENT':
             group = Incident(self.tcex, name, owner=owner, **kwargs)
@@ -215,7 +215,7 @@ class TcExTi(object):
                 kwargs.pop('file_type', None),
                 kwargs.pop('file_text', None),
                 owner=owner,
-                **kwargs
+                **kwargs,
             )
         if group_type == 'THREAT':
             group = Threat(self.tcex, name, owner=owner, **kwargs)
@@ -228,7 +228,7 @@ class TcExTi(object):
                 kwargs.pop('reminder_date', None),
                 kwargs.pop('escalation_date', None),
                 owner=owner,
-                **kwargs
+                **kwargs,
             )
         return group
 
@@ -661,7 +661,7 @@ class TcExTi(object):
                     content_response = r.download()
                     if content_response.ok:
                         entity['fileContent'] = content_response.text
-            # type
+            # get the entity type
             if d.get('type') is not None:
                 entity['type'] = d.get('type')
             else:
@@ -740,5 +740,5 @@ class TcExTi(object):
             """Add Custom Indicator data to Batch object"""
             return custom_class(tcex, value1, value2, value3, owner=owner, **kwargs)
 
-        method = locals()['method_{}'.format(value_count)]
+        method = locals()[f'method_{value_count}']
         setattr(self, method_name, method)

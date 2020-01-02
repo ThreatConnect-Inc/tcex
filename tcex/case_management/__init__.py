@@ -1,2 +1,3 @@
 # -*- coding: utf-8 -*-
-from .case_management import CaseManagement
+"""ThreatConnect Case Management Module."""
+from .case_management import CaseManagement  # noqa: F401

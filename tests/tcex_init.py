@@ -4,8 +4,8 @@ import os
 import sys
 
 from tcex import TcEx
-from .tc_token import TcToken
 
+from .tc_token import TcToken
 
 # instance of tc token to retrieve testing token from API
 tc_token = TcToken()

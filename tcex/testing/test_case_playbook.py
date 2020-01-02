@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Playbook Test Case module"""
 import traceback
-from six import string_types
+
 from .test_case_playbook_common import TestCasePlaybookCommon
 
 
@@ -19,7 +19,7 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         """
         # resolve env vars
         for k, v in args.items():
-            if isinstance(v, string_types):
+            if isinstance(v, str):
                 args[k] = self.resolve_env_args(v)
 
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
@@ -46,19 +46,15 @@ class TestCasePlaybook(TestCasePlaybookCommon):
                         self.app.args.tc_action
                     )()  # pylint: disable=no-member
                 else:
-                    self.log.error(
-                        'Action method ({}) was not found.'.format(self.app.args.tc_action)
-                    )
+                    self.log.error(f'Action method ({self.app.args.tc_action}) was not found.')
                     self._exit(1)
             else:
                 self.app.run()
         except SystemExit as e:
-            self.log.error('App failed in run() method ({}).'.format(e))
+            self.log.error(f'App failed in run() method ({e}).')
             return self._exit(e.code)
         except Exception:
-            self.log.error(
-                'App encountered except in run() method ({}).'.format(traceback.format_exc())
-            )
+            self.log.error(f'App encountered except in run() method ({traceback.format_exc()}).')
             return self._exit(1)
 
         # Write Output
@@ -99,6 +95,6 @@ class TestCasePlaybook(TestCasePlaybookCommon):
 
     def setup_method(self):
         """Run before each test method runs."""
-        super(TestCasePlaybook, self).setup_method()
+        super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex.playbook.db.r

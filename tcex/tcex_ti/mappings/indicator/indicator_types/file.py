@@ -21,7 +21,7 @@ class File(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
         """
-        super(File, self).__init__(tcex, 'File', 'file', 'files', owner, **kwargs)
+        super().__init__(tcex, 'File', 'file', 'files', owner, **kwargs)
 
         if len(kwargs.get('unique_id', '')) == 32:
             md5 = kwargs.get('unique_id')
@@ -124,10 +124,9 @@ class File(Indicator):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for o in self.tc_requests.file_occurrences(
+        yield from self.tc_requests.file_occurrences(
             self.api_type, self.api_branch, self.unique_id, self.owner
-        ):
-            yield o
+        )
 
     def get_occurrence(self, occurrence_id):
         """

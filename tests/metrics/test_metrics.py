@@ -44,7 +44,7 @@ class TestMetrics:
     @staticmethod
     def test_create_new_metrics(tcex):
         """Test key metrics."""
-        name = 'pytest-{}'.format(str(uuid.uuid4()))
+        name = f'pytest-{str(uuid.uuid4())}'
         metrics = tcex.metric(
             name=name, description='pytest', data_type='Sum', interval='Daily', keyed=True
         )

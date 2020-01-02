@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Adversary """
-from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
+from urllib.parse import quote_plus
 
-try:
-    from urllib import quote_plus  # Python 2
-except ImportError:
-    from urllib.parse import quote_plus  # Python
+from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 
 
 class Task(TIMappings):
@@ -33,7 +30,7 @@ class Task(TIMappings):
             name (str): The name for this Group.
         """
 
-        super(Task, self).__init__(tcex, 'Task', 'tasks', None, 'task', None, owner)
+        super().__init__(tcex, 'Task', 'tasks', None, 'task', None, owner)
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
@@ -166,8 +163,7 @@ class Task(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for a in self.tc_requests.assignees(self.api_type, self.api_sub_type, self.unique_id):
-            yield a
+        yield from self.tc_requests.assignees(self.api_type, self.api_sub_type, self.unique_id)
 
     def assignee(self, assignee_id, action='ADD'):
         """
@@ -222,8 +218,7 @@ class Task(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for e in self.tc_requests.escalatees(self.api_type, self.api_sub_type, self.unique_id):
-            yield e
+        yield from self.tc_requests.escalatees(self.api_type, self.api_sub_type, self.unique_id)
 
     def escalatee(self, escalatee_id, action='ADD'):
         """

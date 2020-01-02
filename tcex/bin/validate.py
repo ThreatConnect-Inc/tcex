@@ -9,6 +9,12 @@ import sys
 import traceback
 from collections import deque
 
+import colorama as c
+from jsonschema import SchemaError, ValidationError, validate
+from stdlib_list import stdlib_list
+
+from .bin import Bin
+
 try:
     import pkg_resources
 except PermissionError:
@@ -20,12 +26,6 @@ try:
 except ModuleNotFoundError:
     # this module is only required for certain CLI commands
     pass
-
-import colorama as c
-from jsonschema import SchemaError, ValidationError, validate
-from stdlib_list import stdlib_list
-
-from .bin import Bin
 
 
 class Validate(Bin):
@@ -46,7 +46,7 @@ class Validate(Bin):
         Args:
             _args (namespace): The argparser args Namespace.
         """
-        super(Validate, self).__init__(_args)
+        super().__init__(_args)
 
         # class properties
         self._app_packages = []
@@ -123,9 +123,8 @@ class Validate(Bin):
                 status = False
                 # update validation data errors
                 self.validation_data['errors'].append(
-                    'Module validation failed for {} (module "{}" could not be imported).'.format(
-                        module_data.get('file'), module_data.get('module')
-                    )
+                    f"""Module validation failed for {module_data.get('file')} """
+                    f"""(module "{module_data.get('module')}" could not be imported)."""
                 )
             # update validation data for module
             self.validation_data['moduleImports'].append(
@@ -160,8 +159,10 @@ class Validate(Bin):
     @staticmethod
     def check_imported(module):
         """Check whether the provide module can be imported (package installed).
+
         Args:
             module (str): The name of the module to check availability.
+
         Returns:
             bool: True if the module can be imported, False otherwise.
         """
@@ -235,7 +236,7 @@ class Validate(Bin):
             if error:
                 # update validation data errors
                 self.validation_data['errors'].append(
-                    'Schema validation failed for {} ({}).'.format(install_json, error)
+                    f'Schema validation failed for {install_json} ({error}).'
                 )
 
             # update validation data for module
@@ -271,7 +272,7 @@ class Validate(Bin):
         if error:
             # update validation data errors
             self.validation_data['errors'].append(
-                'Schema validation failed for {} ({}).'.format(layout_json_file, error)
+                f'Schema validation failed for {layout_json_file} ({error}).'
             )
         else:
             self.check_layout_params()
@@ -295,20 +296,19 @@ class Validate(Bin):
                     if p.get('name') in ij_input_names:
                         # update validation data errors
                         self.validation_data['errors'].append(
-                            'Duplicate input name found in install.json ({})'.format(p.get('name'))
+                            f"Duplicate input name found in install.json ({p.get('name')})"
                         )
                         status = False
                     else:
                         ij_input_names.append(p.get('name'))
                 for o in ij.get('playbook', {}).get('outputVariables', []):
                     # build name type to ensure check for duplicates on name-type value
-                    name_type = '{}-{}'.format(o.get('name'), o.get('type'))
+                    name_type = f"{o.get('name')}-{o.get('type')}"
                     if name_type in ij_output_name_type:
                         # update validation data errors
                         self.validation_data['errors'].append(
-                            'Duplicate output variable name found in install.json ({})'.format(
-                                o.get('name')
-                            )
+                            'Duplicate output variable name found in install.json '
+                            f"({o.get('name')})"
                         )
                         status = False
                     else:
@@ -329,8 +329,9 @@ class Validate(Bin):
                 if p.get('name') not in ij_input_names:
                     # update validation data errors
                     self.validation_data['errors'].append(
-                        'Layouts input.parameters[].name validations failed ("{}" is defined in '
-                        'layout.json, but not found in install.json).'.format(p.get('name'))
+                        'Layouts input.parameters[].name validations failed '
+                        f"""("{p.get('name')}" is defined in layout.json, but not found in """
+                        'install.json).'
                     )
                     status = False
                 else:
@@ -338,15 +339,13 @@ class Validate(Bin):
 
                 if 'sqlite3' in sys.modules:
                     if p.get('display'):
-                        display_query = 'SELECT * FROM {} WHERE {}'.format(
-                            self.input_table, p.get('display')
-                        )
+                        display_query = f"SELECT * FROM {self.input_table} WHERE {p.get('display')}"
                         try:
                             self.db_conn.execute(display_query.replace('"', ''))
                         except sqlite3.Error:
                             self.validation_data['errors'].append(
-                                'Layouts input.parameters[].display validations failed ("{}" query '
-                                'is an invalid statement).'.format(p.get('display'))
+                                'Layouts input.parameters[].display validations failed '
+                                f"""("{p.get('display')}" query is an invalid statement)."""
                             )
                             status = False
 
@@ -357,8 +356,8 @@ class Validate(Bin):
             input_names = ','.join(ij_input_names)
             # update validation data errors
             self.validation_data['errors'].append(
-                'Layouts input.parameters[].name validations failed ("{}" values from install.json '
-                'were not included in layout.json.'.format(input_names)
+                f'Layouts input.parameters[].name validations failed ("{input_names}" '
+                'values from install.json were not included in layout.json.'
             )
             status = False
 
@@ -368,22 +367,20 @@ class Validate(Bin):
             if o.get('name') not in ij_output_names:
                 # update validation data errors
                 self.validation_data['errors'].append(
-                    'Layouts output validations failed ({} is defined in layout.json, but not '
-                    'found in install.json).'.format(o.get('name'))
+                    f"Layouts output validations failed ({o.get('name')} is defined "
+                    'in layout.json, but not found in install.json).'
                 )
                 status = False
 
             if 'sqlite3' in sys.modules:
                 if o.get('display'):
-                    display_query = 'SELECT * FROM {} WHERE {}'.format(
-                        self.input_table, o.get('display')
-                    )
+                    display_query = f"SELECT * FROM {self.input_table} WHERE {o.get('display')}"
                     try:
                         self.db_conn.execute(display_query.replace('"', ''))
                     except sqlite3.Error:
                         self.validation_data['errors'].append(
-                            'Layouts outputs.display validations failed ("{}" query is '
-                            'an invalid statement).'.format(o.get('display'))
+                            f"""Layouts outputs.display validations failed ("{o.get('display')}" """
+                            f"""query is an invalid statement)."""
                         )
                         status = False
 
@@ -427,7 +424,7 @@ class Validate(Bin):
             if error:
                 # update validation data errors
                 self.validation_data['errors'].append(
-                    'Syntax validation failed for {} ({}).'.format(filename, error)
+                    f'Syntax validation failed for {filename} ({error}).'
                 )
 
             # store status for this file
@@ -480,51 +477,48 @@ class Validate(Bin):
         """Print results."""
         # Validating Syntax
         if self.validation_data.get('fileSyntax'):
-            print('\n{}{}Validated File Syntax:'.format(c.Style.BRIGHT, c.Fore.BLUE))
-            print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Status:'))
+            print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated File Syntax:')
+            print(f"{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}")
             for f in self.validation_data.get('fileSyntax'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
-                print('{!s:<60}{}{!s:<25}'.format(f.get('filename'), status_color, status_value))
+                print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
 
         # Validating Imports
         if self.validation_data.get('moduleImports'):
-            print('\n{}{}Validated Imports:'.format(c.Style.BRIGHT, c.Fore.BLUE))
-            print(
-                '{}{!s:<30}{!s:<30}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Module:', 'Status:')
-            )
+            print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Imports:')
+            print(f"{c.Style.BRIGHT}{'File:'!s:<30}{'Module:'!s:<30}{'Status:'!s:<25}")
             for f in self.validation_data.get('moduleImports'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
                 print(
-                    '{!s:<30}{}{!s:<30}{}{!s:<25}'.format(
-                        f.get('filename'), c.Fore.WHITE, f.get('module'), status_color, status_value
-                    )
+                    f"{f.get('filename')!s:<30}{c.Fore.WHITE}"
+                    f"{f.get('module')!s:<30}{status_color}{status_value!s:<25}"
                 )
 
         # Validating Schema
         if self.validation_data.get('schema'):
-            print('\n{}{}Validated Schema:'.format(c.Style.BRIGHT, c.Fore.BLUE))
-            print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Status:'))
+            print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Schema:')
+            print(f"{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}")
             for f in self.validation_data.get('schema'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
-                print('{!s:<60}{}{!s:<25}'.format(f.get('filename'), status_color, status_value))
+                print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
 
         # Validating Layouts
         if self.validation_data.get('layouts'):
-            print('\n{}{}Validated Layouts:'.format(c.Style.BRIGHT, c.Fore.BLUE))
-            print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'Params:', 'Status:'))
+            print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Layouts:')
+            print(f"{c.Style.BRIGHT}{'Params:'!s:<60}{'Status:'!s:<25}")
             for f in self.validation_data.get('layouts'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
-                print('{!s:<60}{}{!s:<25}'.format(f.get('params'), status_color, status_value))
+                print(f"{f.get('params')!s:<60}{status_color}{status_value!s:<25}")
 
         if self.validation_data.get('errors'):
             print('\n')  # separate errors from normal output
         for error in self.validation_data.get('errors'):
             # print all errors
-            print('* {}{}'.format(c.Fore.RED, error))
+            print(f'* {c.Fore.RED}{error}')
 
             # ignore exit code
             if not self.args.ignore_validation:

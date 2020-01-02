@@ -5,7 +5,7 @@ from args import Args
 # Typically no changes are required to this file.
 
 
-class JobApp(object):
+class JobApp:
     """Get the owners and indicators in the given owner."""
 
     def __init__(self, _tcex):

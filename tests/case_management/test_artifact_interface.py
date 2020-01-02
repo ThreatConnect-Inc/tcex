@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 
-from ..tcex_init import tcex
 from tcex.case_management.tql import TQL
+
+from ..tcex_init import tcex
 
 
 # pylint: disable=W0201
@@ -30,7 +31,7 @@ class TestArtifactIndicators:
     def test_get_many(self):
         """Tests getting all artifacts"""
         artifact = self.cm.artifact()
-        assert len(artifact) > 0
+        assert artifact
 
     def test_tql(self):
         """
@@ -39,7 +40,7 @@ class TestArtifactIndicators:
         artifact = self.test_create(summary='asn5433')
         self.test_create(summary='asn5432', case_id=1)
         self.test_create(summary='asn5434', case_id=1)
-        self.test_create(summary='asn4566', type='Artifact 2', case_id=1)
+        self.test_create(summary='asn4566', type_='Artifact 2', case_id=1)
 
         artifacts = self.cm.artifacts()
         artifacts.summary_filter(TQL.Operator.EQ, 'asn5433')
@@ -74,7 +75,7 @@ class TestArtifactIndicators:
     def test_create(
         self,
         summary='asn4354',
-        type='New Artifact Type',
+        type_='New Artifact Type',
         intel_type='ArtifactType intelType',
         case_id=None,
         delete=True,
@@ -88,14 +89,14 @@ class TestArtifactIndicators:
             case_id = case.id
 
         artifact = self.cm.artifact(
-            summary=summary, type=type, intel_type=intel_type, case_id=case_id
+            summary=summary, type=type_, intel_type=intel_type, case_id=case_id
         )
         artifact.submit()
 
         assert artifact.case_id == case_id
         assert artifact.summary == summary
         # assert artifact.intel_type == intel_type
-        assert artifact.type == type
+        assert artifact.type == type_
 
         if delete:
             self.test_delete(summary, create=False)

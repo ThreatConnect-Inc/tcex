@@ -9,13 +9,7 @@ import time
 import traceback
 
 import colorama as c
-
 from tcex.bin import Run
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -62,8 +56,7 @@ if __name__ == '__main__':
         profile_count = 0
         # load staging data
         for p in tcr.profiles:
-            separator = '=' * 20
-            tcr.log.info('{0} {1} {0}'.format(separator, p.get('profile_name')))
+            tcr.log.info(f"{'=' * 20} {p.get('profile_name')} {'=' * 20}")
             tcr.profile = p
 
             # clear redis and threatconnect data found in profile and staging files.
@@ -80,7 +73,7 @@ if __name__ == '__main__':
             # sleep between profiles
             if profile_count > 0:
                 sleep = tcr.profile.get('sleep', tcr.tcex_json.get('sleep', tcr.sleep))
-                print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
+                print(f'Sleep: {c.Style.BRIGHT}{c.Fore.YELLOW}{sleep} seconds')
                 time.sleep(sleep)
             profile_count += 1
 
@@ -88,8 +81,8 @@ if __name__ == '__main__':
         tcr.report()
 
         # log and exit
-        tcr.log.info('Exit Code: {}'.format(tcr.exit_code))
+        tcr.log.info(f'Exit Code: {tcr.exit_code}')
         sys.exit(tcr.exit_code)
     except Exception:
-        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}')
         sys.exit(1)

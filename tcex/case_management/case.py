@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case"""
+from .artifact import Artifact, Artifacts
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
-from .artifact import Artifact, Artifacts
-from .task import Task, Tasks
 from .note import Note, Notes
 from .tag import Tag, Tags
+from .task import Task, Tasks
 from .tql import TQL
-
 
 api_endpoint = '/v3/cases'
 
@@ -344,7 +343,7 @@ class Case(CommonCaseManagement):
         self._date_added = date_added
 
 
-class Creator(object):
+class Creator:
     """ Sub class of the Cases object. Used to map the creator to."""
 
     def __init__(self, **kwargs):

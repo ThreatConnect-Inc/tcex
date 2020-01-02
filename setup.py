@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Setup for TCEX Module."""
 import re
-import sys
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 with open('tcex/__init__.py', 'r') as fd:
     version = re.search(
@@ -30,8 +30,6 @@ install_requires = [
     'stdlib-list',
     'tzlocal',
 ]
-if sys.version_info < (3,):
-    install_requires.extend(['ipaddress'])
 
 scripts = [
     'bin/tcinit',
@@ -55,7 +53,11 @@ setup(
     author_email='support@threatconnect.com',
     description='ThreatConnect Exchange App Framework',
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
-    extras_require={'development': ['deepdiff', 'jmespath', 'mako', 'pytest', 'pytest-cov']},
+    extras_require={
+        'dev': ['deepdiff', 'jmespath', 'mako', 'pytest', 'pytest-cov'],
+        'develop': ['deepdiff', 'jmespath', 'mako', 'pytest', 'pytest-cov'],
+        'development': ['deepdiff', 'jmespath', 'mako', 'pytest', 'pytest-cov'],
+    },
     include_package_data=True,
     install_requires=install_requires,
     license='Apache License, Version 2',
@@ -64,7 +66,6 @@ setup(
     package_data={'': ['*.json']},
     scripts=scripts,
     url='https://github.com/ThreatConnect-Inc/tcex',
-    use_2to3=True,
     version=version,
     zip_safe=True,
 )

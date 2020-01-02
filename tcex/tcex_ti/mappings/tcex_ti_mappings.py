@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Generic Mappings Object"""
 import json
+from urllib.parse import unquote
+
 from tcex.tcex_ti.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
-try:
-    from urllib import unquote  # Python 2
-except ImportError:
-    from urllib.parse import unquote  # Python
 
-
-class TIMappings(object):
+class TIMappings:
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
 
     def __init__(self, tcex, main_type, api_type, sub_type, api_entity, api_branch, owner):
@@ -262,15 +259,14 @@ class TIMappings(object):
         Yields: A Indicator/Group/Victim json
 
         """
-        for i in self.tc_requests.many(
+        yield from self.tc_requests.many(
             self.api_type,
             self.api_branch,
             self.api_entity,
             owner=self.owner,
             filters=filters,
             params=params,
-        ):
-            yield i
+        )
 
     def request(self, result_limit, result_start, filters=None, params=None):
         """
@@ -310,15 +306,14 @@ class TIMappings(object):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for t in self.tc_requests.tags(
+        yield from self.tc_requests.tags(
             self.api_type,
             self.api_branch,
             self.unique_id,
             owner=self.owner,
             filters=filters,
             params=params,
-        ):
-            yield t
+        )
 
     def tag(self, name, action='ADD', params=None):
         """
@@ -385,15 +380,14 @@ class TIMappings(object):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for l in self.tc_requests.labels(
+        yield from self.tc_requests.labels(
             self.api_type,
             self.api_branch,
             self.unique_id,
             owner=self.owner,
             filters=filters,
             params=params,
-        ):
-            yield l
+        )
 
     def label(self, label, action='ADD', params=None):
         """
@@ -475,10 +469,9 @@ class TIMappings(object):
         if params is None:
             params = {}
 
-        for ia in self.tc_requests.indicator_associations(
+        yield from self.tc_requests.indicator_associations(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
-        ):
-            yield ia
+        )
 
     def group_associations(self, params=None):
         """
@@ -493,10 +486,9 @@ class TIMappings(object):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for ga in self.tc_requests.group_associations(
+        yield from self.tc_requests.group_associations(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
-        ):
-            yield ga
+        )
 
     def victim_asset_associations(self, params=None):
         """
@@ -535,7 +527,7 @@ class TIMappings(object):
             self._tcex.handle_error(910, [self.type])
 
         target = self._tcex.ti.indicator(indicator_type)
-        for at in self.tc_requests.indicator_associations_types(
+        yield from self.tc_requests.indicator_associations_types(
             self.api_type,
             self.api_branch,
             self.unique_id,
@@ -544,8 +536,7 @@ class TIMappings(object):
             api_branch=api_branch,
             owner=self.owner,
             params=params,
-        ):
-            yield at
+        )
 
     def group_associations_types(self, group_type, api_entity=None, api_branch=None, params=None):
         """
@@ -567,7 +558,7 @@ class TIMappings(object):
 
         target = self._tcex.ti.group(group_type)
 
-        for gat in self.tc_requests.group_associations_types(
+        yield from self.tc_requests.group_associations_types(
             self.api_type,
             self.api_branch,
             self.unique_id,
@@ -576,8 +567,7 @@ class TIMappings(object):
             api_branch=api_branch,
             owner=self.owner,
             params=params,
-        ):
-            yield gat
+        )
 
     def victim_asset_associations_type(self, victim_asset_type, params=None):
         """
@@ -680,10 +670,9 @@ class TIMappings(object):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for a in self.tc_requests.attributes(
+        yield from self.tc_requests.attributes(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
-        ):
-            yield a
+        )
 
     def attribute(self, attribute_id, action='GET', params=None):
         """
@@ -822,15 +811,14 @@ class TIMappings(object):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        for al in self.tc_requests.attribute_labels(
+        yield from self.tc_requests.attribute_labels(
             self.api_type,
             self.api_branch,
             self.unique_id,
             attribute_id,
             owner=self.owner,
             params=params,
-        ):
-            yield al
+        )
 
     def attribute_label(self, attribute_id, label, action='GET', params=None):
         """
