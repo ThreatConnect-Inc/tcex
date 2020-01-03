@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Artifact Type"""
+from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .tql import TQL
-
-api_endpoint = '/v3/artifactTypes'
 
 
 class ArtifactTypes(CommonCaseManagementCollection):
@@ -20,7 +19,10 @@ class ArtifactTypes(CommonCaseManagementCollection):
              tql_filters: TQL filters to apply during a search.
          """
         super().__init__(
-            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+            tcex,
+            ApiEndpoints.ARTIFACT_TYPES,
+            initial_response=initial_response,
+            tql_filters=tql_filters,
         )
         self.tql = TQL()
 
@@ -103,11 +105,16 @@ class ArtifactType(CommonCaseManagement):
                 data_type (str): The data type for the artifact type.
                 intel_type (string): The intel type for the artifact type.
         """
-        super().__init__(tcex, api_endpoint, kwargs)
+        super().__init__(tcex, ApiEndpoints.ARTIFACT_TYPES, kwargs)
         self._name = kwargs.get('name', None)
         self._description = kwargs.get('description', None)
         self._date_type = kwargs.get('data_type', None)
         self._intel_type = kwargs.get('intel_type', None)
+
+    @property
+    def available_fields(self):
+        """Return available fields for current object."""
+        return []
 
     def entity_mapper(self, entity):
         """

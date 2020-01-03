@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Note"""
+from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .tql import TQL
-
-api_endpoint = '/v3/notes'
 
 
 class Notes(CommonCaseManagementCollection):
@@ -19,7 +18,7 @@ class Notes(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
         """Initialize Class properties"""
         super().__init__(
-            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+            tcex, ApiEndpoints.NOTES, initial_response=initial_response, tql_filters=tql_filters
         )
         self.added_notes = []
 
@@ -150,7 +149,7 @@ class Note(CommonCaseManagement):
 
     def __init__(self, tcex, **kwargs):
         """Initialize class properties."""
-        super().__init__(tcex, api_endpoint, kwargs)
+        super().__init__(tcex, ApiEndpoints.NOTES, kwargs)
         self._case_id = kwargs.get('case_id', None)
         self._artifact_id = kwargs.get('artifact_id', None)
         self._task_id = kwargs.get('task_id', None)

@@ -1,137 +1,190 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Case Management Module."""
+import os
 from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
+from .cm_helpers import CMHelper
 
 
 class TestArtifactIndicators:
     """Test TcEx CM Artifact Interface."""
 
+    cm = None
+    cm_helper = None
+
     def setup_class(self):
         """Configure setup before all tests."""
-        self.cm = tcex.cm  # pylint: disable=attribute-defined-outside-init
+        self.cm = tcex.cm
 
-    def test_get_single_by_id(self):
-        """Tests Artifact Get by Id"""
-        case_management_case_name = 'pytest-artifact-case'
-        case_management_xid = 'pytest-artifact-case'
-        artifact_summary = 'asn7654'
+    def setup_method(self):
+        """Configure setup before all tests."""
+        self.cm_helper = CMHelper(self.cm)
 
-        # ensure case exist
-        case = self.cm.case(
-            name=case_management_case_name, status='Open', severity='Low', xid=case_management_xid
-        )
-        case.submit()
+    def teardown_method(self):
+        """Configure setup before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.cm_helper.cleanup()
 
-        # ensure artifact exist
+    def test_create_by_case_id(self):
+        """Test Artifact Creation"""
+
+        # create case
+        case = self.cm_helper.create_case(case_name=__name__)
+
+        artifact_data = {
+            'artifact_intel_type': 'indicator-ASN',
+            'artifact_summary': 'asn7654',
+            'artifact_type': 'ASN',
+        }
+
+        # create artifact
         artifact = self.cm.artifact(
-            case_id=case.id, intel_type='indicator-ASN', summary=artifact_summary, type='ASN',
+            case_id=case.id,
+            intel_type=artifact_data.get('artifact_intel_type'),
+            summary=artifact_data.get('artifact_summary'),
+            type=artifact_data.get('artifact_type'),
         )
         artifact.submit()
 
+        # get single artifact by id
         artifact = self.cm.artifact(id=artifact.id)
         artifact.get()
 
         # run assertions on returned data
-        assert artifact.summary == artifact_summary
+        assert artifact.intel_type == artifact_data.get('artifact_intel_type')
+        assert artifact.summary == artifact_data.get('artifact_summary')
+        assert artifact.type == artifact_data.get('artifact_type')
 
-        # cleanup data from TC instance
+    def test_delete(self):
+        """Test Artifact Deletion"""
+        artifact_data = {
+            'artifact_intel_type': 'indicator-ASN',
+            'artifact_summary': 'asn7654',
+            'artifact_type': 'ASN',
+            'case_name': __name__,
+            'case_xid': __name__,
+        }
+
+        # create artifact
+        artifact = self.cm_helper.create_artifact(**artifact_data)
+
+        # get single artifact by id
+        artifact = self.cm.artifact(id=artifact.id)
+
+        # delete the artifact
         artifact.delete()
-        case.delete()
+
+        # test artifact is deleted
+        try:
+            artifact.get()
+            assert False
+        except Exception:
+            pass
 
     def test_get_many(self):
-        """Tests getting all artifacts"""
-        case_management_case_name = 'pytest-artifact-case'
-        case_management_xid = 'pytest-artifact-case'
-        artifact_summary = 'asn7654'
+        """Test Artifact Get Many"""
+        artifact_data = {
+            'artifact_intel_type': 'indicator-ASN',
+            'artifact_summary': 'asn7654',
+            'artifact_type': 'ASN',
+            'case_name': __name__,
+            'case_xid': __name__,
+        }
 
-        # ensure case exist
-        case = self.cm.case(
-            name=case_management_case_name, status='Open', severity='Low', xid=case_management_xid
-        )
-        case.submit()
-
-        # ensure artifact exist
-        artifact = self.cm.artifact(
-            case_id=case.id, intel_type='indicator-ASN', summary=artifact_summary, type='ASN',
-        )
-        artifact.submit()
+        # create artifact
+        self.cm_helper.create_artifact(**artifact_data)
 
         # iterate over all artifact looking for needle
         for a in self.cm.artifacts():
-            if a.summary == artifact_summary:
+            if a.summary == artifact_data.get('artifact_summary'):
                 break
         else:
             assert False
 
-        # cleanup data from TC instance
-        artifact.delete()
-        case.delete()
+    def test_get_single_by_id(self):
+        """Test Artifact Get by Id"""
+        artifact_data = {
+            'artifact_intel_type': 'indicator-ASN',
+            'artifact_summary': 'asn7654',
+            'artifact_type': 'ASN',
+            'case_name': __name__,
+            'case_xid': __name__,
+        }
 
-    def test_tql(self):
-        """Tests Artifact Get by TQL's"""
-        artifact = self.test_create(summary='asn5433')
-        self.test_create(summary='asn5432', case_id=1)
-        self.test_create(summary='asn5434', case_id=1)
-        self.test_create(summary='asn4566', type_='Artifact 2', case_id=1)
+        # create artifact
+        artifact = self.cm_helper.create_artifact(**artifact_data)
 
+        # get single artifact by id
+        artifact = self.cm.artifact(id=artifact.id)
+        artifact.get()
+
+        # run assertions on returned data
+        assert artifact.intel_type == artifact_data.get('artifact_intel_type')
+        assert artifact.summary == artifact_data.get('artifact_summary')
+        assert artifact.type == artifact_data.get('artifact_type')
+
+    def test_get_by_tql_filter_case_id(self):
+        """Test Artifact Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case(case_name=__name__)
+
+        # create artifact #1
+        artifact_data = {
+            'artifact_intel_type': 'indicator-ASN',
+            'artifact_summary': 'asn7777',
+            'artifact_type': 'ASN',
+            'case_id': case.id,
+        }
+        artifact = self.cm_helper.create_artifact(**artifact_data)
+
+        # retrieve artifacts using TQL
         artifacts = self.cm.artifacts()
-        artifacts.summary_filter(TQL.Operator.EQ, 'asn5433')
-        assert len(artifacts) == 1
+        artifacts.filter.case_id(TQL.Operator.EQ, case.id)
+
+        assert len(artifacts.as_dict) == 1
         for artifact in artifacts:
-            assert artifact.summary == 'asn5433'
-            assert artifact.type == 'New Artifact Type'
+            assert artifact.summary == artifact_data.get('artifact_summary')
+            assert artifact.type == artifact_data.get('artifact_type')
 
-        artifacts.tql.filters = []
+    def test_get_by_tql_filter_id(self):
+        """Test Artifact Get by TQL"""
+        # create artifact
+        artifact_data = {
+            'artifact_intel_type': 'indicator-ASN',
+            'artifact_summary': 'asn7777',
+            'artifact_type': 'ASN',
+            'case_name': __name__,
+            'case_xid': __name__,
+        }
+        artifact = self.cm_helper.create_artifact(**artifact_data)
 
-        artifacts.id_filter(TQL.Operator.EQ, artifact.id)
-        assert len(artifacts) == 1
-        for artifact in artifacts:
-            assert artifact.summary == 'asn5433'
-            assert artifact.type == 'New Artifact Type'
-
-        artifacts.tql.filters = []
-
-        artifacts.case_filter(TQL.Operator.EQ, 1)
-
-    def test_delete(self, summary='artifact_name', create=True):
-        """
-        Tests Artifact Deletion
-        """
-        if create:
-            self.test_create(summary, delete=False)
+        # retrieve artifacts using TQL
         artifacts = self.cm.artifacts()
-        artifacts.summary_filter(TQL.Operator.EQ, summary)
+        artifacts.filter.id(TQL.Operator.EQ, artifact.id)
+
+        assert len(artifacts.as_dict) == 1
         for artifact in artifacts:
-            artifact.delete()
+            assert artifact.summary == artifact_data.get('artifact_summary')
+            assert artifact.type == artifact_data.get('artifact_type')
 
-    def test_create(
-        self,
-        summary='asn4354',
-        type_='New Artifact Type',
-        intel_type='ArtifactType intelType',
-        case_id=None,
-        delete=True,
-    ):
-        """Tests Artifact Creation"""
-        if not case_id:
-            case = self.cm.case(name='artifact_name', status='Open', severity='Low')
-            case.submit()
-            case_id = case.id
+    def test_get_by_tql_filter_summary(self):
+        """Test Artifact Get by TQL"""
+        # create artifact #1
+        artifact_data = {
+            'artifact_intel_type': 'indicator-ASN',
+            'artifact_summary': 'asn7777',
+            'artifact_type': 'ASN',
+            'case_name': __name__,
+            'case_xid': __name__,
+        }
+        artifact = self.cm_helper.create_artifact(**artifact_data)
 
-        artifact = self.cm.artifact(
-            summary=summary, type=type_, intel_type=intel_type, case_id=case_id
-        )
-        print(artifact)
-        artifact.submit()
+        # retrieve artifacts using TQL
+        artifacts = self.cm.artifacts()
+        artifacts.filter.summary(TQL.Operator.EQ, artifact_data.get('artifact_summary'))
 
-        # assert artifact.case_id == case_id
-        # assert artifact.summary == summary
-        # # assert artifact.intel_type == intel_type
-        # assert artifact.type == type_
-
-        if delete:
-            self.test_delete(summary, create=False)
-
-        return artifact
+        assert len(artifacts.as_dict) == 1
+        for artifact in artifacts:
+            assert artifact.summary == artifact_data.get('artifact_summary')
+            assert artifact.type == artifact_data.get('artifact_type')

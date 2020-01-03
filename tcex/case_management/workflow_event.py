@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Workflow Event"""
+from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .note import Note, Notes
 from .tql import TQL
-
-api_endpoint = '/v3/workflowEvents'
 
 
 class WorkflowEvents(CommonCaseManagementCollection):
@@ -20,7 +19,10 @@ class WorkflowEvents(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
         """Initialize Class properties"""
         super().__init__(
-            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+            tcex,
+            ApiEndpoints.WORKFLOW_EVENTS,
+            initial_response=initial_response,
+            tql_filters=tql_filters,
         )
         self.added_tags = []
 
@@ -165,7 +167,7 @@ class WorkflowEvent(CommonCaseManagement):
 
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
-        super().__init__(tcex, api_endpoint, kwargs)
+        super().__init__(tcex, ApiEndpoints.WORKFLOW_EVENTS, kwargs)
         self._event_date = kwargs.get('event_date', None)
         self._date_added = kwargs.get('date_added', None)
         self._summary = kwargs.get('summary', None)

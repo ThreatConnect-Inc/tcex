@@ -4,7 +4,7 @@ from .tql import TQL
 
 
 class CommonCaseManagementCollection:
-    """Common Case Management Collection
+    """Common Class for Case Management Collection
 
     Object encapsulates common methods used by child classes.
 
@@ -43,7 +43,7 @@ class CommonCaseManagementCollection:
         if tql_filters is None:
             tql_filters = []
         self.tql = TQL()
-        self.api_endpoint = api_endpoint
+        self.api_endpoint = api_endpoint.value
         self._next_url = next_url
         self._previous_url = previous_url
         self._page_size = page_size

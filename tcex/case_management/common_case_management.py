@@ -12,7 +12,7 @@ class CommonCaseManagement:
         self._tcex = tcex
         self._id = kwargs.get('id', None)
         self._transform_kwargs(kwargs)
-        self.api_endpoint = api_endpoint
+        self.api_endpoint = api_endpoint.value
 
     @property
     def required_properties(self):
@@ -175,11 +175,11 @@ class CommonCaseManagement:
 
     @property
     def available_fields(self):
-        """All of the available fields for the case management object"""
-        return []
+        """Stub for available fields"""
+        raise NotImplementedError('Child class must implement this method.')
 
     def entity_mapper(self, entity):
-        """Entity Mapper"""
+        """Stub for entity mapper"""
         raise NotImplementedError('Child class must implement this method.')
 
     def _reverse_transform(self, kwargs):
@@ -258,3 +258,16 @@ class CommonCaseManagement:
         else:
             status = False
         return status
+
+    def __str__(self):
+        """Printable version of Object"""
+        printable_string = ''
+        for key, value in sorted(vars(self).items()):
+            key = f'{key.lstrip("_")} '
+            if value is None:
+                printable_string += f'{key:.<40} {"null":<50}\n'
+            elif isinstance(value, (int, str)):
+                printable_string += f'{key:.<40} {value:<50}\n'
+            else:
+                printable_string += f'{key:.<40} {"<object>":<50}\n'
+        return printable_string

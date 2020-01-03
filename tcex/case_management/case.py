@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case"""
+from .api_endpoints import ApiEndpoints
 from .artifact import Artifact, Artifacts
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
@@ -7,8 +8,6 @@ from .note import Note, Notes
 from .tag import Tag, Tags
 from .task import Task, Tasks
 from .tql import TQL
-
-api_endpoint = '/v3/cases'
 
 
 class Cases(CommonCaseManagementCollection):
@@ -24,7 +23,7 @@ class Cases(CommonCaseManagementCollection):
               tql_filters: TQL filters to apply during a search.
           """
         super().__init__(
-            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+            tcex, ApiEndpoints.CASES, initial_response=initial_response, tql_filters=tql_filters
         )
 
     def __iter__(self):
@@ -140,7 +139,7 @@ class Case(CommonCaseManagement):
                tags (dict): The tags for the case.
                notes (dict): The notes for the case.
        """
-        super().__init__(tcex, api_endpoint, kwargs)
+        super().__init__(tcex, ApiEndpoints.CASES, kwargs)
         case_filter = [
             {'keyword': 'caseid', 'operator': TQL.Operator.EQ, 'value': self.id, 'type': 'integer'}
         ]

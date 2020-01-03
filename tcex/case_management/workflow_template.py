@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Workflow Template"""
+from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .tql import TQL
-
-api_endpoint = '/v3/workflowTemplates'
 
 
 class WorkflowTemplates(CommonCaseManagementCollection):
@@ -19,7 +18,10 @@ class WorkflowTemplates(CommonCaseManagementCollection):
     def __init__(self, tcex, initial_response=None, tql_filters=None):
         """Initialize Class properties"""
         super().__init__(
-            tcex, api_endpoint, initial_response=initial_response, tql_filters=tql_filters
+            tcex,
+            ApiEndpoints.WORKFLOW_TEMPLATES,
+            initial_response=initial_response,
+            tql_filters=tql_filters,
         )
 
     def __iter__(self):
@@ -155,7 +157,7 @@ class WorkflowTemplate(CommonCaseManagement):
 
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties."""
-        super().__init__(tcex, api_endpoint, kwargs)
+        super().__init__(tcex, ApiEndpoints.WORKFLOW_TEMPLATES, kwargs)
         self._name = kwargs.get('name', None)
         self._description = kwargs.get('description', None)
         self._active = kwargs.get('active', True)
