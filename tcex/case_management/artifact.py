@@ -58,7 +58,7 @@ class Artifacts(CommonCaseManagementCollection):
             entity (dict): The Artifact data.
 
         Returns:
-            CaseManagement.Artifact: [description]
+            CaseManagement.Artifact: An Artificat Object
         """
         return Artifact(self.tcex, **entity)
 
@@ -73,17 +73,17 @@ class Artifact(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        case_id (int, kwargs): The Case ID for the artifact.
-        case_xid (str, kwargs): The Case XID for the artifact
-        date_added (date, kwargs): The date added for the artifact
-        file_data (base64, kwargs): The file data for the artifact
-        intel_type (str, kwargs): The intel type for the artifact.
-        notes (dict, kwargs): The notes for the artifact.
-        source (str, kwargs): The source for the artifact.
-        summary (str, kwargs): The summary for the artifact.
-        task_id (int, kwargs): The Task ID for the artifact.
-        task_xid (str, kwargs): The task xid for the artifact.
-        type (str, kwargs): The Artifact Type for the artifact.
+        case_id (int, kwargs): The Case ID for the Artifact.
+        case_xid (str, kwargs): The unique Case XID for the Artifact.
+        date_added (date, kwargs): The Date Added for the Artifact.
+        file_data (base64, kwargs): The File Data for the Artifact.
+        intel_type (str, kwargs): The Intel Type for the Artifact.
+        notes (dict, kwargs): The Notes for the Artifact.
+        source (str, kwargs): The Source for the Artifact.
+        summary (str, kwargs): The Summary for the Artifact.
+        task_id (int, kwargs): The Task ID for the Artifact.
+        task_xid (str, kwargs): The Task xid for the Artifact.
+        type (str, kwargs): The Artifact Type for the Artifact.
     """
 
     def __init__(self, tcex, **kwargs):
@@ -108,11 +108,7 @@ class Artifact(CommonCaseManagement):
 
     @property
     def available_fields(self):
-        """Return the available fields to fetch for an Artifact.
-
-        Returns:
-            list: Available fields to fetch for the artifact.
-        """
+        """Return the available fields to fetch for an Artifact."""
         return [
             'caseXid',
             'caseId',
@@ -197,11 +193,7 @@ class Artifact(CommonCaseManagement):
 
     @property
     def required_properties(self):
-        """Return a list of required fields for an Artifact.
-
-        Returns:
-            list: Required fields for a artifact.
-        """
+        """Return a list of required fields for an Artifact."""
         return ['summary', 'type', 'intel_type', 'case_id']
 
     @property

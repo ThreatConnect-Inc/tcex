@@ -2,6 +2,8 @@
 """Case Management PyTest Helper Method"""
 from random import randint
 
+# from tcex.case_management.tql import TQL
+
 
 class CMHelper:
     """Case Management Helper Module
@@ -32,13 +34,41 @@ class CMHelper:
             CaseManagement.Case: A CM case object.
         """
         name = kwargs.get('case_name') or f'Dummy-{randint(0,10_000)}'
+        artifacts = kwargs.get('artifacts', {})
+        notes = kwargs.get('notes', [])
         severity = kwargs.get('case_severity') or 'Low'
         status = kwargs.get('case_status') or 'Open'
+        tags = kwargs.get('tags', [])
+        tasks = kwargs.get('tasks', {})
         xid = kwargs.get('case_xid') or f'cm-xid-{randint(0,1_000_000)}'
 
         # create case
         case = self.cm.case(name=name, severity=severity, status=status, xid=xid)
+
+        # add artifacts
+        for artifact, artifact_data in artifacts.items():
+            case.add_artifact(
+                summary=artifact,
+                intel_type=artifact_data.get('intel_type'),
+                type=artifact_data.get('type'),
+            )
+
+        # add notes
+        for note in notes:
+            case.add_note(text=note)
+
+        # add tags
         case.add_tag(name='pytest')
+        for tag in tags:
+            case.add_tag(name=tag)
+
+        # add task
+        for task, task_data in tasks.items():
+            case.add_task(
+                name=task, description=task_data.get('description'), status=task_data.get('status')
+            )
+
+        # submit task
         case.submit()
 
         # store case id for cleanup
@@ -85,3 +115,17 @@ class CMHelper:
         """Remove all cases and child data."""
         for case in self.cases:
             case.delete()
+
+        # delete by tag
+
+        # cases = self.cm.cases()
+        # cases.filter.tag(TQL.Operator.EQ, 'pytest')
+        # for case in cases:
+        #     case.delete()
+
+        # delete by name starts with
+
+        # cases = self.cm.cases()
+        # for case in cases:
+        #     if case.name.startswith('tests.case_man'):
+        #         case.delete(

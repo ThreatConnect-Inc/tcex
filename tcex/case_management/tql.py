@@ -111,7 +111,8 @@ class TQL:
                     values = [value]
                 if tql_filter.get('type') == self.Type.STRING:
                     values = [f'"{value}"' for value in values]
-                value = f"({','.join(values)})"
+                # value = f"({','.join(values)})"
+                value = f"({','.join([str(v) for v in values])})"
             if tql_filter.get('type') == self.Type.STRING:
                 value = f'"{value}"'
             filters.append(f"{tql_filter.get('keyword')} {tql_filter.get('operator').name} {value}")
