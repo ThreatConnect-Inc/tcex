@@ -172,7 +172,7 @@ class Case(CommonCaseManagement):
     def available_fields(self):
         """
          The available fields to fetch for the Case.
-         Returns:
+         Return:
              list of available fields to fetch for the Case.
          """
         return ['artifacts', 'events', 'notes', 'related', 'tags', 'tasks']
@@ -197,7 +197,7 @@ class Case(CommonCaseManagement):
     def required_properties(self):
         """
          The required fields for a Case
-         Returns:
+         Return:
              list of required fields for a Case.
          """
         return ['status', 'severity', 'name']
@@ -205,142 +205,149 @@ class Case(CommonCaseManagement):
     @property
     def name(self):
         """
-        Returns the name for the Case.
+        Return the name for the Case.
         """
         return self._name
 
     @name.setter
     def name(self, name):
         """
-        Sets the name for the Case.
+        Set the name for the Case.
         """
         self._name = name
 
     @property
     def severity(self):
         """
-        Returns the severity for the Case.
+        Return the severity for the Case.
         """
         return self._severity
 
     @severity.setter
     def severity(self, artifact_severity):
         """
-        Sets the severity for the Case.
+        Set the severity for the Case.
         """
         self._severity = artifact_severity
 
     @property
     def status(self):
         """
-        Returns the status for the Case.
+        Return the status for the Case.
         """
         return self._status
 
     @status.setter
     def status(self, status):
         """
-        Sets the status for the Case.
+        Set the status for the Case.
         """
         self._status = status
 
     @property
     def resolution(self):
         """
-        Returns the resolution for the Case.
+        Return the resolution for the Case.
         """
         return self._resolution
 
     @resolution.setter
     def resolution(self, resolution):
         """
-        Sets the resolution for the Case.
+        Set the resolution for the Case.
         """
         self._resolution = resolution
 
     @property
     def created_by(self):
         """
-        Returns the creator for the Case.
+        Return the creator for the Case.
         """
         return self._created_by
 
     @created_by.setter
     def created_by(self, created_by):
         """
-        Sets the creator for the Case.
+        Set the creator for the Case.
         """
         self._created_by = created_by
 
     @property
     def notes(self):
         """
-        Returns the notes for the Case.
+        Return the notes for the Case.
         """
         return self._notes
 
     @notes.setter
     def notes(self, notes):
         """
-        Sets the notes for the Case.
+        Set the notes for the Case.
         """
         self._notes = notes
 
     @property
     def tags(self):
         """
-        Returns the tags for the Case.
+        Return the tags for the Case.
         """
         return self._tags
 
     @tags.setter
     def tags(self, tags):
         """
-        Sets the tags for the Case.
+        Set the tags for the Case.
         """
         self._tags = tags
 
     @property
     def tasks(self):
         """
-        Returns the tasks for the Case.
+        Return the tasks for the Case.
         """
         return self._tasks
 
     @tasks.setter
     def tasks(self, tasks):
         """
-        Sets the tasks for the Case.
+        Set the tasks for the Case.
         """
         self._tasks = tasks
 
     @property
     def artifacts(self):
         """
-        Returns the artifacts for the Case.
+        Return the artifacts for the Case.
         """
         return self._artifacts
 
     @artifacts.setter
     def artifacts(self, artifacts):
         """
-        Sets the artifacts for the Case.
+        Set the artifacts for the Case.
         """
         self._artifacts = artifacts
 
     @property
     def date_added(self):
         """
-        Returns the date added for the Case.
+        Return the date added for the Case.
         """
         return self._date_added
 
     @date_added.setter
     def date_added(self, date_added):
         """
-        Sets the date added for the Case.
+        Set the date added for the Case.
         """
         self._date_added = date_added
+
+    @property
+    def as_entity(self):
+        """
+        Return the entity representation of the Case
+        """
+        return {'type': 'Case', 'id': self.id, 'value': self.name}
 
 
 class Creator:
@@ -374,13 +381,13 @@ class Creator:
 
     @property
     def _metadata_map(self):
-        """ Returns a mapping of kwargs to expected args. """
+        """ Return a mapping of kwargs to expected args. """
         return {'dateAdded': 'date_added', 'firstName': 'first_name', 'userName': 'user_name'}
 
     @property
     def as_dict(self):
         """
-        Returns a dict representation of the Creator class.
+        Return a dict representation of the Creator class.
         """
         properties = vars(self)
         as_dict = {}
@@ -398,69 +405,69 @@ class Creator:
     @property
     def id(self):
         """
-        Returns the id for the Creator.
+        Return the id for the Creator.
         """
         return self._id
 
     @id.setter
     def id(self, creator_id):
         """
-        Sets the id for the Creator.
+        Set the id for the Creator.
         """
         self._id = creator_id
 
     @property
     def user_name(self):
         """
-        Returns the user name for the Creator.
+        Return the user name for the Creator.
         """
         return self._user_name
 
     @user_name.setter
     def user_name(self, user_name):
         """
-        Sets the user name for the Creator.
+        Set the user name for the Creator.
         """
         self._user_name = user_name
 
     @property
     def first_name(self):
         """
-        Returns the first name for the Creator.
+        Return the first name for the Creator.
         """
         return self._first_name
 
     @first_name.setter
     def first_name(self, first_name):
         """
-        Sets the first name for the Creator.
+        Set the first name for the Creator.
         """
         self._first_name = first_name
 
     @property
     def pseudonym(self):
         """
-        Returns the pseudonym for the Creator.
+        Return the pseudonym for the Creator.
         """
         return self._pseudonym
 
     @pseudonym.setter
     def pseudonym(self, pseudonym):
         """
-        Sets the pseudonym for the Creator.
+        Set the pseudonym for the Creator.
         """
         self._pseudonym = pseudonym
 
     @property
     def role(self):
         """
-        Returns the role for the Creator.
+        Return the role for the Creator.
         """
         return self._pseudonym
 
     @role.setter
     def role(self, role):
         """
-        Sets the role for the Creator.
+        Set the role for the Creator.
         """
         self._role = role

@@ -153,6 +153,7 @@ class Note(CommonCaseManagement):
         self._case_id = kwargs.get('case_id', None)
         self._artifact_id = kwargs.get('artifact_id', None)
         self._task_id = kwargs.get('task_id', None)
+        self._workflow_event_id = kwargs.get('workflow_event_id', None)
         self._text = kwargs.get('text', None)
         self._summary = kwargs.get('summary', None)
         self._user_name = kwargs.get('user_name', None)
@@ -186,6 +187,24 @@ class Note(CommonCaseManagement):
         """
         new_note = Note(self.tcex, **entity)
         self.__dict__.update(new_note.__dict__)
+
+    @property
+    def workflow_event_id(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
+        return self._workflow_event_id
+
+    @workflow_event_id.setter
+    def workflow_event_id(self, workflow_event_id):
+        """[summary]
+
+        Args:
+            case_id ([type]): [description]
+        """
+        self._workflow_event_id = workflow_event_id
 
     @property
     def case_id(self):
@@ -348,3 +367,10 @@ class Note(CommonCaseManagement):
             edited ([type]): [description]
         """
         self._edited = edited
+
+    @property
+    def as_entity(self):
+        """
+        Return the entity representation of the Note
+        """
+        return {'type': 'Note', 'value': self.summary, 'id': self.id}

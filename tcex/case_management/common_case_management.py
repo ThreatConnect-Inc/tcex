@@ -50,6 +50,11 @@ class CommonCaseManagement:
         self._id = cm_id
 
     @property
+    def as_entity(self):
+        """Placeholder for common method."""
+        raise NotImplementedError('Child class must implement this method.')
+
+    @property
     def as_dict(self):
         """
         Returns the dict representation of the case management object.
@@ -65,6 +70,8 @@ class CommonCaseManagement:
             except AttributeError:
                 pass
             if value is None:
+                continue
+            if isinstance(value, dict) and 'data' in value and not value.get('data'):
                 continue
             as_dict[key] = value
         if not as_dict:
@@ -89,6 +96,7 @@ class CommonCaseManagement:
             'caseId': 'case_id',
             'caseXid': 'case_xid',
             'taskId': 'task_id',
+            'workflowEventId': 'workflow_event_id',
             'artifactId': 'artifact_id',
             'dateAdded': 'date_added',
             'lastModified': 'last_modified',
@@ -214,13 +222,16 @@ class CommonCaseManagement:
         as_dict = self.as_dict
 
         # if the ID is included, its an update
+        body = self._reverse_transform(as_dict)
         if self.id:
             url = f'{self.api_endpoint}/{self.id}'
             self.tcex.log.debug(f'Resource URL: ({url})')
-            r = self.tcex.session.put(url, json=self._reverse_transform(as_dict))
+            r = self.tcex.session.put(url, json=body)
         else:
             self.tcex.log.debug(f'Resource URL: ({url})')
-            r = self.tcex.session.post(url, json=self._reverse_transform(as_dict))
+            r = self.tcex.session.post(url, json=body)
+
+        self.tcex.log.debug(f'Resource body: ({body})')
 
         if r.ok:
             r_json = r.json()
