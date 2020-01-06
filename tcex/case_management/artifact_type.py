@@ -116,6 +116,13 @@ class ArtifactType(CommonCaseManagement):
         """Return available fields for current object."""
         return []
 
+    @property
+    def as_entity(self):
+        """
+        Return the entity representation of the Artifact
+        """
+        return {'type': 'Artifact Type', 'value': self.name, 'id': self.id}
+
     def entity_mapper(self, entity):
         """
          Maps a dict to a Artifact Type then updates self.

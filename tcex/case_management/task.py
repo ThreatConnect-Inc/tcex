@@ -217,6 +217,13 @@ class Task(CommonCaseManagement):
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     @property
+    def as_entity(self):
+        """
+        Return the entity representation of the Artifact
+        """
+        return {'type': 'Task', 'value': self.name, 'id': self.id}
+
+    @property
     def required_properties(self):
         """Return the required fields for a task
 

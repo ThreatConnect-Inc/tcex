@@ -181,6 +181,13 @@ class WorkflowEvent(CommonCaseManagement):
         """Add a note to the workflow event."""
         self._notes.add_note(Note(self.tcex, **kwargs))
 
+    @property
+    def as_entity(self):
+        """
+        Return the entity representation of the Artifact
+        """
+        return {'type': 'Workflow Event', 'value': self.summary, 'id': self.id}
+
     def entity_mapper(self, entity):
         """Map a dict to a Workflow Event then updates self.
 
