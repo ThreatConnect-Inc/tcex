@@ -152,6 +152,7 @@ class CommonCaseManagementCollection:
 
         while True:
             r = self.tcex.session.get(url, params=parameters)
+            self.tcex.log.debug(f'Method: (GET), url: ({url}), Params: ({parameters})')
             if not self.success(r):
                 current_retries += 1
                 if current_retries > self.retry_count:

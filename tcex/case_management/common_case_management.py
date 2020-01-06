@@ -128,8 +128,8 @@ class CommonCaseManagement:
         url = f'{self.api_endpoint}/{self.id}'
         current_retries = -1
         while current_retries < retry_count:
-            self.tcex.log.debug(f'Resource URL: ({url})')
             response = self.tcex.session.delete(url)
+            self.tcex.log.debug(f'Method: (DELETE), url: ({url})')
             if not self.success(response):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -169,6 +169,7 @@ class CommonCaseManagement:
         while current_retries < retry_count:
             self.tcex.log.debug(f'Resource URL: ({url})')
             response = self.tcex.session.get(url, params=parameters)
+            self.tcex.log.debug(f'Method: (GET), URL: ({url}), params: ({parameters})')
             if not self.success(response):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -227,11 +228,11 @@ class CommonCaseManagement:
             url = f'{self.api_endpoint}/{self.id}'
             self.tcex.log.debug(f'Resource URL: ({url})')
             r = self.tcex.session.put(url, json=body)
+            self.tcex.log.debug(f'Method: (POST), Resource body: ({body})')
         else:
             self.tcex.log.debug(f'Resource URL: ({url})')
             r = self.tcex.session.post(url, json=body)
-
-        self.tcex.log.debug(f'Resource body: ({body})')
+            self.tcex.log.debug(f'Method: (POST), Resource body: ({body})')
 
         if r.ok:
             r_json = r.json()
