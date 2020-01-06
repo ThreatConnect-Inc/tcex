@@ -144,7 +144,7 @@ class CommonCaseManagement:
         """Get the Case Management Object.
 
         Args:
-            all_available_fields (bool): determins if all fields should be returned.
+            all_available_fields (bool): If True all available fields will be returned.
             case_management_id (int): The id of the case management object to be returned.
             retry_count (int, optional): [description]. Defaults to 0.
             fields (list): A list of the fields that should be returned.

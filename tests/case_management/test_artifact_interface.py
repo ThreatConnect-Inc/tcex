@@ -22,7 +22,7 @@ class TestArtifactIndicators:
         self.cm_helper = CMHelper(self.cm)
 
     def teardown_method(self):
-        """Configure setup before all tests."""
+        """Configure teardown before all tests."""
         if os.getenv('TEARDOWN_METHOD') is None:
             self.cm_helper.cleanup()
 
