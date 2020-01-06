@@ -77,6 +77,7 @@ class Case(CommonCaseManagement):
         )
         self._created_by = Creator(**kwargs.get('created_by', {}))
         self._date_added = kwargs.get('date_added', None)
+        self._description = kwargs.get('description', None)
         self._name = kwargs.get('name', None)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
         self._resolution = kwargs.get('resolution', None)
@@ -134,14 +135,15 @@ class Case(CommonCaseManagement):
         """Set the Created By for the Case."""
         self._created_by = created_by
 
-    def entity_mapper(self, entity):
-        """Map a dict to a Case
+    @property
+    def description(self):
+        """Return the Description for the Case."""
+        return self._description
 
-        Args:
-            entity (dict): The Case data.
-        """
-        new_case = Case(self.tcex, **entity)
-        self.__dict__.update(new_case.__dict__)
+    @description.setter
+    def description(self, description):
+        """Set the Description for the Case."""
+        self._description = description
 
     @property
     def date_added(self):
@@ -152,6 +154,15 @@ class Case(CommonCaseManagement):
     def date_added(self, date_added):
         """Set the Date Added for the Case."""
         self._date_added = date_added
+
+    def entity_mapper(self, entity):
+        """Map a dict to a Case
+
+        Args:
+            entity (dict): The Case data.
+        """
+        new_case = Case(self.tcex, **entity)
+        self.__dict__.update(new_case.__dict__)
 
     @property
     def name(self):
