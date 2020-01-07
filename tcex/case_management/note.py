@@ -21,7 +21,9 @@ class Notes(CommonCaseManagementCollection):
         super().__init__(
             tcex, ApiEndpoints.NOTES, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.added_notes = []
+        if initial_response:
+            for item in initial_response.get('data', []):
+                self.added_items.append(Note(tcex, **item))
 
     def __iter__(self):
         """Object iterator"""
@@ -33,13 +35,7 @@ class Notes(CommonCaseManagementCollection):
         Args:
             note (Note): The Note Object to add.
         """
-        self.added_notes.append(note)
-
-    @property
-    def as_dict(self):
-        """Return a dict version of this object."""
-        # @bpurdy - does this include all artifacts ???
-        return super().list_as_dict(self.added_notes)
+        self.added_items.append(note)
 
     def entity_map(self, entity):
         """Update current object with provided object properties.

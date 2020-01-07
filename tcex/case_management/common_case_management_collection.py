@@ -42,6 +42,7 @@ class CommonCaseManagementCollection:
 
         if tql_filters is None:
             tql_filters = []
+        self._added_items = []
         self._initial_response = initial_response
         self._next_url = next_url
         self._previous_url = previous_url
@@ -60,6 +61,16 @@ class CommonCaseManagementCollection:
     #         count += 1
     #     return count
 
+    @property
+    def added_items(self):
+        """Return the added items to the collection"""
+        return self._added_items
+
+    @added_items.setter
+    def added_items(self, added_items):
+        """Set the added items to the collection"""
+        self._added_items = added_items
+
     def entity_map(self, entity):
         """Stub for common method."""
         raise NotImplementedError('Child class must implement this method.')
@@ -69,19 +80,15 @@ class CommonCaseManagementCollection:
         """Return the initial response of the case management object collection."""
         return self._initial_response
 
-    def iterate(self, initial_response=None, added_entities=None):
+    def iterate(self, initial_response=None):
         """Iterate over the case management object collection objects.
 
         Args:
             initial_response ([type], optional): [description]. Defaults to None.
-            added_entities ([type], optional): [description]. Defaults to None.
 
         Yields:
             [type]: [description]
         """
-        if added_entities is None:
-            added_entities = []
-
         parameters = {'fields': []}
         url = self.api_endpoint
 
@@ -126,7 +133,7 @@ class CommonCaseManagementCollection:
                 yield self.entity_map(result)
 
             if not url:
-                yield from added_entities
+                yield from self.added_items
                 break
 
     # def json(self):

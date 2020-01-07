@@ -24,11 +24,10 @@ class WorkflowEvents(CommonCaseManagementCollection):
             initial_response=initial_response,
             tql_filters=tql_filters,
         )
-        self.added_tags = []
 
     def __iter__(self):
         """Iterate on Workflow Events."""
-        return self.iterate(initial_response=self.initial_response, added_entities=self.added_tags)
+        return self.iterate(initial_response=self.initial_response)
 
     def summary_filter(self, operator, summary):
         """[summary]
@@ -139,23 +138,6 @@ class WorkflowEvents(CommonCaseManagementCollection):
             [type]: [description]
         """
         return WorkflowEvent(self.tcex, **entity)
-
-    def add_tag(self, tag):
-        """[summary]
-
-        Args:
-            tag ([type]): [description]
-        """
-        self.added_tags.append(tag)
-
-    @property
-    def as_dict(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return super().list_as_dict(self.added_tags)
 
 
 class WorkflowEvent(CommonCaseManagement):

@@ -20,18 +20,14 @@ class Tags(CommonCaseManagementCollection):
         super().__init__(
             tcex, ApiEndpoints.TAGS, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.added_tags = []
 
-        # For tags, we could be passing in a bunch of existing
-        # tags (used when associating to a case) so we handle
-        # appending them here
         if initial_response:
-            for t in initial_response.get('data', []):
-                self.added_tags.append(t)
+            for item in initial_response.get('data', []):
+                self.added_items.append(Tag(tcex, **item))
 
     def __iter__(self):
         """Iterate over all Tags"""
-        return self.iterate(initial_response=self.initial_response, added_entities=self.added_tags)
+        return self.iterate(initial_response=self.initial_response)
 
     def owner_filter(self, operator, owner):
         """Filter tag by owner id using the provided operator.
@@ -100,12 +96,7 @@ class Tags(CommonCaseManagementCollection):
 
     def add_tag(self, tag):
         """Add a Tag"""
-        self.added_tags.append(tag)
-
-    @property
-    def as_dict(self):
-        """Return Tag object as a dict"""
-        return super().list_as_dict(self.added_tags)
+        self.added_items.append(tag)
 
 
 class Tag(CommonCaseManagement):

@@ -25,17 +25,14 @@ class Artifacts(CommonCaseManagementCollection):
             initial_response=initial_response,
             tql_filters=tql_filters,
         )
-        self.added_artifacts = []
 
         if initial_response:
-            for t in initial_response.get('data', []):
-                self.added_artifacts.append(t)
+            for item in initial_response.get('data', []):
+                self.added_items.append(Artifact(tcex, **item))
 
     def __iter__(self):
         """Object iterator"""
-        return self.iterate(
-            initial_response=self.initial_response, added_entities=self.added_artifacts
-        )
+        return self.iterate(initial_response=self.initial_response)
 
     def add_artifact(self, artifact):
         """Add an artifact to a case.
@@ -43,13 +40,7 @@ class Artifacts(CommonCaseManagementCollection):
         Args:
             artifact (Artifact): The Artifact Object to add.
         """
-        self.added_artifacts.append(artifact)
-
-    @property
-    def as_dict(self):
-        """Return a dict version of this object."""
-        # @bpurdy - does this include all artifacts ???
-        return super().list_as_dict(self.added_artifacts)
+        self.added_items.append(artifact)
 
     def entity_map(self, entity):
         """Map a dict to a Artifact.

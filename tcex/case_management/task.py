@@ -22,7 +22,10 @@ class Tasks(CommonCaseManagementCollection):
         super().__init__(
             tcex, ApiEndpoints.TASKS, initial_response=initial_response, tql_filters=tql_filters
         )
-        self.added_tasks = []
+
+        if initial_response:
+            for item in initial_response.get('data', []):
+                self.added_items.append(Task(tcex, **item))
 
     def __iter__(self):
         """Object iterator"""
@@ -34,12 +37,7 @@ class Tasks(CommonCaseManagementCollection):
         Args:
             task (Task): The Task Object to add.
         """
-        self.added_tasks.append(task)
-
-    @property
-    def as_dict(self):
-        """Return a dict version of this object."""
-        return super().list_as_dict(self.added_tasks)
+        self.added_items.append(task)
 
     def entity_map(self, entity):
         """Map a dict to a Task.

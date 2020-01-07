@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Common Case Management"""
+from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
 
 
 class CommonCaseManagement:
@@ -116,7 +117,12 @@ class CommonCaseManagement:
             try:
                 value = value.as_dict
             except AttributeError:
-                pass
+                if isinstance(value, CommonCaseManagementCollection):
+                    for added_item in value.added_items:
+                        if key not in as_dict:
+                            as_dict[key] = {'data': []}
+                        as_dict[key]['data'].append(added_item.as_dict)
+                    continue
 
             if value is None:
                 continue

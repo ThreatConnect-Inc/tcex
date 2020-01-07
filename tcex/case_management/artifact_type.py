@@ -24,7 +24,6 @@ class ArtifactTypes(CommonCaseManagementCollection):
             initial_response=initial_response,
             tql_filters=tql_filters,
         )
-        self.tql = TQL()
 
     def __iter__(self):
         """
@@ -85,11 +84,6 @@ class ArtifactTypes(CommonCaseManagementCollection):
         Maps a dict to a Artifact Type.
         """
         return ArtifactType(self.tcex, **entity)
-
-    @property
-    def as_dict(self):
-        """Returns a dict version of this object."""
-        return super().list_as_dict([])
 
 
 class ArtifactType(CommonCaseManagement):
