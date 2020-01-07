@@ -78,7 +78,7 @@ The example below retrieves a single Adversary with ID 416, if it exists.
 
 Get Group Metadata
 ------------------
-There are six methods that retrieve metadata for a Group: ``group_associations()``, ``indicator_associations()``, ``attributes()``, ``attributes()``, ``tags()``, and ``labels()``.  This data can also be retrieved in the initial API call by using the ``include`` query parameters.
+There are six methods that retrieve metadata for a Group: ``group_associations()``, ``indicator_associations()``, ``victim_asset_associations()``, ``attributes()``, ``tags()``, and ``labels()``.  This data can also be retrieved in the initial API call by using the ``include`` query parameters.
 
 .. code-block:: python
     :linenos:
@@ -226,7 +226,7 @@ The example below retrieves a single Address with Value 1.1.1.1, if it exists.
 
 Get Indicator Metadata
 ----------------------
-There are six methods that retrieve metadata for an Indicator: ``group_associations()``, ``indicator_associations()``, ``attributes()``, ``attributes()``, ``tags()``, and ``labels()``.  This data can also be retrieved in the initial API call by using the ``include`` query parameters.
+There are six methods that retrieve metadata for an Indicator: ``group_associations()``, ``indicator_associations()``, ``victim_asset_associations()``, ``attributes()``, ``tags()``, and ``labels()``.  This data can also be retrieved in the initial API call by using the ``include`` query parameters.
 
 .. code-block:: python
     :linenos:
@@ -240,6 +240,10 @@ There are six methods that retrieve metadata for an Indicator: ``group_associati
 
     # get indicator associations
     for association in ti.indicator_associations():
+        self.tcex.log.debug('association: {}'.format(association))
+       
+    # get victim asset associations
+    for association in ti.victim_asset_associations():
         self.tcex.log.debug('association: {}'.format(association))
 
     # get attributes
