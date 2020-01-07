@@ -82,6 +82,8 @@ class Task(CommonCaseManagement):
 
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
+        self._completed_date = kwargs.get('completed_date', None)
+        self._due_date = kwargs.get('due_date', None)
         self._description = kwargs.get('description', None)
         self._is_workflow = kwargs.get('is_workflow', None)
         self._name = kwargs.get('name', None)
@@ -118,6 +120,16 @@ class Task(CommonCaseManagement):
         self._case_id = case_id
 
     @property
+    def completed_date(self):
+        """Return the "Completed Date" for the Task"""
+        return self._completed_date
+
+    @completed_date.setter
+    def completed_date(self, completed_date):
+        """Set the "Completed Date" for the Task"""
+        self._completed_date = completed_date
+
+    @property
     def description(self):
         """Return the "Description" for the Task"""
         return self._description
@@ -126,6 +138,16 @@ class Task(CommonCaseManagement):
     def description(self, description):
         """Set the "Description" for the Task"""
         self._description = description
+
+    @property
+    def due_date(self):
+        """Return the "Due Date" for the Task"""
+        return self._due_date
+
+    @due_date.setter
+    def due_date(self, due_date):
+        """Set the "Completed Date" for the Task"""
+        self._due_date = due_date
 
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
@@ -313,15 +335,6 @@ class FilterTask:
             id (int): The filter value.
         """
         self.tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
-
-    def intel_type(self, operator, intel_type):
-        """Filter objects based on "intel type" field.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            intel_type (str): The filter value.
-        """
-        self.tql.add_filter('inteltype', operator, intel_type)
 
     def name(self, operator, name):
         """Filter objects based on "name" field.
