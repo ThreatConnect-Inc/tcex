@@ -119,7 +119,9 @@ class CommonCaseManagement:
             except AttributeError:
                 if isinstance(value, CommonCaseManagementCollection):
                     for added_item in value.added_items:
-                        as_dict[key] = added_item.as_dict
+                        if key not in as_dict:
+                            as_dict[key] = {'data': []}
+                        as_dict[key]['data'].append(added_item.as_dict)
                     continue
 
             if value is None:
@@ -240,6 +242,8 @@ class CommonCaseManagement:
         # make the request
         r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
         self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
+        print(f'Body: ({self._reverse_transform(as_dict)}')
+        print(r.text)
 
         # log post/put data for debug
         self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')
