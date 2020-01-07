@@ -99,6 +99,11 @@ class Note(CommonCaseManagement):
         self._artifact_id = artifact_id
 
     @property
+    def as_entity(self):
+        """Return the entity representation of the Note."""
+        return {'type': 'Note', 'value': self.summary, 'id': self.id}
+
+    @property
     def available_fields(self):
         """Return the available fields to fetch for a Note."""
         return ['artifacts', 'caseId', 'task', 'parentCase']
@@ -196,6 +201,16 @@ class Note(CommonCaseManagement):
     def user_name(self, user_name):
         """Set the "User Name" value for the Note."""
         self._user_name = user_name
+
+    @property
+    def workflow_event_id(self):
+        """Return the "Workflow Event ID" value for the Note."""
+        return self._workflow_event_id
+
+    @workflow_event_id.setter
+    def workflow_event_id(self, workflow_event_id):
+        """Set the "Workflow Event ID" value for the Note."""
+        self._workflow_event_id = workflow_event_id
 
 
 class FilterNote:

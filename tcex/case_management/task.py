@@ -39,7 +39,6 @@ class Tasks(CommonCaseManagementCollection):
     @property
     def as_dict(self):
         """Return a dict version of this object."""
-        # @bpurdy - does this include all artifacts ???
         return super().list_as_dict(self.added_tasks)
 
     def entity_map(self, entity):
@@ -97,6 +96,11 @@ class Task(CommonCaseManagement):
     def add_note(self, **kwargs):
         """Add a note to the task"""
         self._notes.add_note(Note(self.tcex, **kwargs))
+
+    @property
+    def as_entity(self):
+        """Return the entity representation of the Artifact."""
+        return {'type': 'Task', 'value': self.name, 'id': self.id}
 
     @property
     def available_fields(self):

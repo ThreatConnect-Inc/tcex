@@ -121,6 +121,13 @@ class Tag(CommonCaseManagement):
         self._name = kwargs.get('name', None)
         self._description = kwargs.get('description', None)
 
+    @property
+    def as_entity(self):
+        """
+        Return the entity representation of the Artifact
+        """
+        return {'type': 'Tag', 'value': self.name, 'id': self.id}
+
     def entity_mapper(self, entity):
         """Map a dict to a Tag then updates self.
 

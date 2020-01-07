@@ -98,6 +98,11 @@ class CommonCaseManagement:
             kwargs[new_key] = kwargs.pop(key)
 
     @property
+    def as_entity(self):
+        """Placeholder for common method."""
+        raise NotImplementedError('Child class must implement this method.')
+
+    @property
     def as_dict(self):
         """Return the dict representation of the CM object."""
         properties = vars(self)
@@ -112,6 +117,8 @@ class CommonCaseManagement:
                 pass
 
             if value is None:
+                continue
+            if isinstance(value, dict) and 'data' in value and not value.get('data'):
                 continue
             as_dict[key] = value
         if not as_dict:
@@ -135,8 +142,8 @@ class CommonCaseManagement:
         url = f'{self.api_endpoint}/{self.id}'
         current_retries = -1
         while current_retries < retry_count:
-            self.tcex.log.debug(f'Delete URL: ({url})')
             r = self.tcex.session.delete(url)
+            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
             if not self.success(r):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -180,8 +187,8 @@ class CommonCaseManagement:
 
         # @bpurdy - what is the retry count for? tcex session has built-in retry
         while current_retries < retry_count:
-            self.tcex.log.debug(f'Get URL: ({url})')
             r = self.tcex.session.get(url, params=parameters)
+            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
             self.tcex.log.trace(f'response cm data: {r.text}')
             if not self.success(r):
                 current_retries += 1
@@ -225,8 +232,8 @@ class CommonCaseManagement:
             url = f'{self.api_endpoint}/{self.id}'
 
         # make the request
-        self.tcex.log.debug(f'Submit URL: ({url})')
         r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
+        self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
 
         # log post/put data for debug
         self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')

@@ -107,6 +107,11 @@ class Artifact(CommonCaseManagement):
         self._notes.add_note(Note(self.tcex, **kwargs))
 
     @property
+    def as_entity(self):
+        """Return the entity representation of the Artifact."""
+        return {'type': 'Artifact', 'value': self.summary, 'id': self.id}
+
+    @property
     def available_fields(self):
         """Return the available fields to fetch for an Artifact."""
         return [
