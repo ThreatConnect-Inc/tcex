@@ -52,14 +52,17 @@ class CommonCaseManagementCollection:
         self._tcex = tcex
         self._initial_response = initial_response
         self._tql_filters = tql_filters
+        self._added_items = []
 
-    @staticmethod
-    def list_as_dict(added_items):
-        """Return the dict representation of the case management collection object."""
-        as_dict = {'data': []}
-        for item in added_items:
-            as_dict['data'].append(item.as_dict)
-        return as_dict
+    @property
+    def added_items(self):
+        """Return the added items to the collection"""
+        return self._added_items
+
+    @added_items.setter
+    def added_items(self, added_items):
+        """Set the added items to the collection"""
+        self._added_items = added_items
 
     @property
     def tcex(self):
@@ -121,7 +124,7 @@ class CommonCaseManagementCollection:
         """Return the initial response of the case management object collection."""
         return self._initial_response
 
-    def iterate(self, initial_response=None, added_entities=None):
+    def iterate(self, initial_response=None):
         """Iterate over the case management object collection objects.
 
         Args:
@@ -131,9 +134,6 @@ class CommonCaseManagementCollection:
         Yields:
             [type]: [description]
         """
-        if added_entities is None:
-            added_entities = []
-
         url = self.api_endpoint
         if self.tql.raw_tql:
             tql_string = self.tql.raw_tql
@@ -173,7 +173,7 @@ class CommonCaseManagementCollection:
                 yield self.entity_map(result)
 
             if not url:
-                yield from added_entities
+                yield from self.added_items
                 break
 
     # def json(self):
