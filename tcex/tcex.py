@@ -39,7 +39,7 @@ class TcEx:
 
         # Property defaults
         self._config = kwargs.get('config', {})
-        self._cm = None
+        # self._cm = None
         self._default_args = None
         self._error_codes = None
         self._exit_code = 0
@@ -224,11 +224,14 @@ class TcEx:
 
         .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
         """
-        if self._cm is None:
-            from .case_management import CaseManagement
+        # if self._cm is None:
+        #     from .case_management import CaseManagement
 
-            self._cm = CaseManagement(self)
-        return self._cm
+        #     self._cm = CaseManagement(self)
+        # return self._cm
+        from .case_management import CaseManagement
+
+        return CaseManagement(self)
 
     @property
     def cm(self):

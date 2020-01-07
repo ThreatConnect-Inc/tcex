@@ -238,6 +238,8 @@ class FilterNote:
     def author(self, operator, author):
         """Filter objects based on "author" field.
 
+        For API HMAC auth the author is the Access ID, otherwise the Account login username.
+
         Args:
             operator (enum): The enum for the required operator.
             author (str): The filter value.
@@ -280,15 +282,6 @@ class FilterNote:
         """
         self.tql.add_filter('lastmodified', operator, last_modified)
 
-    def owner_id(self, operator, owner_id):
-        """Filter objects based on "owner id" field.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            owner_id (int): The filter value.
-        """
-        self.tql.add_filter('owner', operator, owner_id, TQL.Type.INTEGER)
-
     def summary(self, operator, summary):
         """Filter objects based on "summary" field.
 
@@ -306,3 +299,196 @@ class FilterNote:
             task_id (int): The filter value.
         """
         self.tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
+
+    def workflow_event_id(self, operator, workflow_event_id):
+        """Filter objects based on "workflow event id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            task_id (int): The filter value.
+        """
+        self.tql.add_filter('workfloweventid', operator, workflow_event_id, TQL.Type.INTEGER)
+
+
+# Options
+
+# {
+#     "artifact": {
+#         "read-only": true,
+#         "type": "Artifact"
+#     },
+#     "artifactId": {
+#         "description": "the ID of the artifact on which to apply the note",
+#         "required": false,
+#         "type": "Long"
+#     },
+#     "caseId": {
+#         "required": true,
+#         "required-alt-field": "caseXid",
+#         "type": "Long"
+#     },
+#     "caseXid": {
+#         "required": true,
+#         "required-alt-field": "caseId",
+#         "type": "String"
+#     },
+#     "dateAdded": {
+#         "read-only": true,
+#         "type": "Date"
+#     },
+#     "edited": {
+#         "read-only": true,
+#         "type": "boolean"
+#     },
+#     "lastModified": {
+#         "read-only": true,
+#         "type": "Date"
+#     },
+#     "parentCase": {
+#         "read-only": true,
+#         "type": "Case"
+#     },
+#     "summary": {
+#         "read-only": true,
+#         "type": "String"
+#     },
+#     "task": {
+#         "read-only": true,
+#         "type": "Task"
+#     },
+#     "taskId": {
+#         "description": "the ID of the task on which to apply the note",
+#         "required": false,
+#         "type": "Long"
+#     },
+#     "taskXid": {
+#         "description": "the XID of the task on which to apply the note",
+#         "required": false,
+#         "type": "String"
+#     },
+#     "text": {
+#         "min_length": 1,
+#         "required": true,
+#         "type": "String"
+#     },
+#     "userId": {
+#         "read-only": true,
+#         "type": "Long"
+#     },
+#     "userName": {
+#         "read-only": true,
+#         "type": "String"
+#     },
+#     "workflowEvent": {
+#         "read-only": true,
+#         "type": "WorkflowEvent"
+#     },
+#     "workflowEventId": {
+#         "description": "the ID of the workflow event on which to apply the note",
+#         "required": false,
+#         "type": "Long"
+#     }
+# }
+
+# Fields
+
+# {
+#     "data": [
+#         {
+#             "description": "Includes the artifact (if any) related to the Note",
+#             "includedByDefault": false,
+#             "name": "artifact"
+#         },
+#         {
+#             "description": "Includes the case ID related to the Note",
+#             "includedByDefault": false,
+#             "name": "caseId"
+#         },
+#         {
+#             "description": "Includes the case related to the Note",
+#             "includedByDefault": false,
+#             "name": "parentCase"
+#         },
+#         {
+#             "description": "Includes the task (if any) related to the Note",
+#             "includedByDefault": false,
+#             "name": "task"
+#         },
+#         {
+#             "description": "Includes the workflow event (if any) related to the Note",
+#             "includedByDefault": false,
+#             "name": "workflowEvent"
+#         }
+#     ],
+#     "count": 5,
+#     "status": "Success"
+# }
+
+# TQL
+
+# {
+#     "data": [
+#         {
+#             "keyword": "owner",
+#             "name": "Owner",
+#             "type": "Integer",
+#             "description": "The owner ID for the case the notes are associated with"
+#         },
+#         {
+#             "keyword": "summary",
+#             "name": "Summary",
+#             "type": "String",
+#             "description": "Text of the first 100 characters of the note"
+#         },
+#         {
+#             "keyword": "author",
+#             "name": "User Name",
+#             "type": "String",
+#             "description": "The name of the user who wrote the note"
+#         },
+#         {
+#             "keyword": "lastmodified",
+#             "name": "Last Modified",
+#             "type": "DateTime",
+#             "description": "The date the note was last modified"
+#         },
+#         {
+#             "keyword": "caseid",
+#             "name": "Case ID",
+#             "type": "Integer",
+#             "description": "The ID of the case this note is associated with"
+#         },
+#         {
+#             "keyword": "artifactid",
+#             "name": "Artifact ID",
+#             "type": "Integer",
+#             "description": "The ID of the artifact this note is associated with"
+#         },
+#         {
+#             "keyword": "id",
+#             "name": "ID",
+#             "type": "Integer",
+#             "description": "The ID of the case"
+#         },
+#         {
+#             "keyword": "dateadded",
+#             "name": "Date Added",
+#             "type": "DateTime",
+#             "description": "The date the note was written"
+#         },
+#         {
+#             "keyword": "taskid",
+#             "name": "Task ID",
+#             "type": "Integer",
+#             "description": "The ID of the task this note is associated with"
+#         },
+#         {
+#             "keyword": "workfloweventid",
+#             "name": "Workflow Event ID",
+#             "type": "Integer",
+#             "description": "The ID of the workflow event this note is associated with"
+#         }
+#     ],
+#     "count": 10,
+#     "status": "Success"
+# }

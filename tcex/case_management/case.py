@@ -115,9 +115,7 @@ class Case(CommonCaseManagement):
 
     @property
     def as_entity(self):
-        """
-        Return the entity representation of the Case
-        """
+        """Return the entity representation of the Case."""
         return {'type': 'Case', 'id': self.id, 'value': self.name}
 
     @property

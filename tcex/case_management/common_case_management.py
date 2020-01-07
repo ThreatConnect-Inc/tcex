@@ -145,7 +145,7 @@ class CommonCaseManagement:
         current_retries = -1
         while current_retries < retry_count:
             r = self.tcex.session.delete(url)
-            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
+            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({r.url})')
             if not self.success(r):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -190,7 +190,7 @@ class CommonCaseManagement:
         # @bpurdy - what is the retry count for? tcex session has built-in retry
         while current_retries < retry_count:
             r = self.tcex.session.get(url, params=parameters)
-            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
+            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({r.url})')
             self.tcex.log.trace(f'response cm data: {r.text}')
             if not self.success(r):
                 current_retries += 1
@@ -235,7 +235,7 @@ class CommonCaseManagement:
 
         # make the request
         r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
-        self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
+        self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({r.url})')
 
         # log post/put data for debug
         self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')

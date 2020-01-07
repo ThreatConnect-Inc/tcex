@@ -163,6 +163,7 @@ class TestArtifact:
         assert artifact.summary == artifact_data.get('summary')
         assert artifact.type == artifact_data.get('type')
 
+    # TODO: update this
     def test_artifact_get_by_tql_filter_case(self):
         """Test Artifact Get by TQL"""
 
@@ -187,11 +188,14 @@ class TestArtifact:
         artifacts = self.cm.artifacts()
         artifacts.filter.case_id(TQL.Operator.EQ, case.id)
 
-        assert len(artifacts.as_dict) == 1
         for artifact in artifacts:
             assert artifact.summary == artifact_data.get('summary')
             assert artifact.type == artifact_data.get('type')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
 
+    # TODO: checking with MJ on what this should be
     def test_artifact_get_by_tql_filter_comment_id(self):
         """Test Artifact Get by TQL"""
 
@@ -216,13 +220,42 @@ class TestArtifact:
         artifacts = self.cm.artifacts()
         artifacts.filter.id(TQL.Operator.EQ, artifact.id)
 
-        assert len(artifacts.as_dict) == 1
         for artifact in artifacts:
             assert artifact.summary == artifact_data.get('summary')
             assert artifact.type == artifact_data.get('type')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
 
     def test_artifact_get_by_tql_filter_source(self):
         """Test Artifact Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'source': 'pytest',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # create artifact
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+
+        # retrieve artifacts using TQL
+        artifacts = self.cm.artifacts()
+        artifacts.filter.case_id(TQL.Operator.EQ, case.id)
+        artifacts.filter.source(TQL.Operator.EQ, artifact_data.get('source'))
+
+        for artifact in artifacts:
+            assert artifact.summary == artifact_data.get('summary')
+            assert artifact.type == artifact_data.get('type')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
 
     def test_artifact_get_by_tql_filter_summary(self):
         """Test Artifact Get by TQL"""
@@ -243,15 +276,55 @@ class TestArtifact:
 
         # retrieve artifacts using TQL
         artifacts = self.cm.artifacts()
+        artifacts.filter.case_id(TQL.Operator.EQ, case.id)
         artifacts.filter.summary(TQL.Operator.EQ, artifact_data.get('summary'))
 
-        assert len(artifacts.as_dict) == 1
         for artifact in artifacts:
             assert artifact.summary == artifact_data.get('summary')
             assert artifact.type == artifact_data.get('type')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
 
-    def test_artifact_get_by_tql_filter_task_id(self):
-        """Test Artifact Get by TQL"""
+    # def test_artifact_get_by_tql_filter_task_id(self, request):
+    #     """Test Artifact Get by TQL"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
 
-    def test_artifact_get_by_tql_filter_typename(self):
+    #     # task data
+    #     task_data = {
+    #         'case_id': case.id,
+    #         'name': f'name-{request.node.name}',
+    #     }
+
+    #     # create task
+    #     task = self.cm.task(**task_data)
+    #     task.submit()
+
+    #     # artifact data
+    #     artifact_data = {
+    #         'case_id': case.id,
+    #         'intel_type': 'indicator-ASN',
+    #         'summary': f'asn{randint(100, 999)}',
+    #         'task_id': task.id,
+    #         'type': 'ASN',
+    #     }
+
+    #     # create artifact
+    #     artifact = self.cm.artifact(**artifact_data)
+    #     artifact.submit()
+
+    #     # retrieve artifacts using TQL
+    #     artifacts = self.cm.artifacts()
+    #     artifacts.filter.case_id(TQL.Operator.EQ, case.id)
+    #     artifacts.filter.task_id(TQL.Operator.EQ, task.id)
+
+    #     for artifact in artifacts:
+    #         assert artifact.summary == artifact_data.get('summary')
+    #         assert artifact.type == artifact_data.get('type')
+    #         break
+    #     else:
+    #         assert False, 'No artifact returned for TQL'
+
+    def test_artifact_get_by_tql_filter_type_name(self):
         """Test Artifact Get by TQL"""
