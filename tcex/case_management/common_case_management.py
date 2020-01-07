@@ -242,7 +242,6 @@ class CommonCaseManagement:
         # make the request
         r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
         self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({url})')
-        print(r.text)
 
         # log post/put data for debug
         self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')
