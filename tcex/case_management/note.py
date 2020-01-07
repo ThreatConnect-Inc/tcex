@@ -10,9 +10,10 @@ class Notes(CommonCaseManagementCollection):
     """ThreatConnect Notes Object
 
     Args:
-        tcex ([type]): [description]
-        initial_response ([type], optional): [description]. Defaults to None.
-        tql_filters ([type], optional): [description]. Defaults to None.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        initial_response (dict, optional): Initial data in
+            Case Object for Artifact. Defaults to None.
+        tql_filters (list, optional): List of TQL filters. Defaults to None.
     """
 
     def __init__(self, tcex, initial_response=None, tql_filters=None):
@@ -23,163 +24,87 @@ class Notes(CommonCaseManagementCollection):
         self.added_notes = []
 
     def __iter__(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
+        """Object iterator"""
         return self.iterate(initial_response=self.initial_response)
 
-    def owner_filter(self, operator, owner):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            owner ([type]): [description]
-        """
-        self.tql.add_filter('owner', operator, owner)
-
-    def summary_filter(self, operator, summary):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            summary ([type]): [description]
-        """
-        self.tql.add_filter('summary', operator, summary)
-
-    def author_filter(self, operator, author):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            author ([type]): [description]
-        """
-        self.tql.add_filter('author', operator, author)
-
-    def last_modified_filter(self, operator, last_modified):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            last_modified ([type]): [description]
-        """
-        self.tql.add_filter('lastmodified', operator, last_modified)
-
-    def case_id_filter(self, operator, case_id):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            case_id ([type]): [description]
-        """
-        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
-
-    def artifact_id_filter(self, operator, artifact_id):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            artifact_id ([type]): [description]
-        """
-        self.tql.add_filter('artifactid', operator, artifact_id, TQL.Type.INTEGER)
-
-    def id_filter(self, operator, id_):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            id_ ([type]): [description]
-        """
-        self.tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
-
-    def date_added_filter(self, operator, date_added):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            date_added ([type]): [description]
-        """
-        self.tql.add_filter('dateadded', operator, date_added)
-
-    def task_id_filter(self, operator, task_id):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            task_id ([type]): [description]
-        """
-        self.tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
-
-    def entity_map(self, entity):
-        """[summary]
-
-        Args:
-            entity ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        return Note(self.tcex, **entity)
-
     def add_note(self, note):
-        """[summary]
+        """Add a Note to an Artifact, Case, or Task.
 
         Args:
-            note ([type]): [description]
+            note (Note): The Note Object to add.
         """
         self.added_notes.append(note)
 
     @property
     def as_dict(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
+        """Return a dict version of this object."""
+        # @bpurdy - does this include all artifacts ???
         return super().list_as_dict(self.added_notes)
+
+    def entity_map(self, entity):
+        """Update current object with provided object properties.
+
+        Args:
+            entity (dict): The dict to map self too.
+        """
+        return Note(self.tcex, **entity)
+
+    @property
+    def filter(self):
+        """Return instance of FilterNote Object."""
+        return FilterNote(self.tql)
 
 
 class Note(CommonCaseManagement):
-    """[summary]
+    """Note object for Case Management.
 
     Args:
-        tcex ([type]): [description]
+        tcex (TcEx): An instantiated instance of TcEx object.
+        artifact_id (int, kwargs): The Artifact ID for the Note.
+        case_id (int, kwargs): The Case ID for the Note.
+        case_xid (str, kwargs): The Task xid for the Note.
+        date_added (date, kwargs): The Date Added for the Note.
+        edited (bool, kwargs): The Edited for the Note.
+        last_modified (date, kwargs): The Last Modified for the Note.
+        summary (str, kwargs): The Summary for the Note.
+        task_id (int, kwargs): The Task ID for the Note.
+        task_xid (str, kwargs): The Task xid for the Note.
+        text (str, kwargs): The Text for the Note.
+        user_name (str, kwargs): The User Name for the Note.
     """
 
     def __init__(self, tcex, **kwargs):
         """Initialize class properties."""
         super().__init__(tcex, ApiEndpoints.NOTES, kwargs)
-        self._case_id = kwargs.get('case_id', None)
         self._artifact_id = kwargs.get('artifact_id', None)
-        self._task_id = kwargs.get('task_id', None)
-        self._text = kwargs.get('text', None)
-        self._summary = kwargs.get('summary', None)
-        self._user_name = kwargs.get('user_name', None)
+        self._case_id = kwargs.get('case_id', None)
+        self._case_xid = kwargs.get('case_xid', None)
         self._date_added = kwargs.get('date_added')
-        self._last_modified = kwargs.get('last_modified', None)
         self._edited = kwargs.get('edited', None)
+        self._last_modified = kwargs.get('last_modified', None)
+        self._summary = kwargs.get('summary', None)
+        self._task_id = kwargs.get('task_id', None)
+        self._task_xid = kwargs.get('task_xid', None)
+        self._text = kwargs.get('text', None)
+        self._user_name = kwargs.get('user_name', None)
 
     @property
-    def required_properties(self):
-        """[summary]
+    def artifact_id(self):
+        """Return the parent "Artifact ID" for the Note."""
+        return self._artifact_id
 
-        Returns:
-            [type]: [description]
-        """
-        return ['text']
+    @artifact_id.setter
+    def artifact_id(self, artifact_id):
+        """Set the parent "Artifact ID" for the Note."""
+        self._artifact_id = artifact_id
 
     @property
     def available_fields(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
+        """Return the available fields to fetch for a Note."""
         return ['artifacts', 'caseId', 'task', 'parentCase']
 
     def entity_mapper(self, entity):
-        """Map a dict to a Note then updates self.
+        """Update current object with provided object properties.
 
         Args:
             entity (dict): The dict to map self too.
@@ -189,162 +114,180 @@ class Note(CommonCaseManagement):
 
     @property
     def case_id(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
+        """Return the parent "Case ID" for the Note."""
         return self._case_id
 
     @case_id.setter
     def case_id(self, case_id):
-        """[summary]
-
-        Args:
-            case_id ([type]): [description]
-        """
+        """Set the parent "Case ID" for the Note."""
         self._case_id = case_id
 
     @property
-    def task_id(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return self._task_id
-
-    @task_id.setter
-    def task_id(self, task_id):
-        """[summary]
-
-        Args:
-            task_id ([type]): [description]
-        """
-        self._task_id = task_id
-
-    @property
-    def artifact_id(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return self._artifact_id
-
-    @artifact_id.setter
-    def artifact_id(self, artifact_id):
-        """[summary]
-
-        Args:
-            artifact_id ([type]): [description]
-        """
-        self._artifact_id = artifact_id
-
-    @property
-    def text(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return self._text
-
-    @text.setter
-    def text(self, text):
-        """[summary]
-
-        Args:
-            text ([type]): [description]
-        """
-        self._text = text
-
-    @property
-    def summary(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return self._summary
-
-    @summary.setter
-    def summary(self, summary):
-        """[summary]
-
-        Args:
-            summary ([type]): [description]
-        """
-        self._summary = summary
-
-    @property
-    def user_name(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return self._user_name
-
-    @user_name.setter
-    def user_name(self, user_name):
-        """[summary]
-
-        Args:
-            user_name ([type]): [description]
-        """
-        self._user_name = user_name
-
-    @property
     def date_added(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
+        """Return the "Date Added" value for the Note."""
         return self._date_added
 
     @date_added.setter
     def date_added(self, date_added):
-        """[summary]
-
-        Args:
-            date_added ([type]): [description]
-        """
+        """Set the "Date Added" value for the Note."""
         self._date_added = date_added
 
     @property
-    def last_modified(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return self._last_modified
-
-    @last_modified.setter
-    def last_modified(self, last_modified):
-        """[summary]
-
-        Args:
-            last_modified ([type]): [description]
-        """
-        self._last_modified = last_modified
-
-    @property
     def edited(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
+        """Return the "Edited" value for the Note."""
         return self._edited
 
     @edited.setter
     def edited(self, edited):
-        """[summary]
+        """Set the "Edited" value for the Note."""
+        self._edited = edited
+
+    @property
+    def last_modified(self):
+        """Return the "Last Modified" value for the Note."""
+        return self._last_modified
+
+    @last_modified.setter
+    def last_modified(self, last_modified):
+        """Set the "Last Modified" value for the Note."""
+        self._last_modified = last_modified
+
+    @property
+    def required_properties(self):
+        """Return a list of required fields for an Artifact."""
+        return ['text']
+
+    @property
+    def summary(self):
+        """Return the "Summary" value for the Note."""
+        return self._summary
+
+    @summary.setter
+    def summary(self, summary):
+        """Set the "Summary" value for the Note."""
+        self._summary = summary
+
+    @property
+    def task_id(self):
+        """Return the parent "Task ID" for the Note."""
+        return self._task_id
+
+    @task_id.setter
+    def task_id(self, task_id):
+        """Set the parent "Task ID" for the Note."""
+        self._task_id = task_id
+
+    @property
+    def text(self):
+        """Return the "Text" value for the Note."""
+        return self._text
+
+    @text.setter
+    def text(self, text):
+        """Set the "Text" value for the Note."""
+        self._text = text
+
+    @property
+    def user_name(self):
+        """Return the "User Name" value for the Note."""
+        return self._user_name
+
+    @user_name.setter
+    def user_name(self, user_name):
+        """Set the "User Name" value for the Note."""
+        self._user_name = user_name
+
+
+class FilterNote:
+    """Filter Object for Note
+
+    Args:
+        tql (TQL): Instance of TQL Class.
+    """
+
+    # @mj - should owner be ownerid
+
+    def __init__(self, tql):
+        """Initialize Class properties"""
+        self.tql = tql
+
+    def artifact_id(self, operator, artifact_id):
+        """Filter objects based on "artifact id" field.
 
         Args:
-            edited ([type]): [description]
+            operator (enum): The enum for the required operator.
+            artifact_id (int): The filter value.
         """
-        self._edited = edited
+        self.tql.add_filter('artifactid', operator, artifact_id, TQL.Type.INTEGER)
+
+    def author(self, operator, author):
+        """Filter objects based on "author" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            author (str): The filter value.
+        """
+        self.tql.add_filter('author', operator, author)
+
+    def case_id(self, operator, case_id):
+        """Filter objects based on "case id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            case_id (str): The filter value.
+        """
+        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+
+    def date_added(self, operator, date_added):
+        """Filter objects based on "date added" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            date_added (str): The filter value.
+        """
+        self.tql.add_filter('dateadded', operator, date_added)
+
+    def id(self, operator, id_):
+        """Filter objects based on "id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            id (int): The filter value.
+        """
+        self.tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
+
+    def last_modified(self, operator, last_modified):
+        """Filter objects based on "last modified" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            last_modified (int): The filter value.
+        """
+        self.tql.add_filter('lastmodified', operator, last_modified)
+
+    def owner_id(self, operator, owner_id):
+        """Filter objects based on "owner id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            owner_id (int): The filter value.
+        """
+        self.tql.add_filter('owner', operator, owner_id, TQL.Type.INTEGER)
+
+    def summary(self, operator, summary):
+        """Filter objects based on "summary" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            summary (int): The filter value.
+        """
+        self.tql.add_filter('summary', operator, summary)
+
+    def task_id(self, operator, task_id):
+        """Filter objects based on "task id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            task_id (int): The filter value.
+        """
+        self.tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)

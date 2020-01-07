@@ -221,6 +221,16 @@ class Case(CommonCaseManagement):
         """Set the Tasks for the Case."""
         self._tasks = tasks
 
+    @property
+    def xid(self):
+        """Return the XID for the Case."""
+        return self._xid
+
+    @xid.setter
+    def xid(self, xid):
+        """Set the XID for the Case."""
+        self._xid = xid
+
 
 class Creator:
     """Sub class of the Cases object. Used to map the creator to.
@@ -333,8 +343,8 @@ class FilterCase:
         """Initialize Class properties"""
         self.tql = tql
 
-    def artifact(self, operator, artifact_id):
-        """Filter objects based on artifact field.
+    def artifact_id(self, operator, artifact_id):
+        """Filter objects based on "artifact id" field.
 
         Args:
             operator (enum): The enum for the required operator.

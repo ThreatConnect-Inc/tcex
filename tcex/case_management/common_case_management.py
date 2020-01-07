@@ -3,184 +3,66 @@
 
 
 class CommonCaseManagement:
-    """Common Case Management object that encapsulates common methods used by children classes."""
+    """Common Class for Case Management.
+
+    Args:
+        tcex ([type]): [description]
+        api_endpoint ([type]): [description]
+        kwargs ([type]): [description]
+    """
 
     def __init__(self, tcex, api_endpoint, kwargs):
-        """
-        Initialize CommonCaseManagement Class
-        """
-        self._tcex = tcex
+        """Initialize Class properties."""
         self._id = kwargs.get('id', None)
         self._transform_kwargs(kwargs)
         self.api_endpoint = api_endpoint.value
+        self.tcex = tcex
 
-    @property
-    def required_properties(self):
-        """
-        Returns a list of required fields.
-        """
-        return []
+    def __str__(self):
+        """Printable version of Object"""
+        printable_string = ''
+        for key, value in sorted(vars(self).items()):
+            key = f'{key.lstrip("_")} '
+            if value is None:
+                printable_string += f'{key:.<40} {"null":<50}\n'
+            elif isinstance(value, (int, str)):
+                printable_string += f'{key:.<40} {value:<50}\n'
+            else:
+                printable_string += f'{key:.<40} {"<object>":<50}\n'
+        return printable_string
 
     @property
     def _excluded_properties(self):
-        """
-        Returns a list of properties to exclude when creating a dict of the children Classes.
-        """
-        return ['tcex', 'kwargs', 'api_endpoint']
-
-    @property
-    def tcex(self):
-        """
-        Returns the tcex of the case management object.
-        """
-        return self._tcex
-
-    @property
-    def id(self):
-        """
-        Returns the id of the case management object.
-        """
-        return self._id
-
-    @id.setter
-    def id(self, cm_id):
-        """
-        Sets the id of the case management object.
-        """
-        self._id = cm_id
-
-    @property
-    def as_dict(self):
-        """
-        Returns the dict representation of the case management object.
-        """
-        properties = vars(self)
-        as_dict = {}
-        for key, value in properties.items():
-            key = key.lstrip('_')
-            if key in self._excluded_properties:
-                continue
-            try:
-                value = value.as_dict
-            except AttributeError:
-                pass
-            if value is None:
-                continue
-            as_dict[key] = value
-        if not as_dict:
-            return None
-        return as_dict
-
-    def _transform_kwargs(self, kwargs):
-        """
-        Maps the provided kwargs to expected arguments.
-        """
-        for key in dict(kwargs):
-            new_key = self._metadata_map.get(key, key)
-            # if key in ['date_added', 'eventDate', 'firstSeen', 'publishDate']:
-            #     transformed_value = self._utils.format_datetime(value,
-            #                                                   date_format='%Y-%m-%dT%H:%M:%SZ')
-            kwargs[new_key] = kwargs.pop(key)
+        """Return a list of properties to exclude when creating a dict of the children class."""
+        return ['api_endpoint', 'kwargs', 'tcex']
 
     @property
     def _metadata_map(self):
-        """ Returns a mapping of kwargs to expected args. """
+        """Return a mapping of kwargs to expected args."""
         return {
+            'artifactId': 'artifact_id',
+            'artifact_type': 'type',
+            'artifactType': 'type',
             'caseId': 'case_id',
             'caseXid': 'case_xid',
-            'taskId': 'task_id',
-            'artifactId': 'artifact_id',
-            'dateAdded': 'date_added',
-            'lastModified': 'last_modified',
-            'userName': 'user_name',
             'createdBy': 'created_by',
             'dataType': 'data_type',
+            'dateAdded': 'date_added',
+            'eventDate': 'event_date',
+            'fileData': 'file_data',
             'intelType': 'intel_type',
             'isWorkflow': 'is_workflow',
+            'lastModified': 'last_modified',
+            'parentCase': 'parent_case',
+            'systemGenerated': 'system_generated',
+            'taskId': 'task_id',
+            'taskXid': 'task_xid',
+            'userName': 'user_name',
             'workflowId': 'workflow_id',
             'workflowPhase': 'workflow_phase',
             'workflowStep': 'workflow_step',
-            'artifact_type': 'type',
-            'artifactType': 'type',
-            'fileData': 'file_data',
-            'eventDate': 'event_date',
-            'systemGenerated': 'system_generated',
-            'parentCase': 'parent_case',
             'workflowTemplate': 'workflow_template',
         }
-
-    def delete(self, retry_count=0):
-        """Delete the Case Management Object.
-
-        If no id is present in the obj then returns immediately.
-        """
-        if not self.id:
-            return None
-
-        url = f'{self.api_endpoint}/{self.id}'
-        current_retries = -1
-        while current_retries < retry_count:
-            self.tcex.log.debug(f'Resource URL: ({url})')
-            response = self.tcex.session.delete(url)
-            if not self.success(response):
-                current_retries += 1
-                if current_retries >= retry_count:
-                    err = response.text or response.reason
-                    self.tcex.handle_error(950, [response.status_code, err, response.url])
-                else:
-                    continue
-            break
-        return None
-
-    def get(self, all_available_fields=False, case_management_id=None, retry_count=0, fields=None):
-        """Get the Case Management Object.
-
-        Args:
-            all_available_fields (bool): If True all available fields will be returned.
-            case_management_id (int): The id of the case management object to be returned.
-            retry_count (int, optional): [description]. Defaults to 0.
-            fields (list): A list of the fields that should be returned.
-
-        Returns:
-            [type]: [description]
-        """
-        if fields is None:
-            fields = []
-        cm_id = case_management_id or self.id
-        url = f'{self.api_endpoint}/{cm_id}'
-        current_retries = -1
-        entity = None
-        parameters = {'fields': []}
-        if all_available_fields:
-            for field in self.available_fields:
-                parameters['fields'].append(field)
-        elif fields:
-            for field in fields:
-                parameters['fields'].append(field)
-
-        while current_retries < retry_count:
-            self.tcex.log.debug(f'Resource URL: ({url})')
-            response = self.tcex.session.get(url, params=parameters)
-            if not self.success(response):
-                current_retries += 1
-                if current_retries >= retry_count:
-                    err = response.text or response.reason
-                    self.tcex.handle_error(951, ['GET', response.status_code, err, response.url])
-                else:
-                    continue
-            entity = response.json()
-            break
-        self.entity_mapper(entity.get('data', {}))
-        return self
-
-    @property
-    def available_fields(self):
-        """Stub for available fields"""
-        raise NotImplementedError('Child class must implement this method.')
-
-    def entity_mapper(self, entity):
-        """Stub for entity mapper"""
-        raise NotImplementedError('Child class must implement this method.')
 
     def _reverse_transform(self, kwargs):
         """Reverse mapping of the _metadata_map method."""
@@ -205,22 +87,149 @@ class CommonCaseManagement:
 
         return reverse_transform(kwargs)
 
+    def _transform_kwargs(self, kwargs):
+        """Map the provided kwargs to expected arguments."""
+        for key in dict(kwargs):
+            new_key = self._metadata_map.get(key, key)
+            # if key in ['date_added', 'eventDate', 'firstSeen', 'publishDate']:
+            #     transformed_value = self._utils.format_datetime(
+            #         value, date_format='%Y-%m-%dT%H:%M:%SZ'
+            #     )
+            kwargs[new_key] = kwargs.pop(key)
+
+    @property
+    def as_dict(self):
+        """Return the dict representation of the CM object."""
+        properties = vars(self)
+        as_dict = {}
+        for key, value in properties.items():
+            key = key.lstrip('_')
+            if key in self._excluded_properties:
+                continue
+            try:
+                value = value.as_dict
+            except AttributeError:
+                pass
+
+            if value is None:
+                continue
+            as_dict[key] = value
+        if not as_dict:
+            return None
+        return as_dict
+
+    @property
+    def available_fields(self):
+        """Stub for available fields"""
+        raise NotImplementedError('Child class must implement this method.')
+
+    def delete(self, retry_count=0):
+        """Delete the Case Management Object.
+
+        If no id is present in the obj then returns immediately.
+        """
+        if not self.id:
+            self.tcex.log.warning('A case without an ID cannot be deleted.')
+            return None
+
+        url = f'{self.api_endpoint}/{self.id}'
+        current_retries = -1
+        while current_retries < retry_count:
+            self.tcex.log.debug(f'Delete URL: ({url})')
+            r = self.tcex.session.delete(url)
+            if not self.success(r):
+                current_retries += 1
+                if current_retries >= retry_count:
+                    err = r.text or r.reason
+                    self.tcex.handle_error(950, [r.status_code, err, r.url])
+                else:
+                    continue
+            break
+        return None
+
+    def entity_mapper(self, entity):
+        """Stub for entity mapper"""
+        raise NotImplementedError('Child class must implement this method.')
+
+    def get(self, all_available_fields=False, case_management_id=None, retry_count=0, fields=None):
+        """Get the Case Management Object.
+
+        Args:
+            all_available_fields (bool): If True all available fields will be returned.
+            case_management_id (int): The id of the case management object to be returned.
+            retry_count (int, optional): [description]. Defaults to 0.
+            fields (list): A list of the fields that should be returned.
+
+        Returns:
+            Object: A artifact, case, note, task, tag, or workflow object.
+        """
+        cm_id = case_management_id or self.id
+        fields = fields or []
+        url = f'{self.api_endpoint}/{cm_id}'
+        current_retries = -1
+        entity = None
+        parameters = {'fields': []}
+
+        # add fields parameter if provided
+        if all_available_fields:
+            for field in self.available_fields:
+                parameters['fields'].append(field)
+        elif fields:
+            for field in fields:
+                parameters['fields'].append(field)
+
+        # @bpurdy - what is the retry count for? tcex session has built-in retry
+        while current_retries < retry_count:
+            self.tcex.log.debug(f'Get URL: ({url})')
+            r = self.tcex.session.get(url, params=parameters)
+            self.tcex.log.trace(f'response cm data: {r.text}')
+            if not self.success(r):
+                current_retries += 1
+                if current_retries >= retry_count:
+                    err = r.text or r.reason
+                    self.tcex.handle_error(951, ['GET', r.status_code, err, r.url])
+                else:
+                    continue
+            entity = r.json()
+            break
+        self.entity_mapper(entity.get('data', {}))
+        return self
+
+    @property
+    def id(self):
+        """Return the id of the case management object."""
+        return self._id
+
+    @id.setter
+    def id(self, cm_id):
+        """Set the id of the case management object."""
+        self._id = cm_id
+
+    @property
+    def required_properties(self):
+        """Return a list of required fields for an object."""
+        return []
+
     def submit(self):
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.
         """
-        url = self.api_endpoint
         as_dict = self.as_dict
 
-        # if the ID is included, its an update
+        method = 'POST'
+        url = self.api_endpoint
         if self.id:
+            # if the ID is included, its an update
+            method = 'PUT'
             url = f'{self.api_endpoint}/{self.id}'
-            self.tcex.log.debug(f'Resource URL: ({url})')
-            r = self.tcex.session.put(url, json=self._reverse_transform(as_dict))
-        else:
-            self.tcex.log.debug(f'Resource URL: ({url})')
-            r = self.tcex.session.post(url, json=self._reverse_transform(as_dict))
+
+        # make the request
+        self.tcex.log.debug(f'Submit URL: ({url})')
+        r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
+
+        # log post/put data for debug
+        self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')
 
         if r.ok:
             r_json = r.json()
@@ -231,10 +240,7 @@ class CommonCaseManagement:
             return self
 
         err = r.text or r.reason
-        if self.id:
-            self.tcex.handle_error(951, ['PUT', r.status_code, err, r.url])
-        else:
-            self.tcex.handle_error(951, ['POST', r.status_code, err, r.url])
+        self.tcex.handle_error(951, [r.request.method, r.status_code, err, r.url])
 
         return r
 
@@ -258,16 +264,3 @@ class CommonCaseManagement:
         else:
             status = False
         return status
-
-    def __str__(self):
-        """Printable version of Object"""
-        printable_string = ''
-        for key, value in sorted(vars(self).items()):
-            key = f'{key.lstrip("_")} '
-            if value is None:
-                printable_string += f'{key:.<40} {"null":<50}\n'
-            elif isinstance(value, (int, str)):
-                printable_string += f'{key:.<40} {value:<50}\n'
-            else:
-                printable_string += f'{key:.<40} {"<object>":<50}\n'
-        return printable_string

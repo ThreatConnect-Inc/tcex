@@ -47,7 +47,7 @@ class Artifacts(CommonCaseManagementCollection):
 
     @property
     def as_dict(self):
-        """Returns a dict version of this object."""
+        """Return a dict version of this object."""
         # @bpurdy - does this include all artifacts ???
         return super().list_as_dict(self.added_artifacts)
 
@@ -58,7 +58,7 @@ class Artifacts(CommonCaseManagementCollection):
             entity (dict): The Artifact data.
 
         Returns:
-            CaseManagement.Artifact: An Artificat Object
+            CaseManagement.Artifact: An Artifact Object
         """
         return Artifact(self.tcex, **entity)
 
@@ -124,32 +124,32 @@ class Artifact(CommonCaseManagement):
 
     @property
     def case_id(self):
-        """Return the parent Case ID for the Artifact."""
+        """Return the parent "Case ID" for the Artifact."""
         return self._case_id
 
     @case_id.setter
     def case_id(self, case_id):
-        """Set the parent Case ID for the Artifact."""
+        """Set the parent "Case ID" for the Artifact."""
         self._case_id = case_id
 
     @property
     def case_xid(self):
-        """Return the Case XID for the Artifact."""
+        """Return the "Case XID" for the Artifact."""
         return self._case_xid
 
     @case_xid.setter
     def case_xid(self, case_xid):
-        """Set the Case XID for the Artifact."""
+        """Set the "Case XID" for the Artifact."""
         self._case_xid = case_xid
 
     @property
     def date_added(self):
-        """Return the Date Added for the Artifact."""
+        """Return the "Date Added" for the Artifact."""
         return self._date_added
 
     @date_added.setter
     def date_added(self, date_added):
-        """Set the Date Added for the Artifact."""
+        """Set the "Date Added" for the Artifact."""
         self._date_added = date_added
 
     def entity_mapper(self, entity):
@@ -163,32 +163,32 @@ class Artifact(CommonCaseManagement):
 
     @property
     def file_data(self):
-        """Return the File Data for the Artifact."""
+        """Return the "File Data" for the Artifact."""
         return self._file_data
 
     @file_data.setter
     def file_data(self, file_data):
-        """Set the File Data for the Artifact."""
+        """Set the "File Data" for the Artifact."""
         self._file_data = file_data
 
     @property
     def intel_type(self):
-        """Return the Intel Type for the Artifact."""
+        """Return the "Intel Type" for the Artifact."""
         return self._intel_type
 
     @intel_type.setter
     def intel_type(self, intel_type):
-        """Set the Intel Type for the Artifact."""
+        """Set the "Intel Type" for the Artifact."""
         self._intel_type = intel_type
 
     @property
     def notes(self):
-        """Return the Notes for the Artifact."""
+        """Return the "Notes" for the Artifact."""
         return self._notes
 
     @notes.setter
     def notes(self, notes):
-        """Set the Notes for the Artifact."""
+        """Set the "Notes" for the Artifact."""
         self._notes = notes
 
     @property
@@ -198,52 +198,52 @@ class Artifact(CommonCaseManagement):
 
     @property
     def source(self):
-        """Return the Source for the Artifact."""
+        """Return the "Source" for the Artifact."""
         return self._source
 
     @source.setter
     def source(self, source):
-        """Set the Source for the Artifact."""
+        """Set the "Source" for the Artifact."""
         self._source = source
 
     @property
     def summary(self):
-        """Return the Summary for the Artifact."""
+        """Return the "Summary" for the Artifact."""
         return self._summary
 
     @summary.setter
     def summary(self, summary):
-        """Set the Summary for the Artifact."""
+        """Set the "Summary" for the Artifact."""
         self._summary = summary
 
     @property
     def task_id(self):
-        """Return the Task ID for the Artifact."""
+        """Return the "Task ID" for the Artifact."""
         return self._task_id
 
     @task_id.setter
     def task_id(self, task_id):
-        """Set the Task ID for the Artifact."""
+        """Set the "Task ID" for the Artifact."""
         self._task_id = task_id
 
     @property
     def task_xid(self):
-        """Return the Task XID for the Artifact."""
+        """Return the "Task XID" for the Artifact."""
         return self._task_id
 
     @task_xid.setter
     def task_xid(self, task_xid):
-        """Set the Task XID for the Artifact."""
+        """Set the "Task XID" for the Artifact."""
         self._task_id = task_xid
 
     @property
     def type(self):
-        """Return the Type for the Artifact."""
+        """Return the "Type" for the Artifact."""
         return self._type
 
     @type.setter
     def type(self, artifact_type):
-        """Set the Type for the Artifact."""
+        """Set the "Type" for the Artifact."""
         self._type = artifact_type
 
 
@@ -258,17 +258,17 @@ class FilterArtifact:
         """Initialize Class properties"""
         self.tql = tql
 
-    def summary(self, operator, summary):
-        """Filter objects based on summary field.
+    def case(self, operator, case):
+        """Filter objects based on "case" association.
 
         Args:
             operator (enum): The enum for the required operator.
-            summary (str): The filter value.
+            case (str): The filter value.
         """
-        self.tql.add_filter('summary', operator, summary)
+        self.tql.add_filter('case', operator, case)
 
     def case_id(self, operator, case_id):
-        """Filter objects based on case id field.
+        """Filter objects based on "case id" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -277,7 +277,7 @@ class FilterArtifact:
         self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def comment_id(self, operator, comment_id):
-        """Filter objects based on comment id field.
+        """Filter objects based on "comment id" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -286,7 +286,7 @@ class FilterArtifact:
         self.tql.add_filter('comment_id', operator, comment_id, TQL.Type.INTEGER)
 
     def id(self, operator, artifact_id):
-        """Filter objects based on ID field.
+        """Filter objects based on "ID" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -295,7 +295,7 @@ class FilterArtifact:
         self.tql.add_filter('id', operator, artifact_id, TQL.Type.INTEGER)
 
     def source(self, operator, source):
-        """Filter objects based on source field.
+        """Filter objects based on "source" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -303,17 +303,17 @@ class FilterArtifact:
         """
         self.tql.add_filter('source', operator, source)
 
-    def case(self, operator, case):
-        """Filter objects based on case association.
+    def summary(self, operator, summary):
+        """Filter objects based on "summary" field.
 
         Args:
             operator (enum): The enum for the required operator.
-            case (str): The filter value.
+            summary (str): The filter value.
         """
-        self.tql.add_filter('case', operator, case)
+        self.tql.add_filter('summary', operator, summary)
 
     def task_id(self, operator, task_id):
-        """Filter objects based on task id field.
+        """Filter objects based on "task id" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -322,7 +322,7 @@ class FilterArtifact:
         self.tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
 
     def type_name(self, operator, type_name):
-        """Filter objects based on type name field.
+        """Filter objects based on "type name" field.
 
         Args:
             operator (enum): The enum for the required operator.
