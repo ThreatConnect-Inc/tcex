@@ -29,105 +29,6 @@ class WorkflowEvents(CommonCaseManagementCollection):
         """Iterate on Workflow Events."""
         return self.iterate(initial_response=self.initial_response)
 
-    def summary_filter(self, operator, summary):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            summary ([type]): [description]
-        """
-        self.tql.add_filter('summary', operator, summary)
-
-    def deleted_filter(self, operator, deleted):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            deleted ([type]): [description]
-        """
-        self.tql.add_filter('deleted', operator, deleted)
-
-    def case_id_filter(self, operator, case_id):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            case_id ([type]): [description]
-        """
-        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
-
-    def link_filter(self, operator, link):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            link ([type]): [description]
-        """
-        self.tql.add_filter('link', operator, link)
-
-    def deleted_reason_filter(self, operator, deleted_reason):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            deleted_reason ([type]): [description]
-        """
-        self.tql.add_filter('deletedreason', operator, deleted_reason)
-
-    def system_generated_filter(self, operator, system_generated):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            system_generated ([type]): [description]
-        """
-        self.tql.add_filter('systemgenerated', operator, system_generated)
-
-    def id_filter(self, operator, id_):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            id ([type]): [description]
-        """
-        self.tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
-
-    def link_text_filter(self, operator, link_text):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            link_text ([type]): [description]
-        """
-        self.tql.add_filter('link_text', operator, link_text)
-
-    def date_added_filter(self, operator, date_added):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            date_added ([type]): [description]
-        """
-        self.tql.add_filter('dateadded', operator, date_added)
-
-    def event_date_filter(self, operator, event_date):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            event_date ([type]): [description]
-        """
-        self.tql.add_filter('eventdate', operator, event_date)
-
-    def username_filter(self, operator, username):
-        """[summary]
-
-        Args:
-            operator ([type]): [description]
-            username ([type]): [description]
-        """
-        self.tql.add_filter('username', operator, username)
-
     def entity_map(self, entity):
         """[summary]
 
@@ -138,6 +39,11 @@ class WorkflowEvents(CommonCaseManagementCollection):
             [type]: [description]
         """
         return WorkflowEvent(self.tcex, **entity)
+
+    @property
+    def filter(self):
+        """Return instance of FilterWorkflowEvent Object."""
+        return FilterWorkflowEvent(self.tql)
 
 
 class WorkflowEvent(CommonCaseManagement):
@@ -266,3 +172,121 @@ class WorkflowEvent(CommonCaseManagement):
     def link(self, link):
         """Set the link for the Workflow Event."""
         self._link = link
+
+
+class FilterWorkflowEvent:
+    """Filter Object for Workflow Event
+
+    Args:
+        tql (TQL): Instance of TQL Class.
+    """
+
+    def __init__(self, tql):
+        self._tql = tql
+
+    def tql(self, tql):
+        """Filter objects based on TQL expression.
+
+        Args:
+            tql (str): The raw TQL string expression.
+        """
+        self._tql.set_raw_tql(tql)
+
+    def summary(self, operator, summary):
+        """Filter objects based on "summary" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            summary (str): The filter value.
+        """
+        self._tql.add_filter('summary', operator, summary)
+
+    def deleted(self, operator, deleted):
+        """Filter objects based on "deleted" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            deleted (str): The filter value.
+        """
+        self._tql.add_filter('deleted', operator, deleted)
+
+    def case_id(self, operator, case_id):
+        """Filter objects based on "case id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            case id (int): The filter value.
+        """
+        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+
+    def link(self, operator, link):
+        """Filter objects based on "link" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            link (str): The filter value.
+        """
+        self._tql.add_filter('link', operator, link)
+
+    def deleted_reason(self, operator, deleted_reason):
+        """Filter objects based on "deleted reason" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            deleted_reason (str): The filter value.
+        """
+        self._tql.add_filter('deletedreason', operator, deleted_reason)
+
+    def system_generated(self, operator, system_generated):
+        """Filter objects based on "system generated" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            system_generated (str): The filter value.
+        """
+        self._tql.add_filter('systemgenerated', operator, system_generated)
+
+    def id(self, operator, id_):
+        """Filter objects based on "id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            id_ (int): The filter value.
+        """
+        self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
+
+    def link_text(self, operator, link_text):
+        """Filter objects based on "link text" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            link_text (str): The filter value.
+        """
+        self._tql.add_filter('link_text', operator, link_text)
+
+    def date_added(self, operator, date_added):
+        """Filter objects based on "date added" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            date_added (str): The filter value.
+        """
+        self._tql.add_filter('dateadded', operator, date_added)
+
+    def event_date(self, operator, event_date):
+        """Filter objects based on "event date" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            event_date (str): The filter value.
+        """
+        self._tql.add_filter('eventdate', operator, event_date)
+
+    def username(self, operator, username):
+        """Filter objects based on "username" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            username (str): The filter value.
+        """
+        self._tql.add_filter('username', operator, username)
