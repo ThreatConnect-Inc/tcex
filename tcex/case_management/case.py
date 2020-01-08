@@ -55,6 +55,7 @@ class Case(CommonCaseManagement):
         artifacts (dict, kwargs): The Artifacts for the Case.
         created_by (dict, kwargs): The Created By data for the Case.
         date_added (date, kwargs): The Date Added for the Case.
+        description (str, kwargs): The Description for the Case.
         name (str, kwargs): The Name for the Case.
         notes (dict, kwargs): The Notes for the Case.
         resolution (string, kwargs): The Resolution for the Case.
@@ -401,16 +402,7 @@ class FilterCase:
 
     def __init__(self, tql):
         """Initialize Class properties"""
-        self.tql = tql
-
-    def artifact_id(self, operator, artifact_id):
-        """Filter objects based on "artifact id" field.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            artifact_id (str): The filter value.
-        """
-        self.tql.add_filter('hasartifact', operator, artifact_id, TQL.Type.INTEGER)
+        self._tql = tql
 
     def created_by_id(self, operator, created_by_id):
         """Filter objects based on "create by id" field.
@@ -419,7 +411,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             created_by_id (int): The filter value.
         """
-        self.tql.add_filter('createdbyid', operator, created_by_id)
+        self._tql.add_filter('createdbyid', operator, created_by_id, TQL.Type.INTEGER)
 
     def description(self, operator, description):
         """Filter objects based on description field.
@@ -428,7 +420,34 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             description (str]): The filter value.
         """
-        self.tql.add_filter('description', operator, description)
+        self._tql.add_filter('description', operator, description)
+
+    def hasartifact(self, operator, artifact_id):
+        """Filter objects based on "artifact id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            artifact_id (str): The filter value.
+        """
+        self._tql.add_filter('hasartifact', operator, artifact_id, TQL.Type.INTEGER)
+
+    def hastag(self, operator, tag):
+        """Filter objects based on tag field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            tag (str): The filter value.
+        """
+        self._tql.add_filter('hastag', operator, tag)
+
+    def hastask(self, operator, task):
+        """Filter objects based on task field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            task (str): The filter value.
+        """
+        self._tql.add_filter('hastask', operator, task)
 
     def id(self, operator, case_id):
         """Filter objects based on id field.
@@ -437,7 +456,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             case_id (int): The filter value.
         """
-        self.tql.add_filter('id', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('id', operator, case_id, TQL.Type.INTEGER)
 
     def owner_name(self, operator, owner_name):
         """Filter objects based on "owner name" field.
@@ -446,7 +465,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             owner_name (str): The filter value.
         """
-        self.tql.add_filter('ownername', operator, owner_name)
+        self._tql.add_filter('ownername', operator, owner_name)
 
     def name(self, operator, name):
         """Filter objects based on name field.
@@ -455,7 +474,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             name (str): The filter value.
         """
-        self.tql.add_filter('name', operator, name)
+        self._tql.add_filter('name', operator, name)
 
     def resolution(self, operator, resolution):
         """Filter objects based on resolution field.
@@ -464,7 +483,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             resolution (str): The filter value.
         """
-        self.tql.add_filter('resolution', operator, resolution)
+        self._tql.add_filter('resolution', operator, resolution)
 
     def severity(self, operator, severity):
         """Filter object based on severity field.
@@ -473,7 +492,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             severity (str): The filter value.
         """
-        self.tql.add_filter('severity', operator, severity)
+        self._tql.add_filter('severity', operator, severity)
 
     def status(self, operator, status):
         """Filter objects based on status field.
@@ -482,7 +501,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             status (str): The filter value.
         """
-        self.tql.add_filter('status', operator, status)
+        self._tql.add_filter('status', operator, status)
 
     def tag(self, operator, tag):
         """Filter objects based on tag field.
@@ -491,8 +510,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             tag (str): The filter value.
         """
-        # self.tql.add_filter('hastag', operator, tag)
-        self.tql.add_filter('tag', operator, tag)
+        self._tql.add_filter('tag', operator, tag)
 
     def target_id(self, operator, target_id):
         """Filter objects based on "target id" field.
@@ -501,7 +519,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             target_id (str): The filter value.
         """
-        self.tql.add_filter('targetid', operator, target_id)
+        self._tql.add_filter('targetid', operator, target_id)
 
     def target_type(self, operator, target_type):
         """Filter objects based on "target type" field.
@@ -510,16 +528,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             target_type (str): The filter value.
         """
-        self.tql.add_filter('targettype', operator, target_type)
-
-    def task(self, operator, task):
-        """Filter objects based on task field.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            task (str): The filter value.
-        """
-        self.tql.add_filter('hastask', operator, task)
+        self._tql.add_filter('targettype', operator, target_type)
 
     def xid(self, operator, xid):
         """Filter objects based on xid field.
@@ -528,4 +537,4 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             xid (str): The filter value.
         """
-        self.tql.add_filter('xid', operator, xid)
+        self._tql.add_filter('xid', operator, xid)
