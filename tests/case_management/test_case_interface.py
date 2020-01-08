@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 import os
+
+# from random import randint
 from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
@@ -165,41 +167,199 @@ class TestCaseIndicators:
         # run assertions on case count
         assert case_count == 2
 
-    def test_case_get_by_tql_filter_artifact_id(self, request):
-        """Test Case Get by TQL"""
+    # def test_case_get_by_tql_filter_artifact_id(self, request):
+    #     """Test Case Get by TQL"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
+
+    #     # artifact data
+    #     artifact_data = {
+    #         'case_id': case.id,
+    #         'intel_type': 'indicator-ASN',
+    #         'summary': f'asn{randint(100, 999)}',
+    #         'type': 'ASN',
+    #     }
+
+    #     # create artifact
+    #     artifact = self.cm.artifact(**artifact_data)
+    #     artifact.submit()
+
+    #     # retrieve note using TQL
+    #     cases = self.cm.cases()
+    #     cases.filter.artifact_id(TQL.Operator.EQ, artifact.id)
+
+    #     for case in cases:
+    #         assert case.name == request.node.name
+    #         break
+    #     else:
+    #         assert False, 'No cases returned for TQL'
 
     def test_case_get_by_tql_filter_created_by_id(self, request):
-        """Test Case Get by TQL"""
+        """Test Case Get by TQL
+
+        # This method is geared more for the UI as we won't have easy access to user id
+        """
+        # create case
+        case = self.cm_helper.create_case()
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.created_by_id(TQL.Operator.EQ, 5)
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
 
     def test_case_get_by_tql_filter_description(self, request):
         """Test Case Get by TQL"""
+        description = f'a test description for {request.node.name}'
 
-    def test_case_get_by_tql_id(self, request):
+        # create case
+        case = self.cm_helper.create_case(description=description)
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.description(TQL.Operator.EQ, description)
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
+
+    def test_case_get_by_tql_filter_hasartifact(self):
         """Test Case Get by TQL"""
 
-    def test_case_get_by_tql_owner_name(self, request):
+    def test_case_get_by_tql_filter_hastag(self):
         """Test Case Get by TQL"""
 
-    def test_case_get_by_tql_resolution(self, request):
+    def test_case_get_by_tql_filter_hastask(self):
         """Test Case Get by TQL"""
 
-    def test_case_get_by_tql_severity(self, request):
+    def test_case_get_by_tql_filter_id(self, request):
+        """Test Case Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
+
+    def test_case_get_by_tql_filter_owner_name(self, request):
+        """Test Case Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.owner_name(TQL.Operator.EQ, os.getenv('TC_OWNER'))
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
+
+    def test_case_get_by_tql_filter_resolution(self, request):
+        """Test Case Get by TQL"""
+        resolution = 'Escalated'
+
+        # create case
+        case = self.cm_helper.create_case(resolution=resolution)
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.resolution(TQL.Operator.EQ, resolution)
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
+
+    def test_case_get_by_tql_filter_severity(self, request):
+        """Test Case Get by TQL"""
+        severity = 'Low'
+        # create case
+        case = self.cm_helper.create_case(severity=severity)
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.severity(TQL.Operator.EQ, severity)
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
+
+    def test_case_get_by_tql_filter_status(self, request):
+        """Test Case Get by TQL"""
+        status = 'Closed'
+        # create case
+        case = self.cm_helper.create_case(status=status)
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.status(TQL.Operator.EQ, status)
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
+
+    def test_case_get_by_tql_filter_tag(self, request):
+        """Test Case Get by TQL"""
+        tags = [request.node.name]
+        # create case
+        case = self.cm_helper.create_case(tags=tags)
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.tag(TQL.Operator.EQ, tags[0])
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'
+
+    # def test_case_get_by_tql_filter_target_id(self, request):
+    #     """Test Case Get by TQL"""
+    #     assignee = os.getenv('API_ACCESS_ID')
+    #     # create case
+    #     # case = self.cm_helper.create_case(assignee=assignee)
+    #     case = self.cm_helper.create_case()
+
+    #     # retrieve note using TQL
+    #     cases = self.cm.cases()
+    #     cases.filter.id(TQL.Operator.EQ, case.id)
+    #     # cases.filter.target_id(TQL.Operator.EQ, 4)
+
+    #     for case in cases:
+    #         assert case.name == request.node.name
+    #         break
+    #     else:
+    #         assert False, 'No cases returned for TQL'
+
+    def test_case_get_by_tql_filter_target_type(self, request):
         """Test Case Get by TQL"""
 
-    def test_case_get_by_tql_status(self, request):
-        """Test Case Get by TQL"""
-
-    def test_case_get_by_tql_tag(self, request):
-        """Test Case Get by TQL"""
-
-    def test_case_get_by_tql_target_id(self, request):
-        """Test Case Get by TQL"""
-
-    def test_case_get_by_tql_target_type(self, request):
-        """Test Case Get by TQL"""
-
-    def test_case_get_by_tql_task(self, request):
-        """Test Case Get by TQL"""
-
-    def test_case_get_by_tql_xid(self, request):
+    def test_case_get_by_tql_filter_xid(self, request):
         """Test Case Get by TQL"""

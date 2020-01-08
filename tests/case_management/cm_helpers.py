@@ -23,7 +23,11 @@ class CMHelper:
         If a case_name is not provide a dynamic case name will be used.
 
         Args:
+            assignee (str, kwargs): Optional assignee.
+            date_added (str, kwargs): Optional date_added.
+            description (str, kwargs): Optional description.
             name (str, kwargs): Optional case name.
+            resolution (str, kwargs): Optional case resolution.
             severity (str, kwargs): Optional case severity.
             status (str, kwargs): Optional case status.
             xid (str, kwargs): Optional case XID.
@@ -31,17 +35,26 @@ class CMHelper:
         Returns:
             CaseManagement.Case: A CM case object.
         """
-        name = kwargs.get('name') or inspect.stack()[1].function
+        case_data = {
+            'assignee': kwargs.get('assignee'),
+            'date_added': kwargs.get('date_added'),
+            'description': kwargs.get(
+                'description', f'A description for {inspect.stack()[1].function}'
+            ),
+            'name': kwargs.get('name', inspect.stack()[1].function),
+            'resolution': kwargs.get('resolution', 'Not Specified'),
+            'severity': kwargs.get('severity', 'Low'),
+            'status': kwargs.get('status', 'Open'),
+            'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
+        }
+
         artifacts = kwargs.get('artifacts', {})
         notes = kwargs.get('notes', [])
-        severity = kwargs.get('case_severity') or 'Low'
-        status = kwargs.get('case_status') or 'Open'
         tags = kwargs.get('tags', [])
         tasks = kwargs.get('tasks', {})
-        xid = kwargs.get('xid') or f'xid-{inspect.stack()[1].function}'
 
         # create case
-        case = self.cm.case(name=name, severity=severity, status=status, xid=xid)
+        case = self.cm.case(**case_data)
 
         # add artifacts
         for artifact, artifact_data in artifacts.items():
