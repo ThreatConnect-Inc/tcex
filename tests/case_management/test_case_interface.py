@@ -363,3 +363,17 @@ class TestCaseIndicators:
 
     def test_case_get_by_tql_filter_xid(self, request):
         """Test Case Get by TQL"""
+        # create case
+        xid = request.node.name
+        case = self.cm_helper.create_case(xid=xid)
+
+        # retrieve note using TQL
+        cases = self.cm.cases()
+        cases.filter.id(TQL.Operator.EQ, case.id)
+        cases.filter.xid(TQL.Operator.EQ, xid)
+
+        for case in cases:
+            assert case.name == request.node.name
+            break
+        else:
+            assert False, 'No cases returned for TQL'

@@ -36,7 +36,7 @@ class CMHelper:
             CaseManagement.Case: A CM case object.
         """
         case_data = {
-            'assignee': kwargs.get('assignee'),
+            # 'assignee': kwargs.get('assignee'),
             'date_added': kwargs.get('date_added'),
             'description': kwargs.get(
                 'description', f'A description for {inspect.stack()[1].function}'
