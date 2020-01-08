@@ -29,59 +29,10 @@ class Tags(CommonCaseManagementCollection):
         """Iterate over all Tags"""
         return self.iterate(initial_response=self.initial_response)
 
-    def owner_filter(self, operator, owner):
-        """Filter tag by owner id using the provided operator.
-
-        Args:
-            operator ([type]): [description]
-            owner ([type]): [description]
-        """
-        self.tql.add_filter('owner', operator, owner, TQL.Type.INTEGER)
-
-    def owner_name_filter(self, operator, owner_name):
-        """Filter tag by owner name using provided operator.
-
-        Args:
-            operator ([type]): [description]
-            owner_name ([type]): [description]
-        """
-        self.tql.add_filter('ownername', operator, owner_name)
-
-    def case_id_filter(self, operator, case_id):
-        """Filter tag by case id using provided operator
-
-        Args:
-            operator ([type]): [description]
-            case_id ([type]): [description]
-        """
-        self.tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
-
-    def name_filter(self, operator, name):
-        """Filter tag by name using provided operator
-
-        Args:
-            operator ([type]): [description]
-            name ([type]): [description]
-        """
-        self.tql.add_filter('name', operator, name)
-
-    def id_filter(self, operator, id_):
-        """Filter tag by ID using provided operator
-
-        Args:
-            operator ([type]): [description]
-            id ([type]): [description]
-        """
-        self.tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
-
-    def case_filter(self, operator, case):
-        """Filter cases by association to other cases using provided operator
-
-        Args:
-            operator ([type]): [description]
-            case ([type]): [description]
-        """
-        self.tql.add_filter('hascase', operator, case, TQL.Type.INTEGER)
+    @property
+    def filter(self):
+        """Return instance of FilterTag Object."""
+        return FilterTag(self.tql)
 
     def entity_map(self, entity):
         """[summary]
@@ -157,3 +108,77 @@ class Tag(CommonCaseManagement):
     def description(self, description):
         """Set the description"""
         self._description = description
+
+
+class FilterTag:
+    """Filter Object for Tag
+
+    Args:
+        tql (TQL): Instance of TQL Class.
+    """
+
+    def __init__(self, tql):
+        """Initialize Class properties"""
+        self._tql = tql
+
+    def case_id(self, operator, case_id):
+        """"Filter objects based on "case id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            case_id (int): The filter value.
+        """
+        self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
+
+    def hascase(self, operator, case):
+        """Filter objects based on "case" association.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            case (str): The filter value.
+        """
+        self._tql.add_filter('hascase', operator, case, TQL.Type.INTEGER)
+
+    def id(self, operator, id_):
+        """"Filter objects based on "id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            id_ (int): The filter value.
+        """
+        self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
+
+    def name(self, operator, name):
+        """"Filter objects based on "name" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            name (str): The filter value.
+        """
+        self._tql.add_filter('name', operator, name)
+
+    def owner(self, operator, owner):
+        """"Filter objects based on "owner" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            owner (int): The filter value.
+        """
+        self._tql.add_filter('owner', operator, owner, TQL.Type.INTEGER)
+
+    def owner_name(self, operator, owner_name):
+        """"Filter objects based on "owner name" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            owner_name (str): The filter value.
+        """
+        self._tql.add_filter('ownername', operator, owner_name)
+
+    def tql(self, tql):
+        """Filter objects based on TQL expression.
+
+        Args:
+            tql (str): The raw TQL string expression.
+        """
+        self._tql.set_raw_tql(tql)
