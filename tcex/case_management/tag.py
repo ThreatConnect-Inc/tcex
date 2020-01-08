@@ -23,7 +23,12 @@ class Tags(CommonCaseManagementCollection):
 
         if initial_response:
             for item in initial_response.get('data', []):
-                self.added_items.append(Tag(tcex, **item))
+                if isinstance(item, Tag):
+                    self.added_items.append(item)
+                elif isinstance(item, dict):
+                    self.added_items.append(Tag(tcex, **item))
+                else:
+                    continue
 
     def __iter__(self):
         """Iterate over all Tags"""
