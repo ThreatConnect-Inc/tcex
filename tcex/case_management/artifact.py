@@ -252,16 +252,7 @@ class FilterArtifact:
 
     def __init__(self, tql):
         """Initialize Class properties"""
-        self.tql = tql
-
-    def case(self, operator, case):
-        """Filter objects based on "case" association.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            case (str): The filter value.
-        """
-        self.tql.add_filter('case', operator, case)
+        self._tql = tql
 
     def case_id(self, operator, case_id):
         """Filter objects based on "case id" field.
@@ -270,7 +261,7 @@ class FilterArtifact:
             operator (enum): The enum for the required operator.
             case_id (int): The filter value.
         """
-        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def comment_id(self, operator, comment_id):
         """Filter objects based on "comment id" field.
@@ -279,7 +270,16 @@ class FilterArtifact:
             operator (enum): The enum for the required operator.
             comment_id (int): The filter value.
         """
-        self.tql.add_filter('comment_id', operator, comment_id, TQL.Type.INTEGER)
+        self._tql.add_filter('comment_id', operator, comment_id, TQL.Type.INTEGER)
+
+    def hascase(self, operator, case):
+        """Filter objects based on "case" association.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            case (str): The filter value.
+        """
+        self._tql.add_filter('hascase', operator, case)
 
     def id(self, operator, artifact_id):
         """Filter objects based on "ID" field.
@@ -288,7 +288,7 @@ class FilterArtifact:
             operator (enum): The enum for the required operator.
             artifact_id (int): The filter value.
         """
-        self.tql.add_filter('id', operator, artifact_id, TQL.Type.INTEGER)
+        self._tql.add_filter('id', operator, artifact_id, TQL.Type.INTEGER)
 
     def source(self, operator, source):
         """Filter objects based on "source" field.
@@ -297,7 +297,7 @@ class FilterArtifact:
             operator (enum): The enum for the required operator.
             source (str): The filter value.
         """
-        self.tql.add_filter('source', operator, source)
+        self._tql.add_filter('source', operator, source)
 
     def summary(self, operator, summary):
         """Filter objects based on "summary" field.
@@ -306,7 +306,7 @@ class FilterArtifact:
             operator (enum): The enum for the required operator.
             summary (str): The filter value.
         """
-        self.tql.add_filter('summary', operator, summary)
+        self._tql.add_filter('summary', operator, summary)
 
     def task_id(self, operator, task_id):
         """Filter objects based on "task id" field.
@@ -315,7 +315,15 @@ class FilterArtifact:
             operator (enum): The enum for the required operator.
             task_id (str): The filter value.
         """
-        self.tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
+        self._tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
+
+    def tql(self, tql):
+        """Filter objects based on TQL expression.
+
+        Args:
+            tql (str): The raw TQL string for the filter.
+        """
+        self._tql.set_raw_tql(tql)
 
     def type_name(self, operator, type_name):
         """Filter objects based on "type name" field.
@@ -324,4 +332,4 @@ class FilterArtifact:
             operator (enum): The enum for the required operator.
             type_name (str): The filter value.
         """
-        self.tql.add_filter('typename', operator, type_name)
+        self._tql.add_filter('typename', operator, type_name)

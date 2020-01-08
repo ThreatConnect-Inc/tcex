@@ -188,6 +188,7 @@ class TestTask:
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
 
+    # TODO: update this
     def test_task_get_by_tql_filter_case(self, request):
         """Test Task Get by TQL"""
 
@@ -212,7 +213,6 @@ class TestTask:
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
 
-        assert len(tasks.as_dict) == 1
         for task in tasks:
             assert task.description == task_data.get('description')
             # assert task.is_workflow == task_data.get('is_workflow')
@@ -249,7 +249,6 @@ class TestTask:
         tasks = self.cm.tasks()
         tasks.filter.description(TQL.Operator.EQ, task_data.get('description'))
 
-        assert len(tasks.as_dict) == 1
         for task in tasks:
             assert task.description == task_data.get('description')
             # assert task.is_workflow == task_data.get('is_workflow')
@@ -302,7 +301,6 @@ class TestTask:
         tasks = self.cm.tasks()
         tasks.filter.xid(TQL.Operator.EQ, task_data.get('xid'))
 
-        assert len(tasks.as_dict) == 1
         for task in tasks:
             assert task.description == task_data.get('description')
             assert task.name == task_data.get('name')

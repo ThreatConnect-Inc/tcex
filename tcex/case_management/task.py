@@ -251,7 +251,7 @@ class FilterTask:
 
     def __init__(self, tql):
         """Initialize Class properties"""
-        self.tql = tql
+        self._tql = tql
 
     def case(self, operator, case):
         """Filter objects based on "case" association.
@@ -260,7 +260,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             case (str): The filter value.
         """
-        self.tql.add_filter('hascase', operator, case)
+        self._tql.add_filter('hascase', operator, case)
 
     def case_id(self, operator, case_id):
         """Filter objects based on "case id" field.
@@ -269,7 +269,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             case_id (int): The filter value.
         """
-        self.tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def completed_date(self, operator, completed_date):
         """Filter objects based on "completed date" field.
@@ -278,7 +278,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             completed_date (str): The filter value.
         """
-        self.tql.add_filter('completeddate', operator, completed_date)
+        self._tql.add_filter('completeddate', operator, completed_date)
 
     def config_playbook(self, operator, config_playbook):
         """Filter objects based on "config playbook" field.
@@ -287,7 +287,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             config_playbook (str): The filter value.
         """
-        self.tql.add_filter('configplaybook', operator, config_playbook)
+        self._tql.add_filter('configplaybook', operator, config_playbook)
 
     def config_task(self, operator, config_task):
         """Filter objects based on "config task" field.
@@ -296,7 +296,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             config_task (str): The filter value.
         """
-        self.tql.add_filter('configtask', operator, config_task)
+        self._tql.add_filter('configtask', operator, config_task)
 
     def description(self, operator, description):
         """Filter objects based on "description" field.
@@ -305,7 +305,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             description (str): The filter value.
         """
-        self.tql.add_filter('description', operator, description)
+        self._tql.add_filter('description', operator, description)
 
     def due_date(self, operator, due_date):
         """Filter objects based on "due date" field.
@@ -314,7 +314,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             due_date (str): The filter value.
         """
-        self.tql.add_filter('duedate', operator, due_date)
+        self._tql.add_filter('duedate', operator, due_date)
 
     def duration(self, operator, duration):
         """Filter objects based on "duration" field.
@@ -323,7 +323,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             duration (str): The filter value.
         """
-        self.tql.add_filter('duration', operator, duration)
+        self._tql.add_filter('duration', operator, duration)
 
     def id(self, operator, id_):
         """Filter objects based on "id" field.
@@ -332,7 +332,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             id (int): The filter value.
         """
-        self.tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
+        self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
 
     def name(self, operator, name):
         """Filter objects based on "name" field.
@@ -341,7 +341,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             name (str): The filter value.
         """
-        self.tql.add_filter('name', operator, name)
+        self._tql.add_filter('name', operator, name)
 
     def status(self, operator, status):
         """Filter objects based on "status" field.
@@ -350,7 +350,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             status (str): The filter value.
         """
-        self.tql.add_filter('status', operator, status)
+        self._tql.add_filter('status', operator, status)
 
     def target_id(self, operator, target_id):
         """Filter objects based on "target id" field.
@@ -359,7 +359,7 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             target_id (str): The filter value.
         """
-        self.tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
+        self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
 
     def target_type(self, operator, target_type):
         """Filter objects based on "target type" field.
@@ -368,7 +368,15 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             target_type (str): The filter value.
         """
-        self.tql.add_filter('targettype', operator, target_type)
+        self._tql.add_filter('targettype', operator, target_type)
+
+    def tql(self, tql):
+        """Filter objects based on TQL expression.
+
+        Args:
+            tql (str): The raw TQL string for the filter.
+        """
+        self._tql.set_raw_tql(tql)
 
     def xid(self, operator, xid):
         """Filter objects based on "xid" field.
@@ -377,4 +385,4 @@ class FilterTask:
             operator (enum): The enum for the required operator.
             xid (str): The filter value.
         """
-        self.tql.add_filter('xid', operator, xid)
+        self._tql.add_filter('xid', operator, xid)

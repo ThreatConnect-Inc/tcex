@@ -27,11 +27,14 @@ class TestCaseIndicators:
         if os.getenv('TEARDOWN_METHOD') is None:
             self.cm_helper.cleanup()
 
-    def test_create(self):
+    def test_case_create(self, request):
         """Test Case Creation"""
-        severity = 'Low'
-        status = 'Open'
-        case = self.cm.case(name=__name__, severity=severity, status=status)
+        case_data = {
+            'name': request.node.name,
+            'severity': 'Low',
+            'status': 'Open',
+        }
+        case = self.cm.case(**case_data)
         case.submit()
 
         # retrieve case for asserts
@@ -39,67 +42,70 @@ class TestCaseIndicators:
         case.get()
 
         # run assertions on returned data
-        assert case.name == __name__
-        assert case.status == status
-        assert case.severity == severity
+        assert case.name == case_data.get('name')
+        assert case.severity == case_data.get('severity')
+        assert case.status == case_data.get('status')
 
         # cleanup case
         case.delete()
 
-    def test_delete(self):
+    def test_case_delete(self, request):
         """Test Case Deletion"""
-        case = self.cm_helper.create_case(case_name=__name__)
+        case = self.cm_helper.create_case()
 
         cases = self.cm.cases()
-        cases.filter.name(TQL.Operator.EQ, __name__)
+        cases.filter.name(TQL.Operator.EQ, request.node.name)
         for case in cases:
-            if case.name == __name__:
+            if case.name == request.node.name:
                 break
         else:
             # if this hit case was not deleted
-            assert False
+            assert False, 'No case was return from TQL filter.'
 
-    def test_create_with_metadata(self):
+    def test_case_create_with_metadata(self, request):
         """Test Case Creation"""
         case_data = {
-            'artifacts': {
-                'asn4455': {'intel_type': 'indicator-ASN', 'type': 'ASN'},
-                'asn5544': {'intel_type': 'indicator-ASN', 'type': 'ASN'},
-            },
-            'case_severity': 'Low',
-            'case_status': 'Open',
-            'notes': [f'A note for pytest test {__name__}'],
-            'tags': [f'{__name__}-1', f'{__name__}-1'],
-            'tasks': {'task-1': {'description': 'task description', 'status': 'Pending'}},
+            'name': request.node.name,
+            'severity': 'Low',
+            'status': 'Open',
         }
 
         # create case
-        case = self.cm.case(
-            name=__name__,
-            severity=case_data.get('case_severity'),
-            status=case_data.get('case_status'),
-        )
+        case = self.cm.case(**case_data)
+
+        # artifact data
+        artifact_data = {
+            'asn4455': {'intel_type': 'indicator-ASN', 'type': 'ASN'},
+            'asn5544': {'intel_type': 'indicator-ASN', 'type': 'ASN'},
+        }
 
         # add artifacts
-        for artifact, artifact_data in case_data.get('artifacts', {}).items():
+        for artifact, a_data in artifact_data.items():
             case.add_artifact(
-                summary=artifact,
-                intel_type=artifact_data.get('intel_type'),
-                type=artifact_data.get('type'),
+                summary=artifact, intel_type=a_data.get('intel_type'), type=a_data.get('type'),
             )
 
+        # note data
+        note_data = [f'A note for pytest test {__name__}']
+
         # add notes
-        for note in case_data.get('notes', []):
+        for note in note_data:
             case.add_note(text=note)
 
+        # tag data
+        tag_data = [f'{__name__}-1', f'{__name__}-1']
+
         # add tags
-        for tag in case_data.get('tags', []):
+        for tag in tag_data:
             case.add_tag(name=tag)
 
+        # task data
+        task_data = {'task-1': {'description': 'task description', 'status': 'Pending'}}
+
         # add task
-        for task, task_data in case_data.get('tasks', {}).items():
+        for task, t_data in task_data.items():
             case.add_task(
-                name=task, description=task_data.get('description'), status=task_data.get('status')
+                name=task, description=t_data.get('description'), status=t_data.get('status')
             )
 
         # submit case
@@ -111,85 +117,89 @@ class TestCaseIndicators:
 
         # run assertions on returned data
         assert case.id
-        assert case.name == __name__
-        assert case.severity == case_data.get('case_severity')
-        assert case.status == case_data.get('case_status')
+        assert case.name == request.node.name
+        assert case.severity == case_data.get('severity')
+        assert case.status == case_data.get('status')
 
-        # assert len(case.artifacts) == 2
         for artifact in case.artifacts:
-            assert artifact.summary in case_data.get('artifacts', [])
+            assert artifact.summary in artifact_data.keys()
             # assert artifact.intel_type == 'indicator-ASN'
             assert artifact.type == 'ASN'
 
-        # assert len(case.tags) == 2
         for tag in case.tags:
-            assert tag.name in case_data.get('tags', [])
+            assert tag.name in tag_data
 
-        # assert len(case.notes) == 1
         for note in case.notes:
-            assert note.text in case_data.get('notes', [])
+            assert note.text in note_data
 
-        # assert len(case.tasks) == 1
         for task in case.tasks:
-            assert task.name in case_data.get('tasks', [])
+            assert task.name in task_data
 
         # cleanup case
         case.delete()
 
-    def test_get_single_by_id(self):
+    def test_case_get_single_by_id(self, request):
         """Test Case get by ID"""
         # create case
-        case = self.cm_helper.create_case(case_name=__name__)
+        case = self.cm_helper.create_case()
 
+        # retrieve case for asserts
         case = self.cm.case(id=case.id)
         case.get()
 
         # run assertions on returned data
-        assert case.name == __name__
+        assert case.name == request.node.name
 
-    def test_get_many(self):
+    def test_case_get_many(self, request):
         """Test Case get many"""
         # create cases
-        self.cm_helper.create_case(case_name=f'{__name__}-1')
-        self.cm_helper.create_case(case_name=f'{__name__}-2')
+        self.cm_helper.create_case(name=f'{request.node.name}-1', xid=f'{request.node.name}-1')
+        self.cm_helper.create_case(name=f'{request.node.name}-2', xid=f'{request.node.name}-2')
 
         # specifically match the count of the cases created.
         case_count = 0
         for case in self.cm.cases():
-            if case.name.startswith(__name__):
+            if case.name.startswith(request.node.name):
                 case_count += 1
 
         # run assertions on case count
         assert case_count == 2
 
-    # def test_get_by_tql_filter_tag(self):
-    #     """Test Artifact Get by TQL"""
-    #     # create case
-    #     case_data = {
-    #         # 'artifacts': {'asn7777': {'intel_type': 'indicator-ASN', 'type': 'ASN'},},
-    #         'case_name': __name__,
-    #         'case_severity': 'Low',
-    #         'case_status': 'Open',
-    #         # 'notes': [f'A note for pytest test {__name__}'],
-    #         # 'tags': [f'{__name__}-1', f'{__name__}-1'],
-    #         # 'tasks': {'task-1': {'description': 'task description', 'status': 'Pending'}},
-    #     }
-    #     case = self.cm_helper.create_case(**case_data)
+    def test_case_get_by_tql_filter_artifact_id(self, request):
+        """Test Case Get by TQL"""
 
-    #     # create artifact
-    #     artifact_data = {
-    #         'artifact_intel_type': 'indicator-ASN',
-    #         'artifact_summary': 'asn7777',
-    #         'artifact_type': 'ASN',
-    #         'case_id': case.id,
-    #     }
-    #     artifact = self.cm_helper.create_artifact(**artifact_data)
+    def test_case_get_by_tql_filter_created_by_id(self, request):
+        """Test Case Get by TQL"""
 
-    #     # retrieve cases using TQL
-    #     cases = self.cm.cases()
-    #     cases.filter.artifact(TQL.Operator.EQ, artifact.id)
+    def test_case_get_by_tql_filter_description(self, request):
+        """Test Case Get by TQL"""
 
-    #     # assert len(cases.as_dict) == 1
-    #     for case in cases:
-    #         print(case)
-    #         assert case.name == case_data.get('case_name')
+    def test_case_get_by_tql_id(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_owner_name(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_resolution(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_severity(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_status(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_tag(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_target_id(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_target_type(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_task(self, request):
+        """Test Case Get by TQL"""
+
+    def test_case_get_by_tql_xid(self, request):
+        """Test Case Get by TQL"""

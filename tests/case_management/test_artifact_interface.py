@@ -163,10 +163,6 @@ class TestArtifact:
         assert artifact.summary == artifact_data.get('summary')
         assert artifact.type == artifact_data.get('type')
 
-    # TODO: update this
-    def test_artifact_get_by_tql_filter_case(self):
-        """Test Artifact Get by TQL"""
-
     def test_artifact_get_by_tql_filter_case_id(self):
         """Test Artifact Get by TQL"""
         # create case
@@ -226,6 +222,10 @@ class TestArtifact:
             break
         else:
             assert False, 'No artifact returned for TQL'
+
+    # TODO: this needs some consideration
+    def test_artifact_get_by_tql_filter_hascase(self):
+        """Test Artifact Get by TQL"""
 
     def test_artifact_get_by_tql_filter_source(self):
         """Test Artifact Get by TQL"""
@@ -328,3 +328,29 @@ class TestArtifact:
 
     def test_artifact_get_by_tql_filter_type_name(self):
         """Test Artifact Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # create artifact
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+
+        # retrieve artifacts using TQL
+        artifacts = self.cm.artifacts()
+        artifacts.filter.case_id(TQL.Operator.EQ, case.id)
+        artifacts.filter.type_name(TQL.Operator.EQ, artifact_data.get('type'))
+
+        for artifact in artifacts:
+            assert artifact.summary == artifact_data.get('summary')
+            assert artifact.type == artifact_data.get('type')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
