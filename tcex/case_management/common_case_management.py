@@ -53,13 +53,16 @@ class CommonCaseManagement:
             'dueDate': 'due_date',
             'eventDate': 'event_date',
             'fileData': 'file_data',
+            'firstName': 'first_name',
             'intelType': 'intel_type',
             'isWorkflow': 'is_workflow',
             'lastModified': 'last_modified',
+            'lastName': 'last_name',
             'parentCase': 'parent_case',
             'systemGenerated': 'system_generated',
             'taskId': 'task_id',
             'taskXid': 'task_xid',
+            'userAccess': 'user_access',
             'userName': 'user_name',
             'workflowId': 'workflow_id',
             'workflowPhase': 'workflow_phase',
@@ -245,17 +248,17 @@ class CommonCaseManagement:
 
         # log post/put data for debug
         self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')
+        print(f'submit cm data: {self._reverse_transform(as_dict)}')
 
-        if r.ok:
-            r_json = r.json()
-            if not self.id:
-                self.id = r_json.get('data', {}).get('id')
-            as_dict['id'] = self.id
-            self.entity_mapper(r_json.get('data', r_json))
-            return self
+        if not r.ok:
+            err = r.text or r.reason
+            self.tcex.handle_error(951, [r.request.method, r.status_code, err, r.url])
 
-        err = r.text or r.reason
-        self.tcex.handle_error(951, [r.request.method, r.status_code, err, r.url])
+        r_json = r.json()
+        if not self.id:
+            self.id = r_json.get('data', {}).get('id')
+        as_dict['id'] = self.id
+        self.entity_mapper(r_json.get('data', r_json))
 
         return r
 

@@ -75,7 +75,8 @@ class Case(CommonCaseManagement):
         self._artifacts = Artifacts(
             self.tcex, kwargs.get('artifacts', None), tql_filters=case_filter
         )
-        self._created_by = Creator(**kwargs.get('created_by', {}))
+        self._assignee = UserData(**kwargs.get('assignee', {}))
+        self._created_by = User(**kwargs.get('created_by', {}))
         self._date_added = kwargs.get('date_added', None)
         self._description = kwargs.get('description', None)
         self._name = kwargs.get('name', None)
@@ -85,6 +86,7 @@ class Case(CommonCaseManagement):
         self._status = kwargs.get('status', None)
         self._tasks = Tasks(self.tcex, kwargs.get('tasks', {}), tql_filters=case_filter)
         self._tags = Tags(self.tcex, kwargs.get('tags', {}), tql_filters=case_filter)
+        self._user_access = Users(kwargs.get('user_access', {}))
         self._xid = kwargs.get('xid', None)
 
     def add_artifact(self, **kwargs):
@@ -248,15 +250,57 @@ class Case(CommonCaseManagement):
         self._xid = xid
 
 
-class Creator:
+class UserData:
+    """Sub class of the Cases object. Used to map the user to.
+
+    Args:
+        data (dict): The User data.
+        type (string): The User type.
+    """
+
+    def __init__(self, **kwargs):
+        self.type = kwargs.get('type', None)
+        self.user_data = User(**kwargs.get('data', {}))
+
+    @property
+    def as_dict(self):
+        """Return a dict representation of the UsersData class."""
+        if self.type:
+            return {'type': self.type, 'data': self.user_data.as_dict}
+        return {'data': self.user_data.as_dict}
+
+
+class Users:
+    """Sub class of the Cases object. Used to map the users to.
+
+    Args:
+        users (list): A array of user data
+    """
+
+    def __init__(self, users):
+        self.user = []
+        for data in users:
+            self.user.append(User(**data.get('data', data)))
+
+    @property
+    def as_dict(self):
+        """Return a dict representation of the UsersData class."""
+        data = []
+        for user in self.user:
+            data.append(user.as_dict)
+
+        return {'data': data}
+
+
+class User:
     """Sub class of the Cases object. Used to map the creator to.
 
     Args:
-        first_name (str, kwargs): The first name of the creator.
-        id (id, kwargs): The id of the creator.
-        pseudonym (str, kwargs): The pseudonym of the creator.
-        role (str, kwargs): The role of the creator.
-        user_name (str, kwargs): The user name of the creator.
+        first_name (str, kwargs): The first name of the user.
+        id (id, kwargs): The id of the user.
+        pseudonym (str, kwargs): The pseudonym of the user.
+        role (str, kwargs): The role of the user.
+        user_name (str, kwargs): The user name of the user.
     """
 
     def __init__(self, **kwargs):
