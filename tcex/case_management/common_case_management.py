@@ -248,7 +248,6 @@ class CommonCaseManagement:
 
         # log post/put data for debug
         self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')
-        print(f'submit cm data: {self._reverse_transform(as_dict)}')
 
         if not r.ok:
             err = r.text or r.reason
