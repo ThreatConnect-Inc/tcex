@@ -111,7 +111,7 @@ class ThreatConnect:
         response = []
         if batch:
             self.batch = self.provider.tcex.batch(owner)
-            for entity in entities:
+            for key, entity in entities.items():
                 labels = entity.pop('securityLabels')
                 attributes = entity.pop('attributes')
                 tags = entity.pop('tags')
@@ -154,7 +154,7 @@ class ThreatConnect:
     def delete_staged(self, staged_data):
         """Delete data in redis"""
         for data in staged_data:
-            data = data.get('data')
+            data = data.get('data', {})
             if data.get('status_code') != 201:
                 continue
 
