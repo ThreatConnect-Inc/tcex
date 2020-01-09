@@ -123,9 +123,6 @@ class Bin:
             args = []
         try:
             hidden = False
-            print(self.ij)
-            print(self.ij.runtime_level)
-            print(self.lj.parameters_names)
             if self.ij.runtime_level.lower() == 'playbook':
                 name = list(self.lj.parameters_names)[index]
                 display = self.lj.parameters_dict.get(name, {}).get('display')
