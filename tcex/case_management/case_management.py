@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case Management"""
-import requests
-
 from .artifact import Artifact, Artifacts
 from .artifact_type import ArtifactType, ArtifactTypes
 from .case import Case, Cases
@@ -178,15 +176,12 @@ class CaseManagement:
             return None
 
         r = obj.submit()
-        response = {}
-        if isinstance(r, requests.models.Response):
-            response['status_code'] = r.status_code
-        else:
-            response['status_code'] = 201
-            response['unique_id'] = r.as_dict.get('id')
+        data = r.json()
+        if r.ok:
+            data = data.get('data')
+            data['status_code'] = r.status_code
+            data['main_type'] = 'Case_Management'
+            data['sub_type'] = entity_type
+            data['owner'] = owner
 
-        response['main_type'] = 'Case_Management'
-        response['sub_type'] = entity_type
-        response['owner'] = owner
-
-        return response
+        return data
