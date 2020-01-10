@@ -62,12 +62,23 @@ class Task(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
+        artifacts (dict, kwargs): The Artifact for the Note.
         case_id (int, kwargs): The Case ID for the Task.
         case_xid (str, kwargs): The unique Case XID for the Task.
+        completed_by (str, kwargs): The Completed By date for the Task.
+        completed_date (str, kwargs): The Completed Date for the Task.
+        config_playbook (str, kwargs): The Config Playbook for the Task.
+        config_task (str, kwargs): The Config Task for the Task.
+        dependent_on_task_name (str, kwargs): The Depend on Task Name for the Task.
+        due_date (str, kwargs): The Due Date for the Task.
+        duration (str, kwargs): The Duration for the Task.
         description (str, kwargs): The Description for the Task.
+        id_dependent_on (str, kwargs): The ID Dependent On for the Task.
         is_workflow (bool, kwargs): The Is Workflow for the Task.
         name (str, kwargs): The Name for the Task.
         notes (dict, kwargs): The Notes for the Task.
+        parent_case (dict, kwargs): The Parent Case for the Artifact.
+        required (book, kwargs): The Required flag for the Task.
         source (str, kwargs): The Source for the Task.
         workflow_id (str, kwargs): The Workflow ID for the Task.
         workflow_phase (str, kwargs): The Workflow Phase for the Task.
@@ -79,15 +90,26 @@ class Task(CommonCaseManagement):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TASKS, kwargs)
 
+        # TODO: @bpurdy - the is an array of artifact. how should we handle them???
+        self._artifacts = kwargs.get('artifact', {})
         self._assignee = None
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
+        # TODO: @bpurdy - the is an array of artifact. how should we handle them???
+        self._completed_by = kwargs.get('completed_date', None)
         self._completed_date = kwargs.get('completed_date', None)
+        self._config_playbook = kwargs.get('config_playbook', None)
+        self._config_task = kwargs.get('config_task', None)
+        self._dependent_on_task_name = kwargs.get('dependent_on_task_name', None)
         self._due_date = kwargs.get('due_date', None)
+        self._duration = kwargs.get('duration', None)
         self._description = kwargs.get('description', None)
+        self._id_dependent_on = kwargs.get('id_dependent_on', None)
         self._is_workflow = kwargs.get('is_workflow', None)
         self._name = kwargs.get('name', None)
         self._notes = Notes(kwargs.get('notes', {}).get('data'))
+        self._parent_case = tcex.cm.case(**kwargs.get('parent_case', {}))
+        self._required = kwargs.get('required', None)
         self._source = kwargs.get('source', None)
         self._status = kwargs.get('status', None)
         self._workflow_id = kwargs.get('workflow_id', None)
@@ -99,6 +121,11 @@ class Task(CommonCaseManagement):
     def add_note(self, **kwargs):
         """Add a note to the task"""
         self._notes.add_note(Note(self.tcex, **kwargs))
+
+    @property
+    def artifacts(self):
+        """Return the **Artifacts** for the Note."""
+        return self._artifacts
 
     @property
     def as_entity(self):
@@ -136,6 +163,21 @@ class Task(CommonCaseManagement):
         self._case_id = case_id
 
     @property
+    def case_xid(self):
+        """Return the "Case XID" for the Task"""
+        return self._case_xid
+
+    @case_xid.setter
+    def case_xid(self, case_xid):
+        """Set the "Case XID" for the Task"""
+        self._case_xid = case_xid
+
+    @property
+    def completed_by(self):
+        """Return the "Completed By" for the Task"""
+        return self._completed_by
+
+    @property
     def completed_date(self):
         """Return the "Completed Date" for the Task"""
         return self._completed_date
@@ -144,6 +186,21 @@ class Task(CommonCaseManagement):
     def completed_date(self, completed_date):
         """Set the "Completed Date" for the Task"""
         self._completed_date = completed_date
+
+    @property
+    def config_playbook(self):
+        """Return the "Config Playbook" for the Task"""
+        return self._config_playbook
+
+    @property
+    def config_task(self):
+        """Return the "Config Task" for the Task"""
+        return self._config_task
+
+    @property
+    def dependent_on_task_name(self):
+        """Return the "Depend On Task Name" for the Task"""
+        return self._dependent_on_task_name
 
     @property
     def description(self):
@@ -165,6 +222,11 @@ class Task(CommonCaseManagement):
         """Set the "Completed Date" for the Task"""
         self._due_date = due_date
 
+    @property
+    def duration(self):
+        """Return the "Duration" for the Task"""
+        return self._duration
+
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
 
@@ -173,6 +235,11 @@ class Task(CommonCaseManagement):
         """
         new_case = Task(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
+
+    @property
+    def id_dependent_on(self):
+        """Return the "ID Dependent On" for the Task"""
+        return self._id_dependent_on
 
     @property
     def is_workflow(self):
@@ -205,9 +272,19 @@ class Task(CommonCaseManagement):
         self._notes = notes
 
     @property
+    def parent_case(self):
+        """Return the **Parent Case** for the Artifact."""
+        return self._parent_case
+
+    @property
     def required_properties(self):
         """Return a list of required fields for an Artifact."""
         return ['name', 'case_id']
+
+    @property
+    def required(self):
+        """Return the "Required" for the Task"""
+        return self._required
 
     @property
     def source(self):
@@ -259,6 +336,16 @@ class Task(CommonCaseManagement):
         """Set the "Workflow Step" for the Task"""
         self._workflow_step = workflow_step
 
+    @property
+    def xid(self):
+        """Return the "XID" for the Task"""
+        return self._xid
+
+    @xid.setter
+    def xid(self, xid):
+        """Set the "XID" for the Task"""
+        self._xid = xid
+
 
 class FilterTask:
     """Filter Object for Task
@@ -288,6 +375,15 @@ class FilterTask:
             case_id (int): The filter value.
         """
         self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+
+    def case_severity(self, operator, case_severity):
+        """Filter objects based on "case severity" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            case_severity (str): The filter value.
+        """
+        self._tql.add_filter('caseseverity', operator, case_severity)
 
     def completed_date(self, operator, completed_date):
         """Filter objects based on "completed date" field.
@@ -343,6 +439,15 @@ class FilterTask:
         """
         self._tql.add_filter('duration', operator, duration, TQL.Type.INTEGER)
 
+    def hascase(self, operator, case_id):
+        """Filter objects based on "duration" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            case_id (int): The filter value.
+        """
+        self._tql.add_filter('hascase', operator, case_id)
+
     def id(self, operator, id_):
         """Filter objects based on "id" field.
 
@@ -351,6 +456,18 @@ class FilterTask:
             id (int): The filter value.
         """
         self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
+
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords
 
     def name(self, operator, name):
         """Filter objects based on "name" field.

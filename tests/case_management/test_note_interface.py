@@ -19,6 +19,8 @@ class TestNote:
     def setup_class(self):
         """Configure setup before all tests."""
         self.cm = tcex.cm
+        self.test_obj = self.cm.note()
+        self.test_obj_collection = self.cm.notes()
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -28,6 +30,28 @@ class TestNote:
         """Configure teardown before all tests."""
         if os.getenv('TEARDOWN_METHOD') is None:
             self.cm_helper.cleanup()
+
+    def test_note_properties(self):
+        """Test Note properties."""
+        r = tcex.session.options(self.test_obj.api_endpoint, params={'show': 'readOnly'})
+        for prop_string, prop_data in r.json().items():
+            prop_read_only = prop_data.get('read-only', False)
+            prop_string = self.cm_helper.camel_to_snake(prop_string)
+
+            # ensure class has property
+            assert hasattr(
+                self.test_obj, prop_string
+            ), f'Missing {prop_string} property. read-only: {prop_read_only}'
+
+    def test_notes_filter_methods(self):
+        """Test Notes filter methods."""
+        r = tcex.session.options(f'{self.test_obj.api_endpoint}/tql', params={})
+
+        for data in r.json().get('data'):
+            keyword = data.get('keyword')
+
+            if keyword not in self.test_obj_collection.filter.keywords:
+                assert False, f'Missing TQL keyword {keyword}.'
 
     def test_note_create_by_case_id(self, request):
         """Test Note Creation on a Case."""

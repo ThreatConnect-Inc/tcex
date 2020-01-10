@@ -267,3 +267,27 @@ class WorkflowTemplate(CommonCaseManagement):
             version ([type]): [description]
         """
         self._version = version
+
+
+class FilterWorkflowTemplate:
+    """Filter Object for Workflow Event
+
+    Args:
+        tql (TQL): Instance of TQL Class.
+    """
+
+    def __init__(self, tql):
+        """Initialize Class properties"""
+        self._tql = tql
+
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords

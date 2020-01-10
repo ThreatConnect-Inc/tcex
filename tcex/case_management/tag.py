@@ -12,7 +12,7 @@ class Tags(CommonCaseManagementCollection):
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
-            Case Object for Artifact. Defaults to None.
+            Case Object for Tag. Defaults to None.
         tql_filters (list, optional): List of TQL filters. Defaults to None.
     """
 
@@ -65,7 +65,8 @@ class Tag(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        case_id (int, kwargs): The Case ID for the Artifact.
+        case_id (int, kwargs): The Case ID for the Tag.
+        cases (dict, kwargs): The Cases for the Tag.
         description (str, kwargs): The Description for the Tag.
         name (str, kwargs): The Name for the Tag.
     """
@@ -73,6 +74,9 @@ class Tag(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TAGS, kwargs)
+        self._case_id = kwargs.get('case_id', [])
+        # TODO: @bpurdy - this is an array of cases. how should we handle???
+        self._cases = kwargs.get('cases', [])
         self._description = kwargs.get('description', None)
         self._name = kwargs.get('name', None)
 
@@ -86,6 +90,21 @@ class Tag(CommonCaseManagement):
         """Return the available fields to fetch for a Tag."""
         return ['case', 'description']
 
+    @property
+    def cases(self):
+        """Return the "Cases" for the Tag."""
+        return self._cases
+
+    @property
+    def case_id(self):
+        """Return the "Case ID" for the Tag."""
+        return self._case_id
+
+    @case_id.setter
+    def case_id(self, case_id):
+        """Set the "Case ID" for the Tag."""
+        self._case_id = case_id
+
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
 
@@ -97,22 +116,22 @@ class Tag(CommonCaseManagement):
 
     @property
     def description(self):
-        """Return the "Description" for the Artifact."""
+        """Return the "Description" for the Tag."""
         return self._description
 
     @description.setter
     def description(self, description):
-        """Set the "Description" for the Artifact."""
+        """Set the "Description" for the Tag."""
         self._description = description
 
     @property
     def name(self):
-        """Return the "Name" for the Artifact."""
+        """Return the "Name" for the Tag."""
         return self._name
 
     @name.setter
     def name(self, name):
-        """Set the "Name" for the Artifact."""
+        """Set the "Name" for the Tag."""
         self._name = name
 
     @property
@@ -158,6 +177,18 @@ class FilterTag:
             id_ (int): The filter value.
         """
         self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
+
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords
 
     def name(self, operator, name):
         """Filter objects based on "name" field.

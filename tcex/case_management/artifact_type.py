@@ -182,6 +182,18 @@ class FilterArtifactType:
         """
         self._tql.add_filter('inteltype', operator, intel_type)
 
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords
+
     def managed(self, operator, managed):
         """Filter objects based on "managed" field.
 

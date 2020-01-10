@@ -64,12 +64,19 @@ class Artifact(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
+        analytics_priority (str, kwargs): The Analytics Priority for the Artifact.
+        analytics_priority_level (int, kwargs): The Analytics Priority Level for the Artifact.
+        analytics_score (int, kwargs): The Analytics Score for the Artifact.
+        analytics_type (int, kwargs): The Analytics Type for the Artifact.
         case_id (int, kwargs): The Case ID for the Artifact.
         case_xid (str, kwargs): The unique Case XID for the Artifact.
         date_added (date, kwargs): The Date Added for the Artifact.
         file_data (base64, kwargs): The File Data for the Artifact.
         intel_type (str, kwargs): The Intel Type for the Artifact.
+        links (dict, kwargs): The Intel Type for the Artifact.
         notes (dict, kwargs): The Notes for the Artifact.
+        parent_case (dict, kwargs): The Parent Case for the Artifact.
+        parent_task (dict, kwargs): The Parent Task for the Artifact.
         source (str, kwargs): The Source for the Artifact.
         summary (str, kwargs): The Summary for the Artifact.
         task_id (int, kwargs): The Task ID for the Artifact.
@@ -81,12 +88,20 @@ class Artifact(CommonCaseManagement):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.ARTIFACTS, kwargs)
 
+        self._analytics_priority = kwargs.get('analytics_priority', None)
+        self._analytics_priority_level = kwargs.get('analytics_priority_level', None)
+        self._analytics_score = kwargs.get('analytics_score', None)
+        self._analytics_type = kwargs.get('analytics_type', None)
+        self._artifact_type = kwargs.get('artifact_type', None)
         self._case_id = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get('id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._date_added = kwargs.get('date_added', None)
         self._file_data = kwargs.get('file_data', None)
         self._intel_type = kwargs.get('intel_type', None)
+        self._links = kwargs.get('links', None)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}).get('data'))
+        self._parent_case = tcex.cm.case(**kwargs.get('parent_case', {}))
+        self._parent_task = tcex.cm.task(**kwargs.get('parent_task', {}))
         self._source = kwargs.get('source', None)
         self._summary = kwargs.get('summary', None)
         self._task_id = kwargs.get('task_id', None)
@@ -96,6 +111,32 @@ class Artifact(CommonCaseManagement):
     def add_note(self, **kwargs):
         """Add a note to the artifact"""
         self._notes.add_note(Note(self.tcex, **kwargs))
+
+    @property
+    def analytics_priority(self):
+        """Return the **Analytics Priority** for the Artifact."""
+        return self._analytics_priority
+
+    @property
+    def analytics_priority_level(self):
+        """Return the **Analytics Priority Level** for the Artifact."""
+        return self._analytics_priority_level
+
+    @property
+    def analytics_score(self):
+        """Return the **Analytics Score** for the Artifact."""
+        return self._analytics_score
+
+    @property
+    def analytics_type(self):
+        """Return the **Analytics Type** for the Artifact."""
+        return self._analytics_type
+
+    # TODO: @bpurdy - do we want to create an object for each type ???
+    @property
+    def artifact_type(self):
+        """Return the **Artifact Type** for the Artifact."""
+        return self._artifact_type
 
     @property
     def as_entity(self):
@@ -178,6 +219,11 @@ class Artifact(CommonCaseManagement):
         self._intel_type = intel_type
 
     @property
+    def links(self):
+        """Return the **Links** for the Artifact."""
+        return self._links
+
+    @property
     def notes(self):
         """Return the "Notes" for the Artifact."""
         return self._notes
@@ -186,6 +232,16 @@ class Artifact(CommonCaseManagement):
     def notes(self, notes):
         """Set the "Notes" for the Artifact."""
         self._notes = notes
+
+    @property
+    def parent_case(self):
+        """Return the **Parent Case** for the Artifact."""
+        return self._parent_case
+
+    @property
+    def parent_task(self):
+        """Return the **Parent Task** for the Artifact."""
+        return self._parent_task
 
     @property
     def required_properties(self):
@@ -263,15 +319,6 @@ class FilterArtifact:
         """
         self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
-    def comment_id(self, operator, comment_id):
-        """Filter objects based on "comment id" field.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            comment_id (int): The filter value.
-        """
-        self._tql.add_filter('comment_id', operator, comment_id, TQL.Type.INTEGER)
-
     def hascase(self, operator, case):
         """Filter objects based on "case" association.
 
@@ -289,6 +336,27 @@ class FilterArtifact:
             artifact_id (int): The filter value.
         """
         self._tql.add_filter('id', operator, artifact_id, TQL.Type.INTEGER)
+
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords
+
+    def note_id(self, operator, note_id):
+        """Filter objects based on "note id" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            note_id (int): The filter value.
+        """
+        self._tql.add_filter('noteid', operator, note_id, TQL.Type.INTEGER)
 
     def source(self, operator, source):
         """Filter objects based on "source" field.

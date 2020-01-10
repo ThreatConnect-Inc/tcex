@@ -285,6 +285,18 @@ class FilterWorkflowEvent:
         """
         self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
 
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords
+
     def link(self, operator, link):
         """Filter objects based on "link" field.
 

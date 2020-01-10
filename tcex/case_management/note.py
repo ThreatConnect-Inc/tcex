@@ -64,34 +64,52 @@ class Note(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
+        # possibly parent_artifact
+        artifact (dict, kwargs): The Artifact for the Note.
         artifact_id (int, kwargs): The Artifact ID for the Note.
         case_id (int, kwargs): The Case ID for the Note.
         case_xid (str, kwargs): The Task xid for the Note.
         date_added (date, kwargs): The Date Added for the Note.
         edited (bool, kwargs): The Edited for the Note.
         last_modified (date, kwargs): The Last Modified for the Note.
+        parent_case (dict, kwargs): The Parent Case for the Artifact.
         summary (str, kwargs): The Summary for the Note.
+        # possibly parent_artifact
+        task (dict, kwargs): The Task for the Note.
         task_id (int, kwargs): The Task ID for the Note.
         task_xid (str, kwargs): The Task xid for the Note.
         text (str, kwargs): The Text for the Note.
+        user_id (int, kwargs): The User ID for the Note.
         user_name (str, kwargs): The User Name for the Note.
+        workflow_event (dict, kwargs): The Workflow Event for the Note.
     """
 
     def __init__(self, tcex, **kwargs):
         """Initialize class properties."""
         super().__init__(tcex, ApiEndpoints.NOTES, kwargs)
+        # TODO: @bpurdy - should we handle this as on object and dict?
+        self._artifact = tcex.cm.artifact(**kwargs.get('artifact', {}))
         self._artifact_id = kwargs.get('artifact_id', None)
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._date_added = kwargs.get('date_added')
         self._edited = kwargs.get('edited', None)
         self._last_modified = kwargs.get('last_modified', None)
+        self._parent_case = tcex.cm.case(**kwargs.get('parent_case', {}))
         self._summary = kwargs.get('summary', None)
+        self._task = tcex.cm.task(**kwargs.get('task', {}))
         self._task_id = kwargs.get('task_id', None)
         self._task_xid = kwargs.get('task_xid', None)
         self._text = kwargs.get('text', None)
+        self._user_id = kwargs.get('user_id', None)
         self._user_name = kwargs.get('user_name', None)
+        self._workflow_event = tcex.cm.workflow_event(**kwargs.get('workflow_event', {}))
         self._workflow_event_id = kwargs.get('workflow_event_id', None)
+
+    @property
+    def artifact(self):
+        """Return the parent **Artifact** for the Note."""
+        return self._artifact
 
     @property
     def artifact_id(self):
@@ -133,6 +151,16 @@ class Note(CommonCaseManagement):
         self._case_id = case_id
 
     @property
+    def case_xid(self):
+        """Return the parent "Case XID" for the Note."""
+        return self._case_xid
+
+    @case_xid.setter
+    def case_xid(self, case_xid):
+        """Set the parent "Case XID" for the Note."""
+        self._case_xid = case_xid
+
+    @property
     def date_added(self):
         """Return the "Date Added" value for the Note."""
         return self._date_added
@@ -163,6 +191,11 @@ class Note(CommonCaseManagement):
         self._last_modified = last_modified
 
     @property
+    def parent_case(self):
+        """Return the **Parent Case** for the Artifact."""
+        return self._parent_case
+
+    @property
     def required_properties(self):
         """Return a list of required fields for an Artifact."""
         return ['text']
@@ -178,6 +211,11 @@ class Note(CommonCaseManagement):
         self._summary = summary
 
     @property
+    def task(self):
+        """Return the **Task** for the Artifact."""
+        return self._task
+
+    @property
     def task_id(self):
         """Return the parent "Task ID" for the Note."""
         return self._task_id
@@ -186,6 +224,16 @@ class Note(CommonCaseManagement):
     def task_id(self, task_id):
         """Set the parent "Task ID" for the Note."""
         self._task_id = task_id
+
+    @property
+    def task_xid(self):
+        """Return the parent "Task XID" for the Note."""
+        return self._task_xid
+
+    @task_xid.setter
+    def task_xid(self, task_xid):
+        """Set the parent "Task XID" for the Note."""
+        self._task_xid = task_xid
 
     @property
     def text(self):
@@ -198,6 +246,11 @@ class Note(CommonCaseManagement):
         self._text = text
 
     @property
+    def user_id(self):
+        """Return the parent "User ID" for the Note."""
+        return self._user_id
+
+    @property
     def user_name(self):
         """Return the "User Name" value for the Note."""
         return self._user_name
@@ -206,6 +259,11 @@ class Note(CommonCaseManagement):
     def user_name(self, user_name):
         """Set the "User Name" value for the Note."""
         self._user_name = user_name
+
+    @property
+    def workflow_event(self):
+        """Return the **Workflow Event** for the Artifact."""
+        return self._workflow_event
 
     @property
     def workflow_event_id(self):
@@ -275,6 +333,18 @@ class FilterNote:
             id (int): The filter value.
         """
         self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
+
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords
 
     def last_modified(self, operator, last_modified):
         """Filter objects based on "last modified" field.

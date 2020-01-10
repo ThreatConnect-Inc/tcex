@@ -16,10 +16,14 @@ class TestWorkflowEvent:
 
     cm = None
     cm_helper = None
+    test_obj = None
+    test_obj_collection = None
 
     def setup_class(self):
         """Configure setup before all tests."""
         self.cm = tcex.cm
+        self.test_obj = self.cm.workflow_event()
+        self.test_obj_collection = self.cm.workflow_events()
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -31,21 +35,26 @@ class TestWorkflowEvent:
             self.cm_helper.cleanup()
 
     def test_workflow_event_properties(self):
-        """Test WorkflowEvent properties."""
-        r = tcex.session.options('/v3/workflowEvents', params={'show': 'readOnly'})
+        """Test Workflow Event properties."""
+        r = tcex.session.options(self.test_obj.api_endpoint, params={'show': 'readOnly'})
         for prop_string, prop_data in r.json().items():
             prop_read_only = prop_data.get('read-only', False)
             prop_string = self.cm_helper.camel_to_snake(prop_string)
-            # prop_type = prop_data.get('type')
-
-            # prop_required = False
-            # if not prop_read_only:
-            #     prop_required = prop_data.get('required')
 
             # ensure class has property
             assert hasattr(
-                self.cm.workflow_event(), prop_string
-            ), f'Workflow Event missing {prop_string} property. read-only: {prop_read_only}'
+                self.test_obj, prop_string
+            ), f'Missing {prop_string} property. read-only: {prop_read_only}'
+
+    def test_workflows_event_filter_methods(self):
+        """Test Workflow Events filter methods."""
+        r = tcex.session.options(f'{self.test_obj.api_endpoint}/tql', params={})
+
+        for data in r.json().get('data'):
+            keyword = data.get('keyword')
+
+            if keyword not in self.test_obj_collection.filter.keywords:
+                assert False, f'Missing TQL keyword {keyword}.'
 
     def test_workflow_event_create_by_case_id(self, request):
         """Test Workflow Event Creation"""

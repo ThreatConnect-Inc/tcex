@@ -12,10 +12,14 @@ class TestTag:
 
     cm = None
     cm_helper = None
+    test_obj = None
+    test_obj_collection = None
 
     def setup_class(self):
         """Configure setup before all tests."""
         self.cm = tcex.cm
+        self.test_obj = self.cm.tag()
+        self.test_obj_collection = self.cm.tags()
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -25,6 +29,28 @@ class TestTag:
         """Configure teardown before all tests."""
         if os.getenv('TEARDOWN_METHOD') is None:
             self.cm_helper.cleanup()
+
+    def test_tag_properties(self):
+        """Test Tag properties."""
+        r = tcex.session.options(self.test_obj.api_endpoint, params={'show': 'readOnly'})
+        for prop_string, prop_data in r.json().items():
+            prop_read_only = prop_data.get('read-only', False)
+            prop_string = self.cm_helper.camel_to_snake(prop_string)
+
+            # ensure class has property
+            assert hasattr(
+                self.test_obj, prop_string
+            ), f'Missing {prop_string} property. read-only: {prop_read_only}'
+
+    def test_tags_filter_methods(self):
+        """Test Tags filter methods."""
+        r = tcex.session.options(f'{self.test_obj.api_endpoint}/tql', params={})
+
+        for data in r.json().get('data'):
+            keyword = data.get('keyword')
+
+            if keyword not in self.test_obj_collection.filter.keywords:
+                assert False, f'Missing TQL keyword {keyword}.'
 
     def test_tag_create(self, request):
         """Test Artifact Creation"""

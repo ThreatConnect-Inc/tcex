@@ -56,14 +56,17 @@ class Case(CommonCaseManagement):
         artifacts (dict, kwargs): The Artifacts for the Case.
         created_by (dict, kwargs): The Created By data for the Case.
         date_added (date, kwargs): The Date Added for the Case.
+        events (dict, kwargs): The Events for the Case.
         description (str, kwargs): The Description for the Case.
         name (str, kwargs): The Name for the Case.
         notes (dict, kwargs): The Notes for the Case.
+        related (dict, kwargs): The Related Cases for the Case.
         resolution (string, kwargs): The Resolution for the Case.
         severity (str, kwargs): The Severity for the Case.
         status (str, kwargs): The Status for the Case.
         tasks (dict, kwargs): The Tasks for the Case.
         tags (dict, kwargs): The Tags for the case.
+        workflow_template (dict, kwargs): The Workflow Template for the case.
         xid (str, kwargs): The unique XID (external ID) for the Case.
     """
 
@@ -81,14 +84,20 @@ class Case(CommonCaseManagement):
         self._created_by = User(**kwargs.get('created_by', {}))
         self._date_added = kwargs.get('date_added', None)
         self._description = kwargs.get('description', None)
+        # TODO: @bpurdy - this is an array events. how should it be handled???
+        self._events = kwargs.get('events', None)
         self._name = kwargs.get('name', None)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
+        # TODO: @bpurdy - this is an array of cases. how should it be handled???
+        self._related = kwargs.get('related', None)
         self._resolution = kwargs.get('resolution', None)
         self._severity = kwargs.get('severity', None)
         self._status = kwargs.get('status', None)
         self._tasks = Tasks(self.tcex, kwargs.get('tasks', {}), tql_filters=case_filter)
         self._tags = Tags(self.tcex, kwargs.get('tags', {}), tql_filters=case_filter)
         self._user_access = Users(kwargs.get('user_access', {}))
+        # TODO: @bpurdy - this is an array of cases. how should it be handled???
+        self._workflow_template = kwargs.get('workflow_template', None)
         self._xid = kwargs.get('xid', None)
 
     def add_artifact(self, **kwargs):
@@ -189,6 +198,11 @@ class Case(CommonCaseManagement):
         self.__dict__.update(new_case.__dict__)
 
     @property
+    def events(self):
+        """Return the **Events** for the Case."""
+        return self._events
+
+    @property
     def name(self):
         """Return the Name for the Case."""
         return self._name
@@ -207,6 +221,11 @@ class Case(CommonCaseManagement):
     def notes(self, notes):
         """Set the Notes for the Case."""
         self._notes = notes
+
+    @property
+    def related(self):
+        """Return the **Related Cases** for the Case."""
+        return self._related
 
     @property
     def required_properties(self):
@@ -274,6 +293,11 @@ class Case(CommonCaseManagement):
         self._user_access = user_access
 
     @property
+    def workflow_template(self):
+        """Return the **Workflow Template** for the Case."""
+        return self._workflow_template
+
+    @property
     def xid(self):
         """Return the XID for the Case."""
         return self._xid
@@ -312,6 +336,15 @@ class FilterCase:
             created_by_id (int): The filter value.
         """
         self._tql.add_filter('createdbyid', operator, created_by_id, TQL.Type.INTEGER)
+
+    def date_added(self, operator, date_added):
+        """Filter objects based on date added field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            date_added (str]): The filter value.
+        """
+        self._tql.add_filter('dateadded', operator, date_added)
 
     def description(self, operator, description):
         """Filter objects based on description field.
@@ -357,6 +390,18 @@ class FilterCase:
             case_id (int): The filter value.
         """
         self._tql.add_filter('id', operator, case_id, TQL.Type.INTEGER)
+
+    @property
+    def keywords(self):
+        """Return supported TQL keywords."""
+        keywords = []
+        for prop in dir(self):
+            if prop.startswith('_') or prop in ['tql']:
+                continue
+            # remove underscore from method name to match keyword
+            keywords.append(prop.replace('_', ''))
+
+        return keywords
 
     def owner_name(self, operator, owner_name):
         """Filter objects based on "owner name" field.
