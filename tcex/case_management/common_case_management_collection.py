@@ -68,7 +68,16 @@ class CommonCaseManagementCollection:
 
     def __len__(self):
         """Return the length of the collection."""
-        parameters = {'resultLimit': 1}
+        parameters = self.params
+        tql_string = self.tql.raw_tql
+        if not self.tql.raw_tql:
+            self.tql.filters = self._tql_filters + self.tql.filters
+            tql_string = self.tql.as_str
+        if tql_string:
+            parameters['tql'] = tql_string
+        parameters['result_limit'] = 1
+        self.to_camel_case(parameters)
+
         r = self.tcex.session.get(self.api_endpoint, params=parameters)
         return r.json().get('count')
 
