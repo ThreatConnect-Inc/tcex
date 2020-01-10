@@ -100,11 +100,12 @@ class TestArtifact:
 
         # get single artifact by id
         artifact = self.cm.artifact(id=artifact.id)
+        artifact.get()
 
         # delete the artifact
         artifact.delete()
 
-        # test artifact is deleted
+        # test that artifact is deleted
         try:
             artifact.get()
             assert False
@@ -286,6 +287,7 @@ class TestArtifact:
         else:
             assert False, 'No artifact returned for TQL'
 
+    # TODO: MJ working on this for AD-4631
     # def test_artifact_get_by_tql_filter_task_id(self, request):
     #     """Test Artifact Get by TQL"""
     #     # create case

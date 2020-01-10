@@ -29,6 +29,14 @@ class Notes(CommonCaseManagementCollection):
         """Object iterator"""
         return self.iterate(initial_response=self.initial_response)
 
+    def __str__(self):
+        """Object iterator"""
+        printable_string = ''
+        for obj in self.iterate(initial_response=self.initial_response):
+            printable_string += f'{"-" * 50}\n'
+            printable_string += str(obj)
+        return printable_string
+
     def add_note(self, note):
         """Add a Note to an Artifact, Case, or Task.
 
@@ -108,7 +116,7 @@ class Note(CommonCaseManagement):
         """Update current object with provided object properties.
 
         Args:
-            entity (dict): The dict to map self too.
+            entity (dict): An entity dict used to update the Object.
         """
         new_note = Note(self.tcex, **entity)
         self.__dict__.update(new_note.__dict__)

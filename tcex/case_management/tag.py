@@ -7,12 +7,13 @@ from .tql import TQL
 
 
 class Tags(CommonCaseManagementCollection):
-    """[summary]
+    """Tags Class for Case Management Collection
 
     Args:
-        tcex ([type]): [description]
-        initial_response ([type], optional): [description]. Defaults to None.
-        tql_filters ([type], optional): [description]. Defaults to None.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        initial_response (dict, optional): Initial data in
+            Case Object for Artifact. Defaults to None.
+        tql_filters (list, optional): List of TQL filters. Defaults to None.
     """
 
     def __init__(self, tcex, initial_response=None, tql_filters=None):
@@ -31,88 +32,93 @@ class Tags(CommonCaseManagementCollection):
                     continue
 
     def __iter__(self):
-        """Iterate over all Tags"""
+        """Iterate on Tag Collection"""
         return self.iterate(initial_response=self.initial_response)
+
+    def add_tag(self, tag):
+        """Add a Tag.
+
+        Args:
+            tag (Tag): The Data Object to add.
+        """
+        self.added_items.append(tag)
+
+    def entity_map(self, entity):
+        """Map a dict to a Tag.
+
+        Args:
+            entity (dict): The Tag data.
+
+        Returns:
+            CaseManagement.Tag: An Tag Object
+        """
+        return Tag(self.tcex, **entity)
 
     @property
     def filter(self):
         """Return instance of FilterTag Object."""
         return FilterTag(self.tql)
 
-    def entity_map(self, entity):
-        """[summary]
-
-        Args:
-            entity ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        return Tag(self.tcex, **entity)
-
-    def add_tag(self, tag):
-        """Add a Tag"""
-        self.added_items.append(tag)
-
 
 class Tag(CommonCaseManagement):
-    """[summary]
+    """Tag object for Case Management.
 
     Args:
-        tcex ([type]): [description]
+        tcex (TcEx): An instantiated instance of TcEx object.
+        case_id (int, kwargs): The Case ID for the Artifact.
+        description (str, kwargs): The Description for the Tag.
+        name (str, kwargs): The Name for the Tag.
     """
 
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TAGS, kwargs)
-        self._name = kwargs.get('name', None)
         self._description = kwargs.get('description', None)
+        self._name = kwargs.get('name', None)
 
     @property
     def as_entity(self):
-        """
-        Return the entity representation of the Artifact
-        """
+        """Return the entity representation of the Tag."""
         return {'type': 'Tag', 'value': self.name, 'id': self.id}
 
+    @property
+    def available_fields(self):
+        """Return the available fields to fetch for a Tag."""
+        return ['case', 'description']
+
     def entity_mapper(self, entity):
-        """Map a dict to a Tag then updates self.
+        """Update current object with provided object properties.
 
         Args:
-            entity (dict): The dict to map self too.
+            entity (dict): An entity dict used to update the Object.
         """
         new_case = Tag(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 
     @property
-    def required_properties(self):
-        """Return required properties for tag."""
-        return ['name', 'description']
-
-    @property
-    def available_fields(self):
-        """Return available fields for tag."""
-        return ['case', 'description']
-
-    @property
-    def name(self):
-        """Return the description"""
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        """Set the name"""
-        self._name = name
-
-    @property
     def description(self):
-        """Return the description"""
+        """Return the "Description" for the Artifact."""
         return self._description
 
     @description.setter
     def description(self, description):
-        """Set the description"""
+        """Set the "Description" for the Artifact."""
         self._description = description
+
+    @property
+    def name(self):
+        """Return the "Name" for the Artifact."""
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """Set the "Name" for the Artifact."""
+        self._name = name
+
+    @property
+    def required_properties(self):
+        """Return a list of required fields for a Tag."""
+        return ['name']
 
 
 class FilterTag:
@@ -127,7 +133,7 @@ class FilterTag:
         self._tql = tql
 
     def case_id(self, operator, case_id):
-        """"Filter objects based on "case id" field.
+        """Filter objects based on "case id" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -145,7 +151,7 @@ class FilterTag:
         self._tql.add_filter('hascase', operator, case, TQL.Type.INTEGER)
 
     def id(self, operator, id_):
-        """"Filter objects based on "id" field.
+        """Filter objects based on "id" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -154,7 +160,7 @@ class FilterTag:
         self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
 
     def name(self, operator, name):
-        """"Filter objects based on "name" field.
+        """Filter objects based on "name" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -163,7 +169,7 @@ class FilterTag:
         self._tql.add_filter('name', operator, name)
 
     def owner(self, operator, owner):
-        """"Filter objects based on "owner" field.
+        """Filter objects based on "owner" field.
 
         Args:
             operator (enum): The enum for the required operator.
@@ -172,7 +178,7 @@ class FilterTag:
         self._tql.add_filter('owner', operator, owner, TQL.Type.INTEGER)
 
     def owner_name(self, operator, owner_name):
-        """"Filter objects based on "owner name" field.
+        """Filter objects based on "owner name" field.
 
         Args:
             operator (enum): The enum for the required operator.

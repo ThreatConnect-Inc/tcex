@@ -35,7 +35,7 @@ class Artifacts(CommonCaseManagementCollection):
         return self.iterate(initial_response=self.initial_response)
 
     def add_artifact(self, artifact):
-        """Add an artifact to a case.
+        """Add an Artifact.
 
         Args:
             artifact (Artifact): The Artifact Object to add.
@@ -152,7 +152,7 @@ class Artifact(CommonCaseManagement):
         """Update current object with provided object properties.
 
         Args:
-            entity (dict): The dict to map self too.
+            entity (dict): An entity dict used to update the Object.
         """
         new_artifact = Artifact(self.tcex, **entity)
         self.__dict__.update(new_artifact.__dict__)

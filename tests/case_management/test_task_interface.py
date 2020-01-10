@@ -2,6 +2,7 @@
 """Test the TcEx Threat Intel Module."""
 import os
 import time
+from datetime import datetime, timedelta
 from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
@@ -188,10 +189,6 @@ class TestTask:
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
 
-    # TODO: update this
-    def test_task_get_by_tql_filter_case(self, request):
-        """Test Task Get by TQL"""
-
     def test_task_get_by_tql_filter_case_id(self, request):
         """Test Task Get by TQL"""
         # create case
@@ -215,12 +212,42 @@ class TestTask:
 
         for task in tasks:
             assert task.description == task_data.get('description')
-            # assert task.is_workflow == task_data.get('is_workflow')
             assert task.name == task_data.get('name')
-            # assert task.source == task_data.get('source')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_completed_date(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'completed_date': datetime.now().isoformat(),
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve artifacts using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.completed_date(
+            TQL.Operator.GT, (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        )
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_config_playbook(self, request):
         """Test Task Get by TQL"""
@@ -247,38 +274,205 @@ class TestTask:
 
         # retrieve artifacts using TQL
         tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.description(TQL.Operator.EQ, task_data.get('description'))
 
         for task in tasks:
             assert task.description == task_data.get('description')
-            # assert task.is_workflow == task_data.get('is_workflow')
             assert task.name == task_data.get('name')
-            # assert task.source == task_data.get('source')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_due_date(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
 
-    def test_task_get_by_tql_filter_duration(self, request):
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'due_date': (datetime.now() + timedelta(days=1)).isoformat(),
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve artifacts using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.due_date(TQL.Operator.GT, datetime.now().strftime('%Y-%m-%d'))
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
+
+    # Per converstion with MJ this only works with templates
+    # def test_task_get_by_tql_filter_duration(self, request):
+    #     """Test Task Get by TQL"""
+
+    # TODO: this needs some consideration
+    def test_task_get_by_tql_filter_hascase(self, request):
         """Test Task Get by TQL"""
 
     def test_task_get_by_tql_filter_id(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
 
-    # @bpurdy - is this a valid filter for task
-    def test_task_get_by_tql_filter_intel_type(self, request):
-        """Test Task Get by TQL"""
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve artifacts using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.id(TQL.Operator.EQ, task.id)
+        tasks.filter.description(TQL.Operator.EQ, task_data.get('description'))
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_name(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve artifacts using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.name(TQL.Operator.EQ, task_data.get('name'))
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_status(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'status': 'Open',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve artifacts using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.status(TQL.Operator.EQ, task_data.get('status'))
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_target_id(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        task_data = {
+            'assignee': assignee,
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'status': 'Open',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve artifacts using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.target_id(TQL.Operator.EQ, 5)
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_target_type(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        task_data = {
+            'assignee': assignee,
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'status': 'Open',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve artifacts using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.target_type(TQL.Operator.EQ, 'User')
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_xid(self, request):
         """Test Task Get by TQL"""

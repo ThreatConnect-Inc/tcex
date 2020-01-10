@@ -1,67 +1,173 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
-# from tcex.case_management.tql import TQL
+import os
+from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
+from .cm_helpers import CMHelper
 
 
-# pylint: disable=W0201
-class TestArtifactTypeIndicators:
-    """Test TcEx Address Indicators."""
+class TestArtifactType:
+    """Test TcEx CM Artifact Type Interface."""
+
+    cm = None
+    cm_helper = None
 
     def setup_class(self):
         """Configure setup before all tests."""
         self.cm = tcex.cm
 
-    # def test_get_single(self):
-    #     """Tests Artifact Type Get by Id"""
-    #     artifact_type = self.cm.artifact_type(id=1)
-    #     artifact_type.get()
+    def setup_method(self):
+        """Configure setup before all tests."""
+        self.cm_helper = CMHelper(self.cm)
 
-    #     assert artifact_type.id == 1
-    #     assert artifact_type.name == 'E-mail Address'
-    #     assert artifact_type.description == (
-    #         'A name that identifies an electronic post office box on '
-    #         'a network where Electronic-Mail (e-mail) can be sent.'
-    #     )
-    #     assert artifact_type.data_type == 'String'
-    #     assert artifact_type.intel_type == 'indicator-EmailAddress'
+    def teardown_method(self):
+        """Configure teardown before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.cm_helper.cleanup()
 
-    # def test_get_many(self):
-    #     """Tests getting all artifact types"""
-    #     artifact_types = self.cm.artifact_types()
-    #     assert len(artifact_types.as_dict) >= 1
+    def test_artifact_type_get_many(self):
+        """Tests getting all artifact types"""
+        artifact_types = self.cm.artifact_types()
+        for artifact_type in artifact_types:
+            if artifact_type.name == 'Protocol Number':
+                assert artifact_type.api_endpoint == '/v3/artifactTypes'
+                assert artifact_type.data_type == 'String'
+                assert artifact_type.description.startswith('In the Internet Protocol')
+                break
+        else:
+            assert False, 'Artifact type of "Protocol Number" was not returned.'
 
-    # def test_tql(self):
-    #     """Tests Artifact Type Get by TQL's"""
-    #     artifact_types = self.cm.artifact_types()
+    def test_artifact_type_get_single(self):
+        """Tests Artifact Type Get by Id"""
+        artifact_type = self.cm.artifact_type(id=1)
+        artifact_type.get()
 
-    #     # Test Name Filter
-    #     artifact_types.name_filter(TQL.Operator.EQ, 'ASN')
-    #     assert len(artifact_types.as_dict) == 1
+        assert artifact_type.id == 1
+        assert artifact_type.name == 'E-mail Address'
+        assert artifact_type.description.startswith('A name that identifies')
+        assert artifact_type.data_type == 'String'
+        assert artifact_type.intel_type == 'indicator-EmailAddress'
 
-    #     for artifact_type in artifact_types:
-    #         assert artifact_type.id == 7
+    def test_artifact_type_get_by_tql_filter_active(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.active(TQL.Operator.EQ, True)
 
-    #     # Test AND functionality
-    #     artifact_types.data_type_filter(TQL.Operator.EQ, 'String')
-    #     assert len(artifact_types.as_dict) >= 1
-    #     for artifact_type in artifact_types:
-    #         assert artifact_type.data_type == 'String'
+        for artifact_type in artifact_types:
+            if artifact_type.id == 1:
+                assert artifact_type.name == 'E-mail Address'
+                assert artifact_type.description.startswith('A name that identifies')
+                assert artifact_type.data_type == 'String'
+                assert artifact_type.intel_type == 'indicator-EmailAddress'
+                break
+        else:
+            assert False, 'No artifact type returned for TQL'
 
-    #     # Clear Filters
-    #     artifact_types.tql.filters = []
+    def test_artifact_type_get_by_tql_filter_data_type(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.data_type(TQL.Operator.EQ, 'String')
 
-    #     artifact_types.active_filter(TQL.Operator.EQ, True)
-    #     assert len(artifact_types.as_dict) >= 1
-    #     # active field doesn't come back from API
-    #     # for artifact_type in artifact_types:
-    #     #     assert artifact_type.active == True
+        for artifact_type in artifact_types:
+            if artifact_type.id == 1:
+                assert artifact_type.name == 'E-mail Address'
+                assert artifact_type.description.startswith('A name that identifies')
+                assert artifact_type.data_type == 'String'
+                assert artifact_type.intel_type == 'indicator-EmailAddress'
+                break
+        else:
+            assert False, 'No artifact type returned for TQL'
 
-    #     # Clear Filters
-    #     artifact_types.tql.filters = []
+    def test_artifact_type_get_by_tql_filter_description(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.description(
+            TQL.Operator.EQ,
+            'A name that identifies an electronic post office box on '
+            'a network where Electronic-Mail (e-mail) can be sent.',
+        )
 
-    #     artifact_types.description_filter(TQL.Operator.CONTAINS, 'Electronic-Mail')
-    #     assert len(artifact_types.as_dict) >= 1
-    #     for artifact_type in artifact_types:
-    #         assert 'Electronic-Mail' in artifact_type.description
+        for artifact_type in artifact_types:
+            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.description.startswith('A name that identifies')
+            assert artifact_type.data_type == 'String'
+            assert artifact_type.intel_type == 'indicator-EmailAddress'
+            break
+        else:
+            assert False, 'No artifact type returned for TQL'
+
+    def test_artifact_type_get_by_tql_filter_id(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.id(TQL.Operator.EQ, 1)
+
+        for artifact_type in artifact_types:
+            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.description.startswith('A name that identifies')
+            assert artifact_type.data_type == 'String'
+            assert artifact_type.intel_type == 'indicator-EmailAddress'
+            break
+        else:
+            assert False, 'No artifact type returned for TQL'
+
+    def test_artifact_type_get_by_tql_filter_intel_type(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.intel_type(TQL.Operator.EQ, 'indicator-EmailAddress')
+
+        for artifact_type in artifact_types:
+            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.description.startswith('A name that identifies')
+            assert artifact_type.data_type == 'String'
+            assert artifact_type.intel_type == 'indicator-EmailAddress'
+            break
+        else:
+            assert False, 'No artifact type returned for TQL'
+
+    def test_artifact_type_get_by_tql_filter_managed(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.managed(TQL.Operator.EQ, True)
+
+        for artifact_type in artifact_types:
+            if artifact_type.id == 1:
+                assert artifact_type.name == 'E-mail Address'
+                assert artifact_type.description.startswith('A name that identifies')
+                assert artifact_type.data_type == 'String'
+                assert artifact_type.intel_type == 'indicator-EmailAddress'
+                break
+        else:
+            assert False, 'No artifact type returned for TQL'
+
+    def test_artifact_type_get_by_tql_filter_name(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.name(TQL.Operator.EQ, 'E-mail Address')
+
+        for artifact_type in artifact_types:
+            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.description.startswith('A name that identifies')
+            assert artifact_type.data_type == 'String'
+            assert artifact_type.intel_type == 'indicator-EmailAddress'
+            break
+        else:
+            assert False, 'No artifact type returned for TQL'
+
+    def test_artifact_type_get_by_tql_filter_tql(self):
+        """Test Artifact Type Get by TQL"""
+        artifact_types = self.cm.artifact_types()
+        artifact_types.filter.tql('name EQ "E-mail Address"')
+
+        for artifact_type in artifact_types:
+            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.description.startswith('A name that identifies')
+            assert artifact_type.data_type == 'String'
+            assert artifact_type.intel_type == 'indicator-EmailAddress'
+            break
+        else:
+            assert False, 'No artifact type returned for TQL'
+
+    # TODO: MJ is checking if this can be removed
+    def test_artifact_type_get_by_tql_filter_ui_element(self, request):
+        """Test Artifact Type Get by TQL"""

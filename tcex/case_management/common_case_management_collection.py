@@ -54,12 +54,19 @@ class CommonCaseManagementCollection:
         self.tcex = tcex
         self.tql = TQL()
 
-    # def __len__(self):
-    #     """Returns the length of the collection."""
-    #     count = 0
-    #     for cm in self:
-    #         count += 1
-    #     return count
+    def __len__(self):
+        """Return the length of the collection."""
+        parameters = {'resultLimit': 1}
+        r = self.tcex.session.get(self.api_endpoint, params=parameters)
+        return r.json().get('count')
+
+    def __str__(self):
+        """Object iterator"""
+        printable_string = ''
+        for obj in self.iterate(initial_response=self.initial_response):
+            printable_string += f'{"-" * 50}\n'
+            printable_string += str(obj)
+        return printable_string
 
     @property
     def added_items(self):
@@ -111,8 +118,12 @@ class CommonCaseManagementCollection:
 
         while True:
             r = self.tcex.session.get(url, params=parameters)
-            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({r.url})')
-            self.tcex.log.trace(f'response cm data: {r.text}')
+            self.tcex.log.debug(
+                f'Method: ({r.request.method.upper()}), '
+                f'Status Code: {r.status_code}, '
+                f'URl: ({r.url})'
+            )
+            self.tcex.log.trace(f'response: {r.text}')
 
             if not self.success(r):
                 current_retries += 1
@@ -127,7 +138,7 @@ class CommonCaseManagementCollection:
             current_retries = 0
 
             data = r.json().get('data', [])
-            url = r.json().pop('next_url', None)
+            url = r.json().pop('next', None)
 
             for result in data:
                 yield self.entity_map(result)

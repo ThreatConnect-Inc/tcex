@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Task"""
+from .assignee import Assignee
 from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
@@ -78,6 +79,7 @@ class Task(CommonCaseManagement):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TASKS, kwargs)
 
+        self._assignee = None
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._completed_date = kwargs.get('completed_date', None)
@@ -92,6 +94,7 @@ class Task(CommonCaseManagement):
         self._workflow_phase = kwargs.get('workflow_phase', None)
         self._workflow_step = kwargs.get('workflow_step', None)
         self._xid = kwargs.get('xid', None)
+        self.assignee = kwargs.get('assignee')
 
     def add_note(self, **kwargs):
         """Add a note to the task"""
@@ -101,6 +104,21 @@ class Task(CommonCaseManagement):
     def as_entity(self):
         """Return the entity representation of the Artifact."""
         return {'type': 'Task', 'value': self.name, 'id': self.id}
+
+    @property
+    def assignee(self):
+        """Return the Assignee for the Case."""
+        return self._assignee
+
+    @assignee.setter
+    def assignee(self, assignee):
+        """Set the Assignee for the Case."""
+        if isinstance(assignee, Assignee):
+            self._assignee = assignee
+        elif isinstance(assignee, dict):
+            self._assignee = Assignee(type=assignee.get('type'), **assignee.get('data'))
+        else:
+            self._assignee = assignee
 
     @property
     def available_fields(self):
@@ -151,7 +169,7 @@ class Task(CommonCaseManagement):
         """Update current object with provided object properties.
 
         Args:
-            entity (dict): The dict to map self too.
+            entity (dict): An entity dict used to update the Object.
         """
         new_case = Task(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
@@ -321,9 +339,9 @@ class FilterTask:
 
         Args:
             operator (enum): The enum for the required operator.
-            duration (str): The filter value.
+            duration (int): The filter value.
         """
-        self._tql.add_filter('duration', operator, duration)
+        self._tql.add_filter('duration', operator, duration, TQL.Type.INTEGER)
 
     def id(self, operator, id_):
         """Filter objects based on "id" field.
