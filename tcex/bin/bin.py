@@ -124,7 +124,7 @@ class Bin:
         try:
             hidden = False
             if self.ij.runtime_level.lower() == 'playbook':
-                name = self.lj.parameters_names[index]
+                name = list(self.lj.parameters_names)[index]
                 display = self.lj.parameters_dict.get(name, {}).get('display')
                 hidden = self.lj.parameters_dict.get(name, {}).get('hidden', False)
             else:

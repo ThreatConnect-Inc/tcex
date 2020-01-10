@@ -91,6 +91,7 @@ class Note(CommonCaseManagement):
         self._task_xid = kwargs.get('task_xid', None)
         self._text = kwargs.get('text', None)
         self._user_name = kwargs.get('user_name', None)
+        self._workflow_event_id = kwargs.get('workflow_event_id', None)
 
     @property
     def artifact_id(self):

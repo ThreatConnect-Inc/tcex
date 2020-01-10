@@ -10,6 +10,7 @@ import time
 import traceback
 import uuid
 from datetime import datetime
+import jmespath
 
 import pytest
 from tcex import TcEx
@@ -69,7 +70,7 @@ class TestCase:
 
     def add_tc_output_variable(self, variable_name, variable_value):
         """Add a TC output variable to the output variable dict"""
-        self._tc_output_variables[self._convert_variable_name(variable_name)] = variable_value
+        self._tc_output_variables[variable_name] = variable_value
 
     def app_init(self, args):
         """Return an instance of App."""
@@ -166,11 +167,36 @@ class TestCase:
     def generate_tc_output_variables(self, staged_tc_data):
         """Generate all of the TC output variables given the profiles staged data"""
         for staged_data in staged_tc_data:
-            for key, value in staged_data.get('outputs', {}).items():
-                paths = key.split('.')
-                for path in paths:
-                    data = staged_data[path]
-                    self.add_tc_output_variable(value, data)
+            self.add_tc_output_variable(staged_data.get('key'), staged_data.get('data'))
+
+    def update_profile(self, profile_name):
+        """Update the profile format"""
+        with open(os.path.join(self.test_case_profile_dir, f'{profile_name}.json'), 'r+') as fh:
+            data = json.load(fh)
+            data = self.update_staged_threatconnect_data(data)
+            fh.seek(0)
+            fh.write(json.dumps(data, indent=2, sort_keys=True))
+            fh.truncate()
+
+    @staticmethod
+    def update_staged_threatconnect_data(data):
+        """Update the stage threatconnect profile section"""
+        if 'stage' not in data.keys():
+            return data
+        tc_data = data.get('stage').get('threatconnect', None)
+        if not isinstance(tc_data, list):
+            return data
+
+        data['stage']['threatconnect'] = {}
+        if not tc_data:
+            return data
+
+        counter = 0
+        for item in tc_data:
+            data['stage']['threatconnect'][f'item_{counter}'] = item
+            counter += 1
+
+        return data
 
     def init_profile(self, profile_name):
         """Get a profile from the profiles.json file by name
@@ -182,6 +208,7 @@ class TestCase:
             dict: The profile data.
         """
         try:
+            self.update_profile(profile_name)
             with open(os.path.join(self.test_case_profile_dir, f'{profile_name}.json'), 'r') as fh:
                 profile = json.load(fh)
         except OSError:
@@ -249,13 +276,20 @@ class TestCase:
             old_string = '${env.' + m.group(1) + '}'
             if os.getenv(m.group(1)):
                 profile_str = profile_str.replace(old_string, os.getenv(m.group(1)))
+
         return json.loads(profile_str)
 
     def populate_threatconnect_variables(self, profile):
         """Replace all of the TC output variables in the profile with their correct value"""
         profile_str = json.dumps(profile)
-        for output_variable, value in self._tc_output_variables.items():
-            profile_str = profile_str.replace(output_variable, str(value))
+        for key, value in self._tc_output_variables.items():
+            regex = r'\${tcenv\.' + str(key) + '([^}]*)'
+            for m in re.finditer(regex, profile_str):
+                if m.group(1):
+                    key = '${tcenv.' + key + m.group(1) + '}'
+                    group = m.group(1)[1:]
+                    value = jmespath.search(group, value)
+                    profile_str = profile_str.replace(key, str(value))
         return json.loads(profile_str)
 
     def populate_exit_message(self):

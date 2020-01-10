@@ -111,7 +111,7 @@ class ThreatConnect:
         response = []
         if batch:
             self.batch = self.provider.tcex.batch(owner)
-            for entity in entities:
+            for key, entity in entities.items():
                 labels = entity.pop('securityLabels')
                 attributes = entity.pop('attributes')
                 tags = entity.pop('tags')
@@ -139,23 +139,22 @@ class ThreatConnect:
 
             response = self.batch.submit_all()
         else:
-            for entity in entities:
-                response.append(self.entity(entity, owner))
+            for key, value in entities.items():
+                response.append(self.entity(key, value, owner))
         return response if not batch else None
 
-    def entity(self, entity, owner=None):
+    def entity(self, key, value, owner=None):
         """Stage data in ThreatConnect"""
-        outputs = entity.pop('outputs', {})
-        owner = entity.pop('owner', None) or owner
-        created_entity = self.provider.tcex.cm.create_entity(entity, owner)
+        owner = value.pop('owner', None) or owner
+        created_entity = self.provider.tcex.cm.create_entity(value, owner)
         if created_entity is None:
-            created_entity = self.provider.tcex.ti.create_entity(entity, owner)
-        created_entity['outputs'] = outputs
-        return created_entity
+            created_entity = self.provider.tcex.ti.create_entity(value, owner)
+        return {'key': key, 'data': created_entity}
 
     def delete_staged(self, staged_data):
         """Delete data in redis"""
         for data in staged_data:
+            data = data.get('data', {})
             if data.get('status_code') != 201:
                 continue
 
@@ -163,15 +162,15 @@ class ThreatConnect:
             ti = None
             if entity_type == 'Group':
                 ti = self.provider.tcex.ti.group(
-                    data.get('sub_type'), unique_id=data.get('unique_id'), owner=data.get('owner')
+                    data.get('sub_type'), unique_id=data.get('id'), owner=data.get('owner')
                 )
             elif entity_type == 'Indicator':
                 ti = self.provider.tcex.ti.indicator(
-                    data.get('sub_type'), unique_id=data.get('unique_id'), owner=data.get('owner')
+                    data.get('sub_type'), unique_id=data.get('id'), owner=data.get('owner')
                 )
             elif entity_type == 'Task':
                 ti = self.provider.tcex.ti.group(
-                    entity_type, unique_id=data.get('unique_id'), owner=data.get('owner')
+                    entity_type, unique_id=data.get('id'), owner=data.get('owner')
                 )
             if ti:
                 ti.delete()
@@ -183,7 +182,7 @@ class ThreatConnect:
                     'workflow event',
                 ]:
                     continue
-                cm.id = data.get('unique_id')
+                cm.id = data.get('id')
                 cm.delete()
 
     def clear(self, owner):

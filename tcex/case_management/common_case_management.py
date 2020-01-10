@@ -68,6 +68,7 @@ class CommonCaseManagement:
             'userAccess': 'user_access',
             'userName': 'user_name',
             'workflowId': 'workflow_id',
+            'workflowEventId': 'workflow_event_id',
             'workflowPhase': 'workflow_phase',
             'workflowStep': 'workflow_step',
             'workflowTemplate': 'workflow_template',

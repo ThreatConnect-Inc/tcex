@@ -433,36 +433,35 @@ class TcExTi:
         r = ti.create()
         if entity_type.lower() in ['document', 'report']:
             ti.file_content(file_content)
-        response = {
-            'status_code': r.status_code,
-            'main_type': ti.type,
-            'sub_type': ti.api_sub_type,
-            'api_type': ti.api_type,
-            'unique_id': ti.unique_id,
-            'api_entity': ti.api_entity,
-            'api_branch': ti.api_branch,
-            'owner': owner,
-            'attributes': [],
-            'tags': [],
-            'security_labels': [],
-            'associations': [],
-        }
+
+        data = {'status_code': r.status_code}
+        if r.ok:
+            data.update(r.json().get('data', {}))
+            data['main_type'] = ti.type
+            data['sub_type'] = ti.api_sub_type
+            data['api_type'] = ti.api_sub_type
+            data['api_entity']: ti.api_entity
+            data['api_branch']: ti.api_branch
+            data['owner'] = owner
+            data['attributes'] = []
+            data['tags'] = []
+            data['security_labels'] = []
+            data['associations'] = []
+
         for attribute in attributes:
             r = ti.add_attribute(attribute.get('type'), attribute.get('value'))
-            attribute_response = {
-                'status_code': r.status_code,
-                'type': r.json().get('attribute', {}).get('type', 'Description'),
-                'id': r.json().get('attribute', {}).get('id', None),
-            }
-            response['attributes'].append(attribute_response)
+            attribute_data = {'status_code': r.status_code}
+            if r.ok:
+                attribute_data.update(r.json().get('attribute', {}))
+            data['attributes'].append(attribute_data)
         for tag in tags:
             r = ti.add_tag(tag)
             tag_response = {'status_code': r.status_code}
-            response['tags'].append(tag_response)
+            data['tags'].append(tag_response)
         for label in security_labels:
             r = ti.add_label(label)
             label_response = {'status_code': r.status_code}
-            response['security_labels'].append(label_response)
+            data['security_labels'].append(label_response)
         for association in associations:
             association_target = self.indicator(
                 association.pop('type', None), association.pop('owner', None), **association
@@ -473,9 +472,11 @@ class TcExTi:
                 )
             r = ti.add_association(association_target)
             association_response = {'status_code': r.status_code}
-            response['associations'].append(association_response)
+            if r.ok:
+                association_response.update(r.json().get('association', {}))
+            data['associations'].append(association_response)
 
-        return response
+        return data
 
     def create_entities(self, entities, owner):
         """

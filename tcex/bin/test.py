@@ -95,7 +95,7 @@ class Profiles:
             'exit_codes': profile_data.get('exit_codes', [0]),
             'exit_message': None,
             'outputs': profile_data.get('outputs'),
-            'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': []}),
+            'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
         }
         if profile_data.get('runtime_level').lower() == 'triggerservice':
             profile['configs'] = profile_data.get('configs')
