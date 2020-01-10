@@ -26,6 +26,9 @@ class Cases(CommonCaseManagementCollection):
         super().__init__(
             tcex, ApiEndpoints.CASES, initial_response=initial_response, tql_filters=tql_filters
         )
+        if initial_response:
+            for item in initial_response.get('data', []):
+                self.added_items.append(Case(tcex, **item))
 
     def __iter__(self):
         """Object iterator"""
@@ -85,10 +88,13 @@ class Case(CommonCaseManagement):
         self._date_added = kwargs.get('date_added', None)
         self._description = kwargs.get('description', None)
         # TODO: @bpurdy - this is an array events. how should it be handled???
+        # workflow events ???
         self._events = kwargs.get('events', None)
         self._name = kwargs.get('name', None)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
         # TODO: @bpurdy - this is an array of cases. how should it be handled???
+        # self._related = kwargs.get('related', {})
+        # return tcex.cm.cases(initial_response=self._related)
         self._related = kwargs.get('related', None)
         self._resolution = kwargs.get('resolution', None)
         self._severity = kwargs.get('severity', None)

@@ -26,7 +26,22 @@ class Utils:
             rhash (string): The REDIS hash.
         """
         self.tcex = tcex
+        self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
         self._inflect = None
+
+    @staticmethod
+    def _replace_timezone(dateutil_parser):
+        try:
+            # try to get the timezone from tzlocal
+            tzinfo = pytz.timezone(get_localzone().zone)
+        except pytz.exceptions.UnknownTimeZoneError:  # pragma: no cover
+            try:
+                # try to get the timezone from python's time package
+                tzinfo = pytz.timezone(time.tzname[0])
+            except pytz.exceptions.UnknownTimeZoneError:
+                # seeing as all else has failed: use UTC as the timezone
+                tzinfo = pytz.timezone('UTC')
+        return tzinfo.localize(dateutil_parser)
 
     def any_to_datetime(self, time_input, tz=None):
         """Return datetime object from multiple formats.
@@ -63,22 +78,16 @@ class Utils:
 
         return dt_value
 
-    @staticmethod
-    def _replace_timezone(dateutil_parser):
-        try:
-            # try to get the timezone from tzlocal
-            tzinfo = pytz.timezone(get_localzone().zone)
-        except pytz.exceptions.UnknownTimeZoneError:  # pragma: no cover
-            try:
-                # try to get the timezone from python's time package
-                tzinfo = pytz.timezone(time.tzname[0])
-            except pytz.exceptions.UnknownTimeZoneError:
-                # seeing as all else has failed: use UTC as the timezone
-                tzinfo = pytz.timezone('UTC')
-        return tzinfo.localize(dateutil_parser)
+    def camel_to_snake(self, camel_string):
+        """Return snake case string from a camel case string."""
+        return self._camel_pattern.sub('_', camel_string).lower()
+
+    def camel_to_space(self, camel_string):
+        """Return snake case string from a camel case string."""
+        return self._camel_pattern.sub(' ', camel_string).lower()
 
     def date_to_datetime(self, time_input, tz=None):
-        """ Convert ISO 8601 and other date strings to datetime.datetime type.
+        """Convert ISO 8601 and other date strings to datetime.datetime type.
 
         Args:
             time_input (string): The time input string (see formats above).

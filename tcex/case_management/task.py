@@ -4,6 +4,7 @@ from .assignee import Assignee
 from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .filter import Filter
 from .note import Note, Notes
 from .tql import TQL
 
@@ -53,37 +54,37 @@ class Tasks(CommonCaseManagementCollection):
 
     @property
     def filter(self):
-        """Return instance of FilterArtifact Object."""
-        return FilterTask(self.tql)
+        """Return instance of FilterWorkflowTemplate Object."""
+        return FilterTasks(ApiEndpoints.TASKS, self.tcex, self.tql)
 
 
 class Task(CommonCaseManagement):
-    """Artifact object for Case Management.
+    """Task object for Case Management.
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        artifacts (dict, kwargs): The Artifact for the Note.
-        case_id (int, kwargs): The Case ID for the Task.
-        case_xid (str, kwargs): The unique Case XID for the Task.
-        completed_by (str, kwargs): The Completed By date for the Task.
-        completed_date (str, kwargs): The Completed Date for the Task.
-        config_playbook (str, kwargs): The Config Playbook for the Task.
-        config_task (str, kwargs): The Config Task for the Task.
-        dependent_on_task_name (str, kwargs): The Depend on Task Name for the Task.
-        due_date (str, kwargs): The Due Date for the Task.
-        duration (str, kwargs): The Duration for the Task.
-        description (str, kwargs): The Description for the Task.
-        id_dependent_on (str, kwargs): The ID Dependent On for the Task.
-        is_workflow (bool, kwargs): The Is Workflow for the Task.
-        name (str, kwargs): The Name for the Task.
-        notes (dict, kwargs): The Notes for the Task.
-        parent_case (dict, kwargs): The Parent Case for the Artifact.
-        required (book, kwargs): The Required flag for the Task.
-        source (str, kwargs): The Source for the Task.
-        workflow_id (str, kwargs): The Workflow ID for the Task.
-        workflow_phase (str, kwargs): The Workflow Phase for the Task.
-        workflow_step (str, kwargs): The Workflow Step for the Task.
-        xid (str, kwargs): The unique XID for the Task.
+        artifacts (Artifact, kwargs): [Required] a list of Artifacts corresponding to the Task.
+        assignee (Assignee, kwargs): The **Assignee** for the Task.
+        case_id (int, kwargs): [Required] The **Case Id** for the Task.
+        case_xid (str, kwargs): [Required] The **Case Xid** for the Task.
+        completed_by (str, kwargs): [Read-Only] The **Completed By** for the Task.
+        completed_date (str, kwargs): The **Completed Date** for the Task.
+        config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Task.
+        config_task (dict, kwargs): [Read-Only] The **Config Task** for the Task.
+        dependent_on_task_name (str, kwargs): [Read-Only] The **Dependent On Task Name** for the
+            Task.
+        description (str, kwargs): The **Description** for the Task.
+        due_date (str, kwargs): The **Due Date** for the Task.
+        duration (int, kwargs): [Read-Only] The **Duration** for the Task.
+        id_dependent_on (int, kwargs): [Read-Only] The **Id_Dependent On** for the Task.
+        name (str, kwargs): [Required] The **Name** for the Task.
+        notes (Note, kwargs): [Required] a list of Notes corresponding to the Task
+        parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Task.
+        required (bool, kwargs): [Read-Only] The **Required** flag for the Task.
+        status (str, kwargs): The **Status** for the Task.
+        workflow_phase (int, kwargs): The **Workflow Phase** for the Task.
+        workflow_step (int, kwargs): The **Workflow Step** for the Task.
+        xid (str, kwargs): The **Xid** for the Task.
     """
 
     def __init__(self, tcex, **kwargs):
@@ -347,177 +348,131 @@ class Task(CommonCaseManagement):
         self._xid = xid
 
 
-class FilterTask:
-    """Filter Object for Task
-
-    Args:
-        tql (TQL): Instance of TQL Class.
-    """
-
-    def __init__(self, tql):
-        """Initialize Class properties"""
-        self._tql = tql
-
-    def case(self, operator, case):
-        """Filter objects based on "case" association.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            case (str): The filter value.
-        """
-        self._tql.add_filter('hascase', operator, case)
+class FilterTasks(Filter):
+    """Filter Object for Workflow Event"""
 
     def case_id(self, operator, case_id):
-        """Filter objects based on "case id" field.
+        """Filter Tasks based on **caseid** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            case_id (int): The filter value.
+            operator (enum): The operator enum for the filter.
+            case_id (int): The ID of the case this Task is associated with.
         """
         self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
 
     def case_severity(self, operator, case_severity):
-        """Filter objects based on "case severity" field.
+        """Filter Tasks based on **caseseverity** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            case_severity (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            case_severity (str): The severity of the case associated with the task.
         """
-        self._tql.add_filter('caseseverity', operator, case_severity)
+        self._tql.add_filter('caseseverity', operator, case_severity, TQL.Type.STRING)
 
     def completed_date(self, operator, completed_date):
-        """Filter objects based on "completed date" field.
+        """Filter Tasks based on **completeddate** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            completed_date (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            completed_date (str): The completion date for the task.
         """
-        self._tql.add_filter('completeddate', operator, completed_date)
+        self._tql.add_filter('completeddate', operator, completed_date, TQL.Type.STRING)
 
     def config_playbook(self, operator, config_playbook):
-        """Filter objects based on "config playbook" field.
+        """Filter Tasks based on **configplaybook** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            config_playbook (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            config_playbook (str): The playbook configuration of the task.
         """
-        self._tql.add_filter('configplaybook', operator, config_playbook)
+        self._tql.add_filter('configplaybook', operator, config_playbook, TQL.Type.STRING)
 
     def config_task(self, operator, config_task):
-        """Filter objects based on "config task" field.
+        """Filter Tasks based on **configtask** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            config_task (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            config_task (str): The configuration of the task.
         """
-        self._tql.add_filter('configtask', operator, config_task)
+        self._tql.add_filter('configtask', operator, config_task, TQL.Type.STRING)
 
     def description(self, operator, description):
-        """Filter objects based on "description" field.
+        """Filter Tasks based on **description** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            description (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            description (str): The description of the task.
         """
-        self._tql.add_filter('description', operator, description)
+        self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
     def due_date(self, operator, due_date):
-        """Filter objects based on "due date" field.
+        """Filter Tasks based on **duedate** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            due_date (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            due_date (str): The due date for the task.
         """
-        self._tql.add_filter('duedate', operator, due_date)
+        self._tql.add_filter('duedate', operator, due_date, TQL.Type.STRING)
 
-    def duration(self, operator, duration):
-        """Filter objects based on "duration" field.
+    def has_case(self, operator, has_case):
+        """Filter Tasks based on **hascase** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            duration (int): The filter value.
+            operator (enum): The operator enum for the filter.
+            has_case (int): A nested query for association to other cases.
         """
-        self._tql.add_filter('duration', operator, duration, TQL.Type.INTEGER)
+        self._tql.add_filter('hascase', operator, has_case, TQL.Type.INTEGER)
 
-    def hascase(self, operator, case_id):
-        """Filter objects based on "duration" field.
+    def id(self, operator, id):  # pylint: disable=redefined-builtin
+        """Filter Tasks based on **id** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            case_id (int): The filter value.
+            operator (enum): The operator enum for the filter.
+            id (int): The ID of the task.
         """
-        self._tql.add_filter('hascase', operator, case_id)
-
-    def id(self, operator, id_):
-        """Filter objects based on "id" field.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            id (int): The filter value.
-        """
-        self._tql.add_filter('id', operator, id_, TQL.Type.INTEGER)
-
-    @property
-    def keywords(self):
-        """Return supported TQL keywords."""
-        keywords = []
-        for prop in dir(self):
-            if prop.startswith('_') or prop in ['tql']:
-                continue
-            # remove underscore from method name to match keyword
-            keywords.append(prop.replace('_', ''))
-
-        return keywords
+        self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def name(self, operator, name):
-        """Filter objects based on "name" field.
+        """Filter Tasks based on **name** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            name (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            name (str): The name of the task.
         """
-        self._tql.add_filter('name', operator, name)
+        self._tql.add_filter('name', operator, name, TQL.Type.STRING)
 
     def status(self, operator, status):
-        """Filter objects based on "status" field.
+        """Filter Tasks based on **status** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            status (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            status (str): The status of the task.
         """
-        self._tql.add_filter('status', operator, status)
+        self._tql.add_filter('status', operator, status, TQL.Type.STRING)
 
     def target_id(self, operator, target_id):
-        """Filter objects based on "target id" field.
+        """Filter Tasks based on **targetid** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            target_id (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            target_id (str): The assigned user or group ID for the task.
         """
-        self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
+        self._tql.add_filter('targetid', operator, target_id, TQL.Type.STRING)
 
     def target_type(self, operator, target_type):
-        """Filter objects based on "target type" field.
+        """Filter Tasks based on **targettype** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            target_type (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            target_type (str): The target type for this task (either User or Group).
         """
-        self._tql.add_filter('targettype', operator, target_type)
-
-    def tql(self, tql):
-        """Filter objects based on TQL expression.
-
-        Args:
-            tql (str): The raw TQL string for the filter.
-        """
-        self._tql.set_raw_tql(tql)
+        self._tql.add_filter('targettype', operator, target_type, TQL.Type.STRING)
 
     def xid(self, operator, xid):
-        """Filter objects based on "xid" field.
+        """Filter Tasks based on **xid** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            xid (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            xid (str): The XID of the task.
         """
-        self._tql.add_filter('xid', operator, xid)
+        self._tql.add_filter('xid', operator, xid, TQL.Type.STRING)

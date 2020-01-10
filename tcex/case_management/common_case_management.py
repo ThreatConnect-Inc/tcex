@@ -15,6 +15,9 @@ class CommonCaseManagement:
     def __init__(self, tcex, api_endpoint, kwargs):
         """Initialize Class properties."""
         self._id = kwargs.get('id', None)
+        self._fields = None
+        self._properties = None
+        self._tql = None
         self._transform_kwargs(kwargs)
         self.api_endpoint = api_endpoint.value
         self.tcex = tcex
@@ -34,6 +37,77 @@ class CommonCaseManagement:
             else:
                 printable_string += f'{key:.<40} {"<object>":<50}\n'
         return printable_string
+
+    @property
+    def _doc_string(self):
+        """Return a doc string current object."""
+        docstring = (
+            f'\n{" " * 4}"""{self.__class__.__name__} object for Case Management.\n\n'
+            f'{" " * 4}Args:\n'
+            f'{" " * 8}tcex (TcEx): An instantiated instance of TcEx object.\n'
+        )
+        for p, pd in sorted(self.properties.items()):
+            # get data array if exists
+            data = pd.get('data')
+
+            # get read-only value for display and required value
+            read_only = pd.get('read-only', False)
+
+            # get required value or default
+            required = pd.get('required', True)
+            if read_only is True:
+                required = False
+
+            # get type
+            type_flag = ''  # used to append the word flag for bool types
+            type_ = pd.get('type')
+            if type_ is None and data:
+                type_ = data[0].get('type')
+
+            if type_ == 'Array':
+                type_ = 'list'
+            elif type_ == 'Boolean':
+                type_ = 'bool'
+                type_flag = ' flag'
+            elif type_ == 'Date':
+                type_ = 'str'
+            elif type_ == 'Integer':
+                type_ = 'int'
+            elif type_ == 'JsonNode':
+                type_ = 'dict'
+            elif type_ == 'Long':
+                type_ = 'int'
+            elif type_ == 'String':
+                type_ = 'str'
+
+            # set description
+            description = (
+                f'The **{self.tcex.utils.camel_to_space(p).title()}**{type_flag} for the '
+                f'{self.tcex.utils.camel_to_space(self.__class__.__name__).title()}.'
+            )
+            if data:
+                if data[0].get('description'):
+                    description = data[0].get('description', '')
+
+            # build meta with required and read-only values
+            meta = []
+            if required:
+                meta.append('Required')
+            if read_only:
+                meta.append('Read-Only')
+            if meta:
+                meta = f" [{','.join(meta)}]"
+            else:
+                meta = ''
+
+            # build docstring
+            docstring += (
+                f'{" " * 8}{self.tcex.utils.camel_to_snake(p)} ({type_}, kwargs):'
+                f'{meta} {description}\n'
+            )
+
+        docstring += f'{" " * 4}"""\n'
+        return docstring
 
     @property
     def _excluded_properties(self):
@@ -181,6 +255,15 @@ class CommonCaseManagement:
         """Stub for entity mapper"""
         raise NotImplementedError('Child class must implement this method.')
 
+    @property
+    def fields(self):
+        """Return defined API fields for the current Object."""
+        if self._fields is None:
+            r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
+            if r.ok:
+                self._fields = r.json()['data']
+        return self._fields
+
     def get(self, all_available_fields=False, case_management_id=None, retry_count=0, fields=None):
         """Get the Case Management Object.
 
@@ -242,10 +325,28 @@ class CommonCaseManagement:
         """Set the id of the case management object."""
         self._id = cm_id
 
+    # @property
+    # def property_names(self):
+    #     """Return a list of property names for current object."""
+    #     return [p.get('name') for p in self.properties]
+
+    @property
+    def properties(self):
+        """Return defined API properties for the current object."""
+        if self._properties is None:
+            r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
+            if r.ok:
+                self._properties = r.json()
+        return self._properties
+
     @property
     def required_properties(self):
-        """Return a list of required fields for an object."""
-        return []
+        """Return a list of required fields for current object."""
+        rp = []
+        for p, pd in self.properties.items():
+            if pd.get('required'):
+                rp.append(p)
+        return rp
 
     def submit(self):
         """Create or Update the Case Management object.
@@ -303,3 +404,13 @@ class CommonCaseManagement:
         else:
             status = False
         return status
+
+    @property
+    def tql(self):
+        """Return TQL data keywords."""
+        if self._tql is None:
+            r = self.tcex.session.options(f'{self.api_endpoint}/tql', params={})
+            if r.ok:
+                self._tql = r.json()['data']
+
+        return self._tql

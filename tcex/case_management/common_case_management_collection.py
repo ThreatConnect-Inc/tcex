@@ -49,6 +49,7 @@ class CommonCaseManagementCollection:
         self._page_size = page_size
         self._retry_count = retry_count
         self._timeout = timeout
+        self._tql_data = None
         self._tql_filters = tql_filters
         self.api_endpoint = api_endpoint.value
         self.tcex = tcex
@@ -69,6 +70,63 @@ class CommonCaseManagementCollection:
         return printable_string
 
     @property
+    def _filter_map_method(self):
+        """Return a property for keywork mapping."""
+        method_data = (
+            f'\n{" " * 4}@property\n'
+            f'\n{" " * 4}def keyword_map(self):\n'
+            f'{" " * 8}"""Return keyword to method name map."""\n\n'
+            f'{" " * 8}return {{\n'
+        )
+        for t in sorted(self.tql_data, key=lambda i: i['keyword']):
+            method_data += f"""{" " * 12}"{t.get('keyword')}": "{t.get('keyword')}",\n"""
+        method_data += f'{" " * 8}}}\n'
+
+        return method_data
+
+    @property
+    def _filter_class(self):
+        """Return a Filter Class current object."""
+        filter_class = (
+            f'\nclass Filter{self.__class__.__name__}(Filter):\n'
+            f'{" " * 4}"""Filter Object for Workflow Event"""\n\n'
+        )
+
+        for t in sorted(self.tql_data, key=lambda i: i['keyword']):
+            class_name = self.tcex.utils.camel_to_space(self.__class__.__name__).title()
+            description = t.get('description')
+            keyword = t.get('keyword')
+            keyword_snake = self.filter.keyword_map.get(keyword)
+
+            # get the arg type
+            keyword_type = 'str'
+            tql_type = 'TQL.Type.STRING'
+            if t.get('type') == 'Integer':
+                keyword_type = 'int'
+                tql_type = 'TQL.Type.INTEGER'
+            elif t.get('type') == 'Boolean':
+                keyword_type = 'bool'
+                tql_type = 'TQL.Type.BOOLEAN'
+
+            comment = ''
+            if keyword_snake in ['id', 'type']:
+                comment = '  # pylint: disable=redefined-builtin'
+
+            # build method
+            filter_class += (
+                f'\n{" " * 8}def {keyword_snake}(self, operator, {keyword_snake}):{comment}\n'
+                f'{" " * 8}"""Filter {class_name} based on **{keyword}** keyword.\n\n'
+                f'{" " * 8}Args:\n'
+                f'{" " * 12}operator (enum): The operator enum for the filter.\n'
+                f'{" " * 12}{keyword_snake} ({keyword_type}): {description}.\n'
+                f'{" " * 8}"""\n'
+                f"{' ' * 8}self._tql.add_filter('{keyword}', operator, "
+                f'{keyword_snake}, {tql_type})\n'
+            )
+
+        return filter_class
+
+    @property
     def added_items(self):
         """Return the added items to the collection"""
         return self._added_items
@@ -80,6 +138,11 @@ class CommonCaseManagementCollection:
 
     def entity_map(self, entity):
         """Stub for common method."""
+        raise NotImplementedError('Child class must implement this method.')
+
+    @property
+    def filter(self):
+        """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
 
     @property
@@ -234,3 +297,13 @@ class CommonCaseManagementCollection:
     def timeout(self, timeout):
         """Set the timeout of the case management object collection."""
         self._timeout = timeout
+
+    @property
+    def tql_data(self):
+        """Return TQL data keywords."""
+        if self._tql_data is None:
+            r = self.tcex.session.options(f'{self.api_endpoint}/tql', params={})
+            if r.ok:
+                self._tql_data = r.json()['data']
+
+        return self._tql_data
