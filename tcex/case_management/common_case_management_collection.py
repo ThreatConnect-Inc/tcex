@@ -8,6 +8,12 @@ class CommonCaseManagementCollection:
 
     Object encapsulates common methods used by child classes.
 
+    params example: {
+        'result_limit': 100, # How many results are retrieved.
+        'result_start': 10,  # Starting point on retrieved results.
+        'fields': ['caseId', 'summary'] # Additional fields returned on the results
+    }
+
     Args:
         tcex ([type]): [description]
         api_endpoint ([type]): [description]
@@ -18,6 +24,8 @@ class CommonCaseManagementCollection:
         retry_count (int, optional): [description]. Defaults to 5.
         timeout (int, optional): [description]. Defaults to 1000.
         initial_response ([type], optional): [description]. Defaults to None.
+        params(dict, optional): Dict of the params to be sent while
+                    retrieving the Case Management objects.
 
     Returns:
         [type]: [description]
@@ -37,9 +45,13 @@ class CommonCaseManagementCollection:
         retry_count=5,
         timeout=1000,
         initial_response=None,
+        params=None,
     ):
         """Initialize Class properties."""
 
+        self._params = params
+        if params is None:
+            self.params = {}
         if tql_filters is None:
             tql_filters = []
         self._added_items = []
@@ -96,7 +108,8 @@ class CommonCaseManagementCollection:
         Yields:
             [type]: [description]
         """
-        parameters = {'fields': []}
+        parameters = self.params
+        self.to_camel_case(parameters)
         url = self.api_endpoint
 
         tql_string = self.tql.raw_tql
@@ -172,6 +185,16 @@ class CommonCaseManagementCollection:
     #    json to stix2
 
     @property
+    def params(self):
+        """Return the parameters of the case management object collection."""
+        return self._params
+
+    @params.setter
+    def params(self, params):
+        """Set the parameters of the case management object collection."""
+        self._params = params
+
+    @property
     def page_size(self):
         """Return the page size of the case management object collection."""
         return self._page_size
@@ -234,3 +257,18 @@ class CommonCaseManagementCollection:
     def timeout(self, timeout):
         """Set the timeout of the case management object collection."""
         self._timeout = timeout
+
+    @staticmethod
+    def to_camel_case(kwargs):
+        """
+        Converts snake_case to camelCase
+
+        Args:
+            kwargs (dict): The dictionary you wish to convert keys to camel case.
+        """
+        for key in dict(kwargs):
+            if not key:
+                continue
+            components = key.split('_')
+            new_key = components[0] + ''.join(x.title() for x in components[1:])
+            kwargs[new_key] = kwargs.pop(key)

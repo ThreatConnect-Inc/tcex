@@ -7,21 +7,29 @@ from .tql import TQL
 
 
 class WorkflowTemplates(CommonCaseManagementCollection):
-    """[summary]
+    """Workflow Template Class for Case Management Collection
 
+    params example: {
+        'result_limit': 100, # How many results are retrieved.
+        'result_start': 10,  # Starting point on retrieved results.
+        'fields': ['caseId', 'summary'] # Additional fields returned on the results
+    }
     Args:
         tcex ([type]): [description]
         initial_response ([type], optional): [description]. Defaults to None.
         tql_filters ([type], optional): [description]. Defaults to None.
+        params(dict, optional): Dict of the params to be sent while
+            retrieving the Workflow Template objects.
     """
 
-    def __init__(self, tcex, initial_response=None, tql_filters=None):
-        """Initialize Class properties"""
+    def __init__(self, tcex, initial_response=None, tql_filters=None, params=None):
+        """Initialize Class properties."""
         super().__init__(
             tcex,
             ApiEndpoints.WORKFLOW_TEMPLATES,
             initial_response=initial_response,
             tql_filters=tql_filters,
+            params=params,
         )
 
     def __iter__(self):
