@@ -72,9 +72,9 @@ class CMHelper:
             case.add_note(text=note)
 
         # add tags
+        case.add_tag(name='pytest')
         if isinstance(tags, dict):
             tags = [tags]
-        case.add_tag(name='pytest')
         for tag in tags:
             case.add_tag(**tag)
 

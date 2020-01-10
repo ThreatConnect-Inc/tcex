@@ -74,9 +74,9 @@ class Tag(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TAGS, kwargs)
-        self._case_id = kwargs.get('case_id', [])
+        self._case_id = kwargs.get('case_id', None)
         # TODO: @bpurdy - this is an array of cases. how should we handle???
-        self._cases = kwargs.get('cases', [])
+        self._cases = kwargs.get('cases', None)
         self._description = kwargs.get('description', None)
         self._name = kwargs.get('name', None)
 

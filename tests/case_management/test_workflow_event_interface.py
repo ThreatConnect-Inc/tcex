@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Case Management Module."""
 import os
-
-# import re
-# import time
-# from random import randint
-# from tcex.case_management.tql import TQL
+from datetime import datetime, timedelta
+from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
 from .cm_helpers import CMHelper
@@ -61,7 +58,7 @@ class TestWorkflowEvent:
         # create case
         case = self.cm_helper.create_case()
 
-        # artifact data
+        # workflow event data
         workflow_event_data = {
             'case_id': case.id,
             'summary': request.node.name,
@@ -83,7 +80,7 @@ class TestWorkflowEvent:
         # create case
         case = self.cm_helper.create_case()
 
-        # artifact data
+        # workflow event data
         workflow_event_data = {
             'case_id': case.id,
             'summary': request.node.name,
@@ -112,7 +109,7 @@ class TestWorkflowEvent:
         # create case
         case = self.cm_helper.create_case()
 
-        # artifact data
+        # workflow event data
         workflow_event_data = {
             'case_id': case.id,
             'summary': request.node.name,
@@ -134,7 +131,7 @@ class TestWorkflowEvent:
         # create case
         case = self.cm_helper.create_case()
 
-        # artifact data
+        # workflow event data
         workflow_event_data = {
             'case_id': case.id,
             'summary': request.node.name,
@@ -150,3 +147,283 @@ class TestWorkflowEvent:
 
         # run assertions on returned data
         assert workflow_event.summary == workflow_event_data.get('summary')
+
+    def test_workflow_event_get_by_tql_filter_case_id(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_date_added(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.date_added(
+            TQL.Operator.GT, (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        )
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_deleted(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.deleted(TQL.Operator.EQ, False)
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_deleted_reason(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # delete event
+        workflow_event.delete()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.deleted(TQL.Operator.EQ, True)
+        workflow_events.filter.deleted_reason(
+            TQL.Operator.EQ, f"Deleted through API by User:{os.getenv('API_ACCESS_ID')}"
+        )
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_event_date(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'event_date': (datetime.now() + timedelta(days=1)).isoformat(),
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
+        workflow_events.filter.event_date(TQL.Operator.GT, datetime.now().strftime('%Y-%m-%d'))
+
+        for we in workflow_events:  # pylint: disable=unused-variable
+            # more than one workflow event will always be returned
+            if workflow_event.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_id(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.id(TQL.Operator.EQ, workflow_event.id)
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    # link is not added when the workflow event is created via the API
+    # def test_workflow_event_get_by_tql_filter_link(self, request):
+    #     """Test Workflow Event Get by TQL"""
+
+    # link_text is not added when the workflow event is created via the API
+    # def test_workflow_event_get_by_tql_filter_link_text(self, request):
+    #     """Test Workflow Event Get by TQL"""
+
+    def test_workflow_event_get_by_tql_filter_summary(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.summary(TQL.Operator.EQ, workflow_event_data.get('summary'))
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_system_generated(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
+        workflow_events.filter.system_generated(TQL.Operator.EQ, False)
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_tql(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.tql(f'caseid EQ {case.id}')
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
+
+    def test_workflow_event_get_by_tql_filter_username(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
+        workflow_events.filter.username(TQL.Operator.EQ, os.getenv('API_ACCESS_ID'))
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'

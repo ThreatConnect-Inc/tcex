@@ -71,7 +71,7 @@ class WorkflowEvent(CommonCaseManagement):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.WORKFLOW_EVENTS, kwargs)
         self._case_id = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get('id', None)
-        self._case_xid = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get(
+        self._case_xid = kwargs.get('case_xid', None) or kwargs.get('parent_case', {}).get(
             'xid', None
         )
         self._date_added = kwargs.get('date_added', None)
@@ -98,7 +98,7 @@ class WorkflowEvent(CommonCaseManagement):
     @property
     def available_fields(self):
         """Return the available fields to fetch for an Artifact."""
-        return ['user', 'parentCase']
+        return ['caseid', 'note', 'parentCase', 'user']
 
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
@@ -161,6 +161,16 @@ class WorkflowEvent(CommonCaseManagement):
 
     @event_date.setter
     def event_date(self, event_date):
+        """Set the "Event Date" for the Workflow Event."""
+        self._event_date = event_date
+
+    @property
+    def id(self):
+        """Return the **ID** for the Workflow Event."""
+        return self._id
+
+    @id.setter
+    def id(self, event_date):
         """Set the "Event Date" for the Workflow Event."""
         self._event_date = event_date
 
@@ -254,9 +264,9 @@ class FilterWorkflowEvent:
 
         Args:
             operator (enum): The enum for the required operator.
-            deleted (str): The filter value.
+            deleted (bool): The filter value.
         """
-        self._tql.add_filter('deleted', operator, deleted)
+        self._tql.add_filter('deleted', operator, deleted, TQL.Type.BOOLEAN)
 
     def deleted_reason(self, operator, deleted_reason):
         """Filter objects based on "deleted reason" field.
@@ -329,9 +339,9 @@ class FilterWorkflowEvent:
 
         Args:
             operator (enum): The enum for the required operator.
-            system_generated (str): The filter value.
+            system_generated (bool): The filter value.
         """
-        self._tql.add_filter('systemgenerated', operator, system_generated)
+        self._tql.add_filter('systemgenerated', operator, system_generated, TQL.Type.BOOLEAN)
 
     def tql(self, tql):
         """Filter objects based on TQL expression.
