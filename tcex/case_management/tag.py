@@ -9,17 +9,29 @@ from .tql import TQL
 class Tags(CommonCaseManagementCollection):
     """Tags Class for Case Management Collection
 
+    params example: {
+        'result_limit': 100, # How many results are retrieved.
+        'result_start': 10,  # Starting point on retrieved results.
+        'fields': ['caseId', 'summary'] # Additional fields returned on the results
+    }
+
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
             Case Object for Tag. Defaults to None.
         tql_filters (list, optional): List of TQL filters. Defaults to None.
+        params(dict, optional): Dict of the params to be sent while
+            retrieving the Tag objects.
     """
 
-    def __init__(self, tcex, initial_response=None, tql_filters=None):
-        """Initialize Class properties"""
+    def __init__(self, tcex, initial_response=None, tql_filters=None, params=None):
+        """Initialize Class properties."""
         super().__init__(
-            tcex, ApiEndpoints.TAGS, initial_response=initial_response, tql_filters=tql_filters
+            tcex,
+            ApiEndpoints.TAGS,
+            initial_response=initial_response,
+            tql_filters=tql_filters,
+            params=params,
         )
 
         if initial_response:

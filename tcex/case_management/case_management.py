@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case Management"""
-import requests
-
 from .assignee import Assignee, User, Users
 from .artifact import Artifact, Artifacts
 from .artifact_type import ArtifactType, ArtifactTypes
@@ -54,25 +52,23 @@ class CaseManagement:
         return Cases(self.tcex, **kwargs)
 
     def create_entity(self, entity, owner):
-        """Create a CM object provided a dict and owner."""
+        """
+        Creates a CM object provided a dict and owner.
+        """
         entity_type = entity.get('type').lower()
         obj = self.obj_from_entity(entity)
         if obj is None:
             return None
 
         r = obj.submit()
-        response = {}
-        if isinstance(r, requests.models.Response):
-            response['status_code'] = r.status_code
-        else:
-            response['status_code'] = 201
-            response['unique_id'] = r.as_dict.get('id')
+        data = {'status_code': r.status_code}
+        if r.ok:
+            data.update(r.json().get('data', {}))
+            data['main_type'] = 'Case_Management'
+            data['sub_type'] = entity_type
+            data['owner'] = owner
 
-        response['main_type'] = 'Case_Management'
-        response['sub_type'] = entity_type
-        response['owner'] = owner
-
-        return response
+        return data
 
     def note(self, **kwargs):
         """Return a instance of Note object."""

@@ -184,6 +184,21 @@ class CommonCaseManagement:
             #     )
             kwargs[new_key] = kwargs.pop(key)
 
+    @staticmethod
+    def to_camel_case(kwargs):
+        """
+        Converts snake_case to camelCase
+
+        Args:
+            kwargs (dict): The dictionary you wish to convert keys to camel case.
+        """
+        for key in dict(kwargs):
+            if not key:
+                continue
+            components = key.split('_')
+            new_key = components[0] + ''.join(x.title() for x in components[1:])
+            kwargs[new_key] = kwargs.pop(key)
+
     @property
     def as_entity(self):
         """Placeholder for common method."""
@@ -255,48 +270,47 @@ class CommonCaseManagement:
         """Stub for entity mapper"""
         raise NotImplementedError('Child class must implement this method.')
 
-    @property
-    def fields(self):
-        """Return defined API fields for the current Object."""
-        if self._fields is None:
-            r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
-            if r.ok:
-                self._fields = r.json()['data']
-        return self._fields
-
-    def get(self, all_available_fields=False, case_management_id=None, retry_count=0, fields=None):
+    def get(self, all_available_fields=False, case_management_id=None, retry_count=0, params=None):
         """Get the Case Management Object.
+
+        params example: {
+            'result_limit': 100, # How many results are retrieved.
+            'result_start': 10,  # Starting point on retrieved results.
+            'fields': ['caseId', 'summary'] # Additional fields returned on the results
+        }
 
         Args:
             all_available_fields (bool): If True all available fields will be returned.
             case_management_id (int): The id of the case management object to be returned.
             retry_count (int, optional): [description]. Defaults to 0.
-            fields (list): A list of the fields that should be returned.
+            params(dict, optional): Dict of the params to be sent while
+                retrieving the Artifacts objects.
 
         Returns:
             Object: A artifact, case, note, task, tag, or workflow object.
         """
+        if params is None:
+            params = {}
+        self.to_camel_case(params)
         cm_id = case_management_id or self.id
-        fields = fields or []
         url = f'{self.api_endpoint}/{cm_id}'
         current_retries = -1
         entity = None
-        parameters = {'fields': []}
 
         # add fields parameter if provided
         if all_available_fields:
+            params['fields'] = []
             for field in self.available_fields:
-                parameters['fields'].append(field)
-        elif fields:
-            for field in fields:
-                parameters['fields'].append(field)
+                params['fields'].append(field)
+
         if not cm_id:
             message = '{"message": "No ID provided.", "status": "Error"}'
             self.tcex.handle_error(951, ['GET', '404', message, url])
 
         # @bpurdy - what is the retry count for? tcex session has built-in retry
+        r = None
         while current_retries < retry_count:
-            r = self.tcex.session.get(url, params=parameters)
+            r = self.tcex.session.get(url, params=params)
             self.tcex.log.debug(
                 f'Method: ({r.request.method.upper()}), '
                 f'Status Code: {r.status_code}, '
@@ -313,7 +327,7 @@ class CommonCaseManagement:
             entity = r.json()
             break
         self.entity_mapper(entity.get('data', {}))
-        return self
+        return r
 
     @property
     def id(self):

@@ -12,17 +12,29 @@ from .tql import TQL
 class Tasks(CommonCaseManagementCollection):
     """Tasks Class for Case Management Collection
 
+    params example: {
+        'result_limit': 100, # How many results are retrieved.
+        'result_start': 10,  # Starting point on retrieved results.
+        'fields': ['caseId', 'summary'] # Additional fields returned on the results
+    }
+
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
             Case Object for Artifact. Defaults to None.
         tql_filters (list, optional): List of TQL filters. Defaults to None.
+        params(dict, optional): Dict of the params to be sent while
+            retrieving the Task objects.
     """
 
-    def __init__(self, tcex, initial_response=None, tql_filters=None):
+    def __init__(self, tcex, initial_response=None, tql_filters=None, params=None):
         """Initialize Class properties."""
         super().__init__(
-            tcex, ApiEndpoints.TASKS, initial_response=initial_response, tql_filters=tql_filters
+            tcex,
+            ApiEndpoints.TASKS,
+            initial_response=initial_response,
+            tql_filters=tql_filters,
+            params=params,
         )
 
         if initial_response:
@@ -92,7 +104,8 @@ class Task(CommonCaseManagement):
         super().__init__(tcex, ApiEndpoints.TASKS, kwargs)
 
         # TODO: @bpurdy - the is an array of artifact. how should we handle them???
-        self._artifacts = kwargs.get('artifact', {})
+        # TODO: Fix Me
+        self._artifacts = kwargs.get('artifact', None)
         self._assignee = None
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
@@ -109,7 +122,8 @@ class Task(CommonCaseManagement):
         self._is_workflow = kwargs.get('is_workflow', None)
         self._name = kwargs.get('name', None)
         self._notes = Notes(kwargs.get('notes', {}).get('data'))
-        self._parent_case = tcex.cm.case(**kwargs.get('parent_case', {}))
+        # TODO: Fix Me
+        self._parent_case = kwargs.get('parent_case', None)
         self._required = kwargs.get('required', None)
         self._source = kwargs.get('source', None)
         self._status = kwargs.get('status', None)

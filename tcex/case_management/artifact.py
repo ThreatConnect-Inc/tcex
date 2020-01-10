@@ -10,20 +10,29 @@ from .tql import TQL
 class Artifacts(CommonCaseManagementCollection):
     """Artifacts Class for Case Management Collection
 
+    params example: {
+        'result_limit': 100, # How many results are retrieved.
+        'result_start': 10,  # Starting point on retrieved results.
+        'fields': ['caseId', 'summary'] # Additional fields returned on the results
+    }
+
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
             Case Object for Artifact. Defaults to None.
         tql_filters (list, optional): List of TQL filters. Defaults to None.
+        params(dict, optional): Dict of the params to be sent while
+            retrieving the Artifacts objects.
     """
 
-    def __init__(self, tcex, initial_response=None, tql_filters=None):
+    def __init__(self, tcex, initial_response=None, tql_filters=None, params=None):
         """Initialize Class properties"""
         super().__init__(
             tcex,
             ApiEndpoints.ARTIFACTS,
             initial_response=initial_response,
             tql_filters=tql_filters,
+            params=params,
         )
 
         if initial_response:
@@ -100,8 +109,9 @@ class Artifact(CommonCaseManagement):
         self._intel_type = kwargs.get('intel_type', None)
         self._links = kwargs.get('links', None)
         self._notes = Notes(self.tcex, kwargs.get('notes', {}).get('data'))
-        self._parent_case = tcex.cm.case(**kwargs.get('parent_case', {}))
-        self._parent_task = tcex.cm.task(**kwargs.get('parent_task', {}))
+        # TODO: Fix me
+        self._parent_case = kwargs.get('parent_case', None)
+        self._parent_task = kwargs.get('parent_task', None)
         self._source = kwargs.get('source', None)
         self._summary = kwargs.get('summary', None)
         self._task_id = kwargs.get('task_id', None)
