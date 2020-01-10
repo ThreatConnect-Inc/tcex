@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Case Management PyTest Helper Method"""
 import inspect
+import re
 
 
 class CMHelper:
@@ -13,6 +14,7 @@ class CMHelper:
     def __init__(self, cm):
         """Initialize Class Properties"""
         self.cm = cm
+        self.camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
 
         # cleanup values
         self.cases = []
@@ -30,13 +32,14 @@ class CMHelper:
             resolution (str, kwargs): Optional case resolution.
             severity (str, kwargs): Optional case severity.
             status (str, kwargs): Optional case status.
+            tags (dict|list, kwargs): Optional case tags.
             xid (str, kwargs): Optional case XID.
 
         Returns:
             CaseManagement.Case: A CM case object.
         """
         case_data = {
-            # 'assignee': kwargs.get('assignee'),
+            'assignee': kwargs.get('assignee'),
             'date_added': kwargs.get('date_added'),
             'description': kwargs.get(
                 'description', f'A description for {inspect.stack()[1].function}'
@@ -69,9 +72,11 @@ class CMHelper:
             case.add_note(text=note)
 
         # add tags
+        if isinstance(tags, dict):
+            tags = [tags]
         case.add_tag(name='pytest')
         for tag in tags:
-            case.add_tag(name=tag)
+            case.add_tag(**tag)
 
         # add task
         for task, task_data in tasks.items():
@@ -247,3 +252,7 @@ class CMHelper:
         # for case in cases:
         #     if case.name.startswith('tests.case_man'):
         #         case.delete(
+
+    def camel_to_snake(self, camel_string):
+        """Return snake case string from a camel case string."""
+        return self.camel_pattern.sub('_', camel_string).lower()

@@ -23,7 +23,10 @@ class CommonCaseManagement:
         """Printable version of Object"""
         printable_string = ''
         for key, value in sorted(vars(self).items()):
+            if key in ['tcex']:
+                continue
             key = f'{key.lstrip("_")} '
+
             if value is None:
                 printable_string += f'{key:.<40} {"null":<50}\n'
             elif isinstance(value, (int, str)):
@@ -155,7 +158,12 @@ class CommonCaseManagement:
         current_retries = -1
         while current_retries < retry_count:
             r = self.tcex.session.delete(url)
-            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({r.url})')
+            self.tcex.log.debug(
+                f'Method: ({r.request.method.upper()}), '
+                f'Status Code: {r.status_code}, '
+                f'URl: ({r.url})'
+            )
+            self.tcex.log.trace(f'response: {r.text}')
             if not self.success(r):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -203,8 +211,12 @@ class CommonCaseManagement:
         # @bpurdy - what is the retry count for? tcex session has built-in retry
         while current_retries < retry_count:
             r = self.tcex.session.get(url, params=parameters)
-            self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({r.url})')
-            self.tcex.log.trace(f'response cm data: {r.text}')
+            self.tcex.log.debug(
+                f'Method: ({r.request.method.upper()}), '
+                f'Status Code: {r.status_code}, '
+                f'URl: ({r.url})'
+            )
+            self.tcex.log.trace(f'response: {r.text}')
             if not self.success(r):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -248,10 +260,13 @@ class CommonCaseManagement:
 
         # make the request
         r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
-        self.tcex.log.debug(f'Method: ({r.request.method.upper()}), url: ({r.url})')
-
-        # log post/put data for debug
-        self.tcex.log.trace(f'submit cm data: {self._reverse_transform(as_dict)}')
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Status Code: {r.status_code}, '
+            f'URl: ({r.url})'
+        )
+        self.tcex.log.trace(f'body: {self._reverse_transform(as_dict)}')
+        self.tcex.log.trace(f'response: {r.text}')
 
         if not r.ok:
             err = r.text or r.reason

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case"""
+from .assignee import Assignee, User, Users
 from .api_endpoints import ApiEndpoints
 from .artifact import Artifact, Artifacts
 from .common_case_management import CommonCaseManagement
@@ -76,7 +77,7 @@ class Case(CommonCaseManagement):
         self._artifacts = Artifacts(
             self.tcex, kwargs.get('artifacts', None), tql_filters=case_filter
         )
-        self._assignee = UserData(**kwargs.get('assignee', {}))
+        self._assignee = self.assignee_builder(kwargs.get('assignee'))
         self._created_by = User(**kwargs.get('created_by', {}))
         self._date_added = kwargs.get('date_added', None)
         self._description = kwargs.get('description', None)
@@ -115,6 +116,28 @@ class Case(CommonCaseManagement):
     def artifacts(self, artifacts):
         """Set the Artifacts for the Case."""
         self._artifacts = artifacts
+
+    @property
+    def assignee(self):
+        """Return the Assignee for the Case."""
+        return self._assignee
+
+    @assignee.setter
+    def assignee(self, assignee):
+        """Set the Assignee for the Case."""
+        self._assignee = self.assignee_builder(assignee)
+
+    @staticmethod
+    def assignee_builder(assignee):
+        """Build the Assignee for the Case.
+
+        Args:
+            assignee (Assignee|dict): The Assignee data as dict or object.
+        """
+        if isinstance(assignee, dict):
+            assignee = Assignee(type=assignee.get('type'), **assignee.get('data'))
+
+        return assignee
 
     @property
     def as_entity(self):
@@ -157,10 +180,10 @@ class Case(CommonCaseManagement):
         self._date_added = date_added
 
     def entity_mapper(self, entity):
-        """Map a dict to a Case
+        """Update current object with provided object properties.
 
         Args:
-            entity (dict): The Case data.
+            entity (dict): An entity dict used to update the Object.
         """
         new_case = Case(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
@@ -241,6 +264,16 @@ class Case(CommonCaseManagement):
         self._tasks = tasks
 
     @property
+    def user_access(self):
+        """Return the User Access for the Case."""
+        return self._user_access
+
+    @user_access.setter
+    def user_access(self, user_access):
+        """Set the User Access for the Case."""
+        self._user_access = user_access
+
+    @property
     def xid(self):
         """Return the XID for the Case."""
         return self._xid
@@ -249,152 +282,6 @@ class Case(CommonCaseManagement):
     def xid(self, xid):
         """Set the XID for the Case."""
         self._xid = xid
-
-
-class UserData:
-    """Sub class of the Cases object. Used to map the user to.
-
-    Args:
-        data (dict): The User data.
-        type (string): The User type.
-    """
-
-    def __init__(self, **kwargs):
-        self.type = kwargs.get('type', None)
-        self.user_data = User(**kwargs.get('data', {}))
-
-    @property
-    def as_dict(self):
-        """Return a dict representation of the UsersData class."""
-        if self.type:
-            return {'type': self.type, 'data': self.user_data.as_dict}
-        return {'data': self.user_data.as_dict}
-
-
-class Users:
-    """Sub class of the Cases object. Used to map the users to.
-
-    Args:
-        users (list): A array of user data
-    """
-
-    def __init__(self, users):
-        self.user = []
-        if isinstance(users, dict):
-            for data in users.get('data', []):
-                self.user.append(User(**data))
-        elif isinstance(users, list):
-            for user in users:
-                self.user.append(user)
-
-    @property
-    def as_dict(self):
-        """Return a dict representation of the UsersData class."""
-        data = []
-        for user in self.user:
-            data.append(user.as_dict)
-
-        return {'data': data}
-
-
-class User:
-    """Sub class of the Cases object. Used to map the creator to.
-
-    Args:
-        first_name (str, kwargs): The first name of the user.
-        id (id, kwargs): The id of the user.
-        pseudonym (str, kwargs): The pseudonym of the user.
-        role (str, kwargs): The role of the user.
-        user_name (str, kwargs): The user name of the user.
-    """
-
-    def __init__(self, **kwargs):
-        """
-           Initializes the Creator class:
-        """
-        self._transform_kwargs(kwargs)
-        self._first_name = kwargs.get('first_name', None)
-        self._id = kwargs.get('id', None)
-        self._pseudonym = kwargs.get('pseudonym', None)
-        self._role = kwargs.get('role', None)
-        self._user_name = kwargs.get('user_name', None)
-
-    def _transform_kwargs(self, kwargs):
-        """Map the provided kwargs to expected arguments."""
-        for key in dict(kwargs):
-            new_key = self._metadata_map.get(key, key)
-            kwargs[new_key] = kwargs.pop(key)
-
-    @property
-    def _metadata_map(self):
-        """Return a mapping of kwargs to expected args."""
-        return {'dateAdded': 'date_added', 'firstName': 'first_name', 'userName': 'user_name'}
-
-    @property
-    def as_dict(self):
-        """Return a dict representation of the Creator class."""
-        properties = vars(self)
-        as_dict = {}
-        for key, value in properties.items():
-            key = key.lstrip('_')
-            if value is None:
-                continue
-            as_dict[key] = value
-
-        if not as_dict:
-            return None
-
-        return as_dict
-
-    @property
-    def id(self):
-        """Return the ID for the Case Creator."""
-        return self._id
-
-    @id.setter
-    def id(self, creator_id):
-        """Set the ID for the Case Creator."""
-        self._id = creator_id
-
-    @property
-    def user_name(self):
-        """Return the User Name for the Case Creator."""
-        return self._user_name
-
-    @user_name.setter
-    def user_name(self, user_name):
-        """Set the User Name for the Case Creator."""
-        self._user_name = user_name
-
-    @property
-    def first_name(self):
-        """Return the First Name for the Case Creator."""
-        return self._first_name
-
-    @first_name.setter
-    def first_name(self, first_name):
-        """Set the First Name for the Case Creator."""
-        self._first_name = first_name
-
-    @property
-    def pseudonym(self):
-        """Return the Pseudonym for the Case Creator."""
-        return self._pseudonym
-
-    @pseudonym.setter
-    def pseudonym(self, pseudonym):
-        """Set the Pseudonym for the Case Creator."""
-        self._pseudonym = pseudonym
-
-    @property
-    def role(self):
-        """Return the Role for the Case Creator."""
-        return self._pseudonym
-
-    @role.setter
-    def role(self, role):
-        """Set the Role for the Case Creator."""
-        self._role = role
 
 
 class FilterCase:
@@ -407,6 +294,15 @@ class FilterCase:
     def __init__(self, tql):
         """Initialize Class properties"""
         self._tql = tql
+
+    def created_by(self, operator, created_by):
+        """Filter objects based on "create by" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            created_by (int): The filter value.
+        """
+        self._tql.add_filter('createdby', operator, created_by)
 
     def created_by_id(self, operator, created_by_id):
         """Filter objects based on "create by id" field.
@@ -523,7 +419,7 @@ class FilterCase:
             operator (enum): The enum for the required operator.
             target_id (str): The filter value.
         """
-        self._tql.add_filter('targetid', operator, target_id)
+        self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
 
     def target_type(self, operator, target_type):
         """Filter objects based on "target type" field.

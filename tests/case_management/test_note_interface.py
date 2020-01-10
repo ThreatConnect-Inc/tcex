@@ -10,7 +10,7 @@ from .cm_helpers import CMHelper
 
 
 # pylint: disable=W0201
-class TestNoteIndicators:
+class TestNote:
     """Test TcEx CM Note Interface."""
 
     cm = None

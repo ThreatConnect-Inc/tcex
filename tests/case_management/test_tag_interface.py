@@ -1,101 +1,246 @@
 # -*- coding: utf-8 -*-
-"""Test the TcEx Threat Intel Module."""
+"""Test the TcEx Case Management Module."""
+import os
 from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
+from .cm_helpers import CMHelper
 
 
-# pylint: disable=W0201
-class TestTagIndicators:
-    """Test TcEx Address Indicators."""
+class TestTag:
+    """Test TcEx CM Tag Interface."""
+
+    cm = None
+    cm_helper = None
 
     def setup_class(self):
         """Configure setup before all tests."""
         self.cm = tcex.cm
 
-    def test_get_single(self):
-        """[summary]"""
-        tag = self.test_create('tag_name', delete=False)
-        self.test_create('tag_name_2', delete=False)
+    def setup_method(self):
+        """Configure setup before all tests."""
+        self.cm_helper = CMHelper(self.cm)
 
-        tag = self.cm.tag(id=tag.id)
-        tag.get()
-        assert tag.name == 'tag_name'
+    def teardown_method(self):
+        """Configure teardown before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.cm_helper.cleanup()
 
-        self.test_delete('tag_name', create=False)
-        self.test_delete('tag_name_2', create=False)
+    def test_tag_create(self, request):
+        """Test Artifact Creation"""
+        # tag data
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
 
-    def test_tql(self):
-        """[summary]"""
-        test_tag_1 = self.test_create('tag_name', delete=False)
-        self.test_create('tag_name_2', delete=False)
-        tags = self.cm.tags()
-
-        # Test id tql filter
-        tags.id_filter(TQL.Operator.EQ, test_tag_1.id)
-        assert len(tags) == 1
-        for tag in tags:
-            assert tag.id == test_tag_1.id
-
-        # Test AND functionality
-        tags.name_filter(TQL.Operator.EQ, 'does not exist')
-        assert not tags
-
-        # Clear Filters
-        tags.tql.filters = []
-
-        # Test Name filter
-        tags.name_filter(TQL.Operator.NE, 'does not exist')
-        assert len(tags) == 2
-        for tag in tags:
-            assert tag.name in ['tag_name', 'tag_name_2']
-
-        tags.name_filter(TQL.Operator.EQ, 'tag_name')
-        assert len(tags) == 1
-        for tag in tags:
-            assert tag.name == test_tag_1.name
-
-        # Clear Filters
-        tags.tql.filters = []
-
-        tags.owner_name_filter(TQL.Operator.EQ, tcex.args.tc_owner)
-        # assert len(tags) == 2
-
-        self.test_delete('tag_name', create=False)
-        self.test_delete('tag_name_2', create=False)
-
-    def test_delete(self, name='tag_name', create=True):
-        """[summary]
-
-        Args:
-            name (str, optional): [description]. Defaults to 'tag_name'.
-            create (bool, optional): [description]. Defaults to True.
-        """
-        if create:
-            self.test_create(name, delete=False)
-        tags = self.cm.tags()
-        tags.name_filter(TQL.Operator.EQ, name)
-        for tag in tags:
-            tag.delete()
-
-    def test_create(self, name='tag_name', description='Tag Description', delete=True):
-        """[summary]
-
-        Args:
-            name (str, optional): [description]. Defaults to 'tag_name'.
-            description (str, optional): [description]. Defaults to 'Tag Description'.
-            delete (bool, optional): [description]. Defaults to True.
-
-        Returns:
-            [type]: [description]
-        """
-        tag = self.cm.tag(name=name, description=description)
+        # create tag
+        tag = self.cm.tag(**tag_data)
         tag.submit()
 
-        assert tag.name == name
-        assert tag.description == description
+        # get tag from API to use in asserts
+        tag = self.cm.tag(id=tag.id)
+        tag.get()
 
-        if delete:
-            self.test_delete(name, create=False)
+        # run assertions on returned data
+        assert tag.name == tag_data.get('name')
+        assert tag.description == tag_data.get('description')
 
-        return tag
+        # delete tag
+        tag.delete()
+
+    def test_tag_get_single(self, request):
+        """Test Artifact Creation"""
+        # tag data
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
+
+        # create tag
+        tag = self.cm.tag(**tag_data)
+        tag.submit()
+
+        # get tag from API to use in asserts
+        tag = self.cm.tag(id=tag.id)
+        tag.get()
+
+        # run assertions on returned data
+        assert tag.name == tag_data.get('name')
+        assert tag.description == tag_data.get('description')
+
+        # delete tag
+        tag.delete()
+
+    def test_tag_get_many(self, request):
+        """Test Artifact Creation"""
+        # tag data
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
+
+        # create tag
+        tag = self.cm.tag(**tag_data)
+        tag.submit()
+
+        # iterate over all artifact looking for needle
+        for t in self.cm.tags():
+            if t.name == tag_data.get('name'):
+                assert t.name == tag_data.get('name')
+                assert t.description == tag_data.get('description')
+                break
+        else:
+            assert False
+
+        # delete tag
+        tag.delete()
+
+    def test_tag_get_by_tql_filter_case_id(self, request):
+        """Test Tag Get by TQL"""
+        tag_data = {
+            'name': request.node.name,
+        }
+
+        # create case
+        case = self.cm_helper.create_case(tags=tag_data)
+
+        # retrieve tags using TQL
+        tags = self.cm.tags()
+        tags.filter.case_id(TQL.Operator.EQ, case.id)
+
+        for t in tags:
+            if t.name.lower() == 'pytest':
+                continue
+
+            assert t.name == tag_data.get('name')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
+
+    def test_tag_get_by_tql_filter_id(self, request):
+        """Test Tag Get by TQL"""
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
+
+        # create tag
+        tag = self.cm.tag(**tag_data)
+        tag.submit()
+
+        # retrieve tags using TQL
+        tags = self.cm.tags()
+        tags.filter.id(TQL.Operator.EQ, tag.id)
+
+        for tag in tags:
+            assert tag.name == tag_data.get('name')
+            assert tag.description == tag_data.get('description')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
+
+        # delete tag
+        tag.delete()
+
+    def test_tag_get_by_tql_filter_name(self, request):
+        """Test Tag Get by TQL"""
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
+
+        # create tag
+        tag = self.cm.tag(**tag_data)
+        tag.submit()
+
+        # retrieve tags using TQL
+        tags = self.cm.tags()
+        tags.filter.name(TQL.Operator.EQ, tag_data.get('name'))
+
+        for tag in tags:
+            assert tag.name == tag_data.get('name')
+            assert tag.description == tag_data.get('description')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
+
+        # delete tag
+        tag.delete()
+
+    def test_tag_get_by_tql_filter_owner(self, request):
+        """Test Tag Get by TQL"""
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
+
+        # create tag
+        tag = self.cm.tag(**tag_data)
+        tag.submit()
+
+        # retrieve tags using TQL
+        tags = self.cm.tags()
+        tags.filter.id(TQL.Operator.EQ, tag.id)
+        tags.filter.owner(TQL.Operator.EQ, 2)
+
+        for tag in tags:
+            assert tag.name == tag_data.get('name')
+            assert tag.description == tag_data.get('description')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
+
+        # delete tag
+        tag.delete()
+
+    def test_tag_get_by_tql_filter_owner_name(self, request):
+        """Test Tag Get by TQL"""
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
+
+        # create tag
+        tag = self.cm.tag(**tag_data)
+        tag.submit()
+
+        # retrieve tags using TQL
+        tags = self.cm.tags()
+        tags.filter.id(TQL.Operator.EQ, tag.id)
+        tags.filter.owner_name(TQL.Operator.EQ, 'TCI')
+
+        for tag in tags:
+            assert tag.name == tag_data.get('name')
+            assert tag.description == tag_data.get('description')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
+
+        # delete tag
+        tag.delete()
+
+    def test_tag_get_by_tql_filter_tql(self, request):
+        """Test Tag Get by TQL"""
+        tag_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+        }
+
+        # create tag
+        tag = self.cm.tag(**tag_data)
+        tag.submit()
+
+        # retrieve tags using TQL
+        tags = self.cm.tags()
+        tags.filter.tql(f'id EQ {tag.id}')
+
+        for tag in tags:
+            assert tag.name == tag_data.get('name')
+            assert tag.description == tag_data.get('description')
+            break
+        else:
+            assert False, 'No artifact returned for TQL'
+
+        # delete tag
+        tag.delete()

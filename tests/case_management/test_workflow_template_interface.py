@@ -1,57 +1,31 @@
 # -*- coding: utf-8 -*-
-"""Test the TcEx Threat Intel Module."""
+"""Test the TcEx Case Management Module."""
+import os
 
-from tcex.case_management.tql import TQL
+# import re
+# import time
+# from random import randint
+# from tcex.case_management.tql import TQL
 
 from ..tcex_init import tcex
+from .cm_helpers import CMHelper
 
 
-# pylint: disable=W0201
-class TestWorkflowTemplateIndicators:
-    """Test TcEx Address Indicators."""
+class TestWorkflowEvent:
+    """Test TcEx CM Workflow Event Interface."""
+
+    cm = None
+    cm_helper = None
 
     def setup_class(self):
         """Configure setup before all tests."""
         self.cm = tcex.cm
 
-    # def test_get_single(self):
+    def setup_method(self):
+        """Configure setup before all tests."""
+        self.cm_helper = CMHelper(self.cm)
 
-    # def test_get_many(self):
-
-    # def test_tql(self):
-
-    def test_delete(self, name='tag_name', create=True):
-        """[summary]
-
-        Args:
-            name (str, optional): [description]. Defaults to 'tag_name'.
-            create (bool, optional): [description]. Defaults to True.
-        """
-        if create:
-            self.test_create(name, delete=False)
-        tags = self.cm.tags()
-        tags.name_filter(TQL.Operator.EQ, name)
-        for tag in tags:
-            tag.delete()
-
-    def test_create(self, name='tag_name', description='Tag Description', delete=True):
-        """[summary]
-
-        Args:
-            name (str, optional): [description]. Defaults to 'tag_name'.
-            description (str, optional): [description]. Defaults to 'Tag Description'.
-            delete (bool, optional): [description]. Defaults to True.
-
-        Returns:
-            [type]: [description]
-        """
-        tag = self.cm.tag(name=name, description=description)
-        tag.submit()
-
-        assert tag.name == name
-        assert tag.description == description
-
-        if delete:
-            self.test_delete(name, create=False)
-
-        return tag
+    def teardown_method(self):
+        """Configure teardown before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.cm_helper.cleanup()

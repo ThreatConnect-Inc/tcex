@@ -181,13 +181,18 @@ class WorkflowTemplate(CommonCaseManagement):
         """
         return ['assignees', 'cases', 'organizations', 'user']
 
-    def entity_mapper(self, entity):
-        """
-         Maps a dict to a Workflow Template then updates self.
+    # TODO: BCS fix this
+    @property
+    def as_entity(self):
+        """Return the entity representation of the Workflow Event."""
+        return {}
 
-         Args:
-             entity (dict): The dict to map self too.
-         """
+    def entity_mapper(self, entity):
+        """Update current object with provided object properties.
+
+        Args:
+            entity (dict): An entity dict used to update the Object.
+        """
         new_case = WorkflowTemplate(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
 
