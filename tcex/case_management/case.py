@@ -280,8 +280,12 @@ class Users:
 
     def __init__(self, users):
         self.user = []
-        for data in users:
-            self.user.append(User(**data.get('data', data)))
+        if isinstance(users, dict):
+            for data in users.get('data', []):
+                self.user.append(User(**data))
+        elif isinstance(users, list):
+            for user in users:
+                self.user.append(user)
 
     @property
     def as_dict(self):
