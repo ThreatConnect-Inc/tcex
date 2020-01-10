@@ -204,6 +204,9 @@ class CommonCaseManagement:
         elif fields:
             for field in fields:
                 parameters['fields'].append(field)
+        if not cm_id:
+            message = '{"message": "No ID provided.", "status": "Error"}'
+            self.tcex.handle_error(951, ['GET', '404', message, url])
 
         # @bpurdy - what is the retry count for? tcex session has built-in retry
         while current_retries < retry_count:
