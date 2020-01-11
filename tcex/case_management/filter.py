@@ -39,8 +39,10 @@ class Filter:
 
         return {
             'active': 'active',
+            'artifactid': 'artifact_id',
             'assignedgroupid': 'assigned_group_id',
             'assigneduserid': 'assigned_user_id',
+            'author': 'author',
             'caseid': 'case_id',
             'caseseverity': 'case_severity',
             'completeddate': 'completed_date',
@@ -55,6 +57,7 @@ class Filter:
             'eventdate': 'event_date',
             'hascase': 'has_case',
             'id': 'id',
+            'lastmodified': 'last_modified',
             'link': 'link',
             'linktext': 'link_text',
             'name': 'name',
@@ -66,8 +69,10 @@ class Filter:
             'systemgenerated': 'system_generated',
             'targetid': 'target_id',
             'targettype': 'target_type',
+            'taskid': 'task_id',
             'version': 'version',
             'username': 'username',
+            'workfloweventid': 'workflow_event_id',
             'xid': 'xid',
         }
 

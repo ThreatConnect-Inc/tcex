@@ -100,7 +100,7 @@ class CommonCaseManagementCollection:
             f'{" " * 8}return {{\n'
         )
         for t in sorted(self.tql_data, key=lambda i: i['keyword']):
-            method_data += f"""{" " * 12}"{t.get('keyword')}": "{t.get('keyword')}",\n"""
+            method_data += f"""{" " * 12}'{t.get('keyword')}': '{t.get('keyword')}',\n"""
         method_data += f'{" " * 8}}}\n'
 
         return method_data
