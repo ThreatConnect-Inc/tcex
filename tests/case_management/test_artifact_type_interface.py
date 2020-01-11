@@ -30,10 +30,18 @@ class TestArtifactType:
         if os.getenv('TEARDOWN_METHOD') is None:
             self.cm_helper.cleanup()
 
+    def test_artifact_type_filter_keywords(self):
+        """Test filter keywords."""
+        # print(self.test_obj._doc_string)
+        # print(self.test_obj_collection._filter_map_method)
+        # print(self.test_obj_collection._filter_class)
+        for keyword in self.test_obj_collection.filter.keywords:
+            if keyword not in self.test_obj_collection.filter.implemented_keywords:
+                assert False, f'Missing TQL keyword {keyword}.'
+
     def test_artifact_type_properties(self):
-        """Test Artifacts properties."""
-        r = tcex.session.options(self.test_obj.api_endpoint, params={'show': 'readOnly'})
-        for prop_string, prop_data in r.json().items():
+        """Test properties."""
+        for prop_string, prop_data in self.test_obj.properties.items():
             prop_read_only = prop_data.get('read-only', False)
             prop_string = self.cm_helper.camel_to_snake(prop_string)
 
@@ -41,16 +49,6 @@ class TestArtifactType:
             assert hasattr(
                 self.test_obj, prop_string
             ), f'Missing {prop_string} property. read-only: {prop_read_only}'
-
-    def test_artifact_types_filter_methods(self):
-        """Test Artifacts filter methods."""
-        r = tcex.session.options(f'{self.test_obj.api_endpoint}/tql', params={})
-
-        for data in r.json().get('data'):
-            keyword = data.get('keyword')
-
-            if keyword not in self.test_obj_collection.filter.keywords:
-                assert False, f'Missing TQL keyword {keyword}.'
 
     def test_artifact_type_get_many(self):
         """Tests getting all artifact types"""

@@ -3,13 +3,14 @@
 from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
+from .filter import Filter
 from .tql import TQL
 
 
 class ArtifactTypes(CommonCaseManagementCollection):
     """Artifacts Type Class for Case Management Collection
 
-   params example: {
+    params example: {
         'result_limit': 100, # How many results are retrieved.
         'result_start': 10,  # Starting point on retrieved results.
         'fields': ['caseId', 'summary'] # Additional fields returned on the results
@@ -51,27 +52,26 @@ class ArtifactTypes(CommonCaseManagementCollection):
 
     @property
     def filter(self):
-        """Return instance of FilterArtifactType Object."""
-        return FilterArtifactType(self.tql)
+        """Return instance of FilterArtifactTypes Object."""
+        return FilterArtifactTypes(ApiEndpoints.ARTIFACT_TYPES, self.tcex, self.tql)
 
 
 class ArtifactType(CommonCaseManagement):
-    """Artifact object for Case Management.
+    """ArtifactType object for Case Management.
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-
-        description (str, kwargs): The Description for the Artifact Type.
-        data_type (str, kwargs): The Data Type for the Artifact Type.
-        intel_type (str, kwargs): The Intel Type for the Artifact Type.
-        name (str, kwargs): The Name for the Artifact Type.
+        data_type (str, kwargs): [Read-Only] The **Data Type** for the Artifact Type.
+        description (str, kwargs): [Read-Only] The **Description** for the Artifact Type.
+        intel_type (str, kwargs): [Read-Only] The **Intel Type** for the Artifact Type.
+        name (str, kwargs): [Read-Only] The **Name** for the Artifact Type.
     """
 
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.ARTIFACT_TYPES, kwargs)
-        self._description = kwargs.get('description', None)
         self._data_type = kwargs.get('data_type', None)
+        self._description = kwargs.get('description', None)
         self._intel_type = kwargs.get('intel_type', None)
         self._name = kwargs.get('name', None)
 
@@ -79,11 +79,6 @@ class ArtifactType(CommonCaseManagement):
     def as_entity(self):
         """Return the entity representation of the Artifact Type."""
         return {'type': 'Artifact Type', 'value': self.name, 'id': self.id}
-
-    @property
-    def available_fields(self):
-        """Return available fields for current object."""
-        return []
 
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
@@ -96,144 +91,96 @@ class ArtifactType(CommonCaseManagement):
 
     @property
     def data_type(self):
-        """Return the "Date Type" for the Artifact."""
+        """Return the **Date Type** for the Artifact."""
         return self._data_type
-
-    @data_type.setter
-    def data_type(self, data_type):
-        """Set the "Date Type" for the Artifact."""
-        self._data_type = data_type
 
     @property
     def description(self):
-        """Return the "Description" for the Artifact."""
+        """Return the **Description** for the Artifact."""
         return self._description
-
-    @description.setter
-    def description(self, description):
-        """Set the "Description" for the Artifact."""
-        self._description = description
 
     @property
     def intel_type(self):
-        """Return the "Intel Type" for the Artifact."""
+        """Return the **Intel Type** for the Artifact."""
         return self._intel_type
-
-    @intel_type.setter
-    def intel_type(self, intel_type):
-        """Set the "Intel Type" for the Artifact."""
-        self._intel_type = intel_type
 
     @property
     def name(self):
-        """Return the "Name" for the Artifact."""
+        """Return the **Name** for the Artifact."""
         return self._name
 
-    @name.setter
-    def name(self, name):
-        """Set the "Name" for the Artifact."""
-        self._name = name
 
-
-class FilterArtifactType:
-    """Filter Object for Artifact
-
-    Args:
-        tql (TQL): Instance of TQL Class.
-    """
-
-    def __init__(self, tql):
-        """Initialize Class properties"""
-        self._tql = tql
+class FilterArtifactTypes(Filter):
+    """Filter Object for ArtifactTypes"""
 
     def active(self, operator, active):
-        """Filter objects based on "active" field.
+        """Filter Artifact Types based on **active** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            active (bool): The filter value.
+            operator (enum): The operator enum for the filter.
+            active (bool): The active status of the artifact type.
         """
         self._tql.add_filter('active', operator, active, TQL.Type.BOOLEAN)
 
     def data_type(self, operator, data_type):
-        """Filter objects based on "data type" field.
+        """Filter Artifact Types based on **datatype** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            data_type (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            data_type (str): The data type of the artifact type.
         """
-        self._tql.add_filter('datatype', operator, data_type)
+        self._tql.add_filter('datatype', operator, data_type, TQL.Type.STRING)
 
     def description(self, operator, description):
-        """Filter objects based on "description" field.
+        """Filter Artifact Types based on **description** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            description (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            description (str): The description of the artifact type.
         """
-        self._tql.add_filter('description', operator, description)
+        self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
-    def id(self, operator, artifact_type_id):
-        """Filter objects based on "id" field.
+    def id(self, operator, id):  # pylint: disable=redefined-builtin
+        """Filter Artifact Types based on **id** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            artifact_type_id (int): The filter value.
+            operator (enum): The operator enum for the filter.
+            id (int): The ID of the artifact type.
         """
-        self._tql.add_filter('id', operator, artifact_type_id, TQL.Type.INTEGER)
+        self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def intel_type(self, operator, intel_type):
-        """Filter objects based on "intel type" field.
+        """Filter Artifact Types based on **inteltype** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            intel_type (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            intel_type (str): The intel type of the artifact type.
         """
-        self._tql.add_filter('inteltype', operator, intel_type)
-
-    @property
-    def keywords(self):
-        """Return supported TQL keywords."""
-        keywords = []
-        for prop in dir(self):
-            if prop.startswith('_') or prop in ['tql']:
-                continue
-            # remove underscore from method name to match keyword
-            keywords.append(prop.replace('_', ''))
-
-        return keywords
+        self._tql.add_filter('inteltype', operator, intel_type, TQL.Type.STRING)
 
     def managed(self, operator, managed):
-        """Filter objects based on "managed" field.
+        """Filter Artifact Types based on **managed** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            managed (bool): The filter value.
+            operator (enum): The operator enum for the filter.
+            managed (bool): The managed status of the artifact type.
         """
         self._tql.add_filter('managed', operator, managed, TQL.Type.BOOLEAN)
 
     def name(self, operator, name):
-        """Filter objects based on "name" field.
+        """Filter Artifact Types based on **name** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            name (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            name (str): The name of the artifact type.
         """
-        self._tql.add_filter('name', operator, name)
-
-    def tql(self, tql):
-        """Filter objects based on TQL expression.
-
-        Args:
-            tql (str): The raw TQL string for the filter.
-        """
-        self._tql.set_raw_tql(tql)
+        self._tql.add_filter('name', operator, name, TQL.Type.STRING)
 
     def ui_element(self, operator, ui_element):
-        """Filter objects based on "ui element" field.
+        """Filter Artifact Types based on **uielement** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            ui_element (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            ui_element (str): The UI element type to use for this artifact type.
         """
-        self._tql.add_filter('uielement', operator, ui_element)
+        self._tql.add_filter('uielement', operator, ui_element, TQL.Type.STRING)
