@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Workflow Event"""
-from .assignee import User
 from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .filter import Filter
-from .note import Note, Notes
 from .tql import TQL
 
 
@@ -63,15 +61,16 @@ class WorkflowEvent(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        case_id (int, kwargs): [Required] The **Case Id** for the Workflow Event.
-        case_xid (str, kwargs): [Required] The **Case Xid** for the Workflow Event.
+        case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Workflow Event.
+        case_xid (str, kwargs): [Required (alt: caseId)] The **Case Xid** for the Workflow Event.
         date_added (str, kwargs): [Read-Only] The **Date Added** for the Workflow Event.
         deleted (bool, kwargs): [Read-Only] The **Deleted** flag for the Workflow Event.
-        deleted_reason (str, kwargs): [Read-Only] The **Deleted Reason** for the Workflow Event.
-        event_date (str, kwargs): The **Event Date** for the Workflow Event.
+        deleted_reason (str, kwargs): the reason for deleting the event (required input for DELETE
+            operation only)
+        event_date (str, kwargs): the time that the Event is logged
         link (str, kwargs): [Read-Only] The **Link** for the Workflow Event.
         link_text (str, kwargs): [Read-Only] The **Link Text** for the Workflow Event.
-        notes (Note, kwargs): [Required] a list of Notes corresponding to the Event
+        notes (Note, kwargs): a list of Notes corresponding to the Event
         parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Workflow Event.
         summary (str, kwargs): [Required] The **Summary** for the Workflow Event.
         system_generated (bool, kwargs): [Read-Only] The **System Generated** flag for the Workflow
@@ -92,25 +91,20 @@ class WorkflowEvent(CommonCaseManagement):
         self._event_date = kwargs.get('event_date', None)
         self._link = kwargs.get('link', None)
         self._link_text = kwargs.get('link_text', None)
-        self._notes = Notes(self.tcex, kwargs.get('notes', {}).get('data'))
-        self._parent_case = tcex.cm.case(**kwargs.get('parent_case', {}))
+        self._notes = kwargs.get('notes', None)
+        self._parent_case = kwargs.get('parent_case', None)
         self._summary = kwargs.get('summary', None)
         self._system_generated = kwargs.get('system_generated', None)
-        self._user = User(**kwargs.get('user', {}))
+        self._user = kwargs.get('user', None)
 
     def add_note(self, **kwargs):
         """Add a note to the workflow event."""
-        self._notes.add_note(Note(self.tcex, **kwargs))
+        self._notes.add_note(self.tcex.cm.note(**kwargs))
 
     @property
     def as_entity(self):
         """Return the entity representation of the Workflow Event."""
         return {'type': 'Workflow Event', 'value': self.summary, 'id': self.id}
-
-    @property
-    def available_fields(self):
-        """Return the available fields to fetch for an Artifact."""
-        return ['caseid', 'note', 'parentCase', 'user']
 
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
@@ -143,28 +137,23 @@ class WorkflowEvent(CommonCaseManagement):
 
     @property
     def date_added(self):
-        """Return the "Date Added" for the Workflow Event."""
+        """Return the **Date Added** for the Workflow Event."""
         return self._date_added
-
-    @date_added.setter
-    def date_added(self, date_added):
-        """Set the "Date Added" for the Workflow Event."""
-        self._date_added = date_added
 
     @property
     def deleted(self):
         """Return the **Deleted** flag for the Workflow Event."""
         return self._deleted
 
-    @deleted.setter
-    def deleted(self, deleted):
-        """Set the **Deleted** flag for the Workflow Event."""
-        self._deleted = deleted
-
     @property
     def deleted_reason(self):
         """Return the **Deleted Reason** for the Workflow Event."""
         return self._deleted_reason
+
+    @deleted_reason.setter
+    def deleted_reason(self, deleted_reason):
+        """Set the **Deleted Reason** for the Workflow Event."""
+        self._deleted_reason = deleted_reason
 
     @property
     def event_date(self):
@@ -173,7 +162,7 @@ class WorkflowEvent(CommonCaseManagement):
 
     @event_date.setter
     def event_date(self, event_date):
-        """Set the "Event Date" for the Workflow Event."""
+        """Set the **Event Date** for the Workflow Event."""
         self._event_date = event_date
 
     @property
@@ -182,19 +171,14 @@ class WorkflowEvent(CommonCaseManagement):
         return self._id
 
     @id.setter
-    def id(self, event_date):
-        """Set the "Event Date" for the Workflow Event."""
-        self._event_date = event_date
+    def id(self, id):  # pylint: disable=redefined-builtin
+        """Set the **ID** for the Workflow Event."""
+        self._id = id
 
     @property
     def link(self):
-        """Return the **link** for the Workflow Event."""
+        """Return the **Link** for the Workflow Event."""
         return self._link
-
-    @link.setter
-    def link(self, link):
-        """Set the **Link** for the Workflow Event."""
-        self._link = link
 
     @property
     def link_text(self):
@@ -203,18 +187,22 @@ class WorkflowEvent(CommonCaseManagement):
 
     @property
     def notes(self):
-        """Return the **Notes** for the Workflow Event."""
+        """Return the **Notes** for the Task"""
+        if self._notes:
+            return self.tcex.cm.notes(initial_response=self._notes)
         return self._notes
+
+    @notes.setter
+    def notes(self, notes):
+        """Set the **Notes** for the Task"""
+        self._notes = notes
 
     @property
     def parent_case(self):
-        """Return the **Parent Case** for the Workflow Event."""
+        """Return the **Parent Case** for the Task."""
+        if self._parent_case:
+            return self.tcex.cm.case(**self._parent_case)
         return self._parent_case
-
-    @property
-    def required_properties(self):
-        """Return a list of required fields for an Artifact."""
-        return ['summary', 'case_id']
 
     @property
     def summary(self):
@@ -231,14 +219,11 @@ class WorkflowEvent(CommonCaseManagement):
         """Return the **System Generated** flag for the Workflow Event."""
         return self._system_generated
 
-    @system_generated.setter
-    def system_generated(self, system_generated):
-        """Set the **System Generated** flag for the Workflow Event."""
-        self._system_generated = system_generated
-
     @property
     def user(self):
         """Return the **User** for the Workflow Event."""
+        if self._user:
+            return self.tcex.cm.user(**self._user)
         return self._user
 
 

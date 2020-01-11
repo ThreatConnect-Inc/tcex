@@ -54,9 +54,9 @@ class CommonCaseManagement:
             read_only = pd.get('read-only', False)
 
             # get required value or default
-            required = pd.get('required', True)
-            if read_only is True:
-                required = False
+            required = pd.get('required', False)
+            # if read_only is True:
+            #     required = False
 
             # get type
             type_flag = ''  # used to append the word flag for bool types
@@ -85,14 +85,19 @@ class CommonCaseManagement:
                 f'The **{self.tcex.utils.camel_to_space(p).title()}**{type_flag} for the '
                 f'{self.tcex.utils.camel_to_space(self.__class__.__name__).title()}.'
             )
-            if data:
+            if pd.get('description'):
+                description = pd.get('description')
+            elif data:
                 if data[0].get('description'):
                     description = data[0].get('description', '')
 
             # build meta with required and read-only values
             meta = []
             if required:
-                meta.append('Required')
+                required_text = 'Required'
+                if pd.get('required-alt-field'):
+                    required_text += f" (alt: {pd.get('required-alt-field')})"
+                meta.append(required_text)
             if read_only:
                 meta.append('Read-Only')
             if meta:
@@ -117,6 +122,7 @@ class CommonCaseManagement:
     @property
     def _metadata_map(self):
         """Return a mapping of kwargs to expected args."""
+        # @bpurdy - can we just use camel_to_snake here???
         return {
             'artifactId': 'artifact_id',
             'artifact_type': 'type',

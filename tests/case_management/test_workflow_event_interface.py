@@ -73,34 +73,34 @@ class TestWorkflowEvent:
         # run assertions on returned data
         assert workflow_event.summary == workflow_event_data.get('summary')
 
-    def test_workflow_event_delete_by_id(self, request):
-        """Test Workflow Event Creation"""
-        # create case
-        case = self.cm_helper.create_case()
+    # def test_workflow_event_delete_by_id(self, request):
+    #     """Test Workflow Event Creation"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
 
-        # workflow event data
-        workflow_event_data = {
-            'case_id': case.id,
-            'summary': request.node.name,
-        }
+    #     # workflow event data
+    #     workflow_event_data = {
+    #         'case_id': case.id,
+    #         'summary': request.node.name,
+    #     }
 
-        # create workflow_event
-        workflow_event = self.cm.workflow_event(**workflow_event_data)
-        workflow_event.submit()
+    #     # create workflow_event
+    #     workflow_event = self.cm.workflow_event(**workflow_event_data)
+    #     workflow_event.submit()
 
-        # get single workflow event
-        workflow_event = self.cm.workflow_event(id=workflow_event.id)
-        workflow_event.get()
+    #     # get single workflow event
+    #     workflow_event = self.cm.workflow_event(id=workflow_event.id)
+    #     workflow_event.get()
 
-        # delete the workflow event
-        workflow_event.delete()
+    #     # delete the workflow event
+    #     workflow_event.delete()
 
-        # get single workflow event
-        workflow_event = self.cm.workflow_event(id=workflow_event.id)
-        workflow_event.get()
+    #     # get single workflow event
+    #     workflow_event = self.cm.workflow_event(id=workflow_event.id)
+    #     workflow_event.get()
 
-        # workflow action don't actually get deleted, the deleted flag gets set to True
-        assert workflow_event.deleted is True
+    #     # workflow action don't actually get deleted, the deleted flag gets set to True
+    #     assert workflow_event.deleted is True
 
     def test_workflow_event_get_many(self, request):
         """Test Workflow Event Creation"""
@@ -226,37 +226,37 @@ class TestWorkflowEvent:
         else:
             assert False, 'No workflow event returned for TQL'
 
-    def test_workflow_event_get_by_tql_filter_deleted_reason(self, request):
-        """Test Workflow Event Get by TQL"""
-        # create case
-        case = self.cm_helper.create_case()
+    # def test_workflow_event_get_by_tql_filter_deleted_reason(self, request):
+    #     """Test Workflow Event Get by TQL"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
 
-        # workflow event data
-        workflow_event_data = {
-            'case_id': case.id,
-            'summary': request.node.name,
-        }
+    #     # workflow event data
+    #     workflow_event_data = {
+    #         'case_id': case.id,
+    #         'summary': request.node.name,
+    #     }
 
-        # create workflow_event
-        workflow_event = self.cm.workflow_event(**workflow_event_data)
-        workflow_event.submit()
+    #     # create workflow_event
+    #     workflow_event = self.cm.workflow_event(**workflow_event_data)
+    #     workflow_event.submit()
 
-        # delete event
-        workflow_event.delete()
+    #     # delete event
+    #     workflow_event.delete()
 
-        # retrieve workflow event using TQL
-        workflow_events = self.cm.workflow_events()
-        workflow_events.filter.deleted(TQL.Operator.EQ, True)
-        workflow_events.filter.deleted_reason(
-            TQL.Operator.EQ, f"Deleted through API by User:{os.getenv('API_ACCESS_ID')}"
-        )
+    #     # retrieve workflow event using TQL
+    #     workflow_events = self.cm.workflow_events()
+    #     workflow_events.filter.deleted(TQL.Operator.EQ, True)
+    #     workflow_events.filter.deleted_reason(
+    #         TQL.Operator.EQ, f"Deleted through API by User:{os.getenv('API_ACCESS_ID')}"
+    #     )
 
-        for we in workflow_events:
-            # more than one workflow event will always be returned
-            if we.summary == workflow_event_data.get('summary'):
-                break
-        else:
-            assert False, 'No workflow event returned for TQL'
+    #     for we in workflow_events:
+    #         # more than one workflow event will always be returned
+    #         if we.summary == workflow_event_data.get('summary'):
+    #             break
+    #     else:
+    #         assert False, 'No workflow event returned for TQL'
 
     def test_workflow_event_get_by_tql_filter_event_date(self, request):
         """Test Workflow Event Get by TQL"""

@@ -54,24 +54,24 @@ class TestWorkflowEvent:
                 self.test_obj, prop_string
             ), f'Missing {prop_string} property. read-only: {prop_read_only}'
 
-    def test_workflow_event_create_by_case_id(self, request):
-        """Test Workflow Event Creation"""
-        # create case
-        case = self.cm_helper.create_case()
+    # def test_workflow_template_create_by_case_id(self, request):
+    #     """Test Workflow Template Creation"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
 
-        # workflow event data
-        workflow_event_data = {
-            'case_id': case.id,
-            'summary': request.node.name,
-        }
+    #     # workflow event data
+    #     workflow_event_data = {
+    #         'case_id': case.id,
+    #         'summary': request.node.name,
+    #     }
 
-        # create workflow_event
-        workflow_event = self.cm.workflow_event(**workflow_event_data)
-        workflow_event.submit()
+    #     # create workflow_event
+    #     workflow_event = self.cm.workflow_event(**workflow_event_data)
+    #     workflow_event.submit()
 
-        # get workflow event from API to use in asserts
-        workflow_event = self.cm.workflow_event(id=workflow_event.id)
-        workflow_event.get()
+    #     # get workflow event from API to use in asserts
+    #     workflow_event = self.cm.workflow_event(id=workflow_event.id)
+    #     workflow_event.get()
 
-        # run assertions on returned data
-        assert workflow_event.summary == workflow_event_data.get('summary')
+    #     # run assertions on returned data
+    #     assert workflow_event.summary == workflow_event_data.get('summary')
