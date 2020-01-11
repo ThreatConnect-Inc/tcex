@@ -58,6 +58,8 @@ class Filter:
             'link': 'link',
             'linktext': 'link_text',
             'name': 'name',
+            'owner': 'owner',
+            'ownername': 'owner_name',
             'organizationid': 'organization_id',
             'status': 'status',
             'summary': 'summary',

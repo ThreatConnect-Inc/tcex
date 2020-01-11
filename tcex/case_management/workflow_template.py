@@ -65,7 +65,7 @@ class WorkflowTemplate(CommonCaseManagement):
             Template.
         assigned_user (User, kwargs): [Read-Only] The **Assigned User** for the Workflow Template.
         assignee (Assignee, kwargs): [Read-Only] The **Assignee** for the Workflow Template.
-        cases (Case, kwargs): [Required] The **Cases** for the Workflow Template.
+        cases (Case, kwargs): The **Cases** for the Workflow Template.
         config_artifact (str, kwargs): [Read-Only] The **Config Artifact** for the Workflow
             Template.
         config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Workflow

@@ -74,27 +74,27 @@ class Task(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        artifacts (Artifact, kwargs): [Required] a list of Artifacts corresponding to the Task.
-        assignee (Assignee, kwargs): The **Assignee** for the Task.
-        case_id (int, kwargs): [Required] The **Case Id** for the Task.
-        case_xid (str, kwargs): [Required] The **Case Xid** for the Task.
+        artifacts (Artifact, kwargs): a list of Artifacts corresponding to the Task
+        assignee (Assignee, kwargs): the user or group Assignee object for the Task
+        case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Task.
+        case_xid (str, kwargs): [Required (alt: caseId)] The **Case Xid** for the Task.
         completed_by (str, kwargs): [Read-Only] The **Completed By** for the Task.
-        completed_date (str, kwargs): The **Completed Date** for the Task.
+        completed_date (str, kwargs): the completion date of the Task
         config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Task.
         config_task (dict, kwargs): [Read-Only] The **Config Task** for the Task.
         dependent_on_task_name (str, kwargs): [Read-Only] The **Dependent On Task Name** for the
             Task.
         description (str, kwargs): The **Description** for the Task.
-        due_date (str, kwargs): The **Due Date** for the Task.
+        due_date (str, kwargs): the due date of the Task
         duration (int, kwargs): [Read-Only] The **Duration** for the Task.
         id_dependent_on (int, kwargs): [Read-Only] The **Id_Dependent On** for the Task.
         name (str, kwargs): [Required] The **Name** for the Task.
-        notes (Note, kwargs): [Required] a list of Notes corresponding to the Task
+        notes (Note, kwargs): a list of Notes corresponding to the Task
         parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Task.
         required (bool, kwargs): [Read-Only] The **Required** flag for the Task.
         status (str, kwargs): The **Status** for the Task.
-        workflow_phase (int, kwargs): The **Workflow Phase** for the Task.
-        workflow_step (int, kwargs): The **Workflow Step** for the Task.
+        workflow_phase (int, kwargs): the phase of the workflow
+        workflow_step (int, kwargs): the step of the workflow
         xid (str, kwargs): The **Xid** for the Task.
     """
 
