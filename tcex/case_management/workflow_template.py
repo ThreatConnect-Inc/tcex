@@ -73,8 +73,6 @@ class WorkflowTemplate(CommonCaseManagement):
         config_task (dict, kwargs): [Read-Only] The **Config Task** for the Workflow Template.
         description (str, kwargs): The **Description** for the Workflow Template.
         name (str, kwargs): [Required] The **Name** for the Workflow Template.
-        organization (Organization, kwargs): [Read-Only] The **Organization** for the Workflow
-            Template.
         target_type (str, kwargs): [Read-Only] The **Target Type** for the Workflow Template.
         version (int, kwargs): The **Version** for the Workflow Template.
     """
@@ -92,7 +90,6 @@ class WorkflowTemplate(CommonCaseManagement):
         self._config_task = kwargs.get('config_task', None)
         self._description = kwargs.get('description', None)
         self._name = kwargs.get('name', None)
-        self._organization = kwargs.get('organization', None)
         self._target_type = kwargs.get('target_type', None)
         self._version = kwargs.get('version', None)
 
@@ -101,47 +98,21 @@ class WorkflowTemplate(CommonCaseManagement):
         """Return the parent **Active** flag for the Workflow Template."""
         return self._active
 
-    @active.setter
-    def active(self, active):
-        """Set the parent **Active** flag for the Workflow Template."""
-        self._active = active
-
     @property
     def assigned_group(self):
         """Return the parent **Assigned Group** flag for the Workflow Template."""
         return self._assigned_group
-
-    @assigned_group.setter
-    def assigned_group(self, assigned_group):
-        """Set the parent **Assigned Group** flag for the Workflow Template."""
-        self._assigned_group = assigned_group
 
     @property
     def assigned_user(self):
         """Return the parent **Assigned User** flag for the Workflow Template."""
         return self._assigned_user
 
-    @assigned_user.setter
-    def assigned_user(self, assigned_user):
-        """Set the parent **Assigned User** flag for the Workflow Template."""
-        self._assigned_user = assigned_user
-
     @property
     def assignee(self):
         """Return the parent **Assignee** flag for the Workflow Template."""
         return self._assignee
 
-    @assignee.setter
-    def assignee(self, assignee):
-        """Set the parent **Assignee** flag for the Workflow Template."""
-        self._assignee = assignee
-
-    @property
-    def available_fields(self):
-        """Return the available fields to fetch for an Workflow Template."""
-        return ['assignees', 'cases', 'organizations', 'user']
-
-    # TODO: BCS fix this
     @property
     def as_entity(self):
         """Return the entity representation of the Workflow Event."""
@@ -150,7 +121,12 @@ class WorkflowTemplate(CommonCaseManagement):
     @property
     def cases(self):
         """Return the parent **Cases** for the Workflow Template."""
-        return self._cases
+        return self.tcex.cm.cases(initial_response=self._cases)
+
+    @cases.setter
+    def cases(self, cases):
+        """Set the parent **Cases** for the Workflow Template."""
+        self._cases = cases
 
     @property
     def config_artifact(self):
@@ -195,11 +171,6 @@ class WorkflowTemplate(CommonCaseManagement):
     def name(self, name):
         """Set the parent **Name** for the Workflow Template."""
         self._name = name
-
-    @property
-    def organization(self):
-        """Return the parent **Organization** for the Workflow Template."""
-        return self._organization
 
     @property
     def target_type(self):
