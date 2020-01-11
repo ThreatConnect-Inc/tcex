@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Utils Module."""
 import pytest
-from ..tcex_init import tcex
 
 
 # pylint: disable=no-self-use
@@ -17,10 +16,11 @@ class TestStringModifiers:
             ('Upper', 'upper'),
         ],
     )
-    def test_utils_camel_to_snake(self, input_, expected):
+    def test_utils_camel_to_snake(self, tcex, input_, expected):
         """Test **camel_to_snake** method of TcEx Utils module.
 
         Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             input_ (str): The input string to convert to snake case.
             expected (str): The expected result value.
         """
@@ -36,10 +36,11 @@ class TestStringModifiers:
             ('Upper', 'upper'),
         ],
     )
-    def test_utils_camel_to_space(self, input_, expected):
+    def test_utils_camel_to_space(self, tcex, input_, expected):
         """Test **camel_to_space** method of TcEx Utils module.
 
         Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             input_ (str): The input string to convert to snake case.
             expected (str): The expected result value.
         """
@@ -62,10 +63,11 @@ class TestStringModifiers:
             ('Threat', 'Threats'),
         ],
     )
-    def test_utils_inflect(self, input_, expected):
+    def test_utils_inflect(self, tcex, input_, expected):
         """Test **inflect** method of TcEx Utils module.
 
         Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             input_ (str): The string to "inflect".
             expected (str): The expected results.
         """
@@ -85,10 +87,11 @@ class TestStringModifiers:
             (False, False),
         ],
     )
-    def test_utils_to_bool(self, input_, expected):
+    def test_utils_to_bool(self, tcex, input_, expected):
         """Test **to_bool** method of TcEx Utils module.
 
         Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             input_ (str): The input string to convert to bool.
             expected (bool): The expected boolean value.
         """

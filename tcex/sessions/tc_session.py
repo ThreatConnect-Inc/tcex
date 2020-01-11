@@ -69,8 +69,8 @@ class TcSession(Session):
         if self.args.tc_proxy_tc:
             self.proxies = self.tcex.proxies
             self.tcex.log.trace(
-                f'Using proxy host {self.args.tc_proxy_host}:{self.args.tc_proxy_port} '
-                'for ThreatConnect API.'
+                f'Using proxy host {self.args.tc_proxy_host}:'
+                f'{self.args.tc_proxy_port} for ThreatConnect API.'
             )
 
         # Add Retry
@@ -86,13 +86,15 @@ class TcSession(Session):
             # service Apps only use tokens and playbook/runtime Apps will use token if available
             self.auth = TokenAuth(self.token)
             self.tcex.log.trace('Using token authorization.')
-        else:
+        elif self.args.api_access_id and self.args.api_secret_key:
             try:
                 # for external Apps or testing Apps locally
                 self.auth = HmacAuth(self.args.api_access_id, self.args.api_secret_key)
                 self.tcex.log.trace('Using HMAC authorization.')
             except AttributeError:  # pragma: no cover
                 raise RuntimeError('No valid ThreatConnect API credentials provided.')
+        else:
+            raise RuntimeError('No valid ThreatConnect API credentials provided.')
 
     @property
     def _service_app(self):

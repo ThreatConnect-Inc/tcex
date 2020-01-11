@@ -33,7 +33,7 @@ class TestUtils:
         """Test **any_to_datetime** method of TcEx Utils datetime module.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             date (str): The input datetime expression.
             tz (str, Optional): The timezone value as a string.
             results (dict,str): The expected results.
@@ -52,7 +52,7 @@ class TestUtils:
         """Test failure handling of **any_to_datetime** method of TcEx Utils datetime module.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         try:
             tcex.utils.datetime.any_to_datetime('abc')
@@ -80,7 +80,7 @@ class TestUtils:
         """Test **date_to_datetime** method of TcEx Utils datetime module.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             date (str): The input datetime expression.
             tz (str, Optional): The timezone value as a string.
             results (dict,str): The expected results.
@@ -111,7 +111,7 @@ class TestUtils:
         """Test **format_datetime** method of TcEx Utils datetime module.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             date (str): The input datetime expression.
             tz (str, Optional): The timezone value as a string.
             date_format (str, Optional): The strftime format for the date.
@@ -241,7 +241,7 @@ class TestUtils:
         """Test **human_date_to_datetime** method of TcEx Utils datetime module.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             date (str): The input datetime expression.
             tz (str, Optional): The timezone value as a string.
             results (dict,str): The expected results.
@@ -263,7 +263,7 @@ class TestUtils:
         """Test **human_date_to_datetime** method of TcEx Utils datetime module with source.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             date (str): The input datetime expression.
             tz (str, Optional): The timezone value as a string.
             results (dict,str): The expected results.
@@ -284,7 +284,7 @@ class TestUtils:
         """Test **timedelta** method of TcEx Utils datetime module.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         delta = tcex.utils.datetime.timedelta('2018-01-13', '2018-02-14')
         assert delta['days'] == -1
@@ -316,7 +316,7 @@ class TestUtils:
         """Test **unix_time_to_datetime** method of TcEx Utils datetime module.
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
             date (str): The input datetime expression.
             tz (str, Optional): The timezone value as a string.
             results (dict,str): The expected results.

@@ -68,8 +68,8 @@ class Tokens:
             # for Job, Playbook, and ApiService Apps the key is the thread name.
             key = self.thread_name
         else:
-            # for Trigger and Webhook Apps the key is ConfigId. find ConfigId using array of
-            # registered thread names.
+            # for Trigger and Webhook Apps the key is ConfigId.
+            # find ConfigId using array of registered thread names.
             for k, d in self.token_map.items():
                 if self.thread_name in d.get('thread_names', []):
                     key = k
