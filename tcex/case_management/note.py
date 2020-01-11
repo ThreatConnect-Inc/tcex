@@ -68,7 +68,7 @@ class Notes(CommonCaseManagementCollection):
 
     @property
     def filter(self):
-        """Return instance of FilterWorkflowTemplate Object."""
+        """Return instance of FilterNotes Object."""
         return FilterNotes(ApiEndpoints.NOTES, self.tcex, self.tql)
 
 
@@ -262,7 +262,7 @@ class Note(CommonCaseManagement):
 
 
 class FilterNotes(Filter):
-    """Filter Object for Workflow Event"""
+    """Filter Object for Notes"""
 
     def artifact_id(self, operator, artifact_id):
         """Filter Notes based on **artifactid** keyword.

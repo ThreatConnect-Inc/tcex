@@ -26,9 +26,12 @@ class CommonCaseManagement:
         """Printable version of Object"""
         printable_string = ''
         for key, value in sorted(vars(self).items()):
-            if key in ['tcex']:
+            key = key.lstrip('_')
+            if key in self._excluded_properties:
                 continue
-            key = f'{key.lstrip("_")} '
+
+            # format key with trailing whitespace
+            key = f'{key} '
 
             if value is None:
                 printable_string += f'{key:.<40} {"null":<50}\n'
@@ -117,7 +120,16 @@ class CommonCaseManagement:
     @property
     def _excluded_properties(self):
         """Return a list of properties to exclude when creating a dict of the children class."""
-        return ['api_endpoint', 'kwargs', 'tcex']
+        return [
+            'api_endpoint',
+            'case_filter',
+            'filter',
+            'fields',
+            'kwargs',
+            'properties',
+            'tcex',
+            'tql',
+        ]
 
     @property
     def _metadata_map(self):
@@ -191,21 +203,6 @@ class CommonCaseManagement:
             #     )
             kwargs[new_key] = kwargs.pop(key)
 
-    @staticmethod
-    def to_camel_case(kwargs):
-        """
-        Converts snake_case to camelCase
-
-        Args:
-            kwargs (dict): The dictionary you wish to convert keys to camel case.
-        """
-        for key in dict(kwargs):
-            if not key:
-                continue
-            components = key.split('_')
-            new_key = components[0] + ''.join(x.title() for x in components[1:])
-            kwargs[new_key] = kwargs.pop(key)
-
     @property
     def as_entity(self):
         """Placeholder for common method."""
@@ -240,6 +237,11 @@ class CommonCaseManagement:
         return as_dict
 
     @property
+    def available_fields(self):
+        """Return the available query param field names for this object."""
+        return [fd.get('name') for fd in self.fields]
+
+    @property
     def fields(self):
         """Return the field data for this object."""
         if self._fields is None:
@@ -247,11 +249,6 @@ class CommonCaseManagement:
             if r.ok:
                 self._fields = r.json()['data']
         return self._fields
-
-    @property
-    def available_fields(self):
-        """Return the available query param field names for this object."""
-        return [fd.get('name') for fd in self.fields]
 
     def delete(self, retry_count=0):
         """Delete the Case Management Object.
@@ -444,3 +441,18 @@ class CommonCaseManagement:
                 self._tql = r.json()['data']
 
         return self._tql
+
+    @staticmethod
+    def to_camel_case(kwargs):
+        """
+        Converts snake_case to camelCase
+
+        Args:
+            kwargs (dict): The dictionary you wish to convert keys to camel case.
+        """
+        for key in dict(kwargs):
+            if not key:
+                continue
+            components = key.split('_')
+            new_key = components[0] + ''.join(x.title() for x in components[1:])
+            kwargs[new_key] = kwargs.pop(key)

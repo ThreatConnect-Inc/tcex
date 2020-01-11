@@ -69,7 +69,7 @@ class Tags(CommonCaseManagementCollection):
 
     @property
     def filter(self):
-        """Return instance of FilterWorkflowTemplate Object."""
+        """Return instance of FilterTags Object."""
         return FilterTags(ApiEndpoints.TAGS, self.tcex, self.tql)
 
 
@@ -133,7 +133,7 @@ class Tag(CommonCaseManagement):
 
 
 class FilterTags(Filter):
-    """Filter Object for Workflow Event"""
+    """Filter Object for Tags"""
 
     def case_id(self, operator, case_id):
         """Filter Tags based on **caseid** keyword.

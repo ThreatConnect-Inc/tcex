@@ -110,7 +110,7 @@ class CommonCaseManagementCollection:
         """Return a Filter Class current object."""
         filter_class = (
             f'\nclass Filter{self.__class__.__name__}(Filter):\n'
-            f'{" " * 4}"""Filter Object for Workflow Event"""\n\n'
+            f'{" " * 4}"""Filter Object for {self.__class__.__name__}"""\n\n'
         )
 
         for t in sorted(self.tql_data, key=lambda i: i['keyword']):

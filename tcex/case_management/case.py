@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case"""
-from .assignee import Assignee, User, Users
 from .api_endpoints import ApiEndpoints
-from .artifact import Artifact, Artifacts
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
-from .note import Note, Notes
-from .tag import Tag, Tags
-from .task import Task, Tasks
+from .filter import Filter
 from .tql import TQL
 
 
@@ -59,112 +55,111 @@ class Cases(CommonCaseManagementCollection):
 
     @property
     def filter(self):
-        """Return instance of FilterCase Object."""
-        return FilterCase(self.tql)
+        """Return instance of FilterCases Object."""
+        return FilterCases(ApiEndpoints.CASES, self.tcex, self.tql)
 
 
 class Case(CommonCaseManagement):
-    """Unique API calls for Artifact Type API Endpoints
+    """Case object for Case Management.
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        artifacts (dict, kwargs): The Artifacts for the Case.
-        created_by (dict, kwargs): The Created By data for the Case.
-        date_added (date, kwargs): The Date Added for the Case.
-        events (dict, kwargs): The Events for the Case.
-        description (str, kwargs): The Description for the Case.
-        name (str, kwargs): The Name for the Case.
-        notes (dict, kwargs): The Notes for the Case.
-        related (dict, kwargs): The Related Cases for the Case.
-        resolution (string, kwargs): The Resolution for the Case.
-        severity (str, kwargs): The Severity for the Case.
-        status (str, kwargs): The Status for the Case.
-        tasks (dict, kwargs): The Tasks for the Case.
-        tags (dict, kwargs): The Tags for the case.
-        workflow_template (dict, kwargs): The Workflow Template for the case.
-        xid (str, kwargs): The unique XID (external ID) for the Case.
+        artifacts (Artifact, kwargs): a list of Artifacts corresponding to the Case
+        assignee (Assignee, kwargs): the user or group Assignee object for the Case
+        created_by (User, kwargs): [Read-Only] The **Created By** for the Case.
+        date_added (str, kwargs): [Read-Only] The **Date Added** for the Case.
+        description (str, kwargs): The **Description** for the Case.
+        events (WorkflowEvent, kwargs): The **Events** for the Case.
+        name (str, kwargs): [Required] The **Name** for the Case.
+        notes (Note, kwargs): a list of Notes corresponding to the Case
+        related (Case, kwargs): The **Related** for the Case.
+        resolution (str, kwargs): The **Resolution** for the Case.
+        severity (str, kwargs): [Required] The **Severity** for the Case.
+        status (str, kwargs): [Required] The **Status** for the Case.
+        tags (Tag, kwargs): a list of Tags corresponding to the Case
+            (NOTE: Setting this parameter will replace any existing tag(s) with
+            the one(s) specified)
+        tasks (Task, kwargs): a list of Tasks corresponding to the Case
+        user_access (User, kwargs): a list of Users that, when defined, are the only
+            ones allowed to view or edit the Case
+        workflow_template (WorkflowTemplate, kwargs): the Template that the Case is
+            populated by.
+        xid (str, kwargs): The **Xid** for the Case.
     """
 
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.CASES, kwargs)
-        case_filter = [
+        self.case_filter = [
             {'keyword': 'caseid', 'operator': TQL.Operator.EQ, 'value': self.id, 'type': 'integer'}
         ]
 
-        self._artifacts = Artifacts(
-            self.tcex, kwargs.get('artifacts', None), tql_filters=case_filter
-        )
-        self._assignee = self.assignee_builder(kwargs.get('assignee'))
-        self._created_by = User(**kwargs.get('created_by', {}))
+        self._artifacts = kwargs.get('artifacts', None)
+        self._assignee = kwargs.get('assignee', None)
+        self._created_by = kwargs.get('created_by', None)
         self._date_added = kwargs.get('date_added', None)
         self._description = kwargs.get('description', None)
-        # TODO: @bpurdy - this is an array events. how should it be handled???
-        # workflow events ???
         self._events = kwargs.get('events', None)
         self._name = kwargs.get('name', None)
-        self._notes = Notes(self.tcex, kwargs.get('notes', {}), tql_filters=case_filter)
-        # TODO: @bpurdy - this is an array of cases. how should it be handled???
-        # self._related = kwargs.get('related', {})
-        # return tcex.cm.cases(initial_response=self._related)
+        self._notes = kwargs.get('notes', None)
         self._related = kwargs.get('related', None)
         self._resolution = kwargs.get('resolution', None)
         self._severity = kwargs.get('severity', None)
         self._status = kwargs.get('status', None)
-        self._tasks = Tasks(self.tcex, kwargs.get('tasks', {}), tql_filters=case_filter)
-        self._tags = Tags(self.tcex, kwargs.get('tags', {}), tql_filters=case_filter)
-        self._user_access = Users(kwargs.get('user_access', {}))
-        # TODO: @bpurdy - this is an array of cases. how should it be handled???
+        self._tags = kwargs.get('tags', None)
+        self._tasks = kwargs.get('tasks', None)
+        self._user_access = kwargs.get('user_access', None)
         self._workflow_template = kwargs.get('workflow_template', None)
         self._xid = kwargs.get('xid', None)
 
     def add_artifact(self, **kwargs):
         """Add a Artifact to a Case."""
-        self._artifacts.add_artifact(Artifact(self.tcex, **kwargs))
+        self.artifacts.add_artifact(self.tcex.cm.artifact(**kwargs))
 
     def add_note(self, **kwargs):
         """Add a Note to a Case."""
-        self._notes.add_note(Note(self.tcex, **kwargs))
+        self.notes.add_note(self.tcex.cm.note(**kwargs))
 
     def add_tag(self, **kwargs):
         """Add a Tag to a Case."""
-        self._tags.add_tag(Tag(self.tcex, **kwargs))
+        self.tags.add_tag(self.tcex.cm.tag(**kwargs))
 
     def add_task(self, **kwargs):
         """Add a Task to a Case."""
-        self._tasks.add_task(Task(self.tcex, **kwargs))
+        self.tasks.add_task(self.tcex.cm.task(**kwargs))
 
     @property
     def artifacts(self):
-        """Return the Artifacts for the Case."""
+        """Return the **Artifacts** for the Case."""
+        if self._artifacts is None or isinstance(self._artifacts, dict):
+            artifacts = self._artifacts or {}
+            self._artifacts = self.tcex.cm.artifacts(
+                initial_response=artifacts, tql_filters=self.case_filter
+            )
         return self._artifacts
 
     @artifacts.setter
     def artifacts(self, artifacts):
-        """Set the Artifacts for the Case."""
+        """Set the **Artifacts** for the Case."""
         self._artifacts = artifacts
 
     @property
     def assignee(self):
-        """Return the Assignee for the Case."""
+        """Return the **Assignee** for the Case."""
+        if isinstance(self._assignee, dict):
+            return self.tcex.cm.assignee(
+                type=self._assignee.get('type'), **self._assignee.get('data')
+            )
         return self._assignee
 
     @assignee.setter
     def assignee(self, assignee):
-        """Set the Assignee for the Case."""
-        self._assignee = self.assignee_builder(assignee)
-
-    @staticmethod
-    def assignee_builder(assignee):
-        """Build the Assignee for the Case.
-
-        Args:
-            assignee (Assignee|dict): The Assignee data as dict or object.
-        """
+        """Set the **Assignee** for the Case."""
         if isinstance(assignee, dict):
-            assignee = Assignee(type=assignee.get('type'), **assignee.get('data'))
-
-        return assignee
+            self._assignee = self.tcex.cm.assignee(
+                type=assignee.get('type'), **assignee.get('data')
+            )
+        self._assignee = assignee
 
     @property
     def as_entity(self):
@@ -172,39 +167,26 @@ class Case(CommonCaseManagement):
         return {'type': 'Case', 'id': self.id, 'value': self.name}
 
     @property
-    def available_fields(self):
-        """Return the available fields to fetch for an Artifact."""
-        return ['artifacts', 'events', 'notes', 'related', 'tags', 'tasks']
-
-    @property
     def created_by(self):
-        """Return the Created By for the Case."""
+        """Return the **Created By** for the Case."""
+        if self._created_by:
+            return self.tcex.cm.user(**self._created_by)
         return self._created_by
-
-    @created_by.setter
-    def created_by(self, created_by):
-        """Set the Created By for the Case."""
-        self._created_by = created_by
 
     @property
     def description(self):
-        """Return the Description for the Case."""
+        """Return the **Description** for the Case."""
         return self._description
 
     @description.setter
     def description(self, description):
-        """Set the Description for the Case."""
+        """Set the **Description** for the Case."""
         self._description = description
 
     @property
     def date_added(self):
-        """Return the Date Added for the Case."""
+        """Return the **Date Added** for the Case."""
         return self._date_added
-
-    @date_added.setter
-    def date_added(self, date_added):
-        """Set the Date Added for the Case."""
-        self._date_added = date_added
 
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
@@ -218,286 +200,280 @@ class Case(CommonCaseManagement):
     @property
     def events(self):
         """Return the **Events** for the Case."""
+        if self._events:
+            return self.tcex.cm.workflow_events(
+                initial_response=self._events, tql_filters=self.case_filter
+            )
         return self._events
 
     @property
     def name(self):
-        """Return the Name for the Case."""
+        """Return the **Name** for the Case."""
         return self._name
 
     @name.setter
     def name(self, name):
-        """Set the Name for the Case."""
+        """Set the **Name** for the Case."""
         self._name = name
 
     @property
     def notes(self):
-        """Return the Notes for the Case."""
+        """Return the **Notes** for the Case."""
+        if self._notes is None or isinstance(self._notes, dict):
+            notes = self._notes or {}
+            self._notes = self.tcex.cm.notes(initial_response=notes, tql_filters=self.case_filter)
         return self._notes
 
     @notes.setter
     def notes(self, notes):
-        """Set the Notes for the Case."""
+        """Set the **Notes** for the Case."""
         self._notes = notes
 
     @property
     def related(self):
         """Return the **Related Cases** for the Case."""
+        if self._related:
+            return self.tcex.cm.cases(initial_response=self._related, tql_filters=self.case_filter)
         return self._related
 
     @property
-    def required_properties(self):
-        """Return a list of required fields for an Artifact."""
-        return ['name', 'severity', 'status']
-
-    @property
     def resolution(self):
-        """Return the Resolution for the Case."""
+        """Return the **Resolution** for the Case."""
         return self._resolution
 
     @resolution.setter
     def resolution(self, resolution):
-        """Set the Resolution for the Case."""
+        """Set the **Resolution** for the Case."""
         self._resolution = resolution
 
     @property
     def severity(self):
-        """Return the Severity for the Case."""
+        """Return the **Severity** for the Case."""
         return self._severity
 
     @severity.setter
-    def severity(self, artifact_severity):
-        """Set the Severity for the Case."""
-        self._severity = artifact_severity
+    def severity(self, severity):
+        """Set the **Severity** for the Case."""
+        self._severity = severity
 
     @property
     def status(self):
-        """Return the Status for the Case."""
+        """Return the **Status** for the Case."""
         return self._status
 
     @status.setter
     def status(self, status):
-        """Set the Status for the Case."""
+        """Set the **Status** for the Case."""
         self._status = status
 
     @property
     def tags(self):
-        """Return the Tags for the Case."""
+        """Return the **Tags** for the Case."""
+        if self._tags is None or isinstance(self._tags, dict):
+            tags = self._tags or {}
+            self._tags = self.tcex.cm.tags(initial_response=tags, tql_filters=self.case_filter)
         return self._tags
 
     @tags.setter
     def tags(self, tags):
-        """Set the Tags for the Case."""
+        """Set the **Tags** for the Case."""
         self._tags = tags
 
     @property
     def tasks(self):
-        """Return the Tasks for the Case."""
+        """Return the **Tasks** for the Case."""
+        if self._tasks is None or isinstance(self._tasks, dict):
+            tasks = self._tasks or {}
+            self._tasks = self.tcex.cm.tasks(initial_response=tasks, tql_filters=self.case_filter)
         return self._tasks
 
     @tasks.setter
     def tasks(self, tasks):
-        """Set the Tasks for the Case."""
+        """Set the **Tasks** for the Case."""
         self._tasks = tasks
 
     @property
     def user_access(self):
-        """Return the User Access for the Case."""
+        """Return the **User Access** for the Case."""
+        if self._user_access:
+            return self.tcex.cm.users(self.user_access)
         return self._user_access
 
     @user_access.setter
     def user_access(self, user_access):
-        """Set the User Access for the Case."""
+        """Set the **User Access** for the Case."""
         self._user_access = user_access
 
     @property
     def workflow_template(self):
         """Return the **Workflow Template** for the Case."""
+        if self._workflow_template:
+            return self.tcex.cm.workflow_template(**self._workflow_template)
         return self._workflow_template
 
     @property
     def xid(self):
-        """Return the XID for the Case."""
+        """Return the **XID** for the Case."""
         return self._xid
 
     @xid.setter
     def xid(self, xid):
-        """Set the XID for the Case."""
+        """Set the **XID** for the Case."""
         self._xid = xid
 
 
-class FilterCase:
-    """Filter Object for Case
-
-    Args:
-        tql (TQL): Instance of TQL Class.
-    """
-
-    def __init__(self, tql):
-        """Initialize Class properties"""
-        self._tql = tql
+class FilterCases(Filter):
+    """Filter Object for Cases"""
 
     def created_by(self, operator, created_by):
-        """Filter objects based on "create by" field.
+        """Filter Cases based on **createdby** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            created_by (int): The filter value.
+            operator (enum): The operator enum for the filter.
+            created_by (str): The account login of the user who created the case.
         """
-        self._tql.add_filter('createdby', operator, created_by)
+        self._tql.add_filter('createdby', operator, created_by, TQL.Type.STRING)
 
     def created_by_id(self, operator, created_by_id):
-        """Filter objects based on "create by id" field.
+        """Filter Cases based on **createdbyid** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            created_by_id (int): The filter value.
+            operator (enum): The operator enum for the filter.
+            created_by_id (int): The user ID for the creator of the case.
         """
         self._tql.add_filter('createdbyid', operator, created_by_id, TQL.Type.INTEGER)
 
     def date_added(self, operator, date_added):
-        """Filter objects based on date added field.
+        """Filter Cases based on **dateadded** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            date_added (str]): The filter value.
+            operator (enum): The operator enum for the filter.
+            date_added (str): The date the case was added to the system.
         """
-        self._tql.add_filter('dateadded', operator, date_added)
+        self._tql.add_filter('dateadded', operator, date_added, TQL.Type.STRING)
 
     def description(self, operator, description):
-        """Filter objects based on description field.
+        """Filter Cases based on **description** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            description (str]): The filter value.
+            operator (enum): The operator enum for the filter.
+            description (str): The description of the case.
         """
-        self._tql.add_filter('description', operator, description)
+        self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
-    def hasartifact(self, operator, artifact_id):
-        """Filter objects based on "artifact id" field.
+    def has_artifact(self, operator, has_artifact):
+        """Filter Cases based on **hasartifact** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            artifact_id (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            has_artifact (int): A nested query for association to artifacts.
         """
-        self._tql.add_filter('hasartifact', operator, artifact_id, TQL.Type.INTEGER)
+        self._tql.add_filter('hasartifact', operator, has_artifact, TQL.Type.INTEGER)
 
-    def hastag(self, operator, tag):
-        """Filter objects based on tag field.
+    def has_tag(self, operator, has_tag):
+        """Filter Cases based on **hastag** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            tag (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            has_tag (int): A nested query for association to labels.
         """
-        self._tql.add_filter('hastag', operator, tag)
+        self._tql.add_filter('hastag', operator, has_tag, TQL.Type.INTEGER)
 
-    def hastask(self, operator, task):
-        """Filter objects based on task field.
+    def has_task(self, operator, has_task):
+        """Filter Cases based on **hastask** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            task (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            has_task (int): A nested query for association to tasks.
         """
-        self._tql.add_filter('hastask', operator, task)
+        self._tql.add_filter('hastask', operator, has_task, TQL.Type.INTEGER)
 
-    def id(self, operator, case_id):
-        """Filter objects based on id field.
+    def id(self, operator, id):  # pylint: disable=redefined-builtin
+        """Filter Cases based on **id** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            case_id (int): The filter value.
+            operator (enum): The operator enum for the filter.
+            id (int): The ID of the case.
         """
-        self._tql.add_filter('id', operator, case_id, TQL.Type.INTEGER)
-
-    @property
-    def keywords(self):
-        """Return supported TQL keywords."""
-        keywords = []
-        for prop in dir(self):
-            if prop.startswith('_') or prop in ['tql']:
-                continue
-            # remove underscore from method name to match keyword
-            keywords.append(prop.replace('_', ''))
-
-        return keywords
-
-    def owner_name(self, operator, owner_name):
-        """Filter objects based on "owner name" field.
-
-        Args:
-            operator (enum): The enum for the required operator.
-            owner_name (str): The filter value.
-        """
-        self._tql.add_filter('ownername', operator, owner_name)
+        self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def name(self, operator, name):
-        """Filter objects based on name field.
+        """Filter Cases based on **name** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            name (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            name (str): The name of the case.
         """
-        self._tql.add_filter('name', operator, name)
+        self._tql.add_filter('name', operator, name, TQL.Type.STRING)
+
+    def owner_name(self, operator, owner_name):
+        """Filter Cases based on **ownername** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            owner_name (str): The name of the case owner.
+        """
+        self._tql.add_filter('ownername', operator, owner_name, TQL.Type.STRING)
 
     def resolution(self, operator, resolution):
-        """Filter objects based on resolution field.
+        """Filter Cases based on **resolution** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            resolution (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            resolution (str): The resolution of the case.
         """
-        self._tql.add_filter('resolution', operator, resolution)
+        self._tql.add_filter('resolution', operator, resolution, TQL.Type.STRING)
 
     def severity(self, operator, severity):
-        """Filter object based on severity field.
+        """Filter Cases based on **severity** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            severity (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            severity (str): The severity of the case.
         """
-        self._tql.add_filter('severity', operator, severity)
+        self._tql.add_filter('severity', operator, severity, TQL.Type.STRING)
 
     def status(self, operator, status):
-        """Filter objects based on status field.
+        """Filter Cases based on **status** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            status (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            status (str): The status of the case.
         """
-        self._tql.add_filter('status', operator, status)
+        self._tql.add_filter('status', operator, status, TQL.Type.STRING)
 
     def tag(self, operator, tag):
-        """Filter objects based on tag field.
+        """Filter Cases based on **tag** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            tag (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            tag (str): The name of a tag applied to a case.
         """
-        self._tql.add_filter('tag', operator, tag)
+        self._tql.add_filter('tag', operator, tag, TQL.Type.STRING)
 
     def target_id(self, operator, target_id):
-        """Filter objects based on "target id" field.
+        """Filter Cases based on **targetid** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            target_id (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            target_id (int): The assigned user or group ID for the case.
         """
         self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
 
     def target_type(self, operator, target_type):
-        """Filter objects based on "target type" field.
+        """Filter Cases based on **targettype** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            target_type (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            target_type (str): The target type for this case (either User or Group).
         """
-        self._tql.add_filter('targettype', operator, target_type)
+        self._tql.add_filter('targettype', operator, target_type, TQL.Type.STRING)
 
     def xid(self, operator, xid):
-        """Filter objects based on xid field.
+        """Filter Cases based on **xid** keyword.
 
         Args:
-            operator (enum): The enum for the required operator.
-            xid (str): The filter value.
+            operator (enum): The operator enum for the filter.
+            xid (str): The XID of the case.
         """
-        self._tql.add_filter('xid', operator, xid)
+        self._tql.add_filter('xid', operator, xid, TQL.Type.STRING)

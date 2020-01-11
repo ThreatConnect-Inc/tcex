@@ -189,7 +189,7 @@ class WorkflowTemplate(CommonCaseManagement):
 
 
 class FilterWorkflowTemplates(Filter):
-    """Filter Object for Workflow Event"""
+    """Filter Object for Workflow Templates"""
 
     def active(self, operator, active):
         """Filter Workflow Templates based on **active** keyword.

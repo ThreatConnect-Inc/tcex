@@ -65,7 +65,7 @@ class Tasks(CommonCaseManagementCollection):
 
     @property
     def filter(self):
-        """Return instance of FilterWorkflowTemplate Object."""
+        """Return instance of FilterTasks Object."""
         return FilterTasks(ApiEndpoints.TASKS, self.tcex, self.tql)
 
 
@@ -319,7 +319,7 @@ class Task(CommonCaseManagement):
 
 
 class FilterTasks(Filter):
-    """Filter Object for Workflow Event"""
+    """Filter Object for Tasks"""
 
     def case_id(self, operator, case_id):
         """Filter Tasks based on **caseid** keyword.

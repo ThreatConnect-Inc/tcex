@@ -15,6 +15,8 @@ class TestCase:
 
     cm = None
     cm_helper = None
+    test_obj = None
+    test_obj_collection = None
 
     def setup_class(self):
         """Configure setup before all tests."""
@@ -31,10 +33,18 @@ class TestCase:
         if os.getenv('TEARDOWN_METHOD') is None:
             self.cm_helper.cleanup()
 
+    def test_case_filter_keywords(self):
+        """Test filter keywords."""
+        # print(self.test_obj._doc_string)
+        # print(self.test_obj_collection._filter_map_method)
+        # print(self.test_obj_collection._filter_class)
+        for keyword in self.test_obj_collection.filter.keywords:
+            if keyword not in self.test_obj_collection.filter.implemented_keywords:
+                assert False, f'Missing TQL keyword {keyword}.'
+
     def test_case_properties(self):
-        """Test Case properties."""
-        r = tcex.session.options(self.test_obj.api_endpoint, params={'show': 'readOnly'})
-        for prop_string, prop_data in r.json().items():
+        """Test properties."""
+        for prop_string, prop_data in self.test_obj.properties.items():
             prop_read_only = prop_data.get('read-only', False)
             prop_string = self.cm_helper.camel_to_snake(prop_string)
 
@@ -42,16 +52,6 @@ class TestCase:
             assert hasattr(
                 self.test_obj, prop_string
             ), f'Missing {prop_string} property. read-only: {prop_read_only}'
-
-    def test_cases_filter_methods(self):
-        """Test Cases filter methods."""
-        r = tcex.session.options(f'{self.test_obj.api_endpoint}/tql', params={})
-
-        for data in r.json().get('data'):
-            keyword = data.get('keyword')
-
-            if keyword not in self.test_obj_collection.filter.keywords:
-                assert False, f'Missing TQL keyword {keyword}.'
 
     def test_case_create(self, request):
         """Test Case Creation"""
@@ -100,16 +100,14 @@ class TestCase:
         case = self.cm.case(**case_data)
 
         # artifact data
-        artifact_data = {
-            'asn4455': {'intel_type': 'indicator-ASN', 'type': 'ASN'},
-            'asn5544': {'intel_type': 'indicator-ASN', 'type': 'ASN'},
-        }
+        artifact_data = [
+            {'summary': 'asn4455', 'intel_type': 'indicator-ASN', 'type': 'ASN'},
+            {'summary': 'asn5544', 'intel_type': 'indicator-ASN', 'type': 'ASN'},
+        ]
 
         # add artifacts
-        for artifact, a_data in artifact_data.items():
-            case.add_artifact(
-                summary=artifact, intel_type=a_data.get('intel_type'), type=a_data.get('type'),
-            )
+        for artifact in artifact_data:
+            case.add_artifact(**artifact)
 
         # note data
         note_data = [f'A note for pytest test {__name__}']
@@ -119,20 +117,18 @@ class TestCase:
             case.add_note(text=note)
 
         # tag data
-        tag_data = [{'name': f'{__name__}-1'}, {'name': f'{__name__}-1'}]
+        tag_data = [{'name': f'{__name__}-1'}, {'name': f'{__name__}-2'}]
 
         # add tags
         for tag in tag_data:
             case.add_tag(**tag)
 
         # task data
-        task_data = {'task-1': {'description': 'task description', 'status': 'Pending'}}
+        task_data = [{'name': 'task-1', 'description': 'task description', 'status': 'Pending'}]
 
         # add task
-        for task, t_data in task_data.items():
-            case.add_task(
-                name=task, description=t_data.get('description'), status=t_data.get('status')
-            )
+        for task in task_data:
+            case.add_task(**task)
 
         # submit case
         case.submit()
@@ -148,8 +144,8 @@ class TestCase:
         assert case.status == case_data.get('status')
 
         for artifact in case.artifacts:
-            assert artifact.summary in artifact_data.keys()
-            # assert artifact.intel_type == 'indicator-ASN'
+            assert artifact.summary in [a.get('summary') for a in artifact_data]
+            assert artifact.intel_type == 'indicator-ASN'
             assert artifact.type == 'ASN'
 
         for tag in case.tags:
@@ -159,7 +155,7 @@ class TestCase:
             assert note.text in note_data
 
         for task in case.tasks:
-            assert task.name in task_data
+            assert task.name in [t.get('name') for t in task_data]
 
         # cleanup case
         case.delete()

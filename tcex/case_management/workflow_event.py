@@ -52,7 +52,7 @@ class WorkflowEvents(CommonCaseManagementCollection):
 
     @property
     def filter(self):
-        """Return instance of FilterWorkflowTemplate Object."""
+        """Return instance of FilterWorkflowEvent Object."""
         return FilterWorkflowEvents(ApiEndpoints.WORKFLOW_EVENTS, self.tcex, self.tql)
 
 
@@ -228,7 +228,7 @@ class WorkflowEvent(CommonCaseManagement):
 
 
 class FilterWorkflowEvents(Filter):
-    """Filter Object for Workflow Event"""
+    """Filter Object for Workflow Events"""
 
     def case_id(self, operator, case_id):
         """Filter Workflow Events based on **caseid** keyword.
