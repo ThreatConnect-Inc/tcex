@@ -61,10 +61,7 @@ class TestTask:
         task_data = {
             'case_id': case.id,
             'description': f'a description from {request.node.name}',
-            # 'is_workflow': False,
             'name': f'name-{request.node.name}',
-            # 'source': f'source-{request.node.name}',
-            # 'workflow_id': randint(100,999),
             'workflow_phase': 0,
             'workflow_step': 1,
             'xid': f'{request.node.name}-{time.time()}',
@@ -80,9 +77,7 @@ class TestTask:
 
         # run assertions on returned data
         assert task.description == task_data.get('description')
-        assert task.is_workflow == task_data.get('is_workflow')
         assert task.name == task_data.get('name')
-        assert task.source == task_data.get('source')
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
 
@@ -96,10 +91,7 @@ class TestTask:
         task_data = {
             'case_xid': case_xid,
             'description': f'a description from {request.node.name}',
-            # 'is_workflow': False,
             'name': f'name-{request.node.name}',
-            # 'source': f'source-{request.node.name}',
-            # 'workflow_id': randint(100,999),
             'workflow_phase': 0,
             'workflow_step': 1,
             'xid': f'{request.node.name}-{time.time()}',
@@ -115,9 +107,7 @@ class TestTask:
 
         # run assertions on returned data
         assert task.description == task_data.get('description')
-        assert task.is_workflow == task_data.get('is_workflow')
         assert task.name == task_data.get('name')
-        assert task.source == task_data.get('source')
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
 
@@ -188,10 +178,7 @@ class TestTask:
         task_data = {
             'case_id': case.id,
             'description': f'a description from {request.node.name}',
-            # 'is_workflow': False,
             'name': f'name-{request.node.name}',
-            # 'source': f'source-{request.node.name}',
-            # 'workflow_id': randint(100,999),
             'workflow_phase': 0,
             'workflow_step': 1,
             'xid': f'{request.node.name}-{time.time()}',
@@ -207,9 +194,7 @@ class TestTask:
 
         # run assertions on returned data
         assert task.description == task_data.get('description')
-        # assert task.is_workflow == task_data.get('is_workflow')
         assert task.name == task_data.get('name')
-        # assert task.source == task_data.get('source')
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
 

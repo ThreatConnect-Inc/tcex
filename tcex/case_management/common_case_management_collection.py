@@ -122,7 +122,7 @@ class CommonCaseManagementCollection:
             # get the arg type
             keyword_type = 'str'
             tql_type = 'TQL.Type.STRING'
-            if t.get('type') == 'Integer':
+            if t.get('type') in ['Integer', 'Long']:
                 keyword_type = 'int'
                 tql_type = 'TQL.Type.INTEGER'
             elif t.get('type') == 'Boolean':
@@ -135,7 +135,7 @@ class CommonCaseManagementCollection:
 
             # build method
             filter_class += (
-                f'\n{" " * 8}def {keyword_snake}(self, operator, {keyword_snake}):{comment}\n'
+                f'\n{" " * 4}def {keyword_snake}(self, operator, {keyword_snake}):{comment}\n'
                 f'{" " * 8}"""Filter {class_name} based on **{keyword}** keyword.\n\n'
                 f'{" " * 8}Args:\n'
                 f'{" " * 12}operator (enum): The operator enum for the filter.\n'

@@ -14,8 +14,8 @@ class CommonCaseManagement:
 
     def __init__(self, tcex, api_endpoint, kwargs):
         """Initialize Class properties."""
-        self._id = kwargs.get('id', None)
         self._fields = None
+        self._id = kwargs.get('id', None)
         self._properties = None
         self._tql = None
         self._transform_kwargs(kwargs)
@@ -123,6 +123,7 @@ class CommonCaseManagement:
             'artifactType': 'type',
             'caseId': 'case_id',
             'caseXid': 'case_xid',
+            'completedBy': 'completed_by',
             'completedDate': 'completed_date',
             'createdBy': 'created_by',
             'dataType': 'data_type',
@@ -233,9 +234,18 @@ class CommonCaseManagement:
         return as_dict
 
     @property
+    def fields(self):
+        """Return the field data for this object."""
+        if self._fields is None:
+            r = self.tcex.session.options(f'{self.api_endpoint}/fields', params={})
+            if r.ok:
+                self._fields = r.json()['data']
+        return self._fields
+
+    @property
     def available_fields(self):
-        """Stub for available fields"""
-        raise NotImplementedError('Child class must implement this method.')
+        """Return the available query param field names for this object."""
+        return [fd.get('name') for fd in self.fields]
 
     def delete(self, retry_count=0):
         """Delete the Case Management Object.

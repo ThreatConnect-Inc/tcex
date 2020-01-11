@@ -5,7 +5,6 @@ from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .filter import Filter
-from .note import Note, Notes
 from .tql import TQL
 
 
@@ -21,7 +20,7 @@ class Tasks(CommonCaseManagementCollection):
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
-            Case Object for Artifact. Defaults to None.
+            Case Object for Task. Defaults to None.
         tql_filters (list, optional): List of TQL filters. Defaults to None.
         params(dict, optional): Dict of the params to be sent while
             retrieving the Task objects.
@@ -103,143 +102,131 @@ class Task(CommonCaseManagement):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TASKS, kwargs)
 
-        # TODO: @bpurdy - the is an array of artifact. how should we handle them???
-        # TODO: Fix Me
         self._artifacts = kwargs.get('artifact', None)
-        self._assignee = None
+        self._assignee = kwargs.get('assignee', None)
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
-        # TODO: @bpurdy - the is an array of artifact. how should we handle them???
         self._completed_by = kwargs.get('completed_date', None)
         self._completed_date = kwargs.get('completed_date', None)
         self._config_playbook = kwargs.get('config_playbook', None)
         self._config_task = kwargs.get('config_task', None)
         self._dependent_on_task_name = kwargs.get('dependent_on_task_name', None)
+        self._description = kwargs.get('description', None)
         self._due_date = kwargs.get('due_date', None)
         self._duration = kwargs.get('duration', None)
-        self._description = kwargs.get('description', None)
         self._id_dependent_on = kwargs.get('id_dependent_on', None)
-        self._is_workflow = kwargs.get('is_workflow', None)
         self._name = kwargs.get('name', None)
-        self._notes = Notes(kwargs.get('notes', {}).get('data'))
-        # TODO: Fix Me
+        self._notes = kwargs.get('notes', None)
         self._parent_case = kwargs.get('parent_case', None)
         self._required = kwargs.get('required', None)
-        self._source = kwargs.get('source', None)
         self._status = kwargs.get('status', None)
-        self._workflow_id = kwargs.get('workflow_id', None)
         self._workflow_phase = kwargs.get('workflow_phase', None)
         self._workflow_step = kwargs.get('workflow_step', None)
         self._xid = kwargs.get('xid', None)
-        self.assignee = kwargs.get('assignee')
 
     def add_note(self, **kwargs):
         """Add a note to the task"""
-        self._notes.add_note(Note(self.tcex, **kwargs))
+        self._notes.add_note(self.tcex.cm.note(**kwargs))
 
     @property
     def artifacts(self):
-        """Return the **Artifacts** for the Note."""
+        """Return the **Artifacts** for the Task."""
+        if self._artifacts:
+            return self.tcex.cm.artifacts(initial_response=self._artifacts)
         return self._artifacts
 
     @property
     def as_entity(self):
-        """Return the entity representation of the Artifact."""
+        """Return the entity representation of the Task."""
         return {'type': 'Task', 'value': self.name, 'id': self.id}
 
     @property
     def assignee(self):
-        """Return the Assignee for the Case."""
+        """Return the **Assignee** for the Task."""
+        if isinstance(self._assignee, dict):
+            return self.tcex.cm.assignee(**self._assignee)
         return self._assignee
 
     @assignee.setter
     def assignee(self, assignee):
-        """Set the Assignee for the Case."""
-        if isinstance(assignee, Assignee):
-            self._assignee = assignee
-        elif isinstance(assignee, dict):
-            self._assignee = Assignee(type=assignee.get('type'), **assignee.get('data'))
-        else:
-            self._assignee = assignee
-
-    @property
-    def available_fields(self):
-        """Return the available fields to fetch for an Artifact."""
-        return ['artifacts', 'assignee', 'caseId', 'notes', 'parentCase']
+        """Set the **Assignee** for the Task."""
+        if isinstance(assignee, dict):
+            assignee = Assignee(type=assignee.get('type'), **assignee.get('data'))
+        self._assignee = assignee
 
     @property
     def case_id(self):
-        """Return the "Case ID" for the Task"""
+        """Return the **Case ID** for the Task"""
         return self._case_id
 
     @case_id.setter
     def case_id(self, case_id):
-        """Set the "Case ID" for the Task"""
+        """Set the **Case ID** for the Task"""
         self._case_id = case_id
 
     @property
     def case_xid(self):
-        """Return the "Case XID" for the Task"""
+        """Return the **Case XID** for the Task"""
         return self._case_xid
 
     @case_xid.setter
     def case_xid(self, case_xid):
-        """Set the "Case XID" for the Task"""
+        """Set the **Case XID** for the Task"""
         self._case_xid = case_xid
 
     @property
     def completed_by(self):
-        """Return the "Completed By" for the Task"""
+        """Return the **Completed By** for the Task"""
         return self._completed_by
 
     @property
     def completed_date(self):
-        """Return the "Completed Date" for the Task"""
+        """Return the **Completed Date** for the Task"""
         return self._completed_date
 
     @completed_date.setter
     def completed_date(self, completed_date):
-        """Set the "Completed Date" for the Task"""
+        """Set the **Completed Date** for the Task"""
         self._completed_date = completed_date
 
     @property
     def config_playbook(self):
-        """Return the "Config Playbook" for the Task"""
+        """Return the **Config Playbook** for the Task"""
         return self._config_playbook
 
     @property
     def config_task(self):
-        """Return the "Config Task" for the Task"""
+        """Return the **Config Task** for the Task"""
         return self._config_task
 
     @property
     def dependent_on_task_name(self):
-        """Return the "Depend On Task Name" for the Task"""
+        """Return the **Depend On Task Name** for the Task"""
         return self._dependent_on_task_name
 
     @property
     def description(self):
-        """Return the "Description" for the Task"""
+        """Return the **Description** for the Task"""
         return self._description
 
     @description.setter
     def description(self, description):
-        """Set the "Description" for the Task"""
+        """Set the **Description** for the Task"""
         self._description = description
 
     @property
     def due_date(self):
-        """Return the "Due Date" for the Task"""
+        """Return the **Due Date** for the Task"""
         return self._due_date
 
     @due_date.setter
     def due_date(self, due_date):
-        """Set the "Completed Date" for the Task"""
+        """Set the **Completed Date** for the Task"""
         self._due_date = due_date
 
     @property
     def duration(self):
-        """Return the "Duration" for the Task"""
+        """Return the **Duration** for the Task"""
         return self._duration
 
     def entity_mapper(self, entity):
@@ -253,112 +240,81 @@ class Task(CommonCaseManagement):
 
     @property
     def id_dependent_on(self):
-        """Return the "ID Dependent On" for the Task"""
+        """Return the **ID Dependent On** for the Task"""
         return self._id_dependent_on
 
     @property
-    def is_workflow(self):
-        """Return the "Is Workflow" for the Task"""
-        return self._is_workflow
-
-    @is_workflow.setter
-    def is_workflow(self, is_workflow):
-        """Set the "Is Workflow" for the Task"""
-        self._is_workflow = is_workflow
-
-    @property
     def name(self):
-        """Return the "Name" for the Task"""
+        """Return the **Name** for the Task"""
         return self._name
 
     @name.setter
     def name(self, name):
-        """Set the "Name" for the Task"""
+        """Set the **Name** for the Task"""
         self._name = name
 
     @property
     def notes(self):
-        """Return the "Notes" for the Task"""
+        """Return the **Notes** for the Task"""
+        if self._notes:
+            return self.tcex.cm.notes(initial_response=self._notes)
         return self._notes
 
     @notes.setter
     def notes(self, notes):
-        """Set the "Notes" for the Task"""
+        """Set the **Notes** for the Task"""
         self._notes = notes
 
     @property
     def parent_case(self):
-        """Return the **Parent Case** for the Artifact."""
+        """Return the **Parent Case** for the Task."""
+        if self._parent_case:
+            return self.tcex.cm.case(**self._parent_case)
         return self._parent_case
 
     @property
-    def required_properties(self):
-        """Return a list of required fields for an Artifact."""
-        return ['name', 'case_id']
-
-    @property
     def required(self):
-        """Return the "Required" for the Task"""
+        """Return the **Required** for the Task"""
         return self._required
 
     @property
-    def source(self):
-        """Return the "Source" for the Task"""
-        return self._source
-
-    @source.setter
-    def source(self, source):
-        """Set the "Source" for the Task"""
-        self._source = source
-
-    @property
     def status(self):
-        """Return the "Status" for the Task"""
+        """Return the **Status** for the Task"""
         return self._status
 
     @status.setter
     def status(self, status):
-        """Set the "Status" for the Task"""
+        """Set the **Status** for the Task"""
         self._status = status
 
     @property
-    def workflow_id(self):
-        """Return the "Workflow ID" for the Task"""
-        return self._workflow_id
-
-    @workflow_id.setter
-    def workflow_id(self, workflow_id):
-        """Set the "Workflow ID" for the Task"""
-        self._workflow_id = workflow_id
-
-    @property
     def workflow_phase(self):
-        """Return the "Workflow Phase" for the Task"""
+        """Return the **Workflow Phase** for the Task"""
         return self._workflow_phase
 
     @workflow_phase.setter
     def workflow_phase(self, workflow_phase):
-        """Set the "Workflow Phase" for the Task"""
+        """Set the **Workflow Phase** for the Task"""
         self._workflow_phase = workflow_phase
 
     @property
     def workflow_step(self):
-        """Return the "Workflow Step" for the Task"""
+        """Return the **Workflow Step** for the Task"""
         return self._workflow_step
 
     @workflow_step.setter
     def workflow_step(self, workflow_step):
-        """Set the "Workflow Step" for the Task"""
+        """Set the **Workflow Step** for the Task"""
         self._workflow_step = workflow_step
 
     @property
     def xid(self):
-        """Return the "XID" for the Task"""
+        """Return the **XID** for the Task"""
         return self._xid
 
     @xid.setter
     def xid(self, xid):
-        """Set the "XID" for the Task"""
+        """Set the **XID** for the Task"""
         self._xid = xid
 
 
@@ -469,9 +425,9 @@ class FilterTasks(Filter):
 
         Args:
             operator (enum): The operator enum for the filter.
-            target_id (str): The assigned user or group ID for the task.
+            target_id (int): The assigned user or group ID for the task.
         """
-        self._tql.add_filter('targetid', operator, target_id, TQL.Type.STRING)
+        self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
 
     def target_type(self, operator, target_type):
         """Filter Tasks based on **targettype** keyword.
