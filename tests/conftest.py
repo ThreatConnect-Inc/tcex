@@ -44,6 +44,18 @@ def tcex():
     return app.tcex
 
 
+@pytest.fixture()
+def tcex_hmac():
+    """Return an instance of tcex."""
+    # create log structure for feature/test (e.g., args/test_args.log)
+    config_data_ = {
+        'tc_token': None,
+        'tc_token_expires': None,
+    }
+    app = MockApp(runtime_level='Playbook', config_data=config_data_)
+    return app.tcex
+
+
 # @pytest.fixture(scope='module')
 @pytest.fixture()
 def tcex_proxy_external():
@@ -54,8 +66,6 @@ def tcex_proxy_external():
     # create log structure for feature/test (e.g., args/test_args.log)
     config_data_ = {
         'tc_proxy_external': True,
-        'tc_proxy_host': 'localhost',
-        'tc_proxy_port': '4242',
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
     return app.tcex

@@ -15,7 +15,7 @@ class TestWorkflowEvent(TestCaseManagement):
 
     def setup_method(self):
         """Configure setup before all tests."""
-        self.cm_helper = CMHelper('artifact')
+        self.cm_helper = CMHelper('workflow_template')
         self.cm = self.cm_helper.cm
 
     def teardown_method(self):

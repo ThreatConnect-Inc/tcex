@@ -143,7 +143,8 @@ class TestCaseManagement:
             # TODO: Remove this after core fixes issue
             # caseid = workflow event obj
             # useraccess = case obj
-            if f.get('name') in ['caseid', 'useraccess']:
+            # user = workflow template obj
+            if f.get('name') in ['caseid', 'user', 'useraccess']:
                 continue
 
             if f.get('name') not in self.cm_helper.cm_obj.properties:

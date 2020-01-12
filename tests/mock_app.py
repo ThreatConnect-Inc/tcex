@@ -124,7 +124,7 @@ class MockApp:
         """
         cv = self.cd.get(key) or os.getenv(key.upper(), default)
         if boolean:
-            cv = str(cv.lower) in ['true']
+            cv = str(cv).lower() in ['true']
         return cv
 
     @property
