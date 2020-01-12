@@ -2,7 +2,10 @@
 """Base pytest configuration file."""
 import os
 import shutil
+
 import pytest
+import redis
+
 from .mock_app import MockApp
 
 
@@ -15,7 +18,27 @@ from .mock_app import MockApp
 def config_data():
     """Return tcex config data."""
     app = MockApp(runtime_level='Playbook')
-    return app.mock_config_data
+    return app.config_data
+
+
+@pytest.fixture()
+def playbook_app():
+    """Mock a playbook App."""
+
+    def app(**kwargs):
+        if kwargs.get('runtime_level') is None:
+            kwargs['runtime_level'] = 'Playbook'
+        return MockApp(**kwargs)
+
+    return app
+
+
+@pytest.fixture()
+def redis_client():
+    """Return instance of redis_client."""
+    host = os.getenv('tc_playbook_db_path', 'localhost')
+    port = os.getenv('tc_playbook_db_port', '6379')
+    return redis.Redis(host=host, port=port)
 
 
 @pytest.fixture()
@@ -112,4 +135,20 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
         # remove temp install.json directory
         os.remove('install.json')
     except OSError:
+        pass
+
+    # cleanup environment variables
+    try:
+        del os.environ['TC_APP_PARAM_FILE']
+    except Exception:
+        pass
+
+    try:
+        del os.environ['TC_APP_PARAM_KEY']
+    except Exception:
+        pass
+
+    try:
+        del os.environ['TC_APP_PARAM_LOCK']
+    except Exception:
         pass

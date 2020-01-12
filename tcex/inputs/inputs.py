@@ -29,6 +29,7 @@ class Inputs:
         3. Inputs from CLI arg and from secure params
         4. All inputs from Config params
         5. Inputs from Config params and from AOT params
+        6. Inputs from Config File (including encrypted file for services)
         """
         self.tcex = tcex
 

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """TcEx Utilities Module"""
 import os
+import random
 import re
+import string
 import uuid
 
 from .date_utils import DatetimeUtils
@@ -57,6 +59,18 @@ class Utils:
 
             self._inflect = inflect.engine()
         return self._inflect
+
+    @staticmethod
+    def random_string(string_length=10):
+        """Generate a random string of fixed length
+
+        Args:
+            string_length (int, optional): The length of the string. Defaults to 10.
+
+        Returns:
+            str: A random string
+        """
+        return ''.join(random.choice(string.ascii_letters) for i in range(string_length))
 
     def write_temp_binary_file(self, content, filename=None):
         """Write content to a temporary file.
