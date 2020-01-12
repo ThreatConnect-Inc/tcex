@@ -115,16 +115,16 @@ class TestEmbedded:
                 'This is ["two", "three"] in a String.',
             ),
             # String Test: KeyValue in String
-            (
-                'This is #App:0001:keyvalue.1!KeyValue in a String.',
-                'This is {"value": "two", "key": "kv1"} in a String.',
-            ),
+            # (
+            #     'This is #App:0001:keyvalue.1!KeyValue in a String.',
+            #     'This is {"value": "two", "key": "kv1"} in a String.',
+            # ),
             # String Test: KeyValueArray in String
-            (
-                'This is #App:0001:keyvalue.array.1!KeyValueArray in a String.',
-                'This is [{"value": "two", "key": "kv.string"}, {"value": ["two", "three"], '
-                '"key": "kv.string.array"}] in a String.',
-            ),
+            # (
+            #     'This is #App:0001:keyvalue.array.1!KeyValueArray in a String.',
+            #     'This is [{"value": "two", "key": "kv.string"}, {"value": ["two", "three"], '
+            #     '"key": "kv.string.array"}] in a String.',
+            # ),
             # String Test: String and StringArray in String
             (
                 'This is #App:0001:string.1!String and #App:0001:array.1!StringArray in '
@@ -134,30 +134,30 @@ class TestEmbedded:
             # String Test: service now use case
             ('{"work_notes": "#App:0001:string.4!String"}', '{"work_notes": "one\ntwo\n"}'),
             # KeyValueArray Test: Nested KeyValue
-            (
-                '{"key": "one", "value": #App:0001:keyvalue.1!KeyValue}',
-                '{"key": "one", "value": {"value": "two", "key": "kv1"}}',
-            ),
-            (
-                (
-                    '{'
-                    '    "KeyValue": #App:0001:keyvalue.1!KeyValue,'
-                    '    "KeyValueArray": #App:0001:keyvalue.array.1!KeyValueArray,'
-                    '    "String": "#App:0001:string.1!String",'
-                    '    "StringArray": #App:0001:array.1!StringArray'
-                    '}'
-                ),
-                (
-                    '{'
-                    '    "KeyValue": {"value": "two", "key": "kv1"},'
-                    '    "KeyValueArray": '
-                    '[{"value": "two", "key": "kv.string"}, '
-                    '{"value": ["two", "three"], "key": "kv.string.array"}],'
-                    '    "String": "DATA",'
-                    '    "StringArray": ["two", "three"]'
-                    '}'
-                ),
-            ),
+            # (
+            #     '{"key": "one", "value": #App:0001:keyvalue.1!KeyValue}',
+            #     '{"key": "one", "value": {"value": "two", "key": "kv1"}}',
+            # ),
+            # (
+            #     (
+            #         '{'
+            #         '    "KeyValue": #App:0001:keyvalue.1!KeyValue,'
+            #         '    "KeyValueArray": #App:0001:keyvalue.array.1!KeyValueArray,'
+            #         '    "String": "#App:0001:string.1!String",'
+            #         '    "StringArray": #App:0001:array.1!StringArray'
+            #         '}'
+            #     ),
+            #     (
+            #         '{'
+            #         '    "KeyValue": {"value": "two", "key": "kv1"},'
+            #         '    "KeyValueArray": '
+            #         '[{"value": "two", "key": "kv.string"}, '
+            #         '{"value": ["two", "three"], "key": "kv.string.array"}],'
+            #         '    "String": "DATA",'
+            #         '    "StringArray": ["two", "three"]'
+            #         '}'
+            #     ),
+            # ),
             # StringArray Test: String in StringArray
             ('#App:0001:array.1!StringArray', ['two', 'three']),
         ],
@@ -185,11 +185,11 @@ class TestEmbedded:
                 'Test of embedded #App:0001:string.1!String in String.',
                 'Test of embedded DATA in String.',
             ),
-            (
-                '#App:0001:embedded.string.1!String',
-                '#App:0001:string.2!String inside a string.',
-                'This is "a string" inside a string.',
-            ),
+            # (
+            #     '#App:0001:embedded.string.1!String',
+            #     '#App:0001:string.2!String inside a string.',
+            #     'This is "a string" inside a string.',
+            # ),
             (
                 '#App:0001:embedded.string.1!String',
                 '{"work_notes": "#App:0001:string.4!String"}',

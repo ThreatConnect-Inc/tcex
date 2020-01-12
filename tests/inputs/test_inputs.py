@@ -47,7 +47,7 @@ class TestInputsConfig:
         """Test argument_parser add_argument method with a required field and config_data.
 
         Args:
-            playbook_app (TcEx, fixture): An instantiated instance of MockApp.
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
         """
         # update config data
         config_data = {
@@ -68,8 +68,8 @@ class TestInputsConfig:
         """Test AOT input method of TcEx
 
         Args:
-            playbook_app (TcEx, fixture): An instantiated instance of MockApp.
-            redis_client (TcEx, fixture): An instantiated instance of Redis Client.
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
+            redis_client (Redis.client, fixture): An instantiated instance of Redis Client.
         """
         # add AOT setting to App
         config_data = {
@@ -129,7 +129,7 @@ class TestInputsConfig:
         """Test secure params feature of TcEx inputs.
 
         Args:
-            playbook_app (TcEx, fixture): An instantiated instance of MockApp.
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
             monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
         """
         app = playbook_app()
@@ -221,7 +221,7 @@ class TestInputsConfig:
         """Test secure params failure.
 
         Args:
-            playbook_app (TcEx, fixture): An instantiated instance of MockApp.
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
             monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
         """
         config_data = {'tc_secure_params': True}
