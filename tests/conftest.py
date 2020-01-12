@@ -58,13 +58,14 @@ def tcex_hmac():
 
 # @pytest.fixture(scope='module')
 @pytest.fixture()
-def tcex_proxy_external():
+def tcex_proxy():
     """Return an instance of tcex.
 
     mitmproxy -p 4242 --ssl-insecure
     """
     # create log structure for feature/test (e.g., args/test_args.log)
     config_data_ = {
+        'tc_proxy_tc': True,
         'tc_proxy_external': True,
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)

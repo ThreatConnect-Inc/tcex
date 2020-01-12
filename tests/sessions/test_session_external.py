@@ -18,12 +18,12 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_external_proxy(tcex_proxy_external):
+    def test_session_external_proxy(tcex_proxy):
         """Test tc.session_external property with proxy.
 
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
-        r = tcex_proxy_external.session_external.get('https://www.google.com', verify=False)
-        assert tcex_proxy_external.session_external.proxies is not None
+        r = tcex_proxy.session_external.get('https://www.google.com', verify=False)
+        assert tcex_proxy.session_external.proxies is not None
         assert r.status_code == 200
