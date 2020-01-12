@@ -1,5 +1,11 @@
-# Module Testing
+# Test a specific module
 pytest tests/batch
+
+# Test a specific file
+pytest tests/case_management/test_artifact_interface.py
+
+# Test a specific test case in a file
+pytest tests/case_management/test_artifact_interface.py::test_artifact_type_api_options
 
 # Coverage Testing
 pytest --cov=. --cov-report term-missing tests/

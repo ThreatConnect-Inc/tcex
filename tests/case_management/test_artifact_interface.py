@@ -5,52 +5,40 @@ import time
 from random import randint
 from tcex.case_management.tql import TQL
 
-from ..tcex_init import tcex
-from .cm_helpers import CMHelper
+from .cm_helpers import CMHelper, TestCaseManagement
 
 
-class TestArtifact:
+class TestArtifact(TestCaseManagement):
     """Test TcEx CM Artifact Interface."""
-
-    cm = None
-    cm_helper = None
-    test_obj = None
-    test_obj_collection = None
-
-    def setup_class(self):
-        """Configure setup before all tests."""
-        self.cm = tcex.cm
-        self.test_obj = self.cm.artifact()
-        self.test_obj_collection = self.cm.artifacts()
 
     def setup_method(self):
         """Configure setup before all tests."""
-        self.cm_helper = CMHelper(self.cm)
+        self.cm_helper = CMHelper('artifact')
+        self.cm = self.cm_helper.cm
 
     def teardown_method(self):
         """Configure teardown before all tests."""
         if os.getenv('TEARDOWN_METHOD') is None:
             self.cm_helper.cleanup()
 
+    def test_artifact_api_options(self):
+        """Test filter keywords."""
+        super().obj_api_options()
+
+    def test_artifact_code_gen(self):
+        """Generate code and docstring from Options methods.
+
+        This is not truly a test case, but best place to store it for now.
+        """
+        super().obj_code_gen()
+
     def test_artifact_filter_keywords(self):
         """Test filter keywords."""
-        # print(self.test_obj._doc_string)
-        # print(self.test_obj_collection._filter_map_method)
-        # print(self.test_obj_collection._filter_class)
-        for keyword in self.test_obj_collection.filter.keywords:
-            if keyword not in self.test_obj_collection.filter.implemented_keywords:
-                assert False, f'Missing TQL keyword {keyword}.'
+        super().obj_filter_keywords()
 
-    def test_artifact_properties(self):
+    def test_artifact_object_properties(self):
         """Test properties."""
-        for prop_string, prop_data in self.test_obj.properties.items():
-            prop_read_only = prop_data.get('read-only', False)
-            prop_string = self.cm_helper.camel_to_snake(prop_string)
-
-            # ensure class has property
-            assert hasattr(
-                self.test_obj, prop_string
-            ), f'Missing {prop_string} property. read-only: {prop_read_only}'
+        super().obj_properties()
 
     def test_artifact_create_by_case_id(self):
         """Test Artifact Creation"""
