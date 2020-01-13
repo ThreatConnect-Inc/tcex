@@ -303,7 +303,7 @@ class Case(CommonCaseManagement):
     def user_access(self):
         """Return the **User Access** for the Case."""
         if self._user_access:
-            return self.tcex.cm.users(self.user_access)
+            return self.tcex.cm.users(**self._user_access)
         return self._user_access
 
     @user_access.setter

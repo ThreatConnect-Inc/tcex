@@ -137,11 +137,11 @@ class Users:
         users (list): A array of user data
     """
 
-    def __init__(self, users):
+    def __init__(self, **kwargs):
         """Initialize Class properties."""
         self.user = []
-        for data in users:
-            self.user.append(User(**data.get('data', data)))
+        for data in kwargs.get('data', []):
+            self.user.append(User(**data))
 
     @property
     def as_dict(self):
