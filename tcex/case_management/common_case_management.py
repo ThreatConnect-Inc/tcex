@@ -168,7 +168,7 @@ class CommonCaseManagement:
 
     @property
     def as_entity(self):
-        """Placeholder for common method."""
+        """Return the object as an entity."""
         raise NotImplementedError('Child class must implement this method.')
 
     @property
@@ -181,8 +181,6 @@ class CommonCaseManagement:
             if key in self._excluded_properties:
                 continue
             if hasattr(self, key):
-                if key == 'user_access':
-                    print('getting here')
                 value = getattr(self, key)
             try:
                 value = value.as_dict
@@ -325,10 +323,18 @@ class CommonCaseManagement:
         """Set the id of the case management object."""
         self._id = cm_id
 
-    # @property
-    # def property_names(self):
-    #     """Return a list of property names for current object."""
-    #     return [p.get('name') for p in self.properties]
+    @property
+    def implemented_properties(self):
+        """Return implemented Object properties."""
+        properties = []
+        for key in vars(self):
+            key = key.lstrip('_')
+            if key in self._excluded_properties:
+                continue
+
+            properties.append(key)
+
+        return properties
 
     @property
     def properties(self):

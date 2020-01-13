@@ -42,6 +42,10 @@ class TestTag(TestCaseManagement):
         """Test properties."""
         super().obj_properties()
 
+    def test_tag_object_properties_extra(self):
+        """Test properties."""
+        super().obj_properties_extra()
+
     def test_tag_create(self, request):
         """Test Artifact Creation"""
         # tag data

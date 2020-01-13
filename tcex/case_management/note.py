@@ -91,8 +91,6 @@ class Note(CommonCaseManagement):
         task_id (int, kwargs): the ID of the Task on which to apply the Note
         task_xid (str, kwargs): the XID of the Task on which to apply the Note
         text (str, kwargs): [Required] The **Text** for the Note.
-        user_id (int, kwargs): [Read-Only] The **User Id** for the Note.
-        user_name (str, kwargs): [Read-Only] The **User Name** for the Note.
         workflow_event (WorkflowEvent, kwargs): [Read-Only] The **Workflow Event** for the Note.
         workflow_event_id (int, kwargs): the ID of the Event on which to apply the Note
     """
@@ -115,8 +113,6 @@ class Note(CommonCaseManagement):
         self._task_id = kwargs.get('task_id', None)
         self._task_xid = kwargs.get('task_xid', None)
         self._text = kwargs.get('text', None)
-        self._user_id = kwargs.get('user_id', None)
-        self._user_name = kwargs.get('user_name', None)
         self._workflow_event = kwargs.get('workflow_event', None)
         self._workflow_event_id = kwargs.get('workflow_event_id', None)
 
@@ -239,16 +235,6 @@ class Note(CommonCaseManagement):
     def text(self, text):
         """Set the **Text** value for the Note."""
         self._text = text
-
-    @property
-    def user_id(self):
-        """Return the **User ID** for the Note."""
-        return self._user_id
-
-    @property
-    def user_name(self):
-        """Return the **User Name** value for the Note."""
-        return self._user_name
 
     @property
     def workflow_event(self):

@@ -42,6 +42,10 @@ class TestArtifactType(TestCaseManagement):
         """Test properties."""
         super().obj_properties()
 
+    def test_artifact_object_properties_extra(self):
+        """Test properties."""
+        super().obj_properties_extra()
+
     def test_artifact_type_get_many(self):
         """Tests getting all artifact types"""
         artifact_types = self.cm.artifact_types()

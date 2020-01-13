@@ -44,6 +44,10 @@ class TestArtifact(TestCaseManagement):
         """Test properties."""
         super().obj_properties()
 
+    def test_artifact_object_properties_extra(self):
+        """Test properties."""
+        super().obj_properties_extra()
+
     def test_artifact_create_by_case_id(self):
         """Test Artifact Creation"""
         # create case

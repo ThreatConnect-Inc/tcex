@@ -180,3 +180,18 @@ class TestCaseManagement:
             assert hasattr(
                 self.cm_helper.cm_obj, prop_string
             ), f'Missing {prop_string} property. read-only: {prop_read_only}'
+
+    def obj_properties_extra(self):
+        """Check to see if there are any additional properties in obj."""
+
+        for prop in self.cm_helper.cm_obj.implemented_properties:
+            prop_camel = self.tcex.utils.snake_to_camel(prop)
+
+            # handle additional properties
+            # TODO: remove items that are fixed in core
+            # id_dependent_on - bug on task object
+            if prop in ['id', 'id_dependent_on']:
+                continue
+
+            # ensure class has property
+            assert prop_camel in self.cm_helper.cm_obj.properties, f'Extra {prop} property.'

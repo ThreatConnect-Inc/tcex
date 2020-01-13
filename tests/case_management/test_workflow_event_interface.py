@@ -43,6 +43,10 @@ class TestWorkflowEvent(TestCaseManagement):
         """Test properties."""
         super().obj_properties()
 
+    def test_workflow_event_object_properties_extra(self):
+        """Test properties."""
+        super().obj_properties_extra()
+
     def test_workflow_event_create_by_case_id(self, request):
         """Test Workflow Event Creation"""
         # create case
