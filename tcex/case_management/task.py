@@ -177,8 +177,6 @@ class Task(CommonCaseManagement):
     @property
     def completed_by(self):
         """Return the **Completed By** for the Task"""
-        if self._completed_by:
-            return self.tcex.cm.user(**self._completed_by)
         return self._completed_by
 
     @property
