@@ -14,13 +14,17 @@ class CommonCaseManagement:
 
     def __init__(self, tcex, api_endpoint, kwargs):
         """Initialize Class properties."""
+        self.tcex = tcex
+        self.api_endpoint = api_endpoint.value
+
+        # properties
         self._fields = None
         self._id = kwargs.get('id', None)
         self._properties = None
         self._tql = None
+
+        # process kwargs
         self._transform_kwargs(kwargs)
-        self.api_endpoint = api_endpoint.value
-        self.tcex = tcex
 
     def __str__(self):
         """Printable version of Object"""
@@ -40,6 +44,12 @@ class CommonCaseManagement:
             else:
                 printable_string += f'{key:.<40} {"<object>":<50}\n'
         return printable_string
+
+    def _camel_case_key(self, key):
+        """Map key to it's appropriate Core/Test value."""
+        if key in ['artifact_type', 'artifactType']:
+            return 'type'
+        return self.tcex.utils.camel_to_snake(key)
 
     @property
     def _doc_string(self):
@@ -131,48 +141,8 @@ class CommonCaseManagement:
             'tql',
         ]
 
-    @property
-    def _metadata_map(self):
-        """Return a mapping of kwargs to expected args."""
-        # @bpurdy - can we just use camel_to_snake here???
-        return {
-            'artifactId': 'artifact_id',
-            'artifact_type': 'type',
-            'artifactType': 'type',
-            'caseId': 'case_id',
-            'caseXid': 'case_xid',
-            'completedBy': 'completed_by',
-            'completedDate': 'completed_date',
-            'createdBy': 'created_by',
-            'dataType': 'data_type',
-            'dateAdded': 'date_added',
-            'deletedReason': 'deleted_reason',
-            'dueDate': 'due_date',
-            'eventDate': 'event_date',
-            'fileData': 'file_data',
-            'firstName': 'first_name',
-            'intelType': 'intel_type',
-            'isWorkflow': 'is_workflow',
-            'lastModified': 'last_modified',
-            'lastName': 'last_name',
-            'link': 'link',
-            'linkText': 'link_text',
-            'parentCase': 'parent_case',
-            'systemGenerated': 'system_generated',
-            'taskId': 'task_id',
-            'taskXid': 'task_xid',
-            'userAccess': 'user_access',
-            'userName': 'user_name',
-            'workflowId': 'workflow_id',
-            'workflowEventId': 'workflow_event_id',
-            'workflowPhase': 'workflow_phase',
-            'workflowStep': 'workflow_step',
-            'workflowTemplate': 'workflow_template',
-        }
-
     def _reverse_transform(self, kwargs):
         """Reverse mapping of the _metadata_map method."""
-        reversed_transform_mapping = {v: k for k, v in self._metadata_map.items()}
 
         def reverse_transform(kwargs):
             reversed_mappings = {}
@@ -185,9 +155,7 @@ class CommonCaseManagement:
                         values.append(self._reverse_transform(entry))
                     reversed_mappings[key] = values
                     return reversed_mappings
-                new_key = reversed_transform_mapping.get(key, key)
-                if key in ['type']:
-                    new_key = key
+                new_key = self.tcex.utils.snake_to_camel(key)
                 reversed_mappings[new_key] = value
             return reversed_mappings
 
@@ -196,12 +164,7 @@ class CommonCaseManagement:
     def _transform_kwargs(self, kwargs):
         """Map the provided kwargs to expected arguments."""
         for key in dict(kwargs):
-            new_key = self._metadata_map.get(key, key)
-            # if key in ['date_added', 'eventDate', 'firstSeen', 'publishDate']:
-            #     transformed_value = self._utils.datetime.format_datetime(
-            #         value, date_format='%Y-%m-%dT%H:%M:%SZ'
-            #     )
-            kwargs[new_key] = kwargs.pop(key)
+            kwargs[self._camel_case_key(key)] = kwargs.pop(key)
 
     @property
     def as_entity(self):
@@ -304,7 +267,13 @@ class CommonCaseManagement:
         """
         if params is None:
             params = {}
-        self.to_camel_case(params)
+
+        # convert all keys to camel case
+        for k, v in list(params.items()):
+            del params[k]
+            k = self.tcex.util.snake_to_camel(k)
+            params[k] = v
+
         cm_id = case_management_id or self.id
         url = f'{self.api_endpoint}/{cm_id}'
         current_retries = -1
@@ -441,18 +410,3 @@ class CommonCaseManagement:
                 self._tql = r.json()['data']
 
         return self._tql
-
-    @staticmethod
-    def to_camel_case(kwargs):
-        """
-        Converts snake_case to camelCase
-
-        Args:
-            kwargs (dict): The dictionary you wish to convert keys to camel case.
-        """
-        for key in dict(kwargs):
-            if not key:
-                continue
-            components = key.split('_')
-            new_key = components[0] + ''.join(x.title() for x in components[1:])
-            kwargs[new_key] = kwargs.pop(key)
