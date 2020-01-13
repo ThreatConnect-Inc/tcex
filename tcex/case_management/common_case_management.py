@@ -217,6 +217,8 @@ class CommonCaseManagement:
             key = key.lstrip('_')
             if key in self._excluded_properties:
                 continue
+            if hasattr(self, key):
+                value = getattr(self, key)
             try:
                 value = value.as_dict
             except AttributeError:
