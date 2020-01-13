@@ -106,7 +106,7 @@ class Task(CommonCaseManagement):
         self._assignee = kwargs.get('assignee', None)
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
-        self._completed_by = kwargs.get('completed_date', None)
+        self._completed_by = kwargs.get('completed_by', None)
         self._completed_date = kwargs.get('completed_date', None)
         self._config_playbook = kwargs.get('config_playbook', None)
         self._config_task = kwargs.get('config_task', None)

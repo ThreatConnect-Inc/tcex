@@ -180,6 +180,10 @@ class CommonCaseManagement:
             key = key.lstrip('_')
             if key in self._excluded_properties:
                 continue
+            if hasattr(self, key):
+                if key == 'user_access':
+                    print('getting here')
+                value = getattr(self, key)
             try:
                 value = value.as_dict
             except AttributeError:
