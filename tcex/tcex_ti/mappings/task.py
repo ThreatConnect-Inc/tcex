@@ -40,7 +40,7 @@ class Task(TIMappings):
         if due_date:
             self._data['dueDate'] = due_date
             try:
-                self._data['dueDate'] = self._utils.format_datetime(
+                self._data['dueDate'] = self._utils.datetime.format_datetime(
                     due_date, date_format='%Y-%m-%dT%H:%M:%SZ'
                 )
             except RuntimeError:
@@ -48,7 +48,7 @@ class Task(TIMappings):
         if reminder_date:
             self._data['reminderDate'] = reminder_date
             try:
-                self._data['reminderDate'] = self._utils.format_datetime(
+                self._data['reminderDate'] = self._utils.datetime.format_datetime(
                     reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
                 )
             except RuntimeError:
@@ -56,7 +56,7 @@ class Task(TIMappings):
         if escalation_date:
             self._data['escalationDate'] = escalation_date
             try:
-                self._data['escalationDate'] = self._utils.format_datetime(
+                self._data['escalationDate'] = self._utils.datetime.format_datetime(
                     escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
                 )
             except RuntimeError:
@@ -121,7 +121,7 @@ class Task(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        due_date = self._utils.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
+        due_date = self._utils.datetime.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['dueDate'] = due_date
         request = {'dueDate': due_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -135,7 +135,9 @@ class Task(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        reminder_date = self._utils.format_datetime(reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ')
+        reminder_date = self._utils.datetime.format_datetime(
+            reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        )
         self._data['reminderDate'] = reminder_date
         request = {'reminderDate': reminder_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -149,7 +151,7 @@ class Task(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        escalation_date = self._utils.format_datetime(
+        escalation_date = self._utils.datetime.format_datetime(
             escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
         self._data['escalationDate'] = escalation_date
@@ -287,7 +289,9 @@ class Task(TIMappings):
         if key == 'unique_id':
             self._unique_id = quote_plus(str(value))
         elif key in ['dueDate', 'reminderDate', 'escalationDate']:
-            self._data[key] = self._utils.format_datetime(value, date_format='%Y-%m-%dT%H:%M:%SZ')
+            self._data[key] = self._utils.datetime.format_datetime(
+                value, date_format='%Y-%m-%dT%H:%M:%SZ'
+            )
         self._data[key] = value
 
     def can_create(self):

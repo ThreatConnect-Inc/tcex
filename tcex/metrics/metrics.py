@@ -123,7 +123,9 @@ class Metrics:
 
         body = {'value': value}
         if date is not None:
-            body['date'] = self.tcex.utils.format_datetime(date, date_format='%Y-%m-%dT%H:%M:%SZ')
+            body['date'] = self.tcex.utils.datetime.format_datetime(
+                date, date_format='%Y-%m-%dT%H:%M:%SZ'
+            )
         if key is not None:
             body['name'] = key
         self.tcex.log.debug(f'metric data: {body}')

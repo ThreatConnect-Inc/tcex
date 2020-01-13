@@ -118,7 +118,7 @@ class Indicator:
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'lastModified']:
-            self._indicator_data[key] = self._utils.format_datetime(
+            self._indicator_data[key] = self._utils.datetime.format_datetime(
                 value, date_format='%Y-%m-%dT%H:%M:%SZ'
             )
         elif key == 'confidence':
@@ -255,7 +255,7 @@ class Indicator:
     @date_added.setter
     def date_added(self, date_added):
         """Set Indicator dateAdded."""
-        self._indicator_data['dateAdded'] = self._utils.format_datetime(
+        self._indicator_data['dateAdded'] = self._utils.datetime.format_datetime(
             date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -267,7 +267,7 @@ class Indicator:
     @last_modified.setter
     def last_modified(self, last_modified):
         """Set Indicator lastModified."""
-        self._indicator_data['lastModified'] = self._utils.format_datetime(
+        self._indicator_data['lastModified'] = self._utils.datetime.format_datetime(
             last_modified, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -731,7 +731,7 @@ class FileOccurrence:
         if path is not None:
             self._occurrence_data['path'] = path
         if date is not None:
-            self._occurrence_data['date'] = self._utils.format_datetime(
+            self._occurrence_data['date'] = self._utils.datetime.format_datetime(
                 date, date_format='%Y-%m-%dT%H:%M:%SZ'
             )
 
@@ -748,7 +748,7 @@ class FileOccurrence:
     @date.setter
     def date(self, date):
         """Set File Occurrence date."""
-        self._occurrence_data['date'] = self._utils.format_datetime(
+        self._occurrence_data['date'] = self._utils.datetime.format_datetime(
             date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 

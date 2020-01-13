@@ -273,7 +273,7 @@ class Validator:
         passed = True
         for data in app_data:
             try:
-                self.tcex.utils.any_to_datetime(data)
+                self.tcex.datetime.utils.any_to_datetime(data)
             except RuntimeError:
                 bad_data.append(data)
                 passed = False

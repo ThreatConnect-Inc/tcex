@@ -19,7 +19,9 @@ class TestIndicatorDeletedInterface:
 
     def test_address_deleted(self, ip='14.111.14.15'):
         """Test address delete."""
-        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
+        deleted_since = tcex.utils.datetime.format_datetime(
+            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
+        )
         self.address_delete(ip)
 
         indicator_ti = self.ti.indicator(indicator_type='Address')
@@ -57,7 +59,9 @@ class TestIndicatorDeletedInterface:
 
     def test_cidr_deleted(self, block='1.1.1.7/8'):
         """Test cidr delete."""
-        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
+        deleted_since = tcex.utils.datetime.format_datetime(
+            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
+        )
         self.cidr_delete(block)
 
         indicator_ti = self.ti.indicator(indicator_type='CIDR')
@@ -95,7 +99,9 @@ class TestIndicatorDeletedInterface:
 
     def test_email_address_deleted(self, indicator='foo@badwebsite.com'):
         """Test email address delete."""
-        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
+        deleted_since = tcex.utils.datetime.format_datetime(
+            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
+        )
         self.email_address_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='EMAILADDRESS')
@@ -133,7 +139,9 @@ class TestIndicatorDeletedInterface:
 
     def test_file_deleted(self, indicator='1d59bb787ae38a1dda90cf82d09e3648'):
         """Test file delete."""
-        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
+        deleted_since = tcex.utils.datetime.format_datetime(
+            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
+        )
         self.file_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='File')
@@ -173,7 +181,9 @@ class TestIndicatorDeletedInterface:
 
     def test_host_deleted(self, indicator='www.go0gle.co.uk'):
         """Test host delete."""
-        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
+        deleted_since = tcex.utils.datetime.format_datetime(
+            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
+        )
         self.host_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='Host')
@@ -211,7 +221,9 @@ class TestIndicatorDeletedInterface:
 
     def test_url_deleted(self, indicator='https://www.go0gle.co.uk/virus'):
         """Test url delete."""
-        deleted_since = tcex.utils.format_datetime('1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
+        deleted_since = tcex.utils.datetime.format_datetime(
+            '1 hour ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ'
+        )
         self.url_delete(indicator)
 
         indicator_ti = self.ti.indicator(indicator_type='URL')

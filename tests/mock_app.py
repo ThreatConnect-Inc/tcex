@@ -265,7 +265,13 @@ class MockApp:
     @property
     def tcex_log_file(self):
         """Return log file name for current test case."""
-        test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
-        test_feature = test_data[0].split('/')[1].replace('/', '-')
-        test_name = test_data[-1].replace('/', '-').replace('[', '-')
+        try:
+            test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
+            test_feature = test_data[0].split('/')[1].replace('/', '-')
+            test_name = test_data[-1].replace('/', '-').replace('[', '-')
+        except AttributeError:
+            # TODO: remove this once tcex_init file is removed
+            test_feature = 'tcex_init_legacy'
+            test_name = 'app'
+
         return os.path.join(test_feature, f'{test_name}.log')

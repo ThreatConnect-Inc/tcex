@@ -198,7 +198,7 @@ class CommonCaseManagement:
         for key in dict(kwargs):
             new_key = self._metadata_map.get(key, key)
             # if key in ['date_added', 'eventDate', 'firstSeen', 'publishDate']:
-            #     transformed_value = self._utils.format_datetime(
+            #     transformed_value = self._utils.datetime.format_datetime(
             #         value, date_format='%Y-%m-%dT%H:%M:%SZ'
             #     )
             kwargs[new_key] = kwargs.pop(key)

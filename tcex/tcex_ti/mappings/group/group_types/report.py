@@ -123,7 +123,9 @@ class Report(Group):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        publish_date = self._utils.format_datetime(publish_date, date_format='%Y-%m-%dT%H:%M:%SZ')
+        publish_date = self._utils.datetime.format_datetime(
+            publish_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        )
 
         self._data['publishDate'] = publish_date
         request = {'publishDate': publish_date}

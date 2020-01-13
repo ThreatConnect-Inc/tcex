@@ -14,16 +14,16 @@ from tcex import (
     TcEx,
 )
 
-from ..conftest import _config_data
+from ..mock_app import MockApp
+
+_config_data = MockApp(runtime_level='Playbook').config_data
 
 
-# pylint: disable=W0201
 class TestDecorators:
     """Test the TcEx Decorators."""
 
-    def setup_class(self):
-        """Configure setup before all tests."""
-        self.tcex = None
+    args = None
+    tcex = None
 
     def setup_method(self):
         """Setup before each test case is called."""

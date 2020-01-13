@@ -233,7 +233,9 @@ class Indicator(TIMappings):
         """
         key = self._metadata_map().get(key, key)
         if key in ['dateAdded', 'lastModified']:
-            self._data[key] = self._utils.format_datetime(value, date_format='%Y-%m-%dT%H:%M:%SZ')
+            self._data[key] = self._utils.datetime.format_datetime(
+                value, date_format='%Y-%m-%dT%H:%M:%SZ'
+            )
         elif key == 'confidence':
             self._data[key] = int(value)
         elif key == 'rating':
@@ -329,7 +331,7 @@ class Indicator(TIMappings):
 
         data = {
             'count': count,
-            'dateObserved': self._utils.format_datetime(
+            'dateObserved': self._utils.datetime.format_datetime(
                 date_observed, date_format='%Y-%m-%dT%H:%M:%SZ'
             ),
         }

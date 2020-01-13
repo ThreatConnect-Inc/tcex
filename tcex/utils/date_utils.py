@@ -94,7 +94,7 @@ class DatetimeUtils:
         return dt
 
     def format_datetime(self, time_input, tz=None, date_format=None):
-        """ Return timestamp from multiple input formats.
+        """Return timestamp from multiple input formats.
 
             Formats:
 

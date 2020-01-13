@@ -160,7 +160,7 @@ class TestUtils:
             (
                 'tomorrow',
                 'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-%dT', 'timedelta': {'days': 1}},
+                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T', 'timedelta': {'days': 1}},
             ),
             (
                 'next thursday at 4pm',
@@ -170,19 +170,19 @@ class TestUtils:
             (
                 'at 4pm',
                 'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-%dT22:00:00', 'timedelta': {}},
+                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T22:00:00', 'timedelta': {}},
             ),
             (
                 'eod',
                 'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-%dT23:00:00', 'timedelta': {}},
+                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T23:00:00', 'timedelta': {}},
             ),
             (
                 'tomorrow eod',
                 'UTC',
                 {
                     'operator': operator.add,
-                    'strftime': '%Y-%m-%dT23:00:00',
+                    'strftime': '%Y-%m-[0-9]{2}T23:00:00',
                     'timedelta': {'days': 1},
                 },
             ),
@@ -227,12 +227,12 @@ class TestUtils:
             (
                 '2 hours before noon',
                 'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-%dT', 'timedelta': {}},
+                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T', 'timedelta': {}},
             ),
             (
                 '2 days from tomorrow',
                 'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-%dT', 'timedelta': {'days': 3}},
+                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T', 'timedelta': {'days': 3}},
             ),
             # ('0', 'US/Eastern', None),
         ],

@@ -104,7 +104,9 @@ class SecurityLabel(TIMappings):
         Args:
             date_added: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
-        date_added = self._utils.format_datetime(date_added, date_format='%Y-%m-%dT%H:%M:%SZ')
+        date_added = self._utils.datetime.format_datetime(
+            date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
+        )
 
         self._data['dateAdded'] = date_added
         data = {'dateAdded': date_added}

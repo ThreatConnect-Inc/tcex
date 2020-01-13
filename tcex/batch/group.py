@@ -95,7 +95,7 @@ class Group:
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
             if value is not None:
-                self._group_data[key] = self._utils.format_datetime(
+                self._group_data[key] = self._utils.datetime.format_datetime(
                     value, date_format='%Y-%m-%dT%H:%M:%SZ'
                 )
         elif key == 'file_content':
@@ -183,7 +183,7 @@ class Group:
     @date_added.setter
     def date_added(self, date_added):
         """Set Indicator dateAdded."""
-        self._group_data['dateAdded'] = self._utils.format_datetime(
+        self._group_data['dateAdded'] = self._utils.datetime.format_datetime(
             date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -314,7 +314,7 @@ class Campaign(Group):
     @first_seen.setter
     def first_seen(self, first_seen):
         """Set Document first seen."""
-        self._group_data['firstSeen'] = self._utils.format_datetime(
+        self._group_data['firstSeen'] = self._utils.datetime.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -471,7 +471,7 @@ class Event(Group):
     @event_date.setter
     def event_date(self, event_date):
         """Set the Events "event date" value."""
-        self._group_data['eventDate'] = self._utils.format_datetime(
+        self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -523,7 +523,7 @@ class Incident(Group):
     @event_date.setter
     def event_date(self, event_date):
         """Set Incident event_date."""
-        self._group_data['eventDate'] = self._utils.format_datetime(
+        self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -616,7 +616,7 @@ class Report(Group):
     @publish_date.setter
     def publish_date(self, publish_date):
         """Set Report publish date"""
-        self._group_data['publishDate'] = self._utils.format_datetime(
+        self._group_data['publishDate'] = self._utils.datetime.format_datetime(
             publish_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
