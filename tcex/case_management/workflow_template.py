@@ -189,7 +189,7 @@ class WorkflowTemplate(CommonCaseManagement):
 
 
 class FilterWorkflowTemplates(Filter):
-    """Filter Object for Workflow Templates"""
+    """Filter Object for WorkflowTemplates"""
 
     def active(self, operator, active):
         """Filter Workflow Templates based on **active** keyword.
@@ -201,49 +201,49 @@ class FilterWorkflowTemplates(Filter):
         self._tql.add_filter('active', operator, active, TQL.Type.BOOLEAN)
 
     def assigned_group_id(self, operator, assigned_group_id):
-        """Filter Workflow Templates based on **assignedgroupid** keyword.
+        """Filter Workflow Templates based on **assignedGroupId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             assigned_group_id (int): The ID of the Group assigned to this template.
         """
-        self._tql.add_filter('assignedgroupid', operator, assigned_group_id, TQL.Type.INTEGER)
+        self._tql.add_filter('assignedGroupId', operator, assigned_group_id, TQL.Type.INTEGER)
 
     def assigned_user_id(self, operator, assigned_user_id):
-        """Filter Workflow Templates based on **assigneduserid** keyword.
+        """Filter Workflow Templates based on **assignedUserId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             assigned_user_id (int): The ID of the User assigned to this template.
         """
-        self._tql.add_filter('assigneduserid', operator, assigned_user_id, TQL.Type.INTEGER)
+        self._tql.add_filter('assignedUserId', operator, assigned_user_id, TQL.Type.INTEGER)
 
     def config_artifact(self, operator, config_artifact):
-        """Filter Workflow Templates based on **configartifact** keyword.
+        """Filter Workflow Templates based on **configArtifact** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             config_artifact (str): The artifact config information.
         """
-        self._tql.add_filter('configartifact', operator, config_artifact, TQL.Type.STRING)
+        self._tql.add_filter('configArtifact', operator, config_artifact, TQL.Type.STRING)
 
     def config_playbook(self, operator, config_playbook):
-        """Filter Workflow Templates based on **configplaybook** keyword.
+        """Filter Workflow Templates based on **configPlaybook** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             config_playbook (str): The playbook config information.
         """
-        self._tql.add_filter('configplaybook', operator, config_playbook, TQL.Type.STRING)
+        self._tql.add_filter('configPlaybook', operator, config_playbook, TQL.Type.STRING)
 
     def config_task(self, operator, config_task):
-        """Filter Workflow Templates based on **configtask** keyword.
+        """Filter Workflow Templates based on **configTask** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             config_task (str): The task config information.
         """
-        self._tql.add_filter('configtask', operator, config_task, TQL.Type.STRING)
+        self._tql.add_filter('configTask', operator, config_task, TQL.Type.STRING)
 
     def description(self, operator, description):
         """Filter Workflow Templates based on **description** keyword.
@@ -273,31 +273,31 @@ class FilterWorkflowTemplates(Filter):
         self._tql.add_filter('name', operator, name, TQL.Type.STRING)
 
     def organization_id(self, operator, organization_id):
-        """Filter Workflow Templates based on **organizationid** keyword.
+        """Filter Workflow Templates based on **organizationId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             organization_id (int): The ID of the organization associated with this template.
         """
-        self._tql.add_filter('organizationid', operator, organization_id, TQL.Type.INTEGER)
+        self._tql.add_filter('organizationId', operator, organization_id, TQL.Type.INTEGER)
 
     def target_id(self, operator, target_id):
-        """Filter Workflow Templates based on **targetid** keyword.
+        """Filter Workflow Templates based on **targetId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             target_id (int): The ID of the target of this template.
         """
-        self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
+        self._tql.add_filter('targetId', operator, target_id, TQL.Type.INTEGER)
 
     def target_type(self, operator, target_type):
-        """Filter Workflow Templates based on **targettype** keyword.
+        """Filter Workflow Templates based on **targetType** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             target_type (str): The target type of this template.
         """
-        self._tql.add_filter('targettype', operator, target_type, TQL.Type.STRING)
+        self._tql.add_filter('targetType', operator, target_type, TQL.Type.STRING)
 
     def version(self, operator, version):
         """Filter Workflow Templates based on **version** keyword.

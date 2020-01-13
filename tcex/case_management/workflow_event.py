@@ -228,25 +228,25 @@ class WorkflowEvent(CommonCaseManagement):
 
 
 class FilterWorkflowEvents(Filter):
-    """Filter Object for Workflow Events"""
+    """Filter Object for WorkflowEvents"""
 
     def case_id(self, operator, case_id):
-        """Filter Workflow Events based on **caseid** keyword.
+        """Filter Workflow Events based on **caseId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             case_id (int): The ID of the case this event is associated with.
         """
-        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
     def date_added(self, operator, date_added):
-        """Filter Workflow Events based on **dateadded** keyword.
+        """Filter Workflow Events based on **dateAdded** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             date_added (str): The date the event was added.
         """
-        self._tql.add_filter('dateadded', operator, date_added, TQL.Type.STRING)
+        self._tql.add_filter('dateAdded', operator, date_added, TQL.Type.STRING)
 
     def deleted(self, operator, deleted):
         """Filter Workflow Events based on **deleted** keyword.
@@ -258,22 +258,22 @@ class FilterWorkflowEvents(Filter):
         self._tql.add_filter('deleted', operator, deleted, TQL.Type.BOOLEAN)
 
     def deleted_reason(self, operator, deleted_reason):
-        """Filter Workflow Events based on **deletedreason** keyword.
+        """Filter Workflow Events based on **deletedReason** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             deleted_reason (str): The reason the event was deleted.
         """
-        self._tql.add_filter('deletedreason', operator, deleted_reason, TQL.Type.STRING)
+        self._tql.add_filter('deletedReason', operator, deleted_reason, TQL.Type.STRING)
 
     def event_date(self, operator, event_date):
-        """Filter Workflow Events based on **eventdate** keyword.
+        """Filter Workflow Events based on **eventDate** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             event_date (str): The date the event occurred.
         """
-        self._tql.add_filter('eventdate', operator, event_date, TQL.Type.STRING)
+        self._tql.add_filter('eventDate', operator, event_date, TQL.Type.STRING)
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Workflow Events based on **id** keyword.
@@ -294,13 +294,13 @@ class FilterWorkflowEvents(Filter):
         self._tql.add_filter('link', operator, link, TQL.Type.STRING)
 
     def link_text(self, operator, link_text):
-        """Filter Workflow Events based on **linktext** keyword.
+        """Filter Workflow Events based on **linkText** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             link_text (str): The displayed text for the link to the item this event pertains to.
         """
-        self._tql.add_filter('linktext', operator, link_text, TQL.Type.STRING)
+        self._tql.add_filter('linkText', operator, link_text, TQL.Type.STRING)
 
     def summary(self, operator, summary):
         """Filter Workflow Events based on **summary** keyword.
@@ -312,20 +312,20 @@ class FilterWorkflowEvents(Filter):
         self._tql.add_filter('summary', operator, summary, TQL.Type.STRING)
 
     def system_generated(self, operator, system_generated):
-        """Filter Workflow Events based on **systemgenerated** keyword.
+        """Filter Workflow Events based on **systemGenerated** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             system_generated (bool): Flag determining if this event was created automatically by
                 the system.
         """
-        self._tql.add_filter('systemgenerated', operator, system_generated, TQL.Type.BOOLEAN)
+        self._tql.add_filter('systemGenerated', operator, system_generated, TQL.Type.BOOLEAN)
 
-    def username(self, operator, username):
-        """Filter Workflow Events based on **username** keyword.
+    def user_name(self, operator, user_name):
+        """Filter Workflow Events based on **userName** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
-            username (str): The username associated with the event.
+            user_name (str): The username associated with the event.
         """
-        self._tql.add_filter('username', operator, username, TQL.Type.STRING)
+        self._tql.add_filter('userName', operator, user_name, TQL.Type.STRING)

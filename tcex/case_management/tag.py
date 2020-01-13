@@ -80,7 +80,9 @@ class Tag(CommonCaseManagement):
         tcex (TcEx): An instantiated instance of TcEx object.
         cases (Case, kwargs): The **Cases** for the Tag.
         description (str, kwargs): a brief description of the Tag
+        last_used (str, kwargs): [Read-Only] The **Last Used** for the Tag.
         name (str, kwargs): [Required] The **Name** for the Tag.
+        owner (str, kwargs): [Read-Only] The **Owner** for the Tag.
     """
 
     def __init__(self, tcex, **kwargs):
@@ -88,7 +90,9 @@ class Tag(CommonCaseManagement):
         super().__init__(tcex, ApiEndpoints.TAGS, kwargs)
         self._cases = kwargs.get('cases', None)
         self._description = kwargs.get('description', None)
+        self._last_used = kwargs.get('last_used', None)
         self._name = kwargs.get('name', None)
+        self._owner = kwargs.get('owner', None)
 
     @property
     def as_entity(self):
@@ -122,6 +126,11 @@ class Tag(CommonCaseManagement):
         self._description = description
 
     @property
+    def last_used(self):
+        """Return the **Last Used** for the Tag."""
+        return self._last_used
+
+    @property
     def name(self):
         """Return the **Name** for the Tag."""
         return self._name
@@ -131,27 +140,41 @@ class Tag(CommonCaseManagement):
         """Set the **Name** for the Tag."""
         self._name = name
 
+    @property
+    def owner(self):
+        """Return the **Owner** for the Tag."""
+        return self._owner
+
 
 class FilterTags(Filter):
     """Filter Object for Tags"""
 
     def case_id(self, operator, case_id):
-        """Filter Tags based on **caseid** keyword.
+        """Filter Tags based on **caseId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             case_id (int): The ID of the case the tag is applied to.
         """
-        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
+
+    def description(self, operator, description):
+        """Filter Tags based on **description** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            description (str): The description of the tag.
+        """
+        self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
     def has_case(self, operator, has_case):
-        """Filter Tags based on **hascase** keyword.
+        """Filter Tags based on **hasCase** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             has_case (int): A nested query for association to other cases.
         """
-        self._tql.add_filter('hascase', operator, has_case, TQL.Type.INTEGER)
+        self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Tags based on **id** keyword.
@@ -161,6 +184,15 @@ class FilterTags(Filter):
             id (int): The ID of the tag.
         """
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
+
+    def last_used(self, operator, last_used):
+        """Filter Tags based on **lastUsed** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            last_used (str): The date this tag was last used.
+        """
+        self._tql.add_filter('lastUsed', operator, last_used, TQL.Type.STRING)
 
     def name(self, operator, name):
         """Filter Tags based on **name** keyword.
@@ -181,10 +213,10 @@ class FilterTags(Filter):
         self._tql.add_filter('owner', operator, owner, TQL.Type.INTEGER)
 
     def owner_name(self, operator, owner_name):
-        """Filter Tags based on **ownername** keyword.
+        """Filter Tags based on **ownerName** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             owner_name (str): The name of the tag's Organization.
         """
-        self._tql.add_filter('ownername', operator, owner_name, TQL.Type.STRING)
+        self._tql.add_filter('ownerName', operator, owner_name, TQL.Type.STRING)

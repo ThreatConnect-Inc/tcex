@@ -72,6 +72,7 @@ class Case(CommonCaseManagement):
         events (WorkflowEvent, kwargs): The **Events** for the Case.
         name (str, kwargs): [Required] The **Name** for the Case.
         notes (Note, kwargs): a list of Notes corresponding to the Case
+        owner (str, kwargs): The Org/Owner name for the Case.
         related (Case, kwargs): The **Related** for the Case.
         resolution (str, kwargs): The **Resolution** for the Case.
         severity (str, kwargs): [Required] The **Severity** for the Case.
@@ -102,6 +103,7 @@ class Case(CommonCaseManagement):
         self._events = kwargs.get('events', None)
         self._name = kwargs.get('name', None)
         self._notes = kwargs.get('notes', None)
+        self._owner = kwargs.get('owner', None)
         self._related = kwargs.get('related', None)
         self._resolution = kwargs.get('resolution', None)
         self._severity = kwargs.get('severity', None)
@@ -230,6 +232,11 @@ class Case(CommonCaseManagement):
         self._notes = notes
 
     @property
+    def owner(self):
+        """Return the **Owner** for the Case."""
+        return self._owner
+
+    @property
     def related(self):
         """Return the **Related Cases** for the Case."""
         if self._related:
@@ -326,31 +333,31 @@ class FilterCases(Filter):
     """Filter Object for Cases"""
 
     def created_by(self, operator, created_by):
-        """Filter Cases based on **createdby** keyword.
+        """Filter Cases based on **createdBy** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             created_by (str): The account login of the user who created the case.
         """
-        self._tql.add_filter('createdby', operator, created_by, TQL.Type.STRING)
+        self._tql.add_filter('createdBy', operator, created_by, TQL.Type.STRING)
 
     def created_by_id(self, operator, created_by_id):
-        """Filter Cases based on **createdbyid** keyword.
+        """Filter Cases based on **createdById** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             created_by_id (int): The user ID for the creator of the case.
         """
-        self._tql.add_filter('createdbyid', operator, created_by_id, TQL.Type.INTEGER)
+        self._tql.add_filter('createdById', operator, created_by_id, TQL.Type.INTEGER)
 
     def date_added(self, operator, date_added):
-        """Filter Cases based on **dateadded** keyword.
+        """Filter Cases based on **dateAdded** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             date_added (str): The date the case was added to the system.
         """
-        self._tql.add_filter('dateadded', operator, date_added, TQL.Type.STRING)
+        self._tql.add_filter('dateAdded', operator, date_added, TQL.Type.STRING)
 
     def description(self, operator, description):
         """Filter Cases based on **description** keyword.
@@ -362,31 +369,31 @@ class FilterCases(Filter):
         self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
     def has_artifact(self, operator, has_artifact):
-        """Filter Cases based on **hasartifact** keyword.
+        """Filter Cases based on **hasArtifact** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             has_artifact (int): A nested query for association to artifacts.
         """
-        self._tql.add_filter('hasartifact', operator, has_artifact, TQL.Type.INTEGER)
+        self._tql.add_filter('hasArtifact', operator, has_artifact, TQL.Type.INTEGER)
 
     def has_tag(self, operator, has_tag):
-        """Filter Cases based on **hastag** keyword.
+        """Filter Cases based on **hasTag** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             has_tag (int): A nested query for association to labels.
         """
-        self._tql.add_filter('hastag', operator, has_tag, TQL.Type.INTEGER)
+        self._tql.add_filter('hasTag', operator, has_tag, TQL.Type.INTEGER)
 
     def has_task(self, operator, has_task):
-        """Filter Cases based on **hastask** keyword.
+        """Filter Cases based on **hasTask** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             has_task (int): A nested query for association to tasks.
         """
-        self._tql.add_filter('hastask', operator, has_task, TQL.Type.INTEGER)
+        self._tql.add_filter('hasTask', operator, has_task, TQL.Type.INTEGER)
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Cases based on **id** keyword.
@@ -406,14 +413,23 @@ class FilterCases(Filter):
         """
         self._tql.add_filter('name', operator, name, TQL.Type.STRING)
 
-    def owner_name(self, operator, owner_name):
-        """Filter Cases based on **ownername** keyword.
+    def owner(self, operator, owner):
+        """Filter Cases based on **owner** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
-            owner_name (str): The name of the case owner.
+            owner (int): The Owner ID for the case.
         """
-        self._tql.add_filter('ownername', operator, owner_name, TQL.Type.STRING)
+        self._tql.add_filter('owner', operator, owner, TQL.Type.INTEGER)
+
+    def owner_name(self, operator, owner_name):
+        """Filter Cases based on **ownerName** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            owner_name (str): The owner name for the case.
+        """
+        self._tql.add_filter('ownerName', operator, owner_name, TQL.Type.STRING)
 
     def resolution(self, operator, resolution):
         """Filter Cases based on **resolution** keyword.
@@ -452,22 +468,22 @@ class FilterCases(Filter):
         self._tql.add_filter('tag', operator, tag, TQL.Type.STRING)
 
     def target_id(self, operator, target_id):
-        """Filter Cases based on **targetid** keyword.
+        """Filter Cases based on **targetId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             target_id (int): The assigned user or group ID for the case.
         """
-        self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
+        self._tql.add_filter('targetId', operator, target_id, TQL.Type.INTEGER)
 
     def target_type(self, operator, target_type):
-        """Filter Cases based on **targettype** keyword.
+        """Filter Cases based on **targetType** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             target_type (str): The target type for this case (either User or Group).
         """
-        self._tql.add_filter('targettype', operator, target_type, TQL.Type.STRING)
+        self._tql.add_filter('targetType', operator, target_type, TQL.Type.STRING)
 
     def xid(self, operator, xid):
         """Filter Cases based on **xid** keyword.

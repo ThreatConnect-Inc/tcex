@@ -72,6 +72,16 @@ class Utils:
         """
         return ''.join(random.choice(string.ascii_letters) for i in range(string_length))
 
+    @staticmethod
+    def snake_to_camel(snake_string):
+        """Convert snake_case to camelCase
+
+        Args:
+            snake_string (str): The snake case input string.
+        """
+        components = snake_string.split('_')
+        return components[0] + ''.join(x.title() for x in components[1:])
+
     def write_temp_binary_file(self, content, filename=None):
         """Write content to a temporary file.
 

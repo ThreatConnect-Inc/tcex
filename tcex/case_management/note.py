@@ -79,8 +79,9 @@ class Note(CommonCaseManagement):
         tcex (TcEx): An instantiated instance of TcEx object.
         artifact (Artifact, kwargs): [Read-Only] The **Artifact** for the Note.
         artifact_id (int, kwargs): the ID of the Artifact on which to apply the Note
+        author (int, kwargs): [Read-Only] The **Author** for the Note.
         case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Note.
-        case_xid (str, kwargs): [Required (alt: caseId)] The **Case Xid** for the Note.
+        case_xid (str, kwargs): [Required (alt: caseId)]
         date_added (str, kwargs): [Read-Only] The **Date Added** for the Note.
         edited (boolean, kwargs): [Read-Only] The **Edited** for the Note.
         last_modified (str, kwargs): [Read-Only] The **Last Modified** for the Note.
@@ -102,6 +103,7 @@ class Note(CommonCaseManagement):
 
         self._artifact = kwargs.get('artifact', None)
         self._artifact_id = kwargs.get('artifact_id', None)
+        self._author = kwargs.get('author', None)
         self._case_id = kwargs.get('case_id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._date_added = kwargs.get('date_added')
@@ -139,6 +141,11 @@ class Note(CommonCaseManagement):
     def as_entity(self):
         """Return the entity representation of the Note."""
         return {'type': 'Note', 'value': self.summary, 'id': self.id}
+
+    @property
+    def author(self):
+        """Return the parent **Author** for the Note."""
+        return self._author
 
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
@@ -265,13 +272,13 @@ class FilterNotes(Filter):
     """Filter Object for Notes"""
 
     def artifact_id(self, operator, artifact_id):
-        """Filter Notes based on **artifactid** keyword.
+        """Filter Notes based on **artifactId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             artifact_id (int): The ID of the artifact this note is associated with.
         """
-        self._tql.add_filter('artifactid', operator, artifact_id, TQL.Type.INTEGER)
+        self._tql.add_filter('artifactId', operator, artifact_id, TQL.Type.INTEGER)
 
     def author(self, operator, author):
         """Filter Notes based on **author** keyword.
@@ -283,22 +290,22 @@ class FilterNotes(Filter):
         self._tql.add_filter('author', operator, author, TQL.Type.STRING)
 
     def case_id(self, operator, case_id):
-        """Filter Notes based on **caseid** keyword.
+        """Filter Notes based on **caseId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             case_id (int): The ID of the case this note is associated with.
         """
-        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
     def date_added(self, operator, date_added):
-        """Filter Notes based on **dateadded** keyword.
+        """Filter Notes based on **dateAdded** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             date_added (str): The date the note was written.
         """
-        self._tql.add_filter('dateadded', operator, date_added, TQL.Type.STRING)
+        self._tql.add_filter('dateAdded', operator, date_added, TQL.Type.STRING)
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Notes based on **id** keyword.
@@ -310,13 +317,13 @@ class FilterNotes(Filter):
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def last_modified(self, operator, last_modified):
-        """Filter Notes based on **lastmodified** keyword.
+        """Filter Notes based on **lastModified** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             last_modified (str): The date the note was last modified.
         """
-        self._tql.add_filter('lastmodified', operator, last_modified, TQL.Type.STRING)
+        self._tql.add_filter('lastModified', operator, last_modified, TQL.Type.STRING)
 
     def summary(self, operator, summary):
         """Filter Notes based on **summary** keyword.
@@ -328,19 +335,19 @@ class FilterNotes(Filter):
         self._tql.add_filter('summary', operator, summary, TQL.Type.STRING)
 
     def task_id(self, operator, task_id):
-        """Filter Notes based on **taskid** keyword.
+        """Filter Notes based on **taskId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             task_id (int): The ID of the task this note is associated with.
         """
-        self._tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
+        self._tql.add_filter('taskId', operator, task_id, TQL.Type.INTEGER)
 
     def workflow_event_id(self, operator, workflow_event_id):
-        """Filter Notes based on **workfloweventid** keyword.
+        """Filter Notes based on **workflowEventId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             workflow_event_id (int): The ID of the workflow event this note is associated with.
         """
-        self._tql.add_filter('workfloweventid', operator, workflow_event_id, TQL.Type.INTEGER)
+        self._tql.add_filter('workflowEventId', operator, workflow_event_id, TQL.Type.INTEGER)

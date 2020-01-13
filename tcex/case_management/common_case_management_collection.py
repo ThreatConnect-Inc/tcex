@@ -77,7 +77,12 @@ class CommonCaseManagementCollection:
         if tql_string:
             parameters['tql'] = tql_string
         parameters['result_limit'] = 1
-        self.to_camel_case(parameters)
+
+        # convert all keys to camel case
+        for k, v in list(parameters.items()):
+            del parameters[k]
+            k = self.tcex.util.snake_to_camel(k)
+            parameters[k] = v
 
         r = self.tcex.session.get(self.api_endpoint, params=parameters)
         return r.json().get('count')
@@ -110,14 +115,14 @@ class CommonCaseManagementCollection:
         """Return a Filter Class current object."""
         filter_class = (
             f'\nclass Filter{self.__class__.__name__}(Filter):\n'
-            f'{" " * 4}"""Filter Object for {self.__class__.__name__}"""\n\n'
+            f'{" " * 4}"""Filter Object for {self.__class__.__name__}"""\n'
         )
 
         for t in sorted(self.tql_data, key=lambda i: i['keyword']):
             class_name = self.tcex.utils.camel_to_space(self.__class__.__name__).title()
             description = t.get('description')
             keyword = t.get('keyword')
-            keyword_snake = self.filter.keyword_map.get(keyword)
+            keyword_snake = self.tcex.utils.camel_to_snake(keyword)
 
             # get the arg type
             keyword_type = 'str'
@@ -181,7 +186,13 @@ class CommonCaseManagementCollection:
             [type]: [description]
         """
         parameters = self.params
-        self.to_camel_case(parameters)
+
+        # convert all keys to camel case
+        for k, v in list(parameters.items()):
+            del parameters[k]
+            k = self.tcex.util.snake_to_camel(k)
+            parameters[k] = v
+
         url = self.api_endpoint
 
         tql_string = self.tql.raw_tql
@@ -329,21 +340,6 @@ class CommonCaseManagementCollection:
     def timeout(self, timeout):
         """Set the timeout of the case management object collection."""
         self._timeout = timeout
-
-    @staticmethod
-    def to_camel_case(kwargs):
-        """
-        Converts snake_case to camelCase
-
-        Args:
-            kwargs (dict): The dictionary you wish to convert keys to camel case.
-        """
-        for key in dict(kwargs):
-            if not key:
-                continue
-            components = key.split('_')
-            new_key = components[0] + ''.join(x.title() for x in components[1:])
-            kwargs[new_key] = kwargs.pop(key)
 
     @property
     def tql_data(self):

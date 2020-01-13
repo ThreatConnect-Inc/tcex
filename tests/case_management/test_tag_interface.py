@@ -13,6 +13,7 @@ class TestTag(TestCaseManagement):
         """Configure setup before all tests."""
         self.cm_helper = CMHelper('tag')
         self.cm = self.cm_helper.cm
+        self.tcex = self.cm_helper.tcex
 
     def teardown_method(self):
         """Configure teardown before all tests."""
@@ -28,7 +29,10 @@ class TestTag(TestCaseManagement):
 
         This is not truly a test case, but best place to store it for now.
         """
-        super().obj_code_gen()
+        doc_string, filter_map, filter_class = super().obj_code_gen()
+        assert doc_string
+        assert filter_map
+        assert filter_class
 
     def test_tag_filter_keywords(self):
         """Test filter keywords."""

@@ -15,6 +15,7 @@ class TestNote(TestCaseManagement):
         """Configure setup before all tests."""
         self.cm_helper = CMHelper('note')
         self.cm = self.cm_helper.cm
+        self.tcex = self.cm_helper.tcex
 
     def teardown_method(self):
         """Configure teardown before all tests."""
@@ -30,7 +31,10 @@ class TestNote(TestCaseManagement):
 
         This is not truly a test case, but best place to store it for now.
         """
-        super().obj_code_gen()
+        doc_string, filter_map, filter_class = super().obj_code_gen()
+        assert doc_string
+        assert filter_map
+        assert filter_class
 
     def test_note_filter_keywords(self):
         """Test filter keywords."""
@@ -51,9 +55,6 @@ class TestNote(TestCaseManagement):
             'text': f'sample note for {request.node.name} test case.',
             'date_added': '2033-12-07T14:16:40-05:00',
             'edited': True,
-            'last_modified': '',
-            'summary': '',
-            'user_name': '',
         }
 
         # create note
@@ -253,9 +254,6 @@ class TestNote(TestCaseManagement):
             'text': f'sample note for {request.node.name} test case.',
             'date_added': '2033-12-07T14:16:40-05:00',
             'edited': True,
-            'last_modified': '',
-            'summary': '',
-            'user_name': '',
         }
 
         # create note

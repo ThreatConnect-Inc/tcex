@@ -322,49 +322,49 @@ class FilterTasks(Filter):
     """Filter Object for Tasks"""
 
     def case_id(self, operator, case_id):
-        """Filter Tasks based on **caseid** keyword.
+        """Filter Tasks based on **caseId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             case_id (int): The ID of the case this Task is associated with.
         """
-        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
     def case_severity(self, operator, case_severity):
-        """Filter Tasks based on **caseseverity** keyword.
+        """Filter Tasks based on **caseSeverity** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             case_severity (str): The severity of the case associated with the task.
         """
-        self._tql.add_filter('caseseverity', operator, case_severity, TQL.Type.STRING)
+        self._tql.add_filter('caseSeverity', operator, case_severity, TQL.Type.STRING)
 
     def completed_date(self, operator, completed_date):
-        """Filter Tasks based on **completeddate** keyword.
+        """Filter Tasks based on **completedDate** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             completed_date (str): The completion date for the task.
         """
-        self._tql.add_filter('completeddate', operator, completed_date, TQL.Type.STRING)
+        self._tql.add_filter('completedDate', operator, completed_date, TQL.Type.STRING)
 
     def config_playbook(self, operator, config_playbook):
-        """Filter Tasks based on **configplaybook** keyword.
+        """Filter Tasks based on **configPlaybook** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             config_playbook (str): The playbook configuration of the task.
         """
-        self._tql.add_filter('configplaybook', operator, config_playbook, TQL.Type.STRING)
+        self._tql.add_filter('configPlaybook', operator, config_playbook, TQL.Type.STRING)
 
     def config_task(self, operator, config_task):
-        """Filter Tasks based on **configtask** keyword.
+        """Filter Tasks based on **configTask** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             config_task (str): The configuration of the task.
         """
-        self._tql.add_filter('configtask', operator, config_task, TQL.Type.STRING)
+        self._tql.add_filter('configTask', operator, config_task, TQL.Type.STRING)
 
     def description(self, operator, description):
         """Filter Tasks based on **description** keyword.
@@ -376,22 +376,22 @@ class FilterTasks(Filter):
         self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
     def due_date(self, operator, due_date):
-        """Filter Tasks based on **duedate** keyword.
+        """Filter Tasks based on **dueDate** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             due_date (str): The due date for the task.
         """
-        self._tql.add_filter('duedate', operator, due_date, TQL.Type.STRING)
+        self._tql.add_filter('dueDate', operator, due_date, TQL.Type.STRING)
 
     def has_case(self, operator, has_case):
-        """Filter Tasks based on **hascase** keyword.
+        """Filter Tasks based on **hasCase** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             has_case (int): A nested query for association to other cases.
         """
-        self._tql.add_filter('hascase', operator, has_case, TQL.Type.INTEGER)
+        self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Tasks based on **id** keyword.
@@ -421,22 +421,22 @@ class FilterTasks(Filter):
         self._tql.add_filter('status', operator, status, TQL.Type.STRING)
 
     def target_id(self, operator, target_id):
-        """Filter Tasks based on **targetid** keyword.
+        """Filter Tasks based on **targetId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             target_id (int): The assigned user or group ID for the task.
         """
-        self._tql.add_filter('targetid', operator, target_id, TQL.Type.INTEGER)
+        self._tql.add_filter('targetId', operator, target_id, TQL.Type.INTEGER)
 
     def target_type(self, operator, target_type):
-        """Filter Tasks based on **targettype** keyword.
+        """Filter Tasks based on **targetType** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             target_type (str): The target type for this task (either User or Group).
         """
-        self._tql.add_filter('targettype', operator, target_type, TQL.Type.STRING)
+        self._tql.add_filter('targetType', operator, target_type, TQL.Type.STRING)
 
     def xid(self, operator, xid):
         """Filter Tasks based on **xid** keyword.

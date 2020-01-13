@@ -123,13 +123,13 @@ class FilterArtifactTypes(Filter):
         self._tql.add_filter('active', operator, active, TQL.Type.BOOLEAN)
 
     def data_type(self, operator, data_type):
-        """Filter Artifact Types based on **datatype** keyword.
+        """Filter Artifact Types based on **dataType** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             data_type (str): The data type of the artifact type.
         """
-        self._tql.add_filter('datatype', operator, data_type, TQL.Type.STRING)
+        self._tql.add_filter('dataType', operator, data_type, TQL.Type.STRING)
 
     def description(self, operator, description):
         """Filter Artifact Types based on **description** keyword.
@@ -150,13 +150,13 @@ class FilterArtifactTypes(Filter):
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def intel_type(self, operator, intel_type):
-        """Filter Artifact Types based on **inteltype** keyword.
+        """Filter Artifact Types based on **intelType** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             intel_type (str): The intel type of the artifact type.
         """
-        self._tql.add_filter('inteltype', operator, intel_type, TQL.Type.STRING)
+        self._tql.add_filter('intelType', operator, intel_type, TQL.Type.STRING)
 
     def managed(self, operator, managed):
         """Filter Artifact Types based on **managed** keyword.
@@ -175,12 +175,3 @@ class FilterArtifactTypes(Filter):
             name (str): The name of the artifact type.
         """
         self._tql.add_filter('name', operator, name, TQL.Type.STRING)
-
-    def ui_element(self, operator, ui_element):
-        """Filter Artifact Types based on **uielement** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            ui_element (str): The UI element type to use for this artifact type.
-        """
-        self._tql.add_filter('uielement', operator, ui_element, TQL.Type.STRING)

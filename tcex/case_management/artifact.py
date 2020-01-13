@@ -298,22 +298,22 @@ class FilterArtifacts(Filter):
     """Filter Object for Artifacts"""
 
     def case_id(self, operator, case_id):
-        """Filter Artifacts based on **caseid** keyword.
+        """Filter Artifacts based on **caseId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             case_id (int): The ID of the case associated with this artifact.
         """
-        self._tql.add_filter('caseid', operator, case_id, TQL.Type.INTEGER)
+        self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
     def has_case(self, operator, has_case):
-        """Filter Artifacts based on **hascase** keyword.
+        """Filter Artifacts based on **hasCase** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             has_case (int): A nested query for association to other cases.
         """
-        self._tql.add_filter('hascase', operator, has_case, TQL.Type.INTEGER)
+        self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Artifacts based on **id** keyword.
@@ -325,13 +325,13 @@ class FilterArtifacts(Filter):
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
     def note_id(self, operator, note_id):
-        """Filter Artifacts based on **noteid** keyword.
+        """Filter Artifacts based on **noteId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             note_id (int): The ID of the note associated with this artifact.
         """
-        self._tql.add_filter('noteid', operator, note_id, TQL.Type.INTEGER)
+        self._tql.add_filter('noteId', operator, note_id, TQL.Type.INTEGER)
 
     def source(self, operator, source):
         """Filter Artifacts based on **source** keyword.
@@ -352,19 +352,19 @@ class FilterArtifacts(Filter):
         self._tql.add_filter('summary', operator, summary, TQL.Type.STRING)
 
     def task_id(self, operator, task_id):
-        """Filter Artifacts based on **taskid** keyword.
+        """Filter Artifacts based on **taskId** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             task_id (int): The ID of the task associated with this artifact.
         """
-        self._tql.add_filter('taskid', operator, task_id, TQL.Type.INTEGER)
+        self._tql.add_filter('taskId', operator, task_id, TQL.Type.INTEGER)
 
     def type_name(self, operator, type_name):
-        """Filter Artifacts based on **typename** keyword.
+        """Filter Artifacts based on **typeName** keyword.
 
         Args:
             operator (enum): The operator enum for the filter.
             type_name (str): The type name of the artifact.
         """
-        self._tql.add_filter('typename', operator, type_name, TQL.Type.STRING)
+        self._tql.add_filter('typeName', operator, type_name, TQL.Type.STRING)

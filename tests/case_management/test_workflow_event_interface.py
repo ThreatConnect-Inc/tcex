@@ -14,6 +14,7 @@ class TestWorkflowEvent(TestCaseManagement):
         """Configure setup before all tests."""
         self.cm_helper = CMHelper('workflow_event')
         self.cm = self.cm_helper.cm
+        self.tcex = self.cm_helper.tcex
 
     def teardown_method(self):
         """Configure teardown before all tests."""
@@ -29,7 +30,10 @@ class TestWorkflowEvent(TestCaseManagement):
 
         This is not truly a test case, but best place to store it for now.
         """
-        super().obj_code_gen()
+        doc_string, filter_map, filter_class = super().obj_code_gen()
+        assert doc_string
+        assert filter_map
+        assert filter_class
 
     def test_workflow_event_filter_keywords(self):
         """Test filter keywords."""
@@ -387,7 +391,7 @@ class TestWorkflowEvent(TestCaseManagement):
         else:
             assert False, 'No workflow event returned for TQL'
 
-    def test_workflow_event_get_by_tql_filter_username(self, request):
+    def test_workflow_event_get_by_tql_filter_user_name(self, request):
         """Test Workflow Event Get by TQL"""
         # create case
         case = self.cm_helper.create_case()
@@ -405,7 +409,7 @@ class TestWorkflowEvent(TestCaseManagement):
         # retrieve workflow event using TQL
         workflow_events = self.cm.workflow_events()
         workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
-        workflow_events.filter.username(TQL.Operator.EQ, os.getenv('API_ACCESS_ID'))
+        workflow_events.filter.user_name(TQL.Operator.EQ, os.getenv('API_ACCESS_ID'))
 
         for we in workflow_events:
             # more than one workflow event will always be returned

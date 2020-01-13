@@ -136,6 +136,7 @@ class TestCaseManagement:
 
     cm = None
     cm_helper = None
+    tcex = None
 
     def obj_api_options(self):
         """Test filter keywords."""
@@ -155,13 +156,17 @@ class TestCaseManagement:
 
         This is not truly a test case, but best place to store it for now.
         """
-        # print(self.cm_helper.cm_obj._doc_string)
-        # print(self.cm_helper.cm_obj_collection._filter_map_method)
-        # print(self.cm_helper.cm_obj_collection._filter_class)
+        doc_string = self.cm_helper.cm_obj._doc_string
+        filter_map = self.cm_helper.cm_obj_collection._filter_map_method
+        filter_class = self.cm_helper.cm_obj_collection._filter_class
+
+        return doc_string, filter_map, filter_class
 
     def obj_filter_keywords(self):
         """Test filter keywords."""
         for keyword in self.cm_helper.cm_obj_collection.filter.keywords:
+            # covert camel keyword from API to snake before comparing
+            keyword = self.tcex.utils.camel_to_snake(keyword)
             if keyword not in self.cm_helper.cm_obj_collection.filter.implemented_keywords:
                 assert False, f'Missing TQL keyword {keyword}.'
 
