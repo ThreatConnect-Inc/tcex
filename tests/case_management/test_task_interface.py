@@ -35,6 +35,7 @@ class TestTask(TestCaseManagement):
         assert doc_string
         assert filter_map
         assert filter_class
+        print(filter_class)
 
     def test_task_filter_keywords(self):
         """Test filter keywords."""

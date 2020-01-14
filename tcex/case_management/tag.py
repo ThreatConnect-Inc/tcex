@@ -167,14 +167,14 @@ class FilterTags(Filter):
         """
         self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
-    def has_case(self, operator, has_case):
-        """Filter Tags based on **hasCase** keyword.
+    @property
+    def has_case(self):
+        """Return **FilterCases** for further filtering."""
+        from .case import FilterCases
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_case (int): A nested query for association to other cases.
-        """
-        self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
+        cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
+        self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
+        return cases
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Tags based on **id** keyword.

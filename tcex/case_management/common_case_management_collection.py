@@ -138,38 +138,61 @@ class CommonCaseManagementCollection:
             if keyword_snake in ['id', 'type']:
                 comment = '  # pylint: disable=redefined-builtin'
 
-            if keyword_snake == 'has_case':
+            if keyword_snake == 'has_artifact':
+                filter_class += (
+                    f'\n{" " * 4}@property\n'
+                    f'{" " * 4}def has_artifact(self):\n'
+                    f'{" " * 8}"""Return **FilterArtifacts** for further filtering."""\n'
+                    f'{" " * 8}from .artifact import FilterArtifacts\n\n'
+                    f'{" " * 8}artifacts = FilterArtifacts'
+                    f'(ApiEndpoints.ARTIFACTS, self._tcex, TQL())\n'
+                    f"""{" " * 8}self._tql.add_filter('hasArtifact', """
+                    f'TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)\n'
+                    f'{" " * 8}return artifacts\n'
+                )
+            elif keyword_snake == 'has_case':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
                     f'{" " * 4}def has_case(self):\n'
                     f'{" " * 8}"""Return **FilterCases** for further filtering."""\n'
-                    f'{" " * 8}from .case import FilterCases\n'
+                    f'{" " * 8}from .case import FilterCases  # pylint: disable=cyclic-import\n\n'
                     f'{" " * 8}cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())\n'
                     f"""{" " * 8}self._tql.add_filter('hasCase', """
                     f'TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)\n'
-                    f'{" " * 8}return cases'
+                    f'{" " * 8}return cases\n'
+                )
+            elif keyword_snake == 'has_note':
+                filter_class += (
+                    f'\n{" " * 4}@property\n'
+                    f'{" " * 4}def has_note(self):\n'
+                    f'{" " * 8}"""Return **FilterNotes** for further filtering."""\n'
+                    f'{" " * 8}from .note import FilterNotes\n\n'
+                    f'{" " * 8}notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())\n'
+                    f"""{" " * 8}self._tql.add_filter('hasNote', """
+                    f'TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)\n'
+                    f'{" " * 8}return notes\n'
                 )
             elif keyword_snake == 'has_tag':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
                     f'{" " * 4}def has_tag(self):\n'
                     f'{" " * 8}"""Return **FilterTags** for further filtering."""\n'
-                    f'{" " * 8}from .tag import FilterTags\n'
+                    f'{" " * 8}from .tag import FilterTags\n\n'
                     f'{" " * 8}tags = FilterTags(ApiEndpoints.TAGS, self._tcex, TQL())\n'
                     f"""{" " * 8}self._tql.add_filter('hasTag', """
                     f'TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)\n'
-                    f'{" " * 8}return tags'
+                    f'{" " * 8}return tags\n'
                 )
             elif keyword_snake == 'has_task':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
                     f'{" " * 4}def has_task(self):\n'
                     f'{" " * 8}"""Return **FilterTask** for further filtering."""\n'
-                    f'{" " * 8}from .tag import FilterTasks\n'
+                    f'{" " * 8}from .task import FilterTasks\n'
                     f'{" " * 8}tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())\n'
                     f"""{" " * 8}self._tql.add_filter('hasTask', """
                     f'TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)\n'
-                    f'{" " * 8}return tasks'
+                    f'{" " * 8}return tasks\n'
                 )
             else:
                 # build method

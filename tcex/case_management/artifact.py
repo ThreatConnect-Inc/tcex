@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Artifact"""
+
 from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
@@ -306,32 +307,32 @@ class FilterArtifacts(Filter):
         """
         self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
-    def has_case(self, operator, has_case):
-        """Filter Artifacts based on **hasCase** keyword.
+    @property
+    def has_case(self):
+        """Return **FilterCases** for further filtering."""
+        from .case import FilterCases  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_case (int): A nested query for association to other cases.
-        """
-        self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
+        cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
+        self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
+        return cases
 
-    def has_note(self, operator, has_note):
-        """Filter Artifacts based on **hasNote** keyword.
+    @property
+    def has_note(self):
+        """Return **FilterNotes** for further filtering."""
+        from .note import FilterNotes  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_note (int): A nested query for association to other notes.
-        """
-        self._tql.add_filter('hasNote', operator, has_note, TQL.Type.INTEGER)
+        notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
+        self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
+        return notes
 
-    def has_task(self, operator, has_task):
-        """Filter Artifacts based on **hasTask** keyword.
+    @property
+    def has_task(self):
+        """Return **FilterTask** for further filtering."""
+        from .task import FilterTasks  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_task (int): A nested query for association to other tasks.
-        """
-        self._tql.add_filter('hasTask', operator, has_task, TQL.Type.INTEGER)
+        tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
+        self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
+        return tasks
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Artifacts based on **id** keyword.

@@ -368,41 +368,41 @@ class FilterCases(Filter):
         """
         self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
-    def has_artifact(self, operator, has_artifact):
-        """Filter Cases based on **hasArtifact** keyword.
+    @property
+    def has_artifact(self):
+        """Return **FilterArtifacts** for further filtering."""
+        from .artifact import FilterArtifacts  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_artifact (int): A nested query for association to artifacts.
-        """
-        self._tql.add_filter('hasArtifact', operator, has_artifact, TQL.Type.INTEGER)
+        artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
+        self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
+        return artifacts
 
-    def has_note(self, operator, has_note):
-        """Filter Cases based on **hasNote** keyword.
+    @property
+    def has_note(self):
+        """Return **FilterNotes** for further filtering."""
+        from .note import FilterNotes  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_note (int): A nested query for association to notes.
-        """
-        self._tql.add_filter('hasNote', operator, has_note, TQL.Type.INTEGER)
+        notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
+        self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
+        return notes
 
-    def has_tag(self, operator, has_tag):
-        """Filter Cases based on **hasTag** keyword.
+    @property
+    def has_tag(self):
+        """Return **FilterTags** for further filtering."""
+        from .tag import FilterTags  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_tag (int): A nested query for association to labels.
-        """
-        self._tql.add_filter('hasTag', operator, has_tag, TQL.Type.INTEGER)
+        tags = FilterTags(ApiEndpoints.TAGS, self._tcex, TQL())
+        self._tql.add_filter('hasTag', TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)
+        return tags
 
-    def has_task(self, operator, has_task):
-        """Filter Cases based on **hasTask** keyword.
+    @property
+    def has_task(self):
+        """Return **FilterTask** for further filtering."""
+        from .task import FilterTasks  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_task (int): A nested query for association to tasks.
-        """
-        self._tql.add_filter('hasTask', operator, has_task, TQL.Type.INTEGER)
+        tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
+        self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
+        return tasks
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Cases based on **id** keyword.

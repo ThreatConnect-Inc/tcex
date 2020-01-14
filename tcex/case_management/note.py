@@ -293,32 +293,32 @@ class FilterNotes(Filter):
         """
         self._tql.add_filter('dateAdded', operator, date_added, TQL.Type.STRING)
 
-    def has_artifact(self, operator, has_artifact):
-        """Filter Notes based on **hasArtifact** keyword.
+    @property
+    def has_artifact(self):
+        """Return **FilterArtifacts** for further filtering."""
+        from .artifact import FilterArtifacts  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_artifact (int): A nested query for association to artifacts.
-        """
-        self._tql.add_filter('hasArtifact', operator, has_artifact, TQL.Type.INTEGER)
+        artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
+        self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
+        return artifacts
 
-    def has_case(self, operator, has_case):
-        """Filter Notes based on **hasCase** keyword.
+    @property
+    def has_case(self):
+        """Return **FilterCases** for further filtering."""
+        from .case import FilterCases  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_case (int): A nested query for association to cases.
-        """
-        self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
+        cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
+        self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
+        return cases
 
-    def has_task(self, operator, has_task):
-        """Filter Notes based on **hasTask** keyword.
+    @property
+    def has_task(self):
+        """Return **FilterTask** for further filtering."""
+        from .task import FilterTasks  # pylint: disable=cyclic-import
 
-        Args:
-            operator (enum): The operator enum for the filter.
-            has_task (int): A nested query for association to tasks.
-        """
-        self._tql.add_filter('hasTask', operator, has_task, TQL.Type.INTEGER)
+        tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
+        self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
+        return tasks
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Notes based on **id** keyword.

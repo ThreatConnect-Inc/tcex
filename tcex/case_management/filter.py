@@ -15,6 +15,7 @@ class Filter:
         self._tcex = tcex
         self._tql = tql
         self._tql_data = None
+        self.artifacts = None
 
     @property
     def implemented_keywords(self):
