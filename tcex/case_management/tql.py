@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TQL"""
 from enum import Enum
+from .filter import Filter
 
 
 class TQL:
@@ -92,6 +93,7 @@ class TQL:
         STRING = 'String'
         INTEGER = 'Integer'
         BOOLEAN = 'Boolean'
+        SUB_QUERY = 'Sub Query'
 
     def __init__(self):
         """Initialize Class Properties"""
@@ -105,16 +107,23 @@ class TQL:
         for tql_filter in self.filters:
             value = tql_filter.get('value')
             keyword = tql_filter.get('keyword')
-            if keyword.startswith('has'):
+            if isinstance(value, Filter):
+                filters.append(f"{tql_filter.get('keyword')}({value._tql.as_str})")
+            elif keyword.startswith('has'):
                 values = value
                 if not isinstance(value, list):
                     values = [value]
                 if tql_filter.get('type') == self.Type.STRING:
                     values = [f'"{value}"' for value in values]
+                # value = f"({','.join(values)})"
                 value = f"({','.join([str(v) for v in values])})"
-            if tql_filter.get('type') == self.Type.STRING:
-                value = f'"{value}"'
-            filters.append(f"{tql_filter.get('keyword')} {tql_filter.get('operator').name} {value}")
+                if tql_filter.get('type') == self.Type.STRING:
+                    value = f'"{value}"'
+                filters.append(f"{tql_filter.get('keyword')} EQ {value}")
+            else:
+                if tql_filter.get('type') == self.Type.STRING:
+                    value = f'"{value}"'
+                filters.append(f"{tql_filter.get('keyword')} EQ {value}")
 
         return ' and '.join(filters)
 
