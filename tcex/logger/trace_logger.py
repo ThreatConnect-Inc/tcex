@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Trace Logger Class"""
 import logging
-import sys
 from inspect import getframeinfo, stack
 
 # Create trace logging level
@@ -30,11 +29,7 @@ class TraceLogger(logging.Logger):
                 break
             depth += 1
 
-        if sys.version_info < (3,):
-            # return value for py2
-            return (caller.filename, caller.lineno, caller.function)
-        # TODO: [py2] - remove py2 statement and remove coverage pragma
-        return (caller.filename, caller.lineno, caller.function, None)  # pragma: no cover
+        return (caller.filename, caller.lineno, caller.function, None)
 
     def trace(self, msg, *args, **kwargs):
         """Set trace logging level

@@ -93,7 +93,7 @@ class TcSession(Session):
                 self.tcex.log.trace('Using HMAC authorization.')
             except AttributeError:  # pragma: no cover
                 raise RuntimeError('No valid ThreatConnect API credentials provided.')
-        else:
+        else:  # pragma: no cover
             raise RuntimeError('No valid ThreatConnect API credentials provided.')
 
     @property

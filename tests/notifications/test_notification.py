@@ -2,16 +2,17 @@
 """Test the TcEx Notification Module."""
 
 
-# pylint: disable=W0201
+# pylint: disable=no-self-use
 class TestNotification:
     """Test the TcEx Notification Module."""
 
-    def setup_class(self):
-        """Configure setup before all tests."""
-
     @staticmethod
     def test_notification_organization(tcex):
-        """Test org notification."""
+        """Test Org notifications
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         notification = tcex.notification()
         notification.org(notification_type='PyTest notification', priority='Low')
         status = notification.send(message='High alert send to organization.')
@@ -19,7 +20,11 @@ class TestNotification:
 
     @staticmethod
     def test_notification_recipients(tcex):
-        """Test org notification."""
+        """Test recipient notifications
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         notification = tcex.notification()
         notification.recipients(
             notification_type='PyTest recipients notification',
@@ -31,7 +36,11 @@ class TestNotification:
 
     @staticmethod
     def test_notification_invalid_recipients(tcex):
-        """Test org notification."""
+        """Test invalid recipient notifications
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         notification = tcex.notification()
         notification.recipients(
             notification_type='PyTest recipients notification',

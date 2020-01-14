@@ -377,6 +377,15 @@ class FilterCases(Filter):
         """
         self._tql.add_filter('hasArtifact', operator, has_artifact, TQL.Type.INTEGER)
 
+    def has_note(self, operator, has_note):
+        """Filter Cases based on **hasNote** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_note (int): A nested query for association to notes.
+        """
+        self._tql.add_filter('hasNote', operator, has_note, TQL.Type.INTEGER)
+
     def has_tag(self, operator, has_tag):
         """Filter Cases based on **hasTag** keyword.
 

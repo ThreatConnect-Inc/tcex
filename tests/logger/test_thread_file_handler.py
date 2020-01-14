@@ -7,12 +7,14 @@ import threading
 class TestApiHandler:
     """Test the TcEx API Handler Module."""
 
-    def setup_class(self):
-        """Configure setup before all tests."""
+    @staticmethod
+    def logging_thread(logfile, tcex):
+        """Test thread logging
 
-    def logging_thread(self, logfile, tcex):  # pylint: disable=no-self-use
-        """Thread to test logging."""
-        logfile = logfile.replace('.log', '-thread.log')
+        Args:
+            logfile (str): The logfile name.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         tcex.logger.add_thread_file_handler(
             name='pytest', filename=logfile, level='trace', path=tcex.default_args.tc_log_path
         )
@@ -26,11 +28,19 @@ class TestApiHandler:
 
         tcex.logger.remove_handler_by_name(handler_name='pytest')
 
-    def test_thread_file_handler(self, tc_log_file, tcex):
-        """Test thread file handler."""
-        t = threading.Thread(name='pytest', target=self.logging_thread, args=(tc_log_file, tcex))
+    def test_thread_file_handler(self, tcex):
+        """Test thread logging
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        logfile = tcex.default_args.tc_log_file.replace('.log', '-thread.log')
+        t = threading.Thread(name='pytest', target=self.logging_thread, args=(logfile, tcex))
+        import time
+
+        time.sleep(5)
         t.start()
         t.join()
 
         # simple assert to ensure the log file was created
-        assert os.path.exists(os.path.join(tcex.default_args.tc_log_path, tc_log_file))
+        assert os.path.exists(os.path.join(tcex.default_args.tc_log_path, logfile))

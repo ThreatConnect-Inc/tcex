@@ -7,12 +7,13 @@ import uuid
 class TestMetrics:
     """Test the TcEx Metrics Module."""
 
-    def setup_class(self):
-        """Configure setup before all tests."""
-
     @staticmethod
     def test_add_metrics(tcex):
-        """Test metrics."""
+        """Test **add** method of TcEx metrics module.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         date = '2008-12-12T12:12:12'
         result_date = '2008-12-12T00:00:00Z'
         metrics = tcex.metric(
@@ -28,7 +29,11 @@ class TestMetrics:
 
     @staticmethod
     def test_add_keyed_metrics(tcex):
-        """Test key metrics."""
+        """Test **add_keyed** method of TcEx metrics module.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         date = '2008-12-12T12:12:12'
         result_date = '2008-12-12T00:00:00Z'
         metrics = tcex.metric(
@@ -43,7 +48,11 @@ class TestMetrics:
 
     @staticmethod
     def test_create_new_metrics(tcex):
-        """Test key metrics."""
+        """Test creation of a new metric
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         name = f'pytest-{str(uuid.uuid4())}'
         metrics = tcex.metric(
             name=name, description='pytest', data_type='Sum', interval='Daily', keyed=True
@@ -52,7 +61,11 @@ class TestMetrics:
 
     @staticmethod
     def test_create_new_metrics_fail(tcex):
-        """Test key metrics."""
+        """Test failure of a new metric creation
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         name = 'x' * 500
         try:
             tcex.metric(

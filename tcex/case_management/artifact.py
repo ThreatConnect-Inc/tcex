@@ -315,6 +315,24 @@ class FilterArtifacts(Filter):
         """
         self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
 
+    def has_note(self, operator, has_note):
+        """Filter Artifacts based on **hasNote** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_note (int): A nested query for association to other notes.
+        """
+        self._tql.add_filter('hasNote', operator, has_note, TQL.Type.INTEGER)
+
+    def has_task(self, operator, has_task):
+        """Filter Artifacts based on **hasTask** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_task (int): A nested query for association to other tasks.
+        """
+        self._tql.add_filter('hasTask', operator, has_task, TQL.Type.INTEGER)
+
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Artifacts based on **id** keyword.
 

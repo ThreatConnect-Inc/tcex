@@ -138,17 +138,51 @@ class CommonCaseManagementCollection:
             if keyword_snake in ['id', 'type']:
                 comment = '  # pylint: disable=redefined-builtin'
 
-            # build method
-            filter_class += (
-                f'\n{" " * 4}def {keyword_snake}(self, operator, {keyword_snake}):{comment}\n'
-                f'{" " * 8}"""Filter {class_name} based on **{keyword}** keyword.\n\n'
-                f'{" " * 8}Args:\n'
-                f'{" " * 12}operator (enum): The operator enum for the filter.\n'
-                f'{" " * 12}{keyword_snake} ({keyword_type}): {description}.\n'
-                f'{" " * 8}"""\n'
-                f"{' ' * 8}self._tql.add_filter('{keyword}', operator, "
-                f'{keyword_snake}, {tql_type})\n'
-            )
+            if keyword_snake == 'has_case':
+                filter_class += (
+                    f'\n{" " * 4}@property\n'
+                    f'{" " * 4}def has_case(self):\n'
+                    f'{" " * 8}"""Return **FilterCases** for further filtering."""\n'
+                    f'{" " * 8}from .case import FilterCases\n'
+                    f'{" " * 8}cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())\n'
+                    f"""{" " * 8}self._tql.add_filter('hasCase', """
+                    f'TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)\n'
+                    f'{" " * 8}return cases'
+                )
+            elif keyword_snake == 'has_tag':
+                filter_class += (
+                    f'\n{" " * 4}@property\n'
+                    f'{" " * 4}def has_tag(self):\n'
+                    f'{" " * 8}"""Return **FilterTags** for further filtering."""\n'
+                    f'{" " * 8}from .tag import FilterTags\n'
+                    f'{" " * 8}tags = FilterTags(ApiEndpoints.TAGS, self._tcex, TQL())\n'
+                    f"""{" " * 8}self._tql.add_filter('hasTag', """
+                    f'TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)\n'
+                    f'{" " * 8}return tags'
+                )
+            elif keyword_snake == 'has_task':
+                filter_class += (
+                    f'\n{" " * 4}@property\n'
+                    f'{" " * 4}def has_task(self):\n'
+                    f'{" " * 8}"""Return **FilterTask** for further filtering."""\n'
+                    f'{" " * 8}from .tag import FilterTasks\n'
+                    f'{" " * 8}tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())\n'
+                    f"""{" " * 8}self._tql.add_filter('hasTask', """
+                    f'TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)\n'
+                    f'{" " * 8}return tasks'
+                )
+            else:
+                # build method
+                filter_class += (
+                    f'\n{" " * 4}def {keyword_snake}(self, operator, {keyword_snake}):{comment}\n'
+                    f'{" " * 8}"""Filter {class_name} based on **{keyword}** keyword.\n\n'
+                    f'{" " * 8}Args:\n'
+                    f'{" " * 12}operator (enum): The operator enum for the filter.\n'
+                    f'{" " * 12}{keyword_snake} ({keyword_type}): {description}.\n'
+                    f'{" " * 8}"""\n'
+                    f"{' ' * 8}self._tql.add_filter('{keyword}', operator, "
+                    f'{keyword_snake}, {tql_type})\n'
+                )
 
         return filter_class
 

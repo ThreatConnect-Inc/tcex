@@ -293,6 +293,33 @@ class FilterNotes(Filter):
         """
         self._tql.add_filter('dateAdded', operator, date_added, TQL.Type.STRING)
 
+    def has_artifact(self, operator, has_artifact):
+        """Filter Notes based on **hasArtifact** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_artifact (int): A nested query for association to artifacts.
+        """
+        self._tql.add_filter('hasArtifact', operator, has_artifact, TQL.Type.INTEGER)
+
+    def has_case(self, operator, has_case):
+        """Filter Notes based on **hasCase** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_case (int): A nested query for association to cases.
+        """
+        self._tql.add_filter('hasCase', operator, has_case, TQL.Type.INTEGER)
+
+    def has_task(self, operator, has_task):
+        """Filter Notes based on **hasTask** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_task (int): A nested query for association to tasks.
+        """
+        self._tql.add_filter('hasTask', operator, has_task, TQL.Type.INTEGER)
+
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Notes based on **id** keyword.
 
