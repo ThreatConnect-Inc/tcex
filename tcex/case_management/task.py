@@ -395,7 +395,7 @@ class FilterTasks(Filter):
     @property
     def has_artifact(self):
         """Return **FilterArtifacts** for further filtering."""
-        from .artifact import FilterArtifacts  # pylint: disable=cyclic-import
+        from .artifact import FilterArtifacts
 
         artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
@@ -404,7 +404,7 @@ class FilterTasks(Filter):
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
-        from .case import FilterCases  # pylint: disable=cyclic-import
+        from .case import FilterCases
 
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
@@ -413,7 +413,7 @@ class FilterTasks(Filter):
     @property
     def has_note(self):
         """Return **FilterNotes** for further filtering."""
-        from .note import FilterNotes  # pylint: disable=cyclic-import
+        from .note import FilterNotes
 
         notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
         self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
