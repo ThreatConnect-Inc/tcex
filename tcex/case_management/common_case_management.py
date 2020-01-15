@@ -233,7 +233,10 @@ class CommonCaseManagement:
                 f'Status Code: {r.status_code}, '
                 f'URl: ({r.url})'
             )
-            self.tcex.log.trace(f'response: {r.text}')
+            if len(r.content) < 5000:
+                self.tcex.log.debug(u'response text: {}'.format(r.text))
+            else:
+                self.tcex.log.debug(u'response text: (text to large to log)')
             if not self.success(r):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -300,7 +303,10 @@ class CommonCaseManagement:
                 f'Status Code: {r.status_code}, '
                 f'URl: ({r.url})'
             )
-            self.tcex.log.trace(f'response: {r.text}')
+            if len(r.content) < 5000:
+                self.tcex.log.debug(u'response text: {}'.format(r.text))
+            else:
+                self.tcex.log.debug(u'response text: (text to large to log)')
             if not self.success(r):
                 current_retries += 1
                 if current_retries >= retry_count:
@@ -370,13 +376,17 @@ class CommonCaseManagement:
 
         # make the request
         r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
+
         self.tcex.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Status Code: {r.status_code}, '
             f'URl: ({r.url})'
         )
-        self.tcex.log.trace(f'body: {self._reverse_transform(as_dict)}')
-        self.tcex.log.trace(f'response: {r.text}')
+        self.tcex.log.debug(f'body: {self._reverse_transform(as_dict)}')
+        if len(r.content) < 5000:
+            self.tcex.log.debug(u'response text: {}'.format(r.text))
+        else:
+            self.tcex.log.debug(u'response text: (text to large to log)')
 
         if not r.ok:
             err = r.text or r.reason
