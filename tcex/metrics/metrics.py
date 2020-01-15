@@ -104,7 +104,7 @@ class Metrics:
             params['resultStart'] += params.get('resultLimit')
         return False
 
-    def add(self, value, date=None, return_value=False, key=None):
+    def add(self, value, date=None, return_value=False, key=None, weight=None):
         """Add metrics data to collection.
 
         Args:
@@ -112,7 +112,7 @@ class Metrics:
             date (str, optional): The optional date of the metric.
             return_value (bool, default:False): Tell the API to return the updates metric value.
             key (str, optional): The key value for keyed metrics.
-
+            weight (str, optional): The weight value (only needed for averages)
         Return:
             dict: If return_value is True a dict with the current value for the time period
                 is returned.
@@ -128,10 +128,14 @@ class Metrics:
             )
         if key is not None:
             body['name'] = key
+        if weight:
+            body['weight'] = weight
         self.tcex.log.debug(f'metric data: {body}')
+
         params = {}
         if return_value:
             params = {'returnValue': 'true'}
+
         url = f'/v2/customMetrics/{self._metric_id}/data'
         r = self.tcex.session.post(url, json=body, params=params)
         if r.status_code == 200 and 'application/json' in r.headers.get('content-type', ''):
@@ -143,7 +147,7 @@ class Metrics:
 
         return data
 
-    def add_keyed(self, value, key, date=None, return_value=False):
+    def add_keyed(self, value, key, date=None, return_value=False, weight=None):
         """Add keyed metrics data to collection.
 
         Args:
@@ -151,9 +155,10 @@ class Metrics:
             key (str): The key value for keyed metrics.
             date (str, optional): The optional date of the metric.
             return_value (bool, default:False): Tell the API to return the updates metric value.
+            weight (str, optional): The weight value (only needed for averages)
 
         Return:
             dict: If return_value is True a dict with the current value for the time period
                 is returned.
         """
-        return self.add(value, date, return_value, key)
+        return self.add(value, date, return_value, key, weight)

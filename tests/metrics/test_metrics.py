@@ -19,11 +19,11 @@ class TestMetrics:
         metrics = tcex.metric(
             name='pytest metrics',
             description='pytest',
-            data_type='Sum',
+            data_type='Average',
             interval='Daily',
             keyed=False,
         )
-        results = metrics.add(value=42, date=date, return_value=True)
+        results = metrics.add(value=42, date=date, return_value=True, weight=4)
         metrics.add(value=24, date=date, return_value=False)
         assert results.get('date') == result_date
 
@@ -39,11 +39,11 @@ class TestMetrics:
         metrics = tcex.metric(
             name='pytest metrics by Owner',
             description='pytest',
-            data_type='Sum',
+            data_type='Average',
             interval='Daily',
             keyed=True,
         )
-        results = metrics.add_keyed(value=42, key='MyOrg', date=date, return_value=True)
+        results = metrics.add_keyed(value=42, key='MyOrg', date=date, return_value=True, weight=4)
         assert results.get('date') == result_date
 
     @staticmethod
