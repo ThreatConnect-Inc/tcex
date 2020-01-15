@@ -82,8 +82,7 @@ class Task(CommonCaseManagement):
         completed_date (str, kwargs): the completion date of the Task
         config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Task.
         config_task (dict, kwargs): [Read-Only] The **Config Task** for the Task.
-        dependent_on_task_name (str, kwargs): [Read-Only] The **Dependent On Task Name** for the
-            Task.
+        dependent_on_id (str, kwargs): [Read-Only] The **Dependent On ID** for the Task.
         description (str, kwargs): The **Description** for the Task.
         due_date (str, kwargs): the due date of the Task
         duration (int, kwargs): [Read-Only] The **Duration** for the Task.
@@ -110,7 +109,7 @@ class Task(CommonCaseManagement):
         self._completed_date = kwargs.get('completed_date', None)
         self._config_playbook = kwargs.get('config_playbook', None)
         self._config_task = kwargs.get('config_task', None)
-        self._dependent_on_task_name = kwargs.get('dependent_on_task_name', None)
+        self._dependent_on_id = kwargs.get('dependent_on_id', None)
         self._description = kwargs.get('description', None)
         self._due_date = kwargs.get('due_date', None)
         self._duration = kwargs.get('duration', None)
@@ -200,9 +199,9 @@ class Task(CommonCaseManagement):
         return self._config_task
 
     @property
-    def dependent_on_task_name(self):
-        """Return the **Depend On Task Name** for the Task"""
-        return self._dependent_on_task_name
+    def dependent_on_id(self):
+        """Return the **Depend On ID* for the Task"""
+        return self._dependent_on_id
 
     @property
     def description(self):
@@ -339,6 +338,15 @@ class FilterTasks(Filter):
         """
         self._tql.add_filter('caseSeverity', operator, case_severity, TQL.Type.STRING)
 
+    def completed_by(self, operator, completed_by):
+        """Filter Tasks based on **completedBy** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            completed_by (str): The account login of the user who completed the task.
+        """
+        self._tql.add_filter('completedBy', operator, completed_by, TQL.Type.STRING)
+
     def completed_date(self, operator, completed_date):
         """Filter Tasks based on **completedDate** keyword.
 
@@ -385,13 +393,31 @@ class FilterTasks(Filter):
         self._tql.add_filter('dueDate', operator, due_date, TQL.Type.STRING)
 
     @property
+    def has_artifact(self):
+        """Return **FilterArtifacts** for further filtering."""
+        from .artifact import FilterArtifacts
+
+        artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
+        self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
+        return artifacts
+
+    @property
     def has_case(self):
-        """Return **FilterCases** for further filtering. """
-        from .case import FilterCases  # pylint: disable=cyclic-import
+        """Return **FilterCases** for further filtering."""
+        from .case import FilterCases
 
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases
+
+    @property
+    def has_note(self):
+        """Return **FilterNotes** for further filtering."""
+        from .note import FilterNotes
+
+        notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
+        self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
+        return notes
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Tasks based on **id** keyword.
@@ -410,6 +436,15 @@ class FilterTasks(Filter):
             name (str): The name of the task.
         """
         self._tql.add_filter('name', operator, name, TQL.Type.STRING)
+
+    def required(self, operator, required):
+        """Filter Tasks based on **required** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            required (bool): Flag indicating whether or not the task is required.
+        """
+        self._tql.add_filter('required', operator, required, TQL.Type.BOOLEAN)
 
     def status(self, operator, status):
         """Filter Tasks based on **status** keyword.
@@ -437,6 +472,24 @@ class FilterTasks(Filter):
             target_type (str): The target type for this task (either User or Group).
         """
         self._tql.add_filter('targetType', operator, target_type, TQL.Type.STRING)
+
+    def workflow_phase(self, operator, workflow_phase):
+        """Filter Tasks based on **workflowPhase** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            workflow_phase (int): The workflow phase of the task.
+        """
+        self._tql.add_filter('workflowPhase', operator, workflow_phase, TQL.Type.INTEGER)
+
+    def workflow_step(self, operator, workflow_step):
+        """Filter Tasks based on **workflowStep** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            workflow_step (int): The workflow step of the task.
+        """
+        self._tql.add_filter('workflowStep', operator, workflow_step, TQL.Type.INTEGER)
 
     def xid(self, operator, xid):
         """Filter Tasks based on **xid** keyword.

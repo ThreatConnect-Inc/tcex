@@ -19,13 +19,7 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
             delay (int, optional): The delay period. Defaults to 0.
         """
         if not os.path.exists(os.path.dirname(filename)):
-            try:
-                # pylint: disable=unexpected-keyword-arg
-                os.makedirs(os.path.dirname(filename), exist_ok=True)
-            except TypeError:
-                # TODO: [py2] - remove py2 specific code and pylint-disable
-                if not os.path.exists(os.path.dirname(filename)):
-                    os.makedirs(os.path.dirname(filename))
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
 
 

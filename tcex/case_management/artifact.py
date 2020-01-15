@@ -309,12 +309,30 @@ class FilterArtifacts(Filter):
 
     @property
     def has_case(self):
-        """Return **FilterCases** for further filtering. """
-        from .case import FilterCases  # pylint: disable=cyclic-import
+        """Return **FilterCases** for further filtering."""
+        from .case import FilterCases
 
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases
+
+    @property
+    def has_note(self):
+        """Return **FilterNotes** for further filtering."""
+        from .note import FilterNotes  # pylint: disable=cyclic-import
+
+        notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
+        self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
+        return notes
+
+    @property
+    def has_task(self):
+        """Return **FilterTask** for further filtering."""
+        from .task import FilterTasks  # pylint: disable=cyclic-import
+
+        tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
+        self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
+        return tasks
 
     def id(self, operator, id):  # pylint: disable=redefined-builtin
         """Filter Artifacts based on **id** keyword.

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Inputs Config Module."""
 import json
+import sys
 from random import randint
+from requests import Session
 
 from tcex.inputs import Inputs
 
@@ -125,6 +127,49 @@ class TestInputsConfig:
         tcex.inputs.config_file('tests/inputs/dummy-config.json')
 
     @staticmethod
+    def test_cli_args(playbook_app, request):
+        """Test args passed via cli.
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+            request (pytest.request, fixture): The built-in request object from pytest.
+        """
+        app = playbook_app(clear_argv=False)
+
+        # store config data
+        config_data = app.config_data
+        # clear the config data to test cli args
+        app._config_data = {}
+
+        # backup current sys.argv
+        sys_argv_orig = sys.argv
+
+        # build new sys.argv
+        sys.argv = sys.argv[:1] + [
+            '--tc_token',
+            config_data.get('tc_token'),
+            '--tc_token_expires',
+            config_data.get('tc_token_expires'),
+            '--tc_log_file',
+            config_data.get('tc_log_file'),
+            '--pytest_arg',
+            request.node.name,
+            '--unknown',
+        ]
+
+        tcex = app.tcex
+        tcex.parser.add_argument('--pytest_arg')
+
+        # parse tcex.args
+        tcex.args  # pylint: disable=pointless-statement
+
+        # assert
+        assert tcex.args.pytest_arg == request.node.name
+
+        # restore previous sys.argv
+        sys.argv = sys_argv_orig
+
+    @staticmethod
     def test_get_secure_params(playbook_app, monkeypatch):
         """Test secure params feature of TcEx inputs.
 
@@ -144,6 +189,62 @@ class TestInputsConfig:
         data = tcex.inputs._get_secure_params()
 
         assert data.get('tc_log_path') == 'log'
+
+    @staticmethod
+    def test_get_secure_params_mock_env_server(playbook_app, monkeypatch):
+        """Test secure params feature of TcEx inputs as working on env server.
+
+        Args:
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+            request (_pytest.request, fixture): Pytest request
+        """
+        app = playbook_app(clear_argv=False)
+
+        # store config data
+        config_data = dict(app.config_data)
+
+        # clear the config data to test cli args
+        app._config_data = {}
+
+        # backup current sys.argv
+        sys_argv_orig = sys.argv
+
+        # build new sys.argv
+        sys.argv = sys.argv[:1] + [
+            '--tc_secure_params',
+            '--tc_token',
+            config_data.get('tc_token'),
+            '--tc_token_expires',
+            config_data.get('tc_token_expires'),
+            '--tc_log_path',
+            config_data.get('tc_log_path'),
+            '--tc_log_file',
+            config_data.get('tc_log_file'),
+        ]
+
+        # monkeypatch method
+        secure_params = dict(app.config_data)
+        secure_params['tc_log_path'] = 'bad-log.log'
+        secure_params['pytest_secure_params'] = 'pytest_secure_params'
+
+        def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
+            return MockGet({'inputs': secure_params})
+
+        # monkey patch Session.get() method to return mock secureParams data
+        monkeypatch.setattr(Session, 'get', mp_get)
+
+        # get instance of tcex
+        tcex = app.tcex
+        tcex.parser.add_argument('--pytest_secure_params')
+
+        # assert tc_log_path didn't change with incoming secure param value
+        assert tcex.args.tc_log_path == 'log'
+        # ensure secure params worked
+        assert tcex.args.pytest_secure_params == 'pytest_secure_params'
+
+        # restore previous sys.argv
+        sys.argv = sys_argv_orig
 
     @staticmethod
     def test_get_secure_params_bad_data(tcex, monkeypatch):
@@ -185,38 +286,6 @@ class TestInputsConfig:
             assert True
 
     @staticmethod
-    def test_update_params(tcex, config_data):
-        """Test secure params failure.
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx.
-            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
-        """
-        # add custom config data
-        config_data = {
-            'my_bool': 'true',
-            'my_multi': 'one|two',
-            'unknown_args': True,  # coverage: test unknown args
-        }
-
-        # update params
-        updated_params = tcex.inputs.update_params(config_data)
-        tcex.inputs.config(updated_params)
-
-        # add custom args (install.json defined in conftest.py)
-        tcex.parser.add_argument('--my_bool', action='store_true')
-        tcex.parser.add_argument('--my_multi', action='append')
-
-        # args and rargs must be called once before accessing args
-        tcex.args  # pylint: disable=pointless-statement
-        tcex.rargs  # pylint: disable=pointless-statement
-
-        assert tcex.args.my_bool is True
-        assert tcex.rargs.my_bool is True  # pylint: disable=no-member
-        assert tcex.args.my_multi == ['one', 'two']
-        assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
-
-    @staticmethod
     def test_secure_params(playbook_app, monkeypatch):
         """Test secure params failure.
 
@@ -239,6 +308,48 @@ class TestInputsConfig:
 
         # get instance of tcex
         tcex = app.tcex
+
+        # add custom args (install.json defined in conftest.py)
+        tcex.parser.add_argument('--my_bool', action='store_true')
+        tcex.parser.add_argument('--my_multi', action='append')
+
+        # args and rargs must be called once before accessing args
+        tcex.args  # pylint: disable=pointless-statement
+        tcex.rargs  # pylint: disable=pointless-statement
+
+        assert tcex.args.my_bool is True
+        assert tcex.rargs.my_bool is True  # pylint: disable=no-member
+        assert tcex.args.my_multi == ['one', 'two']
+        assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
+
+    @staticmethod
+    def test_update_logging(playbook_app):
+        """Test update logging method of inputs module
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(config_data={'tc_log_level': None, 'logging': 'trace'}).tcex
+        tcex.log.info('update logging test')
+
+    @staticmethod
+    def test_update_params(tcex, config_data):
+        """Test secure params failure.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
+        # add custom config data
+        config_data = {
+            'my_bool': 'true',
+            'my_multi': 'one|two',
+            'unknown_args': True,  # coverage: test unknown args
+        }
+
+        # update params
+        updated_params = tcex.inputs.update_params(config_data)
+        tcex.inputs.config(updated_params)
 
         # add custom args (install.json defined in conftest.py)
         tcex.parser.add_argument('--my_bool', action='store_true')

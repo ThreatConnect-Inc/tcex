@@ -24,13 +24,17 @@ class MockApp:
 
     Args:
         runtime_level (str): The runtime level of the Mock App.
+        clear_argv (bool, optional): [description]. Defaults to True.
+        config_data ([type], optional): [description]. Defaults to None.
+        ij_data ([type], optional): [description]. Defaults to None.
     """
 
-    def __init__(self, runtime_level, config_data=None, ij_data=None):
-        """Initialize Class properties."""
-        self.cd = config_data or {}  # configuration data for tcex instance
-        self.ijd = ij_data or {}  # install.json data
+    def __init__(self, runtime_level, **kwargs):
+        """Initialize class properties."""
         self.runtime_level = runtime_level
+        self.cd = kwargs.get('config_data', {})  # configuration data for tcex instance
+        self.clear_argv = kwargs.get('clear_argv', True)  # clear sys.argv
+        self.ijd = kwargs.get('ij_data', {})  # install.json data
 
         # properties
         api_access_id = os.getenv('API_ACCESS_ID')
@@ -95,6 +99,15 @@ class MockApp:
             )
             config['tc_playbook_db_path'] = self.getenv('tc_playbook_db_path', 'localhost')
             config['tc_playbook_db_port'] = self.getenv('tc_playbook_db_port', '6379')
+
+        if self.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
+            config['tc_svc_client_topic'] = self.getenv(
+                'tc_playbook_db_port', 'svc-client-cc66d36344787779ccaa8dbb5e09a7ab'
+            )
 
         # add proxy config options if appropriate
         if self.getenv('tc_proxy_host'):
@@ -227,9 +240,13 @@ class MockApp:
         Returns:
             bool|str: The value found in config date, env var, or default.
         """
-        # pop default values from self.cd, leaving new args
-        cv = self.cd.pop(key, None) or os.getenv(key.upper(), default)
+        cv = os.getenv(key.upper(), default)
+        if hasattr(self.cd, key):
+            # check if it exist so None can be set
+            cv = self.cd.pop(key)
+
         if boolean:
+            # convert string response to boolean
             cv = str(cv).lower() in ['true']
         return cv
 
@@ -250,7 +267,8 @@ class MockApp:
     def tcex(self):
         """Return an instance of tcex."""
         # clear sys.argv to avoid invalid arguments
-        sys.argv = sys.argv[:1]
+        if self.clear_argv:
+            sys.argv = sys.argv[:1]
 
         tcex = TcEx(config=self.config_data)
 

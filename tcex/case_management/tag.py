@@ -169,8 +169,8 @@ class FilterTags(Filter):
 
     @property
     def has_case(self):
-        """Return **FilterCases** for further filtering. """
-        from .case import FilterCases  # pylint: disable=cyclic-import
+        """Return **FilterCases** for further filtering."""
+        from .case import FilterCases
 
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)

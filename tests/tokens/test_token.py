@@ -117,6 +117,7 @@ class TestToken:
         t.join()
 
         tcex.token.unregister_token(token_key)
+        tcex.token.shutdown = True  # coverage
 
     @staticmethod
     def test_token_setter(service_app):
@@ -134,6 +135,7 @@ class TestToken:
 
         try:
             r = tcex.session.get('/v2/owners')
+            assert tcex.token.token_expires == 1700000000  # coverage
             assert r.status_code == 200, f'Failed API call ({r.text})'
         except RuntimeError:
             assert False
@@ -187,7 +189,7 @@ class TestToken:
     def token_thread_pass(self, tcex, key, sleep=True, register_thread=True, old_token=None):
         """Run thread test for expected pass test.
 
-        Args:
+        Args:  # coverage
             tcex (TcEx): An instantiated instance of TcEx object.
             key (str): The thread key.
             sleep (bool, optional): If true add sleep interval to wait for token renewal.

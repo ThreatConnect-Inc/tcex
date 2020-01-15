@@ -179,13 +179,11 @@ class Tokens:
     @token.setter
     def token(self, token):
         """Set token for current thread."""
-        # TODO: add lock.acquire / lock.release
         self.token_map.setdefault(self.key, {})['token'] = token
 
     @property
     def token_expires(self):
         """Return token_expires for current thread."""
-        # TODO: add lock.acquire / lock.release
         return self.token_map.get(self.key, {}).get('token_expires')
 
     @token_expires.setter

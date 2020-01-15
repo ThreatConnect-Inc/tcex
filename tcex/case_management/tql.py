@@ -119,11 +119,15 @@ class TQL:
                 value = f"({','.join([str(v) for v in values])})"
                 if tql_filter.get('type') == self.Type.STRING:
                     value = f'"{value}"'
-                filters.append(f"{tql_filter.get('keyword')} EQ {value}")
+                filters.append(
+                    f"{tql_filter.get('keyword')} {tql_filter.get('operator').name} {value}"
+                )
             else:
                 if tql_filter.get('type') == self.Type.STRING:
                     value = f'"{value}"'
-                filters.append(f"{tql_filter.get('keyword')} EQ {value}")
+                filters.append(
+                    f"{tql_filter.get('keyword')} {tql_filter.get('operator').name} {value}"
+                )
 
         return ' and '.join(filters)
 

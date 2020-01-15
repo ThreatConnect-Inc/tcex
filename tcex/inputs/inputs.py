@@ -179,7 +179,7 @@ class Inputs:
             self.config(args.__dict__, False)
 
             # special case for service Apps
-            if self._default_args.tc_svc_client_topic is not None:
+            if self._default_args.tc_svc_client_topic is not None:  # pragma: no cover
                 # get the service id as third part of the service
                 # --tc_svc_client_topic svc-client-cc66d36344787779ccaa8dbb5e09a7ab
                 setattr(
@@ -226,7 +226,7 @@ class Inputs:
         if isinstance(config_data, dict):
             if preserve:
                 # on env server core doesn't send all required values on cli. inputs that
-                # come in via secureParams need to be updated, but not all of them (e.g. log_path).
+                # come in via secureParams needs to be updated, but not all of them (e.g. log_path).
                 # this code will only update new inputs that are not provided via sys argv.
                 for key in list(config_data):
                     if f'--{key}' in sys.argv:
@@ -264,7 +264,7 @@ class Inputs:
 
                     # delete file
                     os.unlink(filename)
-                except Exception:
+                except Exception:  # pragma: no cover
                     self.tcex.log.error(
                         f'Could not read or decrypt configuration file "{filename}".'
                     )
@@ -272,9 +272,9 @@ class Inputs:
                 try:
                     with open(filename, 'r') as fh:
                         file_content = json.load(fh)
-                except ValueError:
+                except ValueError:  # pragma: no cover
                     self.tcex.log.error(f'Could not parse configuration file "{filename}".')
-        elif filename is not None:
+        elif filename is not None:  # pragma: no cover
             self.tcex.log.error(f'Could not load configuration file "{filename}".')
         return file_content
 
@@ -387,6 +387,8 @@ class Inputs:
 
     def unknown_args(self):
         """Log argparser unknown arguments.
+
+        This method is only applicable for args passed on the CLI.
 
         Args:
             args (list): List of unknown arguments

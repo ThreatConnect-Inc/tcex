@@ -79,7 +79,7 @@ class FileParams:  # pylint: disable=useless-object-inheritance
 
     def EVP_aes_128_ecb(self):  # pylint: disable=invalid-name
         """Find the AES-128-ECB cipher suite"""
-        return c_void_p(self.libssl.EVP_aes_128_ecb())
+        return c_void_p(self.libssl.EVP_aes_128_ecb())  # pragma: no cover
 
     def EVP_aes_128_cbc(self):  # pylint: disable=invalid-name
         """Find the AES-128-CBC cipher suite"""

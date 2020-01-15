@@ -97,3 +97,37 @@ class TestStringModifiers:
         """
         result = tcex.utils.to_bool(input_)
         assert result == expected, f'Input {input_} result of {result} != {expected}'
+
+    @pytest.mark.parametrize(
+        'string_length', [(0), (1), (55), (100), (1000)],
+    )
+    def test_utils_random_string(self, tcex, string_length):
+        """Test **camel_to_snake** method of TcEx Utils module.
+
+        Args:
+            string_length (int): The length of the random string.
+        """
+        result = tcex.utils.random_string(string_length=string_length)
+        assert (
+            len(result) == string_length
+        ), f'The length of the string {len(result)} != {string_length}'
+
+    @pytest.mark.parametrize(
+        'input_,expected',
+        [
+            ('upper_upper', 'upperUpper'),
+            ('lower_upper', 'lowerUpper'),
+            ('lowerlower', 'lowerlower'),
+            ('upper', 'upper'),
+        ],
+    )
+    def test_utils_snake_to_camel(self, tcex, input_, expected):
+        """Test **camel_to_snake** method of TcEx Utils module.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            input_ (str): The input string to convert to snake case.
+            expected (str): The expected result value.
+        """
+        result = tcex.utils.snake_to_camel(input_)
+        assert result == expected, f'Input {input_} result of {result} != {expected}'

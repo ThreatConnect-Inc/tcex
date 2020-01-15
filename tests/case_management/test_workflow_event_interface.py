@@ -185,6 +185,7 @@ class TestWorkflowEvent(TestCaseManagement):
 
         # retrieve workflow event using TQL
         workflow_events = self.cm.workflow_events()
+        workflow_events.filter.case_id(TQL.Operator.EQ, case_id=case.id)
         workflow_events.filter.date_added(
             TQL.Operator.GT, (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
         )
