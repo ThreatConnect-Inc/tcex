@@ -78,7 +78,7 @@ class Tag(CommonCaseManagement):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        cases (Case, kwargs): The **Cases** for the Tag.
+        cases (Case, kwargs): [Read-Only] The **Cases** for the Tag.
         description (str, kwargs): a brief description of the Tag
         last_used (str, kwargs): [Read-Only] The **Last Used** for the Tag.
         name (str, kwargs): [Required] The **Name** for the Tag.

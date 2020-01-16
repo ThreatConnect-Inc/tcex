@@ -323,6 +323,39 @@ class TestTask(TestCaseManagement):
         else:
             assert False, 'No task returned for TQL'
 
+    def test_task_get_by_tql_filter_case_severity(self, request):
+        """Test Task Get by TQL"""
+        # create case
+        severity = 'Low'
+        case = self.cm_helper.create_case(severity=severity)
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve tasks using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_severity(TQL.Operator.EQ, severity)
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
+
+    # unsure if there is a way to set completed by via UI
+    def test_task_get_by_tql_filter_completed_by(self, request):
+        """Test Task Get by TQL"""
+
     def test_task_get_by_tql_filter_completed_date(self, request):
         """Test Task Get by TQL"""
         # create case
