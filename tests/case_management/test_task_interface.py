@@ -3,6 +3,7 @@
 import os
 import time
 from datetime import datetime, timedelta
+from random import randint
 from tcex.case_management.tql import TQL
 
 from .cm_helpers import CMHelper, TestCaseManagement
@@ -194,6 +195,93 @@ class TestTask(TestCaseManagement):
         assert task.name == task_data.get('name')
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
+
+    def test_task_get_single_by_id_properties(self, request):
+        """Test Task Get Many"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'case_xid': case.xid,
+            'completed_date': datetime.now().isoformat(),
+            'description': f'a description from {request.node.name}',
+            'due_date': (datetime.now() + timedelta(days=2)).isoformat(),
+            'name': f'name-{request.node.name}',
+            'note_text': f'a note for {request.node.name}',
+            'status': 'Open',
+            'workflow_phase': 0,
+            'workflow_step': 1,
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task()
+
+        # add properties
+        task.case_id = task_data.get('case_id')
+        task.case_xid = task_data.get('case_xid')
+        task.completed_date = task_data.get('completed_date')
+        task.description = task_data.get('description')
+        task.due_date = task_data.get('due_date')
+        task.name = task_data.get('name')
+        task.status = task_data.get('status')
+        task.workflow_phase = task_data.get('workflow_phase')
+        task.workflow_step = task_data.get('workflow_step')
+        task.xid = task_data.get('xid')
+
+        # add artifacts
+        artifact_data = {
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+        task.add_artifact(**artifact_data)
+
+        # add assignee
+        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        task.assignee = assignee
+
+        # add note
+        task.add_note(text=task_data.get('note_text'))
+
+        task.submit()
+
+        # get task from API to use in asserts
+        task = self.cm.task(id=task.id)
+        task.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert task.assignee.user_name == os.getenv('API_ACCESS_ID')
+        assert task.case_id == task_data.get('case_id')
+        assert task.case_xid is None  # note returned with task data
+        assert task_data.get('completed_date')[:10] in task.completed_date
+        assert task.description == task_data.get('description')
+        assert task_data.get('due_date')[:10] in task.due_date
+        assert task.name == task_data.get('name')
+        for note in task.notes:
+            if note.text == task_data.get('note_text'):
+                break
+        else:
+            assert False, 'Note not found'
+        assert task.status == task_data.get('status')
+        assert task.workflow_phase == task_data.get('workflow_phase')
+        assert task.workflow_step == task_data.get('workflow_step')
+        assert task.xid == task_data.get('xid')
+
+        # assert read-only data
+        assert task.completed_by is None  # not returned in the response
+        assert task.config_playbook is None  # not returned in the response
+        assert task.config_task is None  # not returned in the response
+        assert task.dependent_on_id is None  # not returned in the response
+        assert task.duration is None  # not returned in the response
+        assert task.id_dependent_on is None  # not returned in the response
+        assert task.parent_case.id == task_data.get('case_id')
+        assert task.required is False
+
+        # test as_entity
+        assert task.as_entity.get('value') == task_data.get('name')
 
     def test_task_get_by_tql_filter_case_id(self, request):
         """Test Task Get by TQL"""

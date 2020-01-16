@@ -37,10 +37,8 @@ class CommonCaseManagement:
             # format key with trailing whitespace
             key = f'{key} '
 
-            if value is None:
-                printable_string += f'{key:.<40} {"null":<50}\n'
-            elif isinstance(value, (int, str)):
-                printable_string += f'{key:.<40} {value:<50}\n'
+            if isinstance(value, (int, str)) or value is None:
+                printable_string += f'{key:.<40} {str(value):<50}\n'
             else:
                 printable_string += f'{key:.<40} {"<object>":<50}\n'
         return printable_string

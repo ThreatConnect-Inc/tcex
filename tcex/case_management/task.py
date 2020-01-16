@@ -123,6 +123,10 @@ class Task(CommonCaseManagement):
         self._workflow_step = kwargs.get('workflow_step', None)
         self._xid = kwargs.get('xid', None)
 
+    def add_artifact(self, **kwargs):
+        """Add a artifact to the task"""
+        self.artifacts.add_artifact(self.tcex.cm.artifact(**kwargs))
+
     def add_note(self, **kwargs):
         """Add a note to the task"""
         self.notes.add_note(self.tcex.cm.note(**kwargs))
@@ -130,8 +134,10 @@ class Task(CommonCaseManagement):
     @property
     def artifacts(self):
         """Return the **Artifacts** for the Task."""
-        if self._artifacts:
-            return self.tcex.cm.artifacts(initial_response=self._artifacts)
+        if self._artifacts is None or isinstance(self._artifacts, dict):
+            artifacts = self._artifacts or {}
+            # @bpurdy - should this have tql_filters
+            self._artifacts = self.tcex.cm.artifacts(initial_response=artifacts)
         return self._artifacts
 
     @property
@@ -143,7 +149,7 @@ class Task(CommonCaseManagement):
     def assignee(self):
         """Return the **Assignee** for the Task."""
         if isinstance(self._assignee, dict):
-            return self.tcex.cm.assignee(**self._assignee)
+            return self.tcex.cm.assignee(**self._assignee.get('data'))
         return self._assignee
 
     @assignee.setter
@@ -264,6 +270,8 @@ class Task(CommonCaseManagement):
     @notes.setter
     def notes(self, notes):
         """Set the **Notes** for the Task"""
+        if isinstance(notes, dict):
+            self._notes = self.tcex.cm.notes(initial_response=notes)
         self._notes = notes
 
     @property
