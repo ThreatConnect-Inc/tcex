@@ -69,6 +69,7 @@ class TestWorkflowEvent(TestCaseManagement):
         # run assertions on returned data
         assert workflow_event.summary == workflow_event_data.get('summary')
 
+    # TODO: @mj - confirm this should work
     # def test_workflow_event_delete_by_id(self, request):
     #     """Test Workflow Event Creation"""
     #     # create case
@@ -141,6 +142,58 @@ class TestWorkflowEvent(TestCaseManagement):
 
         # run assertions on returned data
         assert workflow_event.summary == workflow_event_data.get('summary')
+
+    def test_workflow_event_get_single_by_id_properties(self, request):
+        """Test Workflow Event Creation"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'case_xid': case.xid,
+            'event_date': datetime.now().isoformat(),
+            'note_text': f'a note for {request.node.name}',
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event()
+        workflow_event.case_id = workflow_event_data.get('case_id')
+        workflow_event.case_xid = workflow_event_data.get('case_xid')
+        workflow_event.event_date = workflow_event_data.get('event_date')
+        workflow_event.summary = workflow_event_data.get('summary')
+
+        # add note
+        workflow_event.add_note(text=workflow_event_data.get('note_text'))
+
+        # submit
+        workflow_event.submit()
+
+        # get workflow event from API to use in asserts
+        workflow_event = self.cm.workflow_event(id=workflow_event.id)
+        workflow_event.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert workflow_event.case_id == workflow_event_data.get('case_id')
+        assert workflow_event.case_xid == workflow_event_data.get('case_xid')
+        assert workflow_event.date_added
+        assert workflow_event_data.get('event_date')[:17] in workflow_event.event_date
+        assert workflow_event.id == workflow_event.id
+        # TODO: @mj - confirm this should work
+        # for note in workflow_event.notes:
+        #     print('note', note)
+        #     if note.text == workflow_event_data.get('note_text'):
+        #         break
+        # else:
+        #     assert False, 'Note not found'
+        assert workflow_event.parent_case.id == case.id
+        assert workflow_event.summary == workflow_event_data.get('summary')
+        assert workflow_event.user.user_name == os.getenv('API_ACCESS_ID')
+        assert workflow_event.as_entity.get('value') == workflow_event_data.get('summary')
+        # TODO: @mj - confirm the status of these fields
+        assert workflow_event.deleted is None
+        assert workflow_event.deleted_reason is None
 
     def test_workflow_event_get_by_tql_filter_case_id(self, request):
         """Test Workflow Event Get by TQL"""
@@ -223,6 +276,7 @@ class TestWorkflowEvent(TestCaseManagement):
         else:
             assert False, 'No workflow event returned for TQL'
 
+    # TODO: @mj - confirm this should work
     # def test_workflow_event_get_by_tql_filter_deleted_reason(self, request):
     #     """Test Workflow Event Get by TQL"""
     #     # create case
@@ -309,11 +363,36 @@ class TestWorkflowEvent(TestCaseManagement):
         else:
             assert False, 'No workflow event returned for TQL'
 
-    # link is not added when the workflow event is created via the API
+    # per @mj link_text is not added when the workflow event is created via the API
     # def test_workflow_event_get_by_tql_filter_link(self, request):
     #     """Test Workflow Event Get by TQL"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
 
-    # link_text is not added when the workflow event is created via the API
+    #     # workflow event data
+    #     workflow_event_data = {
+    #         'case_id': case.id,
+    #         'summary': request.node.name,
+    #     }
+
+    #     # create workflow_event
+    #     workflow_event = self.cm.workflow_event(**workflow_event_data)
+    #     workflow_event.submit()
+
+    #     # retrieve workflow event using TQL
+    #     link = f"{os.getenv('TC_API_PATH')}/v3/cases/{case.id}"
+    #     workflow_events = self.cm.workflow_events(params={'fields': ['user']})
+    #     workflow_events.filter.id(TQL.Operator.EQ, workflow_event.id)
+    #     # workflow_events.filter.link(TQL.Operator.EQ, link)
+
+    #     for we in workflow_events:
+    #         # more than one workflow event will always be returned
+    #         if we.summary == workflow_event_data.get('summary'):
+    #             break
+    #     else:
+    #         assert False, 'No workflow event returned for TQL'
+
+    # per @mj link is not added when the workflow event is created via the API
     # def test_workflow_event_get_by_tql_filter_link_text(self, request):
     #     """Test Workflow Event Get by TQL"""
 

@@ -125,7 +125,7 @@ class Task(CommonCaseManagement):
 
     def add_note(self, **kwargs):
         """Add a note to the task"""
-        self._notes.add_note(self.tcex.cm.note(**kwargs))
+        self.notes.add_note(self.tcex.cm.note(**kwargs))
 
     @property
     def artifacts(self):
@@ -255,8 +255,10 @@ class Task(CommonCaseManagement):
     @property
     def notes(self):
         """Return the **Notes** for the Task"""
-        if self._notes:
-            return self.tcex.cm.notes(initial_response=self._notes)
+        if self._notes is None or isinstance(self._notes, dict):
+            notes = self._notes or {}
+            # @bpurdy - should this have tql_filters
+            self._notes = self.tcex.cm.notes(initial_response=notes)
         return self._notes
 
     @notes.setter

@@ -120,6 +120,7 @@ class CMHelper:
 
         # cases = self.cm.cases()
         # cases.filter.tag(TQL.Operator.EQ, 'pytest')
+        # # cases.filter.tag(TQL.Operator.EQ, 'tests.case_management.test_case_interface-1')
         # for case in cases:
         #     case.delete()
 

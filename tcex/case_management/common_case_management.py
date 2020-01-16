@@ -65,6 +65,8 @@ class CommonCaseManagement:
 
             # get read-only value for display and required value
             read_only = pd.get('read-only', False)
+            if read_only is None and data:
+                read_only = data[0].get('read-only', False)
 
             # get required value or default
             required = pd.get('required', False)

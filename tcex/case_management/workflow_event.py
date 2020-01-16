@@ -99,7 +99,7 @@ class WorkflowEvent(CommonCaseManagement):
 
     def add_note(self, **kwargs):
         """Add a note to the workflow event."""
-        self._notes.add_note(self.tcex.cm.note(**kwargs))
+        self.notes.add_note(self.tcex.cm.note(**kwargs))
 
     @property
     def as_entity(self):
@@ -128,7 +128,7 @@ class WorkflowEvent(CommonCaseManagement):
     @property
     def case_xid(self):
         """Return the **Case XID** for the Workflow Event."""
-        return self._case_id
+        return self._case_xid
 
     @case_xid.setter
     def case_xid(self, case_xid):
@@ -150,10 +150,11 @@ class WorkflowEvent(CommonCaseManagement):
         """Return the **Deleted Reason** for the Workflow Event."""
         return self._deleted_reason
 
-    @deleted_reason.setter
-    def deleted_reason(self, deleted_reason):
-        """Set the **Deleted Reason** for the Workflow Event."""
-        self._deleted_reason = deleted_reason
+    # TODO: @mj - confirm the status of this field
+    # @deleted_reason.setter
+    # def deleted_reason(self, deleted_reason):
+    #     """Set the **Deleted Reason** for the Workflow Event."""
+    #     self._deleted_reason = deleted_reason
 
     @property
     def event_date(self):
@@ -188,8 +189,10 @@ class WorkflowEvent(CommonCaseManagement):
     @property
     def notes(self):
         """Return the **Notes** for the Task"""
-        if self._notes:
-            return self.tcex.cm.notes(initial_response=self._notes)
+        if self._notes is None or isinstance(self._notes, dict):
+            notes = self._notes or {}
+            # @bpurdy - should this have tql_filters
+            self._notes = self.tcex.cm.notes(initial_response=notes)
         return self._notes
 
     @notes.setter
@@ -257,7 +260,8 @@ class FilterWorkflowEvents(Filter):
         """
         self._tql.add_filter('deleted', operator, deleted, TQL.Type.BOOLEAN)
 
-    def deleted_reason(self, operator, deleted_reason):
+    # TODO: @mj - confirm the status of these fields
+    def deleted_reason(self, operator, deleted_reason):  # pragma: no cover
         """Filter Workflow Events based on **deletedReason** keyword.
 
         Args:
@@ -293,7 +297,8 @@ class FilterWorkflowEvents(Filter):
         """
         self._tql.add_filter('link', operator, link, TQL.Type.STRING)
 
-    def link_text(self, operator, link_text):
+    # TODO: @mj - confirm the status of these fields
+    def link_text(self, operator, link_text):  # pragma: no cover
         """Filter Workflow Events based on **linkText** keyword.
 
         Args:

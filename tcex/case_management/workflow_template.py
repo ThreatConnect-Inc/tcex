@@ -65,7 +65,7 @@ class WorkflowTemplate(CommonCaseManagement):
             Template.
         assigned_user (User, kwargs): [Read-Only] The **Assigned User** for the Workflow Template.
         assignee (Assignee, kwargs): [Read-Only] The **Assignee** for the Workflow Template.
-        cases (Case, kwargs): The **Cases** for the Workflow Template.
+        cases (Case, kwargs): [Read-Only] The **Cases** for the Workflow Template.
         config_artifact (str, kwargs): [Read-Only] The **Config Artifact** for the Workflow
             Template.
         config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Workflow
@@ -116,17 +116,13 @@ class WorkflowTemplate(CommonCaseManagement):
     @property
     def as_entity(self):
         """Return the entity representation of the Workflow Event."""
+        # @bpurdy - what should this be ???
         return {}
 
     @property
     def cases(self):
         """Return the parent **Cases** for the Workflow Template."""
         return self.tcex.cm.cases(initial_response=self._cases)
-
-    @cases.setter
-    def cases(self, cases):
-        """Set the parent **Cases** for the Workflow Template."""
-        self._cases = cases
 
     @property
     def config_artifact(self):
@@ -200,7 +196,8 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('active', operator, active, TQL.Type.BOOLEAN)
 
-    def assigned_group_id(self, operator, assigned_group_id):
+    # TODO: checking to see if this is still valid
+    def assigned_group_id(self, operator, assigned_group_id):  # pragma: no cover
         """Filter Workflow Templates based on **assignedGroupId** keyword.
 
         Args:
@@ -209,7 +206,8 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('assignedGroupId', operator, assigned_group_id, TQL.Type.INTEGER)
 
-    def assigned_user_id(self, operator, assigned_user_id):
+    # TODO: checking to see if this is still valid
+    def assigned_user_id(self, operator, assigned_user_id):  # pragma: no cover
         """Filter Workflow Templates based on **assignedUserId** keyword.
 
         Args:
@@ -218,7 +216,8 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('assignedUserId', operator, assigned_user_id, TQL.Type.INTEGER)
 
-    def config_artifact(self, operator, config_artifact):
+    # TODO: checking to see if this is still valid
+    def config_artifact(self, operator, config_artifact):  # pragma: no cover
         """Filter Workflow Templates based on **configArtifact** keyword.
 
         Args:
@@ -227,7 +226,8 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('configArtifact', operator, config_artifact, TQL.Type.STRING)
 
-    def config_playbook(self, operator, config_playbook):
+    # TODO: checking to see if this is still valid
+    def config_playbook(self, operator, config_playbook):  # pragma: no cover
         """Filter Workflow Templates based on **configPlaybook** keyword.
 
         Args:
@@ -236,7 +236,8 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('configPlaybook', operator, config_playbook, TQL.Type.STRING)
 
-    def config_task(self, operator, config_task):
+    # TODO: checking to see if this is still valid
+    def config_task(self, operator, config_task):  # pragma: no cover
         """Filter Workflow Templates based on **configTask** keyword.
 
         Args:
@@ -272,7 +273,8 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('name', operator, name, TQL.Type.STRING)
 
-    def organization_id(self, operator, organization_id):
+    # TODO: checking to see if this is still valid
+    def organization_id(self, operator, organization_id):  # pragma: no cover
         """Filter Workflow Templates based on **organizationId** keyword.
 
         Args:
@@ -281,6 +283,7 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('organizationId', operator, organization_id, TQL.Type.INTEGER)
 
+    # TODO: waiting on core to make assignee writable
     def target_id(self, operator, target_id):
         """Filter Workflow Templates based on **targetId** keyword.
 
@@ -290,6 +293,7 @@ class FilterWorkflowTemplates(Filter):
         """
         self._tql.add_filter('targetId', operator, target_id, TQL.Type.INTEGER)
 
+    # TODO: waiting on core to make assignee writable
     def target_type(self, operator, target_type):
         """Filter Workflow Templates based on **targetType** keyword.
 

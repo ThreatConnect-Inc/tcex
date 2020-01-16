@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Case Management Module."""
 import os
-
-# import re
-# import time
-# from random import randint
-# from tcex.case_management.tql import TQL
+from tcex.case_management.tql import TQL
 
 from .cm_helpers import CMHelper, TestCaseManagement
 
 
-class TestWorkflowEvent(TestCaseManagement):
-    """Test TcEx CM Workflow Event Interface."""
+class TestWorkflowTemplate(TestCaseManagement):
+    """Test TcEx CM Workflow Template Interface."""
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -50,24 +46,261 @@ class TestWorkflowEvent(TestCaseManagement):
         """Test properties."""
         super().obj_properties_extra()
 
-    # def test_workflow_template_create_by_case_id(self, request):
-    #     """Test Workflow Template Creation"""
-    #     # create case
-    #     case = self.cm_helper.create_case()
+    def test_workflow_template_create_by_case_id(self, request):
+        """Test Workflow Template Creation"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
 
-    #     # workflow event data
-    #     workflow_event_data = {
-    #         'case_id': case.id,
-    #         'summary': request.node.name,
-    #     }
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
 
-    #     # create workflow_event
-    #     workflow_event = self.cm.workflow_event(**workflow_event_data)
-    #     workflow_event.submit()
+        # get workflow template from API to use in asserts
+        workflow_template = self.cm.workflow_template(id=workflow_template.id)
+        workflow_template.get()
 
-    #     # get workflow event from API to use in asserts
-    #     workflow_event = self.cm.workflow_event(id=workflow_event.id)
-    #     workflow_event.get()
+        # run assertions on returned data
+        assert workflow_template.description == workflow_template_data.get('description')
+        assert workflow_template.name == workflow_template_data.get('name')
+        assert workflow_template.version == workflow_template_data.get('version')
 
-    #     # run assertions on returned data
-    #     assert workflow_event.summary == workflow_event_data.get('summary')
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_many(self, request):
+        """Test Workflow Template Creation"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
+
+        # get workflow template from API to use in asserts
+        for wt in self.cm.workflow_templates():
+            if wt.name == workflow_template_data.get('name'):
+                assert workflow_template.description == workflow_template_data.get('description')
+                assert workflow_template.version == workflow_template_data.get('version')
+                break
+        else:
+            assert False, f"Workflow template {workflow_template_data.get('name')} was not found."
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_single_by_id(self, request):
+        """Test Workflow Template Creation"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
+
+        # get workflow template from API to use in asserts
+        workflow_template = self.cm.workflow_template(id=workflow_template.id)
+        workflow_template.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert workflow_template.description == workflow_template_data.get('description')
+        assert workflow_template.name == workflow_template_data.get('name')
+        assert workflow_template.version == workflow_template_data.get('version')
+        assert workflow_template.cases
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_single_by_id_properties(self, request):
+        """Test Workflow Template Creation"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template()
+        workflow_template.description = workflow_template_data.get('description')
+        workflow_template.name = workflow_template_data.get('name')
+        workflow_template.version = workflow_template_data.get('version')
+        workflow_template.submit()
+
+        # get workflow template from API to use in asserts
+        workflow_template = self.cm.workflow_template(id=workflow_template.id)
+        workflow_template.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert workflow_template.description == workflow_template_data.get('description')
+        assert workflow_template.name == workflow_template_data.get('name')
+        assert workflow_template.version == workflow_template_data.get('version')
+        assert workflow_template.cases
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_by_tql_filter_active(self, request):
+        """Test Workflow Template Get by TQL"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
+
+        # retrieve workflow event using TQL
+        workflow_templates = self.cm.workflow_templates()
+        workflow_templates.filter.active(TQL.Operator.EQ, True)
+
+        for wt in workflow_templates:
+            # more than one workflow event will always be returned
+            if wt.name == workflow_template_data.get('name'):
+                break
+        else:
+            assert False, 'No workflow templates returned for TQL'
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_by_tql_filter_description(self, request):
+        """Test Workflow Template Get by TQL"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
+
+        # retrieve workflow event using TQL
+        workflow_templates = self.cm.workflow_templates()
+        workflow_templates.filter.description(
+            TQL.Operator.EQ, workflow_template_data.get('description')
+        )
+
+        for wt in workflow_templates:
+            # more than one workflow event will always be returned
+            if wt.name == workflow_template_data.get('name'):
+                break
+        else:
+            assert False, 'No workflow templates returned for TQL'
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_by_tql_filter_id(self, request):
+        """Test Workflow Template Get by TQL"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
+
+        # retrieve workflow event using TQL
+        workflow_templates = self.cm.workflow_templates()
+        workflow_templates.filter.id(TQL.Operator.EQ, workflow_template.id)
+
+        for wt in workflow_templates:
+            # more than one workflow event will always be returned
+            if wt.name == workflow_template_data.get('name'):
+                break
+        else:
+            assert False, 'No workflow templates returned for TQL'
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_by_tql_filter_name(self, request):
+        """Test Workflow Template Get by TQL"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
+
+        # retrieve workflow event using TQL
+        workflow_templates = self.cm.workflow_templates()
+        workflow_templates.filter.name(TQL.Operator.EQ, workflow_template.name)
+
+        for wt in workflow_templates:
+            # more than one workflow event will always be returned
+            if wt.name == workflow_template_data.get('name'):
+                break
+        else:
+            assert False, 'No workflow templates returned for TQL'
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_get_by_tql_filter_version(self, request):
+        """Test Workflow Template Get by TQL"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+        workflow_template.submit()
+
+        # retrieve workflow event using TQL
+        workflow_templates = self.cm.workflow_templates()
+        workflow_templates.filter.id(TQL.Operator.EQ, workflow_template.id)
+        workflow_templates.filter.version(TQL.Operator.EQ, workflow_template_data.get('version'))
+
+        for wt in workflow_templates:
+            # more than one workflow event will always be returned
+            if wt.name == workflow_template_data.get('name'):
+                break
+        else:
+            assert False, 'No workflow templates returned for TQL'
+
+        # cleanup workflow template
+        workflow_template.delete()
+
+    def test_workflow_template_as_entity(self, request):
+        """Test Workflow Template As entity"""
+        # workflow template data
+        workflow_template_data = {
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
+            'version': 1,
+        }
+
+        # create workflow_template
+        workflow_template = self.cm.workflow_template(**workflow_template_data)
+
+        # assert a proper entity is returned
+        # TODO: update this
+        assert workflow_template.as_entity == {}

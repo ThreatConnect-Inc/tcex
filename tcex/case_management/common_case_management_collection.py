@@ -81,7 +81,7 @@ class CommonCaseManagementCollection:
         # convert all keys to camel case
         for k, v in list(parameters.items()):
             del parameters[k]
-            k = self.tcex.util.snake_to_camel(k)
+            k = self.tcex.utils.snake_to_camel(k)
             parameters[k] = v
 
         r = self.tcex.session.get(self.api_endpoint, params=parameters)
@@ -247,7 +247,7 @@ class CommonCaseManagementCollection:
         # convert all keys to camel case
         for k, v in list(parameters.items()):
             del parameters[k]
-            k = self.tcex.util.snake_to_camel(k)
+            k = self.tcex.utils.snake_to_camel(k)
             parameters[k] = v
 
         url = self.api_endpoint
