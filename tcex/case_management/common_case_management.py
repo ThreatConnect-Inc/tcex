@@ -132,11 +132,13 @@ class CommonCaseManagement:
         """Return a list of properties to exclude when creating a dict of the children class."""
         return [
             'api_endpoint',
+            'artifact_filter',
             'case_filter',
             'filter',
             'fields',
             'kwargs',
             'properties',
+            'task_filter',
             'tcex',
             'tql',
         ]

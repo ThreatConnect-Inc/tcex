@@ -49,20 +49,16 @@ class CommonCaseManagementCollection:
     ):
         """Initialize Class properties."""
 
-        self._params = params
-        if params is None:
-            self.params = {}
-        if tql_filters is None:
-            tql_filters = []
         self._added_items = []
         self._initial_response = initial_response
         self._next_url = next_url
-        self._previous_url = previous_url
         self._page_size = page_size
+        self._params = params or {}
+        self._previous_url = previous_url
         self._retry_count = retry_count
         self._timeout = timeout
         self._tql_data = None
-        self._tql_filters = tql_filters
+        self._tql_filters = tql_filters or []
         self.api_endpoint = api_endpoint.value
         self.tcex = tcex
         self.tql = TQL()
@@ -254,8 +250,8 @@ class CommonCaseManagementCollection:
 
         tql_string = self.tql.raw_tql
         if not self.tql.raw_tql:
-            tql_string = self.tql.as_str
             self.tql.filters = self._tql_filters + self.tql.filters
+            tql_string = self.tql.as_str
 
         if tql_string:
             parameters['tql'] = tql_string

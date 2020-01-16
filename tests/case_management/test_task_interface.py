@@ -184,6 +184,18 @@ class TestTask(TestCaseManagement):
 
         # create task
         task = self.cm.task(**task_data)
+
+        # add assignee
+        assignee_data = {'type': 'User', 'data': {'userName': os.getenv('API_ACCESS_ID')}}
+        task.assignee = assignee_data
+
+        # add note
+        notes_data = {
+            'data': [{'text': 'a note for test_task_get_single_by_id_properties'}],
+        }
+        task.notes = notes_data
+
+        # submit task
         task.submit()
 
         # get task from API to use in asserts
@@ -300,7 +312,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
 
@@ -329,7 +341,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.completed_date(
@@ -366,7 +378,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.description(TQL.Operator.EQ, task_data.get('description'))
@@ -396,7 +408,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.due_date(TQL.Operator.GT, datetime.now().strftime('%Y-%m-%d'))
@@ -408,13 +420,116 @@ class TestTask(TestCaseManagement):
         else:
             assert False, 'No task returned for TQL'
 
-    # Per converstion with MJ this only works with templates
-    # def test_task_get_by_tql_filter_duration(self, request):
+    # The artifact request setup can be added to a task, but there is no way to add an actual
+    # artifact
+    # def test_task_get_by_tql_filter_has_artifact(self, request):
     #     """Test Task Get by TQL"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
 
-    # TODO: this needs some consideration
-    def test_task_get_by_tql_filter_hascase(self, request):
+    #     # task data
+    #     task_data = {
+    #         'case_id': case.id,
+    #         'description': f'a description from {request.node.name}',
+    #         'name': f'name-{request.node.name}',
+    #         'xid': f'{request.node.name}-{time.time()}',
+    #     }
+
+    #     # create task
+    #     task = self.cm.task(**task_data)
+
+    #     # add artifacts
+    #     artifact_data = {
+    #         'intel_type': 'indicator-ASN',
+    #         'summary': f'asn{randint(100, 999)}',
+    #         'type': 'ASN',
+    #     }
+    #     task.add_artifact(**artifact_data)
+
+    #     # submit task
+    #     task.submit()
+
+    #     my_task = self.cm.task(id=task.id)
+    #     my_task.get(all_available_fields=True)
+
+    #     # get artifact id
+    #     for artifact in task.artifacts:
+    #         artifact_id = artifact.id
+
+    #     # retrieve tasks using TQL
+    #     tasks = self.cm.tasks()
+    #     tasks.filter.id(TQL.Operator.EQ, task.id)
+    #     tasks.filter.has_artifact.id(TQL.Operator.EQ, artifact_id)
+
+    #     for task in tasks:
+    #         assert task.description == task_data.get('description')
+    #         assert task.name == task_data.get('name')
+    #         break
+    #     else:
+    #         assert False, 'No task returned for TQL'
+
+    def test_task_get_by_tql_filter_has_case(self, request):
         """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve tasks using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.id(TQL.Operator.EQ, task.id)
+        tasks.filter.has_case.id(TQL.Operator.EQ, case.id)
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
+
+    def test_task_get_by_tql_filter_has_note(self, request):
+        """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.add_note(text='blah')
+        task.submit()
+
+        # get note id
+        for note in task.notes:
+            note_id = note.id
+
+        # retrieve tasks using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.id(TQL.Operator.EQ, task.id)
+        tasks.filter.has_note.id(TQL.Operator.EQ, note_id)
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_id(self, request):
         """Test Task Get by TQL"""
@@ -433,7 +548,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.id(TQL.Operator.EQ, task.id)
         tasks.filter.description(TQL.Operator.EQ, task_data.get('description'))
@@ -462,10 +577,39 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.name(TQL.Operator.EQ, task_data.get('name'))
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
+
+    def test_task_get_by_tql_filter_required(self, request):
+        """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve tasks using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.required(TQL.Operator.EQ, False)
 
         for task in tasks:
             assert task.description == task_data.get('description')
@@ -492,7 +636,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.status(TQL.Operator.EQ, task_data.get('status'))
@@ -524,7 +668,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.target_id(TQL.Operator.EQ, 5)
@@ -556,10 +700,70 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.case_id(TQL.Operator.EQ, case.id)
         tasks.filter.target_type(TQL.Operator.EQ, 'User')
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
+
+    def test_task_get_by_tql_filter_workflow_phase(self, request):
+        """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'status': 'Open',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve tasks using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.workflow_phase(TQL.Operator.EQ, 0)
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
+
+    def test_task_get_by_tql_filter_workflow_step(self, request):
+        """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'status': 'Open',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve tasks using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.workflow_step(TQL.Operator.EQ, 1)
 
         for task in tasks:
             assert task.description == task_data.get('description')
@@ -585,7 +789,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
         task.submit()
 
-        # retrieve artifacts using TQL
+        # retrieve tasks using TQL
         tasks = self.cm.tasks()
         tasks.filter.xid(TQL.Operator.EQ, task_data.get('xid'))
 
