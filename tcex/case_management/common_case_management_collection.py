@@ -215,12 +215,12 @@ class CommonCaseManagementCollection:
         """Set the added items to the collection"""
         self._added_items = added_items
 
-    def entity_map(self, entity):
+    def entity_map(self, entity):  # pragma: no cover
         """Stub for common method."""
         raise NotImplementedError('Child class must implement this method.')
 
     @property
-    def filter(self):
+    def filter(self):  # pragma: no cover
         """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
 
@@ -276,11 +276,11 @@ class CommonCaseManagementCollection:
 
             if not self.success(r):
                 current_retries += 1
-                if current_retries > self.retry_count:
-                    err = r.text or r.reason
-                    self.tcex.handle_error(950, [r.status_code, err, r.url])
-                else:
-                    continue
+                # if current_retries > self.retry_count:
+                #     err = r.text or r.reason
+                #     self.tcex.handle_error(950, [r.status_code, err, r.url])
+                # else:
+                #     continue
 
             # reset some vars
             parameters = {}
@@ -296,9 +296,6 @@ class CommonCaseManagementCollection:
                 yield from self.added_items
                 break
 
-    # def json(self):
-    #    generator with built in API call and pagination
-
     @staticmethod
     def list_as_dict(added_items):
         """Return the dict representation of the case management collection object."""
@@ -307,18 +304,15 @@ class CommonCaseManagementCollection:
             as_dict['data'].append(item.as_dict)
         return as_dict
 
-    @property
-    def next_url(self):
-        """Return the next url of the case management object collection."""
-        return self._next_url
+    # @property
+    # def next_url(self):
+    #     """Return the next url of the case management object collection."""
+    #     return self._next_url
 
-    @next_url.setter
-    def next_url(self, next_url):
-        """Set the next url of the case management object collection."""
-        self._next_url = next_url
-
-    # def openioc(self):
-    #    json to stix2
+    # @next_url.setter
+    # def next_url(self, next_url):
+    #     """Set the next url of the case management object collection."""
+    #     self._next_url = next_url
 
     @property
     def params(self):
@@ -330,55 +324,52 @@ class CommonCaseManagementCollection:
         """Set the parameters of the case management object collection."""
         self._params = params
 
-    @property
-    def page_size(self):
-        """Return the page size of the case management object collection."""
-        return self._page_size
+    # @property
+    # def page_size(self):
+    #     """Return the page size of the case management object collection."""
+    #     return self._page_size
 
-    @property
-    def previous_url(self):
-        """Return the previous url of the case management object collection."""
-        return self._previous_url
+    # @property
+    # def previous_url(self):
+    #     """Return the previous url of the case management object collection."""
+    #     return self._previous_url
 
-    @previous_url.setter
-    def previous_url(self, previous_url):
-        """Set the previous url of the case management object collection."""
-        self._previous_url = previous_url
+    # @previous_url.setter
+    # def previous_url(self, previous_url):
+    #     """Set the previous url of the case management object collection."""
+    #     self._previous_url = previous_url
 
-    @page_size.setter
-    def page_size(self, page_size):
-        """Set the page size of the case management object collection."""
-        self._page_size = page_size
+    # @page_size.setter
+    # def page_size(self, page_size):
+    #     """Set the page size of the case management object collection."""
+    #     self._page_size = page_size
 
-    @property
-    def retry_count(self):
-        """Return the retry count of the case management object collection."""
-        return self._retry_count
+    # @property
+    # def retry_count(self):
+    #     """Return the retry count of the case management object collection."""
+    #     return self._retry_count
 
-    @retry_count.setter
-    def retry_count(self, retry_count):
-        """Set the retry count of the case management object collection."""
-        self._retry_count = retry_count
-
-    # def stix2(self):
-    #    json to stix2
+    # @retry_count.setter
+    # def retry_count(self, retry_count):
+    #     """Set the retry count of the case management object collection."""
+    #     self._retry_count = retry_count
 
     @staticmethod
     def success(r):
-        """Validates if the response is valid.
+        """Validate the response is valid.
 
         Args:
-            r ([type]): [description]
+            r (requests.response): The response object.
 
         Returns:
-            [type]: [description]
+            bool: True if status is "ok"
         """
         status = True
         if r.ok:
             try:
-                if r.json().get('status') != 'Success':
+                if r.json().get('status') != 'Success':  # pragma: no cover
                     status = False
-            except Exception:
+            except Exception:  # pragma: no cover
                 status = False
         else:
             status = False

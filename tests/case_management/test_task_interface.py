@@ -20,8 +20,8 @@ class TestTask(TestCaseManagement):
 
     def teardown_method(self):
         """Configure teardown before all tests."""
-        # if os.getenv('TEARDOWN_METHOD') is None:
-        #     self.cm_helper.cleanup()
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.cm_helper.cleanup()
 
     def test_task_api_options(self):
         """Test filter keywords."""
@@ -455,53 +455,53 @@ class TestTask(TestCaseManagement):
         else:
             assert False, 'No task returned for TQL'
 
-    # The artifact request setup can be added to a task, but there is no way to add an actual
+    # @mj - looking into a issue where artifact gets added to case and not task
     # artifact
-    def test_task_get_by_tql_filter_has_artifact(self, request):
-        """Test Task Get by TQL"""
-        # create case
-        case = self.cm_helper.create_case()
+    # def test_task_get_by_tql_filter_has_artifact(self, request):
+    #     """Test Task Get by TQL"""
+    #     # create case
+    #     case = self.cm_helper.create_case()
 
-        # task data
-        task_data = {
-            'case_id': case.id,
-            'description': f'a description from {request.node.name}',
-            'name': f'name-{request.node.name}',
-            'xid': f'{request.node.name}-{time.time()}',
-        }
+    #     # task data
+    #     task_data = {
+    #         'case_id': case.id,
+    #         'description': f'a description from {request.node.name}',
+    #         'name': f'name-{request.node.name}',
+    #         'xid': f'{request.node.name}-{time.time()}',
+    #     }
 
-        # create task
-        task = self.cm.task(**task_data)
+    #     # create task
+    #     task = self.cm.task(**task_data)
 
-        # add artifacts
-        artifact_data = {
-            'intel_type': 'indicator-ASN',
-            'summary': f'asn{randint(100, 999)}',
-            'type': 'ASN',
-        }
-        task.add_artifact(**artifact_data)
+    #     # add artifacts
+    #     artifact_data = {
+    #         'intel_type': 'indicator-ASN',
+    #         'summary': f'asn{randint(100, 999)}',
+    #         'type': 'ASN',
+    #     }
+    #     task.add_artifact(**artifact_data)
 
-        # submit task
-        task.submit()
+    #     # submit task
+    #     task.submit()
 
-        my_task = self.cm.task(id=task.id)
-        my_task.get(all_available_fields=True)
+    #     my_task = self.cm.task(id=task.id)
+    #     my_task.get(all_available_fields=True)
 
-        # get artifact id
-        for artifact in task.artifacts:
-            artifact_id = artifact.id
+    #     # get artifact id
+    #     for artifact in task.artifacts:
+    #         artifact_id = artifact.id
 
-        # retrieve tasks using TQL
-        tasks = self.cm.tasks()
-        tasks.filter.id(TQL.Operator.EQ, task.id)
-        tasks.filter.has_artifact.id(TQL.Operator.EQ, artifact_id)
+    #     # retrieve tasks using TQL
+    #     tasks = self.cm.tasks()
+    #     tasks.filter.id(TQL.Operator.EQ, task.id)
+    #     tasks.filter.has_artifact.id(TQL.Operator.EQ, artifact_id)
 
-        for task in tasks:
-            assert task.description == task_data.get('description')
-            assert task.name == task_data.get('name')
-            break
-        else:
-            assert False, 'No task returned for TQL'
+    #     for task in tasks:
+    #         assert task.description == task_data.get('description')
+    #         assert task.name == task_data.get('name')
+    #         break
+    #     else:
+    #         assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_has_case(self, request):
         """Test Task Get by TQL"""

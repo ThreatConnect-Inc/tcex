@@ -274,7 +274,7 @@ class TestTag(TestCaseManagement):
         tags = self.cm.tags()
         tags.filter.id(TQL.Operator.EQ, tag.id)
         tags.filter.last_used(
-            TQL.Operator.GT, (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+            TQL.Operator.GT, (datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d')
         )
 
         for t in tags:

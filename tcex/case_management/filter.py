@@ -29,19 +29,9 @@ class Filter:
         return keywords
 
     @property
-    def descriptions(self):
-        """Return supported TQL descriptions."""
-        return [td.get('description') for td in self.tql_data]
-
-    @property
     def keywords(self):
         """Return supported TQL keywords."""
         return [td.get('keyword') for td in self.tql_data]
-
-    @property
-    def names(self):
-        """Return supported TQL names."""
-        return [td.get('name') for td in self.tql_data]
 
     @property
     def tql_data(self):
@@ -52,11 +42,6 @@ class Filter:
                 self._tql_data = r.json()['data']
 
         return self._tql_data
-
-    @property
-    def types(self):
-        """Return supported TQL types."""
-        return [td.get('type') for td in self.tql_data]
 
     def tql(self, tql):
         """Filter objects based on TQL expression.

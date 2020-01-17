@@ -64,7 +64,7 @@ class TestArtifactType(TestCaseManagement):
         artifact_type.get()
 
         assert artifact_type.id == 1
-        assert artifact_type.name == 'E-mail Address'
+        assert artifact_type.name == 'Email Address'
         assert artifact_type.description.startswith('A name that identifies')
         assert artifact_type.data_type == 'String'
         assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -76,7 +76,7 @@ class TestArtifactType(TestCaseManagement):
 
         for artifact_type in artifact_types:
             if artifact_type.id == 1:
-                assert artifact_type.name == 'E-mail Address'
+                assert artifact_type.name == 'Email Address'
                 assert artifact_type.description.startswith('A name that identifies')
                 assert artifact_type.data_type == 'String'
                 assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -91,7 +91,7 @@ class TestArtifactType(TestCaseManagement):
 
         for artifact_type in artifact_types:
             if artifact_type.id == 1:
-                assert artifact_type.name == 'E-mail Address'
+                assert artifact_type.name == 'Email Address'
                 assert artifact_type.description.startswith('A name that identifies')
                 assert artifact_type.data_type == 'String'
                 assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -109,7 +109,7 @@ class TestArtifactType(TestCaseManagement):
         )
 
         for artifact_type in artifact_types:
-            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.name == 'Email Address'
             assert artifact_type.description.startswith('A name that identifies')
             assert artifact_type.data_type == 'String'
             assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -123,7 +123,7 @@ class TestArtifactType(TestCaseManagement):
         artifact_types.filter.id(TQL.Operator.EQ, 1)
 
         for artifact_type in artifact_types:
-            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.name == 'Email Address'
             assert artifact_type.description.startswith('A name that identifies')
             assert artifact_type.data_type == 'String'
             assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -137,7 +137,7 @@ class TestArtifactType(TestCaseManagement):
         artifact_types.filter.intel_type(TQL.Operator.EQ, 'indicator-EmailAddress')
 
         for artifact_type in artifact_types:
-            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.name == 'Email Address'
             assert artifact_type.description.startswith('A name that identifies')
             assert artifact_type.data_type == 'String'
             assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -152,7 +152,7 @@ class TestArtifactType(TestCaseManagement):
 
         for artifact_type in artifact_types:
             if artifact_type.id == 1:
-                assert artifact_type.name == 'E-mail Address'
+                assert artifact_type.name == 'Email Address'
                 assert artifact_type.description.startswith('A name that identifies')
                 assert artifact_type.data_type == 'String'
                 assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -163,10 +163,10 @@ class TestArtifactType(TestCaseManagement):
     def test_artifact_type_get_by_tql_filter_name(self):
         """Test Artifact Type Get by TQL"""
         artifact_types = self.cm.artifact_types()
-        artifact_types.filter.name(TQL.Operator.EQ, 'E-mail Address')
+        artifact_types.filter.name(TQL.Operator.EQ, 'Email Address')
 
         for artifact_type in artifact_types:
-            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.name == 'Email Address'
             assert artifact_type.description.startswith('A name that identifies')
             assert artifact_type.data_type == 'String'
             assert artifact_type.intel_type == 'indicator-EmailAddress'
@@ -177,10 +177,10 @@ class TestArtifactType(TestCaseManagement):
     def test_artifact_type_get_by_tql_filter_tql(self):
         """Test Artifact Type Get by TQL"""
         artifact_types = self.cm.artifact_types()
-        artifact_types.filter.tql('name EQ "E-mail Address"')
+        artifact_types.filter.tql('name EQ "Email Address"')
 
         for artifact_type in artifact_types:
-            assert artifact_type.name == 'E-mail Address'
+            assert artifact_type.name == 'Email Address'
             assert artifact_type.description.startswith('A name that identifies')
             assert artifact_type.data_type == 'String'
             assert artifact_type.intel_type == 'indicator-EmailAddress'

@@ -61,9 +61,6 @@ class WorkflowTemplate(CommonCaseManagement):
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         active (bool, kwargs): [Read-Only] The **Active** flag for the Workflow Template.
-        assigned_group (UserGroup, kwargs): [Read-Only] The **Assigned Group** for the Workflow
-            Template.
-        assigned_user (User, kwargs): [Read-Only] The **Assigned User** for the Workflow Template.
         assignee (Assignee, kwargs): [Read-Only] The **Assignee** for the Workflow Template.
         cases (Case, kwargs): [Read-Only] The **Cases** for the Workflow Template.
         config_artifact (str, kwargs): [Read-Only] The **Config Artifact** for the Workflow
@@ -81,8 +78,6 @@ class WorkflowTemplate(CommonCaseManagement):
         """Initialize Class properties."""
         super().__init__(tcex, ApiEndpoints.WORKFLOW_TEMPLATES, kwargs)
         self._active = kwargs.get('active', True)
-        self._assigned_group = kwargs.get('assigned_group', None)
-        self._assigned_user = kwargs.get('assigned_user', None)
         self._assignee = kwargs.get('assignee', None)
         self._cases = kwargs.get('cases', None)
         self._config_artifact = kwargs.get('config_artifact', None)
@@ -99,16 +94,6 @@ class WorkflowTemplate(CommonCaseManagement):
         return self._active
 
     @property
-    def assigned_group(self):
-        """Return the parent **Assigned Group** flag for the Workflow Template."""
-        return self._assigned_group
-
-    @property
-    def assigned_user(self):
-        """Return the parent **Assigned User** flag for the Workflow Template."""
-        return self._assigned_user
-
-    @property
     def assignee(self):
         """Return the parent **Assignee** flag for the Workflow Template."""
         return self._assignee
@@ -116,8 +101,7 @@ class WorkflowTemplate(CommonCaseManagement):
     @property
     def as_entity(self):
         """Return the entity representation of the Workflow Event."""
-        # @bpurdy - what should this be ???
-        return {}
+        return {'type': 'Workflow Template', 'value': self.name, 'id': self.id}
 
     @property
     def cases(self):

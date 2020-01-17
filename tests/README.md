@@ -26,21 +26,22 @@ Name                                                        Stmts   Miss  Cover 
 -----------------------------------------------------------------------------------------
 tcex/case_management/__init__.py                                2      0   100%
 tcex/case_management/api_endpoints.py                          12      0   100%
-tcex/case_management/artifact.py                              146     28    81%   126, 152, 158, 168, 178, 202, 212, 231, 237, 248, 258, 264, 275, 285, 295, 313-317, 322-326, 331-335, 353
+tcex/case_management/artifact.py                              149     16    89%   241-245, 327-331, 336-340, 345-349, 367
 tcex/case_management/artifact_type.py                          50      1    98%   81
-tcex/case_management/assignee.py                               83     29    65%   29-38, 68, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 142-144, 149-153, 189
-tcex/case_management/case.py                                  190     40    79%   39, 146, 152, 160-164, 169, 175, 186, 206, 219, 232, 243, 254, 264, 274, 287, 300, 306, 312, 318, 329, 360, 374-378, 383-387, 392-396, 401-405, 432
-tcex/case_management/case_management.py                       100     47    53%   58-71, 83-100, 104-121, 147
-tcex/case_management/common_case_management.py                249     50    80%   31-44, 49, 67, 81, 172, 198, 201, 224-225, 239, 241-246, 252, 278-280, 294-295, 309, 316, 357-361, 374-375, 389, 392-393, 417-419, 427-432
-tcex/case_management/common_case_management_collection.py     173     35    80%   78, 92-96, 220, 224, 229, 249-251, 282-287, 309-312, 317, 322, 340, 345, 350, 355, 360, 365, 384-388, 394, 399
+tcex/case_management/assignee.py                               91     24    74%   29-38, 68, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 148, 160, 205
+tcex/case_management/case.py                                  192     24    88%   161, 206, 243, 314, 320, 331, 362, 376-380, 385-389, 394-398, 403-407, 434
+tcex/case_management/case_management.py                       100     46    54%   58-71, 83-100, 104-121
+tcex/case_management/common_case_management.py                249     47    81%   31-44, 49, 67, 81, 175, 204, 227-228, 242, 244-249, 255, 281-283, 297-298, 312, 319, 360-364, 392, 395-396, 420-422, 430-435
+tcex/case_management/common_case_management_collection.py     169     32    81%   88-92, 216, 220, 225, 278-283, 305-308, 313, 318, 331, 336, 341, 346, 351, 356, 361, 380-384, 390, 395
 tcex/case_management/filter.py                                 31      3    90%   34, 44, 59
-tcex/case_management/note.py                                  138     30    78%   47-51, 123, 134, 139, 163, 173, 194, 206, 217, 227, 237, 243, 254, 299-303, 308-312, 317-321, 366
-tcex/case_management/tag.py                                    73     12    84%   41, 45, 100, 106, 126, 141, 168, 173-177, 195
-tcex/case_management/task.py                                  182     22    88%   146, 159, 273, 347, 356, 374, 383, 406-410, 415-419, 424-428, 455, 491, 500
-tcex/case_management/tql.py                                   132     81    39%   33, 54-88, 111, 113-122, 163-197
-tcex/case_management/workflow_event.py                        104      2    98%   201, 298
-tcex/case_management/workflow_template.py                      80      2    98%   294, 304
+tcex/case_management/note.py                                  138     29    79%   47-51, 123, 134, 139, 163, 173, 194, 206, 217, 227, 243, 254, 299-303, 308-312, 317-321, 366
+tcex/case_management/tag.py                                    73      2    97%   41, 45
+tcex/case_management/task.py                                  181      3    98%   366, 384, 393
+tcex/case_management/tql.py                                   132     80    39%   33, 54-88, 113-122, 163-197
+tcex/case_management/workflow_event.py                        107      4    96%   210-214, 311
+tcex/case_management/workflow_template.py                      74      2    97%   278, 287
 -----------------------------------------------------------------------------------------
+TOTAL                                                        1750    313    82%
 ```
 
 ## datastore
@@ -161,19 +162,39 @@ TOTAL                        130      0   100%
 
 # Issues:
 
+
+## Artifact
+
+
+## Artifact Type
+
+
+## Case
+
+
+## Note
+
+
+## Tag
+
+
+## Common Case Management Collection
+
+* @bpurdy - [line 387-395] - remove retry logic from get and other methods
+* @bpurdy - [line 300-305] - is list_as_dict() method needed?
+
+
 ## TQL
+* @bpurdy - [line 33] supported dict checking if needed
+* @bpurdy - [line 54-88] operator.get checking if needed
+* @bpurdy - [line 163-197] type.get_operator checking if needed
 * @bpurdy - difference between get and get_operator
-
-## Task
-* @mj - is there a way to set completed by via API only
-* @mj - how does data get added to config_task
-* @mj - how does data get added to config_playbook
-
 
 ## Tasks
 
 * @mj - can completedBy be set via the API?
-* @mj - can a "actual" artifact be added to a task through the API. we can add an artifact object, but that just provides the setup to collect an artifact, not the actual artifact.
+* @mj - bug when adding artifact to task gets added to case.
+* @mj - how to add configTask via API?
 * @mj - TQL keyword configPlaybook valid?
 * @mj - TQL keyword configTask valid?
 
@@ -183,6 +204,7 @@ TOTAL                        130      0   100%
 * @mj - are we still supporting DELETE operation on workflow event? with deleted reason?
 * @mj - can a note be added to a workflow event during creation?
 * @mj - is deletedReason still a supported field.
+* @mj - is linkText used/needed or valid?
 * @bpurdy - notes method does not have tql_filter.
 * @mj - TQL keyword deletedReason valid?
 * @mj - TQL keyword link required? does not appear to be useful.
@@ -190,9 +212,23 @@ TOTAL                        130      0   100%
 
 ## Workflow Template
 
-* @bpurdy - what should as_entity be set to?
+* @mj - what is targetType field for? is this not the same as assignee type?
 * @mj - TQL keyword assignedGroupId valid?
 * @mj - TQL keyword assignedUserId valid?
+```
+        {
+            "keyword": "assignedGroupId",
+            "name": "Assigned Group ID",
+            "type": "Integer",
+            "description": "The ID of the Group assigned to this template"
+        },
+        {
+            "keyword": "assignedUserId",
+            "name": "Assigned User ID",
+            "type": "Integer",
+            "description": "The ID of the User assigned to this template"
+        },
+```
 * @mj - TQL keyword configArtifact valid?
 * @mj - TQL keyword configPlaybook valid?
 * @mj - TQL keyword configTask valid?

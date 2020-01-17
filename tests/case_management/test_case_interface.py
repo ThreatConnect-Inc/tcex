@@ -204,8 +204,8 @@ class TestCase(TestCaseManagement):
         artifact_data = {
             'source': 'artifact source',
             'file_data': f'{file_data}',
-            'summary': 'email file summary',
-            'type': 'E-mail Attachment File',
+            'summary': 'pytest test file artifact',
+            'type': 'Certificate File',
         }
         note_data = {'text': 'Note text'}
         task_data = {

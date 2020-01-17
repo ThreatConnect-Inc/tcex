@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Case Management PyTest Helper Method"""
 import inspect
+import os
 
 from ..mock_app import MockApp
 
@@ -115,14 +116,13 @@ class CMHelper:
             case.delete()
 
         # delete by tag
+        if os.getenv('TCEX_CLEAN_CM'):
+            from tcex.case_management.tql import TQL
 
-        # from tcex.case_management.tql import TQL
-
-        # cases = self.cm.cases()
-        # cases.filter.tag(TQL.Operator.EQ, 'pytest')
-        # # cases.filter.tag(TQL.Operator.EQ, 'tests.case_management.test_case_interface-1')
-        # for case in cases:
-        #     case.delete()
+            cases = self.cm.cases()
+            cases.filter.tag(TQL.Operator.EQ, 'pytest')
+            for case in cases:
+                case.delete()
 
         # delete by name starts with
 

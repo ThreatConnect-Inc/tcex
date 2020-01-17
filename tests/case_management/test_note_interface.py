@@ -106,6 +106,42 @@ class TestNote(TestCaseManagement):
         # run assertions on returned data
         assert note.text == note_data.get('text')
 
+    def test_note_create_by_artifact_id_property(self, request):
+        """Test Note Get by Id"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # create artifact
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+
+        # note data
+        note_data = {
+            'artifact_id': artifact.id,
+            'text': f'sample note for {request.node.name} test case.',
+        }
+
+        # create note
+        note = self.cm.note()
+        note.artifact_id = note_data.get('artifact_id')
+        note.artifact_text = note_data.get('artifact_text')
+        note.submit()
+
+        # get single note by id
+        note = self.cm.note(id=note.id)
+        note.get()
+
+        # run assertions on returned data
+        assert note.text == note_data.get('text')
+
     def test_note_create_by_task_id(self, request):
         """Test Note Get by Id"""
         # create case
@@ -210,21 +246,22 @@ class TestNote(TestCaseManagement):
         # run assertions on returned data
         assert note.text == note_data.get('text')
 
-    def test_get_single_by_id_properties(self, request):
+    def test_note_get_single_by_id_properties(self, request):
         """Test Note get single properties"""
         case = self.cm_helper.create_case()
-        # task data
 
         file_data = (
             'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
         )
+
         # artifact data
         artifact_data = {
             'source': 'artifact source',
             'file_data': f'{file_data}',
-            'summary': 'email file summary',
-            'type': 'E-mail Attachment File',
+            'summary': 'pytest test file artifact',
+            'type': 'Certificate File',
         }
+
         # task data
         task_data = {
             'description': f'a description from {request.node.name}',
@@ -232,6 +269,7 @@ class TestNote(TestCaseManagement):
             'name': f'name-{request.node.name}',
             'status': 'Open',
         }
+
         # workflow event data
         workflow_event_data = {
             'case_id': case.id,
@@ -239,25 +277,48 @@ class TestNote(TestCaseManagement):
         }
         # tag data
         tag_data = {'name': f'tag-{request.node.name}'}
-        # add note
-        note_data = {'text': f'note_text - {request.node.name}'}
 
-        event = self.cm.workflow_event(**workflow_event_data)
-        event.submit()
+        # add note
+        note_data = {
+            'case_id': case.id,
+            'case_xid': case.xid,
+            'text': f'note_text - {request.node.name}',
+        }
+
+        # create workflow event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
         case.add_artifact(**artifact_data)
         case.add_task(**task_data)
         case.add_tag(**tag_data)
-        note = self.cm.note(**note_data)
+
+        # create note
+        note = self.cm.note()
+        note.case_id = note_data.get('case_id')
+        note.case_xid = note_data.get('case_xid')
+        note.text = note_data.get('text')
+
         # add properties
         note.text = note_data.get('text')
         case.add_note(**note_data)
         case.submit()
+
         # make sure all objects were added
         assert len(case.notes) == 1
         assert len(case.artifacts) == 1
         assert len(case.tasks) == 1
         for note in case.notes:
             assert note.summary == note_data.get('text')
+        assert note.case_xid == case.xid
+
+        # read-only
+        assert note.author == os.getenv('API_ACCESS_ID')
+        assert note.edited is False
+
+        # test as_entity
+        assert note.as_entity.get('id') == note.id
+
         # test adding note to artifact
         # for artifact in case.artifacts:
         #     assert len(artifact.notes) == 0

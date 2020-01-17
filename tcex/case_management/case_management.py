@@ -52,11 +52,9 @@ class CaseManagement:
         return Cases(self.tcex, **kwargs)
 
     def create_entity(self, entity, owner):
-        """
-        Creates a CM object provided a dict and owner.
-        """
+        """Create a CM object provided a dict and owner."""
         entity_type = entity.get('type').lower()
-        obj = self.obj_from_entity(entity)
+        obj = getattr(self, entity_type)
         if obj is None:
             return None
 
@@ -77,48 +75,6 @@ class CaseManagement:
     def notes(self, **kwargs):
         """Return a instance of Notes object."""
         return Notes(self.tcex, **kwargs)
-
-    def obj_from_entity(self, entity):
-        """Return a instance of the appropriate object populated."""
-        obj = None
-        obj_type = entity.pop('type').lower()
-        if obj_type == 'tag':
-            obj = Tag(self.tcex, **entity)
-        elif obj_type == 'case':
-            obj = Case(self.tcex, **entity)
-        elif obj_type == 'note':
-            obj = Note(self.tcex, **entity)
-        elif obj_type == 'artifact':
-            obj = Artifact(self.tcex, **entity)
-        elif obj_type == 'task':
-            obj = Task(self.tcex, **entity)
-        elif obj_type in ['workflow_event', 'workflowevent', 'workflow event']:
-            obj = WorkflowEvent(self.tcex, **entity)
-        elif obj_type in ['workflow_template', 'workflowtemplate', 'workflow template']:
-            obj = WorkflowTemplate(self.tcex, **entity)
-
-        return obj
-
-    def obj_from_type(self, obj_type):
-        """Return a instance of the appropriate object for the given type."""
-        obj_type = obj_type.lower()
-        cm = None
-        if obj_type == 'tag':
-            cm = Tag(self.tcex, **{})
-        elif obj_type == 'case':
-            cm = Case(self.tcex, **{})
-        elif obj_type == 'note':
-            cm = Note(self.tcex, **{})
-        elif obj_type == 'artifact':
-            cm = Artifact(self.tcex, **{})
-        elif obj_type == 'task':
-            cm = Task(self.tcex, **{})
-        elif obj_type in ['workflow_event', 'workflowevent', 'workflow event']:
-            cm = WorkflowEvent(self.tcex, **{})
-        elif obj_type in ['workflow_template', 'workflowtemplate', 'workflow template']:
-            cm = WorkflowTemplate(self.tcex, **{})
-
-        return cm
 
     def tag(self, **kwargs):
         """Return a instance of Tag object."""

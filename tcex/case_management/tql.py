@@ -106,22 +106,22 @@ class TQL:
         filters = []
         for tql_filter in self.filters:
             value = tql_filter.get('value')
-            keyword = tql_filter.get('keyword')
+            # keyword = tql_filter.get('keyword')
             if isinstance(value, Filter):
                 filters.append(f"{tql_filter.get('keyword')}({value._tql.as_str})")
-            elif keyword.startswith('has'):
-                values = value
-                if not isinstance(value, list):
-                    values = [value]
-                if tql_filter.get('type') == self.Type.STRING:
-                    values = [f'"{value}"' for value in values]
-                # value = f"({','.join(values)})"
-                value = f"({','.join([str(v) for v in values])})"
-                if tql_filter.get('type') == self.Type.STRING:
-                    value = f'"{value}"'
-                filters.append(
-                    f"{tql_filter.get('keyword')} {tql_filter.get('operator').name} {value}"
-                )
+            # elif keyword.startswith('has'):
+            #     values = value
+            #     if not isinstance(value, list):
+            #         values = [value]
+            #     if tql_filter.get('type') == self.Type.STRING:
+            #         values = [f'"{value}"' for value in values]
+            #     # value = f"({','.join(values)})"
+            #     value = f"({','.join([str(v) for v in values])})"
+            #     if tql_filter.get('type') == self.Type.STRING:
+            #         value = f'"{value}"'
+            #     filters.append(
+            #         f"{tql_filter.get('keyword')} {tql_filter.get('operator').name} {value}"
+            #     )
             else:
                 if tql_filter.get('type') == self.Type.STRING:
                     value = f'"{value}"'

@@ -45,7 +45,8 @@ class CommonCaseManagement:
 
     def _camel_case_key(self, key):
         """Map key to it's appropriate Core/Test value."""
-        if key in ['staged_artifact_type', 'stagedArtifactType']:
+        if key in ['staged_artifact_type', 'stagedArtifactType']:  # pragma: no cover
+            # used in testing when staging data
             return 'type'
         return self.tcex.utils.camel_to_snake(key)
 
@@ -170,7 +171,7 @@ class CommonCaseManagement:
             kwargs[self._camel_case_key(key)] = kwargs.pop(key)
 
     @property
-    def as_entity(self):
+    def as_entity(self):  # pragma: no cover
         """Return the object as an entity."""
         raise NotImplementedError('Child class must implement this method.')
 
@@ -200,8 +201,11 @@ class CommonCaseManagement:
             if isinstance(value, dict) and 'data' in value and not value.get('data'):
                 continue
             as_dict[key] = value
+
+        # don't return empty dicts
         if not as_dict:
             return None
+
         return as_dict
 
     @property
@@ -223,7 +227,7 @@ class CommonCaseManagement:
 
         If no id is present in the obj then returns immediately.
         """
-        if not self.id:
+        if not self.id:  # pragma: no cover
             self.tcex.log.warning('A case without an ID cannot be deleted.')
             return None
 
@@ -238,7 +242,7 @@ class CommonCaseManagement:
             )
             if len(r.content) < 5000:
                 self.tcex.log.debug(u'response text: {}'.format(r.text))
-            else:
+            else:  # pragma: no cover
                 self.tcex.log.debug(u'response text: (text to large to log)')
             if not self.success(r):
                 current_retries += 1
@@ -250,7 +254,7 @@ class CommonCaseManagement:
             break
         return None
 
-    def entity_mapper(self, entity):
+    def entity_mapper(self, entity):  # pragma: no cover
         """Stub for entity mapper"""
         raise NotImplementedError('Child class must implement this method.')
 
@@ -293,7 +297,7 @@ class CommonCaseManagement:
             for field in self.available_fields:
                 params['fields'].append(field)
 
-        if not cm_id:
+        if not cm_id:  # pragma: no cover
             message = '{"message": "No ID provided.", "status": "Error"}'
             self.tcex.handle_error(951, ['GET', '404', message, url])
 
@@ -308,7 +312,7 @@ class CommonCaseManagement:
             )
             if len(r.content) < 5000:
                 self.tcex.log.debug(u'response text: {}'.format(r.text))
-            else:
+            else:  # pragma: no cover
                 self.tcex.log.debug(u'response text: (text to large to log)')
             if not self.success(r):
                 current_retries += 1
@@ -388,10 +392,10 @@ class CommonCaseManagement:
         self.tcex.log.debug(f'body: {self._reverse_transform(as_dict)}')
         if len(r.content) < 5000:
             self.tcex.log.debug(u'response text: {}'.format(r.text))
-        else:
+        else:  # pragma: no cover
             self.tcex.log.debug(u'response text: (text to large to log)')
 
-        if not r.ok:
+        if not self.success(r):  # pragma: no cover
             err = r.text or r.reason
             self.tcex.handle_error(951, [r.request.method, r.status_code, err, r.url])
 
@@ -416,20 +420,10 @@ class CommonCaseManagement:
         status = True
         if r.ok:
             try:
-                if r.json().get('status') != 'Success':
+                if r.json().get('status') != 'Success':  # pragma: no cover
                     status = False
-            except Exception:
+            except Exception:  # pragma: no cover
                 status = False
         else:
             status = False
         return status
-
-    @property
-    def tql(self):
-        """Return TQL data keywords."""
-        if self._tql is None:
-            r = self.tcex.session.options(f'{self.api_endpoint}/tql', params={})
-            if r.ok:
-                self._tql = r.json()['data']
-
-        return self._tql

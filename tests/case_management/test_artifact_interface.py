@@ -71,6 +71,7 @@ class TestArtifact(TestCaseManagement):
         artifact.get()
 
         # run assertions on returned data
+        assert artifact.required_properties  # coverage: required_properties
         assert artifact.intel_type == artifact_data.get('intel_type')
         assert artifact.summary == artifact_data.get('summary')
         assert artifact.type == artifact_data.get('type')
@@ -178,9 +179,10 @@ class TestArtifact(TestCaseManagement):
 
         # get single artifact by id
         artifact = self.cm.artifact(id=artifact.id)
-        artifact.get()
+        artifact.get(params={'result_limit': 10})
 
         # run assertions on returned data
+        assert str(artifact)  # coverage: __str__ method
         assert artifact.intel_type == artifact_data.get('intel_type')
         assert artifact.summary == artifact_data.get('summary')
         assert artifact.type == artifact_data.get('type')
@@ -211,8 +213,8 @@ class TestArtifact(TestCaseManagement):
             'task_xid': task.xid,
             'source': 'artifact source',
             'file_data': f'{file_data}',
-            'summary': 'email file summary',
-            'type': 'E-mail Attachment File',
+            'summary': 'pytest test file artifact',
+            'type': 'Certificate File',
             'note_text': 'artifact note text',
         }
 
@@ -282,8 +284,8 @@ class TestArtifact(TestCaseManagement):
             'case_xid': case.xid,
             'source': 'artifact source',
             'file_data': f'{file_data}',
-            'summary': 'email file summary',
-            'type': 'E-mail Attachment File',
+            'summary': 'pytest test file artifact',
+            'type': 'Certificate File',
             'note_text': 'artifact note text',
         }
 
@@ -525,9 +527,23 @@ class TestArtifact(TestCaseManagement):
         artifacts.filter.case_id(TQL.Operator.EQ, case.id)
         artifacts.filter.type_name(TQL.Operator.EQ, artifact_data.get('type'))
 
+        assert str(artifacts)  # coverage: __str__ method
         for artifact in artifacts:
             assert artifact.summary == artifact_data.get('summary')
             assert artifact.type == artifact_data.get('type')
             break
         else:
             assert False, 'No artifact returned for TQL'
+
+    def test_artifact_get_by_tql_filter_fail_tql(self):
+        """Test Artifact Get by TQL"""
+        # retrieve artifacts using TQL
+        artifacts = self.cm.artifacts()
+        artifacts.filter.tql('Invalid TQL')
+
+        try:
+            for artifact in artifacts:  # pylint: disable=unused-variable
+                pass
+            assert False, 'TQL should have failed'
+        except Exception:
+            pass
