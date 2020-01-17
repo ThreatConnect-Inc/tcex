@@ -597,6 +597,18 @@ class TestNote(TestCaseManagement):
         else:
             assert False, 'No notes returned for TQL'
 
+    def test_note_create_entity(self, request):
+        """Test Artifact Get by TQL"""
+        # retrieve artifacts using TQL
+        case = self.cm_helper.create_case()
+        note_entity = {
+            'type': 'Note',
+            'case_id': case.id,
+            'text': f'sample note for {request.node.name} test case.',
+        }
+        data = self.cm.create_entity(note_entity, os.getenv('API_DEFAULT_ORG'))
+        assert data.get('text') == note_entity.get('text')
+
     # TODO: update this
     def test_note_get_by_tql_filter_workflow_event_id(self):
         """Test Note Get by TQL"""
