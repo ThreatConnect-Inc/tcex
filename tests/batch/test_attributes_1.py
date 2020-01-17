@@ -3,7 +3,7 @@
 import pytest
 
 
-class TestTags1:
+class TestAttributes:
     """Test the TcEx Batch Module."""
 
     @pytest.mark.parametrize(

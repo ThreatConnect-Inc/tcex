@@ -158,3 +158,42 @@ tcex/utils/utils.py           41      0   100%
 --------------------------------------------------------
 TOTAL                        130      0   100%
 ```
+
+# Issues:
+
+## TQL
+* @bpurdy - difference between get and get_operator
+
+## Task
+* @mj - is there a way to set completed by via API only
+* @mj - how does data get added to config_task
+* @mj - how does data get added to config_playbook
+
+
+## Tasks
+
+* @mj - can completedBy be set via the API?
+* @mj - can a "actual" artifact be added to a task through the API. we can add an artifact object, but that just provides the setup to collect an artifact, not the actual artifact.
+* @mj - TQL keyword configPlaybook valid?
+* @mj - TQL keyword configTask valid?
+
+
+## Workflow Event
+
+* @mj - are we still supporting DELETE operation on workflow event? with deleted reason?
+* @mj - can a note be added to a workflow event during creation?
+* @mj - is deletedReason still a supported field.
+* @bpurdy - notes method does not have tql_filter.
+* @mj - TQL keyword deletedReason valid?
+* @mj - TQL keyword link required? does not appear to be useful.
+* @mj - TQL keyword linkText valid?
+
+## Workflow Template
+
+* @bpurdy - what should as_entity be set to?
+* @mj - TQL keyword assignedGroupId valid?
+* @mj - TQL keyword assignedUserId valid?
+* @mj - TQL keyword configArtifact valid?
+* @mj - TQL keyword configPlaybook valid?
+* @mj - TQL keyword configTask valid?
+* @mj - TQL keyword for organizationId valid?

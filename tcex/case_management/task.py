@@ -268,7 +268,6 @@ class Task(CommonCaseManagement):
         """Return the **Notes** for the Task"""
         if self._notes is None or isinstance(self._notes, dict):
             notes = self._notes or {}
-            # @bpurdy - should this have tql_filters
             self._notes = self.tcex.cm.notes(initial_response=notes, tql_filters=self.task_filter)
         return self._notes
 
