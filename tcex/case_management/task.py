@@ -410,8 +410,9 @@ class FilterTasks(Filter):
         """
         self._tql.add_filter('dueDate', operator, due_date, TQL.Type.STRING)
 
+    # there is not way to add an **actual** artifact to a task through the API.
     @property
-    def has_artifact(self):
+    def has_artifact(self):  # pragma: no cover
         """Return **FilterArtifacts** for further filtering."""
         from .artifact import FilterArtifacts
 
