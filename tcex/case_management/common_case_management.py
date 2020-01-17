@@ -45,7 +45,7 @@ class CommonCaseManagement:
 
     def _camel_case_key(self, key):
         """Map key to it's appropriate Core/Test value."""
-        if key in ['artifact_type', 'artifactType']:
+        if key in ['staged_artifact_type', 'stagedArtifactType']:
             return 'type'
         return self.tcex.utils.camel_to_snake(key)
 
@@ -141,6 +141,7 @@ class CommonCaseManagement:
             'task_filter',
             'tcex',
             'tql',
+            'workflow_event_filter',
         ]
 
     def _reverse_transform(self, kwargs):

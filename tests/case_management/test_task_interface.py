@@ -345,6 +345,7 @@ class TestTask(TestCaseManagement):
         tasks = self.cm.tasks()
         tasks.filter.id(TQL.Operator.EQ, task.id)
         tasks.filter.case_severity(TQL.Operator.EQ, severity)
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
 
         for task in tasks:
             assert task.description == task_data.get('description')

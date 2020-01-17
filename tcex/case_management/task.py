@@ -101,7 +101,12 @@ class Task(CommonCaseManagement):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TASKS, kwargs)
         self.task_filter = [
-            {'keyword': 'taskId', 'operator': TQL.Operator.EQ, 'value': self.id, 'type': 'integer'}
+            {
+                'keyword': 'taskId',
+                'operator': TQL.Operator.EQ,
+                'value': self.id,
+                'type': TQL.Type.INTEGER,
+            }
         ]
 
         self._artifacts = kwargs.get('artifact', None)
@@ -139,7 +144,6 @@ class Task(CommonCaseManagement):
         """Return the **Artifacts** for the Task."""
         if self._artifacts is None or isinstance(self._artifacts, dict):
             artifacts = self._artifacts or {}
-            # @bpurdy - should this have tql_filters
             self._artifacts = self.tcex.cm.artifacts(
                 initial_response=artifacts, tql_filters=self.task_filter
             )

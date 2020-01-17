@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 import os
+from datetime import datetime, timedelta
+import time
+import random
 from tcex.case_management.tql import TQL
+from dateutil.parser import parse
 
 from .cm_helpers import CMHelper, TestCaseManagement
 
@@ -164,6 +168,110 @@ class TestCase(TestCaseManagement):
 
         # run assertions on returned data
         assert case.name == request.node.name
+
+    def test_case_get_single_by_id_properties(self, request):
+        """Test Case get single by id"""
+        # create case
+        case_data = {
+            'description': f'case description for {request.node.name}',
+            'name': f'case-{request.node.name}',
+            'resolution': random.choice(
+                [
+                    'Containment Achieved',
+                    'Deferred / Delayed',
+                    'Escalated',
+                    'False Positive',
+                    'In Progress / Investigating',
+                    'Not Specified',
+                    'Rejected',
+                    'Restoration Achieved',
+                ]
+            ),
+            'severity': random.choice(['Low', 'Medium', 'High']),
+            'status': random.choice(['Open', 'Closed']),
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+        case = self.cm.case(**case_data)
+        case.submit()
+
+        file_data = (
+            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
+        )
+        # task data
+        case.user_access.users.append(self.cm.user(user_name=os.getenv('API_ACCESS_ID')))
+        case.assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+
+        artifact_data = {
+            'source': 'artifact source',
+            'file_data': f'{file_data}',
+            'summary': 'email file summary',
+            'type': 'E-mail Attachment File',
+        }
+        note_data = {'text': 'Note text'}
+        task_data = {
+            'description': f'a description from {request.node.name}',
+            'due_date': (datetime.now() + timedelta(days=2)).isoformat(),
+            'name': f'name-{request.node.name}',
+            'status': 'Open',
+        }
+        tag_data = {'name': f'tag-{request.node.name}'}
+
+        case.add_artifact(**artifact_data)
+        case.add_note(**note_data)
+        case.add_task(**task_data)
+        case.add_tag(**tag_data)
+
+        case.submit()
+        # add properties
+
+        case.artifacts = [artifact_data]
+        case.tags = [tag_data]
+        case.notes = [note_data]
+        case.tasks = [task_data]
+        case.description = case_data.get('description')
+        case.name = case_data.get('name')
+        case.resolution = case_data.get('resolution')
+        case.severity = case_data.get('severity')
+        case.status = case_data.get('status')
+        # get task from API to use in asserts
+        case = self.cm.case(id=case.id)
+        case.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert case.description == case_data.get('description')
+        assert case.name == case_data.get('name')
+        assert case.resolution == case_data.get('resolution')
+        assert case.severity == case_data.get('severity')
+        assert case.status == case_data.get('status')
+        assert len(case.tasks) == 1
+        assert len(case.notes) == 1
+        assert len(case.tags) == 1
+        assert len(case.artifacts) == 1
+        for task in case.tasks:
+            assert task.description == task_data.get('description')
+            assert task_data.get('due_date')[:10] in task.due_date
+            assert task.name == task_data.get('name')
+            assert task.status == task_data.get('status')
+        for note in case.notes:
+            assert note.text == note_data.get('text')
+        for artifact in case.artifacts:
+            assert artifact.source == artifact_data.get('source')
+            assert artifact.summary == artifact_data.get('summary')
+            assert artifact.type == artifact_data.get('type')
+        for tag in case.tags:
+            assert tag.name == tag_data.get('name')
+        assert case.assignee.user_name == os.getenv('API_ACCESS_ID')
+        assert len(case.user_access.users) == 1
+        assert case.user_access.users[0].user_name == os.getenv('API_ACCESS_ID')
+        assert case.created_by.user_name == os.getenv('API_ACCESS_ID')
+        try:
+            parse(case.date_added)
+        except ValueError:
+            assert False, 'Invalid date added'
+        assert case.owner == os.getenv('API_DEFAULT_ORG')
+        assert case.xid == case_data.get('xid')
+
+        assert case.as_entity.get('value') == case_data.get('name')
 
     def test_case_get_many(self, request):
         """Test Case get many"""
