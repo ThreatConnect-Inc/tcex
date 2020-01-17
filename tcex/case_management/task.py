@@ -100,6 +100,14 @@ class Task(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.TASKS, kwargs)
+        self.task_filter = [
+            {
+                'keyword': 'taskId',
+                'operator': TQL.Operator.EQ,
+                'value': self.id,
+                'type': TQL.Type.INTEGER,
+            }
+        ]
 
         self._artifacts = kwargs.get('artifact', None)
         self._assignee = kwargs.get('assignee', None)
@@ -136,8 +144,9 @@ class Task(CommonCaseManagement):
         """Return the **Artifacts** for the Task."""
         if self._artifacts is None or isinstance(self._artifacts, dict):
             artifacts = self._artifacts or {}
-            # @bpurdy - should this have tql_filters
-            self._artifacts = self.tcex.cm.artifacts(initial_response=artifacts)
+            self._artifacts = self.tcex.cm.artifacts(
+                initial_response=artifacts, tql_filters=self.task_filter
+            )
         return self._artifacts
 
     @property
@@ -263,15 +272,14 @@ class Task(CommonCaseManagement):
         """Return the **Notes** for the Task"""
         if self._notes is None or isinstance(self._notes, dict):
             notes = self._notes or {}
-            # @bpurdy - should this have tql_filters
-            self._notes = self.tcex.cm.notes(initial_response=notes)
+            self._notes = self.tcex.cm.notes(initial_response=notes, tql_filters=self.task_filter)
         return self._notes
 
     @notes.setter
     def notes(self, notes):
         """Set the **Notes** for the Task"""
         if isinstance(notes, dict):
-            self._notes = self.tcex.cm.notes(initial_response=notes)
+            self._notes = self.tcex.cm.notes(initial_response=notes, tql_filters=self.task_filter)
         self._notes = notes
 
     @property

@@ -100,6 +100,14 @@ class Artifact(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.ARTIFACTS, kwargs)
+        self.artifact_filter = [
+            {
+                'keyword': 'artifactId',
+                'operator': TQL.Operator.EQ,
+                'value': self.id,
+                'type': TQL.Type.INTEGER,
+            }
+        ]
 
         self._analytics_priority = kwargs.get('analytics_priority', None)
         self._analytics_priority_level = kwargs.get('analytics_priority_level', None)
@@ -222,12 +230,18 @@ class Artifact(CommonCaseManagement):
         """Return the **Notes** for the Artifact."""
         if self._notes is None or isinstance(self._notes, dict):
             notes = self._notes or {}
-            self._notes = self.tcex.cm.notes(initial_response=notes)
+            self._notes = self.tcex.cm.notes(
+                initial_response=notes, tql_filters=self.artifact_filter
+            )
         return self._notes
 
     @notes.setter
     def notes(self, notes):
         """Set the **Notes** for the Artifact."""
+        if isinstance(notes, dict):
+            self._notes = self.tcex.cm.notes(
+                initial_response=notes, tql_filters=self.artifact_filter
+            )
         self._notes = notes
 
     @property
@@ -277,12 +291,12 @@ class Artifact(CommonCaseManagement):
     @property
     def task_xid(self):
         """Return the **Task XID** for the Artifact."""
-        return self._task_id
+        return self._task_xid
 
     @task_xid.setter
     def task_xid(self, task_xid):
         """Set the **Task XID** for the Artifact."""
-        self._task_id = task_xid
+        self._task_xid = task_xid
 
     @property
     def type(self):

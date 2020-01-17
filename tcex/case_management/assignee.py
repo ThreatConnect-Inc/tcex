@@ -137,17 +137,33 @@ class Users:
         users (list): A array of user data
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, users=None):
         """Initialize Class properties."""
-        self.user = []
-        for data in kwargs.get('data', []):
-            self.user.append(User(**data))
+        if users is None:
+            users = []
+        self._users = []
+
+        for user in users:
+            if isinstance(user, User):
+                self._users.append(user)
+            else:
+                self._users.append(User(**user))
+
+    @property
+    def users(self):
+        """Return the **Users**."""
+        return self._users
+
+    @users.setter
+    def users(self, users):
+        """Set the **Users**."""
+        self._users = users
 
     @property
     def as_dict(self):
         """Return a dict representation of the UsersData class."""
         data = []
-        for user in self.user:
+        for user in self.users:
             data.append(user.as_dict)
 
         return {'data': data}

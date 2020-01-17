@@ -4,6 +4,7 @@ import os
 import time
 from random import randint
 from tcex.case_management.tql import TQL
+from dateutil.parser import parse
 
 from .cm_helpers import CMHelper, TestCaseManagement
 
@@ -183,6 +184,160 @@ class TestArtifact(TestCaseManagement):
         assert artifact.intel_type == artifact_data.get('intel_type')
         assert artifact.summary == artifact_data.get('summary')
         assert artifact.type == artifact_data.get('type')
+
+    def test_artifact_task_get_single_by_id_properties(self, request):
+        """Test Artifact get single attached to task by id"""
+        case = self.cm_helper.create_case()
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'workflow_phase': 0,
+            'workflow_step': 1,
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        file_data = (
+            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
+        )
+        # task data
+        artifact_data = {
+            'task_id': task.id,
+            'task_xid': task.xid,
+            'source': 'artifact source',
+            'file_data': f'{file_data}',
+            'summary': 'email file summary',
+            'type': 'E-mail Attachment File',
+            'note_text': 'artifact note text',
+        }
+
+        # create task
+        artifact = self.cm.artifact()
+
+        # add properties
+        artifact.task_id = artifact_data.get('task_id')
+        artifact.task_xid = artifact_data.get('task_xid')
+        artifact.file_data = artifact_data.get('file_data')
+        artifact.source = artifact_data.get('source')
+        artifact.summary = artifact_data.get('summary')
+        artifact.intel_type = artifact_data.get('intel_type')
+        artifact.type = artifact_data.get('type')
+
+        # add note
+        note_data = {'text': artifact_data.get('note_text')}
+        artifact.add_note(**note_data)
+
+        artifact.submit()
+
+        # get task from API to use in asserts
+        artifact = self.cm.artifact(id=artifact.id)
+        artifact.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert artifact.case_id == case.id
+        assert artifact.case_xid == case.xid
+        assert artifact.file_data == file_data
+        assert artifact.source == artifact_data.get('source')
+        assert artifact.summary == artifact_data.get('summary')
+        assert artifact.task.name == task.name
+        assert artifact.task_id == task.id
+        assert artifact.task_xid == task.xid
+        assert artifact.intel_type is None
+        assert artifact.type == artifact_data.get('type')
+        for note in artifact.notes:
+            if note.text == artifact_data.get('note_text'):
+                break
+            assert False, 'Note not found'
+
+        # assert read-only data
+        assert artifact.analytics_priority_level is None
+        assert artifact.analytics_score is None
+        assert artifact.analytics_type is None
+        assert artifact.artifact_type.name == artifact_data.get('type')
+        try:
+            parse(artifact.date_added)
+        except ValueError:
+            assert False, 'Invalid date added'
+        assert artifact.parent_case.id == case.id
+
+        # test as_entity
+        assert artifact.as_entity.get('value') == artifact_data.get('summary')
+
+    def test_artifact_case_get_single_by_id_properties(self):
+        """Test Artifact get single attached to case by id"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        file_data = (
+            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
+        )
+        # task data
+        artifact_data = {
+            'case_id': case.id,
+            'case_xid': case.xid,
+            'source': 'artifact source',
+            'file_data': f'{file_data}',
+            'summary': 'email file summary',
+            'type': 'E-mail Attachment File',
+            'note_text': 'artifact note text',
+        }
+
+        # create task
+        artifact = self.cm.artifact()
+
+        # add properties
+        artifact.case_id = artifact_data.get('case_id')
+        artifact.case_xid = artifact_data.get('case_xid')
+        artifact.file_data = artifact_data.get('file_data')
+        artifact.source = artifact_data.get('source')
+        artifact.summary = artifact_data.get('summary')
+        artifact.intel_type = artifact_data.get('intel_type')
+        artifact.type = artifact_data.get('type')
+
+        # add note
+        note_data = {'text': artifact_data.get('note_text')}
+        artifact.add_note(**note_data)
+
+        artifact.submit()
+
+        # get task from API to use in asserts
+        artifact = self.cm.artifact(id=artifact.id)
+        artifact.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert artifact.case_id == artifact_data.get('case_id')
+        assert artifact.case_xid == artifact_data.get('case_xid')
+        assert artifact.file_data == file_data
+        assert artifact.source == artifact_data.get('source')
+        assert artifact.summary == artifact_data.get('summary')
+        assert artifact.task is None
+        assert artifact.task_id is None
+        assert artifact.task_xid is None
+        assert artifact.intel_type is None
+        assert artifact.type == artifact_data.get('type')
+        for note in artifact.notes:
+            if note.text == artifact_data.get('note_text'):
+                break
+            assert False, 'Note not found'
+
+        # assert read-only data
+        assert artifact.analytics_priority_level is None
+        assert artifact.analytics_score is None
+        assert artifact.analytics_type is None
+        assert artifact.artifact_type.name == artifact_data.get('type')
+        try:
+            parse(artifact.date_added)
+        except ValueError:
+            assert False, 'Invalid date added'
+        assert artifact.parent_case.id == case.id
+
+        # test as_entity
+        assert artifact.as_entity.get('value') == artifact_data.get('summary')
 
     def test_artifact_get_by_tql_filter_case_id(self):
         """Test Artifact Get by TQL"""

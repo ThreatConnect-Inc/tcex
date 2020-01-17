@@ -302,8 +302,10 @@ class Case(CommonCaseManagement):
     @property
     def user_access(self):
         """Return the **User Access** for the Case."""
-        if self._user_access:
-            return self.tcex.cm.users(**self._user_access)
+        if self._user_access is None:
+            self._user_access = self.tcex.cm.users()
+        elif isinstance(self._user_access, dict):
+            self._user_access = self.tcex.cm.users(users=self._user_access.get('data', []))
         return self._user_access
 
     @user_access.setter

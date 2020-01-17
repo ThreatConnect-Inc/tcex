@@ -81,6 +81,14 @@ class WorkflowEvent(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
         super().__init__(tcex, ApiEndpoints.WORKFLOW_EVENTS, kwargs)
+        self.workflow_event_filter = [
+            {
+                'keyword': 'workflowEventId',
+                'operator': TQL.Operator.EQ,
+                'value': self.id,
+                'type': TQL.Type.INTEGER,
+            }
+        ]
         self._case_id = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get('id', None)
         self._case_xid = kwargs.get('case_xid', None) or kwargs.get('parent_case', {}).get(
             'xid', None
@@ -191,13 +199,18 @@ class WorkflowEvent(CommonCaseManagement):
         """Return the **Notes** for the Task"""
         if self._notes is None or isinstance(self._notes, dict):
             notes = self._notes or {}
-            # @bpurdy - should this have tql_filters
-            self._notes = self.tcex.cm.notes(initial_response=notes)
+            self._notes = self.tcex.cm.notes(
+                initial_response=notes, tql_filters=self.workflow_event_filter
+            )
         return self._notes
 
     @notes.setter
     def notes(self, notes):
         """Set the **Notes** for the Task"""
+        if isinstance(notes, dict):
+            self._notes = self.tcex.cm.notes(
+                initial_response=notes, tql_filters=self.workflow_event_filter
+            )
         self._notes = notes
 
     @property
