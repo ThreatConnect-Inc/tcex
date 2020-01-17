@@ -184,6 +184,7 @@ class TestArtifactType(TestCaseManagement):
             assert artifact_type.description.startswith('A name that identifies')
             assert artifact_type.data_type == 'String'
             assert artifact_type.intel_type == 'indicator-EmailAddress'
+            assert artifact_type.as_entity.get('value') == 'Email Address'
             break
         else:
             assert False, 'No artifact type returned for TQL'

@@ -274,6 +274,7 @@ class FilterWorkflowEvents(Filter):
         self._tql.add_filter('deleted', operator, deleted, TQL.Type.BOOLEAN)
 
     # TODO: @mj - confirm the status of these fields
+    # Response: https://threatconnect.slack.com/archives/GS2NQL5SP/p1579282668019800
     def deleted_reason(self, operator, deleted_reason):  # pragma: no cover
         """Filter Workflow Events based on **deletedReason** keyword.
 
@@ -300,25 +301,6 @@ class FilterWorkflowEvents(Filter):
             id (int): The ID of the event.
         """
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
-
-    def link(self, operator, link):
-        """Filter Workflow Events based on **link** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            link (str): The item this event pertains to, in format <type>:<id>.
-        """
-        self._tql.add_filter('link', operator, link, TQL.Type.STRING)
-
-    # TODO: @mj - confirm the status of these fields
-    def link_text(self, operator, link_text):  # pragma: no cover
-        """Filter Workflow Events based on **linkText** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            link_text (str): The displayed text for the link to the item this event pertains to.
-        """
-        self._tql.add_filter('linkText', operator, link_text, TQL.Type.STRING)
 
     def summary(self, operator, summary):
         """Filter Workflow Events based on **summary** keyword.

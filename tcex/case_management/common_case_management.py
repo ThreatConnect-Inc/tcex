@@ -148,9 +148,9 @@ class CommonCaseManagement:
     def _reverse_transform(self, kwargs):
         """Reverse mapping of the _metadata_map method."""
 
-        def reverse_transform(kwargs):
+        def reverse_transform(current_kwargs):
             reversed_mappings = {}
-            for key, value in kwargs.items():
+            for key, value in current_kwargs.items():
                 if isinstance(value, dict):
                     value = reverse_transform(value)
                 elif isinstance(value, list):
@@ -222,43 +222,36 @@ class CommonCaseManagement:
                 self._fields = r.json()['data']
         return self._fields
 
-    def delete(self, retry_count=0):
+    def delete(self):
         """Delete the Case Management Object.
 
         If no id is present in the obj then returns immediately.
         """
         if not self.id:  # pragma: no cover
             self.tcex.log.warning('A case without an ID cannot be deleted.')
-            return None
+            return
 
         url = f'{self.api_endpoint}/{self.id}'
-        current_retries = -1
-        while current_retries < retry_count:
-            r = self.tcex.session.delete(url)
-            self.tcex.log.debug(
-                f'Method: ({r.request.method.upper()}), '
-                f'Status Code: {r.status_code}, '
-                f'URl: ({r.url})'
-            )
-            if len(r.content) < 5000:
-                self.tcex.log.debug(u'response text: {}'.format(r.text))
-            else:  # pragma: no cover
-                self.tcex.log.debug(u'response text: (text to large to log)')
-            if not self.success(r):
-                current_retries += 1
-                if current_retries >= retry_count:
-                    err = r.text or r.reason
-                    self.tcex.handle_error(950, [r.status_code, err, r.url])
-                else:
-                    continue
-            break
-        return None
+        r = self.tcex.session.delete(url)
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Status Code: {r.status_code}, '
+            f'URl: ({r.url})'
+        )
+        if len(r.content) < 5000:
+            self.tcex.log.debug(u'response text: {}'.format(r.text))
+        else:  # pragma: no cover
+            self.tcex.log.debug(u'response text: (text to large to log)')
+        if not self.success(r):
+            err = r.text or r.reason
+            self.tcex.handle_error(950, [r.status_code, err, r.url])
+        return
 
     def entity_mapper(self, entity):  # pragma: no cover
         """Stub for entity mapper"""
         raise NotImplementedError('Child class must implement this method.')
 
-    def get(self, all_available_fields=False, case_management_id=None, retry_count=0, params=None):
+    def get(self, all_available_fields=False, case_management_id=None, params=None):
         """Get the Case Management Object.
 
         params example: {
@@ -288,8 +281,6 @@ class CommonCaseManagement:
 
         cm_id = case_management_id or self.id
         url = f'{self.api_endpoint}/{cm_id}'
-        current_retries = -1
-        entity = None
 
         # add fields parameter if provided
         if all_available_fields:
@@ -301,29 +292,20 @@ class CommonCaseManagement:
             message = '{"message": "No ID provided.", "status": "Error"}'
             self.tcex.handle_error(951, ['GET', '404', message, url])
 
-        # @bpurdy - what is the retry count for? tcex session has built-in retry
-        r = None
-        while current_retries < retry_count:
-            r = self.tcex.session.get(url, params=params)
-            self.tcex.log.debug(
-                f'Method: ({r.request.method.upper()}), '
-                f'Status Code: {r.status_code}, '
-                f'URl: ({r.url})'
-            )
-            if len(r.content) < 5000:
-                self.tcex.log.debug(u'response text: {}'.format(r.text))
-            else:  # pragma: no cover
-                self.tcex.log.debug(u'response text: (text to large to log)')
-            if not self.success(r):
-                current_retries += 1
-                if current_retries >= retry_count:
-                    err = r.text or r.reason
-                    self.tcex.handle_error(951, ['GET', r.status_code, err, r.url])
-                else:
-                    continue
-            entity = r.json()
-            break
-        self.entity_mapper(entity.get('data', {}))
+        r = self.tcex.session.get(url, params=params)
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Status Code: {r.status_code}, '
+            f'URl: ({r.url})'
+        )
+        if len(r.content) < 5000:
+            self.tcex.log.debug(u'response text: {}'.format(r.text))
+        else:  # pragma: no cover
+            self.tcex.log.debug(u'response text: (text to large to log)')
+        if not self.success(r):
+            err = r.text or r.reason
+            self.tcex.handle_error(951, ['GET', r.status_code, err, r.url])
+        self.entity_mapper(r.json().get('data', {}))
         return r
 
     @property
@@ -409,13 +391,13 @@ class CommonCaseManagement:
 
     @staticmethod
     def success(r):
-        """[summary]
+        """Validate the response is valid.
 
         Args:
-            r:
+            r (requests.response): The response object.
 
-        Return:
-
+        Returns:
+            bool: True if status is "ok"
         """
         status = True
         if r.ok:

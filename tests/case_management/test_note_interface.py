@@ -246,55 +246,17 @@ class TestNote(TestCaseManagement):
         # run assertions on returned data
         assert note.text == note_data.get('text')
 
-    def test_note_get_single_by_id_properties(self, request):
-        """Test Note get single properties"""
+    def test_note_get_single_attached_to_case_by_id_properties(self, request):
+        """Test Note on a Case"""
         case = self.cm_helper.create_case()
 
-        file_data = (
-            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
-        )
-
-        # artifact data
-        artifact_data = {
-            'source': 'artifact source',
-            'file_data': f'{file_data}',
-            'summary': 'pytest test file artifact',
-            'type': 'Certificate File',
-        }
-
-        # task data
-        task_data = {
-            'description': f'a description from {request.node.name}',
-            'due_date': (datetime.now() + timedelta(days=2)).isoformat(),
-            'name': f'name-{request.node.name}',
-            'status': 'Open',
-        }
-
-        # workflow event data
-        workflow_event_data = {
-            'case_id': case.id,
-            'summary': request.node.name,
-        }
-        # tag data
-        tag_data = {'name': f'tag-{request.node.name}'}
-
-        # add note
+        # note data
         note_data = {
             'case_id': case.id,
             'case_xid': case.xid,
             'text': f'note_text - {request.node.name}',
         }
-
-        # create workflow event
-        workflow_event = self.cm.workflow_event(**workflow_event_data)
-        workflow_event.submit()
-
-        case.add_artifact(**artifact_data)
-        case.add_task(**task_data)
-        case.add_tag(**tag_data)
-
-        # create note
-        note = self.cm.note()
+        note = self.cm.note(**note_data)
         note.case_id = note_data.get('case_id')
         note.case_xid = note_data.get('case_xid')
         note.text = note_data.get('text')
@@ -306,8 +268,6 @@ class TestNote(TestCaseManagement):
 
         # make sure all objects were added
         assert len(case.notes) == 1
-        assert len(case.artifacts) == 1
-        assert len(case.tasks) == 1
         for note in case.notes:
             assert note.summary == note_data.get('text')
         assert note.case_xid is None  # Case Xid is not returned
@@ -319,28 +279,89 @@ class TestNote(TestCaseManagement):
         # test as_entity
         assert note.as_entity.get('id') == note.id
 
-        # test adding note to artifact
-        # for artifact in case.artifacts:
-        #     assert len(artifact.notes) == 0
-        #     artifact.add_note(**note_data)
-        #     assert len(artifact.notes) == 1
-        #     for note in artifact.notes:
-        #         assert note.summary == note_data.get('text')
-        # test adding note to tasks
-        # for task in case.tasks:
-        #     assert len(task.notes) == 0
-        #     task.add_note(**note_data)
-        #     task.submit()
-        #     assert len(task.notes) == 1
-        #     for note in task.notes:
-        #         assert note.summary == note_data.get('text')
-        # test adding note to workflow events
-        # assert len(event.notes) == 0
-        # event.add_note(**note_data)
-        # event.submit()
-        # assert len(event.notes) == 1
-        # for note in event.notes:
-        #     assert note.summary == note_data.get('text')
+    def test_note_get_single_attached_to_task_by_id_properties(self, request):
+        """Test Note on a Task"""
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'due_date': (datetime.now() + timedelta(days=2)).isoformat(),
+            'name': f'name-{request.node.name}',
+            'status': 'Open',
+        }
+        task = self.cm.task(**task_data)
+        task.submit()
+        # note data
+        note_data = {
+            'task_id': task.id,
+            'task_xid': task.xid,
+            'text': f'note_text - {request.node.name}',
+        }
+        note = self.cm.note(**note_data)
+        note.submit()
+        task.get(all_available_fields=True)
+        assert len(task.notes) == 1
+        for note in task.notes:
+            assert note.summary == note_data.get('text')
+
+    def test_note_get_single_attached_to_artifact_by_id_properties(self, request):
+        """Test Note on a Artifact"""
+        case = self.cm_helper.create_case()
+
+        file_data = (
+            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
+        )
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'source': 'artifact source',
+            'file_data': f'{file_data}',
+            'summary': 'pytest test file artifact',
+            'type': 'Certificate File',
+        }
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+        # note data
+        note_data = {
+            'artifact_id': artifact.id,
+            'text': f'note_text - {request.node.name}',
+        }
+
+        note = self.cm.note(**note_data)
+        note.submit()
+        artifact.get(all_available_fields=True)
+        assert len(artifact.notes) == 1
+        for note in artifact.notes:
+            assert note.summary == note_data.get('text')
+
+    def test_note_get_single_attached_to_wf_event_by_id_properties(self, request):
+        """Test Note on a Workflow Event"""
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': 'pytest test workflow event',
+        }
+
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # note data
+        note_data = {
+            'workflow_event_id': workflow_event.id,
+            'text': f'note_text - {request.node.name}',
+        }
+
+        note = self.cm.note(**note_data)
+        note.submit()
+        workflow_event.get(all_available_fields=True)
+        assert len(workflow_event.notes) == 1
+        for note in workflow_event.notes:
+            assert note.summary == note_data.get('text')
 
     def test_note_get_by_tql_filter_artifact_id(self, request):
         """Test Note Get by TQL"""

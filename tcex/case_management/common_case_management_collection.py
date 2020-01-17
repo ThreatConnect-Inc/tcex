@@ -18,11 +18,6 @@ class CommonCaseManagementCollection:
         tcex ([type]): [description]
         api_endpoint ([type]): [description]
         tql_filters ([type], optional): [description]. Defaults to None.
-        page_size (int, optional): [description]. Defaults to 1000.
-        next_url ([type], optional): [description]. Defaults to None.
-        previous_url ([type], optional): [description]. Defaults to None.
-        retry_count (int, optional): [description]. Defaults to 5.
-        timeout (int, optional): [description]. Defaults to 1000.
         initial_response ([type], optional): [description]. Defaults to None.
         params(dict, optional): Dict of the params to be sent while
                     retrieving the Case Management objects.
@@ -51,13 +46,13 @@ class CommonCaseManagementCollection:
     def __len__(self):
         """Return the length of the collection."""
         parameters = self.params
+        parameters['result_limit'] = 1
         tql_string = self.tql.raw_tql
         if not self.tql.raw_tql:
             self.tql.filters = self._tql_filters + self.tql.filters
             tql_string = self.tql.as_str
         if tql_string:
             parameters['tql'] = tql_string
-        parameters['result_limit'] = 1
 
         # convert all keys to camel case
         for k, v in list(parameters.items()):

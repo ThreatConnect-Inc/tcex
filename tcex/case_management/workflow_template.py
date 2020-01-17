@@ -77,7 +77,7 @@ class WorkflowTemplate(CommonCaseManagement):
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties."""
         super().__init__(tcex, ApiEndpoints.WORKFLOW_TEMPLATES, kwargs)
-        self._active = kwargs.get('active', True)
+        self._active = kwargs.get('active', None)
         self._assignee = kwargs.get('assignee', None)
         self._cases = kwargs.get('cases', None)
         self._config_artifact = kwargs.get('config_artifact', None)
@@ -85,7 +85,6 @@ class WorkflowTemplate(CommonCaseManagement):
         self._config_task = kwargs.get('config_task', None)
         self._description = kwargs.get('description', None)
         self._name = kwargs.get('name', None)
-        self._target_type = kwargs.get('target_type', None)
         self._version = kwargs.get('version', None)
 
     @property
@@ -153,11 +152,6 @@ class WorkflowTemplate(CommonCaseManagement):
         self._name = name
 
     @property
-    def target_type(self):
-        """Return the parent **Target Type** for the Workflow Template."""
-        return True
-
-    @property
     def version(self):
         """Return the parent **Version** for the Workflow Template."""
         return self._version
@@ -179,56 +173,6 @@ class FilterWorkflowTemplates(Filter):
             active (bool): The active status of this template.
         """
         self._tql.add_filter('active', operator, active, TQL.Type.BOOLEAN)
-
-    # TODO: @mj - checking to see if this is still valid
-    def assigned_group_id(self, operator, assigned_group_id):  # pragma: no cover
-        """Filter Workflow Templates based on **assignedGroupId** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            assigned_group_id (int): The ID of the Group assigned to this template.
-        """
-        self._tql.add_filter('assignedGroupId', operator, assigned_group_id, TQL.Type.INTEGER)
-
-    # TODO: @mj - checking to see if this is still valid
-    def assigned_user_id(self, operator, assigned_user_id):  # pragma: no cover
-        """Filter Workflow Templates based on **assignedUserId** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            assigned_user_id (int): The ID of the User assigned to this template.
-        """
-        self._tql.add_filter('assignedUserId', operator, assigned_user_id, TQL.Type.INTEGER)
-
-    # TODO: @mj - checking to see if this is still valid
-    def config_artifact(self, operator, config_artifact):  # pragma: no cover
-        """Filter Workflow Templates based on **configArtifact** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            config_artifact (str): The artifact config information.
-        """
-        self._tql.add_filter('configArtifact', operator, config_artifact, TQL.Type.STRING)
-
-    # TODO: @mj - checking to see if this is still valid
-    def config_playbook(self, operator, config_playbook):  # pragma: no cover
-        """Filter Workflow Templates based on **configPlaybook** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            config_playbook (str): The playbook config information.
-        """
-        self._tql.add_filter('configPlaybook', operator, config_playbook, TQL.Type.STRING)
-
-    # TODO: @mj - checking to see if this is still valid
-    def config_task(self, operator, config_task):  # pragma: no cover
-        """Filter Workflow Templates based on **configTask** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            config_task (str): The task config information.
-        """
-        self._tql.add_filter('configTask', operator, config_task, TQL.Type.STRING)
 
     def description(self, operator, description):
         """Filter Workflow Templates based on **description** keyword.
@@ -256,16 +200,6 @@ class FilterWorkflowTemplates(Filter):
             name (str): The name of this template.
         """
         self._tql.add_filter('name', operator, name, TQL.Type.STRING)
-
-    # TODO: @mj - checking to see if this is still valid
-    def organization_id(self, operator, organization_id):  # pragma: no cover
-        """Filter Workflow Templates based on **organizationId** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            organization_id (int): The ID of the organization associated with this template.
-        """
-        self._tql.add_filter('organizationId', operator, organization_id, TQL.Type.INTEGER)
 
     def target_id(self, operator, target_id):
         """Filter Workflow Templates based on **targetId** keyword.

@@ -191,6 +191,15 @@ class TestCase(TestCaseManagement):
             'status': random.choice(['Open', 'Closed']),
             'xid': f'{request.node.name}-{time.time()}',
         }
+        # User data
+        user_data = {
+            'user_name': 'user name',
+            'role': 'user role',
+            'pseudonym': 'user pseudonym',
+            'last_name': 'user last name',
+            'id': 1,
+            'first_name': 'user first name',
+        }
         case = self.cm.case(**case_data)
         case.submit()
 
@@ -198,8 +207,25 @@ class TestCase(TestCaseManagement):
             'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
         )
         # task data
-        case.user_access.users.append(self.cm.user(user_name=os.getenv('API_ACCESS_ID')))
+        user = self.cm.user()
+        user.user_name = os.getenv('API_ACCESS_ID')
+        case.user_access.users.append(user)
+        case.user_access.users = [user]
         case.assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        user_2 = self.cm.user()
+        user_2.user_name = user_data.get('user_name')
+        assert user_2.user_name == user_data.get('user_name')
+        user_2.role = user_data.get('role')
+        assert user_2.role == user_data.get('role')
+        user_2.pseudonym = user_data.get('pseudonym')
+        assert user_2.pseudonym == user_data.get('pseudonym')
+        user_2.last_name = user_data.get('last_name')
+        assert user_2.last_name == user_data.get('last_name')
+        user_2.id = user_data.get('id')
+        assert user_2.id == user_data.get('id')
+        user_2.first_name = user_data.get('first_name')
+        assert user_2.first_name == user_data.get('first_name')
+        assert str(user_2)
 
         artifact_data = {
             'source': 'artifact source',

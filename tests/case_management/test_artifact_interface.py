@@ -302,8 +302,8 @@ class TestArtifact(TestCaseManagement):
         artifact.type = artifact_data.get('type')
 
         # add note
-        note_data = {'text': artifact_data.get('note_text')}
-        artifact.add_note(**note_data)
+        notes = {'data': [{'text': artifact_data.get('note_text')}]}
+        artifact.notes = notes
 
         artifact.submit()
 
@@ -368,6 +368,140 @@ class TestArtifact(TestCaseManagement):
             break
         else:
             assert False, 'No artifact returned for TQL'
+
+    def test_artifact_get_by_note_id_filter(self, request):
+        """Test Artifact Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # create artifact
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+
+        note_data = {
+            'text': f'note for artifact in {request.node.name}',
+            'artifact_id': artifact.id,
+        }
+
+        # add a note to a artifact
+        note = self.cm.note(**note_data)
+        note.submit()
+
+        artifacts = self.cm.artifacts()
+        artifacts.filter.note_id(TQL.Operator.EQ, note.id)
+        assert len(artifacts) == 1
+        for artifact in artifacts:
+            assert artifact.id == note_data.get('artifact_id')
+            assert artifact.summary == artifact_data.get('summary')
+
+    def test_artifact_get_by_has_case_filter_id(self):
+        """Test Artifact Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data_1 = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+        artifact_data_2 = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # create artifact
+        artifact_1 = self.cm.artifact(**artifact_data_1)
+        artifact_2 = self.cm.artifact(**artifact_data_2)
+        artifact_1.submit()
+        artifact_2.submit()
+
+        artifacts = self.cm.artifacts()
+        artifacts.filter.has_case.id(TQL.Operator.EQ, case.id)
+        assert len(artifacts) == 2
+        ids = [artifact_1.id, artifact_2.id]
+        summaries = [artifact_1.summary, artifact_2.summary]
+        for artifact in artifacts:
+            assert artifact.id in ids
+            assert artifact.summary in summaries
+            ids.remove(artifact.id)
+            summaries.remove(artifact.summary)
+
+    def test_artifact_get_by_has_note_filter_id(self, request):
+        """Test Artifact Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # create artifact
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+
+        note_data = {
+            'text': f'note for artifact in {request.node.name}',
+            'artifact_id': artifact.id,
+        }
+
+        # add a note to a artifact
+        note = self.cm.note(**note_data)
+        note.submit()
+
+        artifacts = self.cm.artifacts()
+        artifacts.filter.has_note.id(TQL.Operator.EQ, note.id)
+        assert len(artifacts) == 1
+        for artifact in artifacts:
+            assert artifact.id == note_data.get('artifact_id')
+            assert artifact.summary == artifact_data.get('summary')
+
+    def test_artifact_get_by_has_task_filter_id(self, request):
+        """Test Artifact Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data = {
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+        }
+        task = self.cm.task(**task_data)
+        task.add_artifact(**artifact_data)
+        task.submit()
+        task.get(all_available_fields=True)
+        artifact_id = None
+        for artifact in task.artifacts:
+            artifact_id = artifact.id
+        artifacts = self.cm.artifacts()
+        artifacts.filter.has_task.id(TQL.Operator.EQ, task.id)
+        assert len(artifacts) == 1
+        for artifact in artifacts:
+            assert artifact.id == artifact_id
+            assert artifact.summary == artifact_data.get('summary')
 
     # TODO: checking with MJ on what this should be
     def test_artifact_get_by_tql_filter_comment_id(self):

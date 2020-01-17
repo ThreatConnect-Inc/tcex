@@ -112,7 +112,7 @@ class User:
     @property
     def role(self):
         """Return the Role for the Case Creator."""
-        return self._pseudonym
+        return self._role
 
     @role.setter
     def role(self, role):
