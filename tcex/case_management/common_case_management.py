@@ -283,7 +283,7 @@ class CommonCaseManagement:
         # convert all keys to camel case
         for k, v in list(params.items()):
             del params[k]
-            k = self.tcex.util.snake_to_camel(k)
+            k = self.tcex.utils.snake_to_camel(k)
             params[k] = v
 
         cm_id = case_management_id or self.id

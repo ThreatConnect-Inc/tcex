@@ -27,66 +27,6 @@ class TQL:
         NOT_ENDS_WITH = 'NOT ENDSWITH'
         ENDS_WITH = 'ENDSWITH'
 
-        @staticmethod
-        def supported():
-            """Supported operation strings"""
-            return [
-                '=',
-                '!=',
-                '>',
-                '<',
-                '<=',
-                '>=',
-                'NOT IN',
-                'IN',
-                'NOT LIKE',
-                'LIKE',
-                'NOT CONTAINS',
-                'CONTAINS',
-                'NOT STARTSWITH',
-                'STARTSWITH',
-                'NOT ENDSWITH',
-                'ENDSWITH',
-            ]
-
-        def get(self, operator):
-            """Get Enum OBJ from string"""
-            operator = operator.upper()
-            operator_obj = None
-            if operator == '=':
-                operator_obj = self.EQ
-            elif operator == '!=':
-                operator_obj = self.NE
-            elif operator == '>':
-                operator_obj = self.GT
-            elif operator == '<':
-                operator_obj = self.LT
-            elif operator == '<=':
-                operator_obj = self.LEQ
-            elif operator == '>=':
-                operator_obj = self.GEQ
-            elif operator == 'NOT IN':
-                operator_obj = self.NOT_IN
-            elif operator == 'IN':
-                operator_obj = self.IN
-            elif operator == 'NOT LIKE':
-                operator_obj = self.NOT_LIKE
-            elif operator == 'LIKE':
-                operator_obj = self.LIKE
-            elif operator == 'NOT CONTAINS':
-                operator_obj = self.NOT_CONTAINS
-            elif operator == 'CONTAINS':
-                operator_obj = self.CONTAINS
-            elif operator in ['NOT STARTSWITH', 'NOT STARTS WITH']:
-                operator_obj = self.NOT_STARTS_WITH
-            elif operator in ['STARTSWITH', 'STARTS WITH']:
-                operator_obj = self.STARTS_WITH
-            elif operator in ['NOT ENDSWITH', 'NOT ENDS WITH']:
-                operator_obj = self.NOT_ENDS_WITH
-            elif operator in ['ENDSWITH', 'ENDS WITH']:
-                operator_obj = self.ENDS_WITH
-            return operator_obj
-
     class Type(Enum):
         """Enum representing available value types"""
 
@@ -157,41 +97,3 @@ class TQL:
     def set_raw_tql(self, tql):
         """Set a raw TQL filter"""
         self.raw_tql = tql
-
-    def get_operator(self, operator):
-        """Get Enum OBJ from string"""
-        operator = operator.upper()
-        operator_obj = None
-        if operator == '=':
-            operator_obj = self.Operator.EQ
-        elif operator == '!=':
-            operator_obj = self.Operator.NE
-        elif operator == '>':
-            operator_obj = self.Operator.GT
-        elif operator == '<':
-            operator_obj = self.Operator.LT
-        elif operator == '<=':
-            operator_obj = self.Operator.LEQ
-        elif operator == '>=':
-            operator_obj = self.Operator.GEQ
-        elif operator == 'NOT IN':
-            operator_obj = self.Operator.NOT_IN
-        elif operator == 'IN':
-            operator_obj = self.Operator.IN
-        elif operator == 'NOT LIKE':
-            operator_obj = self.Operator.NOT_LIKE
-        elif operator == 'LIKE':
-            operator_obj = self.Operator.LIKE
-        elif operator == 'NOT CONTAINS':
-            operator_obj = self.Operator.NOT_CONTAINS
-        elif operator == 'CONTAINS':
-            operator_obj = self.Operator.CONTAINS
-        elif operator in ['NOT STARTSWITH', 'NOT STARTS WITH']:
-            operator_obj = self.Operator.NOT_STARTS_WITH
-        elif operator in ['STARTSWITH', 'STARTS WITH']:
-            operator_obj = self.Operator.STARTS_WITH
-        elif operator in ['NOT ENDSWITH', 'NOT ENDS WITH']:
-            operator_obj = self.Operator.NOT_ENDS_WITH
-        elif operator in ['ENDSWITH', 'ENDS WITH']:
-            operator_obj = self.Operator.ENDS_WITH
-        return operator_obj

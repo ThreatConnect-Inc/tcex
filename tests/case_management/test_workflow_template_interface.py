@@ -302,5 +302,4 @@ class TestWorkflowTemplate(TestCaseManagement):
         workflow_template = self.cm.workflow_template(**workflow_template_data)
 
         # assert a proper entity is returned
-        # TODO: update this
-        assert workflow_template.as_entity == {}
+        assert workflow_template.as_entity.get('value') == workflow_template_data.get('name')

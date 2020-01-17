@@ -132,7 +132,7 @@ class TestNote(TestCaseManagement):
         # create note
         note = self.cm.note()
         note.artifact_id = note_data.get('artifact_id')
-        note.artifact_text = note_data.get('artifact_text')
+        note.text = note_data.get('text')
         note.submit()
 
         # get single note by id
@@ -310,7 +310,7 @@ class TestNote(TestCaseManagement):
         assert len(case.tasks) == 1
         for note in case.notes:
             assert note.summary == note_data.get('text')
-        assert note.case_xid == case.xid
+        assert note.case_xid is None  # Case Xid is not returned
 
         # read-only
         assert note.author == os.getenv('API_ACCESS_ID')

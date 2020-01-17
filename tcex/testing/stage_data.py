@@ -175,7 +175,7 @@ class ThreatConnect:
             if ti:
                 ti.delete()
             if entity_type == 'Case_Management':
-                cm = self.provider.tcex.cm.obj_from_type(data.get('sub_type'))
+                cm = getattr(self.provider.tcex.cm, data.get('sub_type'))()
                 if data.get('sub_type').lower() in [
                     'workflow_event',
                     'workflowevent',

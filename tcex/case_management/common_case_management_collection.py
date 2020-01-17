@@ -35,28 +35,13 @@ class CommonCaseManagementCollection:
     """
 
     def __init__(
-        self,
-        tcex,
-        api_endpoint,
-        tql_filters=None,
-        page_size=1000,
-        next_url=None,
-        previous_url=None,
-        retry_count=5,
-        timeout=1000,
-        initial_response=None,
-        params=None,
+        self, tcex, api_endpoint, tql_filters=None, initial_response=None, params=None,
     ):
         """Initialize Class properties."""
 
         self._added_items = []
         self._initial_response = initial_response
-        self._next_url = next_url
-        self._page_size = page_size
         self._params = params or {}
-        self._previous_url = previous_url
-        self._retry_count = retry_count
-        self._timeout = timeout
         self._tql_data = None
         self._tql_filters = tql_filters or []
         self.api_endpoint = api_endpoint.value
@@ -256,7 +241,6 @@ class CommonCaseManagementCollection:
         if tql_string:
             parameters['tql'] = tql_string
 
-        current_retries = 0
         if initial_response:
             url = initial_response.get('next_url', None)
             entities = initial_response.get('data', [])
@@ -275,16 +259,11 @@ class CommonCaseManagementCollection:
             self.tcex.log.trace(f'response: {r.text}')
 
             if not self.success(r):
-                current_retries += 1
-                # if current_retries > self.retry_count:
-                #     err = r.text or r.reason
-                #     self.tcex.handle_error(950, [r.status_code, err, r.url])
-                # else:
-                #     continue
+                err = r.text or r.reason
+                self.tcex.handle_error(950, [r.status_code, err, r.url])
 
             # reset some vars
             parameters = {}
-            current_retries = 0
 
             data = r.json().get('data', [])
             url = r.json().pop('next', None)
@@ -304,16 +283,6 @@ class CommonCaseManagementCollection:
             as_dict['data'].append(item.as_dict)
         return as_dict
 
-    # @property
-    # def next_url(self):
-    #     """Return the next url of the case management object collection."""
-    #     return self._next_url
-
-    # @next_url.setter
-    # def next_url(self, next_url):
-    #     """Set the next url of the case management object collection."""
-    #     self._next_url = next_url
-
     @property
     def params(self):
         """Return the parameters of the case management object collection."""
@@ -323,36 +292,6 @@ class CommonCaseManagementCollection:
     def params(self, params):
         """Set the parameters of the case management object collection."""
         self._params = params
-
-    # @property
-    # def page_size(self):
-    #     """Return the page size of the case management object collection."""
-    #     return self._page_size
-
-    # @property
-    # def previous_url(self):
-    #     """Return the previous url of the case management object collection."""
-    #     return self._previous_url
-
-    # @previous_url.setter
-    # def previous_url(self, previous_url):
-    #     """Set the previous url of the case management object collection."""
-    #     self._previous_url = previous_url
-
-    # @page_size.setter
-    # def page_size(self, page_size):
-    #     """Set the page size of the case management object collection."""
-    #     self._page_size = page_size
-
-    # @property
-    # def retry_count(self):
-    #     """Return the retry count of the case management object collection."""
-    #     return self._retry_count
-
-    # @retry_count.setter
-    # def retry_count(self, retry_count):
-    #     """Set the retry count of the case management object collection."""
-    #     self._retry_count = retry_count
 
     @staticmethod
     def success(r):
