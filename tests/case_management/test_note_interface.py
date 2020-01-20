@@ -246,6 +246,50 @@ class TestNote(TestCaseManagement):
         # run assertions on returned data
         assert note.text == note_data.get('text')
 
+    def test_note_get_single_attached_to_artifact_by_id_properties(self, request):
+        """Test Note on a Artifact"""
+        case = self.cm_helper.create_case()
+
+        file_data = (
+            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
+        )
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'source': 'artifact source',
+            'file_data': f'{file_data}',
+            'summary': 'pytest test file artifact',
+            'type': 'Certificate File',
+        }
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+
+        # note data
+        note_data = {
+            'artifact_id': artifact.id,
+            'text': f'note_text - {request.node.name}',
+        }
+
+        # create not
+        note = self.cm.note(**note_data)
+        note.submit()
+
+        # get note for asserts
+        note = self.cm.note(id=note.id)
+        note.get(all_available_fields=True)
+
+        # get artifact for asserts
+        artifact.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert note.artifact.id == artifact.id
+        assert note.artifact_id == artifact.id
+
+        assert len(artifact.notes) == 1
+        for note in artifact.notes:
+            assert note.summary == note_data.get('text')
+
     def test_note_get_single_attached_to_case_by_id_properties(self, request):
         """Test Note on a Case"""
         case = self.cm_helper.create_case()
@@ -256,15 +300,27 @@ class TestNote(TestCaseManagement):
             'case_xid': case.xid,
             'text': f'note_text - {request.node.name}',
         }
+
+        # add properties
         note = self.cm.note(**note_data)
         note.case_id = note_data.get('case_id')
         note.case_xid = note_data.get('case_xid')
         note.text = note_data.get('text')
 
-        # add properties
-        note.text = note_data.get('text')
-        case.add_note(**note_data)
-        case.submit()
+        # create note
+        note.submit()
+
+        # get note for asserts
+        note = self.cm.note(id=note.id)
+        note.get(all_available_fields=True)
+
+        # TODO: @bpurdy - why is this getting added to the case twice
+        # update (PUT) case with note
+        # case.add_note(**note_data)
+        # case.submit()
+
+        # run assertions on returned data
+        assert note.parent_case.id == case.id
 
         # make sure all objects were added
         assert len(case.notes) == 1
@@ -292,49 +348,44 @@ class TestNote(TestCaseManagement):
             'status': 'Open',
         }
         task = self.cm.task(**task_data)
+        task.case_id = task_data.get('case_id')
+        task.description = task_data.get('description')
+        task.due_date = task_data.get('due_date')
+        task.name = task_data.get('name')
+        task.status = task_data.get('status')
+        task.xid = request.node.name
         task.submit()
+
         # note data
         note_data = {
             'task_id': task.id,
             'task_xid': task.xid,
             'text': f'note_text - {request.node.name}',
         }
-        note = self.cm.note(**note_data)
+        note = self.cm.note()
+        note.task_id = note_data.get('task_id')  # coverage: task_id setter
+        note.task_xid = note_data.get('task_xid')  # coverage: task_id setter
+        note.text = note_data.get('text')
         note.submit()
+
+        # get note for asserts
+        note = self.cm.note(id=note.id)
+        note.get(all_available_fields=True)
+
+        # get task for asserts
+        task_id = task.id
+        task = self.cm.task()
+        task.id = task_id  # coverage: id setter
         task.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert note.task.id == task.id
+        assert note.task_id == task.id
+        assert note.task_xid == task.xid
+
+        # run assertions on returned data
         assert len(task.notes) == 1
         for note in task.notes:
-            assert note.summary == note_data.get('text')
-
-    def test_note_get_single_attached_to_artifact_by_id_properties(self, request):
-        """Test Note on a Artifact"""
-        case = self.cm_helper.create_case()
-
-        file_data = (
-            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
-        )
-
-        # artifact data
-        artifact_data = {
-            'case_id': case.id,
-            'source': 'artifact source',
-            'file_data': f'{file_data}',
-            'summary': 'pytest test file artifact',
-            'type': 'Certificate File',
-        }
-        artifact = self.cm.artifact(**artifact_data)
-        artifact.submit()
-        # note data
-        note_data = {
-            'artifact_id': artifact.id,
-            'text': f'note_text - {request.node.name}',
-        }
-
-        note = self.cm.note(**note_data)
-        note.submit()
-        artifact.get(all_available_fields=True)
-        assert len(artifact.notes) == 1
-        for note in artifact.notes:
             assert note.summary == note_data.get('text')
 
     def test_note_get_single_attached_to_wf_event_by_id_properties(self, request):
@@ -346,7 +397,6 @@ class TestNote(TestCaseManagement):
             'case_id': case.id,
             'summary': 'pytest test workflow event',
         }
-
         workflow_event = self.cm.workflow_event(**workflow_event_data)
         workflow_event.submit()
 
@@ -355,10 +405,27 @@ class TestNote(TestCaseManagement):
             'workflow_event_id': workflow_event.id,
             'text': f'note_text - {request.node.name}',
         }
-
-        note = self.cm.note(**note_data)
+        note = self.cm.note()
+        note.text = note_data.get('text')
+        note.workflow_event_id = note_data.get('workflow_event_id')  # coverage: task_id setter
         note.submit()
+
+        # get note for asserts
+        note = self.cm.note(id=note.id)
+        note.get(all_available_fields=True)
+
+        # get wfe for asserts
+        workflow_event_id = workflow_event.id
+        workflow_event = self.cm.workflow_event(id=workflow_event.id)
+        workflow_event.id = workflow_event_id  # coverage: id setter
         workflow_event.get(all_available_fields=True)
+
+        # run assertions on returned data
+        assert note.workflow_event.id == workflow_event.id
+        # TODO: opened an issue with @mj to see why this field is not returned.
+        assert note.workflow_event_id == workflow_event.id
+
+        # run assertions on returned data
         assert len(workflow_event.notes) == 1
         for note in workflow_event.notes:
             assert note.summary == note_data.get('text')
@@ -474,6 +541,103 @@ class TestNote(TestCaseManagement):
         notes.filter.date_added(
             TQL.Operator.GT, (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
         )
+
+        for note in notes:
+            assert note.text == note_data.get('text')
+            break
+        else:
+            assert False, 'No notes returned for TQL'
+
+    def test_note_get_by_tql_filter_has_artifact(self, request):
+        """Test Note Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # artifact data
+        artifact_data = {
+            'case_id': case.id,
+            'intel_type': 'indicator-ASN',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+
+        # create artifact
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+
+        # note data
+        note_data = {
+            'artifact_id': artifact.id,
+            'text': f'sample note for {request.node.name} test case.',
+        }
+
+        # create note
+        note = self.cm.note(**note_data)
+        note.submit()
+
+        # retrieve note using TQL
+        notes = self.cm.notes()
+        notes.filter.has_artifact.id(TQL.Operator.EQ, artifact.id)
+
+        for note in notes:
+            assert note.text == note_data.get('text')
+            break
+        else:
+            assert False, 'No notes returned for TQL'
+
+    def test_note_get_by_tql_filter_has_case(self, request):
+        """Test Note Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # note data
+        note_data = {
+            'case_id': case.id,
+            'text': f'sample note for {request.node.name} test case.',
+        }
+
+        # create note
+        note = self.cm.note(**note_data)
+        note.submit()
+
+        # retrieve note using TQL
+        notes = self.cm.notes()
+        notes.filter.has_case.id(TQL.Operator.EQ, case.id)
+
+        for note in notes:
+            assert note.text == note_data.get('text')
+            break
+        else:
+            assert False, 'No notes returned for TQL'
+
+    def test_note_get_by_tql_filter_has_task(self, request):
+        """Test Note Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'name': f'name-{request.node.name}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # note data
+        note_data = {
+            'task_id': task.id,
+            'text': f'sample note for {request.node.name} test case.',
+        }
+
+        # create note
+        note = self.cm.note(**note_data)
+        note.submit()
+
+        # retrieve note using TQL
+        notes = self.cm.notes()
+        notes.filter.has_task.id(TQL.Operator.EQ, task.id)
 
         for note in notes:
             assert note.text == note_data.get('text')
@@ -597,6 +761,40 @@ class TestNote(TestCaseManagement):
         else:
             assert False, 'No notes returned for TQL'
 
+    def test_note_get_by_tql_filter_workflow_event_id(self, request):
+        """Test Note Get by TQL"""
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': 'pytest test workflow event',
+        }
+
+        # create wfe
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # note data
+        note_data = {
+            'workflow_event_id': workflow_event.id,
+            'text': f'note_text - {request.node.name}',
+        }
+
+        # create note
+        note = self.cm.note(**note_data)
+        note.submit()
+
+        # retrieve note using TQL
+        notes = self.cm.notes()
+        notes.filter.workflow_event_id(TQL.Operator.EQ, workflow_event.id)
+
+        for note in notes:
+            assert note.text == note_data.get('text')
+            break
+        else:
+            assert False, 'No notes returned for TQL'
+
     def test_note_create_entity(self, request):
         """Test Artifact Get by TQL"""
         # retrieve artifacts using TQL
@@ -608,7 +806,3 @@ class TestNote(TestCaseManagement):
         }
         data = self.cm.create_entity(note_entity, os.getenv('API_DEFAULT_ORG'))
         assert data.get('text') == note_entity.get('text')
-
-    # TODO: update this
-    def test_note_get_by_tql_filter_workflow_event_id(self):
-        """Test Note Get by TQL"""

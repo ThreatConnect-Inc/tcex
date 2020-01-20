@@ -37,12 +37,9 @@ class Tags(CommonCaseManagementCollection):
 
         if initial_response:
             for item in initial_response.get('data', []):
-                if isinstance(item, Tag):
-                    self.added_items.append(item)
-                elif isinstance(item, dict):
-                    self.added_items.append(Tag(tcex, **item))
-                else:
-                    continue
+                if isinstance(item, dict):
+                    item = Tag(tcex, **item)
+                self.added_items.append(item)
 
     def __iter__(self):
         """Iterate on Tag Collection"""

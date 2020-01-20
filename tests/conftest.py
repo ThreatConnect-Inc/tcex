@@ -22,6 +22,23 @@ def config_data():
 
 
 @pytest.fixture()
+def owner_id():
+    """Return an owner id."""
+    tcex_ = MockApp(runtime_level='Playbook').tcex
+
+    def get_owner_id(name):
+        """Return owner Id give the name."""
+        id_ = None
+        for o in tcex_.session.get('/v2/owners').json().get('data', []).get('owner', []):
+            if o.get('name') == name:
+                id_ = o.get('id')
+                break
+        return id_
+
+    return get_owner_id
+
+
+@pytest.fixture()
 def playbook_app():
     """Mock a playbook App."""
 

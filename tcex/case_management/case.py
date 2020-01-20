@@ -69,7 +69,6 @@ class Case(CommonCaseManagement):
         created_by (User, kwargs): [Read-Only] The **Created By** for the Case.
         date_added (str, kwargs): [Read-Only] The **Date Added** for the Case.
         description (str, kwargs): The **Description** for the Case.
-        events (WorkflowEvent, kwargs): The **Events** for the Case.
         name (str, kwargs): [Required] The **Name** for the Case.
         notes (Note, kwargs): a list of Notes corresponding to the Case
         owner (str, kwargs): The Org/Owner name for the Case.
@@ -83,6 +82,7 @@ class Case(CommonCaseManagement):
         tasks (Task, kwargs): a list of Tasks corresponding to the Case
         user_access (User, kwargs): a list of Users that, when defined, are the only
             ones allowed to view or edit the Case
+        workflow_events (WorkflowEvent, kwargs): The **Events** for the Case.
         workflow_template (WorkflowTemplate, kwargs): the Template that the Case is
             populated by.
         xid (str, kwargs): The **Xid** for the Case.
@@ -100,7 +100,6 @@ class Case(CommonCaseManagement):
         self._created_by = kwargs.get('created_by', None)
         self._date_added = kwargs.get('date_added', None)
         self._description = kwargs.get('description', None)
-        self._events = kwargs.get('events', None)
         self._name = kwargs.get('name', None)
         self._notes = kwargs.get('notes', None)
         self._owner = kwargs.get('owner', None)
@@ -111,6 +110,7 @@ class Case(CommonCaseManagement):
         self._tags = kwargs.get('tags', None)
         self._tasks = kwargs.get('tasks', None)
         self._user_access = kwargs.get('user_access', None)
+        self._workflow_events = kwargs.get('workflow_events', None)
         self._workflow_template = kwargs.get('workflow_template', None)
         self._xid = kwargs.get('xid', None)
 
@@ -198,15 +198,6 @@ class Case(CommonCaseManagement):
         """
         new_case = Case(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
-
-    @property
-    def events(self):
-        """Return the **Events** for the Case."""
-        if self._events:
-            return self.tcex.cm.workflow_events(
-                initial_response=self._events, tql_filters=self.case_filter
-            )
-        return self._events
 
     @property
     def name(self):
@@ -312,6 +303,15 @@ class Case(CommonCaseManagement):
     def user_access(self, user_access):
         """Set the **User Access** for the Case."""
         self._user_access = user_access
+
+    @property
+    def workflow_events(self):
+        """Return the **Workflow Events** for the Case."""
+        if self._workflow_events:
+            return self.tcex.cm.workflow_events(
+                initial_response=self._workflow_events, tql_filters=self.case_filter
+            )
+        return self._workflow_events
 
     @property
     def workflow_template(self):

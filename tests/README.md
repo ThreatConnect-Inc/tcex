@@ -26,22 +26,22 @@ Name                                                        Stmts   Miss  Cover 
 -----------------------------------------------------------------------------------------
 tcex/case_management/__init__.py                                2      0   100%
 tcex/case_management/api_endpoints.py                          12      0   100%
-tcex/case_management/artifact.py                              149     16    89%   241-245, 327-331, 336-340, 345-349, 367
-tcex/case_management/artifact_type.py                          50      1    98%   81
-tcex/case_management/assignee.py                               91     24    74%   29-38, 68, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 148, 160, 205
-tcex/case_management/case.py                                  192     24    88%   161, 206, 243, 314, 320, 331, 362, 376-380, 385-389, 394-398, 403-407, 434
-tcex/case_management/case_management.py                       100     46    54%   58-71, 83-100, 104-121
-tcex/case_management/common_case_management.py                249     47    81%   31-44, 49, 67, 81, 175, 204, 227-228, 242, 244-249, 255, 281-283, 297-298, 312, 319, 360-364, 392, 395-396, 420-422, 430-435
-tcex/case_management/common_case_management_collection.py     169     32    81%   88-92, 216, 220, 225, 278-283, 305-308, 313, 318, 331, 336, 341, 346, 351, 356, 361, 380-384, 390, 395
-tcex/case_management/filter.py                                 31      3    90%   34, 44, 59
-tcex/case_management/note.py                                  138     29    79%   47-51, 123, 134, 139, 163, 173, 194, 206, 217, 227, 243, 254, 299-303, 308-312, 317-321, 366
-tcex/case_management/tag.py                                    73      2    97%   41, 45
+tcex/case_management/artifact.py                              149      0   100%
+tcex/case_management/artifact_type.py                          50      0   100%
+tcex/case_management/assignee.py                               91      5    95%   33, 37, 68, 148, 205
+tcex/case_management/case.py                                  192      4    98%   161, 234, 311, 320
+tcex/case_management/case_management.py                        65      1    98%   59
+tcex/case_management/common_case_management.py                207      6    97%   43, 68, 82, 207, 246-247
+tcex/case_management/common_case_management_collection.py     136      8    94%   196, 276-279, 289, 315, 320
+tcex/case_management/filter.py                                 25      0   100%
+tcex/case_management/note.py                                  132      0   100%
+tcex/case_management/tag.py                                    71      0   100%
 tcex/case_management/task.py                                  181      3    98%   366, 384, 393
-tcex/case_management/tql.py                                   132     80    39%   33, 54-88, 113-122, 163-197
-tcex/case_management/workflow_event.py                        107      4    96%   210-214, 311
-tcex/case_management/workflow_template.py                      74      2    97%   278, 287
+tcex/case_management/tql.py                                    47      0   100%
+tcex/case_management/workflow_event.py                        105      3    97%   210-214
+tcex/case_management/workflow_template.py                      71      2    97%   211, 220
 -----------------------------------------------------------------------------------------
-TOTAL                                                        1750    313    82%
+TOTAL                                                        1536     32    98%
 ```
 
 ## datastore
@@ -160,76 +160,27 @@ tcex/utils/utils.py           41      0   100%
 TOTAL                        130      0   100%
 ```
 
-# Issues:
+# Case Management Error Codes
 
+"""
+/v3/ Error Codes:
 
-## Artifact
-
-
-## Artifact Type
-
-
-## Case
-
-
-## Note
-
-
-## Tag
-
-
-## Common Case Management Collection
-
-* @bpurdy - [line 387-395] - remove retry logic from get and other methods
-* @bpurdy - [line 300-305] - is list_as_dict() method needed?
-
-
-## TQL
-* @bpurdy - [line 33] supported dict checking if needed
-* @bpurdy - [line 54-88] operator.get checking if needed
-* @bpurdy - [line 163-197] type.get_operator checking if needed
-* @bpurdy - difference between get and get_operator
-
-## Tasks
-
-* @mj - can completedBy be set via the API?
-* @mj - bug when adding artifact to task gets added to case.
-* @mj - how to add configTask via API?
-* @mj - TQL keyword configPlaybook valid?
-* @mj - TQL keyword configTask valid?
-
-
-## Workflow Event
-
-* @mj - are we still supporting DELETE operation on workflow event? with deleted reason?
-* @mj - can a note be added to a workflow event during creation?
-* @mj - is deletedReason still a supported field.
-* @mj - is linkText used/needed or valid?
-* @bpurdy - notes method does not have tql_filter.
-* @mj - TQL keyword deletedReason valid?
-* @mj - TQL keyword link required? does not appear to be useful.
-* @mj - TQL keyword linkText valid?
-
-## Workflow Template
-
-* @mj - what is targetType field for? is this not the same as assignee type?
-* @mj - TQL keyword assignedGroupId valid?
-* @mj - TQL keyword assignedUserId valid?
-```
-        {
-            "keyword": "assignedGroupId",
-            "name": "Assigned Group ID",
-            "type": "Integer",
-            "description": "The ID of the Group assigned to this template"
-        },
-        {
-            "keyword": "assignedUserId",
-            "name": "Assigned User ID",
-            "type": "Integer",
-            "description": "The ID of the User assigned to this template"
-        },
-```
-* @mj - TQL keyword configArtifact valid?
-* @mj - TQL keyword configPlaybook valid?
-* @mj - TQL keyword configTask valid?
-* @mj - TQL keyword for organizationId valid?
+Error Code Name   Ref Code  Code  Default Text
+BadRequest        0x1001    400   An unspecified issue exists with your request. Check your request
+                                  and try again.
+Unauthorized      0x1002    401   You are not authorized to perform the requested operation.
+Forbidden         0x1003    403   You do not have permission to perform the requested operation.
+NotFound          0x1004    404   The requested item(s) were not found.
+MethodNotAllowed  0x1005    405   This operation is not supported.
+Conflict          0x1006    409   An item already exists with the same unique information.
+InternalError     0x1007    500   An internal error occurred while processing your request. If the
+                                  problem persists contact your system administrator.
+TqlParseError     0x2001    400   Syntax error(s) found with your TQL query. Check your query and
+                                  try again.
+MismatchedItems   0x2002    400   Your request could not be processed because it references items
+                                  that cannot belong together.
+MissingData       0x2003    400   Your request was missing required data and could not be processed.
+PlaybookFailure   0x2004    400   An automated task could not run based on your request.
+ImproperFormat    0x2005    400   The request does not match the expected format.
+HasDependents     0x2006    400   The request cannot be completed because the item is referenced by
+"""
