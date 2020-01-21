@@ -383,6 +383,55 @@ class TestCase(TestCaseManagement):
         else:
             assert False, 'No cases returned for TQL'
 
+    def test_case_update_properties(self, request):
+        """ Test updating artifacts properties"""
+        case = self.cm_helper.create_case()
+
+        # updated case data
+        case_data = {
+            'description': f'case description for {request.node.name}',
+            'name': f'case-{request.node.name}',
+            'assignee': {'user_name': os.getenv('API_ACCESS_ID')},
+            'user_access': {'data': []},
+            'resolution': random.choice(
+                [
+                    'Containment Achieved',
+                    'Deferred / Delayed',
+                    'Escalated',
+                    'False Positive',
+                    'In Progress / Investigating',
+                    'Not Specified',
+                    'Rejected',
+                    'Restoration Achieved',
+                ]
+            ),
+            'severity': random.choice(['Low', 'Medium', 'High']),
+            'status': random.choice(['Open', 'Closed']),
+        }
+
+        case.assignee = self.cm.assignee(**case_data.get('assignee'))
+        case.description = case_data.get('description')
+        case.name = case_data.get('name')
+        case.resolution = case_data.get('resolution')
+        case.severity = case_data.get('severity')
+        case.status = case_data.get('status')
+        user = self.cm.user()
+        user.user_name = os.getenv('API_ACCESS_ID')
+        case.user_access.users.append(user)
+        case.user_access.users = [user]
+
+        case.submit()
+        case.get(all_available_fields=True)
+
+        assert case.assignee.user_name == case_data.get('assignee').get('user_name')
+        assert case.description == case_data.get('description')
+        assert case.name == case_data.get('name')
+        assert case.resolution == case_data.get('resolution')
+        assert case.severity == case_data.get('severity')
+        assert case.status == case_data.get('status')
+        assert len(case.user_access.users) == 1
+        assert case.user_access.users[0].user_name == os.getenv('API_ACCESS_ID')
+
     def test_case_get_by_tql_filter_has_artifact(self, request):
         """Test Case Get by TQL"""
         # create case

@@ -227,7 +227,6 @@ class TestArtifact(TestCaseManagement):
         artifact.file_data = artifact_data.get('file_data')
         artifact.source = artifact_data.get('source')
         artifact.summary = artifact_data.get('summary')
-        artifact.intel_type = artifact_data.get('intel_type')
         artifact.type = artifact_data.get('type')
 
         # add note
@@ -298,7 +297,6 @@ class TestArtifact(TestCaseManagement):
         artifact.file_data = artifact_data.get('file_data')
         artifact.source = artifact_data.get('source')
         artifact.summary = artifact_data.get('summary')
-        artifact.intel_type = artifact_data.get('intel_type')
         artifact.type = artifact_data.get('type')
 
         # add note
@@ -668,6 +666,43 @@ class TestArtifact(TestCaseManagement):
             break
         else:
             assert False, 'No artifact returned for TQL'
+
+    def test_artifact_update_properties(self):
+        """ Test updating artifacts properties"""
+        case = self.cm_helper.create_case()
+
+        file_data = (
+            'FmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
+        )
+        # artifact data initially
+        artifact_data = {
+            'case_id': case.id,
+            'file_data': f'{file_data}',
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'Certificate File',
+        }
+        # create artifact
+        artifact = self.cm.artifact(**artifact_data)
+        artifact.submit()
+        # artifact data updated
+        file_data = (
+            'GmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
+        )
+        # artifact data
+        artifact_data = {
+            'source': 'artifact source',
+            'file_data': f'{file_data}',
+            'summary': f'asn{randint(100, 999)}',
+        }
+        artifact.source = artifact_data.get('source')
+        artifact.summary = artifact_data.get('summary')
+        artifact.file_data = artifact_data.get('file_data')
+        artifact.submit()
+        artifact.get(all_available_fields=True)
+
+        assert artifact.source == artifact_data.get('source')
+        assert artifact.summary == artifact_data.get('summary')
+        assert artifact.file_data == artifact_data.get('file_data')
 
     def test_artifact_get_by_tql_filter_fail_tql(self):
         """Test Artifact Get by TQL"""

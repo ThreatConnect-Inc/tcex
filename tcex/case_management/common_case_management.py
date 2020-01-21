@@ -358,20 +358,22 @@ class CommonCaseManagement:
 
         method = 'POST'
         url = self.api_endpoint
+        reverse_transformed_dict = self._reverse_transform(as_dict)
         if self.id:
             # if the ID is included, its an update
             method = 'PUT'
             url = f'{self.api_endpoint}/{self.id}'
+            reverse_transformed_dict.pop('id', None)
 
         # make the request
-        r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
+        r = self.tcex.session.request(method, url, json=reverse_transformed_dict)
 
         self.tcex.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Status Code: {r.status_code}, '
             f'URl: ({r.url})'
         )
-        self.tcex.log.debug(f'body: {self._reverse_transform(as_dict)}')
+        self.tcex.log.debug(f'body: {reverse_transformed_dict}')
         if len(r.content) < 5000:
             self.tcex.log.debug(u'response text: {}'.format(r.text))
         else:  # pragma: no cover

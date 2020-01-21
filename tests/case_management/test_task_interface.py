@@ -208,6 +208,51 @@ class TestTask(TestCaseManagement):
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
 
+    def test_task_update_properties(self, request):
+        """ Test updating artifacts properties"""
+        case = self.cm_helper.create_case()
+
+        task_data = {
+            'case_id': case.id,
+            'completed_date': datetime.now().isoformat(),
+            'description': f'a description from {request.node.name}',
+            'due_date': (datetime.now() + timedelta(days=2)).isoformat(),
+            'name': f'name-{request.node.name}',
+            'note_text': f'a note for {request.node.name}',
+            'status': 'Open',
+            'workflow_phase': 0,
+            'workflow_step': 1,
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+        # create artifact
+        task = self.cm.task(**task_data)
+        task.submit()
+        # artifact data updated
+        task_data = {
+            'assignee': {'user_name': os.getenv('API_ACCESS_ID')},
+            'description': f'a updated description from {request.node.name}',
+            'due_date': (datetime.now() + timedelta(days=3)).isoformat(),
+            'name': f'updated-name-{request.node.name}',
+            'status': 'Closed',
+            'workflow_phase': 1,
+            'workflow_step': 2,
+        }
+        task.assignee = self.cm.assignee(**task_data.get('assignee'))
+        task.description = task_data.get('description')
+        task.due_date = task_data.get('due_date')
+        task.name = task_data.get('name')
+        task.workflow_phase = task_data.get('workflow_phase')
+        task.workflow_step = task_data.get('workflow_step')
+        task.submit()
+        task.get(all_available_fields=True)
+
+        assert task.assignee.user_name == task_data.get('assignee').get('user_name')
+        assert task.description == task_data.get('description')
+        assert task_data.get('due_date')[:10] in task.due_date
+        assert task.name == task_data.get('name')
+        assert task.workflow_phase == task_data.get('workflow_phase')
+        assert task.workflow_step == task_data.get('workflow_step')
+
     def test_task_get_single_by_id_properties(self, request):
         """Test Task Get Many"""
         # create case

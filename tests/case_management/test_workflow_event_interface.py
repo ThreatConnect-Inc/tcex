@@ -195,6 +195,34 @@ class TestWorkflowEvent(TestCaseManagement):
         assert workflow_event.deleted is None
         assert workflow_event.deleted_reason is None
 
+    def test_workflow_event_update_properties(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event initial data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+        # workflow event updated data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': f'updated {request.node.name} summary',
+            'event_date': (datetime.now() + timedelta(days=1)).isoformat(),
+        }
+
+        workflow_event.summary = workflow_event_data.get('summary')
+        workflow_event.event_date = workflow_event_data.get('event_date')
+        workflow_event.submit()
+        workflow_event.get(all_available_fields=True)
+
+        assert workflow_event.summary == workflow_event_data.get('summary')
+        assert workflow_event_data.get('event_date')[:10] in workflow_event.event_date
+
     def test_workflow_event_get_by_tql_filter_case_id(self, request):
         """Test Workflow Event Get by TQL"""
         # create case

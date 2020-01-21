@@ -214,11 +214,6 @@ class Artifact(CommonCaseManagement):
         """Return the **Intel Type** for the Artifact."""
         return self._intel_type
 
-    @intel_type.setter
-    def intel_type(self, intel_type):
-        """Set the **Intel Type** for the Artifact."""
-        self._intel_type = intel_type
-
     @property
     def links(self):
         """Return the **Links** for the Artifact."""
