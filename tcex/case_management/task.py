@@ -158,7 +158,9 @@ class Task(CommonCaseManagement):
     def assignee(self):
         """Return the **Assignee** for the Task."""
         if isinstance(self._assignee, dict):
-            return self.tcex.cm.assignee(**self._assignee.get('data'))
+            return self.tcex.cm.assignee(
+                type=self._assignee.get('type', 'User'), **self._assignee.get('data')
+            )
         return self._assignee
 
     @assignee.setter
