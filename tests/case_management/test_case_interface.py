@@ -431,6 +431,7 @@ class TestCase(TestCaseManagement):
         assert case.status == case_data.get('status')
         assert len(case.user_access.users) == 1
         assert case.user_access.users[0].user_name == os.getenv('API_ACCESS_ID')
+        assert case.as_dict
 
     def test_case_get_by_tql_filter_has_artifact(self, request):
         """Test Case Get by TQL"""

@@ -54,6 +54,11 @@ class User:
             kwargs[new_key] = kwargs.pop(key)
 
     @property
+    def body(self):
+        """Return a dict representation of the Creator class."""
+        return self.as_dict
+
+    @property
     def as_dict(self):
         """Return a dict representation of the Creator class."""
         properties = vars(self)
@@ -167,6 +172,15 @@ class Users:
             data.append(user.as_dict)
 
         return {'data': data}
+
+    @property
+    def body(self):
+        """Return a body representation of the Creator class."""
+        body = []
+        for user in self.users:
+            body.append(user.body)
+
+        return {'data': body}
 
 
 class Assignee(User):
