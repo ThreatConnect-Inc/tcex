@@ -54,8 +54,9 @@ class CaseManagement:
     def create_entity(self, entity, owner):
         """Create a CM object provided a dict and owner."""
         entity_type = entity.get('type').lower()
-        obj = getattr(self, entity_type)(**entity)
-        if obj is None:
+        try:
+            obj = getattr(self, entity_type)(**entity)
+        except AttributeError:
             return None
 
         r = obj.submit()
