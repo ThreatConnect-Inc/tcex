@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
         # loop until exit
         if hasattr(app, 'loop_forever'):
-            app.loop_forever()
+            app.loop_forever()  # pylint: disable=no-member
         else:
             tcex.service.loop_forever()
 

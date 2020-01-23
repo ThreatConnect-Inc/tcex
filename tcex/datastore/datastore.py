@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Module for working with DataStore in the ThreatConnect Platform."""
+from json import JSONDecodeError
 
 
 class DataStore:
@@ -151,7 +152,13 @@ class DataStore:
         self.tcex.log.debug(f'datastore get status code: {r.status_code}')
         if 'application/json' in r.headers.get('content-type', ''):
             # as long as the content is JSON set the value
-            response_data = r.json()
+            try:
+                response_data = r.json()
+            except JSONDecodeError:
+                self.tcex.log.warning(
+                    f'DataStore API returned a non-JSON response, even though content-type was \
+                    application/json: {r.content}'
+                )
         if not r.ok:
             error = r.text or r.reason
             self.tcex.handle_error(805, ['get', r.status_code, error], raise_on_error)
