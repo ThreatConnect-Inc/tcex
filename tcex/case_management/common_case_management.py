@@ -401,9 +401,12 @@ class CommonCaseManagement:
     def properties(self):
         """Return defined API properties for the current object."""
         if self._properties is None:
-            r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
-            if r.ok:
-                self._properties = r.json()
+            try:
+                r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
+                if r.ok:
+                    self._properties = r.json()
+            except ConnectionError:
+                self.tcex.handle_error(951, ['OPTIONS', 407, 'Connection Error', self.api_endpoint])
         return self._properties
 
     @property
