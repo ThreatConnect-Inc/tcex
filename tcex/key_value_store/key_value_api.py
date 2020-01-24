@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
-"""TcEx Framework KeyValue Module"""
+"""TcEx Framework Key Value API Module"""
 from urllib.parse import quote
 
 
-class TcExKeyValue:
-    """Update Redis via ThreatConnect API Wrapper"""
+class KeyValueApi:
+    """TcEx Key Value API Module.
 
-    def __init__(self, tcex):
-        """Initialize the Class properties.
+    Args:
+        session (request.Session): A configured requests session for TC API (tcex.session).
+    """
 
-        Args:
-            tcex (object): Instance of TcEx.
-            rhash (string): The REDIS hash.
-        """
-        self.tcex = tcex
+    def __init__(self, session):
+        """Initialize the Class properties."""
+        self._session = session
 
     def create(self, key, value):
         """Create key/value pair in remote KV store.
@@ -28,12 +27,8 @@ class TcExKeyValue:
         key = quote(key, safe='~')
         headers = {'content-type': 'application/octet-stream'}
         url = f'/internal/playbooks/keyValue/{key}'
-        r = self.tcex.session.put(url, data=value, headers=headers)
+        r = self._session.put(url, data=value, headers=headers)
         return r.content
-
-    # def delete(self, key):
-    #     """Delete is not supported in API Wrapper"""
-    #     return None
 
     def read(self, key):
         """Read data from remote KV store for the provided key.
@@ -46,7 +41,7 @@ class TcExKeyValue:
         """
         key = quote(key, safe='~')
         url = f'/internal/playbooks/keyValue/{key}'
-        r = self.tcex.session.get(url)
+        r = self._session.get(url)
         data = r.content
         if data is not None and not isinstance(data, str):
             data = str(r.content, 'utf-8')

@@ -49,6 +49,7 @@ class TcEx:
         self._jobs = None
         self._logger = None
         self._playbook = None
+        self._redis_client = None
         self._service = None
         self._session = None
         self._session_external = None
@@ -586,15 +587,37 @@ class TcEx:
         """Instance tcex args parser."""
         return self.inputs.parser
 
-    @property
-    def playbook(self):
-        """Include the Playbook Module.
+    def pb(self, context, output_variables):
+        """Return a new instance of playbook module.
 
-        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
+        Args:
+            context (str): The Redis context for Playbook or Service Apps.
+            output_variables (list): A list of requested PB/Service output variables.
+
+        Returns:
+            tcex.playbook.Playbooks: An instance of Playbooks
         """
         from .playbooks import Playbooks
 
-        return Playbooks(self)
+        return Playbooks(self, context, output_variables)
+
+    @property
+    def playbook(self):
+        """Return an instance of Playbooks module.
+
+        This property defaults context and outputvariables to arg values.
+
+        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
+        """
+        if self._playbook is None:
+            from .playbooks import Playbooks
+
+            # handle outputs coming in as a csv string and list
+            outputs = self.default_args.tc_playbook_out_variables or []
+            if isinstance(outputs, str):
+                outputs = outputs.split(',')
+            self._playbook = Playbooks(self, self.default_args.tc_playbook_db_context, outputs)
+        return self._playbook
 
     @property
     def proxies(self):
@@ -639,6 +662,45 @@ class TcEx:
     def rargs(self):
         """Return argparser args Namespace with Playbook args automatically resolved."""
         return self.inputs.resolved_args()
+
+    @staticmethod
+    def rc(host, port, db=0, blocking=False, **kwargs):
+        """[summary]
+
+        Initialize a single shared redis.connection.ConnectionPool.
+        For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
+
+        Args:
+            host (str, optional): The REDIS host. Defaults to localhost.
+            port (int, optional): The REDIS port. Defaults to 6379.
+            db (int, optional): The REDIS db. Defaults to 0.
+            blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.
+            errors (str, kwargs): The REDIS errors policy (e.g. strict).
+            max_connections (int, kwargs): The maximum number of connections to REDIS.
+            password (str, kwargs): The REDIS password.
+            socket_timeout (int, kwargs): The REDIS socket timeout.
+            timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
+
+        Returns:
+            Redis.client: An instance of redis client.
+        """
+        from .key_value_store import RedisClient
+
+        return RedisClient(host=host, port=port, db=db, blocking=blocking, **kwargs).client
+
+    @property
+    def redis_client(self):
+        """Return redis client instance configure for Playbook/Service Apps."""
+        if self._redis_client is None:
+            from .key_value_store import RedisClient
+
+            self._redis_client = RedisClient(
+                host=self.default_args.tc_playbook_db_path,
+                port=self.default_args.tc_playbook_db_port,
+                db=0,
+            ).client
+
+        return self._redis_client
 
     def request(self, session=None):
         """Return an instance of the Request Class.

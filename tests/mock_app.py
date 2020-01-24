@@ -100,6 +100,7 @@ class MockApp:
             config['tc_playbook_db_path'] = self.getenv('tc_playbook_db_path', 'localhost')
             config['tc_playbook_db_port'] = self.getenv('tc_playbook_db_port', '6379')
 
+        # add specific config options for service Apps
         if self.runtime_level.lower() in [
             'apiservice',
             'triggerservice',

@@ -127,6 +127,7 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     # remove log directory
     try:
         shutil.rmtree('log')
+        os.makedirs(f'log/DEBUG', exist_ok=True)
     except OSError:
         pass
 
