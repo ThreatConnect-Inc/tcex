@@ -45,7 +45,7 @@ class Redis:
     def __init__(self, provider):
         """Initialize class properties."""
         self.provider = provider
-        self.redis_client = provider.tcex.playbook.db.r
+        self.redis_client = provider.tcex.redis_client
         self.log_data = self.provider.log_data
 
     def from_dict(self, staging_data):

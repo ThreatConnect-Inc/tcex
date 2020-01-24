@@ -253,7 +253,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """Run before each test method runs."""
         super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
-        self.redis_client = self.tcex.playbook.db.r
+        self.redis_client = self.tcex.redis_client
 
         # patch service for each profile (test case)
         self.patch_service()
