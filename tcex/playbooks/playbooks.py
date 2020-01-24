@@ -276,19 +276,16 @@ class Playbooks(PlaybooksBase):
                     results = self.create(v.get('variable'), value)
                 else:
                     self.tcex.log.info(f'Variable {key} has a none value and will not be written.')
-            # TODO: is this needed? why would something not be in output_variable_by_type
-            # elif self.output_variables_by_name.get(key) is not None and variable_type is None:
-            #     # variable key has been requested
-            #     v = self.output_variables_by_name.get(key)
-            #     self.tcex.log.info(
-            #         f"Variable {v.get('variable')} was requested by downstream app."
-            #     )
-            #     if value is not None:
-            #         results = self.create(v.get('variable'), value)
-            #     else:
-            #         self.tcex.log.info(
-            #             f"Variable {v.get('variable')} has a none value and will not be written."
-            #         )
+            elif self.output_variables_by_name.get(key) is not None and variable_type is None:
+                # variable key has been requested
+                v = self.output_variables_by_name.get(key)
+                self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
+                if value is not None:
+                    results = self.create(v.get('variable'), value)
+                else:
+                    self.tcex.log.info(
+                        f"Variable {v.get('variable')} has a none value and will not be written."
+                    )
             else:
                 var_value = key
                 if variable_type is not None:

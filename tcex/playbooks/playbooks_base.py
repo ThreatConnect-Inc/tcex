@@ -445,12 +445,15 @@ class PlaybooksBase:
     def create_raw(self, key, value):
         """Create method of CRUD operation for raw data.
 
+        ..important:: Raw data can only be a byte, str or int. Other data structures
+            (dict, list, etc) must be serialized.
+
         Args:
             key (string): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            value (bytes|int|string): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write.
+            (str): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
@@ -462,27 +465,30 @@ class PlaybooksBase:
     def read_raw(self, key):
         """Read method of CRUD operation for raw data.
 
+        ..important:: Bytes input will be returned a as string as there is
+            no way to determine data from redis originated as bytes or string.
+
         Args:
             key (string): The variable to read from the DB.
 
         Returns:
-            (any): Results retrieved from DB.
+            (str): Results retrieved from DB.
         """
-        data = None
+        value = None
         if key is not None:
-            data = self.key_value_store.read(key.strip())
+            value = self.key_value_store.read(key.strip())
         else:
             self.tcex.log.warning('The key field was None.')
-        return data
+        return value
 
-    def parse_variable(self, variable):
+    def parse_variable(self, variable):  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
 
-    def read(self, key, array=False, embedded=True):
+    def read(self, key, array=False, embedded=True):  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
 
-    def variable_type(self, variable):
+    def variable_type(self, variable):  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
