@@ -62,7 +62,7 @@ setup(
     install_requires=install_requires,
     license='Apache License, Version 2',
     name='tcex',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests', 'tests.*']),
     package_data={'': ['*.json']},
     scripts=scripts,
     url='https://github.com/ThreatConnect-Inc/tcex',
