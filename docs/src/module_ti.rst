@@ -5,7 +5,13 @@
 Module: Threat Intelligence
 ===========================
 
-The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.tcex_ti.tcex_ti.TcExTi` module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.
+The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.tcex_ti.tcex_ti.TcExTi` module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. 
+
+The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. 
+
+It returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. 
+
+The Response object has the status code, headers, and body (``response.text`` or ``response.json()``) of the response, while the ThreatConnect object entity format varies depending on the type of object.
 
 Groups
 ======
@@ -75,6 +81,7 @@ The example below retrieves a single Adversary with ID 416, if it exists.
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     ti = self.tcex.ti.group(group_type='Adversary', owner='MyOrg', unique_id=416)
     response = ti.single(params=parameters)
+    group = response.json().get("data", {})
 
 Get Group Metadata
 ------------------
@@ -223,6 +230,7 @@ The example below retrieves a single Address with Value 1.1.1.1, if it exists.
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     ti = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', unique_id='1.1.1.1')
     response = ti.single(params=parameters)
+    indicator = response.json().get("data", {})
 
 Get Indicator Metadata
 ----------------------
