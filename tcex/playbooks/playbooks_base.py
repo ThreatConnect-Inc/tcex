@@ -52,7 +52,10 @@ class PlaybooksBase:
             if validate and (not isinstance(value, dict) or not self._is_key_value(value)):
                 raise RuntimeError('Invalid data provided for KeyValue.')
         elif variable_type == 'String':
-            if validate and not isinstance(value, (int, str)):
+            # coerce int to str type
+            if isinstance(value, int):
+                value = str(value)
+            if validate and not isinstance(value, str):
                 raise RuntimeError('Invalid data provided for String.')
         elif variable_type == 'TCEntity':
             if validate and (not isinstance(value, dict) or not self._is_tc_entity(value)):
@@ -91,7 +94,10 @@ class PlaybooksBase:
                 raise RuntimeError('Invalid data provided for KeyValueArray.')
         elif variable_type == 'StringArray':
             for v in value:
-                if validate and not isinstance(v, (int, str)):
+                # coerce int to str type
+                if isinstance(value, int):
+                    v = str(v)
+                if validate and not isinstance(v, (type(None), str)):
                     raise RuntimeError('Invalid data provided for StringArray.')
         elif variable_type == 'TCEntityArray':
             if validate and (not isinstance(value, list) or not self._is_tc_entity_array(value)):
@@ -210,7 +216,8 @@ class PlaybooksBase:
             if embedded:
                 value = self._read_embedded(value)
 
-            value = self._load_value(value)
+            # coerce int to str type
+            value = str(self._load_value(value))
         elif variable_type == 'TCEntity':
             value = self._load_value(value)
 
@@ -255,7 +262,13 @@ class PlaybooksBase:
             if embedded:
                 value = self._read_embedded(value)
 
-            value = self._load_value(value)
+            # convert int to str
+            value_coerced = []
+            for v in self._load_value(value):
+                if isinstance(v, int):
+                    v = str(v)
+                value_coerced.append(v)
+            value = value_coerced
         elif variable_type == 'TCEntityArray':
             value = self._load_value(value)
 
