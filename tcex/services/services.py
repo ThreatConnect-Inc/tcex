@@ -131,10 +131,9 @@ class Services:
                 session_id = self.session_id(trigger_id)
 
                 # get instance of playbook specifically for this thread
-                playbook = self.tcex.playbook
-                # update the playbook hash/key/session_id and output_variables
-                playbook.db.key = session_id
-                playbook.output_variables = config.get('tc_playbook_out_variables', [])
+                playbook = self.tcex.pb(
+                    context=session_id, output_variables=config.get('tc_playbook_out_variables', [])
+                )
 
                 self.tcex.log.info(f'Trigger Session ID: {session_id}')
 
@@ -463,21 +462,6 @@ class Services:
         """Handle MQTT on_log events."""
         self.tcex.log.trace(f'on_subscribe - mid: {mid}, granted_qos: {granted_qos}')
 
-    def playbook(self, session_id, variables):
-        """Return a configure playbook instance.
-
-        Args:
-            session_id (str): The current session Id.
-            variables (list): The requested output variables.
-
-        Returns:
-            tcex.Playbook: An instance of Playbooks.
-        """
-        playbook = self.tcex.playbook
-        playbook.db.key = session_id
-        playbook.output_variables = variables or []
-        return playbook
-
     def process_config(self, message):
         """Process config message.
 
@@ -757,7 +741,9 @@ class Services:
             self.tcex.log.error(f"Could not find config for triggerId {message.get('triggerId')}")
 
         # get an instance of playbooks for App
-        playbook = self.playbook(self.thread_name, config.get('tc_playbook_out_variables'))
+        playbook = self.tcex.pb(
+            context=self.thread_name, output_variables=config.get('tc_playbook_out_variables')
+        )
 
         try:
             request_key = message.get('requestKey')
@@ -850,7 +836,7 @@ class Services:
     def redis_client(self):
         """Return the correct KV store for this execution."""
         if self._redis_client is None:
-            self._redis_client = self.tcex.playbook.db.client
+            self._redis_client = self.tcex.redis_client
         return self._redis_client
 
     def server_topic(self, message):
