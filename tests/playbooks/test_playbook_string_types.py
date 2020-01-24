@@ -8,52 +8,12 @@ class TestUtils:
     """Test the TcEx Batch Module."""
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0002:s1!String', None)],
-    )
-    def test_playbook_string_none(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        tcex.playbook.create_string(variable, value)
-        tcex.playbook.read_string(variable)
-        assert tcex.playbook.read(variable) is None
-
-    @pytest.mark.parametrize(
-        'variable,value', [('#App:0003:sa1!StringArray', None)],
-    )
-    def test_playbook_string_array_none(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        tcex.playbook.create_string_array(variable, value)
-        tcex.playbook.read_string_array(variable)
-        assert tcex.playbook.read(variable) is None
-
-    def test_playbook_string_read_none(self, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        assert tcex.playbook.read_string(None) is None
-
-    @pytest.mark.parametrize(
         'variable,value',
         [
-            ('#App:0002:s1!String', '1'),
+            ('#App:0002:s1!String', 1),
             ('#App:0002:s2!String', '2'),
             ('#App:0002:s3!String', '3'),
-            ('#App:0002:s4!String', '4'),
+            ('#App:0002:s4!String', True),
         ],
     )
     def test_playbook_string(self, variable, value, tcex):
@@ -66,6 +26,7 @@ class TestUtils:
         """
         tcex.playbook.create_string(variable, value)
         result = tcex.playbook.read_string(variable)
+        value = str(value).lower()
         assert result == value, f'result of ({result}) does not match ({value})'
 
         tcex.playbook.delete(variable)
@@ -140,3 +101,47 @@ class TestUtils:
             assert False, f'{value} is not a valid String Array value'
         except RuntimeError:
             assert True
+
+    #
+    # Type Specific
+    #
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0002:s1!String', None)],
+    )
+    def test_playbook_string_none(self, variable, value, tcex):
+        """Test the string array method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        tcex.playbook.create_string(variable, value)
+        tcex.playbook.read_string(variable)
+        assert tcex.playbook.read(variable) is None
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0003:sa1!StringArray', None)],
+    )
+    def test_playbook_string_array_none(self, variable, value, tcex):
+        """Test the string array method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        tcex.playbook.create_string_array(variable, value)
+        tcex.playbook.read_string_array(variable)
+        assert tcex.playbook.read(variable) is None
+
+    def test_playbook_string_read_none(self, tcex):
+        """Test the string array method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        assert tcex.playbook.read_string(None) is None

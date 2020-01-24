@@ -262,36 +262,34 @@ class Playbooks(PlaybooksBase):
         """
         #  This is if no downstream variables are requested then nothing should be returned.
         if not self.output_variables_by_type:  # pragma: no cover
+            self.tcex.log.debug(f'Variable {key} was NOT requested by downstream app.')
             return None
 
+        if key is None:
+            self.tcex.log.info(f'Key has a none value and will not be written.')
+            return None
+
+        if value is None:
+            self.tcex.log.info(f'Variable {key} has a none value and will not be written.')
+            return None
+
+        key = key.strip()
+        key_type = f'{key}-{variable_type}'
         results = None
-        if key is not None:
-            key = key.strip()
-            key_type = f'{key}-{variable_type}'
-            if self.output_variables_by_type.get(key_type) is not None:
-                # variable key-type has been requested
-                v = self.output_variables_by_type.get(key_type)
-                self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
-                if value is not None:
-                    results = self.create(v.get('variable'), value)
-                else:
-                    self.tcex.log.info(f'Variable {key} has a none value and will not be written.')
-            elif self.output_variables_by_name.get(key) is not None and variable_type is None:
-                # variable key has been requested
-                v = self.output_variables_by_name.get(key)
-                self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
-                if value is not None:
-                    results = self.create(v.get('variable'), value)
-                else:
-                    self.tcex.log.info(
-                        f"Variable {v.get('variable')} has a none value and will not be written."
-                    )
-            else:
-                var_value = key
-                if variable_type is not None:
-                    var_value = key_type
-                self.tcex.log.trace(f'requested output variables: {self.output_variables_by_name}')
-                self.tcex.log.debug(f'Variable {var_value} was NOT requested by downstream app.')
+        if self.output_variables_by_type.get(key_type) is not None:
+            # variable key-type has been requested
+            v = self.output_variables_by_type.get(key_type)
+            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
+            results = self.create(v.get('variable'), value)
+        elif self.output_variables_by_name.get(key) is not None and variable_type is None:
+            # variable key has been requested
+            v = self.output_variables_by_name.get(key)
+            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
+            results = self.create(v.get('variable'), value)
+        else:
+            self.tcex.log.trace(f'requested output variables: {self.output_variables_by_name}')
+            self.tcex.log.debug(f'Variable {key} was NOT requested by downstream app.')
+
         return results
 
     def delete(self, key):

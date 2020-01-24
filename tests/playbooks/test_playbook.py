@@ -270,6 +270,54 @@ class TestUtils:
     @pytest.mark.parametrize(
         'variable,value',
         [
+            ('#App:0001:b1!Binary', b'not really binary'),
+            ('#App:0001:ba1!BinaryArray', [b'not', b'really', b'binary']),
+            ('#App:0001:kv1!KeyValue', {'key': 'one', 'value': '1'}),
+            (
+                '#App:0001:kva1!KeyValueArray',
+                [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': '2'}],
+            ),
+            ('#App:0001:s1!String', '1'),
+            ('#App:0001:s2!String', '2'),
+            ('#App:0001:s3!String', '3'),
+            ('#App:0001:s4!String', '4'),
+            ('#App:0001:sa1!StringArray', ['a', 'b', 'c']),
+            ('#App:0001:te1!TCEntity', {'id': '123', 'type': 'Address', 'value': '1.1.1.1'}),
+            (
+                '#App:0001:tea1!TCEntityArray',
+                [
+                    {'id': '001', 'type': 'Address', 'value': '1.1.1.1'},
+                    {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
+                ],
+            ),
+            ('#App:0001:r1!Raw', 'raw data'),
+        ],
+    )
+    def test_playbook_create_output_without_type(self, variable, value, playbook_app):
+        """Test the create output method of Playbook module without passing type.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # parse variable and send to create_output() method
+        parsed_variable = tcex.playbook.parse_variable(variable)
+        variable_name = parsed_variable.get('name')
+        tcex.playbook.create_output(variable_name, value)
+        result = tcex.playbook.read(variable)
+        assert result == value, f'result of ({result}) does not match ({value})'
+
+        tcex.playbook.delete(variable)
+        assert tcex.playbook.read(variable) is None
+
+    @pytest.mark.parametrize(
+        'variable,value',
+        [
             ('#App:0001:not_requested!String', 'not requested'),
             ('#App:0001:none!String', 'None'),
             ('#App:0001:dup.name!String', None),
@@ -293,6 +341,36 @@ class TestUtils:
         variable_name = parsed_variable.get('name')
         variable_type = parsed_variable.get('type')
         tcex.playbook.create_output(variable_name, value, variable_type)
+
+        result = tcex.playbook.read(variable)
+        assert result is None, f'result of ({result}) should be None'
+
+    @pytest.mark.parametrize(
+        'variable,value',
+        [
+            ('#App:0001:not_requested!String', 'not requested'),
+            ('#App:0001:none!String', None),
+            (None, None),  # coverage
+        ],
+    )
+    def test_playbook_create_output_not_written_without_type(self, variable, value, playbook_app):
+        """Test the create output method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # parse variable and send to create_output() method
+        parsed_variable = tcex.playbook.parse_variable(variable)
+        variable_name = None  # coverage
+        if variable is not None:
+            variable_name = parsed_variable.get('name')
+        tcex.playbook.create_output(variable_name, value)
 
         result = tcex.playbook.read(variable)
         assert result is None, f'result of ({result}) should be None'
@@ -402,8 +480,6 @@ class TestUtils:
         """Test the create output method of Playbook module.
 
         Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
             playbook_app (callable, fixture): The playbook_app fixture.
         """
         tcex = playbook_app(
@@ -413,3 +489,11 @@ class TestUtils:
         # parse variable and send to create_output() method
         result = tcex.playbook.read('#App:0001:none!String', True)
         assert result == [], f'result of ({result}) does not match ([])'
+
+    def test_playbook_variable_types(self, tcex):
+        """Test the playbooks variable types property.
+
+        Args:
+            tcex (TcEx, fixture): The tcex fixture.
+        """
+        assert len(tcex.playbook._variable_types) == 10

@@ -98,3 +98,122 @@ class TestUtils:
             assert False, f'{value} is not a valid Binary Array value'
         except RuntimeError:
             assert True
+
+    #
+    # Type specific
+    #
+
+    @pytest.mark.parametrize(
+        'variable,value',
+        [
+            ('#App:0002:b1!Binary', b'bytes 1'),
+            ('#App:0002:b2!Binary', b'bytes 2'),
+            ('#App:0002:b3!Binary', b'bytes 3'),
+            ('#App:0002:b4!Binary', b'bytes 4'),
+        ],
+    )
+    def test_playbook_binary_decode(self, variable, value, tcex):
+        """Test the string array method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        tcex.playbook.create_binary(variable, value)
+        result = tcex.playbook.read_binary(variable, decode=True)
+        assert result == value.decode('utf-8'), f'result of ({result}) does not match ({value})'
+
+        tcex.playbook.delete(variable)
+        assert tcex.playbook.read(variable) is None
+
+    @pytest.mark.parametrize(
+        'variable,value,expected',
+        [
+            ('#App:0002:b1!Binary', b'bytes 1', 'Ynl0ZXMgMQ=='),
+            ('#App:0002:b2!Binary', b'bytes 2', 'Ynl0ZXMgMg=='),
+            ('#App:0002:b3!Binary', b'bytes 3', 'Ynl0ZXMgMw=='),
+            ('#App:0002:b4!Binary', b'bytes 4', 'Ynl0ZXMgNA=='),
+        ],
+    )
+    def test_playbook_binary_no_b64decode(self, variable, value, expected, tcex):
+        """Test the string array method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        tcex.playbook.create_binary(variable, value)
+        result = tcex.playbook.read_binary(variable, b64decode=False)
+        assert result == expected, f'result of ({result}) for ({value}) does not match ({expected})'
+
+        tcex.playbook.delete(variable)
+        assert tcex.playbook.read(variable) is None
+
+    @pytest.mark.parametrize(
+        'variable,value',
+        [
+            ('#App:0003:ba1!BinaryArray', [b'bytes 1', b'bytes 1']),
+            ('#App:0003:ba2!BinaryArray', [b'bytes 2', b'bytes 2']),
+            ('#App:0003:ba3!BinaryArray', [b'bytes 3', b'bytes 3']),
+            ('#App:0003:ba4!BinaryArray', [b'bytes 4', b'bytes 4']),
+        ],
+    )
+    def test_playbook_binary_array_decode(self, variable, value, tcex):
+        """Test the string array method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        tcex.playbook.create_binary_array(variable, value)
+        result = tcex.playbook.read_binary_array(variable, decode=True)
+        assert result == [
+            v.decode('utf-8') for v in value
+        ], f'result of ({result}) does not match ({value})'
+
+        tcex.playbook.delete(variable)
+        assert tcex.playbook.read(variable) is None
+
+    @pytest.mark.parametrize(
+        'variable,value,expected',
+        [
+            (
+                '#App:0003:ba1!BinaryArray',
+                [b'bytes 1', b'bytes 1'],
+                ['Ynl0ZXMgMQ==', 'Ynl0ZXMgMQ=='],
+            ),
+            (
+                '#App:0003:ba2!BinaryArray',
+                [b'bytes 2', b'bytes 2'],
+                ['Ynl0ZXMgMg==', 'Ynl0ZXMgMg=='],
+            ),
+            (
+                '#App:0003:ba3!BinaryArray',
+                [b'bytes 3', b'bytes 3'],
+                ['Ynl0ZXMgMw==', 'Ynl0ZXMgMw=='],
+            ),
+            (
+                '#App:0003:ba4!BinaryArray',
+                [b'bytes 4', b'bytes 4'],
+                ['Ynl0ZXMgNA==', 'Ynl0ZXMgNA=='],
+            ),
+        ],
+    )
+    def test_playbook_binary_array_no_b64decode(self, variable, value, expected, tcex):
+        """Test the string array method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (list): The value to store in Key Value Store.
+            expected (list): The expected output of the read command.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        tcex.playbook.create_binary_array(variable, value)
+        result = tcex.playbook.read_binary_array(variable, b64decode=False)
+        assert result == expected, f'result of ({result}) for ({value}) does not match ({expected})'
+
+        tcex.playbook.delete(variable)
+        assert tcex.playbook.read(variable) is None

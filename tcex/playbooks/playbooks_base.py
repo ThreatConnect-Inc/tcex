@@ -35,17 +35,18 @@ class PlaybooksBase:
 
     def _coerce_string_value(self, value):
         """Return a string value from an bool or int."""
-        # coerce int to str type
-        if isinstance(value, int):
-            self.tcex.log.warning(f'Coercing int value ({value}) to a string ("{str(value)}").')
-            value = str(value)
-
+        # coerce bool before int as python thinks bools are ints
         if isinstance(value, bool):
             # coerce int to str type
             self.tcex.log.warning(
                 f'Coercing bool value ({value}) to a string ("{str(value).lower()}").'
             )
             value = str(value).lower()
+
+        # coerce int to str type
+        if isinstance(value, int):
+            self.tcex.log.warning(f'Coercing int value ({value}) to a string ("{str(value)}").')
+            value = str(value)
 
         return value
 
@@ -176,7 +177,7 @@ class PlaybooksBase:
         """
         try:
             return json.loads(value, object_pairs_hook=OrderedDict)
-        except ValueError as e:
+        except ValueError as e:  # pragma: no cover
             raise RuntimeError(f'Failed to JSON load data "{value}" ({e}).')
 
     def _parse_output_variables(self):
@@ -241,8 +242,8 @@ class PlaybooksBase:
 
     def _read_array(self, key, embedded=True, b64decode=True, decode=False):
         """Create the value in Redis if applicable."""
-        if key is None:
-            self.tcex.log.warning('The key is None.')
+        if key is None:  # pragma: no cover
+            self.tcex.log.warning('The null value for key was provided.')
             return None
 
         # get variable type from variable value
@@ -272,7 +273,7 @@ class PlaybooksBase:
 
             try:
                 value = json.loads(value, object_pairs_hook=OrderedDict)
-            except ValueError as e:
+            except ValueError as e:  # pragma: no cover
                 raise RuntimeError(f'Failed loading JSON data ({value}). Error: ({e})')
         elif variable_type == 'StringArray':
             if embedded:
@@ -340,7 +341,7 @@ class PlaybooksBase:
         Returns:
             (string): Results retrieved from DB
         """
-        if value is None:
+        if value is None:  # pragma: no cover
             return value
 
         for variable in (v.group(0) for v in re.finditer(self._variable_parse, str(value))):
@@ -393,7 +394,7 @@ class PlaybooksBase:
     @property
     def _variable_types(self):
         """Return list of standard playbook variable typesd."""
-        return self._variable_single_types.extend(self._variable_array_types)
+        return self._variable_single_types + self._variable_array_types
 
     def _wrap_embedded_keyvalue(self, data):
         """Wrap keyvalue embedded variable in double quotes.
@@ -404,7 +405,8 @@ class PlaybooksBase:
         Returns:
             (string): Results retrieved from DB
         """
-        if data is not None:
+        # TODO: need to verify if core still sends improper JSON for KeyValueArrays
+        if data is not None:  # pragma: no cover
             variables = []
             for v in re.finditer(self._vars_keyvalue_embedded, data):
                 variables.append(v.group(0))
@@ -428,7 +430,7 @@ class PlaybooksBase:
                     timeout=self.tcex.default_args.tc_terminate_seconds,
                 )
 
-                if msg_data is None:
+                if msg_data is None:  #
                     self.tcex.exit(0, 'AOT subscription timeout reached.')
 
                 msg_data = json.loads(msg_data[1])
@@ -437,10 +439,10 @@ class PlaybooksBase:
                     res = msg_data.get('params', {})
                 elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
-                else:
+                else:  # pragma: no cover
                     self.tcex.log.warn(f'Unsupported AOT message type: ({msg_type}).')
                     res = self.aot_blpop()
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 self.tcex.exit(1, f'Exception during AOT subscription ({e}).')
 
             return res
@@ -450,7 +452,7 @@ class PlaybooksBase:
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
             try:
                 self.tcex.redis_client.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 self.tcex.exit(1, f'Exception during AOT exit push ({e}).')
 
     @property
@@ -465,9 +467,10 @@ class PlaybooksBase:
                 from ..key_value_store import KeyValueApi
 
                 self._key_value_store = KeyValueApi(self.tcex.session)
-            else:
-                err = f'Invalid DB Type: ({self.tcex.default_args.tc_playbook_db_type})'
-                raise RuntimeError(err)
+            else:  # pragma: no cover
+                raise RuntimeError(
+                    f'Invalid DB Type: ({self.tcex.default_args.tc_playbook_db_type})'
+                )
         return self._key_value_store
 
     def create_raw(self, key, value):
