@@ -541,7 +541,7 @@ class Redis:
 
         # Properties
         self.log_data = self.provider.log_data
-        self.redis_client = provider.tcex.playbook.db.r
+        self.redis_client = provider.tcex.redis_client
 
     def not_null(self, variable):
         """Validate that a variable is not empty/null"""
