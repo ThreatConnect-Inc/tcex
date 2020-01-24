@@ -138,6 +138,8 @@ class CommonCaseManagement:
             'filter',
             'fields',
             'kwargs',
+            'put_properties',
+            'post_properties',
             'properties',
             'task_filter',
             'tcex',
@@ -207,6 +209,45 @@ class CommonCaseManagement:
             return None
 
         return as_dict
+
+    @property
+    def body(self):
+        """Return the body representation of the CM object."""
+        properties = vars(self)
+        built_body = {}
+        for key, value in properties.items():
+            key = key.lstrip('_')
+            if key in self._excluded_properties:
+                continue
+            # If creating a PUT body and key is not a PUT property do not include it in body.
+            if self.id and key not in map(self._camel_case_key, self.put_properties):
+                continue
+            # If creating a POST body and key is not a POST property do not include it in body.
+            if key not in map(self._camel_case_key, self.post_properties):
+                continue
+            if hasattr(self, key):
+                value = getattr(self, key)
+            try:
+                value = value.body
+            except AttributeError:
+                if isinstance(value, CommonCaseManagementCollection):
+                    for added_item in value.added_items:
+                        if key not in built_body:
+                            built_body[key] = {'data': []}
+                        built_body[key]['data'].append(added_item.body)
+                    continue
+
+            if value is None:
+                continue
+            if isinstance(value, dict) and 'data' in value and not value.get('data'):
+                continue
+            built_body[key] = value
+
+        # don't return empty dicts
+        if not built_body:
+            return None
+
+        return self._reverse_transform(built_body)
 
     @property
     def available_fields(self):
@@ -332,12 +373,40 @@ class CommonCaseManagement:
         return properties
 
     @property
+    def put_properties(self):
+        """Return all the properties available in PUT requests."""
+        put_properties = []
+        for p, pd in sorted(self.properties.items()):
+            # get read-only value for display and required value
+            updatable = pd.get('updatable', True)
+            read_only = pd.get('read-only', False)
+            if not read_only:
+                if updatable:
+                    put_properties.append(p)
+
+        return put_properties
+
+    @property
+    def post_properties(self):
+        """Return all the properties available in POST requests."""
+        post_properties = []
+        for p, pd in sorted(self.properties.items()):
+            read_only = pd.get('read-only', False)
+            if not read_only:
+                post_properties.append(p)
+
+        return post_properties
+
+    @property
     def properties(self):
         """Return defined API properties for the current object."""
         if self._properties is None:
-            r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
-            if r.ok:
-                self._properties = r.json()
+            try:
+                r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
+                if r.ok:
+                    self._properties = r.json()
+            except ConnectionError:
+                self.tcex.handle_error(951, ['OPTIONS', 407, 'Connection Error', self.api_endpoint])
         return self._properties
 
     @property
@@ -354,7 +423,7 @@ class CommonCaseManagement:
 
         This is determined based on if the id is already present in the object.
         """
-        as_dict = self.as_dict
+        body = self.body
 
         method = 'POST'
         url = self.api_endpoint
@@ -364,14 +433,14 @@ class CommonCaseManagement:
             url = f'{self.api_endpoint}/{self.id}'
 
         # make the request
-        r = self.tcex.session.request(method, url, json=self._reverse_transform(as_dict))
+        r = self.tcex.session.request(method, url, json=body)
 
         self.tcex.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Status Code: {r.status_code}, '
             f'URl: ({r.url})'
         )
-        self.tcex.log.debug(f'body: {self._reverse_transform(as_dict)}')
+        self.tcex.log.debug(f'body: {body}')
         if len(r.content) < 5000:
             self.tcex.log.debug(u'response text: {}'.format(r.text))
         else:  # pragma: no cover
@@ -384,7 +453,7 @@ class CommonCaseManagement:
         r_json = r.json()
         if not self.id:
             self.id = r_json.get('data', {}).get('id')
-        as_dict['id'] = self.id
+        body['id'] = self.id
         self.entity_mapper(r_json.get('data', r_json))
 
         return r
