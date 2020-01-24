@@ -33,6 +33,22 @@ class PlaybooksBase:
         # match embedded variables without quotes (#App:7979:variable_name!StringArray)
         self._vars_keyvalue_embedded = re.compile(fr'(?:\"\:\s?)[^\"]?{self._variable_pattern}')
 
+    def _coerce_string_value(self, value):
+        """Return a string value from an bool or int."""
+        # coerce int to str type
+        if isinstance(value, int):
+            self.tcex.log.warning(f'Coercing int value ({value}) to a string ("{str(value)}").')
+            value = str(value)
+
+        if isinstance(value, bool):
+            # coerce int to str type
+            self.tcex.log.warning(
+                f'Coercing bool value ({value}) to a string ("{str(value).lower()}").'
+            )
+            value = str(value).lower()
+
+        return value
+
     def _create(self, key, value, validate=True):
         """Create the value in Redis if applicable."""
         if key is None or value is None:
@@ -52,9 +68,9 @@ class PlaybooksBase:
             if validate and (not isinstance(value, dict) or not self._is_key_value(value)):
                 raise RuntimeError('Invalid data provided for KeyValue.')
         elif variable_type == 'String':
-            # coerce int to str type
-            if isinstance(value, int):
-                value = str(value)
+            # coerce string values
+            value = self._coerce_string_value(value)
+
             if validate and not isinstance(value, str):
                 raise RuntimeError('Invalid data provided for String.')
         elif variable_type == 'TCEntity':
@@ -94,9 +110,9 @@ class PlaybooksBase:
                 raise RuntimeError('Invalid data provided for KeyValueArray.')
         elif variable_type == 'StringArray':
             for v in value:
-                # coerce int to str type
-                if isinstance(value, int):
-                    v = str(v)
+                # coerce string values
+                v = self._coerce_string_value(v)
+
                 if validate and not isinstance(v, (type(None), str)):
                     raise RuntimeError('Invalid data provided for StringArray.')
         elif variable_type == 'TCEntityArray':
@@ -216,8 +232,8 @@ class PlaybooksBase:
             if embedded:
                 value = self._read_embedded(value)
 
-            # coerce int to str type
-            value = str(self._load_value(value))
+            # coerce string values
+            value = self._coerce_string_value(self._load_value(value))
         elif variable_type == 'TCEntity':
             value = self._load_value(value)
 
@@ -265,9 +281,8 @@ class PlaybooksBase:
             # convert int to str
             value_coerced = []
             for v in self._load_value(value):
-                if isinstance(v, int):
-                    v = str(v)
-                value_coerced.append(v)
+                # coerce string values
+                value_coerced.append(self._coerce_string_value(v))
             value = value_coerced
         elif variable_type == 'TCEntityArray':
             value = self._load_value(value)
