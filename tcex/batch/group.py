@@ -12,17 +12,21 @@ from .tag import Tag
 class Group:
     """ThreatConnect Batch Group Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = [
-    #     '_attributes',
-    #     '_file_content',
-    #     '_group_data',
-    #     '_labels',
-    #     '_name',
-    #     '_processed',
-    #     '_type',
-    #     '_tags',
-    #     '_utils']
+    __slots__ = [
+        '_attributes',
+        '_file_content',
+        '_group_data',
+        '_labels',
+        '_name',
+        '_processed',
+        '_type',
+        '_tags',
+        '_utils',
+        'file_content',
+        'malware',
+        'password',
+        'status',
+    ]
 
     def __init__(self, group_type, name, **kwargs):
         """Initialize Class Properties.
@@ -275,8 +279,7 @@ class Group:
 class Adversary(Group):
     """ThreatConnect Batch Adversary Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -292,8 +295,7 @@ class Adversary(Group):
 class Campaign(Group):
     """ThreatConnect Batch Campaign Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -322,8 +324,7 @@ class Campaign(Group):
 class Document(Group):
     """ThreatConnect Batch Document Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_file_data', '_group_data']
+    __slots__ = ['_file_data', '_group_data']
 
     def __init__(self, name, file_name, **kwargs):
         """Initialize Class Properties.
@@ -346,6 +347,8 @@ class Document(Group):
     @property
     def file_content(self):
         """Return Group files."""
+        if callable(self._file_content):
+            return self._file_content(self.xid)
         return self._file_content
 
     @file_content.setter
@@ -386,8 +389,7 @@ class Document(Group):
 class Email(Group):
     """ThreatConnect Batch Email Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, subject, header, body, **kwargs):
         """Initialize Class Properties.
@@ -442,8 +444,7 @@ class Email(Group):
 class Event(Group):
     """ThreatConnect Batch Event Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -489,8 +490,7 @@ class Event(Group):
 class Incident(Group):
     """ThreatConnect Batch Incident Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -553,8 +553,7 @@ class Incident(Group):
 class IntrusionSet(Group):
     """ThreatConnect Batch Adversary Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -570,8 +569,7 @@ class IntrusionSet(Group):
 class Report(Group):
     """ThreatConnect Batch Report Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -592,6 +590,8 @@ class Report(Group):
     @property
     def file_content(self):
         """Return Group files."""
+        if callable(self._file_content):
+            return self._file_content(self.xid)
         return self._file_content
 
     @file_content.setter
@@ -624,8 +624,7 @@ class Report(Group):
 class Signature(Group):
     """ThreatConnect Batch Signature Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, file_name, file_type, file_text, **kwargs):
         """Initialize Class Properties.
@@ -658,8 +657,7 @@ class Signature(Group):
 class Threat(Group):
     """ThreatConnect Batch Threat Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.

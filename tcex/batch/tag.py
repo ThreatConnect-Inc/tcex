@@ -6,8 +6,7 @@ import json
 class Tag:
     """ThreatConnect Batch Tag Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_tag_data', '_valid']
+    __slots__ = ['_tag_data', '_valid']
 
     def __init__(self, name, formatter=None):
         """Initialize Class Properties.

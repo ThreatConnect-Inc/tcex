@@ -13,7 +13,7 @@ module = __import__(__name__)
 
 
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
-    """Internal method for dynamically building Custom Indicator Class."""
+    """Return internal methods for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
     def init_1(self, tcex, value1, xid, **kwargs):  # pylint: disable=W0641
@@ -46,17 +46,17 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 class Indicator:
     """ThreatConnect Batch Indicator Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = [
-    #     '_attributes',
-    #     '_file_actions',
-    #     '_indicator_data',
-    #     '_labels',
-    #     '_occurrences',
-    #     '_summary',
-    #     '_tags',
-    #     '_type',
-    #     '_utils']
+    __slots__ = [
+        '_attributes',
+        '_file_actions',
+        '_indicator_data',
+        '_labels',
+        '_occurrences',
+        '_summary',
+        '_tags',
+        '_type',
+        '_utils',
+    ]
 
     def __init__(self, indicator_type, summary, **kwargs):
         """Initialize Class Properties.
@@ -376,8 +376,7 @@ class Indicator:
 class Address(Indicator):
     """ThreatConnect Batch Address Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, ip, **kwargs):
         """Initialize Class Properties.
@@ -398,8 +397,7 @@ class Address(Indicator):
 class ASN(Indicator):
     """ThreatConnect Batch ASN Object."""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, as_number, **kwargs):
         """Initialize Class Properties.
@@ -420,8 +418,7 @@ class ASN(Indicator):
 class CIDR(Indicator):
     """ThreatConnect Batch CIDR Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, block, **kwargs):
         """Initialize Class Properties.
@@ -442,8 +439,7 @@ class CIDR(Indicator):
 class EmailAddress(Indicator):
     """ThreatConnect Batch EmailAddress Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, address, **kwargs):
         """Initialize Class Properties.
@@ -464,8 +460,7 @@ class EmailAddress(Indicator):
 class File(Indicator):
     """ThreatConnect Batch File Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, md5=None, sha1=None, sha256=None, **kwargs):
         """Initialize Class Properties.
@@ -537,8 +532,7 @@ class File(Indicator):
 class Host(Indicator):
     """ThreatConnect Batch Host Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, hostname, **kwargs):
         """Initialize Class Properties.
@@ -581,8 +575,7 @@ class Host(Indicator):
 class Mutex(Indicator):
     """ThreatConnect Batch Mutex Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, mutex, **kwargs):
         """Initialize Class Properties.
@@ -603,8 +596,7 @@ class Mutex(Indicator):
 class RegistryKey(Indicator):
     """ThreatConnect Batch Registry Key Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, key_name, value_name, value_type, **kwargs):
         """Initialize Class Properties.
@@ -628,8 +620,7 @@ class RegistryKey(Indicator):
 class URL(Indicator):
     """ThreatConnect Batch URL Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, text, **kwargs):
         """Initialize Class Properties.
@@ -650,8 +641,7 @@ class URL(Indicator):
 class UserAgent(Indicator):
     """ThreatConnect Batch User Agent Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, text, **kwargs):
         """Initialize Class Properties.
@@ -672,8 +662,7 @@ class UserAgent(Indicator):
 class FileAction:
     """ThreatConnect Batch FileAction Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_action_data', '_children', 'xid']
+    __slots__ = ['_action_data', '_children', 'xid']
 
     def __init__(self, parent_xid, relationship):
         """Initialize Class Properties.
@@ -713,8 +702,7 @@ class FileAction:
 class FileOccurrence:
     """ThreatConnect Batch FileAction Object."""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_occurrence_data', '_utils']
+    __slots__ = ['_occurrence_data', '_utils']
 
     def __init__(self, file_name=None, path=None, date=None):
         """Initialize Class Properties

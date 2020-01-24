@@ -105,14 +105,14 @@ class Batch:
         self._gen_indicator_class()
 
     @property
-    def _critical_failures(self):
+    def _critical_failures(self):  # pragma: no cover
         """Return Batch critical failure messages."""
         return [
             'Encountered an unexpected Exception while processing batch job',
             'would exceed the number of allowed indicators',
         ]
 
-    def _gen_indicator_class(self):
+    def _gen_indicator_class(self):  # pragma: no cover
         """Generate Custom Indicator Classes."""
 
         for entry in self.tcex.indicator_types_data.values():
@@ -143,7 +143,7 @@ class Batch:
             # Add Custom Indicator Method
             self._gen_indicator_method(name, custom_class, value_count)
 
-    def _gen_indicator_method(self, name, custom_class, value_count):
+    def _gen_indicator_method(self, name, custom_class, value_count):  # pragma: no cover
         """Dynamically generate custom Indicator methods.
 
         Args:
@@ -1661,11 +1661,11 @@ class Batch:
 
     def write_batch_json(self, content):
         """Write batch json data to a file."""
-        # TODO: don't write empty data
-        timestamp = str(time.time()).replace('.', '')
-        batch_json_file = os.path.join(self.tcex.args.tc_temp_path, f'batch-{timestamp}.json')
-        with open(batch_json_file, 'w') as fh:
-            json.dump(content, fh, indent=2)
+        if content:
+            timestamp = str(time.time()).replace('.', '')
+            batch_json_file = os.path.join(self.tcex.args.tc_temp_path, f'batch-{timestamp}.json')
+            with open(batch_json_file, 'w') as fh:
+                json.dump(content, fh, indent=2)
 
     @property
     def file_len(self):
@@ -1686,7 +1686,7 @@ class Batch:
         """Return the number of groups and indicators."""
         return self.group_len + self.indicator_len
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         """Return string represtentation of object."""
         groups = []
         for group_data in self.groups.values():
