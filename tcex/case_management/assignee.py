@@ -75,6 +75,11 @@ class User:
         return as_dict
 
     @property
+    def as_entity(self):
+        """Return the USER as a entity."""
+        return {'type': 'User', 'value': self.user_name, 'id': self.id}
+
+    @property
     def first_name(self):
         """Return the First Name for the Case Creator."""
         return self._first_name
