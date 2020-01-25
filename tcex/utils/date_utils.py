@@ -163,8 +163,7 @@ class DatetimeUtils:
         """
 
         c = pdt.Constants('en')
-        cal = pdt.Calendar(c)
-        # cal = pdt.Calendar(c, version=pdt.VERSION_CONTEXT_STYLE)
+        cal = pdt.Calendar(c, version=2)
         tzinfo = None
         src_tzname = None
         if source_datetime is not None:
@@ -178,7 +177,7 @@ class DatetimeUtils:
                 # don't covert timezone if source timezone already in the correct timezone
                 if tz != src_tzname:
                     dt = dt.astimezone(pytz.timezone(tz))
-            if status == 0:
+            if status.accuracy == 0:
                 dt = None
         except TypeError:  # pragma: no cover
             dt = None

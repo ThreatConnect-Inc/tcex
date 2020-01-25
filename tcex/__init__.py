@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework module init file."""
-__author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '2.0.0'
-__license__ = 'Apache License, Version 2'
-name = 'tcex'
-
 # flake8: noqa
+from .__metadata__ import (
+    __author__,
+    __author_email__,
+    __description__,
+    __license__,
+    __package_name__,
+    __url__,
+    __version__,
+)
+
 try:
     from .tcex import TcEx
     from .decorators import (

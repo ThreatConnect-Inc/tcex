@@ -79,8 +79,8 @@ class Cache:
         if ds_data is not None:
             expired = False
             if ds_data.get('found') is True:
-                cache_date = ds_data.get('_source', {}).get(self._cache_date_key)
                 cache_data = ds_data.get('_source', {})
+                cache_date = cache_data.get(self._cache_date_key)
                 if self._is_cache_expired(cache_date):
                     cache_data = None
                     expired = True

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx DataStore Module."""
-# import time
+import time
 
 
 class TestCache:
@@ -61,34 +61,32 @@ class TestCache:
         rid = 'cache-get'
 
         # get cache instance
-        cache = tcex.cache('local', self.data_type, 30)
+        cache = tcex.cache('local', self.data_type, 300)
 
         # add entry to get
         cache.add(rid=rid, data={'results': 'cached'})
 
         # get cache entry
         results = cache.get(rid=rid)
-        assert results.get('results') == 'cached'
+        assert results.get('cache-data', {}).get('results') == 'cached'
 
-    # TODO: BCS figure out why record is not expiring.
-    # def test_cache_get_expired(self, tcex):
-    #     """Test ttl on a cache item.
+    def test_cache_get_expired(self, tcex):
+        """Test ttl on a cache item.
 
-    #     Args:
-    #         tcex (TcEx, fixture): An instantiated instance of TcEx.
-    #     """
-    #     rid = 'cache-get-expire'
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        rid = 'cache-get-expire'
 
-    #     # get cache instance
-    #     cache = tcex.cache('local', self.data_type, 10)
+        # get cache instance
+        cache = tcex.cache('local', self.data_type, 1)
 
-    #     # add entry to be retrieved
-    #     results = cache.add(rid=rid, data={'one': 5}, ttl_seconds=5)
+        # add entry to be retrieved
+        results = cache.add(rid=rid, data={'one': 5})
 
-    #     time.sleep(10)
-    #     results = cache.get(rid=rid, data_callback=self.expired_data_callback)
-    #     print('results', results)
-    #     assert results.get('results') == 'not-cached'
+        time.sleep(3)
+        results = cache.get(rid=rid, data_callback=self.expired_data_callback)
+        assert results.get('cache-data') == self.expired_data_callback(rid)
 
     def test_cache_update(self, tcex):
         """Test update on cache data
@@ -104,5 +102,4 @@ class TestCache:
         cache = tcex.cache('local', self.data_type, expire)
 
         results = cache.update(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
-        assert results.get('_shards').get('successful') == 1
+        assert results.get('cache-data') == data

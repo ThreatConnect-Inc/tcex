@@ -132,12 +132,20 @@ class TestUtils:
             (
                 'August 25th, 2008',
                 'UTC',
-                {'operator': operator.add, 'strftime': '2008-08-25T', 'timedelta': {'days': 1}},
+                {
+                    'operator': operator.add,
+                    'strftime': r'2008-08-2[0-9]T',
+                    'timedelta': {'days': 1},
+                },
             ),
             (
                 '25 Aug 2008',
                 'UTC',
-                {'operator': operator.add, 'strftime': '2008-08-25T', 'timedelta': {'days': 1}},
+                {
+                    'operator': operator.add,
+                    'strftime': r'2008-08-2[0-9]T',
+                    'timedelta': {'days': 1},
+                },
             ),
             (
                 'Aug 25 5pm',

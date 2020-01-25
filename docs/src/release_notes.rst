@@ -8,13 +8,17 @@ Release Notes
 + Added support for ThreatConnect Case Management.
 + Added support for ThreatConnect Playbook Service Apps.
 + Updated code to support Python 3.6+, removing support for all older versions of Python.
++ Breaking Change: Multiple updates to ``playbook`` module logic.
 + Breaking Change: Moved datetime methods in tcex.utils.xxx to tcex.datetime.xxx.
 + Breaking Change: Removed ``tcex.s()`` method.
++ Breaking Change: Removed ``tcex.data_filter`` property.
++ Breaking Change: Removed ``tcex.request`` property.
++ Breaking Change: Removed ``tcex.resources`` property.
 + Breaking Change: Removed ``tcex.safetag()`` method.
 + Breaking Change: Removed ``tcex.safeurl()`` method.
-+ Breaking Change: Updated ``safe_indicator()`` method input params.
++ Breaking Change: Updated ``tcex.safe_indicator()`` method input params.
 + Breaking Change: Updated ``tcex.safe_url()`` method input params.
-+ Breaking Change: Updated ``safe_tag()`` method input params.
++ Breaking Change: Updated ``tcex.safe_tag()`` method input params.
 
 1.1.8
 =====

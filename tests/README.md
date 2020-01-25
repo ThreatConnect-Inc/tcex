@@ -8,7 +8,19 @@ pytest tests/case_management/test_artifact_interface.py
 pytest tests/case_management/test_artifact_interface.py::test_artifact_type_api_options
 
 # Coverage Testing
-pytest --cov=. --cov-report term-missing tests/
+pytest -n 8 --cov=. --cov-report term-missing tests/
+
+pytest --ignore-glob='*tokens*' --cov=tcex/ --cov-report term-missing tests
+# 2 failed, 871 passed, 28 warnings in 728.86s (0:12:08)
+
+pytest -n 12 --ignore-glob='*tokens*' --cov=tcex/ --cov-report term-missing tests
+# 4 failed, 869 passed, 28 warnings in 105.62s (0:01:45)
+
+pytest -n 12 --cov=tcex/ --cov-report term-missing tests
+# 5 failed, 875 passed, 28 warnings in 105.23s (0:01:45)
+
+# '2020-01-24T22:19:36.597881'
+# '2020-01-24T22:19:36.597881'
 
 # Coverage on Single Module
 pytest --cov=tcex/case_management/ --cov-report term-missing tests/case_management/
@@ -16,162 +28,6 @@ pytest --cov=tcex/utils/ --cov-report term-missing tests/utils/
 
 # Release Testing Run
 pytest --cov=. --cov-report html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
-
-# Test Coverage (2020-01)
-
-## batch
-
-------------------------------------------------------------
-tcex/batch/__init__.py             2      0   100%
-tcex/batch/attribute.py           34      0   100%
-tcex/batch/batch.py              685    292    57%   348, 353, 356, 404-405, 410, 415, 446-447, 451-465, 485, 489, 495, 499, 516-517, 529, 577, 592, 600, 661-674, 693-715, 762, 767, 783, 819, 840, 845, 855-856, 866-867, 872, 877-878, 887, 957, 1005-1006, 1039-1123, 1128, 1133, 1151-1152, 1196-1197, 1202-1204, 1209-1210, 1215-1217, 1230-1231, 1245-1246, 1252-1259, 1274, 1276, 1278, 1333-1361, 1394-1399, 1413-1432, 1440, 1446-1449, 1459, 1465, 1477, 1479-1480, 1489-1505, 1522, 1531-1532, 1537, 1549-1554, 1563-1564, 1567-1568, 1570, 1592-1593, 1599-1612, 1642-1643, 1665-1668, 1673, 1678, 1683, 1687, 1691-1716
-tcex/batch/group.py              211     36    83%   48, 82-83, 107, 117, 144-148, 152-153, 156-157, 185, 190, 206, 214, 219, 258-259, 276, 314, 319, 414, 419, 424, 429, 434, 439, 468, 473, 519, 524, 610, 615
-tcex/batch/indicator.py          279    105    62%   21-24, 28-31, 35-38, 84, 121, 134, 139, 147-148, 175-180, 183-185, 188-189, 210, 215, 228-231, 234-236, 253, 258, 265, 270, 285-291, 296, 301, 306, 311, 316, 334-336, 354-356, 373, 415, 436, 487-489, 494, 499, 504, 509, 514, 519, 524, 529, 557, 562, 567, 572, 593, 616-617, 659, 676-682, 687-690, 694-695, 699, 715-722, 729, 734, 739, 746, 751, 756, 761, 765
-tcex/batch/security_label.py      24      0   100%
-tcex/batch/tag.py                 19      0   100%
-------------------------------------------------------------
-TOTAL                           1254    433    65%
-
-## case_management
-
-```
-Name                                                        Stmts   Miss  Cover   Missing
------------------------------------------------------------------------------------------
-tcex/case_management/__init__.py                                2      0   100%
-tcex/case_management/api_endpoints.py                          12      0   100%
-tcex/case_management/artifact.py                              149      0   100%
-tcex/case_management/artifact_type.py                          50      0   100%
-tcex/case_management/assignee.py                               91      5    95%   33, 37, 68, 148, 205
-tcex/case_management/case.py                                  192      4    98%   161, 234, 311, 320
-tcex/case_management/case_management.py                        65      1    98%   59
-tcex/case_management/common_case_management.py                207      6    97%   43, 68, 82, 207, 246-247
-tcex/case_management/common_case_management_collection.py     136      8    94%   196, 276-279, 289, 315, 320
-tcex/case_management/filter.py                                 25      0   100%
-tcex/case_management/note.py                                  132      0   100%
-tcex/case_management/tag.py                                    71      0   100%
-tcex/case_management/task.py                                  181      3    98%   366, 384, 393
-tcex/case_management/tql.py                                    47      0   100%
-tcex/case_management/workflow_event.py                        105      3    97%   210-214
-tcex/case_management/workflow_template.py                      71      2    97%   211, 220
------------------------------------------------------------------------------------------
-TOTAL                                                        1536     32    98%
-```
-
-## datastore
-
-```
-Name                          Stmts   Miss  Cover   Missing
------------------------------------------------------------
-tcex/datastore/__init__.py        3      0   100%
-tcex/datastore/cache.py          50     10    80%   61-62, 113-115, 119-124
-tcex/datastore/datastore.py      92      0   100%
------------------------------------------------------------
-TOTAL                           145     10    93%
-```
-
-## decorators
-
-```
-Name                                Stmts   Miss  Cover   Missing
------------------------------------------------------------------
-tcex/decorators/__init__.py             2      0   100%
-tcex/decorators/app_decorators.py     184     52    72%   317, 340, 478, 490-506, 537-540, 552-587, 623-626, 638-657
------------------------------------------------------------------
-TOTAL                                 186     52    72%
-```
-
-## inputs
-
-```
-Name                             Stmts   Miss  Cover   Missing
---------------------------------------------------------------
-tcex/inputs/__init__.py              3      0   100%
-tcex/inputs/argument_parser.py     103      0   100%
-tcex/inputs/file_params.py          47      0   100%
-tcex/inputs/inputs.py              131      0   100%
---------------------------------------------------------------
-TOTAL                              284      0   100%
-```
-
-## logger
-
-```
-Name                                          Stmts   Miss  Cover   Missing
----------------------------------------------------------------------------
-tcex/logger/__init__.py                           3      0   100%
-tcex/logger/api_handler.py                       30      0   100%
-tcex/logger/cache_handler.py                     14      0   100%
-tcex/logger/logger.py                           111      0   100%
-tcex/logger/rotating_file_handler_custom.py       8      0   100%
-tcex/logger/thread_file_handler.py               10      0   100%
-tcex/logger/trace_logger.py                      17      0   100%
----------------------------------------------------------------------------
-TOTAL                                           193      0   100%
-```
-
-## metrics
-
-```
-Name                       Stmts   Miss  Cover   Missing
---------------------------------------------------------
-tcex/metrics/__init__.py       2      0   100%
-tcex/metrics/metrics.py       53      0   100%
---------------------------------------------------------
-TOTAL                         55      0   100%
-```
-
-## notifications
-
-```
-Name                                  Stmts   Miss  Cover   Missing
--------------------------------------------------------------------
-tcex/notifications/__init__.py            2      0   100%
-tcex/notifications/notifications.py      28      0   100%
--------------------------------------------------------------------
-TOTAL                                    30      0   100%
-```
-
-## playbooks
-
-???
-
-## sessions
-
-```
-Name                          Stmts   Miss  Cover   Missing
------------------------------------------------------------
-tcex/sessions/__init__.py         2      0   100%
-tcex/sessions/tc_session.py      63      0   100%
------------------------------------------------------------
-TOTAL                            65      0   100%
-```
-
-## ti
-
-???
-
-## tokens
-
-```
-Name                      Stmts   Miss  Cover   Missing
--------------------------------------------------------
-tcex/tokens/__init__.py       2      0   100%
-tcex/tokens/tokens.py       103      0   100%
--------------------------------------------------------
-TOTAL                       105      0   100%
-```
-
-## utils
-
-```
-Name                       Stmts   Miss  Cover   Missing
---------------------------------------------------------
-tcex/utils/__init__.py         2      0   100%
-tcex/utils/date_utils.py      87      0   100%
-tcex/utils/utils.py           41      0   100%
---------------------------------------------------------
-TOTAL                        130      0   100%
-```
 
 # Case Management Error Codes
 

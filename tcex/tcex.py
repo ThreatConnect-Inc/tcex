@@ -44,8 +44,8 @@ class TcEx:
         self._error_codes = None
         self._exit_code = 0
         self._indicator_associations_types_data = {}
-        self._indicator_types = []
-        self._indicator_types_data = {}
+        self._indicator_types = None
+        self._indicator_types_data = None
         self._jobs = None
         self._logger = None
         self._playbook = None
@@ -65,7 +65,7 @@ class TcEx:
         self.inputs = Inputs(self, self._config, kwargs.get('config_file'))
 
         # include resources module
-        self._resources()
+        # self._resources()
 
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
@@ -89,86 +89,6 @@ class TcEx:
                 self._indicator_associations_types_data[association.get('name')] = association
         except Exception as e:
             self.handle_error(200, [e])
-
-    def _resources(self, custom_indicators=False):
-        """Initialize the resource module.
-
-        This method will make a request to the ThreatConnect API to dynamically
-        build classes to support custom Indicators.  All other resources are available
-        via this class.
-
-        .. Note:: Resource Classes can be accessed using ``tcex.resources.<Class>`` or using
-                  tcex.resource('<resource name>').
-        """
-        from importlib import import_module
-
-        # create resource object
-        self.resources = import_module('tcex.resources.resources')
-
-        if custom_indicators:
-            self.log.info('Loading custom indicator types.')
-            # Retrieve all indicator types from the API
-            r = self.session.get('/v2/types/indicatorTypes')
-
-            # check for bad status code and response that is not JSON
-            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.log.warning(f'Custom Indicators are not supported ({r.text}).')
-                return
-            response = r.json()
-            if response.get('status') != 'Success':
-                self.log.warning(f'Bad Status: Custom Indicators are not supported ({r.text}).')
-                return
-
-            try:
-                # Dynamically create custom indicator class
-                data = response.get('data', {}).get('indicatorType', [])
-                for entry in data:
-                    name = self.safe_rt(entry.get('name'))
-                    # temp fix for API issue where boolean are returned as strings
-                    entry['custom'] = self.utils.to_bool(entry.get('custom'))
-                    entry['parsable'] = self.utils.to_bool(entry.get('parsable'))
-                    self._indicator_types.append(f"{entry.get('name')}")
-                    self._indicator_types_data[entry.get('name')] = entry
-                    if not entry['custom']:
-                        continue
-
-                    # Custom Indicator have 3 values. Only add the value if it is set.
-                    value_fields = []
-                    if entry.get('value1Label'):
-                        value_fields.append(entry.get('value1Label'))
-                    if entry.get('value2Label'):
-                        value_fields.append(entry.get('value2Label'))
-                    if entry.get('value3Label'):
-                        value_fields.append(entry.get('value3Label'))
-
-                    # get instance of Indicator Class
-                    i = self.resources.Indicator(self)
-                    custom = {
-                        '_api_branch': entry['apiBranch'],
-                        '_api_entity': entry['apiEntity'],
-                        '_api_uri': f"{i.api_branch}/{entry['apiBranch']}",
-                        '_case_preference': entry['casePreference'],
-                        '_custom': entry['custom'],
-                        '_name': name,
-                        '_parsable': entry['parsable'],
-                        '_request_entity': entry['apiEntity'],
-                        '_request_uri': f"{i.api_branch}/{entry['apiBranch']}",
-                        '_status_codes': {
-                            'DELETE': [200],
-                            'GET': [200],
-                            'POST': [200, 201],
-                            'PUT': [200],
-                        },
-                        '_value_fields': value_fields,
-                    }
-                    # Call custom indicator class factory
-                    setattr(
-                        self.resources,
-                        name,
-                        self.resources.class_factory(name, self.resources.Indicator, custom),
-                    )
-            except Exception as e:
-                self.handle_error(220, [e])
 
     def _signal_handler(self, signal_interupt, frame):  # pylint: disable=W0613
         """Handle singal interrupt."""
@@ -238,28 +158,6 @@ class TcEx:
     def cm(self):
         """Include the Case Management Module."""
         return self.case_management
-
-    # TODO: remove this method and use JMESPath instead.
-    def data_filter(self, data):
-        """Return an instance of the Data Filter Class.
-
-        A simple helper module to filter results from ThreatConnect API or other data
-        source.  For example if results need to be filtered by an unsupported field the module
-        allows you to pass the data array/list in and specify one or more filters to get just the
-        results required.
-
-        Args:
-            data (list): The list of dictionary structure to filter.
-
-        Returns:
-            (object): An instance of DataFilter Class
-        """
-        try:
-            from .tcex_data_filter import DataFilter
-
-            return DataFilter(self, data)
-        except ImportError as e:
-            self.log.warning(f'Required Module is not installed ({e}).')
 
     def datastore(self, domain, data_type, mapping=None):
         """Get instance of the DataStore module.
@@ -490,7 +388,7 @@ class TcEx:
             (list): A list of ThreatConnect Indicator types.
         """
         if not self._indicator_types:
-            self._resources(True)  # load custom indicator associations
+            self._indicator_types = self.indicator_types_data.keys()
         return self._indicator_types
 
     @property
@@ -503,8 +401,16 @@ class TcEx:
             (dict): A dictionary of ThreatConnect Indicator data.
         """
         if not self._indicator_types_data:
-            # load custom indicator associations
-            self._resources(True)
+            self._indicator_types_data = {}
+
+            # retrieve data from API
+            r = self.session.get('/v2/types/indicatorTypes')
+            # TODO: use handle error instead
+            if not r.ok:
+                raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
+
+            for itd in r.json().get('data', {}).get('indicatorType'):
+                self._indicator_types_data[itd.get('name')] = itd
         return self._indicator_types_data
 
     @property
@@ -665,9 +571,8 @@ class TcEx:
 
     @staticmethod
     def rc(host, port, db=0, blocking=False, **kwargs):
-        """[summary]
+        """Return a *new* instance of Redis client.
 
-        Initialize a single shared redis.connection.ConnectionPool.
         For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
 
         Args:
@@ -701,46 +606,6 @@ class TcEx:
             ).client
 
         return self._redis_client
-
-    def request(self, session=None):
-        """Return an instance of the Request Class.
-
-        A wrapper on the Python Requests module that provides a different interface for creating
-        requests. The session property of this instance has built-in logging, session level
-        retries, and preconfigured proxy configuration.
-
-        Returns:
-            (object): An instance of Request Class
-        """
-        try:
-            from .tcex_request import TcExRequest
-
-            r = TcExRequest(self, session)
-            if session is None and self.default_args.tc_proxy_external:
-                self.log.info(
-                    f'Using proxy server for external request '
-                    f'{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}.'
-                )
-                r.proxies = self.proxies
-            return r
-        except ImportError as e:
-            self.handle_error(105, [e])
-
-    def resource(self, resource_type):
-        """Get instance of Resource Class with dynamic type.
-
-        Args:
-            resource_type: The resource type name (e.g Adversary, User Agent, etc).
-
-        Returns:
-            (object): Instance of Resource Object child class.
-        """
-        try:
-            resource = getattr(self.resources, self.safe_rt(resource_type))(self)
-        except AttributeError:
-            self._resources(True)
-            resource = getattr(self.resources, self.safe_rt(resource_type))(self)
-        return resource
 
     def results_tc(self, key, value):
         """Write data to results_tc file in TcEX specified directory.
