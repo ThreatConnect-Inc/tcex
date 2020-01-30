@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import uuid
 from requests import Session
 
 from tcex import TcEx
@@ -95,7 +96,7 @@ class MockApp:
         ]:
             config['tc_playbook_db_type'] = self.getenv('tc_playbook_db_type', 'Redis')
             config['tc_playbook_db_context'] = self.getenv(
-                'tc_playbook_db_context', '0d5a675a-1d60-4679-bd01-3948d6a0a8bd'
+                'tc_playbook_db_context', str(uuid.uuid4())
             )
             config['tc_playbook_db_path'] = self.getenv('tc_playbook_db_path', 'localhost')
             config['tc_playbook_db_port'] = self.getenv('tc_playbook_db_port', '6379')
