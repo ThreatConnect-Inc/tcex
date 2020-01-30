@@ -25,7 +25,7 @@ class TestUtils:
             (
                 'in 1 month',
                 'US/Central',
-                {'operator': operator.add, 'strftime': '%Y-%m-%dT%H:%M', 'timedelta': {'days': 31}},
+                {'operator': operator.add, 'strftime': '%Y-%m-%dT%H:%M', 'timedelta': {'days': 30}},
             ),
         ],
     )
@@ -102,7 +102,7 @@ class TestUtils:
                 'in 1 month',
                 'US/Central',
                 r'%Y-%m-%d',
-                {'operator': operator.add, 'strftime': '%Y-%m-%d', 'timedelta': {'days': 31}},
+                {'operator': operator.add, 'strftime': '%Y-%m-%d', 'timedelta': {'days': 30}},
             ),
             ('now', 'UTC', '%Y-%m-%dT%H:%M:%S', r'20[0-9]{2}-[0-9]{2}-[0-9]{2}'),
         ],
@@ -170,11 +170,7 @@ class TestUtils:
                 'UTC',
                 {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T', 'timedelta': {'days': 1}},
             ),
-            (
-                'next thursday at 4pm',
-                'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T22:00:00', 'timedelta': {}},
-            ),
+            ('next thursday at 4pm', 'UTC', '202[0-9]-[0-9]{2}-[0-9]{2}T22:00:00'),
             (
                 'at 4pm',
                 'UTC',

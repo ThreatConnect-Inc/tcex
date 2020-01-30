@@ -126,7 +126,7 @@ class Inputs:
         """Block and retrieve params from Redis."""
         if self._default_args.tc_aot_enabled is True:
             # update default_args with AOT params
-            params = self.tcex.playbook.aot_blpop()
+            params = self.aot_blpop()
             updated_params = self.update_params(params)
             self.config(updated_params)
 
@@ -164,6 +164,34 @@ class Inputs:
             elif not value:
                 value = None
             setattr(self._default_args, key, value)
+
+    def aot_blpop(self):
+        """Subscribe to AOT action channel."""
+        res = None
+        if self._default_args.tc_playbook_db_type == 'Redis':
+            try:
+                self.tcex.log.info('Blocking for AOT message.')
+                msg_data = self.tcex.redis_client.blpop(
+                    keys=self._default_args.tc_action_channel,
+                    timeout=self._default_args.tc_terminate_seconds,
+                )
+
+                if msg_data is None:
+                    self.tcex.exit(0, 'AOT subscription timeout reached.')
+
+                msg_data = json.loads(msg_data[1])
+                msg_type = msg_data.get('type', 'terminate')
+                if msg_type == 'execute':
+                    res = msg_data.get('params', {})
+                elif msg_type == 'terminate':
+                    self.tcex.exit(0, 'Received AOT terminate message.')
+                else:  # pragma: no cover
+                    self.tcex.log.warn(f'Unsupported AOT message type: ({msg_type}).')
+                    res = self.aot_blpop()
+            except Exception as e:  # pragma: no cover
+                self.tcex.exit(1, f'Exception during AOT subscription ({e}).')
+
+        return res
 
     def args(self, parse=False):
         """Parse args if they have not already been parsed and return the Namespace for args.

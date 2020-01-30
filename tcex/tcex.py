@@ -101,6 +101,14 @@ class TcEx:
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
+    def aot_rpush(self, exit_code):
+        """Push message to AOT action channel."""
+        if self.default_args.tc_playbook_db_type == 'Redis':
+            try:
+                self.redis_client.rpush(self.default_args.tc_exit_channel, exit_code)
+            except Exception as e:  # pragma: no cover
+                self.exit(1, f'Exception during AOT exit push ({e}).')
+
     @property
     def args(self):
         """Argparser args Namespace."""
@@ -219,7 +227,7 @@ class TcEx:
 
         if self.default_args.tc_aot_enabled:
             # push exit message
-            self.playbook.aot_rpush(code)
+            self.aot_rpush(code)
 
         # exit token renewal thread
         self.token.shutdown = True
@@ -516,13 +524,11 @@ class TcEx:
         .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
         """
         if self._playbook is None:
-            from .playbooks import Playbooks
-
             # handle outputs coming in as a csv string and list
             outputs = self.default_args.tc_playbook_out_variables or []
             if isinstance(outputs, str):
                 outputs = outputs.split(',')
-            self._playbook = Playbooks(self, self.default_args.tc_playbook_db_context, outputs)
+            self._playbook = self.pb(self.default_args.tc_playbook_db_context, outputs)
         return self._playbook
 
     @property

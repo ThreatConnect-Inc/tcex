@@ -384,7 +384,7 @@ class TestCase(TestCaseManagement):
             assert False, 'No cases returned for TQL'
 
     def test_case_update_properties(self, request):
-        """ Test updating artifacts properties"""
+        """Test updating artifacts properties"""
         case = self.cm_helper.create_case()
 
         # updated case data

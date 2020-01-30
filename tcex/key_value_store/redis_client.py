@@ -4,7 +4,7 @@ import redis
 
 
 class RedisClient:
-    """A shared REDIS client connection using a ConnectionPooling singleton.
+    """A shared REDIS client connection using a Connection Pool.
 
     Initialize a single shared redis.connection.ConnectionPool.
     For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.

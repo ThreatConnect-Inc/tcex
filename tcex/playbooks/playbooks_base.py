@@ -35,7 +35,7 @@ class PlaybooksBase:
 
     def _coerce_string_value(self, value):
         """Return a string value from an bool or int."""
-        # coerce bool before int as python thinks bools are ints
+        # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
             # coerce int to str type
             self.tcex.log.warning(
@@ -418,42 +418,6 @@ class PlaybooksBase:
                 # is embedded multiple times in the same key value array.
                 data = data.replace(var, f'": "{variable_string}"')
         return data
-
-    def aot_blpop(self):  # pylint: disable=R1710
-        """Subscribe to AOT action channel."""
-        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
-            res = None
-            try:
-                self.tcex.log.info('Blocking for AOT message.')
-                msg_data = self.tcex.redis_client.blpop(
-                    keys=self.tcex.default_args.tc_action_channel,
-                    timeout=self.tcex.default_args.tc_terminate_seconds,
-                )
-
-                if msg_data is None:  #
-                    self.tcex.exit(0, 'AOT subscription timeout reached.')
-
-                msg_data = json.loads(msg_data[1])
-                msg_type = msg_data.get('type', 'terminate')
-                if msg_type == 'execute':
-                    res = msg_data.get('params', {})
-                elif msg_type == 'terminate':
-                    self.tcex.exit(0, 'Received AOT terminate message.')
-                else:  # pragma: no cover
-                    self.tcex.log.warn(f'Unsupported AOT message type: ({msg_type}).')
-                    res = self.aot_blpop()
-            except Exception as e:  # pragma: no cover
-                self.tcex.exit(1, f'Exception during AOT subscription ({e}).')
-
-            return res
-
-    def aot_rpush(self, exit_code):
-        """Push message to AOT action channel."""
-        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
-            try:
-                self.tcex.redis_client.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
-            except Exception as e:  # pragma: no cover
-                self.tcex.exit(1, f'Exception during AOT exit push ({e}).')
 
     @property
     def key_value_store(self):
