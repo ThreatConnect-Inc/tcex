@@ -789,9 +789,9 @@ class TcEx:
         .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
         """
         if self._ti is None:
-            from .tcex_ti import TcExTi
+            from .threat_intelligence import ThreatIntelligence
 
-            self._ti = TcExTi(self)
+            self._ti = ThreatIntelligence(self)
         return self._ti
 
     @property

@@ -668,7 +668,7 @@ class TestArtifact(TestCaseManagement):
             assert False, 'No artifact returned for TQL'
 
     def test_artifact_update_properties(self):
-        """ Test updating artifacts properties"""
+        """Test updating artifacts properties"""
         case = self.cm_helper.create_case()
 
         file_data = (
