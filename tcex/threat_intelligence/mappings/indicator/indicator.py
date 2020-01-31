@@ -35,9 +35,10 @@ def custom_indicator_class_factory(
         if self.unique_id:
             self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
-    def _metadata_map_1(self):
+    @staticmethod
+    def _metadata_map_1():
         """Map field data."""
-        metadata_map = base_class._metadata_map(self)
+        metadata_map = base_class._metadata_map()
         for value in value_fields:
             manipulated_value = value.lower().replace(' ', '_')
             if manipulated_value not in metadata_map.keys():
