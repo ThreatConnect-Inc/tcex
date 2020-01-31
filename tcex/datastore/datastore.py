@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Module for working with DataStore in the ThreatConnect Platform."""
-from json import JSONDecodeError
 
 
 class DataStore:
@@ -154,10 +153,12 @@ class DataStore:
             # as long as the content is JSON set the value
             try:
                 response_data = r.json()
-            except JSONDecodeError:
+            # TODO this issue should be addressed by core.  This is a temporary solution
+            except Exception as e:
                 self.tcex.log.warning(
                     f'DataStore API returned a non-JSON response, even though content-type was \
-                    application/json: {r.content}'
+                        application/json: {r.content} \
+                        error: {e}'
                 )
         if not r.ok:
             error = r.text or r.reason
