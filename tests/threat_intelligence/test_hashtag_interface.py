@@ -6,13 +6,13 @@ from random import randint
 from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
-class TestAsnIndicators(TestThreatIntelligence):
-    """Test TcEx Address Indicators."""
+class TestHashTagIndicators(TestThreatIntelligence):
+    """Test TcEx Hash Tag Indicators."""
 
-    indicator_field = 'AS Number'
+    indicator_field = 'Hashtag'
     indicator_field_arg = indicator_field.replace(' ', '_').lower()
     indicator_field_custom = 'value1'
-    indicator_type = 'ASN'
+    indicator_type = 'Hashtag'
     owner = os.getenv('TC_OWNER')
     ti = None
     ti_helper = None
@@ -29,22 +29,22 @@ class TestAsnIndicators(TestThreatIntelligence):
         if os.getenv('TEARDOWN_METHOD') is None:
             self.ti_helper.cleanup()
 
-    def tests_ti_asn_create(self):
+    def tests_ti_hashtag_create(self):
         """Create an address indicator using specific interface."""
         indicator_data = {
-            self.indicator_field_custom: self.ti_helper.rand_asn(),
+            self.indicator_field_custom: self.ti_helper.rand_hashtag(),
             'confidence': randint(0, 100),
             'owner': self.owner,
             'rating': randint(0, 5),
         }
-        ti = self.ti.asn(**indicator_data)
+        ti = self.ti.hashtag(**indicator_data)
         r = ti.create()
 
         # assert response
         assert r.status_code == 201
 
         # retrieve indicator for asserts
-        ti = self.ti.asn(**indicator_data)
+        ti = self.ti.hashtag(**indicator_data)
         r = ti.single()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)
@@ -62,42 +62,42 @@ class TestAsnIndicators(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_asn_add_attribute(self, request):
+    def tests_ti_hashtag_add_attribute(self, request):
         """Test indicator add attribute."""
         super().indicator_add_attribute(request)
 
-    def tests_ti_asn_add_label(self):
+    def tests_ti_hashtag_add_label(self):
         """Test indicator add label."""
         super().indicator_add_label()
 
-    def tests_ti_asn_add_tag(self, request):
+    def tests_ti_hashtag_add_tag(self, request):
         """Test indicator delete."""
         super().indicator_add_tag(request)
 
-    def tests_ti_asn_delete(self):
+    def tests_ti_hashtag_delete(self):
         """Test indicator delete."""
         super().indicator_delete()
 
-    def tests_ti_asn_get(self):
+    def tests_ti_hashtag_get(self):
         """Test indicator get with generic indicator method."""
         super().indicator_get()
 
-    def tests_ti_asn_get_includes(self, request):
+    def tests_ti_hashtag_get_includes(self, request):
         """Test indicator get with includes."""
         super().indicator_get_includes(request)
 
-    def tests_ti_asn_get_attribute(self, request):
+    def tests_ti_hashtag_get_attribute(self, request):
         """Test indicator get attribute."""
         super().indicator_get_attribute(request)
 
-    def tests_ti_asn_get_label(self):
+    def tests_ti_hashtag_get_label(self):
         """Test indicator get label."""
         super().indicator_get_label()
 
-    def tests_ti_asn_get_tag(self, request):
+    def tests_ti_hashtag_get_tag(self, request):
         """Test indicator get tag."""
         super().indicator_get_tag(request)
 
-    def tests_ti_asn_update(self):
+    def tests_ti_hashtag_update(self):
         """Test updating indicator metadata."""
         super().indicator_update()

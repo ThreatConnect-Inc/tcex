@@ -25,30 +25,45 @@ class TIHelper:
 
         # indicator_type_value_map
         self.im = {
-            'Address': self._rand_ip,
-            'ASN': self._rand_asn,
-            'Hashtag': self._rand_hashtag,
+            'Address': self.rand_ip,
+            'ASN': self.rand_asn,
+            'CIDR': self.rand_cidr,
+            'Email Subject': self.rand_email_subject,
+            'Hashtag': self.rand_hashtag,
         }
 
         # cleanup values
         self.ti_objects = []
 
     @property
-    def _indicator_value(self):
+    def indicator_value(self):
         """Return a proper indicator value for the current indicator type."""
         return self.im.get(self.ti_type)()
 
     @staticmethod
-    def _rand_asn():
-        """Return a random IP ASN."""
+    def rand_asn():
+        """Return a random ASN."""
         return f'ASN{randint(1000, 9999)}'
 
-    def _rand_hashtag(self):
-        """Return a random IP hashtag."""
-        return f'#{self.tcex.utils.random_string(randint(5,15))}'
+    @staticmethod
+    def rand_cidr():
+        """Return a random CIDR block."""
+        return f'{randint(0,255)}.{randint(0,255)}.{randint(0,255)}.0/{randint(16,24)}'
+
+    def rand_email_subject(self):
+        """Return a random email subject."""
+        return (
+            f'{self.tcex.utils.random_string(randint(5,15))} '
+            f'{self.tcex.utils.random_string(randint(5,15))} '
+            f'{self.tcex.utils.random_string(randint(5,15))}'
+        )
+
+    def rand_hashtag(self):
+        """Return a random hashtag."""
+        return f'#{self.tcex.utils.random_string(randint(5,15))}'.lower()
 
     @staticmethod
-    def _rand_ip():
+    def rand_ip():
         """Return a random IP address."""
         return f'222.{randint(0,255)}.{randint(0,255)}.{randint(0,255)}'
 
@@ -76,11 +91,11 @@ class TIHelper:
         """
         # use passed indicator type or global value
         it = indicator_type or self.ti_type
-        indicator_value = kwargs.get(self.ti_type) or self._indicator_value
+        indicator_value = kwargs.get(self.ti_type) or self.indicator_value
 
         # setup indicator data
         indicator_data = {
-            self.ti_field.lower(): indicator_value,
+            self.ti_field: indicator_value,
             'confidence': kwargs.get('confidence') or randint(0, 100),
             'indicator_type': it,
             'owner': kwargs.get('owner') or os.getenv('TC_OWNER'),
@@ -140,12 +155,204 @@ class TIHelper:
 class TestThreatIntelligence:
     """Test TcEx Threat Intelligence Base Class"""
 
-    api_entity = None
     indicator_field = None
+    indicator_field_arg = None
     indicator_type = None
     owner = None
     ti = None
     ti_helper = None
+
+    def indicator_add_attribute(self, request):
+        """Create a attribute on an indicator."""
+        helper_ti = self.ti_helper.create_indicator()
+
+        attribute_data = {
+            'attribute_type': 'Description',
+            'attribute_value': request.node.name,
+            'source': request.node.name,
+            'displayed': True,
+        }
+        r = helper_ti.add_attribute(**attribute_data)
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get('attribute')
+
+        # assert response
+        assert r.status_code == 201
+        assert response_data.get('status') == 'Success'
+
+        # validate ti data
+        assert ti_data.get('type') == attribute_data.get('attribute_type')
+        assert ti_data.get('value') == attribute_data.get('attribute_value')
+        assert ti_data.get('displayed') == attribute_data.get('displayed')
+
+    def indicator_add_label(self):
+        """Create a label on an indicator."""
+        helper_ti = self.ti_helper.create_indicator()
+
+        r = helper_ti.add_label(label='TLP:GREEN')
+        response_data = r.json()
+
+        # assert response
+        assert r.status_code == 201
+        assert response_data.get('status') == 'Success'
+
+    def indicator_add_tag(self, request):
+        """Create a tag on an indicator."""
+        helper_ti = self.ti_helper.create_indicator()
+
+        r = helper_ti.add_tag(request.node.name)
+        response_data = r.json()
+
+        # assert response
+        assert r.status_code == 201
+        assert response_data.get('status') == 'Success'
+
+    def indicator_delete(self):
+        """Delete indicator."""
+        helper_ti = self.ti_helper.create_indicator()
+
+        # indicator for delete
+        indicator_data = {
+            self.indicator_field_arg: helper_ti.indicator,
+            'indicator_type': self.indicator_type,
+            'owner': helper_ti.owner,
+        }
+        ti = self.ti.indicator(**indicator_data)
+        r = ti.delete()
+        response_data = r.json()
+
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
+
+    def indicator_get(self):
+        """Get indicator with generic indicator method."""
+        helper_ti = self.ti_helper.create_indicator()
+
+        # retrieve the indicator
+        indicator_data = {
+            self.indicator_field_arg: helper_ti.indicator,
+            'indicator_type': self.indicator_type,
+            'owner': helper_ti.owner,
+        }
+        ti = self.ti.indicator(**indicator_data)
+        r = ti.single()
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
+
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
+
+        # validate ti data
+        assert ti_data.get('confidence') == helper_ti.confidence, (
+            f"confidence value ({ti_data.get('confidence')}) doe not match"
+            f'expected value of ({helper_ti.confidence})'
+        )
+        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (
+            f'indicator value ({ti_data.get(self.indicator_field)}) doe not match'
+            f'expected value of ({helper_ti.indicator})'
+        )
+        assert ti_data.get('rating') == helper_ti.rating, (
+            f"rating value ({ti_data.get('rating')}) doe not match"
+            f'expected value of ({helper_ti.rating})'
+        )
+
+    def indicator_get_includes(self, request):
+        """Get indicator with includes."""
+        attribute_data = {
+            'attribute_type': 'Description',
+            'attribute_value': request.node.name,
+        }
+        label_data = {'label': 'TLP:RED'}
+        tag_data = {'name': request.node.name}
+        helper_ti = self.ti_helper.create_indicator(
+            attributes=attribute_data, labels=label_data, tags=tag_data
+        )
+
+        # retrieve the indicator
+        indicator_data = {
+            self.indicator_field_arg: helper_ti.indicator,
+            'indicator_type': self.indicator_type,
+            'owner': helper_ti.owner,
+        }
+        ti = self.ti.indicator(**indicator_data)
+        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
+        r = ti.single(params=parameters)
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
+
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
+
+        # validate ti data
+        assert ti_data.get('confidence') == helper_ti.confidence, (
+            f"confidence value ({ti_data.get('confidence')}) doe not match"
+            f'expected value of ({helper_ti.confidence})'
+        )
+        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (
+            f'indicator value ({ti_data.get(self.indicator_field)}) doe not match'
+            f'expected value of ({helper_ti.indicator})'
+        )
+        assert ti_data.get('rating') == helper_ti.rating, (
+            f"rating value ({ti_data.get('rating')}) doe not match"
+            f'expected value of ({helper_ti.rating})'
+        )
+
+        # validate metadata
+        assert ti_data.get('attribute')[0].get('value') == attribute_data.get('attribute_value'), (
+            f"attribute value {ti_data.get('attribute')[0].get('value')} does not match"
+            f"expected value {attribute_data.get('attribute_value')}"
+        )
+        assert ti_data.get('securityLabel')[0].get('name') == label_data.get('label'), (
+            f"label value {ti_data.get('securityLabel')[0].get('name')} does not match"
+            f"expected value {label_data.get('label')}"
+        )
+        for tag in ti_data.get('tag'):
+            if tag.get('name') == tag_data.get('name'):
+                break
+        else:
+            assert False, f"Could not find tag {tag_data.get('name')}"
+
+    def indicator_get_attribute(self, request):
+        """Get attributes for an indicator."""
+        attribute_data = {
+            'attribute_type': 'Description',
+            'attribute_value': request.node.name,
+        }
+        helper_ti = self.ti_helper.create_indicator(attributes=attribute_data)
+
+        # retrieve the indicator
+        indicator_data = {
+            self.indicator_field_arg: helper_ti.indicator,
+            'indicator_type': self.indicator_type,
+            'owner': helper_ti.owner,
+        }
+        ti = self.ti.indicator(**indicator_data)
+        for attribute in ti.attributes():
+            if attribute.get('value') == request.node.name:
+                break
+        else:
+            assert False, f'Could not find attribute with value {request.node.name}'
+
+    def indicator_get_label(self):
+        """Get tags for an indicator."""
+        label_data = {'label': 'TLP:RED'}
+        helper_ti = self.ti_helper.create_indicator(labels=label_data)
+
+        # retrieve the indicator
+        indicator_data = {
+            self.indicator_field_arg: helper_ti.indicator,
+            'indicator_type': self.indicator_type,
+            'owner': helper_ti.owner,
+        }
+        ti = self.ti.indicator(**indicator_data)
+        for label in ti.labels():
+            if label.get('name') == label_data.get('label'):
+                break
+        else:
+            assert False, f"Could not find tag with value {label_data.get('label')}"
 
     def indicator_get_tag(self, request):
         """Get tags for an indicator."""
@@ -154,7 +361,7 @@ class TestThreatIntelligence:
 
         # retrieve the indicator
         indicator_data = {
-            self.indicator_field: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,
             'indicator_type': self.indicator_type,
             'owner': helper_ti.owner,
         }
@@ -171,7 +378,7 @@ class TestThreatIntelligence:
 
         # update indicator
         indicator_data = {
-            self.indicator_field: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,
             'confidence': 100,
             'indicator_type': self.indicator_type,
             'owner': self.owner,
@@ -180,7 +387,7 @@ class TestThreatIntelligence:
         ti = self.ti.indicator(**indicator_data)
         r = ti.update()
         response_data = r.json()
-        ti_data = response_data.get('data', {}).get(self.api_entity)
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
 
         # validate response data
         expected_status_code = 200

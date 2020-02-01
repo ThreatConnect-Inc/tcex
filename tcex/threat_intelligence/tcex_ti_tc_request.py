@@ -15,7 +15,7 @@ class TiTcRequest:
     """
 
     def __init__(self, tcex):
-        """Initialize Class properites."""
+        """Initialize Class properties."""
         self.tcex = tcex
         self.result_limit = 10000
 
@@ -40,8 +40,9 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}'
 
         r = self.tcex.session.post(url, json=data, params={'owner': owner})
-        self.tcex.log.trace(f'body: {data}')
         self.tcex.log.trace(f'url: {r.request.url}')
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'body: {data}')
         return r
 
     def delete(self, main_type, sub_type, unique_id, owner=None):
@@ -60,6 +61,7 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
         r = self.tcex.session.delete(url, params=params)
         self.tcex.log.trace(f'url: {r.request.url}')
+        self.tcex.log.debug(f'status code: {r.status_code}')
         return r
 
     def update(self, main_type, sub_type, unique_id, data, owner=None):
@@ -82,8 +84,9 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
         r = self.tcex.session.put(url, params=params, json=data)
-        self.tcex.log.trace(f'body: {data}')
         self.tcex.log.trace(f'url: {r.request.url}')
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'body: {data}')
         return r
 
     def mine(self):
@@ -122,6 +125,7 @@ class TiTcRequest:
 
         r = self.tcex.session.get(url, params=params)
         self.tcex.log.trace(f'url: {r.request.url}')
+        self.tcex.log.debug(f'status code: {r.status_code}')
         return r
 
     def many(self, main_type, sub_type, api_entity, owner=None, filters=None, params=None):
@@ -209,7 +213,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}'
 
-        return self.tcex.session.get(url, params=params)
+        r = self.tcex.session.get(url, params=params)
+        self.tcex.log.trace(f'url: {r.request.url}')
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        return r
 
     def upload(self, main_type, sub_type, unique_id, data, update_if_exists=True):
         """
@@ -228,7 +235,10 @@ class TiTcRequest:
             data = bytes(data, 'utf-8')
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/upload?updateIfExists={update_if_exists}'
-        return self.tcex.session.post(url, data=data)
+        r = self.tcex.session.post(url, data=data)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def add_false_positive(self, main_type, sub_type, unique_id, owner=None):
         """
@@ -246,7 +256,10 @@ class TiTcRequest:
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/falsePositive'
 
-        return self.tcex.session.post(url, params=params)
+        r = self.tcex.session.post(url, params=params)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def owners(self, main_type, sub_type, unique_id, owner=None):
         """
@@ -266,7 +279,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/owners'
 
-        return self.tcex.session.get(url, params=params)
+        r = self.tcex.session.get(url, params=params)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def add_observations(self, main_type, sub_type, unique_id, data, owner=None):
         """
@@ -285,7 +301,10 @@ class TiTcRequest:
         params = {'owner': owner} if owner else {}
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/observations'
-        return self.tcex.session.post(url, json=data, params=params)
+        r = self.tcex.session.post(url, json=data, params=params)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def observation_count(self, main_type, sub_type, unique_id, owner=None):
         """
@@ -306,7 +325,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/observationCount'
 
-        return self.tcex.session.get(url, params=params)
+        r = self.tcex.session.get(url, params=params)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def observations(self, main_type, sub_type, unique_id, owner=None, params=None):
         """
@@ -331,7 +353,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{type}/{sub_type}/{unique_id}/observations'
 
-        return self.tcex.session.get(url, json=params)
+        r = self.tcex.session.get(url, json=params)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
         """
@@ -378,7 +403,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/download'
 
-        return self.tcex.session.get(url)
+        r = self.tcex.session.get(url)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def dns_resolution(self, main_type, sub_type, unique_id, owner=None):
         """
@@ -399,7 +427,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/dnsResolution'
 
-        return self.tcex.session.get(url, params=params)
+        r = self.tcex.session.get(url, params=params)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def set_dns_resolution(self, main_type, sub_type, unique_id, value, owner=None):
         """
@@ -427,7 +458,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
-        return self.tcex.session.put(url, params=params, json=data)
+        r = self.tcex.session.put(url, params=params, json=data)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def set_whois(self, main_type, sub_type, unique_id, value, owner=None):
         """
@@ -455,7 +489,10 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
-        return self.tcex.session.put(url, params=params, json=data)
+        r = self.tcex.session.put(url, params=params, json=data)
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     @staticmethod
     def is_false(value):
@@ -862,14 +899,18 @@ class TiTcRequest:
                 f'/{target_unique_id}'
             )
 
-        response = None
+        r = None
         if action == 'ADD':
-            response = self.tcex.session.post(url, params=params)
+            r = self.tcex.session.post(url, params=params)
         elif action == 'DELETE':
-            response = self.tcex.session.delete(url, params=params)
+            r = self.tcex.session.delete(url, params=params)
         else:
             self.tcex.log.error('associations error')
-        return response
+
+        if r is not None:
+            self.tcex.log.debug(f'status code: {r.status_code}')
+            self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def add_victim_phone_asset(self, unique_id, name):
         """
@@ -882,7 +923,10 @@ class TiTcRequest:
 
         """
         url = f'/v2/victims/{unique_id}/victimAssets/phoneNumbers'
-        return self.tcex.session.post(url, json={'phoneType': name})
+        r = self.tcex.session.post(url, json={'phoneType': name})
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def add_victim_email_asset(self, unique_id, name, asset_type):
         """
@@ -895,7 +939,10 @@ class TiTcRequest:
 
         """
         url = f'/v2/victims/{unique_id}/victimAssets/emailAddresses'
-        return self.tcex.session.post(url, json={'address': name, 'addressType': asset_type})
+        r = self.tcex.session.post(url, json={'address': name, 'addressType': asset_type})
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def add_victim_network_asset(self, unique_id, name, asset_type):
         """
@@ -909,7 +956,10 @@ class TiTcRequest:
 
         """
         url = f'/v2/victims/{unique_id}/victimAssets/networkAccounts'
-        return self.tcex.session.post(url, json={'account': name, 'network': asset_type})
+        r = self.tcex.session.post(url, json={'account': name, 'network': asset_type})
+        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.trace(f'url: {r.request.url}')
+        return r
 
     def add_victim_social_asset(self, unique_id, name, asset_type):
         """

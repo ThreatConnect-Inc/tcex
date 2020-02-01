@@ -1,258 +1,263 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+import os
 
-import random
+# from random import randint
 
-from ..tcex_init import tcex
+from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
-# pylint: disable=W0201
-class TestFileIndicators:
+class TestFileIndicators(TestThreatIntelligence):
     """Test TcEx Address Indicators."""
+
+    api_entity = 'file'
+    indicator_field = 'ip'
+    indicator_type = 'Address'
+    owner = os.getenv('TC_OWNER')
+    ti = None
+    ti_helper = None
+    tcex = None
 
     def setup_class(self):
         """Configure setup before all tests."""
-        self.ti = tcex.ti
 
-    def teardown_class(self):
+    def setup_method(self):
         """Configure setup before all tests."""
-        hash_prefixes = ['A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'B4', 'B5', 'B6', 'B7']
-        for hp in hash_prefixes:
-            unique_id = hp * 16
-            ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=unique_id)
-            ti.delete()
+        self.ti_helper = TIHelper(self.indicator_type, self.indicator_field)
+        self.ti = self.ti_helper.ti
+        self.tcex = self.ti_helper.tcex
 
-    def test_attributes(self, file_uuid=None, md5='A4', sha1='A4', sha256='A4'):
-        """Tests adding, fetching, updating, and deleting host attributes"""
-        # create
-        if not file_uuid:
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
+    def teardown_method(self):
+        """Configure teardown before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.ti_helper.cleanup()
 
-        # get
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
+    # def tests_ti_address_create_indicator_generic(self):
+    #     """Create an address indicator using generic interface."""
+    #     indicator_data = {
+    #         'confidence': 100,
+    #         'ip': f'222.{randint(0,255)}.{randint(0,255)}.{randint(0,255)}',
+    #         'indicator_type': 'Address',
+    #         'owner': self.owner,
+    #         'rating': 5,
+    #     }
+    #     ti = self.ti.indicator(**indicator_data)
+    #     r = ti.create()
 
-        # assert that attribute is created.
-        r = ti.add_attribute('description', 'description1')
-        assert r.ok
+    #     # assert response
+    #     assert r.status_code == 201
 
-        # assert that attribute data is correct
-        json = r.json().get('data', {}).get('attribute', {})
-        assert json.get('type').lower() == 'description'
-        assert json.get('value').lower() == 'description1'
-        for attribute in ti.attributes():
-            assert attribute.get('value') == 'description1'
+    #     # retrieve indicator for asserts
+    #     ti = self.ti.address(**indicator_data)
+    #     r = ti.single()
+    #     response_data = r.json()
+    #     ti_data = response_data.get('data', {}).get('address')
 
-        # fetch the attribute id
-        attribute_id = json.get('id')
+    #     # validate response data
+    #     assert r.status_code == 200
+    #     assert response_data.get('status') == 'Success'
 
-        # assert that attribute is updated
-        r = ti.update_attribute('description2', attribute_id)
-        assert r.ok
+    #     # validate ti data
+    #     assert ti_data.get('confidence') == indicator_data.get('confidence')
+    #     assert ti_data.get('ip') == indicator_data.get('ip')
+    #     assert ti_data.get('rating') == indicator_data.get('rating')
 
-        # assert that updated attribute data is correct
-        for attribute in ti.attributes():
-            assert attribute.get('value') == 'description2'
+    #     # cleanup indicator
+    #     r = ti.delete()
+    #     assert r.status_code == 200
 
-        # assert that attribute is deleted
-        r = ti.delete_attribute(attribute_id)
-        assert r.ok
+    # def tests_ti_address_create(self):
+    #     """Create an address indicator using specific interface."""
+    #     indicator_data = {
+    #         'confidence': 100,
+    #         'ip': f'222.{randint(0,255)}.{randint(0,255)}.{randint(0,255)}',
+    #         'owner': self.owner,
+    #         'rating': 5,
+    #     }
+    #     ti = self.ti.address(**indicator_data)
+    #     r = ti.create()
 
-        # assert that no attributes remain for this indicator/group/victim
-        for attribute in ti.attributes():
-            assert False
+    #     # assert response
+    #     assert r.status_code == 201
 
-        # remove indicator/group/victim
-        self.test_file_delete(file_uuid)
+    #     # retrieve indicator for asserts
+    #     ti = self.ti.address(**indicator_data)
+    #     r = ti.single()
+    #     response_data = r.json()
+    #     ti_data = response_data.get('data', {}).get('address')
 
-    def test_file_get(self, file_uuid=None, md5='A4', sha1='A4', sha256='A4'):
-        """Test file get."""
-        # create
-        if not file_uuid:
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
+    #     # validate response data
+    #     assert r.status_code == 200
+    #     assert response_data.get('status') == 'Success'
 
-        # get
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        r = ti.single()
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('file').get('md5', None) == md5 * 16
-        assert ti_data.get('data').get('file').get('sha1', None) == sha1 * 20
-        assert ti_data.get('data').get('file').get('sha256', None) == sha256 * 32
+    #     # validate ti data
+    #     assert ti_data.get('confidence') == indicator_data.get('confidence')
+    #     assert ti_data.get('ip') == indicator_data.get('ip')
+    #     assert ti_data.get('rating') == indicator_data.get('rating')
 
-        # delete
-        self.test_file_delete(file_uuid)
+    #     # cleanup indicator
+    #     r = ti.delete()
+    #     assert r.status_code == 200
 
-    def test_file_get_attributes(self, file_uuid=None, md5='A5', sha1='A5', sha256='A5'):
-        """Test file get."""
-        # create
-        if not file_uuid:
-            file_uuid = self.file_create(md5 * 16, sha1 * 20, sha256 * 32)
+    # def tests_ti_address_add_attribute(self, request):
+    #     """Create an attribute on an address indicator.
 
-        self.test_file_add_attribute(file_uuid, 'Description', 'test1')
-        self.test_file_add_attribute(file_uuid, 'Description', 'test2')
-        self.test_file_add_attribute(file_uuid, 'Description', 'test3')
+    #     Args:
+    #         request (fixture): The pytest request fixture.
+    #     """
+    #     helper_ti = self.ti_helper.create_indicator()
 
-        # get attributes
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        for attribute in ti.attributes():
-            assert attribute
-            break
-        else:
-            assert False
+    #     attribute_data = {
+    #         'attribute_type': 'Description',
+    #         'attribute_value': request.node.name,
+    #         'source': request.node.name,
+    #         'displayed': True,
+    #     }
+    #     r = helper_ti.add_attribute(**attribute_data)
+    #     response_data = r.json()
+    #     ti_data = response_data.get('data', {}).get('attribute')
 
-        # delete
-        self.test_file_delete(file_uuid)
+    #     # assert response
+    #     assert r.status_code == 201
+    #     assert response_data.get('status') == 'Success'
 
-    def test_file_get_tags(self, file_uuid=None, md5='A6', sha1='A6', sha256='A6'):
-        """Test file get."""
-        # create
-        if not file_uuid:
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
+    #     # validate ti data
+    #     assert ti_data.get('type') == attribute_data.get('attribute_type')
+    #     assert ti_data.get('value') == attribute_data.get('attribute_value')
+    #     assert ti_data.get('displayed') == attribute_data.get('displayed')
 
-        self.test_file_add_tag(file_uuid, 'One')
-        self.test_file_add_tag(file_uuid, 'Two')
+    # def tests_ti_address_add_security_label(self):
+    #     """Create a tag on an address indicator.
 
-        # get tags
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        for tag in ti.tags():
-            assert tag.get('name')
-            break
-        else:
-            assert False
+    #     Args:
+    #         request (fixture): The pytest request fixture.
+    #     """
+    #     helper_ti = self.ti_helper.create_indicator()
 
-        # delete
-        self.test_file_delete(file_uuid)
+    #     r = helper_ti.add_label(label='TLP:GREEN')
+    #     response_data = r.json()
 
-    def test_file_get_include(self, file_uuid=None, md5='A7', sha1='A7', sha256='A7'):
-        """Test file get."""
-        if not file_uuid:
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
+    #     # assert response
+    #     assert r.status_code == 201
+    #     assert response_data.get('status') == 'Success'
 
-        self.test_file_add_attribute(
-            file_uuid, attribute_type='Description', attribute_value='test123'
-        )
-        self.test_file_add_label(file_uuid, label='TLP:RED')
-        self.test_file_add_tag(file_uuid, name='PyTest')
+    # def tests_ti_address_add_tag(self, request):
+    #     """Create a tag on an address indicator.
 
-        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        r = ti.single(params=parameters)
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('file').get('attribute')[0].get('value') == 'test123'
-        assert ti_data.get('data').get('file').get('securityLabel')[0].get('name') == 'TLP:RED'
-        assert ti_data.get('data').get('file').get('tag')[0].get('name') == 'PyTest'
+    #     Args:
+    #         request (fixture): The pytest request fixture.
+    #     """
+    #     helper_ti = self.ti_helper.create_indicator()
 
-        # delete
-        self.test_file_delete(file_uuid)
+    #     r = helper_ti.add_tag(request.node.name)
+    #     response_data = r.json()
 
-    def file_create(self, md5, sha1, sha256):
-        """Test file create."""
-        random_size = random.randint(1, 101)
-        ti = self.ti.file(
-            owner=tcex.args.tc_owner, md5=md5, sha1=sha1, sha256=sha256, size=random_size
-        )
-        r = ti.create()
-        assert r.status_code == 201
-        ti_data = r.json()
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('file').get('md5', None) == md5
-        assert ti_data.get('data').get('file').get('sha1', None) == sha1
-        assert ti_data.get('data').get('file').get('sha256', None) == sha256
-        assert ti_data.get('data').get('file').get('size', None) == random_size
+    #     # assert response
+    #     assert r.status_code == 201
+    #     assert response_data.get('status') == 'Success'
 
-        if md5:
-            return md5
-        if sha1:
-            return sha1
-        if sha256:
-            return sha256
-        return None
+    # def tests_ti_address_delete(self):
+    #     """Create an address indicator using specific interface."""
+    #     helper_ti = self.ti_helper.create_indicator()
 
-    def test_file_add_attribute(
-        self,
-        file_uuid=None,
-        md5='A9',
-        sha1='A9',
-        sha256='A9',
-        attribute_type='Description',
-        attribute_value='Example Description.',
-    ):
-        """Test file attribute add."""
-        should_delete = False
-        if not file_uuid:
-            should_delete = True
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
-        attribute_data = r.json()
-        assert r.status_code == 201
-        assert attribute_data.get('status') == 'Success'
-        assert attribute_data.get('data').get('attribute').get('value') == attribute_value
-        if should_delete:
-            self.test_file_delete(file_uuid)
+    #     # indicator for delete
+    #     ti = self.ti.address(ip=helper_ti.indicator, owner=helper_ti.owner)
+    #     r = ti.delete()
+    #     response_data = r.json()
 
-    def test_file_add_label(
-        self, file_uuid=None, md5='B4', sha1='B4', sha256='B4', label='TLP:GREEN'
-    ):
-        """Test file attribute add."""
-        should_delete = False
-        if not file_uuid:
-            should_delete = True
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        r = ti.add_label(label=label)
-        label_data = r.json()
-        assert r.status_code == 201
-        assert label_data.get('status') == 'Success'
-        if should_delete:
-            self.test_file_delete(file_uuid)
+    #     # validate response data
+    #     assert r.status_code == 200
+    #     assert response_data.get('status') == 'Success'
 
-    def test_file_add_tag(self, file_uuid=None, md5='B5', sha1='B5', sha256='B5', name='Crimeware'):
-        """Test file attribute add."""
-        should_delete = False
-        if not file_uuid:
-            should_delete = True
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        r = ti.add_tag(name=name)
-        tag_data = r.json()
-        assert r.status_code == 201
-        assert tag_data.get('status') == 'Success'
+    # def tests_ti_address_get_address(self):
+    #     """Get an address indicator."""
+    #     helper_ti = self.ti_helper.create_indicator()
 
-        if should_delete:
-            self.test_file_delete(file_uuid)
+    #     # retrieve the indicator
+    #     ti = self.ti.address(helper_ti.indicator, owner=helper_ti.owner)
+    #     r = ti.single()
+    #     response_data = r.json()
+    #     ti_data = response_data.get('data', {}).get('address')
 
-    def test_file_delete(self, file_uuid=None, md5='B6', sha1='B6', sha256='B6'):
-        """Test file delete."""
-        # create indicator
-        if not file_uuid:
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        r = ti.delete()
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
+    #     # validate response data
+    #     assert r.status_code == 200
+    #     assert response_data.get('status') == 'Success'
 
-    def test_file_update(self, file_uuid=None, md5='B7', sha1='B7', sha256='B7'):
-        """Test file update."""
-        # create indicator
-        if not file_uuid:
-            file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
-        r = ti.rating(5)
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('file').get('rating') == 5.0
+    #     # validate ti data
+    #     assert ti_data.get('confidence') == helper_ti.confidence
+    #     assert ti_data.get('ip') == helper_ti.indicator
+    #     assert ti_data.get('rating') == helper_ti.rating
 
-        r = ti.confidence(10)
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('file').get('confidence') == 10
+    # def tests_ti_address_get_address_include(self, request):
+    #     """Get an address indicator."""
+    #     attribute_data = {
+    #         'attribute_type': 'Description',
+    #         'attribute_value': request.node.name,
+    #     }
+    #     label_data = {'label': 'TLP:RED'}
+    #     tag_data = {'name': request.node.name}
+    #     helper_ti = self.ti_helper.create_indicator(
+    #         attributes=attribute_data, labels=label_data, tags=tag_data
+    #     )
 
-        # delete indicator
-        self.test_file_delete(file_uuid)
+    #     # retrieve the indicator
+    #     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
+    #     ti = self.ti.address(helper_ti.indicator, owner=helper_ti.owner)
+    #     r = ti.single(params=parameters)
+    #     response_data = r.json()
+    #     ti_data = response_data.get('data', {}).get('address')
+
+    #     # validate response data
+    #     assert r.status_code == 200
+    #     assert response_data.get('status') == 'Success'
+
+    #     # validate ti data
+    #     assert ti_data.get('confidence') == helper_ti.confidence
+    #     assert ti_data.get('ip') == helper_ti.indicator
+    #     assert ti_data.get('rating') == helper_ti.rating
+
+    #     # validate metadata
+    #     assert ti_data.get('attribute')[0].get('value') == attribute_data.get('attribute_value')
+    #     assert ti_data.get('securityLabel')[0].get('name') == label_data.get('label')
+    #     for tag in ti_data.get('tag'):
+    #         if tag.get('name') == tag_data.get('name'):
+    #             break
+    #     else:
+    #         assert False, f"Could not find tag {tag_data.get('name')}"
+
+    # def tests_ti_address_get_address_attribute(self, request):
+    #     """Get an address indicator."""
+    #     attribute_data = {
+    #         'attribute_type': 'Description',
+    #         'attribute_value': request.node.name,
+    #     }
+    #     helper_ti = self.ti_helper.create_indicator(attributes=attribute_data)
+
+    #     # retrieve the indicator
+    #     ti = self.ti.address(helper_ti.indicator, owner=helper_ti.owner)
+    #     for attribute in ti.attributes():
+    #         if attribute.get('value') == request.node.name:
+    #             break
+    #     else:
+    #         assert False, f'Could not find attribute with value {request.node.name}'
+
+    # def tests_ti_address_get_address_label(self, request):
+    #     """Get an address indicator."""
+    #     label_data = {'label': 'TLP:RED'}
+    #     helper_ti = self.ti_helper.create_indicator(labels=label_data)
+
+    #     # retrieve the indicator
+    #     ti = self.ti.address(helper_ti.indicator, owner=helper_ti.owner)
+    #     for label in ti.labels():
+    #         if label.get('name') == label_data.get('label'):
+    #             break
+    #     else:
+    #         assert False, f'Could not find tag with value {request.node.name}'
+
+    def tests_ti_address_get_tag(self, request):
+        """Test indicator get tag."""
+        super().indicator_get_tag(request)
+
+    def tests_ti_address_update(self):
+        """Test updating indicator metadata."""
+        super().indicator_update()
