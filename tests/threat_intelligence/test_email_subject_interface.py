@@ -6,7 +6,7 @@ from random import randint
 from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
-class TestAsnIndicators(TestThreatIntelligence):
+class TestEmailSubjectIndicators(TestThreatIntelligence):
     """Test TcEx Address Indicators."""
 
     indicator_field = 'Subject'

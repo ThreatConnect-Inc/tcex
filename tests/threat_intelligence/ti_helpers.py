@@ -30,6 +30,7 @@ class TIHelper:
             'CIDR': self.rand_cidr,
             'Email Subject': self.rand_email_subject,
             'Hashtag': self.rand_hashtag,
+            'Mutex': self.rand_mutex,
         }
 
         # cleanup values
@@ -66,6 +67,18 @@ class TIHelper:
     def rand_ip():
         """Return a random IP address."""
         return f'222.{randint(0,255)}.{randint(0,255)}.{randint(0,255)}'
+
+    def rand_mutex(self):
+        """Return a random Mutex."""
+        return f'Global\\{self.tcex.utils.random_string(randint(5,10))}'
+
+    @staticmethod
+    def rand_user_agent():
+        """Return a random Mutex."""
+        return (
+            f'Mozilla/{randint(1,5)}.0 (Macintosh; Intel Mac OS X 10.8; rv:36.0) '
+            f'Gecko/20100101 Firefox/{randint(1,36)}.0'
+        )
 
     def create_indicator(self, indicator_type=None, **kwargs):
         """Create an case.
