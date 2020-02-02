@@ -19,158 +19,47 @@ class TiTcRequest:
         self.tcex = tcex
         self.result_limit = 10000
 
-    def create(self, main_type, sub_type, data, owner):
-        """[summary]
-
-        Args:
-            main_type ([type]): [description]
-            sub_type ([type]): [description]
-            data (dict): The body for the POST.
-            owner (str): The name of the TC owner.
-
-        Returns:
-            request.Response: The response from the API call.
-        """
-        if not owner:
-            pass
-
-        # ex groups/adversary (will need to map them to the actual string value of them)
-        url = f'/v2/{main_type}'
-        if sub_type:
-            url = f'/v2/{main_type}/{sub_type}'
-
-        r = self.tcex.session.post(url, json=data, params={'owner': owner})
-        self.tcex.log.trace(f'url: {r.request.url}')
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'body: {data}')
-        return r
-
-    def delete(self, main_type, sub_type, unique_id, owner=None):
-        """Delete the Indicator/Group/Victim or Security Label
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            owner:
-        """
-        params = {'owner': owner} if owner else {}
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}'
-        r = self.tcex.session.delete(url, params=params)
-        self.tcex.log.trace(f'url: {r.request.url}')
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        return r
-
-    def update(self, main_type, sub_type, unique_id, data, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            data:
-
-        Returns:
-
-        """
-        params = {'owner': owner} if owner else {}
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}'
-
-        r = self.tcex.session.put(url, params=params, json=data)
-        self.tcex.log.trace(f'url: {r.request.url}')
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'body: {data}')
-        return r
-
-    def mine(self):
-        """
-        Get My owners
-        Returns:
-
-        """
-        url = '/v2/owners/mine'
-        return self.tcex.session.get(url)
-
-    def single(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            owner:
-            filters:
-            params:
-
-        Returns:
-
-        """
+    def _delete(self, url, params=None):
+        """Delete data from API."""
         params = params or {}
 
-        if owner:
-            params['owner'] = owner
-        if filters and filters.filters:
-            params['filters'] = filters.filters_string
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}'
+        r = self.tcex.session.delete(url, params=params)
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Params: ({params}), '
+            f'Status Code: {r.status_code}, '
+            f'URL: ({r.url})'
+        )
+        if not r.ok:
+            err = r.text or r.reason
+            self.tcex.log.error(f'Error deleting data ({err}')
+        return r
+
+    def _get(self, url, params=None):
+        """Delete data from API."""
+        params = params or {}
 
         r = self.tcex.session.get(url, params=params)
-        self.tcex.log.trace(f'url: {r.request.url}')
-        self.tcex.log.debug(f'status code: {r.status_code}')
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Params: ({params}), '
+            f'Status Code: {r.status_code}, '
+            f'URL: ({r.url})'
+        )
+        if not r.ok:
+            err = r.text or r.reason
+            self.tcex.log.error(f'Error getting data ({err}')
         return r
 
-    def many(self, main_type, sub_type, api_entity, owner=None, filters=None, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            api_entity:
-            filters:
-            owner:
-            params:
-
-        Returns:
-
-        """
-        params = params or {}
-
-        if owner:
-            params['owner'] = owner
-        if filters and filters.filters:
-            params['filters'] = filters.filters_string
-        if not sub_type:
-            url = f'/v2/{main_type}'
-        else:
-            url = f'/v2/{main_type}/{sub_type}'
-
-        yield from self._iterate(url, params, api_entity)
-
     def _iterate(self, url, params, api_entity):
-        """
-        Args:
-            url:
-            params:
-            api_entity:
-
-        Return:
-        """
+        """Iterate over API pagination."""
         params['resultLimit'] = self.result_limit
         should_iterate = True
         result_start = 0
         while should_iterate:
-            # params['resultOffset'] = result_offset
             params['resultStart'] = result_start
-            r = self.tcex.session.get(url, params=params)
+            # r = self.tcex.session.get(url, params=params)
+            r = self._get(url, params=params)
             if not self.success(r):
                 err = r.text or r.reason
                 self.tcex.handle_error(950, [r.status_code, err, r.url])
@@ -183,62 +72,491 @@ class TiTcRequest:
 
             yield from data
 
-    def request(
-        self, main_type, sub_type, result_limit, result_start, owner=None, filters=None, params=None
-    ):
-        """
+    def _post(self, url, data, params=None):
+        """Post data to API."""
+        params = params or {}
+
+        r = self.tcex.session.post(url, data=data, params=params)
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Params: ({params}), '
+            f'Status Code: {r.status_code}, '
+            f'URL: ({r.url})'
+        )
+        if len(data) < 50 and not isinstance(data, bytes):
+            self.tcex.log.trace(f'body: {data}')
+        if not r.ok:
+            err = r.text or r.reason
+            self.tcex.log.error(f'Error posting data ({err}')
+        return r
+
+    def _post_json(self, url, json_data, params=None):
+        """Post JSON data to API."""
+        params = params or {}
+
+        r = self.tcex.session.post(url, json=json_data, params=params)
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Params: ({params}), '
+            f'Status Code: {r.status_code}, '
+            f'URL: ({r.url})'
+        )
+        self.tcex.log.trace(f'body: {json_data}')
+        if not r.ok:
+            err = r.text or r.reason
+            self.tcex.log.error(f'Error posting data ({err}')
+        return r
+
+    def _put_json(self, url, json_data, params=None):
+        """Post JSON data to API."""
+        params = params or {}
+
+        r = self.tcex.session.put(url, json=json_data, params=params)
+        self.tcex.log.debug(
+            f'Method: ({r.request.method.upper()}), '
+            f'Params: ({params}), '
+            f'Status Code: {r.status_code}, '
+            f'URL: ({r.url})'
+        )
+        self.tcex.log.trace(f'body: {json_data}')
+        if not r.ok:
+            err = r.text or r.reason
+            self.tcex.log.error(f'Error updating data ({err}')
+        return r
+
+    def add_adversary_handle_asset(self, unique_id, value):
+        """Add an asset to an Adversary.
 
         Args:
-            main_type:
-            sub_type:
-            result_limit:
-            result_start:
-            owner:
-            filters:
-            params:
+            unique_id (str): The unique ID of the Adversary
+            value (str): The asset value
 
-        Return:
+        Returns:
+            requests.Response: A request Response object.
+        """
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/handles'
+        asset_data = {'handle': value}
+        return self._post_json(asset_url, asset_data)
 
+    def add_adversary_phone_asset(self, unique_id, value):
+        """Add an asset to an Adversary.
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            value (str): The asset value
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/phoneNumbers'
+        asset_data = {'phoneNumber': value}
+        return self._post_json(asset_url, asset_data)
+
+    def add_adversary_url_asset(self, unique_id, value):
+        """Add an asset to an Adversary.
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            value (str): The asset value
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/urls'
+        asset_data = {'url': value}
+        return self._post_json(asset_url, asset_data)
+
+    def adversary_assets(self, unique_id, params=None):
+        """Return all Adversary assets
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            params (dict, optional): The query params for the request. Defaults to None.
+
+        Yields:
+            requests.Response: A request Response object.
         """
         params = params or {}
 
-        if owner:
-            params['owner'] = owner
-        if filters and filters.filters:
-            params['filters'] = filters.filters_string
-        params['resultLimit'] = result_limit or params.get('result_limit', self.result_limit)
-        params['resultStart'] = result_start or params.get('result_start', 0)
-        if not sub_type:
-            url = f'/v2/{main_type}'
-        else:
-            url = f'/v2/{main_type}/{sub_type}'
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets'
+        # yield from self._iterate(asset_url, params, 'adversaryAsset')
+        yield from self._iterate(asset_url, params, 'bucketAsset')
 
-        r = self.tcex.session.get(url, params=params)
-        self.tcex.log.trace(f'url: {r.request.url}')
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        return r
-
-    def upload(self, main_type, sub_type, unique_id, data, update_if_exists=True):
-        """
+    def adversary_handle_asset(self, unique_id, asset_id, action='GET', params=None):
+        """Return Adversary handle asset by ID
 
         Args:
-            main_type:
-            sub_type:
-            unique_id:
-            data:
-            update_if_exists:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+            action: (str): The HTTP method (e.g., DELETE or GET)
+            params (dict, optional): The query params for the request. Defaults to None.
 
-        Return:
+        Returns:
+            requests.Response: A request Response object.
+        """
+        params = params or {}
 
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/handles/{asset_id}'
+
+        # handle DELETE action
+        if action == 'DELETE':
+            return self._delete(asset_url, params=params)
+
+        return self._get(asset_url, params=params)
+
+    def adversary_phone_asset(self, unique_id, asset_id, action='GET', params=None):
+        """Return Adversary phone number asset by ID
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+            action: (str): The HTTP method (e.g., DELETE or GET)
+            params (dict, optional): The query params for the request. Defaults to None.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        params = params or {}
+
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/phoneNumbers/{asset_id}'
+
+        # handle DELETE action
+        if action == 'DELETE':
+            return self._delete(asset_url, params=params)
+
+        return self._get(asset_url, params=params)
+
+    def adversary_url_asset(self, unique_id, asset_id, action='GET', params=None):
+        """Return Adversary url asset by ID
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+            action: (str): The HTTP method (e.g., DELETE or GET)
+            params (dict, optional): The query params for the request. Defaults to None.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        params = params or {}
+
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/urls/{asset_id}'
+
+        # handle DELETE action
+        if action == 'DELETE':
+            return self._delete(asset_url, params=params)
+
+        return self._get(asset_url, params=params)
+
+    def adversary_handle_assets(self, unique_id, params=None):
+        """Return all Adversary handle assets
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            params (dict, optional): The query params for the request. Defaults to None.
+
+        Yields:
+            requests.Response: A request Response object.
+        """
+        params = params or {}
+
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/handles'
+        yield from self._iterate(asset_url, params, 'adversaryHandle')
+
+    def adversary_phone_assets(self, unique_id, params=None):
+        """Return all Adversary phone assets
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            params (dict, optional): The query params for the request. Defaults to None.
+
+        Yields:
+            requests.Response: A request Response object.
+        """
+        params = params or {}
+
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/phoneNumbers'
+        yield from self._iterate(asset_url, params, 'adversaryPhoneNumber')
+
+    def adversary_url_assets(self, unique_id, params=None):
+        """Return all Adversary url assets
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            params (dict, optional): The query params for the request. Defaults to None.
+
+        Yields:
+            requests.Response: A request Response object.
+        """
+        params = params or {}
+
+        asset_url = f'/v2/groups/adversaries/{unique_id}/adversaryAssets/urls'
+        yield from self._iterate(asset_url, params, 'adversaryUrl')
+
+    def create(self, main_type, sub_type, data, owner):
+        """Create a TI object in the API.
+
+        Args:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            data (dict): The body for the POST.
+            owner (str): The name of the TC owner.
+
+        Returns:
+            request.Response: The response from the API call.
+        """
+        # TODO: @bpurdy - what is this URL good for on a create???
+        url = f'/v2/{main_type}'
+        if sub_type:
+            url = f'/v2/{main_type}/{sub_type}'
+
+        params = {}
+        if owner:
+            params['owner'] = owner
+        return self._post_json(url, data, params)
+
+    def delete(self, main_type, sub_type, unique_id, owner=None):
+        """Delete a TI object in the API.
+
+        Args:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            data (dict): The body for the POST.
+            owner (str): The name of the TC owner.
+
+        Returns:
+            request.Response: The response from the API call.
+        """
+        # TODO: @bpurdy - what is this URL good for on a delete???
+        url = f'/v2/{main_type}/{unique_id}'
+        if sub_type:
+            if unique_id:
+                url = f'/v2/{main_type}/{sub_type}/{unique_id}'
+
+        params = {}
+        if owner:
+            params['owner'] = owner
+        return self._delete(url, params)
+
+    def delete_adversary_handle_asset(self, unique_id, asset_id):
+        """Delete Adversary handle assest
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        return self.adversary_handle_asset(unique_id, asset_id, action='DELETE')
+
+    def delete_adversary_phone_asset(self, unique_id, asset_id):
+        """Delete Adversary phone assest
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        return self.adversary_phone_asset(unique_id, asset_id, action='DELETE')
+
+    def delete_adversary_url_asset(self, unique_id, asset_id):
+        """Delete Adversary URL assest
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        return self.adversary_url_asset(unique_id, asset_id, action='DELETE')
+
+    def get_adversary_handle_asset(self, unique_id, asset_id, params=None):
+        """Get Adversary handle assest
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        return self.adversary_handle_asset(unique_id, asset_id, params=params)
+
+    def get_adversary_phone_asset(self, unique_id, asset_id, params=None):
+        """Get Adversary phone assest
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        return self.adversary_phone_asset(unique_id, asset_id, params=params)
+
+    def get_adversary_url_asset(self, unique_id, asset_id, params=None):
+        """Get Adversary URL assest
+
+        Args:
+            unique_id (str): The unique ID of the Adversary
+            asset_id: (str) The ID of the asset.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        params = params or {}
+
+        return self.adversary_url_asset(unique_id, asset_id, params=params)
+
+    def many(self, main_type, sub_type, api_entity, owner=None, filters=None, params=None):
+        """Update a TI object in the API.
+
+        Args:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            api_entity (str): The API entity value (e.g., address, file, etc).
+            owner (str): The name of the TC owner.
+            filter (Filter, optional): A filter object.
+            params (dict, optional): Optional dict of query params.
+
+        Yields:
+            request.Response: The response from the API call.
+        """
+        params = params or {}
+
+        # add owner
+        if owner:
+            params['owner'] = owner
+
+        # add filters
+        if filters and filters.filters:
+            params['filters'] = filters.filters_string
+
+        # build url
+        url = f'/v2/{main_type}'
+        if sub_type:
+            url = f'/v2/{main_type}/{sub_type}'
+
+        yield from self._iterate(url, params, api_entity)
+
+    def mine(self):
+        """Get owner mine data."""
+        return self._get('/v2/owners/mine')
+
+    def request(
+        self, main_type, sub_type, result_limit, result_start, owner=None, filters=None, params=None
+    ):
+        """[summary]
+
+        Args:
+            main_type ([type]): [description]
+            sub_type ([type]): [description]
+            result_limit ([type]): [description]
+            result_start ([type]): [description]
+            owner ([type], optional): [description]. Defaults to None.
+            filters ([type], optional): [description]. Defaults to None.
+            params ([type], optional): [description]. Defaults to None.
+
+        Returns:
+            [type]: [description]
+        """
+        params = params or {}
+
+        # add owner
+        if owner:
+            params['owner'] = owner
+
+        # add filters
+        if filters and filters.filters:
+            params['filters'] = filters.filters_string
+
+        # add result limits and result start
+        params['resultLimit'] = result_limit or params.get('result_limit', self.result_limit)
+        params['resultStart'] = result_start or params.get('result_start', 0)
+
+        url = f'/v2/{main_type}'
+        if sub_type:
+            url = f'/v2/{main_type}/{sub_type}'
+
+        return self._get(url, params)
+
+    def single(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
+        """Update a TI object in the API.
+
+        Args:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            unique_id (str): The unique ID of the TI object.
+            owner (str): The name of the TC owner.
+            filter (Filter, optional): A filter object.
+            params (dict, optional): Optional dict of query params.
+
+        Returns:
+            request.Response: The response from the API call.
+        """
+        params = params or {}
+
+        # add owner
+        if owner:
+            params['owner'] = owner
+
+        # add filters
+        if filters and filters.filters:
+            params['filters'] = filters.filters_string
+
+        # build url
+        url = f'/v2/{main_type}/{unique_id}'
+        if sub_type:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}'
+
+        return self._get(url, params)
+
+    def update(self, main_type, sub_type, unique_id, data, owner=None):
+        """Update a TI object in the API.
+
+        Args:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            unique_id (str): The unique ID of the TI object.
+            data (dict): The body for the POST.
+            owner (str): The name of the TC owner.
+
+        Returns:
+            request.Response: The response from the API call.
+        """
+        # TODO: @bpurdy - what is this URL good for on an update???
+        url = f'/v2/{main_type}/{unique_id}'
+        if sub_type:
+            if unique_id:
+                url = f'/v2/{main_type}/{sub_type}/{unique_id}'
+
+        params = {}
+        if owner:
+            params['owner'] = owner
+        return self._put_json(url, data, params)
+
+    def upload(self, main_type, sub_type, unique_id, data, update_if_exists=True):
+        """Upload a file to API.
+
+        Args:
+            main_type ([type]): [description]
+            sub_type ([type]): [description]
+            unique_id ([type]): [description]
+            data ([type]): [description]
+            update_if_exists (bool, optional): [description]. Defaults to True.
+
+        Returns:
+            [type]: [description]
         """
         if not isinstance(data, bytes):
             data = bytes(data, 'utf-8')
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/upload?updateIfExists={update_if_exists}'
-        r = self.tcex.session.post(url, data=data)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
-        return r
+        return self._post(url, data=data)
 
     def add_false_positive(self, main_type, sub_type, unique_id, owner=None):
         """
@@ -910,22 +1228,6 @@ class TiTcRequest:
         if r is not None:
             self.tcex.log.debug(f'status code: {r.status_code}')
             self.tcex.log.trace(f'url: {r.request.url}')
-        return r
-
-    def add_victim_phone_asset(self, unique_id, name):
-        """
-
-        Args:
-            unique_id:
-            name:
-
-        Return:
-
-        """
-        url = f'/v2/victims/{unique_id}/victimAssets/phoneNumbers'
-        r = self.tcex.session.post(url, json={'phoneType': name})
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
         return r
 
     def add_victim_email_asset(self, unique_id, name, asset_type):
@@ -2180,290 +2482,19 @@ class TiTcRequest:
             main_type, sub_type, unique_id, attribute_id, label, action='ADD', owner=owner
         )
 
-    def adversary_assets(self, main_type, sub_type, unique_id, params=None):
-        """
+    def add_victim_phone_asset(self, unique_id, value):
+        """Add an asset to a Victim.
 
         Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
+            unique_id (str): The unique ID of the Victim
+            value (str): The asset value
 
-        Return:
-
+        Returns:
+            requests.Response: A request Response object.
         """
-        params = params or {}
-
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/adversaryAssets'
-        yield from self._iterate(url, params, 'adversaryAsset')
-
-    def adversary_handle_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/adversaryAssets/handles'
-        yield from self._iterate(url, params, 'adversaryHandle')
-
-    def adversary_phone_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/adversaryAssets/phoneNumbers'
-        yield from self._iterate(url, params, 'adversaryPhone')
-
-    def adversary_url_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/adversaryAssets/urls'
-        yield from self._iterate(url, params, 'adversaryUrl')
-
-    def adversary_url_asset(
-        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
-    ):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            action:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/adversaryAssets/urls/{asset_id}'
-
-        if action == 'GET':
-            return self.tcex.session.get(url, params=params)
-        if action == 'DELETE':
-            return self.tcex.session.delete(url)
-        return None
-
-    def get_adversary_url_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        return self.adversary_url_asset(main_type, sub_type, unique_id, asset_id, params=params)
-
-    def delete_adversary_url_asset(self, main_type, sub_type, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.adversary_url_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
-
-    def add_adversary_url_asset(self, main_type, sub_type, unique_id, name):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            name:
-
-        Return:
-
-        """
-        asset_url = f'/v2/{main_type}/{sub_type}/{unique_id}/urls'
-        asset = {'url': name}
-        return self.tcex.session.post(asset_url, json=asset)
-
-    def adversary_phone_asset(
-        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
-    ):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            action:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/adversaryAssets/phoneNumbers/{asset_id}'
-
-        if action == 'GET':
-            return self.tcex.session.get(url, params=params)
-        if action == 'DELETE':
-            return self.tcex.session.delete(url)
-        return None
-
-    def get_adversary_phone_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        return self.adversary_phone_asset(main_type, sub_type, unique_id, asset_id, params=params)
-
-    def delete_adversary_phone_asset(self, main_type, sub_type, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.adversary_phone_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
-
-    def add_adversary_phone_asset(self, main_type, sub_type, unique_id, name):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            name:
-
-        Return:
-
-        """
-        asset_url = f'/v2/{main_type}/{sub_type}/{unique_id}/phoneNumbers'
-        asset = {'phoneNumber': name}
-        return self.tcex.session.post(asset_url, json=asset)
-
-    def adversary_handler_asset(
-        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
-    ):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            action:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/adversaryAssets/handles/{asset_id}'
-
-        if action == 'GET':
-            return self.tcex.session.get(url, params=params)
-        if action == 'DELETE':
-            return self.tcex.session.delete(url)
-        return None
-
-    def get_adversary_handler_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        return self.adversary_handler_asset(main_type, sub_type, unique_id, asset_id, params=params)
-
-    def delete_adversary_handler_asset(self, main_type, sub_type, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.adversary_handler_asset(
-            main_type, sub_type, unique_id, asset_id, action='DELETE'
-        )
-
-    def add_adversary_handler_asset(self, main_type, sub_type, unique_id, name):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            name:
-
-        Return:
-
-        """
-        asset_url = f'/v2/{main_type}/{sub_type}/{unique_id}/handles'
-        asset = {'handle': name}
-        return self.tcex.session.post(asset_url, json=asset)
+        asset_url = f'/v2/victims/{unique_id}/victimAssets/phoneNumbers'
+        asset_data = {'phoneType': value}
+        return self._post_json(asset_url, asset_data)
 
     def assignees(self, main_type, sub_type, unique_id, params=None):
         """

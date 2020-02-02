@@ -60,7 +60,7 @@ class ThreatIntelligence:
         """
         return Address(self.tcex, ip, owner=owner, **kwargs)
 
-    def url(self, url, owner=None, **kwargs):
+    def url(self, text, owner=None, **kwargs):
         """Create the URL TI object.
 
         Args:
@@ -71,7 +71,7 @@ class ThreatIntelligence:
         Return:
 
         """
-        return URL(self.tcex, url, owner=owner, **kwargs)
+        return URL(self.tcex, text, owner=owner, **kwargs)
 
     def email_address(self, address, owner=None, **kwargs):
         """Create the Email Address TI object.
@@ -147,7 +147,7 @@ class ThreatIntelligence:
         elif upper_indicator_type == 'HOST':
             indicator = Host(self.tcex, kwargs.pop('hostname', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'URL':
-            indicator = URL(self.tcex, kwargs.pop('url', None), owner=owner, **kwargs)
+            indicator = URL(self.tcex, kwargs.pop('text', None), owner=owner, **kwargs)
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():

@@ -7,7 +7,7 @@ from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
 class TestEmailSubjectIndicators(TestThreatIntelligence):
-    """Test TcEx Address Indicators."""
+    """Test TcEx Email Subject Indicators."""
 
     indicator_field = 'Subject'
     indicator_field_arg = indicator_field.replace(' ', '_').lower()
@@ -30,7 +30,7 @@ class TestEmailSubjectIndicators(TestThreatIntelligence):
             self.ti_helper.cleanup()
 
     def tests_ti_email_subject_create(self):
-        """Create an address indicator using specific interface."""
+        """Create an indicator using specific interface."""
         indicator_data = {
             self.indicator_field_custom: self.ti_helper.rand_email_subject(),
             'confidence': randint(0, 100),
@@ -71,7 +71,7 @@ class TestEmailSubjectIndicators(TestThreatIntelligence):
         super().indicator_add_label()
 
     def tests_ti_email_subject_add_tag(self, request):
-        """Test indicator delete."""
+        """Test indicator add tag."""
         super().indicator_add_tag(request)
 
     def tests_ti_email_subject_delete(self):

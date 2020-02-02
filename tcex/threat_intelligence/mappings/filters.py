@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""ThreatConnect TI Security Label"""
+"""ThreatConnect Threat Intelligence Filter Module"""
 
 
 class Filters:
-    """Filters object ot handle adding filters to TI URL calls"""
+    """Filters module for Threat Intelligence"""
 
     def __init__(self, tcex):
         """Initialize class properties."""
@@ -15,11 +15,6 @@ class Filters:
         """Return filters"""
         return self._filters
 
-    @filters.setter
-    def filters(self, filter_key):
-        """Set filters"""
-        self._filters = filter_key
-
     def add_filter(self, filter_key, operator, value):
         """Add a filter given a key, operator, and value"""
         filter_key = self._metadata_map.get(filter_key, filter_key)
@@ -27,7 +22,9 @@ class Filters:
 
     def remove_filter(self, filter_key):
         """Remove a filter, given a passed in filter key"""
-        self.filters.pop(filter_key)
+        for f in list(self._filters):
+            if f.get('name') == filter_key:
+                self.filters.remove(f)
 
     @property
     def _metadata_map(self):

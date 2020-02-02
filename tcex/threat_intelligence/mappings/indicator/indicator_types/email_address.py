@@ -32,7 +32,7 @@ class EmailAddress(Indicator):
         Returns:
 
         """
-        return self.data.get('address') is True
+        return not self.data.get('address') is None
 
     def _set_unique_id(self, json_response):
         """Set the unique_id provided a json response.

@@ -7,7 +7,7 @@ from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
 class TestMutexIndicators(TestThreatIntelligence):
-    """Test TcEx Address Indicators."""
+    """Test TcEx Mutex Indicators."""
 
     indicator_field = 'Mutex'
     indicator_field_arg = indicator_field.replace(' ', '_').lower()
@@ -30,7 +30,7 @@ class TestMutexIndicators(TestThreatIntelligence):
             self.ti_helper.cleanup()
 
     def tests_ti_mutex_create(self):
-        """Create an address indicator using specific interface."""
+        """Create an indicator using specific interface."""
         indicator_data = {
             self.indicator_field_custom: self.ti_helper.rand_mutex(),
             'confidence': randint(0, 100),
@@ -71,7 +71,7 @@ class TestMutexIndicators(TestThreatIntelligence):
         super().indicator_add_label()
 
     def tests_ti_mutex_add_tag(self, request):
-        """Test indicator delete."""
+        """Test indicator add tag."""
         super().indicator_add_tag(request)
 
     def tests_ti_mutex_delete(self):

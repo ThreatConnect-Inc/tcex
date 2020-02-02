@@ -23,7 +23,7 @@ def custom_indicator_class_factory(
         self._data[value_fields[0]] = value1
         self.unique_id = kwargs.get('unique_id', value1)
         if self.unique_id:
-            self.unique_id = quote(self.fully_decode_uri(self.unique_id))
+            self.unique_id = quote(self.fully_decode_uri(self.unique_id), safe='')
 
     def _set_unique_id_1(self, json_request):
         """Set the unique ID.
@@ -33,7 +33,7 @@ def custom_indicator_class_factory(
         """
         self.unique_id = json_request.get(value_fields[0])
         if self.unique_id:
-            self.unique_id = quote(self.fully_decode_uri(self.unique_id))
+            self.unique_id = quote(self.fully_decode_uri(self.unique_id), safe='')
 
     @staticmethod
     def _metadata_map_1():
@@ -60,9 +60,9 @@ def custom_indicator_class_factory(
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         if value1:
-            value1 = quote(self.fully_decode_uri(value1))
+            value1 = quote(self.fully_decode_uri(value1), safe='')
         if value2:
-            value2 = quote(self.fully_decode_uri(value2))
+            value2 = quote(self.fully_decode_uri(value2), safe='')
         self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2))
 
     def _set_unique_id_2(self, json_request):
@@ -74,8 +74,8 @@ def custom_indicator_class_factory(
         value_0 = json_request.get(value_fields[0], '')
         value_1 = json_request.get(value_fields[1], '')
         self.unique_id = self.build_summary(
-            quote(self.fully_decode_uri(value_0)) or None,
-            quote(self.fully_decode_uri(value_1)) or None,
+            quote(self.fully_decode_uri(value_0), safe='') or None,
+            quote(self.fully_decode_uri(value_1), safe='') or None,
         )
 
     def can_create_2(self):  # pylint: disable=W0641
@@ -95,11 +95,11 @@ def custom_indicator_class_factory(
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
         if value1:
-            value1 = quote(self.fully_decode_uri(value1))
+            value1 = quote(self.fully_decode_uri(value1), safe='')
         if value2:
-            value2 = quote(self.fully_decode_uri(value2))
+            value2 = quote(self.fully_decode_uri(value2), safe='')
         if value3:
-            value3 = quote(self.fully_decode_uri(value3))
+            value3 = quote(self.fully_decode_uri(value3), safe='')
         self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2, value3))
 
     def _set_unique_id_3(self, json_request):
@@ -112,9 +112,9 @@ def custom_indicator_class_factory(
         value_1 = json_request.get(value_fields[1], '')
         value_2 = json_request.get(value_fields[2], '')
         self.unique_id = self.build_summary(
-            quote(self.fully_decode_uri(value_0)) or None,
-            quote(self.fully_decode_uri(value_1)) or None,
-            quote(self.fully_decode_uri(value_2)) or None,
+            quote(self.fully_decode_uri(value_0), safe='') or None,
+            quote(self.fully_decode_uri(value_1), safe='') or None,
+            quote(self.fully_decode_uri(value_2), safe='') or None,
         )
 
     def can_create_3(self):  # pylint: disable=W0641
@@ -204,7 +204,7 @@ class Indicator(Mappings):
         elif key == 'rating':
             self._data[key] = float(value)
         elif key == 'unique_id':
-            self._unique_id = quote(self.fully_decode_uri(value))
+            self._unique_id = quote(self.fully_decode_uri(value), safe='')
         else:
             self._data[key] = value
 

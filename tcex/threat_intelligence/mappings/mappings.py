@@ -882,15 +882,11 @@ class Mappings:
 
     def can_delete(self):
         """ Determines if the object can be deleted. """
-        if self.unique_id:
-            return True
-        return False
+        return self.unique_id is not None
 
     def can_update(self):
         """ Determines if the object can be updated. """
-        if self.unique_id:
-            return True
-        return False
+        return self.unique_id is not None
 
     @staticmethod
     def is_indicator():

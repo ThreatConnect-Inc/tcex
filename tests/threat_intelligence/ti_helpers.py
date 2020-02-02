@@ -10,10 +10,11 @@ class TIHelper:
     """Case Management Helper Module
 
     Args:
-        cm_object (str): The name of the object (e.g., artifact) being tested.
+        ti_type (str): The TI type for group or indicator.
+        ti_field (str, optional): The TI field for indicators (e.g., ip).
     """
 
-    def __init__(self, ti_type, ti_field):
+    def __init__(self, ti_type, ti_field=None):
         """Initialize Class Properties"""
         self.ti_type = ti_type
         self.ti_field = ti_field
@@ -28,9 +29,13 @@ class TIHelper:
             'Address': self.rand_ip,
             'ASN': self.rand_asn,
             'CIDR': self.rand_cidr,
+            'EmailAddress': self.rand_email_address,
             'Email Subject': self.rand_email_subject,
             'Hashtag': self.rand_hashtag,
+            'Host': self.rand_host,
             'Mutex': self.rand_mutex,
+            'URL': self.rand_url,
+            'User Agent': self.rand_user_agent,
         }
 
         # cleanup values
@@ -51,6 +56,13 @@ class TIHelper:
         """Return a random CIDR block."""
         return f'{randint(0,255)}.{randint(0,255)}.{randint(0,255)}.0/{randint(16,24)}'
 
+    def rand_email_address(self):
+        """Return a random email subject."""
+        return (
+            f'{self.tcex.utils.random_string(randint(5,15))}@'
+            f'{self.tcex.utils.random_string(randint(5,15))}.com'
+        ).lower()
+
     def rand_email_subject(self):
         """Return a random email subject."""
         return (
@@ -63,6 +75,10 @@ class TIHelper:
         """Return a random hashtag."""
         return f'#{self.tcex.utils.random_string(randint(5,15))}'.lower()
 
+    def rand_host(self):
+        """Return a random hashtag."""
+        return f'{self.tcex.utils.random_string(randint(5,15))}.com'.lower()
+
     @staticmethod
     def rand_ip():
         """Return a random IP address."""
@@ -72,6 +88,22 @@ class TIHelper:
         """Return a random Mutex."""
         return f'Global\\{self.tcex.utils.random_string(randint(5,10))}'
 
+    def rand_name(self):
+        """Return a random name."""
+        return f'{self.tcex.utils.random_string(randint(10,100))}'
+
+    @staticmethod
+    def rand_phone_number():
+        """Return a random email subject."""
+        return f'{randint(100,999)}-{randint(100,999)}-{randint(1000,9999)}'
+
+    def rand_url(self):
+        """Return a random hashtag."""
+        return (
+            f'https://{self.tcex.utils.random_string(randint(5,15))}.com/'
+            f'{self.tcex.utils.random_string(randint(5,15))}/'
+        ).lower()
+
     @staticmethod
     def rand_user_agent():
         """Return a random Mutex."""
@@ -79,6 +111,79 @@ class TIHelper:
             f'Mozilla/{randint(1,5)}.0 (Macintosh; Intel Mac OS X 10.8; rv:36.0) '
             f'Gecko/20100101 Firefox/{randint(1,36)}.0'
         )
+
+    def create_group(self, **kwargs):
+        """Create an case.
+
+        If a case_name is not provide a dynamic case name will be used.
+
+        Args:
+            attributes (dict|list, kwargs): An attribute or attributes to add to group.
+            group_type (str, kwargs): The group type.
+            owner (str, kwargs): The TC owner to using when adding TI.
+            name (str, kwargs): The name of the group being added.
+            security_labels (dict|list, kwargs): A label or labels to add to group.
+            tags (dict|list, kwargs): A tag or tags to add to group.
+
+        Returns:
+            TI: A TI object.
+        """
+        # use passed group type or global value
+        attributes = kwargs.pop('attributes', [])
+        labels = kwargs.pop('labels', [])
+        tags = kwargs.pop('tags', [])
+
+        if kwargs.get('group_type') is None:
+            kwargs['group_type'] = self.ti_type
+
+        if kwargs.get('name') is None:
+            kwargs['name'] = self.rand_name()
+
+        if kwargs.get('owner') is None:
+            kwargs['owner'] = os.getenv('TC_OWNER')
+
+        # setup group data
+        ti = self.ti.group(**kwargs)
+        if not ti.is_group():  # coverage
+            raise RuntimeError('Wrong TI object')
+
+        # add the group name to the ti object to be accessed in test case
+        setattr(ti, 'name', kwargs.get('name'))
+
+        # store case id for cleanup
+        self.ti_objects.append(ti)
+
+        # create group
+        r = ti.create()
+        if not r.ok:
+            raise RuntimeError(f"Failed to create group ({kwargs.get('name')}). Error: ({r.text})")
+
+        # handle attribute inputs
+        if isinstance(attributes, dict):
+            attributes = [attributes]
+        for attribute in attributes:
+            ra = ti.add_attribute(**attribute)
+            if not ra.ok:
+                raise RuntimeError(f'Failed to add attribute ({attribute}). Error: ({ra.text})')
+
+        # handle label inputs
+        if isinstance(labels, dict):
+            labels = [labels]
+        for label in labels:
+            rl = ti.add_label(**label)
+            if not rl.ok:
+                raise RuntimeError(f'Failed to add label ({label}). Error: ({rl.text})')
+
+        # handle tag inputs
+        if isinstance(tags, dict):
+            tags = [tags]
+        tags.append({'name': 'PyTest'})
+        for tag in tags:
+            rt = ti.add_tag(**tag)
+            if not rt.ok:
+                raise RuntimeError(f'Failed to add tag ({tag}). Error: ({rt.text})')
+
+        return ti
 
     def create_indicator(self, indicator_type=None, **kwargs):
         """Create an case.
@@ -168,12 +273,266 @@ class TIHelper:
 class TestThreatIntelligence:
     """Test TcEx Threat Intelligence Base Class"""
 
+    group_type = None
     indicator_field = None
     indicator_field_arg = None
     indicator_type = None
     owner = None
     ti = None
     ti_helper = None
+
+    def group_add_attribute(self, request):
+        """Create a attribute on a group."""
+        helper_ti = self.ti_helper.create_group()
+
+        attribute_data = {
+            'attribute_type': 'Description',
+            'attribute_value': request.node.name,
+            'source': request.node.name,
+            'displayed': True,
+        }
+        r = helper_ti.add_attribute(**attribute_data)
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get('attribute')
+
+        # assert response
+        assert r.status_code == 201
+        assert response_data.get('status') == 'Success'
+
+        # validate ti data
+        assert ti_data.get('type') == attribute_data.get('attribute_type')
+        assert ti_data.get('value') == attribute_data.get('attribute_value')
+        assert ti_data.get('displayed') == attribute_data.get('displayed')
+
+    def group_add_label(self):
+        """Create a label on a group."""
+        helper_ti = self.ti_helper.create_group()
+
+        r = helper_ti.add_label(label='TLP:GREEN')
+        response_data = r.json()
+
+        # assert response
+        assert r.status_code == 201
+        assert response_data.get('status') == 'Success'
+
+    def group_add_tag(self, request):
+        """Create a tag on an group."""
+        helper_ti = self.ti_helper.create_group()
+
+        r = helper_ti.add_tag(request.node.name)
+        response_data = r.json()
+
+        # assert response
+        assert r.status_code == 201
+        assert response_data.get('status') == 'Success'
+
+    def group_delete(self):
+        """Delete group."""
+        helper_ti = self.ti_helper.create_group()
+
+        # group for delete
+        group_data = {
+            'name': helper_ti.name,
+            'group_type': self.group_type,
+            'owner': helper_ti.owner,
+            'unique_id': helper_ti.unique_id,
+        }
+        ti = self.ti.group(**group_data)
+        r = ti.delete()
+        response_data = r.json()
+
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
+
+    def group_get(self):
+        """Get group with generic group method."""
+        helper_ti = self.ti_helper.create_group()
+
+        # retrieve the group
+        group_data = {
+            'name': helper_ti.name,
+            'group_type': self.group_type,
+            'owner': helper_ti.owner,
+            'unique_id': helper_ti.unique_id,
+        }
+        ti = self.ti.group(**group_data)
+        r = ti.single()
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
+
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
+
+        # validate ti data
+        assert ti_data.get('name') == helper_ti.name, (
+            f"group value ({ti_data.get('name')}) doe not match"
+            f'expected value of ({helper_ti.name})'
+        )
+
+    def group_get_filter(self):
+        """Get group with generic group method."""
+        helper_ti = self.ti_helper.create_group()
+
+        # retrieve the groups
+        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
+        groups = self.ti.group(owner=helper_ti.owner)
+        filters = self.ti.filters()
+        filters.add_filter('name', '=', helper_ti.name)
+        # coverage
+        filters.add_filter('temp', '=', helper_ti.name)
+        filters.remove_filter('temp')
+        for group in groups.many(filters=filters, params=parameters):
+            if group.get('name') == helper_ti.name:
+                break
+        else:
+            assert False, f'group {helper_ti.name} was not found.'
+
+    def group_get_includes(self, request):
+        """Get group with includes."""
+        attribute_data = {
+            'attribute_type': 'Description',
+            'attribute_value': request.node.name,
+        }
+        label_data = {'label': 'TLP:RED'}
+        tag_data = {'name': request.node.name}
+        helper_ti = self.ti_helper.create_group(
+            attributes=attribute_data, labels=label_data, tags=tag_data
+        )
+
+        # retrieve the group
+        group_data = {
+            'name': helper_ti.name,
+            'group_type': self.group_type,
+            'owner': helper_ti.owner,
+            'unique_id': helper_ti.unique_id,
+        }
+        ti = self.ti.group(**group_data)
+        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
+        r = ti.single(params=parameters)
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
+
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
+
+        # validate ti data
+        assert ti_data.get('name') == helper_ti.name, (
+            f"group value ({ti_data.get('name')}) doe not match"
+            f'expected value of ({helper_ti.name})'
+        )
+
+        # validate metadata
+        assert ti_data.get('attribute')[0].get('value') == attribute_data.get('attribute_value'), (
+            f"attribute value {ti_data.get('attribute')[0].get('value')} does not match"
+            f"expected value {attribute_data.get('attribute_value')}"
+        )
+        assert ti_data.get('securityLabel')[0].get('name') == label_data.get('label'), (
+            f"label value {ti_data.get('securityLabel')[0].get('name')} does not match"
+            f"expected value {label_data.get('label')}"
+        )
+        for tag in ti_data.get('tag'):
+            if tag.get('name') == tag_data.get('name'):
+                break
+        else:
+            assert False, f"Could not find tag {tag_data.get('name')}"
+
+    def group_get_attribute(self, request):
+        """Get attributes for an group."""
+        attribute_data = {
+            'attribute_type': 'Description',
+            'attribute_value': request.node.name,
+        }
+        helper_ti = self.ti_helper.create_group(attributes=attribute_data)
+
+        # retrieve the group
+        group_data = {
+            'name': helper_ti.name,
+            'group_type': self.group_type,
+            'owner': helper_ti.owner,
+            'unique_id': helper_ti.unique_id,
+        }
+        ti = self.ti.group(**group_data)
+        for attribute in ti.attributes():
+            if attribute.get('value') == request.node.name:
+                break
+        else:
+            assert False, f'Could not find attribute with value {request.node.name}'
+
+    def group_get_label(self):
+        """Get tags for an group."""
+        label_data = {'label': 'TLP:RED'}
+        helper_ti = self.ti_helper.create_group(labels=label_data)
+
+        # retrieve the group
+        group_data = {
+            'name': helper_ti.name,
+            'group_type': self.group_type,
+            'owner': helper_ti.owner,
+            'unique_id': helper_ti.unique_id,
+        }
+        ti = self.ti.group(**group_data)
+        for label in ti.labels():
+            if label.get('name') == label_data.get('label'):
+                break
+        else:
+            assert False, f"Could not find tag with value {label_data.get('label')}"
+
+    def group_get_tag(self, request):
+        """Get tags for an group."""
+        tag_data = {'name': request.node.name}
+        helper_ti = self.ti_helper.create_group(tags=tag_data)
+
+        # retrieve the group
+        group_data = {
+            'name': helper_ti.name,
+            'group_type': self.group_type,
+            'owner': helper_ti.owner,
+            'unique_id': helper_ti.unique_id,
+        }
+        ti = self.ti.group(**group_data)
+        for tag in ti.tags():
+            if tag.get('name') == request.node.name:
+                break
+        else:
+            assert False, f'Could not find tag with value {request.node.name}'
+
+    def group_update(self, request):
+        """Test updating group metadata."""
+        helper_ti = self.ti_helper.create_group()
+
+        # update group
+        group_data = {
+            'name': request.node.name,
+            'group_type': self.group_type,
+            'owner': self.owner,
+            'unique_id': helper_ti.unique_id,
+        }
+        ti = self.ti.group(**group_data)
+        r = ti.update()
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
+
+        # validate response data
+        expected_status_code = 200
+        expected_status = 'Success'
+        assert r.status_code == expected_status_code, (
+            f'status code ({r.status_code}) does not match '
+            f'expected code of ({expected_status_code}).'
+            f'({r.text}).'
+        )
+        assert response_data.get('status') == expected_status, (
+            f"status ({response_data.get('status')}) does not "
+            f'match expected status of ({expected_status})'
+        )
+
+        # validate ti data
+        assert ti_data.get('name') == request.node.name, (
+            f"group value ({ti_data.get('name')}) doe not match"
+            f'expected value of ({request.node.name})'
+        )
 
     def indicator_add_attribute(self, request):
         """Create a attribute on an indicator."""
@@ -413,8 +772,6 @@ class TestThreatIntelligence:
             f"status ({response_data.get('status')}) does not "
             f'match expected status of ({expected_status})'
         )
-        print(ti_data)
-        print(self.indicator_field)
 
         # validate ti data
         assert ti_data.get('confidence') == indicator_data.get('confidence'), (

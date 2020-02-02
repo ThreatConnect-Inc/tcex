@@ -1,231 +1,100 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+import os
 
-from ..tcex_init import tcex
+from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
-# pylint: disable=W0201
-class TestCampaignGroups:
-    """Test TcEx Host Groups."""
+class TestCampaignGroups(TestThreatIntelligence):
+    """Test TcEx Campaign Groups."""
 
-    def setup_class(self):
+    group_type = 'Campaign'
+    owner = os.getenv('TC_OWNER')
+    ti = None
+    ti_helper = None
+    tcex = None
+
+    def setup_method(self):
         """Configure setup before all tests."""
-        self.ti = tcex.ti
+        self.ti_helper = TIHelper(self.group_type)
+        self.ti = self.ti_helper.ti
+        self.tcex = self.ti_helper.tcex
 
-    def test_attributes(self, name='campaign-name-42353'):
-        """Tests adding, fetching, updating, and deleting host attributes"""
-        campaign_id = self.campaign_create(name)
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
+    def teardown_method(self):
+        """Configure teardown before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.ti_helper.cleanup()
 
-        # assert that attribute is created.
-        r = ti.add_attribute('description', 'description1')
-        assert r.ok
-
-        # assert that attribute data is correct
-        json = r.json().get('data', {}).get('attribute', {})
-        assert json.get('type').lower() == 'description'
-        assert json.get('value').lower() == 'description1'
-        for attribute in ti.attributes():
-            assert attribute.get('value') == 'description1'
-
-        # fetch the attribute id
-        attribute_id = json.get('id')
-
-        # assert that attribute is updated
-        r = ti.update_attribute('description2', attribute_id)
-        assert r.ok
-
-        # assert that updated attribute data is correct
-        for attribute in ti.attributes():
-            assert attribute.get('value') == 'description2'
-
-        # assert that attribute is deleted
-        r = ti.delete_attribute(attribute_id)
-        assert r.ok
-
-        # assert that no attributes remain for this indicator/group/victim
-        for attribute in ti.attributes():
-            assert False
-
-        # remove indicator/group/victim
-        ti.delete()
-
-    def test_campaign_get(self, name='campaign-name-42353'):
-        """Test campaign get."""
-        # create
-        campaign_id = self.campaign_create(name)
-
-        # get
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        r = ti.single()
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get(ti.api_entity).get('name') == name
-
-        # delete
-        self.campaign_delete(campaign_id)
-
-    def test_campaign_get_attributes(self, name='campaign-name-12453'):
-        """Test campaign get."""
-        # create
-        campaign_id = self.campaign_create(name)
-        self.test_campaign_add_attribute(
-            campaign_id=campaign_id, attribute_type='Description', attribute_value='test1'
-        )
-        self.test_campaign_add_attribute(
-            campaign_id=campaign_id, attribute_type='Description', attribute_value='test2'
-        )
-        self.test_campaign_add_attribute(
-            campaign_id=campaign_id, attribute_type='Description', attribute_value='test3'
-        )
-
-        # get attributes
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        for attribute in ti.attributes():
-            assert attribute
-            break
-        else:
-            assert False
-
-        # delete
-        self.campaign_delete(campaign_id)
-
-    def test_campaign_get_tags(self, name='campaign-name-64235'):
-        """Test campaign get."""
-        # create
-        campaign_id = self.campaign_create(name)
-        self.test_campaign_add_tag(campaign_id=campaign_id, tag='One')
-        self.test_campaign_add_tag(campaign_id=campaign_id, tag='Two')
-
-        # get tags
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        for tag in ti.tags():
-            assert tag.get('name')
-            break
-        else:
-            assert False
-
-        # delete
-        self.campaign_delete(campaign_id)
-
-    def test_campaign_get_include(self, name='campaign-name-78159'):
-        """Test campaign get."""
-        campaign_id = self.campaign_create(name)
-        self.test_campaign_add_attribute(
-            campaign_id=campaign_id, attribute_type='Description', attribute_value='test123'
-        )
-        self.test_campaign_add_label(campaign_id=campaign_id, label='TLP:RED')
-        self.test_campaign_add_tag(campaign_id=campaign_id, tag='PyTest')
-
-        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        r = ti.single(params=parameters)
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('campaign').get('name') == name
-        assert ti_data.get('data').get('campaign').get('attribute')[0].get('value') == 'test123'
-        assert ti_data.get('data').get('campaign').get('securityLabel')[0].get('name') == 'TLP:RED'
-        assert ti_data.get('data').get('campaign').get('tag')[0].get('name') == 'PyTest'
-
-        # delete
-        self.campaign_delete(campaign_id)
-
-    def campaign_create(self, name='campaign-name-65341'):
-        """Test campaign create."""
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner)
+    def tests_ti_campaign_create(self):
+        """Create a group using specific interface."""
+        group_data = {
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.campaign(**group_data)
         r = ti.create()
-        ti_data = r.json()
+
+        # assert response
         assert r.status_code == 201
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('campaign').get('name') == name
-        return ti.unique_id
 
-    def test_campaign_add_attribute(
-        self,
-        campaign_id=None,
-        name='campaign-name-nkjvb',
-        attribute_type='Description',
-        attribute_value='Example Description.',
-    ):
-        """Test campaign attribute add."""
-        should_delete = False
-        if not campaign_id:
-            should_delete = True
-            campaign_id = self.campaign_create(name)
+        # retrieve group for asserts
+        group_data['unique_id'] = ti.unique_id
+        ti = self.ti.campaign(**group_data)
+        r = ti.single()
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
 
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
-        attribute_data = r.json()
-        assert r.status_code == 201
-        assert attribute_data.get('status') == 'Success'
-        assert attribute_data.get('data').get('attribute').get('value') == attribute_value
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
 
-        if should_delete:
-            self.campaign_delete(campaign_id)
+        # validate ti data
+        assert ti_data.get(ti.api_entity) == group_data.get(ti.api_entity)
 
-    def test_campaign_add_label(
-        self, campaign_id=None, name='campaign-name-ds4vb', label='TLP:GREEN'
-    ):
-        """Test campaign attribute add."""
-        should_delete = False
-        if not campaign_id:
-            should_delete = True
-            campaign_id = self.campaign_create(name)
-
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        r = ti.add_label(label=label)
-        label_data = r.json()
-        assert r.status_code == 201
-        assert label_data.get('status') == 'Success'
-
-        if should_delete:
-            self.campaign_delete(campaign_id)
-
-    def test_campaign_add_tag(self, campaign_id=None, name='campaign-name-fdsv23', tag='Crimeware'):
-        """Test campaign attribute add."""
-        should_delete = False
-        if not campaign_id:
-            should_delete = True
-            campaign_id = self.campaign_create(name)
-
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        r = ti.add_tag(tag)
-        tag_data = r.json()
-        assert r.status_code == 201
-        assert tag_data.get('status') == 'Success'
-
-        if should_delete:
-            self.campaign_delete(campaign_id)
-
-    def campaign_delete(self, campaign_id=None, name='campaign-name-bdsfd'):
-        """Test campaign delete."""
-        # create indicator
-        if not campaign_id:
-            campaign_id = self.campaign_create(name)
-
-        # delete indicator
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
+        # cleanup group
         r = ti.delete()
-        ti_data = r.json()
         assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
 
-    def test_campaign_update(self, name='campaign-name-b3da3'):
-        """Test campaign update."""
-        # create indicator
-        campaign_id = self.campaign_create(name)
+    def tests_ti_campaign_add_attribute(self, request):
+        """Test group add attribute."""
+        super().group_add_attribute(request)
 
-        name = 'campaign-new-name-fdasb3'
+    def tests_ti_campaign_add_label(self):
+        """Test group add label."""
+        super().group_add_label()
 
-        # update indicator
-        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
-        r = ti.update()
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('campaign').get('name') == name
+    def tests_ti_campaign_add_tag(self, request):
+        """Test group add tag."""
+        super().group_add_tag(request)
 
-        # delete indicator
-        self.campaign_delete(campaign_id)
+    def tests_ti_campaign_delete(self):
+        """Test group delete."""
+        super().group_delete()
+
+    def tests_ti_campaign_get(self):
+        """Test group get with generic group method."""
+        super().group_get()
+
+    def tests_ti_campaign_get_filter(self):
+        """Test group get with filter."""
+        super().group_get_filter()
+
+    def tests_ti_campaign_get_includes(self, request):
+        """Test group get with includes."""
+        super().group_get_includes(request)
+
+    def tests_ti_campaign_get_attribute(self, request):
+        """Test group get attribute."""
+        super().group_get_attribute(request)
+
+    def tests_ti_campaign_get_label(self):
+        """Test group get label."""
+        super().group_get_label()
+
+    def tests_ti_campaign_get_tag(self, request):
+        """Test group get tag."""
+        super().group_get_tag(request)
+
+    def tests_ti_campaign_update(self, request):
+        """Test updating group metadata."""
+        super().group_update(request)

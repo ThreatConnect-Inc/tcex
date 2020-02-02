@@ -30,7 +30,7 @@ class TestHashTagIndicators(TestThreatIntelligence):
             self.ti_helper.cleanup()
 
     def tests_ti_hashtag_create(self):
-        """Create an address indicator using specific interface."""
+        """Create an indicator using specific interface."""
         indicator_data = {
             self.indicator_field_custom: self.ti_helper.rand_hashtag(),
             'confidence': randint(0, 100),
@@ -75,7 +75,7 @@ class TestHashTagIndicators(TestThreatIntelligence):
         super().indicator_add_tag(request)
 
     def tests_ti_hashtag_delete(self):
-        """Test indicator delete."""
+        """Test indicator add tag."""
         super().indicator_delete()
 
     def tests_ti_hashtag_get(self):

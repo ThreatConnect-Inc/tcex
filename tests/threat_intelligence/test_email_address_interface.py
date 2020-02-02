@@ -1,217 +1,103 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+import os
+from random import randint
 
-from ..tcex_init import tcex
+from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
-# pylint: disable=W0201
-class TestEmailAddressIndicators:
-    """Test TcEx Host Indicators."""
+class TestEmailAddressIndicators(TestThreatIntelligence):
+    """Test TcEx Email Address Indicators."""
 
-    def setup_class(self):
+    indicator_field = 'address'
+    indicator_field_arg = indicator_field.replace(' ', '_').lower()
+    indicator_field_custom = 'address'
+    indicator_type = 'EmailAddress'
+    owner = os.getenv('TC_OWNER')
+    ti = None
+    ti_helper = None
+    tcex = None
+
+    def setup_method(self):
         """Configure setup before all tests."""
-        self.ti = tcex.ti
+        self.ti_helper = TIHelper(self.indicator_type, self.indicator_field_arg)
+        self.ti = self.ti_helper.ti
+        self.tcex = self.ti_helper.tcex
 
-    def test_attributes(self, address='email_address_42353@gmail.com'):
-        """Tests adding, fetching, updating, and deleting host attributes"""
-        self.email_address_create(address)
+    def teardown_method(self):
+        """Configure teardown before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.ti_helper.cleanup()
 
-        # get
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-
-        # assert that attribute is created.
-        r = ti.add_attribute('description', 'description1')
-        assert r.ok
-
-        # assert that attribute data is correct
-        json = r.json().get('data', {}).get('attribute', {})
-        assert json.get('type').lower() == 'description'
-        assert json.get('value').lower() == 'description1'
-        for attribute in ti.attributes():
-            assert attribute.get('value') == 'description1'
-
-        # fetch the attribute id
-        attribute_id = json.get('id')
-
-        # assert that attribute is updated
-        r = ti.update_attribute('description2', attribute_id)
-        assert r.ok
-
-        # assert that updated attribute data is correct
-        for attribute in ti.attributes():
-            assert attribute.get('value') == 'description2'
-
-        # assert that attribute is deleted
-        r = ti.delete_attribute(attribute_id)
-        assert r.ok
-
-        # assert that no attributes remain for this indicator/group/victim
-        for attribute in ti.attributes():
-            assert False
-
-        # remove indicator/group/victim
-        self.email_address_delete(address)
-
-    def test_email_address_get(self, address='email_address_42353@gmail.com'):
-        """Test email_address get."""
-        # create
-        self.email_address_create(address)
-
-        # get
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-        r = ti.single()
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get(ti.api_entity).get('address') == address
-
-        # delete
-        self.email_address_delete(address)
-
-    def test_email_address_get_attributes(self, address='email_address_12453@gmail.com'):
-        """Test email_address get."""
-        # create
-        self.email_address_create(address)
-        self.test_email_address_add_attribute(False, address, 'Description', 'test1')
-        self.test_email_address_add_attribute(False, address, 'Description', 'test2')
-        self.test_email_address_add_attribute(False, address, 'Description', 'test3')
-
-        # get attributes
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-        for attribute in ti.attributes():
-            assert attribute
-            break
-        else:
-            assert False
-
-        # delete
-        self.email_address_delete(address)
-
-    def test_email_address_get_tags(self, address='email_address_64235@gmail.com'):
-        """Test email_address get."""
-        # create
-        self.email_address_create(address)
-        self.test_email_address_add_tag(False, address, 'One')
-        self.test_email_address_add_tag(False, address, 'Two')
-
-        # get tags
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-        for tag in ti.tags():
-            assert tag.get('name')
-            break
-        else:
-            assert False
-
-        # delete
-        self.email_address_delete(address)
-
-    def test_email_address_get_include(self, address='email_address_78159@gmail.com'):
-        """Test email_address get."""
-        self.email_address_create(address)
-        self.test_email_address_add_attribute(False, address, 'Description', 'test123')
-        self.test_email_address_add_label(False, address, 'TLP:RED')
-        self.test_email_address_add_tag(False, address, 'PyTest')
-
-        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-        r = ti.single(params=parameters)
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('emailAddress').get('address') == address
-        assert ti_data.get('data').get('emailAddress').get('attribute')[0].get('value') == 'test123'
-        assert (
-            ti_data.get('data').get('emailAddress').get('securityLabel')[0].get('name') == 'TLP:RED'
-        )
-        assert ti_data.get('data').get('emailAddress').get('tag')[0].get('name') == 'PyTest'
-
-        # delete
-        self.email_address_delete(address)
-
-    def email_address_create(self, address='email_address_65341@gmail.com'):
-        """Test email_address create."""
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
+    def tests_ti_email_address_create(self):
+        """Create an indicator using specific interface."""
+        indicator_data = {
+            self.indicator_field_custom: self.ti_helper.rand_email_address(),
+            'confidence': randint(0, 100),
+            'owner': self.owner,
+            'rating': randint(0, 5),
+        }
+        ti = self.ti.email_address(**indicator_data)
         r = ti.create()
-        ti_data = r.json()
+
+        # assert response
         assert r.status_code == 201
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('emailAddress').get('address') == address
 
-    def test_email_address_add_attribute(
-        self,
-        should_create=True,
-        address='email_address_nkjvb@gmail.com',
-        attribute_type='Description',
-        attribute_value='Example Description.',
-    ):
-        """Test email_address attribute add."""
-        if should_create:
-            self.email_address_create(address)
+        # retrieve indicator for asserts
+        ti = self.ti.email_address(**indicator_data)
+        r = ti.single()
+        response_data = r.json()
+        ti_data = response_data.get('data', {}).get(ti.api_entity)
 
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-        r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
-        attribute_data = r.json()
-        assert r.status_code == 201
-        assert attribute_data.get('status') == 'Success'
-        assert attribute_data.get('data').get('attribute').get('value') == attribute_value
-        if should_create:
-            self.email_address_delete(address)
+        # validate response data
+        assert r.status_code == 200
+        assert response_data.get('status') == 'Success'
 
-    def test_email_address_add_label(
-        self, should_create=True, address='email_address_ds4vb@gmail.com', label='TLP:GREEN'
-    ):
-        """Test email_address attribute add."""
-        if should_create:
-            self.email_address_create(address)
+        # validate ti data
+        assert ti_data.get('confidence') == indicator_data.get('confidence')
+        assert ti_data.get(ti.api_entity) == indicator_data.get(ti.api_entity)
+        assert ti_data.get('rating') == indicator_data.get('rating')
 
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-        r = ti.add_label(label=label)
-        label_data = r.json()
-        assert r.status_code == 201
-        assert label_data.get('status') == 'Success'
-        if should_create:
-            self.email_address_delete(address)
-
-    def test_email_address_add_tag(
-        self, should_create=True, address='email_address_fdsv23@gmail.com', name='Crimeware'
-    ):
-        """Test email_address attribute add."""
-        if should_create:
-            self.email_address_create(address)
-
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
-        r = ti.add_tag(name=name)
-        tag_data = r.json()
-        assert r.status_code == 201
-        assert tag_data.get('status') == 'Success'
-        if should_create:
-            self.email_address_delete(address)
-
-    def email_address_delete(self, address='email_address_523fa@gmail.com'):
-        """Test email_address delete."""
-        # create indicator
-        self.email_address_create(address)
-
-        # delete indicator
-        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
+        # cleanup indicator
         r = ti.delete()
-        ti_data = r.json()
         assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
 
-    def test_email_address_update(self, address='email_address_b3da3@gmail.com'):
-        """Test email_address update."""
-        # create indicator
-        self.email_address_create(address)
+    def tests_ti_email_address_add_attribute(self, request):
+        """Test indicator add attribute."""
+        super().indicator_add_attribute(request)
 
-        # update indicator
-        ti = self.ti.email_address(address, rating=5, confidence=10, owner=tcex.args.tc_owner)
-        r = ti.update()
-        ti_data = r.json()
-        assert r.status_code == 200
-        assert ti_data.get('status') == 'Success'
-        assert ti_data.get('data').get('emailAddress').get('rating') == 5.0
-        assert ti_data.get('data').get('emailAddress').get('confidence') == 10
+    def tests_ti_email_address_add_label(self):
+        """Test indicator add label."""
+        super().indicator_add_label()
 
-        # delete indicator
-        self.email_address_delete(address)
+    def tests_ti_email_address_add_tag(self, request):
+        """Test indicator add tag."""
+        super().indicator_add_tag(request)
+
+    def tests_ti_email_address_delete(self):
+        """Test indicator delete."""
+        super().indicator_delete()
+
+    def tests_ti_email_address_get(self):
+        """Test indicator get with generic indicator method."""
+        super().indicator_get()
+
+    def tests_ti_email_address_get_includes(self, request):
+        """Test indicator get with includes."""
+        super().indicator_get_includes(request)
+
+    def tests_ti_email_address_get_attribute(self, request):
+        """Test indicator get attribute."""
+        super().indicator_get_attribute(request)
+
+    def tests_ti_email_address_get_label(self):
+        """Test indicator get label."""
+        super().indicator_get_label()
+
+    def tests_ti_email_address_get_tag(self, request):
+        """Test indicator get tag."""
+        super().indicator_get_tag(request)
+
+    def tests_ti_email_address_update(self):
+        """Test updating indicator metadata."""
+        super().indicator_update()

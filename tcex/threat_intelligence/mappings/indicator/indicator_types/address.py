@@ -31,13 +31,11 @@ class Address(Indicator):
         """
         self.unique_id = json_response.get('ip', '')
 
-    # TODO: @burdy - should this be a property
     def can_create(self):
         """Return True if address can be created.
 
         If the ip address has been provided returns that the address can be created, otherwise
         returns that the address cannot be created.
-
         """
         return not self.data.get('ip') is None
 

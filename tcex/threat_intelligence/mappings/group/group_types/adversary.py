@@ -17,110 +17,122 @@ class Adversary(Group):
             tcex, 'Adversary', 'adversary', 'adversaries', owner=owner, name=name, **kwargs
         )
 
-    def add_asset(self, asset_type, asset_name):
-        """Add an asset to the adversary
+    def add_asset(self, asset_type, asset_value):
+        """Add an asset to the Adversary
 
         Args:
-            asset_type: (str) Either PHONE, HANDLER, or URL
-            asset_name: (str) the value for the asset
+            asset_type: (str) Either phone, handle, or urL
+            asset_value: (str) the value for the asset
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        if asset_type == 'PHONE':
-            return self.tc_requests.add_adversary_phone_asset(
-                self.api_type, self.api_branch, self.unique_id, asset_name
+        asset_methods = {
+            'handle': self.tc_requests.add_adversary_handle_asset,
+            'phone': self.tc_requests.add_adversary_phone_asset,
+            'url': self.tc_requests.add_adversary_url_asset,
+        }
+
+        # handle invalid input
+        if asset_methods.get(asset_type.lower()) is None:
+            self._tcex.handle_error(
+                925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
             )
-        if asset_type == 'HANDLER':
-            return self.tc_requests.add_adversary_handler_asset(
-                self.api_type, self.api_branch, self.unique_id, asset_name
-            )
-        if asset_type == 'URL':
-            return self.tc_requests.add_adversary_url_asset(
-                self.api_type, self.api_branch, self.unique_id, asset_name
-            )
-        self._tcex.handle_error(
-            925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
-        )
-        return None
+
+        return asset_methods.get(asset_type.lower())(self.unique_id, asset_value)
+
+    def add_handle_asset(self, value):
+        """Add a Handle asset to the adversary.
+
+        Args:
+            value: The value of the asset
+
+        Returns:
+            requests.Response: The response from the API call.
+        """
+        return self.add_asset('HANDLE', value)
+
+    def add_phone_asset(self, value):
+        """Add a phone asset to the adversary.
+
+        Args:
+            value: The value of the asset
+
+        Returns:
+            requests.Response: The response from the API call.
+        """
+        return self.add_asset('PHONE', value)
+
+    def add_url_asset(self, value):
+        """Add a URL asset to the adversary.
+
+        Args:
+            value: The value of the asset
+
+        Returns:
+            requests.Response: The response from the API call.
+        """
+        return self.add_asset('URL', value)
 
     def asset(self, asset_id, asset_type, action='GET'):
-        """Get the asset with the provided id
+        """Get specific Adversary asset type from API
 
         Args:
-            asset_id: The id of the asset to be retrieved
-            asset_type: (str) Either PHONE, HANDLER, or URL
-            action:
+            asset_id: (str) The ID of the asset.
+            asset_type: (str) Either phone, handle, or url.
+            action: (str): The HTTP method (e.g., DELETE or GET)
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        if asset_type == 'PHONE':
-            return self.tc_requests.adversary_phone_asset(
-                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
+        asset_methods = {
+            'handle': self.tc_requests.adversary_handle_asset,
+            'phone': self.tc_requests.adversary_phone_asset,
+            'url': self.tc_requests.adversary_url_asset,
+        }
+
+        # handle invalid input
+        if asset_methods.get(asset_type.lower()) is None:
+            self._tcex.handle_error(
+                925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
             )
-        if asset_type == 'HANDLER':
-            return self.tc_requests.adversary_handle_asset(
-                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
-            )
-        if asset_type == 'URL':
-            return self.tc_requests.adversary_url_asset(
-                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
-            )
-        self._tcex.handle_error(
-            925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
-        )
-        return None
+
+        return asset_methods.get(asset_type.lower())(self.unique_id, asset_id, action=action)
 
     def assets(self, asset_type=None):
         """Retrieve all of the assets of a given asset_type
 
         Args:
-            asset_type: (str) Either None, PHONE, HANDLER, or URL
+            asset_type: (str) Either None, PHONE, HANDLE, or URL
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        if not asset_type:
-            return self.tc_requests.adversary_assets(self.api_type, self.api_branch, self.unique_id)
-        if asset_type == 'PHONE':
-            return self.tc_requests.adversary_phone_assets(
-                self.api_type, self.api_branch, self.unique_id
+        asset_methods = {
+            'handle': self.tc_requests.adversary_handle_assets,
+            'phone': self.tc_requests.adversary_phone_assets,
+            'url': self.tc_requests.adversary_url_assets,
+        }
+
+        if asset_type is None:
+            return self.tc_requests.adversary_assets(self.unique_id)
+
+        # handle invalid input
+        if asset_methods.get(asset_type.lower()) is None:
+            self._tcex.handle_error(
+                925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
             )
-        if asset_type == 'HANDLER':
-            return self.tc_requests.adversary_handle_assets(
-                self.api_type, self.api_branch, self.unique_id
-            )
-        if asset_type == 'URL':
-            return self.tc_requests.adversary_url_assets(
-                self.api_type, self.api_branch, self.unique_id
-            )
 
-        self._tcex.handle_error(
-            925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
-        )
-        return None
-
-    def get_asset(self, asset_id, asset_type):
-        """Get the asset with the provided asset_id & asset_type.
-
-        Args:
-            asset_id: The id of the asset.
-            asset_type: The asset type.
-
-        Returns:
-
-        """
-        return self.asset(asset_id, asset_type=asset_type)
+        return asset_methods.get(asset_type.lower())(self.unique_id)
 
     def delete_asset(self, asset_id, asset_type):
         """Delete the asset with the provided asset_id.
@@ -130,90 +142,20 @@ class Adversary(Group):
             asset_type: The asset type.
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
         return self.asset(asset_id, asset_type=asset_type, action='DELETE')
 
-    def handle_assets(self):
-        """Return all of the handle assets"""
-        return self.assets(asset_type='HANDLER')
-
-    def phone_assets(self):
-        """Return all of the phone assets"""
-        return self.assets(asset_type='PHONE')
-
-    def url_assets(self):
-        """Return all of the url assets"""
-        return self.assets(asset_type='URL')
-
-    def handle_asset(self, asset_id, action='GET'):
-        """Get the phone asset with the passed in id.
+    def delete_handle_asset(self, asset_id):
+        """Delete the handle asset with the passed in id
 
         Args:
-            asset_id: The id  of the asset to be retrieved
-            action:
+            asset_id: The id of the asset to be deleted
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
-        return self.asset(asset_id, 'HANDLER', action=action)
-
-    def phone_asset(self, asset_id, action='GET'):
-        """Get the phone asset with the passed in id.
-
-        Args:
-            asset_id: The id  of the asset to be retrieved
-            action:
-
-        Returns:
-
-        """
-        return self.asset(asset_id, 'PHONE', action=action)
-
-    def url_asset(self, asset_id, action='GET'):
-        """Get the url asset with the passed in id.
-
-        Args:
-            asset_id: The id  of the asset to be retrieved
-            action:
-
-        Returns:
-
-        """
-        return self.asset(asset_id, 'URL', action=action)
-
-    def get_handle_asset(self, asset_id):
-        """Get the handle asset with the passed in id
-
-        Args:
-            asset_id: The id  of the asset to be retrieved
-
-        Returns:
-
-        """
-        return self.get_asset(asset_id, 'HANDLER')
-
-    def get_phone_asset(self, asset_id):
-        """Get the phone asset with the passed in id
-
-        Args:
-            asset_id: The id  of the asset to be retrieved
-
-        Returns:
-
-        """
-        return self.get_asset(asset_id, 'PHONE')
-
-    def get_url_asset(self, asset_id):
-        """Get the url asset with the passed in id
-
-        Args:
-            asset_id: The id  of the asset to be retrieved
-
-        Returns:
-
-        """
-        return self.get_asset(asset_id, 'URL')
+        return self.delete_asset(asset_id, 'HANDLE')
 
     def delete_phone_asset(self, asset_id):
         """Delete the phone asset with the passed in id
@@ -222,7 +164,7 @@ class Adversary(Group):
             asset_id: The id of the asset to be deleted
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
         return self.delete_asset(asset_id, 'PHONE')
 
@@ -233,50 +175,99 @@ class Adversary(Group):
             asset_id: The id of the asset to be deleted
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
         return self.delete_asset(asset_id, 'URL')
 
-    def delete_handler_asset(self, asset_id):
-        """Delete the handler asset with the passed in id
+    def get_asset(self, asset_id, asset_type):
+        """Get the asset with the provided asset_id & asset_type.
 
         Args:
-            asset_id: The id of the asset to be deleted
+            asset_id: (str) The ID of the asset.
+            asset_type: (str) Either None, PHONE, HANDLE, or URL
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
-        return self.delete_asset(asset_id, 'HANDLER')
+        return self.asset(asset_id, asset_type=asset_type)
 
-    def add_handler_asset(self, name):
-        """Add a Handler asset to the adversary.
+    def get_handle_asset(self, asset_id):
+        """Get the handle asset with the passed in id
 
         Args:
-            name: The name of the Handler asset
+            asset_id: The id of the asset.
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
-        return self.add_asset('HANDLER', name)
+        return self.get_asset(asset_id, 'HANDLE')
 
-    def add_phone_asset(self, name):
-        """Add a phone asset to the adversary.
+    def get_phone_asset(self, asset_id):
+        """Get the phone asset with the passed in id
 
         Args:
-            name: The name of the phone asset
+            asset_id: The id of the asset.
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
-        self.add_asset('PHONE', name)
+        return self.get_asset(asset_id, 'PHONE')
 
-    def add_url_asset(self, name):
-        """Add a URL asset to the adversary.
+    def get_url_asset(self, asset_id):
+        """Get the url asset with the passed in id
 
         Args:
-            name: The name of the URL asset
+            asset_id: The id of the asset.
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
-        self.add_asset('URL', name)
+        return self.get_asset(asset_id, 'URL')
+
+    # def handle_asset(self, asset_id, action='GET'):
+    #     """Get the handle asset with the passed in id.
+
+    #     Args:
+    #         asset_id: The id of the asset.
+    #         action: (str): The HTTP method (e.g., DELETE or GET)
+
+    #     Returns:
+    #         requests.Response: The response from the API call.
+    #     """
+    #     return self.asset(asset_id, 'HANDLE', action=action)
+
+    def handle_assets(self):
+        """Return all of the handle assets"""
+        return self.assets(asset_type='HANDLE')
+
+    # def phone_asset(self, asset_id, action='GET'):
+    #     """Get the phone asset with the passed in id.
+
+    #     Args:
+    #         asset_id: The id of the asset.
+    #         action: (str): The HTTP method (e.g., DELETE or GET)
+
+    #     Returns:
+    #         requests.Response: The response from the API call.
+    #     """
+    #     return self.asset(asset_id, 'PHONE', action=action)
+
+    def phone_assets(self):
+        """Return all of the phone assets"""
+        return self.assets(asset_type='PHONE')
+
+    # def url_asset(self, asset_id, action='GET'):
+    #     """Get the url asset with the passed in id.
+
+    #     Args:
+    #         asset_id: The id of the asset.
+    #         action: (str): The HTTP method (e.g., DELETE or GET)
+
+    #     Returns:
+    #         requests.Response: The response from the API call.
+    #     """
+    #     return self.asset(asset_id, 'URL', action=action)
+
+    def url_assets(self):
+        """Return all of the url assets"""
+        return self.assets(asset_type='URL')

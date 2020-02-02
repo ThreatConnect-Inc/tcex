@@ -34,7 +34,7 @@ class Host(Indicator):
         If the hostName has been provided returns that the File can be created, otherwise
         returns that the Host cannot be created.
         """
-        return self.data.get('hostName') is True
+        return not self.data.get('hostName') is None
 
     def _set_unique_id(self, json_response):
         """Set the unique_id provided a json response.

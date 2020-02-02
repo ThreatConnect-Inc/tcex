@@ -27,20 +27,15 @@ class URL(Indicator):
             self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
     def can_create(self):
+        """Return True if address can be created.
+
+        If the text has been provided returns that the URL can be created, otherwise
+        returns that the URL cannot be created.
         """
-         If the text has been provided returns that the URL can be created, otherwise
-         returns that the URL cannot be created.
-
-         Returns:
-
-         """
-        if self.data.get('text'):
-            return True
-        return False
+        return not self.data.get('text') is None
 
     def _set_unique_id(self, json_response):
-        """
-        Sets the unique_id provided a json response.
+        """Set the unique_id provided a json response.
 
         Args:
             json_response:

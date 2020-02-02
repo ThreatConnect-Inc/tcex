@@ -37,7 +37,7 @@ class Group(Mappings):
 
     def can_create(self):
         """Return True if registry key can be create."""
-        return self.data.get('name') is True
+        return self.data.get('name') is not None
 
     def add_key_value(self, key, value):
         """Convert the value and adds it as a data field.
@@ -54,10 +54,6 @@ class Group(Mappings):
         elif key == 'file_content':
             # file content arg is not part of Group JSON
             pass
-        elif key == 'confidence':
-            self._data[key] = int(value)
-        elif key == 'rating':
-            self._data[key] = float(value)
         elif key == 'unique_id':
             self._unique_id = quote_plus(str(value))
         else:
@@ -78,18 +74,18 @@ class Group(Mappings):
     def _set_unique_id(self, json_response):
         self.unique_id = json_response.get('id', '')
 
-    @staticmethod
-    def sub_types():
-        """All supported ThreatConnect Group types."""
-        return {
-            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
-            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
-            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
-            'Emails': {'apiBranch': 'emails', 'apiEntity': 'email'},
-            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
-            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
-            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
-            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
-            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
-            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
-        }
+    # @staticmethod
+    # def sub_types():
+    #     """All supported ThreatConnect Group types."""
+    #     return {
+    #         'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+    #         'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+    #         'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
+    #         'Emails': {'apiBranch': 'emails', 'apiEntity': 'email'},
+    #         'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
+    #         'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
+    #         'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+    #         'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
+    #         'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
+    #         'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+    #     }
