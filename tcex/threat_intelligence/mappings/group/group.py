@@ -7,9 +7,18 @@ from ..mappings import Mappings
 class Group(Mappings):
     """Unique API calls for Group API Endpoints"""
 
-    def __init__(self, tcex, sub_type, api_entity, api_branch, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class properties."""
-        super().__init__(tcex, 'Group', 'groups', sub_type, api_entity, api_branch, owner)
+        super().__init__(
+            tcex,
+            'Group',
+            'groups',
+            kwargs.get('sub_type'),
+            kwargs.get('api_entity'),
+            kwargs.get('api_branch'),
+            kwargs.get('owner'),
+        )
+
         self.name = None
 
         for arg, value in kwargs.items():
