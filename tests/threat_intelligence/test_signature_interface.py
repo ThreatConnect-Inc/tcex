@@ -126,7 +126,7 @@ class TestSignatureGroups(TestThreatIntelligence):
         group_data = {
             'name': self.ti_helper.rand_name(),
             'file_name': self.ti_helper.rand_filename(),
-            'file_type': random.choice(self.file_types),
+            'file_type': self.ti_helper.rand_signature_type(),
             'file_text': 'pytest signature text',
             'owner': self.owner,
         }
