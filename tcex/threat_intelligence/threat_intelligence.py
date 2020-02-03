@@ -175,7 +175,7 @@ class ThreatIntelligence:
 
         """
         if not group_type:
-            return Group(self.tcex, None, 'group', None, owner=owner, **kwargs)
+            return Group(self.tcex, **kwargs)
 
         group_type_map = {
             'adversary': Adversary,
@@ -207,7 +207,7 @@ class ThreatIntelligence:
         group_object = group_type_map.get(group_type)
         return group_object(**kwargs)
 
-    def adversary(self, name, owner=None, **kwargs):
+    def adversary(self, **kwargs):
         """Create the Adversary TI object.
 
         Args:
@@ -218,9 +218,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Adversary(self.tcex, name, owner=owner, **kwargs)
+        return Adversary(self.tcex, **kwargs)
 
-    def campaign(self, name, owner=None, **kwargs):
+    def campaign(self, **kwargs):
         """Create the Campaign TI object.
 
         Args:
@@ -231,9 +231,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Campaign(self.tcex, name, owner=owner, **kwargs)
+        return Campaign(self.tcex, **kwargs)
 
-    def document(self, name, file_name, owner=None, **kwargs):
+    def document(self, **kwargs):
         """Create the Document TI object.
 
         Args:
@@ -245,9 +245,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Document(self.tcex, name, file_name, owner=owner, **kwargs)
+        return Document(self.tcex, **kwargs)
 
-    def event(self, name, owner=None, **kwargs):
+    def event(self, **kwargs):
         """Create the Event TI object.
 
         Args:
@@ -257,9 +257,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Event(self.tcex, name, owner=owner, **kwargs)
+        return Event(self.tcex, **kwargs)
 
-    def email(self, name, to, from_addr, subject, body, header, owner=None, **kwargs):
+    def email(self, **kwargs):
         """Create the Email TI object.
 
         Args:
@@ -275,9 +275,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Email(self.tcex, name, to, from_addr, subject, body, header, owner=owner, **kwargs)
+        return Email(self.tcex, **kwargs)
 
-    def incident(self, name, owner=None, **kwargs):
+    def incident(self, **kwargs):
         """Create the Incident TI object.
 
         Args:
@@ -288,9 +288,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Incident(self.tcex, name, owner=owner, **kwargs)
+        return Incident(self.tcex, **kwargs)
 
-    def intrusion_set(self, name, owner=None, **kwargs):
+    def intrusion_set(self, **kwargs):
         """Create the Intrustion Set TI object.
 
         Args:
@@ -301,9 +301,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return IntrusionSet(self.tcex, name, owner=owner, **kwargs)
+        return IntrusionSet(self.tcex, **kwargs)
 
-    def report(self, name, owner=None, **kwargs):
+    def report(self, **kwargs):
         """Create the Report TI object.
 
         Args:
@@ -314,9 +314,9 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Report(self.tcex, name, owner=owner, **kwargs)
+        return Report(self.tcex, **kwargs)
 
-    def signature(self, name, file_name, file_type, file_text, owner=None, **kwargs):
+    def signature(self, **kwargs):
         """Create the Signature TI object.
 
         Args:
@@ -330,9 +330,9 @@ class ThreatIntelligence:
         Return:
             obj: An instance of Signature.
         """
-        return Signature(self.tcex, name, file_name, file_type, file_text, owner=owner, **kwargs)
+        return Signature(self.tcex, **kwargs)
 
-    def threat(self, name, owner=None, **kwargs):
+    def threat(self, **kwargs):
         """Create the Threat TI object.
 
         Args:
@@ -343,7 +343,7 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Threat(self.tcex, name, owner=owner, **kwargs)
+        return Threat(self.tcex, **kwargs)
 
     def victim(self, name, owner=None, **kwargs):
         """Create the Victim TI object.

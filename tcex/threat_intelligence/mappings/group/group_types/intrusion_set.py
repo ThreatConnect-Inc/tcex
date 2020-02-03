@@ -7,11 +7,17 @@ class IntrusionSet(Group):
     """Unique API calls for IntrustionSet API Endpoints
 
     Args:
-        name (str): The name for this Group.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        name (str, kwargs): [Required for Create] The name for this Group.
+        owner (str, kwargs): The name for this Group. Default to default Org when not provided
     """
 
-    def __init__(self, tcex, name, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties."""
         super().__init__(
-            tcex, 'Intrusion Set', 'intrusionSet', 'intrusionSets', owner=owner, name=name, **kwargs
+            tcex,
+            sub_type='Intrusion Set',
+            api_entity='intrusionSet',
+            api_branch='intrusionSets',
+            **kwargs
         )

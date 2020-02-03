@@ -15,7 +15,9 @@ class Campaign(Group):
 
     def __init__(self, tcex, **kwargs):
         """Initialize Class Properties."""
-        super().__init__(tcex, 'Campaign', 'campaign', 'campaigns', **kwargs)
+        super().__init__(
+            tcex, sub_type='Campaign', api_entity='campaign', api_branch='campaigns', **kwargs
+        )
 
     def first_seen(self, first_seen):
         """Update the campaign with the new first_seen date.

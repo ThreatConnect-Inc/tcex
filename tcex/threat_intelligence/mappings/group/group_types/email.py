@@ -17,12 +17,6 @@ class Email(Group):
         to (str, kwargs): The **to** address for this Email.
     """
 
-    def __init__(self, tcex, to, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class properties."""
-        super().__init__(tcex, 'Email', 'email', 'emails', **kwargs)
-        self._data['to'] = kwargs.get('to') or kwargs.get('to_addr')
-        self._data['from'] = kwargs.get('from_addr') or kwargs.get('from')
-        self._data['subject'] = kwargs.get('subject')
-        self._data['body'] = kwargs.get('body')
-        self._data['header'] = kwargs.get('header')
-        self._data['score'] = kwargs.get('score', 0)
+        super().__init__(tcex, sub_type='Email', api_entity='email', api_branch='emails', **kwargs)

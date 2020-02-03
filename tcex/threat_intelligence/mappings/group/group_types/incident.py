@@ -18,15 +18,16 @@ class Incident(Group):
     + Stalled
 
     Args:
-        name (str): The name for this Group.
-        event_date (str, kwargs): The event datetime expression for this Group.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        name (str, kwargs): [Required for Create] The name for this Group.
+        event_date (str, kwargs): The incident event date expression for this Group.
         status (str, kwargs): The status for this Group.
     """
 
-    def __init__(self, tcex, name, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties."""
         super().__init__(
-            tcex, 'Incident', 'incident', 'incidents', owner=owner, name=name, **kwargs
+            tcex, sub_type='Incident', api_entity='incident', api_branch='incidents', **kwargs
         )
 
     def event_date(self, event_date):

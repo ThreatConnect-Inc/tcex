@@ -18,9 +18,9 @@ class Document(Group):
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties."""
         super().__init__(
-            tcex, 'Document', 'document', 'documents', owner=owner, name=name, **kwargs
+            tcex, sub_type='Document', api_entity='document', api_branch='documents', **kwargs
         )
-        self._data['fileName'] = file_name or kwargs.get('file_name')
+        self._data['fileName'] = kwargs.get('file_name')
 
     def download(self):
         """Download the documents context.

@@ -14,7 +14,9 @@ class Adversary(Group):
 
     def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
-        super().__init__(tcex, 'Adversary', 'adversary', 'adversaries', **kwargs)
+        super().__init__(
+            tcex, sub_type='Adversary', api_entity='adversary', api_branch='adversaries', **kwargs
+        )
 
     def add_asset(self, asset_type, asset_value):
         """Add an asset to the Adversary

@@ -13,14 +13,16 @@ class Event(Group):
     + No Further Action
 
     Args:
-        name (str): The name for this Group.
-        event_date (str, kwargs): The event datetime expression for this Group.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        name (str, kwargs): [Required for Create] The name for this Group.
+        owner (str, kwargs): The name for this Group. Default to default Org when not provided
+        event_date (str, kwargs): The event "event date" datetime expression for this Group.
         status (str, kwargs): The status for this Group.
     """
 
-    def __init__(self, tcex, name, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties."""
-        super().__init__(tcex, 'Event', 'event', 'events', owner=owner, name=name, **kwargs)
+        super().__init__(tcex, sub_type='Event', api_entity='event', api_branch='events', **kwargs)
 
     def event_date(self, event_date):
         """Update the event date for the Event.

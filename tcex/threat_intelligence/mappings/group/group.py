@@ -13,10 +13,10 @@ class Group(Mappings):
             tcex,
             'Group',
             'groups',
-            kwargs.get('sub_type'),
-            kwargs.get('api_entity'),
-            kwargs.get('api_branch'),
-            kwargs.get('owner'),
+            kwargs.pop('sub_type', None),
+            kwargs.pop('api_entity', 'group'),
+            kwargs.pop('api_branch', None),
+            kwargs.pop('owner', None),
         )
 
         self.name = None
