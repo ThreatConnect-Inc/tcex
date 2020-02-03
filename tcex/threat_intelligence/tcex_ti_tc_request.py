@@ -703,36 +703,6 @@ class TiTcRequest:
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
 
-    # TODO: evaluate if this is needed and if so update to just return all hashes
-    # def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
-    #     """
-
-    #     Args:
-    #         main_type:
-    #         sub_type:
-    #         unique_id:
-
-    #     Return:
-
-    #     """
-    #     if not sub_type:
-    #         url = f'/v2/{main_type}/{unique_id}/download'
-    #     else:
-    #         url = f'/v2/{main_type}/{sub_type}/{unique_id}/download'
-
-    #     if hash_type == 'sha256':
-    #         hashed_file = hashlib.sha256()
-    #     elif hash_type == 'sha1':
-    #         hashed_file = hashlib.sha1()
-    #     else:
-    #         hashed_file = hashlib.md5()
-
-    #     with self.tcex.session.get(url, stream=True) as r:
-    #         for chunk in r.iter_content(chunk_size=4096):
-    #             if chunk:  # filter out keep-alive new chunks
-    #                 hashed_file.update(chunk)
-    #     return hashed_file
-
     def dns_resolution(self, main_type, sub_type, unique_id, owner=None):
         """
 

@@ -342,21 +342,21 @@ class ThreatIntelligence:
         """
         return Report(self.tcex, name, owner=owner, **kwargs)
 
-    def signature(self, name, file_name, file_type, file_content, owner=None, **kwargs):
+    def signature(self, name, file_name, file_type, file_text, owner=None, **kwargs):
         """Create the Signature TI object.
 
         Args:
             owner (str): The ThreatConnect owner name.
-            file_content:
-            file_name:
-            file_type:
-            name:
+            name (str): The name for this Group.
+            file_name (str): The name for the attached signature for this Group.
+            file_type (str): The signature type for this Group.
+            file_text (str): The signature content for this Group.
             **kwargs:
 
         Return:
-
+            obj: An instance of Signature.
         """
-        return Signature(self.tcex, name, file_name, file_type, file_content, owner=owner, **kwargs)
+        return Signature(self.tcex, name, file_name, file_type, file_text, owner=owner, **kwargs)
 
     def threat(self, name, owner=None, **kwargs):
         """Create the Threat TI object.
