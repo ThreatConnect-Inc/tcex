@@ -6,24 +6,19 @@ from ..group import Group
 class Report(Group):
     """Unique API calls for Report API Endpoints
 
-    Valid status:
-    + Success
-    + Awaiting Upload
-    + In Progress
-    + Failed
-
     Args:
+        tcex (TcEx): An instantiated instance of TcEx object.
         name (str): The name for this Group.
-        date_added (str, kwargs): The date timestamp the Indicator was created.
         file_name (str, kwargs): The name for the attached file for this Group.
-        file_content (str;method, kwargs): The file contents or callback method to retrieve
-            file content.
         publish_date (str, kwargs): The publish datetime expression for this Group.
     """
 
-    def __init__(self, tcex, name, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties."""
-        super().__init__(tcex, 'Report', 'report', 'reports', owner=owner, name=name, **kwargs)
+
+        super().__init__(
+            tcex, sub_type='Report', api_entity='report', api_branch='reports', **kwargs
+        )
 
     def file_content(self, file_content, update_if_exists=True):
         """Update  the file content.
@@ -132,18 +127,3 @@ class Report(Group):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.download(self.api_type, self.api_branch, self.unique_id)
-
-    def get_file_hash(self, hash_type='sha256'):
-        """Get the hash value of attached document
-
-        Args:
-            hash_type:
-
-        Returns:
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        return self.tc_requests.get_file_hash(
-            self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
-        )

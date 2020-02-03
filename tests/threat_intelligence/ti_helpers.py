@@ -110,6 +110,28 @@ class TIHelper:
         """Return a random email subject."""
         return f'{randint(100,999)}-{randint(100,999)}-{randint(1000,9999)}'
 
+    @staticmethod
+    def rand_report_status():
+        """Return a random report status."""
+        report_statuses = ['Success', 'Awaiting Upload', 'In Progress', 'Failed']
+        return report_statuses[randint(0, len(report_statuses) - 1)]
+
+    @staticmethod
+    def rand_signature_type():
+        """Return a random signature type."""
+        signature_types = [
+            'Snort',
+            'Suricata',
+            'YARA',
+            'ClamAV',
+            'OpenIOC',
+            'CybOX',
+            'Bro',
+            'Regex',
+            'SPL',
+        ]
+        return signature_types[randint(0, len(signature_types) - 1)]
+
     def rand_url(self):
         """Return a random hashtag."""
         return (
