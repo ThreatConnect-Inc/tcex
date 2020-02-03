@@ -19,7 +19,6 @@ class Incident(Group):
 
     Args:
         name (str): The name for this Group.
-        date_added (str, kwargs): The date timestamp the Indicator was created.
         event_date (str, kwargs): The event datetime expression for this Group.
         status (str, kwargs): The status for this Group.
     """
@@ -29,6 +28,25 @@ class Incident(Group):
         super().__init__(
             tcex, 'Incident', 'incident', 'incidents', owner=owner, name=name, **kwargs
         )
+
+    def event_date(self, event_date):
+        """Update the event_date.
+
+        Args:
+            event_date: Converted to %Y-%m-%dT%H:%M:%SZ date format.
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        event_date = self._utils.datetime.format_datetime(
+            event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        )
+        self._data['eventDate'] = event_date
+        request = {'eventDate': event_date}
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def status(self, status):
         """Update  the incidents status
@@ -56,23 +74,4 @@ class Incident(Group):
 
         self._data['status'] = status
         request = {'status': status}
-        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
-
-    def event_date(self, event_date):
-        """Update the event_date.
-
-        Args:
-            event_date: Converted to %Y-%m-%dT%H:%M:%SZ date format.
-
-        Returns:
-
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        event_date = self._utils.datetime.format_datetime(
-            event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-        )
-        self._data['eventDate'] = event_date
-        request = {'eventDate': event_date}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
