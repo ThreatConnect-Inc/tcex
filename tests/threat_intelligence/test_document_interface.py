@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 import os
+from random import randint
 
 from .ti_helpers import TIHelper, TestThreatIntelligence
 
@@ -100,3 +101,140 @@ class TestDocumentGroups(TestThreatIntelligence):
     def tests_ti_document_update(self, request):
         """Test updating group metadata."""
         super().group_update(request)
+
+    #
+    # Custom test cases
+    #
+
+    def tests_ti_document_download(self):
+        """Create a group using specific interface."""
+        helper_ti = self.ti_helper.create_group()
+
+        # update file content
+        file_content = b'pytest content'
+        r = helper_ti.file_content(file_content)
+        assert r.status_code == 200
+
+        # download file
+        r = helper_ti.download()
+        assert r.status_code == 200
+        assert r.text == file_content.decode('utf-8')
+
+    def tests_ti_document_download_no_update(self):
+        """Create a group using specific interface."""
+        group_data = {
+            'file_name': self.ti_helper.rand_filename(),
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.document(**group_data)
+
+        try:
+            ti.download()
+            assert False, 'failed to catch group method call with no id.'
+        except RuntimeError:
+            assert True, 'caught group method call with no id'
+
+    def tests_ti_document_file_content(self):
+        """Update file content value."""
+        helper_ti = self.ti_helper.create_group()
+
+        # update file content
+        file_content = b'pytest content'
+        r = helper_ti.file_content(file_content)
+        assert r.status_code == 200
+
+    def tests_ti_document_file_content_no_update(self):
+        """Create a group using specific interface."""
+        group_data = {
+            'file_name': self.ti_helper.rand_filename(),
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.document(**group_data)
+
+        try:
+            ti.file_content(b'pytest content')
+            assert False, 'failed to catch group method call with no id.'
+        except RuntimeError:
+            assert True, 'caught group method call with no id'
+
+    def tests_ti_document_file_name(self, request):
+        """Update file name value."""
+        helper_ti = self.ti_helper.create_group()
+
+        # update file name
+        file_name = request.node.name
+        r = helper_ti.file_name(file_name)
+        assert r.status_code == 200
+
+    def tests_ti_document_file_name_no_update(self, request):
+        """Create a group using specific interface."""
+        group_data = {
+            'file_name': self.ti_helper.rand_filename(),
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.document(**group_data)
+
+        try:
+            ti.file_name(request.node.name)
+            assert False, 'failed to catch group method call with no id.'
+        except RuntimeError:
+            assert True, 'caught group method call with no id'
+
+    def tests_ti_document_file_size(self):
+        """Update file size value."""
+        helper_ti = self.ti_helper.create_group()
+
+        # update file size
+        file_size = str(randint(10, 20))
+        r = helper_ti.file_size(file_size)
+        assert r.status_code == 200
+
+    def tests_ti_document_file_size_no_update(self):
+        """Create a group using specific interface."""
+        group_data = {
+            'file_name': self.ti_helper.rand_filename(),
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.document(**group_data)
+
+        try:
+            ti.file_size(10)
+            assert False, 'failed to catch group method call with no id.'
+        except RuntimeError:
+            assert True, 'caught group method call with no id'
+
+    def tests_ti_document_malware(self, request):
+        """Update file size value."""
+        helper_ti = self.ti_helper.create_group()
+
+        file_data = {
+            'file_name': request.node.name,
+            'malware': True,
+            'password': 'TCInfected',
+        }
+        r = helper_ti.malware(**file_data)
+        assert r.status_code == 200
+
+    def tests_ti_document_malware_no_update(self, request):
+        """Create a group using specific interface."""
+        group_data = {
+            'file_name': self.ti_helper.rand_filename(),
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.document(**group_data)
+
+        try:
+            file_data = {
+                'file_name': request.node.name,
+                'malware': True,
+                'password': 'TCInfected',
+            }
+            ti.malware(**file_data)
+            assert False, 'failed to catch group method call with no id.'
+        except RuntimeError:
+            assert True, 'caught group method call with no id'

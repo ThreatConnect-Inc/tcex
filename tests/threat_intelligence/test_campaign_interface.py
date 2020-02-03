@@ -106,7 +106,7 @@ class TestCampaignGroups(TestThreatIntelligence):
     #
 
     def tests_ti_campaign_first_seen(self):
-        """Create a label on a group."""
+        """Update first seen value."""
         helper_ti = self.ti_helper.create_group()
 
         # update first seen (coverage)
@@ -115,7 +115,7 @@ class TestCampaignGroups(TestThreatIntelligence):
         assert r.status_code == 200
 
     def tests_ti_campaign_first_seen_no_update(self):
-        """Create a label on a group."""
+        """Test update on group with no id."""
         group_data = {
             'first_seen': datetime.now().isoformat(),
             'name': self.ti_helper.rand_name(),
@@ -127,6 +127,6 @@ class TestCampaignGroups(TestThreatIntelligence):
         try:
             first_seen = (datetime.now() - timedelta(days=2)).isoformat()
             ti.first_seen(first_seen)
-            assert False, 'failed to catch first seen on an campaign with no id.'
+            assert False, 'failed to catch group method call with no id.'
         except RuntimeError:
-            assert True, 'caught first seen call on an campaign with no id'
+            assert True, 'caught group method call with no id'

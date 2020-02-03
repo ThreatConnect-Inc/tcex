@@ -6,18 +6,9 @@ from ..group import Group
 class Document(Group):
     """Unique API calls for Document API Endpoints
 
-    Valid status:
-    + Success
-    + Awaiting Upload
-    + In Progress
-    + Failed
-
     Args:
         name (str): The name for this Group.
         file_name (str): The name for the attached file for this Group.
-        date_added (str, kwargs): The date timestamp the Indicator was created.
-        file_content (str;method, kwargs): The file contents or callback method to retrieve
-            file content.
         malware (bool, kwargs): If true the file is considered malware.
         password (bool, kwargs): If malware is true a password for the zip archive is required.
     """
@@ -29,15 +20,27 @@ class Document(Group):
         )
         self._data['fileName'] = file_name or kwargs.get('file_name')
 
-    def file_content(self, file_content, update_if_exists=True):
-        """Update  the file content.
-
-        Args:
-            file_content: The file_content to upload.
-            update_if_exists:
+    def download(self):
+        """Download the documents context.
 
         Returns:
+            requests.Response: The response from the API call.
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
 
+        return self.tc_requests.download(self.api_type, self.api_branch, self.unique_id)
+
+    def file_content(self, file_content, update_if_exists=True):
+        """Update the file content.
+
+        Args:
+            file_content (bytes|str): The contents of the file to upload.
+            update_if_exists (bool): If True the request will indicate to the API
+                that the file should be updated if it exists.
+
+        Returns:
+            requests.Response
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
@@ -52,90 +55,79 @@ class Document(Group):
         )
 
     def file_name(self, file_name):
-        """Update the file_name.
+        """Update the Document file name.
 
         Args:
-            file_name:
+            file_name (str): The filename of the document.
+
+        Returns:
+            requests.Response
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
+        # update data dict with new value
         self._data['fileName'] = file_name
+
+        # build body for PUT
         request = {'fileName': file_name}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def file_size(self, file_size):
-        """Update the file_size.
+        """Set or Update the Document file size.
 
         Args:
-            file_size:
+            file_name (str): The filename of the document.
+
+        Returns:
+            requests.Response
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
+        # update data dict with new value
         self._data['fileSize'] = file_size
-        request = {'fileSize': file_size}
-        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
-    def status(self, status):
-        """Update the status
-
-        Valid status:
-        + Success
-        + Awaiting Upload
-        + In Progress
-        + Failed
-
-        Args:
-            status: Success, Awaiting Upload, In Progress, or Failed
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        self._data['status'] = status
-        request = {'status': status}
+        # build body for PUT
+        request = {'fileName': self._data.get('fileName'), 'fileSize': file_size}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def malware(self, malware, password, file_name):
-        """Upload to malware vault.
+        """Update the Document file to be marked as malware.
 
         Args:
-            malware:
-            password:
-            file_name:
+            malware (bool): True if the document is malware.
+            password (str): The password for the zip file.
+            file_name (str): The filename of the document.
+
+        Returns:
+            requests.Response
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
+        # update data dict with new value
         self._data['malware'] = malware
         self._data['password'] = password
         self._data['fileName'] = file_name
-        request = {'malware': malware, 'password': password, 'fileName': file_name}
+
+        # build body for PUT
+        request = {'fileName': file_name, 'malware': malware, 'password': password}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
-    def download(self):
-        """Download the documents context.
+    # TODO: evaluate if this is needed and if so update to just return all hashes
+    # def get_file_hash(self, hash_type='sha256'):
+    #     """Get the hash value of attached document
 
-        Returns:
+    #     Args:
+    #         hash_type:
 
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+    #     Returns:
 
-        return self.tc_requests.download(self.api_type, self.api_branch, self.unique_id)
+    #     """
+    #     if not self.can_update():
+    #         self._tcex.handle_error(910, [self.type])
 
-    def get_file_hash(self, hash_type='sha256'):
-        """Get the hash value of attached document
-
-        Args:
-            hash_type:
-
-        Returns:
-
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        return self.tc_requests.get_file_hash(
-            self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
-        )
+    #     return self.tc_requests.get_file_hash(
+    #         self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
+    #     )

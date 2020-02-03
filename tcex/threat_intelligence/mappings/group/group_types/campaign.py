@@ -8,7 +8,7 @@ class Campaign(Group):
 
     Args:
         name (str): The name for this Group.
-        date_added (str, kwargs): The date timestamp the Indicator was created.
+        owner (str): The name for this Group.
         first_seen (str, kwargs): The first seen datetime expression for this Group.
     """
 

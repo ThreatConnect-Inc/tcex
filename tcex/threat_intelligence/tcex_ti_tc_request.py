@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Module"""
-import hashlib
+# import hashlib
 from urllib.parse import quote
 
 # import local modules for dynamic reference
@@ -30,6 +30,8 @@ class TiTcRequest:
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
+        if len(r.content) < 500:
+            self.tcex.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
             self.tcex.log.error(f'Error deleting data ({err}')
@@ -46,6 +48,8 @@ class TiTcRequest:
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
+        if len(r.content) < 500:
+            self.tcex.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
             self.tcex.log.error(f'Error getting data ({err}')
@@ -58,7 +62,6 @@ class TiTcRequest:
         result_start = 0
         while should_iterate:
             params['resultStart'] = result_start
-            # r = self.tcex.session.get(url, params=params)
             r = self._get(url, params=params)
             if not self.success(r):
                 err = r.text or r.reason
@@ -85,6 +88,8 @@ class TiTcRequest:
         )
         if len(data) < 50 and not isinstance(data, bytes):
             self.tcex.log.trace(f'body: {data}')
+        if len(r.content) < 500:
+            self.tcex.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
             self.tcex.log.error(f'Error posting data ({err}')
@@ -102,6 +107,8 @@ class TiTcRequest:
             f'URL: ({r.url})'
         )
         self.tcex.log.trace(f'body: {json_data}')
+        if len(r.content) < 500:
+            self.tcex.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
             self.tcex.log.error(f'Error posting data ({err}')
@@ -118,7 +125,10 @@ class TiTcRequest:
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
-        self.tcex.log.trace(f'body: {json_data}')
+        if len(json_data) < 50 and not isinstance(json_data, bytes):
+            self.tcex.log.trace(f'body: {json_data}')
+        if len(r.content) < 500:
+            self.tcex.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
             self.tcex.log.error(f'Error updating data ({err}')
@@ -340,7 +350,7 @@ class TiTcRequest:
         """Delete Adversary handle assest
 
         Args:
-            unique_id (str): The unique ID of the Adversary
+            unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
 
         Returns:
@@ -352,7 +362,7 @@ class TiTcRequest:
         """Delete Adversary phone assest
 
         Args:
-            unique_id (str): The unique ID of the Adversary
+            unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
 
         Returns:
@@ -364,7 +374,7 @@ class TiTcRequest:
         """Delete Adversary URL assest
 
         Args:
-            unique_id (str): The unique ID of the Adversary
+            unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
 
         Returns:
@@ -372,11 +382,27 @@ class TiTcRequest:
         """
         return self.adversary_url_asset(unique_id, asset_id, action='DELETE')
 
+    def download(self, main_type, sub_type, unique_id):
+        """Download a Document or Report
+
+        Args:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            unique_id (str): The unique ID of the Resource.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        url = f'/v2/{main_type}/{unique_id}/download'
+        if sub_type:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}/download'
+        return self._get(url)
+
     def get_adversary_handle_asset(self, unique_id, asset_id, params=None):
         """Get Adversary handle assest
 
         Args:
-            unique_id (str): The unique ID of the Adversary
+            unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
 
         Returns:
@@ -388,7 +414,7 @@ class TiTcRequest:
         """Get Adversary phone assest
 
         Args:
-            unique_id (str): The unique ID of the Adversary
+            unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
 
         Returns:
@@ -400,7 +426,7 @@ class TiTcRequest:
         """Get Adversary URL assest
 
         Args:
-            unique_id (str): The unique ID of the Adversary
+            unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
 
         Returns:
@@ -552,8 +578,12 @@ class TiTcRequest:
         if not isinstance(data, bytes):
             data = bytes(data, 'utf-8')
 
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/upload?updateIfExists={update_if_exists}'
-        return self._post(url, data=data)
+        params = {}
+        if update_if_exists:
+            params['updateIfExists'] = 'true'
+
+        url = f'/v2/{main_type}/{sub_type}/{unique_id}/upload'
+        return self._post(url, data=data, params=params)
 
     def add_false_positive(self, main_type, sub_type, unique_id, owner=None):
         """
@@ -673,55 +703,35 @@ class TiTcRequest:
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
 
-    def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
-        """
+    # TODO: evaluate if this is needed and if so update to just return all hashes
+    # def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
+    #     """
 
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
+    #     Args:
+    #         main_type:
+    #         sub_type:
+    #         unique_id:
 
-        Return:
+    #     Return:
 
-        """
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/download'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/download'
+    #     """
+    #     if not sub_type:
+    #         url = f'/v2/{main_type}/{unique_id}/download'
+    #     else:
+    #         url = f'/v2/{main_type}/{sub_type}/{unique_id}/download'
 
-        if hash_type == 'sha256':
-            hashed_file = hashlib.sha256()
-        elif hash_type == 'sha1':
-            hashed_file = hashlib.sha1()
-        else:
-            hashed_file = hashlib.md5()
+    #     if hash_type == 'sha256':
+    #         hashed_file = hashlib.sha256()
+    #     elif hash_type == 'sha1':
+    #         hashed_file = hashlib.sha1()
+    #     else:
+    #         hashed_file = hashlib.md5()
 
-        with self.tcex.session.get(url, stream=True) as r:
-            for chunk in r.iter_content(chunk_size=4096):
-                if chunk:  # filter out keep-alive new chunks
-                    hashed_file.update(chunk)
-        return hashed_file
-
-    def download(self, main_type, sub_type, unique_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-
-        Return:
-
-        """
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/download'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/download'
-
-        r = self.tcex.session.get(url)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
-        return r
+    #     with self.tcex.session.get(url, stream=True) as r:
+    #         for chunk in r.iter_content(chunk_size=4096):
+    #             if chunk:  # filter out keep-alive new chunks
+    #                 hashed_file.update(chunk)
+    #     return hashed_file
 
     def dns_resolution(self, main_type, sub_type, unique_id, owner=None):
         """
