@@ -170,68 +170,42 @@ class ThreatIntelligence:
         Args:
             owner (str): The ThreatConnect owner name.
             group_type:
-            **kwargs:
 
         Return:
 
         """
-
-        group = None
         if not group_type:
             return Group(self.tcex, None, 'group', None, owner=owner, **kwargs)
 
-        name = kwargs.pop('name', None)
-        group_type = group_type.upper()
-        if group_type == 'ADVERSARY':
-            group = Adversary(self.tcex, name, owner=owner, **kwargs)
-        if group_type == 'CAMPAIGN':
-            group = Campaign(self.tcex, name, owner=owner, **kwargs)
-        if group_type == 'DOCUMENT':
-            group = Document(self.tcex, name, kwargs.pop('file_name', None), owner=owner, **kwargs)
-        if group_type == 'EVENT':
-            group = Event(self.tcex, name, owner=owner, **kwargs)
-        if group_type == 'EMAIL':
-            group = Email(
-                self.tcex,
-                name,
-                kwargs.pop('to', None),
-                kwargs.pop('from_addr', None),
-                kwargs.pop('subject', None),
-                kwargs.pop('body', None),
-                kwargs.pop('header', None),
-                owner=owner,
-                **kwargs,
-            )
-        if group_type == 'INCIDENT':
-            group = Incident(self.tcex, name, owner=owner, **kwargs)
-        if group_type == 'INTRUSION SET':
-            group = IntrusionSet(self.tcex, name, owner=owner, **kwargs)
-        if group_type == 'REPORT':
-            group = Report(self.tcex, name, owner=owner, **kwargs)
-        if group_type == 'SIGNATURE':
-            group = Signature(
-                self.tcex,
-                name,
-                kwargs.pop('file_name', None),
-                kwargs.pop('file_type', None),
-                kwargs.pop('file_text', None),
-                owner=owner,
-                **kwargs,
-            )
-        if group_type == 'THREAT':
-            group = Threat(self.tcex, name, owner=owner, **kwargs)
-        if group_type == 'TASK':
-            group = Task(
-                self.tcex,
-                name,
-                kwargs.pop('status', 'Not Started'),
-                kwargs.pop('due_date', None),
-                kwargs.pop('reminder_date', None),
-                kwargs.pop('escalation_date', None),
-                owner=owner,
-                **kwargs,
-            )
-        return group
+        group_type_map = {
+            'adversary': Adversary,
+            'campaign': Campaign,
+            'document': Document,
+            'event': Event,
+            'email': Email,
+            'incident': Incident,
+            'intrusion set': IntrusionSet,
+            'report': Report,
+            'signature': Signature,
+            'threat': Threat,
+            'task': Task,
+        }
+
+        # if "name" is not in kwargs
+        if kwargs.get('name') is None:
+            kwargs['name'] = None
+
+        group_type = group_type.lower()
+        if group_type not in group_type_map:
+            raise RuntimeError(f'Invalid group type "{group_type}" provided.')
+
+        # update kwargs
+        kwargs['owner'] = owner
+        kwargs['tcex'] = self.tcex
+
+        # return correct group object
+        group_object = group_type_map.get(group_type)
+        return group_object(**kwargs)
 
     def adversary(self, name, owner=None, **kwargs):
         """Create the Adversary TI object.
@@ -316,7 +290,7 @@ class ThreatIntelligence:
         """
         return Incident(self.tcex, name, owner=owner, **kwargs)
 
-    def intrusion_sets(self, name, owner=None, **kwargs):
+    def intrusion_set(self, name, owner=None, **kwargs):
         """Create the Intrustion Set TI object.
 
         Args:

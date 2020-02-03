@@ -7,16 +7,15 @@ class Campaign(Group):
     """Unique API calls for Campaign API Endpoints
 
     Args:
-        name (str): The name for this Group.
-        owner (str): The name for this Group.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        name (str, kwargs): [Required for Create] The name for this Group.
+        owner (str, kwargs): The name for this Group. Default to default Org when not provided
         first_seen (str, kwargs): The first seen datetime expression for this Group.
     """
 
-    def __init__(self, tcex, name, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties."""
-        super().__init__(
-            tcex, 'Campaign', 'campaign', 'campaigns', owner=owner, name=name, **kwargs
-        )
+        super().__init__(tcex, 'Campaign', 'campaign', 'campaigns', **kwargs)
 
     def first_seen(self, first_seen):
         """Update the campaign with the new first_seen date.

@@ -535,7 +535,6 @@ class TestThreatIntelligence:
             'owner': self.owner,
             'unique_id': helper_ti.unique_id,
         }
-        self._add_group_fields(group_data)
         ti = self.ti.group(**group_data)
         r = ti.update()
         response_data = r.json()

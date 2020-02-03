@@ -7,15 +7,14 @@ class Adversary(Group):
     """Unique API calls for Adversary API Endpoints
 
     Args:
-        name (str): The name for this Group.
-        owner (str): The name for this Group.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        name (str, kwargs): [Required for Create] The name for this Group.
+        owner (str, kwargs): The name for this Group. Default to default Org when not provided
     """
 
-    def __init__(self, tcex, name, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class properties"""
-        super().__init__(
-            tcex, 'Adversary', 'adversary', 'adversaries', owner=owner, name=name, **kwargs
-        )
+        super().__init__(tcex, 'Adversary', 'adversary', 'adversaries', **kwargs)
 
     def add_asset(self, asset_type, asset_value):
         """Add an asset to the Adversary

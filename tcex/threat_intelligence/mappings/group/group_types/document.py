@@ -7,13 +7,15 @@ class Document(Group):
     """Unique API calls for Document API Endpoints
 
     Args:
-        name (str): The name for this Group.
-        file_name (str): The name for the attached file for this Group.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        name (str, kwargs): [Required for Create] The name for this Group.
+        owner (str, kwargs): The name for this Group. Default to default Org when not provided
+        file_name (str, kwargs): The name for the attached file for this Group.
         malware (bool, kwargs): If true the file is considered malware.
         password (bool, kwargs): If malware is true a password for the zip archive is required.
     """
 
-    def __init__(self, tcex, name, file_name, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class properties."""
         super().__init__(
             tcex, 'Document', 'document', 'documents', owner=owner, name=name, **kwargs

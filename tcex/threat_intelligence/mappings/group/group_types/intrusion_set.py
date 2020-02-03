@@ -8,7 +8,6 @@ class IntrusionSet(Group):
 
     Args:
         name (str): The name for this Group.
-        date_added (str, kwargs): The date timestamp the Indicator was created.
     """
 
     def __init__(self, tcex, name, owner=None, **kwargs):
