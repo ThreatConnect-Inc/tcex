@@ -6,7 +6,7 @@ from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
 class TestAdversaryAssets(TestThreatIntelligence):
-    """Test TcEx Adversary Groups."""
+    """Test TcEx Adversary Assets."""
 
     group_type = 'Adversary'
     owner = os.getenv('TC_OWNER')

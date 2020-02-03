@@ -22,10 +22,10 @@ class Campaign(Group):
         """Update the campaign with the new first_seen date.
 
         Args:
-            first_seen: The first_seen date. Converted to %Y-%m-%dT%H:%M:%SZ date format
+            first_seen (str): The first_seen date. Converted to %Y-%m-%dT%H:%M:%SZ date format
 
         Returns:
-
+            requests.Response: The response from the API call.
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])

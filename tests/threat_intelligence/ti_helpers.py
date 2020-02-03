@@ -14,10 +14,12 @@ class TIHelper:
         ti_field (str, optional): The TI field for indicators (e.g., ip).
     """
 
-    def __init__(self, ti_type, ti_field=None):
+    def __init__(self, ti_type, ti_field=None, optional_fields=None, required_fields=None):
         """Initialize Class Properties"""
         self.ti_type = ti_type
         self.ti_field = ti_field
+        self.optional_fields = optional_fields or {}
+        self.required_fields = required_fields or {}
 
         # properties
         self.app = MockApp(runtime_level='Playbook')
@@ -40,6 +42,13 @@ class TIHelper:
 
         # cleanup values
         self.ti_objects = []
+
+    def _add_fields(self, group_data):
+        """Add any required or optional fields to the request body."""
+        for k, v in self.required_fields.items():
+            group_data[k] = v
+        for k, v in self.optional_fields.items():
+            group_data[k] = v
 
     @property
     def indicator_value(self):
@@ -70,6 +79,10 @@ class TIHelper:
             f'{self.tcex.utils.random_string(randint(5,15))} '
             f'{self.tcex.utils.random_string(randint(5,15))}'
         )
+
+    def rand_filename(self):
+        """Return a random hashtag."""
+        return f'{self.tcex.utils.random_string(randint(5,15))}.pdf'.lower()
 
     def rand_hashtag(self):
         """Return a random hashtag."""
@@ -141,6 +154,9 @@ class TIHelper:
 
         if kwargs.get('owner') is None:
             kwargs['owner'] = os.getenv('TC_OWNER')
+
+        # add optional and/or required fields
+        self._add_fields(kwargs)
 
         # setup group data
         ti = self.ti.group(**kwargs)
@@ -277,9 +293,18 @@ class TestThreatIntelligence:
     indicator_field = None
     indicator_field_arg = None
     indicator_type = None
+    optional_fields = {}
     owner = None
+    required_fields = {}
     ti = None
     ti_helper = None
+
+    def _add_group_fields(self, group_data):
+        """Add any required or optional fields to the request body."""
+        for k, v in self.required_fields.items():
+            group_data[k] = v
+        for k, v in self.optional_fields.items():
+            group_data[k] = v
 
     def group_add_attribute(self, request):
         """Create a attribute on a group."""
@@ -332,7 +357,7 @@ class TestThreatIntelligence:
 
         # group for delete
         group_data = {
-            'name': helper_ti.name,
+            # 'name': helper_ti.name,
             'group_type': self.group_type,
             'owner': helper_ti.owner,
             'unique_id': helper_ti.unique_id,
@@ -351,7 +376,7 @@ class TestThreatIntelligence:
 
         # retrieve the group
         group_data = {
-            'name': helper_ti.name,
+            # 'name': helper_ti.name,
             'group_type': self.group_type,
             'owner': helper_ti.owner,
             'unique_id': helper_ti.unique_id,
@@ -510,6 +535,7 @@ class TestThreatIntelligence:
             'owner': self.owner,
             'unique_id': helper_ti.unique_id,
         }
+        self._add_group_fields(group_data)
         ti = self.ti.group(**group_data)
         r = ti.update()
         response_data = r.json()

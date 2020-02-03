@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 import os
-from datetime import datetime, timedelta
 
 from .ti_helpers import TIHelper, TestThreatIntelligence
 
 
-class TestCampaignGroups(TestThreatIntelligence):
-    """Test TcEx Campaign Groups."""
+class TestEventGroups(TestThreatIntelligence):
+    """Test TcEx Event Groups."""
 
-    group_type = 'Campaign'
+    group_type = 'Event'
     owner = os.getenv('TC_OWNER')
     ti = None
     ti_helper = None
@@ -26,14 +25,13 @@ class TestCampaignGroups(TestThreatIntelligence):
         if os.getenv('TEARDOWN_METHOD') is None:
             self.ti_helper.cleanup()
 
-    def tests_ti_campaign_create(self):
+    def tests_ti_event_create(self):
         """Create a group using specific interface."""
         group_data = {
-            'first_seen': datetime.now().isoformat(),
             'name': self.ti_helper.rand_name(),
             'owner': self.owner,
         }
-        ti = self.ti.campaign(**group_data)
+        ti = self.ti.event(**group_data)
         r = ti.create()
 
         # assert response
@@ -41,7 +39,7 @@ class TestCampaignGroups(TestThreatIntelligence):
 
         # retrieve group for asserts
         group_data['unique_id'] = ti.unique_id
-        ti = self.ti.campaign(**group_data)
+        ti = self.ti.event(**group_data)
         r = ti.single()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)
@@ -57,76 +55,46 @@ class TestCampaignGroups(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_campaign_add_attribute(self, request):
+    def tests_ti_event_add_attribute(self, request):
         """Test group add attribute."""
         super().group_add_attribute(request)
 
-    def tests_ti_campaign_add_label(self):
+    def tests_ti_event_add_label(self):
         """Test group add label."""
         super().group_add_label()
 
-    def tests_ti_campaign_add_tag(self, request):
+    def tests_ti_event_add_tag(self, request):
         """Test group add tag."""
         super().group_add_tag(request)
 
-    def tests_ti_campaign_delete(self):
+    def tests_ti_event_delete(self):
         """Test group delete."""
         super().group_delete()
 
-    def tests_ti_campaign_get(self):
+    def tests_ti_event_get(self):
         """Test group get with generic group method."""
         super().group_get()
 
-    def tests_ti_campaign_get_filter(self):
+    def tests_ti_event_get_filter(self):
         """Test group get with filter."""
         super().group_get_filter()
 
-    def tests_ti_campaign_get_includes(self, request):
+    def tests_ti_event_get_includes(self, request):
         """Test group get with includes."""
         super().group_get_includes(request)
 
-    def tests_ti_campaign_get_attribute(self, request):
+    def tests_ti_event_get_attribute(self, request):
         """Test group get attribute."""
         super().group_get_attribute(request)
 
-    def tests_ti_campaign_get_label(self):
+    def tests_ti_event_get_label(self):
         """Test group get label."""
         super().group_get_label()
 
-    def tests_ti_campaign_get_tag(self, request):
+    def tests_ti_event_get_tag(self, request):
         """Test group get tag."""
         super().group_get_tag(request)
 
-    def tests_ti_campaign_update(self, request):
+    def tests_ti_event_update(self, request):
         """Test updating group metadata."""
         super().group_update(request)
-
-    #
-    # Custom test cases
-    #
-
-    def tests_ti_campaign_first_seen(self):
-        """Create a label on a group."""
-        helper_ti = self.ti_helper.create_group()
-
-        # update first seen (coverage)
-        first_seen = (datetime.now() - timedelta(days=2)).isoformat()
-        r = helper_ti.first_seen(first_seen)
-        assert r.status_code == 200
-
-    def tests_ti_campaign_first_seen_no_update(self):
-        """Create a label on a group."""
-        group_data = {
-            'first_seen': datetime.now().isoformat(),
-            'name': self.ti_helper.rand_name(),
-            'owner': self.owner,
-        }
-        ti = self.ti.campaign(**group_data)
-
-        # update first seen (coverage)
-        try:
-            first_seen = (datetime.now() - timedelta(days=2)).isoformat()
-            ti.first_seen(first_seen)
-            assert False, 'failed to catch first seen on an campaign with no id.'
-        except RuntimeError:
-            assert True, 'caught first seen call on an campaign with no id'

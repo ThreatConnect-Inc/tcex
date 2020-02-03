@@ -17,7 +17,7 @@ class Document(Group):
         file_name (str): The name for the attached file for this Group.
         date_added (str, kwargs): The date timestamp the Indicator was created.
         file_content (str;method, kwargs): The file contents or callback method to retrieve
-                                           file content.
+            file content.
         malware (bool, kwargs): If true the file is considered malware.
         password (bool, kwargs): If malware is true a password for the zip archive is required.
     """
@@ -28,7 +28,6 @@ class Document(Group):
             tcex, 'Document', 'document', 'documents', owner=owner, name=name, **kwargs
         )
         self._data['fileName'] = file_name or kwargs.get('file_name')
-        # file data/content to upload
 
     def file_content(self, file_content, update_if_exists=True):
         """Update  the file content.

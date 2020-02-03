@@ -305,7 +305,6 @@ class TiTcRequest:
         Returns:
             request.Response: The response from the API call.
         """
-        # TODO: @bpurdy - what is this URL good for on a create???
         url = f'/v2/{main_type}'
         if sub_type:
             url = f'/v2/{main_type}/{sub_type}'
@@ -327,7 +326,6 @@ class TiTcRequest:
         Returns:
             request.Response: The response from the API call.
         """
-        # TODO: @bpurdy - what is this URL good for on a delete???
         url = f'/v2/{main_type}/{unique_id}'
         if sub_type:
             if unique_id:
@@ -528,7 +526,6 @@ class TiTcRequest:
         Returns:
             request.Response: The response from the API call.
         """
-        # TODO: @bpurdy - what is this URL good for on an update???
         url = f'/v2/{main_type}/{unique_id}'
         if sub_type:
             if unique_id:

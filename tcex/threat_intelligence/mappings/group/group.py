@@ -74,18 +74,18 @@ class Group(Mappings):
     def _set_unique_id(self, json_response):
         self.unique_id = json_response.get('id', '')
 
-    # @staticmethod
-    # def sub_types():
-    #     """All supported ThreatConnect Group types."""
-    #     return {
-    #         'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
-    #         'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
-    #         'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
-    #         'Emails': {'apiBranch': 'emails', 'apiEntity': 'email'},
-    #         'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
-    #         'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
-    #         'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
-    #         'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
-    #         'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
-    #         'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
-    #     }
+    @staticmethod
+    def sub_types():
+        """All supported ThreatConnect Group types."""
+        return {
+            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
+            'Emails': {'apiBranch': 'emails', 'apiEntity': 'email'},
+            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
+            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
+            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
+            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
+            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+        }
