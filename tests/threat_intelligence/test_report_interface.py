@@ -109,7 +109,7 @@ class TestReportGroups(TestThreatIntelligence):
     #
 
     def tests_ti_report_file_content_update(self):
-        """Create a label on a group."""
+        """Test updating the file content of a Report."""
         helper_ti = self.ti_helper.create_group()
 
         # update file content (coverage)
@@ -117,7 +117,7 @@ class TestReportGroups(TestThreatIntelligence):
         assert r.status_code == 200
 
     def tests_ti_report_file_content_no_update(self):
-        """Create a label on a group."""
+        """Test updating the file content of a Report that has not been created yet."""
         group_data = {
             'name': self.ti_helper.rand_name(),
             'file_name': self.ti_helper.rand_filename(),
@@ -133,7 +133,7 @@ class TestReportGroups(TestThreatIntelligence):
             assert True, 'caught file content update call on an report with no id'
 
     def tests_ti_report_file_name_update(self):
-        """Create a label on a group."""
+        """Test updating the file name of a Report."""
         helper_ti = self.ti_helper.create_group()
 
         # update file content (coverage)
@@ -142,7 +142,7 @@ class TestReportGroups(TestThreatIntelligence):
         assert r.status_code == 200
 
     def tests_ti_report_file_name_no_update(self):
-        """Create a label on a group."""
+        """Test updating the file name of a Report that has not been created yet."""
         group_data = {
             'name': self.ti_helper.rand_name(),
             'file_name': self.ti_helper.rand_filename(),
