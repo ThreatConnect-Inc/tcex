@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 import os
+from datetime import datetime, timedelta
 
 from .ti_helpers import TIHelper, TestThreatIntelligence
 
@@ -98,3 +99,53 @@ class TestEventGroups(TestThreatIntelligence):
     def tests_ti_event_update(self, request):
         """Test updating group metadata."""
         super().group_update(request)
+
+    #
+    # Custom test cases
+    #
+
+    def tests_ti_event_event_date(self):
+        """Update event data value."""
+        helper_ti = self.ti_helper.create_group()
+
+        event_date = (datetime.now() - timedelta(days=2)).isoformat()
+        r = helper_ti.event_date(event_date)
+        assert r.status_code == 200
+
+    def tests_ti_event_event_date_no_update(self):
+        """Test update on group with no id."""
+        group_data = {
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.event(**group_data)
+
+        try:
+            event_date = (datetime.now() - timedelta(days=2)).isoformat()
+            ti.event_date(event_date)
+            assert False, 'failed to catch group method call with no id.'
+        except RuntimeError:
+            assert True, 'caught group method call with no id'
+
+    def tests_ti_event_status(self):
+        """Update event data value."""
+        helper_ti = self.ti_helper.create_group()
+
+        status = 'Escalated'
+        r = helper_ti.status(status)
+        assert r.status_code == 200
+
+    def tests_ti_event_status_no_update(self):
+        """Test update on group with no id."""
+        group_data = {
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        ti = self.ti.event(**group_data)
+
+        try:
+            status = 'Escalated'
+            ti.status(status)
+            assert False, 'failed to catch group method call with no id.'
+        except RuntimeError:
+            assert True, 'caught group method call with no id'

@@ -114,20 +114,3 @@ class Document(Group):
         # build body for PUT
         request = {'fileName': file_name, 'malware': malware, 'password': password}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
-
-    # TODO: evaluate if this is needed and if so update to just return all hashes
-    # def get_file_hash(self, hash_type='sha256'):
-    #     """Get the hash value of attached document
-
-    #     Args:
-    #         hash_type:
-
-    #     Returns:
-
-    #     """
-    #     if not self.can_update():
-    #         self._tcex.handle_error(910, [self.type])
-
-    #     return self.tc_requests.get_file_hash(
-    #         self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
-    #     )
