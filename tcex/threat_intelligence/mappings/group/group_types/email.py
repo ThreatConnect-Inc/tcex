@@ -8,13 +8,12 @@ class Email(Group):
 
     Args:
         name (str): The name for this Group.
-        subject (str): The subject for this Email.
-        header (str): The header for this Email.
-        body (str): The body for this Email.
-        date_added (str, kwargs): The date timestamp the Indicator was created.
-        from_addr (str, kwargs): The **from** address for this Email.
         to (str, kwargs): The **to** address for this Email.
-
+        from_addr (str, kwargs): The **from** address for this Email.
+        subject (str): The subject for this Email.
+        body (str): The body for this Email.
+        header (str): The header for this Email.
+        owner (str): The name for this Group.
     """
 
     def __init__(self, tcex, name, to, from_addr, subject, body, header, owner=None, **kwargs):
