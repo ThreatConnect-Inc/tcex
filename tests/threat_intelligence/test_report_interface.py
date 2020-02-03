@@ -12,7 +12,7 @@ class TestReportGroups(TestThreatIntelligence):
 
     group_type = 'Report'
     owner = os.getenv('TC_OWNER')
-    file_content = ('pytest report text',)
+    file_content = 'pytest report text'
     required_fields = {'file_name': 'pytest.pdf'}
     ti = None
     ti_helper = None
@@ -115,7 +115,6 @@ class TestReportGroups(TestThreatIntelligence):
         # update file content (coverage)
         r = helper_ti.file_content(self.file_content)
         assert r.status_code == 200
-        print(r.json())
 
     def tests_ti_report_file_content_no_update(self):
         """Create a label on a group."""
@@ -208,38 +207,15 @@ class TestReportGroups(TestThreatIntelligence):
         except RuntimeError:
             assert True, 'caught file content status call on an report with no id'
 
-    # def tests_ti_report_file_malware_update(self):
-    #     """Create a label on a group."""
-    #     helper_ti = self.ti_helper.create_group()
-    #
-    #     # update file content (coverage)
-    #     r = helper_ti.malware(self.file_content)
-    #     assert r.status_code == 200
-    #     print(r.json())
-    #
-    # def tests_ti_report_file_malware_no_update(self):
-    #     """Create a label on a group."""
-    #     group_data = {
-    #         'name': self.ti_helper.rand_name(),
-    #         'file_name': self.ti_helper.rand_filename(),
-    #         'owner': self.owner,
-    #     }
-    #     ti = self.ti.report(**group_data)
-    #
-    #     # update file content (coverage)
-    #     try:
-    #         ti.file_content(self.file_content)
-    #         assert False, 'failed to catch file content update on an report with no id.'
-    #     except RuntimeError:
-    #         assert True, 'caught file content update call on an report with no id'
-
     def tests_ti_report_file_published_date_update(self):
         """Create a label on a group."""
         helper_ti = self.ti_helper.create_group()
 
         # update file content (coverage)
-        r = helper_ti.publish_date((datetime.now() - timedelta(days=2)).isoformat())
+        date = (datetime.now() - timedelta(days=2)).isoformat()
+        r = helper_ti.publish_date(date)
         assert r.status_code == 200
+        assert r.json().get('data').get(helper_ti.api_entity).get('publishDate')[:10] == date[:10]
 
     def tests_ti_report_file_published_date_no_update(self):
         """Create a label on a group."""
@@ -257,16 +233,19 @@ class TestReportGroups(TestThreatIntelligence):
         except RuntimeError:
             assert True, 'caught publish date update call on an report with no id'
 
-    def tests_ti_report_file_download_update(self):
+    def tests_ti_report_download_update(self):
         """Create a label on a group."""
         helper_ti = self.ti_helper.create_group()
 
         # update file content (coverage)
-        helper_ti.file_content(self.file_content)
-        r = helper_ti.download()
+        r = helper_ti.file_content(self.file_content)
         assert r.status_code == 200
 
-    def tests_ti_report_file_download_no_update(self):
+        r = helper_ti.download()
+        assert r.status_code == 200
+        assert r.text == self.file_content
+
+    def tests_ti_report_download_no_update(self):
         """Create a label on a group."""
         group_data = {
             'name': self.ti_helper.rand_name(),

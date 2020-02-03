@@ -65,7 +65,7 @@ class Report(Group):
             self._tcex.handle_error(910, [self.type])
 
         self._data['fileSize'] = file_size
-        request = {'fileSize': file_size}
+        request = {'fileSize': file_size, 'fileName': self._data['fileName']}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def status(self, status):
@@ -84,24 +84,7 @@ class Report(Group):
             self._tcex.handle_error(910, [self.type])
 
         self._data['status'] = status
-        request = {'status': status}
-        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
-
-    def malware(self, malware, password, file_name):
-        """Upload to malware vault.
-
-        Args:
-            malware:
-            password:
-            file_name:
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        self._data['malware'] = malware
-        self._data['password'] = password
-        self._data['fileName'] = file_name
-        request = {'malware': malware, 'password': password, 'fileName': file_name}
+        request = {'status': status, 'fileName': self._data['fileName']}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def publish_date(self, publish_date):
@@ -114,7 +97,7 @@ class Report(Group):
         )
 
         self._data['publishDate'] = publish_date
-        request = {'publishDate': publish_date}
+        request = {'publishDate': publish_date, 'fileName': self._data['fileName']}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def download(self):
