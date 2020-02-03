@@ -706,12 +706,12 @@ class TiTcRequest:
         """
 
         Args:
-            main_type:
-            sub_type:
-            unique_id:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            unique_id (str): The unique ID of the TI object.
 
         Return:
-
+            obj: The Request response of the download request.
         """
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}/download'

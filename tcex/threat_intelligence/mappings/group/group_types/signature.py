@@ -7,23 +7,21 @@ class Signature(Group):
     """Unique API calls for Signature API Endpoints
 
     Valid file_types:
-    + Snort ®
+    + Snort
     + Suricata
     + YARA
-    + ClamAV ®
+    + ClamAV
     + OpenIOC
-    + CybOX ™
+    + CybOX
     + Bro
     + Regex
-    + SPL - Splunk ® Search Processing Language
+    + SPL
 
     Args:
         name (str): The name for this Group.
         file_name (str): The name for the attached signature for this Group.
         file_type (str): The signature type for this Group.
         file_text (str): The signature content for this Group.
-        date_added (str, kwargs): The date timestamp the Indicator was created.
-
     """
 
     def __init__(self, tcex, name, file_name, file_type, file_text, owner=None, **kwargs):
@@ -39,7 +37,7 @@ class Signature(Group):
         """Download the signature.
 
         Returns:
-
+            obj: The Request response of the download request.
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
