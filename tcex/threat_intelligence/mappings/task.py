@@ -8,9 +8,7 @@ from .mappings import Mappings
 class Task(Mappings):
     """Unique API calls for Tasks API Endpoints"""
 
-    def __init__(
-        self, tcex, name, status, due_date, reminder_date, escalation_date, owner=None, **kwargs
-    ):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties.
 
         Valid status:
@@ -21,46 +19,26 @@ class Task(Mappings):
         + Deferred
 
         Args:
-            tcex:
-            status (str): Not started, In Progress, Completed, Waiting on Someone, Deferred
-            due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
-            reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
-            escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
-            **kwargs:
-            name (str): The name for this Group.
+            tcex (TcEx): An instantiated instance of TcEx object.
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred
+            due_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+            reminder_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+            escalation_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
 
-        super().__init__(tcex, 'Task', 'tasks', None, 'task', None, owner)
+        super().__init__(
+            tcex,
+            main_type='Task',
+            api_type='tasks',
+            sub_type=None,
+            api_entity='task',
+            api_branch=None,
+            owner=kwargs.pop('owner'),
+        )
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
-
-        self._data['name'] = name
-        if status:
-            self._data['status'] = status
-        if due_date:
-            self._data['dueDate'] = due_date
-            try:
-                self._data['dueDate'] = self._utils.datetime.format_datetime(
-                    due_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-                )
-            except RuntimeError:
-                pass
-        if reminder_date:
-            self._data['reminderDate'] = reminder_date
-            try:
-                self._data['reminderDate'] = self._utils.datetime.format_datetime(
-                    reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-                )
-            except RuntimeError:
-                pass
-        if escalation_date:
-            self._data['escalationDate'] = escalation_date
-            try:
-                self._data['escalationDate'] = self._utils.datetime.format_datetime(
-                    escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-                )
-            except RuntimeError:
-                pass
 
     @property
     def name(self):
@@ -80,7 +58,7 @@ class Task(Mappings):
     def is_task():
         """
         Indicates that this is a task object
-        Returns:
+        Return:
 
         """
         return True
@@ -160,16 +138,16 @@ class Task(Mappings):
 
     def assignees(self):
         """
-        Gets the task assignees
+        Get the task assignees
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.assignees(self.api_type, self.api_sub_type, self.unique_id)
+        yield from self.tc_requests.assignees(self.api_type, self.unique_id)
 
     def assignee(self, assignee_id, action='ADD'):
         """
-        Adds a assignee to the task
+        Add a assignee to the task
 
         Args:
             assignee_id: The id of the assignee to be added
@@ -179,13 +157,11 @@ class Task(Mappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        return self.tc_requests.assignee(
-            self.api_type, self.api_sub_type, self.unique_id, assignee_id, action=action
-        )
+        return self.tc_requests.assignee(self.api_type, self.unique_id, assignee_id, action=action)
 
     def add_assignee(self, assignee_id):
         """
-        Adds a assignee to the task
+        Add a assignee to the task
 
         Args:
             assignee_id: The id of the assignee to be added
@@ -195,7 +171,7 @@ class Task(Mappings):
 
     def get_assignee(self, assignee_id):
         """
-        Gets a assignee from a task
+        Get a assignee from a task
 
         Args:
             assignee_id: The id of the assignee to be added
@@ -215,16 +191,17 @@ class Task(Mappings):
 
     def escalatees(self):
         """
-        Gets the task escalatees
+        Get the task escalatees
         """
+        print('after call')
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.escalatees(self.api_type, self.api_sub_type, self.unique_id)
+        yield from self.tc_requests.escalatees(self.api_type, self.unique_id)
 
     def escalatee(self, escalatee_id, action='ADD'):
         """
-        Adds a assignee to the task
+        Add a assignee to the task
 
         Args:
             escalatee_id: The id of the escalatee to be added
@@ -235,28 +212,28 @@ class Task(Mappings):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.escalatee(
-            self.api_type, self.api_sub_type, self.unique_id, escalatee_id, action=action
+            self.api_type, self.unique_id, escalatee_id, action=action
         )
 
     def add_escalatee(self, escalatee_id):
         """
-        Adds a escalatee to the task
+        Add a escalatee to the task
 
         Args:
             escalatee_id: The id of the escalatee to be added
 
         """
-        return self.assignee(escalatee_id)
+        return self.escalatee(escalatee_id)
 
     def get_escalatee(self, escalatee_id):
         """
-        Gets a escalatee from a task
+        Get a escalatee from a task
 
         Args:
             escalatee_id: The id of the escalatee to be added
 
         """
-        return self.assignee(escalatee_id, action='GET')
+        return self.escalatee(escalatee_id, action='GET')
 
     def delete_escalatee(self, escalatee_id):
         """
@@ -266,7 +243,7 @@ class Task(Mappings):
             escalatee_id: The id of the escalatee to be added
 
         """
-        return self.assignee(escalatee_id, action='DELETE')
+        return self.escalatee(escalatee_id, action='DELETE')
 
     @property
     def _metadata_map(self):
@@ -292,16 +269,17 @@ class Task(Mappings):
             self._data[key] = self._utils.datetime.format_datetime(
                 value, date_format='%Y-%m-%dT%H:%M:%SZ'
             )
-        self._data[key] = value
+        else:
+            self._data[key] = value
 
     def can_create(self):
         """
          If the name has been provided returns that the Task can be created, otherwise
          returns that the Task cannot be created.
 
-         Returns:
+         Return:
 
          """
-        if not self.data.get('name', None):
-            return False
-        return True
+        if self.data.get('name'):
+            return True
+        return False
