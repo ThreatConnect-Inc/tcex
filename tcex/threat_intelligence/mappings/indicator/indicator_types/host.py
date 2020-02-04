@@ -7,23 +7,24 @@ from ..indicator import Indicator
 class Host(Indicator):
     """Unique API calls for Host API Endpoints"""
 
-    def __init__(self, tcex, hostname, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties.
 
         Args:
             hostname (str): The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
-            date_added (str, kwargs): The date timestamp the Indicator was created.
-            last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            date_added (str, kwargs): [Read-Only] The date timestamp the Indicator was created.
+            last_modified (str, kwargs): [Read-Only] The date timestamp the Indicator was last
+                modified.
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
-        super().__init__(tcex, 'Host', 'host', 'hosts', owner, **kwargs)
-        self.unique_id = kwargs.get('unique_id', hostname)
-        self._data['hostName'] = hostname or self.unique_id
+        super().__init__(tcex, sub_type='Host', api_entity='host', api_branch='hosts', **kwargs)
+        self.unique_id = kwargs.get('unique_id', kwargs.get('hostname'))
+        self._data['hostName'] = self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 

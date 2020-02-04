@@ -7,22 +7,23 @@ from ..indicator import Indicator
 class URL(Indicator):
     """Unique API calls for URL API Endpoints"""
 
-    def __init__(self, tcex, text, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            text (str): The value for this Indicator.
+            text (str, kwargs): [Required for Create] The URL value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
-            date_added (str, kwargs): The date timestamp the Indicator was created.
-            last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            date_added (str, kwargs): [Read-Only] The date timestamp the Indicator was created.
+            last_modified (str, kwargs): [Read-Only] The date timestamp the Indicator was last
+                modified.
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super().__init__(tcex, 'URL', 'url', 'urls', owner, **kwargs)
-        self.unique_id = kwargs.get('unique_id', text)
-        self.data['text'] = text or self.unique_id
+        super().__init__(tcex, sub_type='URL', api_entity='url', api_branch='urls', **kwargs)
+        self.unique_id = kwargs.get('unique_id', kwargs.get('text'))
+        self.data['text'] = self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 

@@ -42,11 +42,11 @@ class ThreatIntelligence:
         self._custom_indicator_classes = {}
         self._gen_indicator_class()
 
-    def address(self, ip, owner=None, **kwargs):
+    def address(self, **kwargs):
         """Return an Address TI object.
 
         Args:
-            ip (str): The value for this Indicator.
+            ip (str, kwargs): [Required for Create] The IP value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): [Read-Only] The date timestamp the Indicator was created.
@@ -58,58 +58,50 @@ class ThreatIntelligence:
         Returns:
             obj: An instance of Address.
         """
-        return Address(self.tcex, ip, owner=owner, **kwargs)
+        return Address(self.tcex, **kwargs)
 
-    def url(self, text, owner=None, **kwargs):
+    def url(self, **kwargs):
         """Create the URL TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            url:
-            **kwargs:
-
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            text (str, kwargs): [Required for Create] The URL value for this Indicator.
         Return:
-
+            obj: An instance of URL.
         """
-        return URL(self.tcex, text, owner=owner, **kwargs)
+        return URL(self.tcex, **kwargs)
 
-    def email_address(self, address, owner=None, **kwargs):
+    def email_address(self, **kwargs):
         """Create the Email Address TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            address:
-            **kwargs:
-
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            address (str, kwargs): [Required for Create] The Email Address value for this Indicator.
         Return:
-
+            obj: An instance of EmailAddress.
         """
-        return EmailAddress(self.tcex, address, owner=owner, **kwargs)
+        return EmailAddress(self.tcex, **kwargs)
 
-    def file(self, owner=None, **kwargs):
+    def file(self, **kwargs):
         """Create the File TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            **kwargs:
-
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
         Return:
-
+            obj: An instance of File.
         """
-        return File(self.tcex, owner=owner, **kwargs)
+        return File(self.tcex, **kwargs)
 
-    def host(self, hostname, owner=None, **kwargs):
+    def host(self, **kwargs):
         """Create the Host TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            hostname:
-            **kwargs:
-
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            hostname (str, kwargs): [Required for Create] The Host value for this Indicator.
         Return:
-
+            obj: An instance of Host.
         """
-        return Host(self.tcex, hostname, owner=owner, **kwargs)
+        return Host(self.tcex, **kwargs)
 
     def filters(self):
         """Create a Filters TI object"""
@@ -119,13 +111,14 @@ class ThreatIntelligence:
         """Return an TI object.
 
         Args:
-            indicator_type (str): The indicator type.
-            ip (str, kwargs): [address] The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): [Read-Only] The date timestamp the Indicator was created.
+            indicator_type (str): The indicator type.
+            ip (str, kwargs): [address] The value for this Indicator.
             last_modified (str, kwargs): [Read-Only] The date timestamp the Indicator was last
                 modified.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
 
@@ -133,36 +126,33 @@ class ThreatIntelligence:
             obj: An instance of Indicator or specific indicator type.
         """
         if not indicator_type:
-            return Indicator(self.tcex, None, 'indicator', None, owner=owner, **kwargs)
+            return Indicator(self.tcex, **kwargs)
 
-        upper_indicator_type = indicator_type.upper()
+        indicator_type_map = {
+            'address': Address,
+            'email address': EmailAddress,
+            'emailaddress': EmailAddress,
+            'file': File,
+            'host': Host,
+            'url': URL,
+        }
 
-        indicator = None
-        if upper_indicator_type == 'ADDRESS':
-            indicator = Address(self.tcex, kwargs.pop('ip', None), owner=owner, **kwargs)
-        elif upper_indicator_type in ['EMAIL ADDRESS', 'EMAILADDRESS']:
-            indicator = EmailAddress(self.tcex, kwargs.pop('address', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'FILE':
-            indicator = File(self.tcex, owner=owner, **kwargs)
-        elif upper_indicator_type == 'HOST':
-            indicator = Host(self.tcex, kwargs.pop('hostname', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'URL':
-            indicator = URL(self.tcex, kwargs.pop('text', None), owner=owner, **kwargs)
-        else:
-            try:
-                if upper_indicator_type in self._custom_indicator_classes.keys():
-                    custom_indicator_details = self._custom_indicator_classes[upper_indicator_type]
-                    value_fields = custom_indicator_details.get('value_fields')
-                    c = getattr(module, indicator_type.replace(' ', ''))
-                    if len(value_fields) == 1:
-                        indicator = c(self.tcex, None, owner=owner, **kwargs)
-                    elif len(value_fields) == 2:
-                        indicator = c(self.tcex, None, None, owner=owner, **kwargs)
-                    elif len(value_fields) == 3:
-                        indicator = c(self.tcex, None, None, None, owner=owner, **kwargs)
-            except Exception:
-                return None
-        return indicator
+        indicator_type = indicator_type.lower()
+        for custom_type in self._custom_indicator_classes:
+            for a in dir(module):
+                if a.lower() == custom_type.replace(' ', ''):
+                    indicator_type_map[custom_type.lower()] = getattr(module, a)
+
+        if indicator_type not in indicator_type_map:
+            raise RuntimeError(f'Invalid indicator type "{indicator_type}" provided.')
+
+        # update kwargs
+        kwargs['owner'] = owner
+        kwargs['tcex'] = self.tcex
+
+        # return correct indicator object
+        indicator_object = indicator_type_map.get(indicator_type)
+        return indicator_object(**kwargs)
 
     def group(self, group_type=None, owner=None, **kwargs):
         """Create the Group TI object.
@@ -653,7 +643,6 @@ class ThreatIntelligence:
                 value_fields.append(entry['value2Label'])
             if entry.get('value3Label'):
                 value_fields.append(entry['value3Label'])
-            value_count = len(value_fields)
 
             if not value_fields:
                 continue
@@ -672,36 +661,27 @@ class ThreatIntelligence:
                 'entry': entry.get('apiEntry'),
                 'value_fields': value_fields,
             }
-            self._custom_indicator_classes[entry.get('name').upper()] = custom_indicator_data
+            self._custom_indicator_classes[entry.get('name').lower()] = custom_indicator_data
 
             setattr(module, class_name, custom_class)
 
             # Add Custom Indicator Method
-            self._gen_indicator_method(name, custom_class, value_count)
+            self._gen_indicator_method(name, custom_class)
 
-    def _gen_indicator_method(self, name, custom_class, value_count):
+    def _gen_indicator_method(self, name, custom_class):
         """Dynamically generate custom Indicator methods.
 
         Args:
             name (str): The name of the method.
             custom_class (object): The class to add.
-            value_count (int): The number of value parameters to support.
         """
         method_name = name.replace(' ', '_').lower()
         tcex = self.tcex
 
         # Add Method for each Custom Indicator class
-        def method_1(value1, owner=None, **kwargs):  # pylint: disable=W0641
+        def method_1(**kwargs):  # pylint: disable=W0641
             """Add Custom Indicator data to Batch object"""
-            return custom_class(tcex, value1, owner=owner, **kwargs)
+            return custom_class(tcex, **kwargs)
 
-        def method_2(value1, value2, owner=None, **kwargs):  # pylint: disable=W0641
-            """Add Custom Indicator data to Batch object"""
-            return custom_class(tcex, value1, value2, owner=owner, **kwargs)
-
-        def method_3(value1, value2, value3, owner=None, **kwargs):  # pylint: disable=W0641
-            """Add Custom Indicator data to Batch object"""
-            return custom_class(tcex, value1, value2, value3, owner=owner, **kwargs)
-
-        method = locals()[f'method_{value_count}']
+        method = locals()[f'method_1']
         setattr(self, method_name, method)

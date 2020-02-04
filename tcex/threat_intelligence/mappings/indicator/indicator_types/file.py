@@ -6,7 +6,7 @@ from ..indicator import Indicator
 class File(Indicator):
     """Unique API calls for File API Endpoints"""
 
-    def __init__(self, tcex, md5=None, sha1=None, sha256=None, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -15,36 +15,25 @@ class File(Indicator):
             sha256 (str, optional): The sha256 value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
-            date_added (str, kwargs): The date timestamp the Indicator was created.
-            last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            date_added (str, kwargs): [Read-Only] The date timestamp the Indicator was created.
+            last_modified (str, kwargs): [Read-Only] The date timestamp the Indicator was last
+                modified.
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
         """
-        super().__init__(tcex, 'File', 'file', 'files', owner, **kwargs)
+        super().__init__(tcex, sub_type='File', api_entity='file', api_branch='files', **kwargs)
 
-        if len(kwargs.get('unique_id', '')) == 32:
-            md5 = kwargs.get('unique_id')
-        if len(kwargs.get('unique_id', '')) == 40:
-            sha1 = kwargs.get('unique_id')
-        if len(kwargs.get('unique_id', '')) == 64:
-            sha256 = kwargs.get('unique_id')
-
-        self.unique_id = (
-            kwargs.get('unique_id', None)
-            or md5
-            or sha1
-            or sha256
+        unique_id = (
+            kwargs.get('unique_id')
             or kwargs.get('md5', None)
             or kwargs.get('sha1', None)
             or kwargs.get('sha256', None)
         )
-        if self.unique_id:
-            self.data['md5'] = md5 or self._hash_from_unique_id(hash_type='md5')
-        if self.unique_id:
-            self.data['sha1'] = sha1 or self._hash_from_unique_id(hash_type='sha1')
-        if self.unique_id:
-            self.data['sha256'] = sha256 or self._hash_from_unique_id(hash_type='sha256')
+        if unique_id:
+            self.data['md5'] = self._hash_from_unique_id(hash_type='md5')
+            self.data['sha1'] = self._hash_from_unique_id(hash_type='sha1')
+            self.data['sha256'] = self._hash_from_unique_id(hash_type='sha256')
         if 'size' not in self.data:
             self.data['size'] = 0
 
@@ -61,7 +50,6 @@ class File(Indicator):
                 return hash_value
         return None
 
-    # TODO: @bpurdy should this be property
     def can_create(self):
         """Return True if file can be create.
 
@@ -84,10 +72,7 @@ class File(Indicator):
             json_response:
         """
         self.unique_id = (
-            json_response.get('md5')
-            or json_response.get('sha1')
-            or json_response.get('sha256')
-            or ''
+            json_response.get('md5') or json_response.get('sha1') or json_response.get('sha256')
         )
 
     @staticmethod

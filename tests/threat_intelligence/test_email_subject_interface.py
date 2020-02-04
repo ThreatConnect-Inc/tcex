@@ -11,7 +11,6 @@ class TestEmailSubjectIndicators(TestThreatIntelligence):
 
     indicator_field = 'Subject'
     indicator_field_arg = indicator_field.replace(' ', '_').lower()
-    indicator_field_custom = 'value1'
     indicator_type = 'Email Subject'
     owner = os.getenv('TC_OWNER')
     ti = None
@@ -32,7 +31,7 @@ class TestEmailSubjectIndicators(TestThreatIntelligence):
     def tests_ti_email_subject_create(self):
         """Create an indicator using specific interface."""
         indicator_data = {
-            self.indicator_field_custom: self.ti_helper.rand_email_subject(),
+            self.indicator_field_arg: self.ti_helper.rand_email_subject(),
             'confidence': randint(0, 100),
             'owner': self.owner,
             'rating': randint(0, 5),
@@ -55,7 +54,7 @@ class TestEmailSubjectIndicators(TestThreatIntelligence):
 
         # validate ti data
         assert ti_data.get('confidence') == indicator_data.get('confidence')
-        assert ti_data.get(ti.api_entity) == indicator_data.get(ti.api_entity)
+        assert ti_data.get(self.indicator_field) == indicator_data.get(self.indicator_field_arg)
         assert ti_data.get('rating') == indicator_data.get('rating')
 
         # cleanup indicator
