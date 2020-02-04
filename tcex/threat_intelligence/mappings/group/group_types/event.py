@@ -14,9 +14,9 @@ class Event(Group):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
+        event_date (str, kwargs): The event "event date" datetime expression for this Group.
         name (str, kwargs): [Required for Create] The name for this Group.
         owner (str, kwargs): The name for this Group. Default to default Org when not provided
-        event_date (str, kwargs): The event "event date" datetime expression for this Group.
         status (str, kwargs): The status for this Group.
     """
 

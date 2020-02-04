@@ -19,8 +19,8 @@ class Incident(Group):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        name (str, kwargs): [Required for Create] The name for this Group.
         event_date (str, kwargs): The incident event date expression for this Group.
+        name (str, kwargs): [Required for Create] The name for this Group.
         status (str, kwargs): The status for this Group.
     """
 

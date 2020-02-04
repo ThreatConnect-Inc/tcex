@@ -211,12 +211,11 @@ class ThreatIntelligence:
         """Create the Adversary TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            name:
-            **kwargs:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
         Return:
-
+            ti.Adversary: An instance of Adversary.
         """
         return Adversary(self.tcex, **kwargs)
 
@@ -224,12 +223,12 @@ class ThreatIntelligence:
         """Create the Campaign TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            name:
-            **kwargs:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            first_seen (str, kwargs): The first seen datetime expression for this Group.
 
         Return:
-
+            ti.Campaign: An instance of Campaign.
         """
         return Campaign(self.tcex, **kwargs)
 
@@ -237,56 +236,58 @@ class ThreatIntelligence:
         """Create the Document TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            name:
-            file_name:
-            **kwargs:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            file_name (str, kwargs): The name for the attached file for this Group.
+            malware (bool, kwargs): If true the file is considered malware.
+            password (bool, kwargs): If malware is true a password for the zip archive is required.
 
         Return:
-
+            ti.Document: An instance of Document.
         """
         return Document(self.tcex, **kwargs)
-
-    def event(self, **kwargs):
-        """Create the Event TI object.
-
-        Args:
-            name:
-            **kwargs:
-
-        Return:
-
-        """
-        return Event(self.tcex, **kwargs)
 
     def email(self, **kwargs):
         """Create the Email TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            to:
-            from_addr:
-            name:
-            subject:
-            header:
-            body:
-            **kwargs:
+            body (str): The body for this Email.
+            from_addr (str, kwargs): The **from** address for this Email.
+            header (str): The header for this Email.
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            subject (str): The subject for this Email.
+            to (str, kwargs): The **to** address for this Email.
 
         Return:
-
+            ti.Email: An instance of Email.
         """
         return Email(self.tcex, **kwargs)
+
+    def event(self, **kwargs):
+        """Create the Event TI object.
+
+        Args:
+            event_date (str, kwargs): The event "event date" datetime expression for this Group.
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            status (str, kwargs): The status for this Group.
+
+        Return:
+            ti.Event: An instance of Event.
+        """
+        return Event(self.tcex, **kwargs)
 
     def incident(self, **kwargs):
         """Create the Incident TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            name:
-            **kwargs:
+            event_date (str, kwargs): The incident event date expression for this Group.
+            name (str, kwargs): [Required for Create] The name for this Group.
+            status (str, kwargs): The status for this Group.
 
         Return:
-
+            ti.Incident: An instance of Incident.
         """
         return Incident(self.tcex, **kwargs)
 
@@ -294,12 +295,11 @@ class ThreatIntelligence:
         """Create the Intrustion Set TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
-            name:
-            **kwargs:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
         Return:
-
+            ti.IntrusionSet: An instance of IntrusionSet.
         """
         return IntrusionSet(self.tcex, **kwargs)
 

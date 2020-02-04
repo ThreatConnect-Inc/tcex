@@ -69,7 +69,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_add_asset_no_update(self):
         """Test passing a bad asset type."""
-        ti = self.ti.adversary('new')
+        ti = self.ti.adversary(name='new')
 
         # add asset
         try:
@@ -141,7 +141,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_no_update(self):
         """Add an asset to and Adversary."""
-        ti = self.ti.adversary('new')
+        ti = self.ti.adversary(name='new')
 
         # add asset
         try:
@@ -287,7 +287,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_assets_no_update(self):
         """Test passing a bad asset type."""
-        ti = self.ti.adversary('new')
+        ti = self.ti.adversary(name='new')
 
         # get assets
         try:
