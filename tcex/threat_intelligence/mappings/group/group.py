@@ -18,7 +18,6 @@ class Group(Mappings):
             kwargs.pop('api_branch', None),
             kwargs.pop('owner', None),
         )
-
         self.name = None
 
         for arg, value in kwargs.items():
