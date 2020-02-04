@@ -40,210 +40,9 @@ class Task(Mappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
-    @property
-    def name(self):
-        """Return Task name."""
-        return self._data.get('name')
-
-    @name.setter
-    def name(self, name):
-        """
-
-        Args:
-            name:
-        """
-        self._data['name'] = name
-
-    @staticmethod
-    def is_task():
-        """
-        Indicates that this is a task object
-        Return:
-
-        """
-        return True
-
     def _set_unique_id(self, json_response):
-        """
-
-        Args:
-            json_response:
-        """
+        """Set the unique id of the Group."""
         self.unique_id = json_response.get('id', '')
-
-    def status(self, status):
-        """
-        Valid status:
-        + Not Started
-        + In Progress
-        + Completed
-        + Waiting on Someone
-        + Deferred
-
-        Args:
-            status: Not Started, In Progress, Completed, Waiting on Someone, Deferred
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        self._data['status'] = status
-        request = {'status': status}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
-
-    def due_date(self, due_date):
-        """
-        Sets the task due_date
-        Args:
-            due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        due_date = self._utils.datetime.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
-        self._data['dueDate'] = due_date
-        request = {'dueDate': due_date}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
-
-    def reminder_date(self, reminder_date):
-        """
-        Sets the task reminder_date
-        Args:
-            reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        reminder_date = self._utils.datetime.format_datetime(
-            reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-        )
-        self._data['reminderDate'] = reminder_date
-        request = {'reminderDate': reminder_date}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
-
-    def escalation_date(self, escalation_date):
-        """
-        Sets the task escalation_date
-        Args:
-            escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        escalation_date = self._utils.datetime.format_datetime(
-            escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-        )
-        self._data['escalationDate'] = escalation_date
-        request = {'escalationDate': escalation_date}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
-
-    def assignees(self):
-        """
-        Get the task assignees
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        yield from self.tc_requests.assignees(self.api_type, self.unique_id)
-
-    def assignee(self, assignee_id, action='ADD'):
-        """
-        Add a assignee to the task
-
-        Args:
-            assignee_id: The id of the assignee to be added
-            action:
-
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        return self.tc_requests.assignee(self.api_type, self.unique_id, assignee_id, action=action)
-
-    def add_assignee(self, assignee_id):
-        """
-        Add a assignee to the task
-
-        Args:
-            assignee_id: The id of the assignee to be added
-
-        """
-        return self.assignee(assignee_id)
-
-    def get_assignee(self, assignee_id):
-        """
-        Get a assignee from a task
-
-        Args:
-            assignee_id: The id of the assignee to be added
-
-        """
-        return self.assignee(assignee_id, action='GET')
-
-    def delete_assignee(self, assignee_id):
-        """
-        Deletes a assignee from a task
-
-        Args:
-            assignee_id: The id of the assignee to be added
-
-        """
-        return self.assignee(assignee_id, action='DELETE')
-
-    def escalatees(self):
-        """
-        Get the task escalatees
-        """
-        print('after call')
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        yield from self.tc_requests.escalatees(self.api_type, self.unique_id)
-
-    def escalatee(self, escalatee_id, action='ADD'):
-        """
-        Add a assignee to the task
-
-        Args:
-            escalatee_id: The id of the escalatee to be added
-            action:
-
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        return self.tc_requests.escalatee(
-            self.api_type, self.unique_id, escalatee_id, action=action
-        )
-
-    def add_escalatee(self, escalatee_id):
-        """
-        Add a escalatee to the task
-
-        Args:
-            escalatee_id: The id of the escalatee to be added
-
-        """
-        return self.escalatee(escalatee_id)
-
-    def get_escalatee(self, escalatee_id):
-        """
-        Get a escalatee from a task
-
-        Args:
-            escalatee_id: The id of the escalatee to be added
-
-        """
-        return self.escalatee(escalatee_id, action='GET')
-
-    def delete_escalatee(self, escalatee_id):
-        """
-        Deletes a escalatee from a task
-
-        Args:
-            escalatee_id: The id of the escalatee to be added
-
-        """
-        return self.escalatee(escalatee_id, action='DELETE')
 
     @property
     def _metadata_map(self):
@@ -253,6 +52,33 @@ class Task(Mappings):
             'reminder_date': 'reminderDate',
             'escalation_date': 'escalationDate',
         }
+
+    @property
+    def name(self):
+        """Return Task name."""
+        return self._data.get('name')
+
+    @name.setter
+    def name(self, name):
+        """Set the Group name."""
+        self._data['name'] = name
+
+    @staticmethod
+    def is_task():
+        """Return True if object is a task."""
+        return True
+
+    def add_assignee(self, assignee):
+        """ ADD the desired assignee from the Task.
+
+        Args:
+            assignee (str): The assignee username
+
+        Return:
+            obj: The response of the POST.
+
+        """
+        return self.assignee(assignee)
 
     def add_key_value(self, key, value):
         """
@@ -272,6 +98,43 @@ class Task(Mappings):
         else:
             self._data[key] = value
 
+    def add_escalatee(self, escalatee):
+        """ Add the desired escalatee from the Task.
+
+        Args:
+            escalatee (str): The escalatee username
+
+        Return:
+            obj: The response of the POST.
+
+        """
+        return self.escalatee(escalatee)
+
+    def assignee(self, assignee, action='ADD'):
+        """
+            General method to perform actions on assignees
+            Valid Actions:
+            + ADD
+            + GET
+            + DELETE
+        Args:
+            assignee (str): The username of the assignee.
+            action: [ADD, DELETE, GET] the action to be done on the escalatee. Defaults to
+                ADD if not provided.
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.assignee(self.api_type, self.unique_id, assignee, action=action)
+
+    def assignees(self):
+        """Yield the Assignee Users"""
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        yield from self.tc_requests.assignees(self.api_type, self.unique_id)
+
     def can_create(self):
         """
          If the name has been provided returns that the Task can be created, otherwise
@@ -283,3 +146,142 @@ class Task(Mappings):
         if self.data.get('name'):
             return True
         return False
+
+    def delete_assignee(self, assignee):
+        """ Delete the desired assignee from the Task.
+
+        Args:
+            assignee (str): The assignee username
+
+        Return:
+            obj: The response of the DELETE.
+
+        """
+        return self.assignee(assignee, action='DELETE')
+
+    def delete_escalatee(self, escalatee):
+        """ Delete the desired escalatee from the Task.
+
+        Args:
+            escalatee (str): The escalatee username
+
+        Return:
+            obj: The response of the DELETE.
+
+        """
+        return self.escalatee(escalatee, action='DELETE')
+
+    def due_date(self, due_date):
+        """
+        Update the task due_date
+        Args:
+            due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        due_date = self._utils.datetime.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
+        self._data['dueDate'] = due_date
+        request = {'dueDate': due_date}
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+
+    def escalatee(self, escalatee, action='ADD'):
+        """
+            General method to perform actions on escalatees
+            Valid Actions:
+            + ADD
+            + GET
+            + DELETE
+        Args:
+            escalatee (str): The username of the escalatee.
+            action: [ADD, DELETE, GET] the action to be done on the escalatee. Defaults to
+                ADD if not provided.
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.escalatee(self.api_type, self.unique_id, escalatee, action=action)
+
+    def escalatees(self):
+        """Yield the Escalatees Users"""
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        yield from self.tc_requests.escalatees(self.api_type, self.unique_id)
+
+    def escalation_date(self, escalation_date):
+        """
+        Update the task escalation_date
+        Args:
+            escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        escalation_date = self._utils.datetime.format_datetime(
+            escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        )
+        self._data['escalationDate'] = escalation_date
+        request = {'escalationDate': escalation_date}
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+
+    def get_assignee(self, assignee):
+        """ Retrieve the desired assignee from the Task.
+
+        Args:
+            assignee (str): The assignee username
+
+        Return:
+            obj: The response of the GET.
+
+        """
+        return self.assignee(assignee, action='GET')
+
+    def get_escalatee(self, escalatee):
+        """ Retrieve the desired escalatee from the Task.
+
+        Args:
+            escalatee (str): The escalatee username
+
+        Return:
+            obj: The response of the GET.
+
+        """
+        return self.escalatee(escalatee, action='GET')
+
+    def reminder_date(self, reminder_date):
+        """
+        Update the task reminder_date
+        Args:
+            reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        reminder_date = self._utils.datetime.format_datetime(
+            reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        )
+        self._data['reminderDate'] = reminder_date
+        request = {'reminderDate': reminder_date}
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+
+    def status(self, status):
+        """
+        Update the Task Status
+        Valid status:
+        + Not Started
+        + In Progress
+        + Completed
+        + Waiting on Someone
+        + Deferred
+
+        Args:
+            status: Not Started, In Progress, Completed, Waiting on Someone, Deferred
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        self._data['status'] = status
+        request = {'status': status}
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)

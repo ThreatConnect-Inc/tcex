@@ -80,6 +80,7 @@ class Group(Mappings):
         self._data['name'] = name
 
     def _set_unique_id(self, json_response):
+        """Set the unique id of the Group."""
         self.unique_id = json_response.get('id', '')
 
     @staticmethod
