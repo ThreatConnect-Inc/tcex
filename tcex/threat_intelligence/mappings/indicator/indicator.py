@@ -13,27 +13,6 @@ def custom_indicator_class_factory(
     indicator_type, entity_type, branch_type, base_class, value_fields
 ):
     """Build dynamic Custom Indicator Class."""
-    value_count = len(value_fields)
-
-    def init_1(self, tcex, value1, owner=None, **kwargs):  # pylint: disable=W0641
-        """Init method for Custom Indicator Types with one value"""
-        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
-        res = {v: k for k, v in self._metadata_map().items()}
-        value1 = value1 or kwargs.pop(res.get(value_fields[0]), value_fields[0])
-        self._data[value_fields[0]] = value1
-        self.unique_id = kwargs.get('unique_id', value1)
-        if self.unique_id:
-            self.unique_id = quote(self.fully_decode_uri(self.unique_id), safe='')
-
-    def _set_unique_id_1(self, json_request):
-        """Set the unique ID.
-
-        Args:
-            json_request (dict): The JSON data for the request.
-        """
-        self.unique_id = json_request.get(value_fields[0])
-        if self.unique_id:
-            self.unique_id = quote(self.fully_decode_uri(self.unique_id), safe='')
 
     @staticmethod
     def _metadata_map_1():
@@ -45,92 +24,61 @@ def custom_indicator_class_factory(
                 metadata_map[manipulated_value] = value
         return metadata_map
 
-    def can_create_1(self):  # pylint: disable=W0641
-        """Determine if the required data that the API endpoint is expecting is present."""
-        if self.data.get(value_fields[0]):
-            return True
-        return False
-
-    def init_2(self, tcex, value1, value2, owner=None, **kwargs):  # pylint: disable=W0641
-        """Init method for Custom Indicator Types with two values."""
-        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
+    def init(self, tcex, **kwargs):  # pylint: disable=W0641
+        """Init method for Custom Indicator Types with one value"""
+        base_class.__init__(
+            self,
+            tcex,
+            sub_type=indicator_type,
+            api_entity=entity_type,
+            api_branch=branch_type,
+            **kwargs,
+        )
         res = {v: k for k, v in self._metadata_map().items()}
-        value1 = value1 or kwargs.pop(res.get(value_fields[0]), value_fields[0])
-        value2 = value2 or kwargs.pop(res.get(value_fields[0]), value_fields[1])
-        self._data[value_fields[0]] = value1
-        self._data[value_fields[1]] = value2
-        if value1:
-            value1 = quote(self.fully_decode_uri(value1), safe='')
-        if value2:
-            value2 = quote(self.fully_decode_uri(value2), safe='')
-        self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2))
+        values = []
+        for field in value_fields:
+            value = kwargs.pop(res.get(field), '')
+            value = quote(self.fully_decode_uri(value), safe='')
+            values.append(value)
 
-    def _set_unique_id_2(self, json_request):
+        if len(values) == 1:
+            self.unique_id = values[0]
+        elif len(values) == 2:
+            self.unique_id = kwargs.get('unique_id', self.build_summary(values[0], values[1]))
+        elif len(values) == 1:
+            self.unique_id = kwargs.get(
+                'unique_id', self.build_summary(values[0], values[1], values[2])
+            )
+
+    def _set_unique_id(self, json_request):
         """Set the unique ID.
 
         Args:
             json_request (dict): The JSON data for the request.
         """
-        value_0 = json_request.get(value_fields[0], '')
-        value_1 = json_request.get(value_fields[1], '')
-        self.unique_id = self.build_summary(
-            quote(self.fully_decode_uri(value_0), safe='') or None,
-            quote(self.fully_decode_uri(value_1), safe='') or None,
-        )
+        values = []
+        for field in value_fields:
+            value = json_request.get(field, '')
+            values.append(quote(self.fully_decode_uri(value), safe=''))
+        if len(values) == 1:
+            self.unique_id = values[0]
+        elif len(values) == 2:
+            self.unique_id = self.build_summary(values[0], values[1])
+        elif len(values) == 1:
+            self.unique_id = self.build_summary(values[0], values[1], values[2])
 
-    def can_create_2(self):  # pylint: disable=W0641
+    def can_create(self):  # pylint: disable=W0641,W0613
         """Determine if the required data that the API endpoint is expecting is present."""
-        if self.data.get(value_fields[0]) and self.data.get(value_fields[1]):
-            return True
-        return False
-
-    def init_3(self, tcex, value1, value2, value3, owner=None, **kwargs):  # pylint: disable=W0641
-        """Init method for Custom Indicator Types with three values."""
-        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
-        res = {v: k for k, v in self._metadata_map().items()}
-        value1 = value1 or kwargs.pop(res.get(value_fields[0]), value_fields[0])
-        value2 = value2 or kwargs.pop(res.get(value_fields[0]), value_fields[1])
-        value3 = value3 or kwargs.pop(res.get(value_fields[0]), value_fields[2])
-        self._data[value_fields[0]] = value1
-        self._data[value_fields[1]] = value2
-        self._data[value_fields[2]] = value3
-        if value1:
-            value1 = quote(self.fully_decode_uri(value1), safe='')
-        if value2:
-            value2 = quote(self.fully_decode_uri(value2), safe='')
-        if value3:
-            value3 = quote(self.fully_decode_uri(value3), safe='')
-        self.unique_id = kwargs.get('unique_id', self.build_summary(value1, value2, value3))
-
-    def _set_unique_id_3(self, json_request):
-        """Set the unique ID.
-
-        Args:
-            json_request (dict): The JSON data for the request.
-        """
-        value_0 = json_request.get(value_fields[0], '')
-        value_1 = json_request.get(value_fields[1], '')
-        value_2 = json_request.get(value_fields[2], '')
-        self.unique_id = self.build_summary(
-            quote(self.fully_decode_uri(value_0), safe='') or None,
-            quote(self.fully_decode_uri(value_1), safe='') or None,
-            quote(self.fully_decode_uri(value_2), safe='') or None,
-        )
-
-    def can_create_3(self):  # pylint: disable=W0641
-        """Determine if the required data that the API endpoint is expecting is present."""
-        if (
-            self.data.get(value_fields[0])
-            and self.data.get(value_fields[1])
-            and self.data.get(value_fields[2])
-        ):
-            return True
-        return False
+        valid_create = True
+        for field in value_fields:
+            if not field:
+                valid_create = False
+        return valid_create
 
     class_name = indicator_type.replace(' ', '')
-    init_method = locals()[f'init_{value_count}']
-    set_unique_id_method = locals()[f'_set_unique_id_{value_count}']
-    can_create_method = locals()[f'can_create_{value_count}']
+    init_method = locals()[f'init']
+    set_unique_id_method = locals()[f'_set_unique_id']
+    can_create_method = locals()[f'can_create']
     _metadata_map = locals()['_metadata_map_1']
     new_class = type(
         str(class_name),
@@ -148,9 +96,17 @@ def custom_indicator_class_factory(
 class Indicator(Mappings):
     """Unique API calls for Indicator API Endpoints"""
 
-    def __init__(self, tcex, sub_type, api_entity, api_branch, owner, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties."""
-        super().__init__(tcex, 'Indicator', 'indicators', sub_type, api_entity, api_branch, owner)
+        super().__init__(
+            tcex,
+            'Indicator',
+            'indicators',
+            kwargs.pop('sub_type', None),
+            kwargs.pop('api_entity', 'group'),
+            kwargs.pop('api_branch', None),
+            kwargs.pop('owner', None),
+        )
 
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
@@ -374,5 +330,5 @@ class Indicator(Mappings):
         return ' : '.join(summary)
 
     def __str__(self):
-        """Return string represtentation of object"""
+        """Return string representation of object"""
         return json.dumps(self._data, indent=4)

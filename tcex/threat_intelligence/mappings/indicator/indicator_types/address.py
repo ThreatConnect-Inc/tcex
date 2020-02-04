@@ -6,7 +6,7 @@ from ..indicator import Indicator
 class Address(Indicator):
     """Unique API calls for Address API Endpoints"""
 
-    def __init__(self, tcex, ip, owner=None, **kwargs):
+    def __init__(self, tcex, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -19,9 +19,11 @@ class Address(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super().__init__(tcex, 'Address', 'address', 'addresses', owner, **kwargs)
-        self.unique_id = kwargs.get('unique_id', ip)
-        self.data['ip'] = ip or self.unique_id
+        super().__init__(
+            tcex, sub_type='Address', api_entity='address', api_branch='addresses', **kwargs
+        )
+        self.unique_id = kwargs.get('unique_id', kwargs.get('ip'))
+        self.data['ip'] = self.unique_id
 
     def _set_unique_id(self, json_response):
         """Set the unique_id provided a json response.
