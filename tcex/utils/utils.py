@@ -6,6 +6,8 @@ import re
 import string
 import uuid
 
+from typing import List, Any
+
 from .date_utils import DatetimeUtils
 
 
@@ -127,3 +129,26 @@ class Utils:
             bool: The boolean value
         """
         return str(value).lower() in ['1', 't', 'true']
+
+    @staticmethod
+    def flatten_list(lst: List[Any]) -> List[Any]:
+        """Flatten a list
+
+        Will work for lists of lists to arbitrary depth
+        and for lists with a mix of lists and single values
+
+        Args:
+            lst (list): The list to flatten
+
+        Returns:
+            list: the flattened list
+        """
+        flat_list = []
+        for sublist in lst:
+            if isinstance(sublist, list):
+                for item in Utils.flatten_list(sublist):
+                    flat_list.append(item)
+            else:
+                flat_list.append(sublist)
+
+        return flat_list
