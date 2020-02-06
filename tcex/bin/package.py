@@ -188,6 +188,7 @@ class Package(Bin):
             'tcex.json',
             self.args.outdir,
             '__pycache__',
+            '.cache',  # local cache directory
             '.c9',  # C9 IDE
             '.coverage',  # coverage file
             '.coveragerc',  # coverage configuration file file
