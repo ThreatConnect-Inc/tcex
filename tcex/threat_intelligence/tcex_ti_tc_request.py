@@ -67,7 +67,9 @@ class TiTcRequest:
                 err = r.text or r.reason
                 self.tcex.handle_error(950, [r.status_code, err, r.url])
 
-            data = r.json().get('data', {}).get(api_entity, [])
+            data = r.json().get('data', {})
+            if api_entity:
+                data = data.get(api_entity, [])
 
             if len(data) < self.result_limit:
                 should_iterate = False
@@ -2434,7 +2436,7 @@ class TiTcRequest:
             main_type, sub_type, unique_id, attribute_id, label, action='ADD', owner=owner
         )
 
-    def assignees(self, main_type, sub_type, unique_id, params=None):
+    def assignees(self, main_type, unique_id, params=None):
         """
 
         Args:
@@ -2448,10 +2450,10 @@ class TiTcRequest:
         """
         params = params or {}
 
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/assignees'
-        yield from self._iterate(url, params, 'assignee')
+        url = f'/v2/{main_type}/{unique_id}/assignees'
+        yield from self._iterate(url, params, 'user')
 
-    def assignee(self, main_type, sub_type, unique_id, assignee_id, action='ADD', params=None):
+    def assignee(self, main_type, unique_id, assignee_id, action='ADD', params=None):
         """
 
         Args:
@@ -2467,13 +2469,13 @@ class TiTcRequest:
         """
         params = params or {}
 
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/assignees/{assignee_id}'
-        if action == 'GET':
-            return self.tcex.session.get(url, params=params)
-        if action == 'DELETE':
-            return self.tcex.session.delete(url)
+        url = f'/v2/{main_type}/{unique_id}/assignees/{assignee_id}'
         if action == 'ADD':
-            return self.tcex.session.post(url)
+            return self._post(url, {})
+        if action == 'GET':
+            return self._get(url=url, params=params)
+        if action == 'DELETE':
+            return self._delete(url=url)
         return None
 
     def get_assignee(self, main_type, sub_type, unique_id, assignee_id, params=None):
@@ -2505,7 +2507,7 @@ class TiTcRequest:
         Return:
 
         """
-        return self.assignee(main_type, sub_type, unique_id, assignee_id, action='DELETE')
+        return self.assignee(main_type, sub_type, unique_id, assignee_id, 'DELETE')
 
     def add_assignee(self, main_type, sub_type, unique_id, assignee_id):
         """
@@ -2519,9 +2521,9 @@ class TiTcRequest:
         Return:
 
         """
-        return self.assignee(main_type, sub_type, unique_id, assignee_id, action='ADD')
+        return self.assignee(main_type, sub_type, unique_id, assignee_id, 'ADD')
 
-    def escalatees(self, main_type, sub_type, unique_id, params=None):
+    def escalatees(self, main_type, unique_id, params=None):
         """
 
         Args:
@@ -2535,15 +2537,14 @@ class TiTcRequest:
         """
         params = params or {}
 
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/escalatees'
-        yield from self._iterate(url, params, 'escalatee')
+        url = f'/v2/{main_type}/{unique_id}/escalatees'
+        yield from self._iterate(url, params, 'user')
 
-    def escalatee(self, main_type, sub_type, unique_id, escalatee_id, action='GET', params=None):
+    def escalatee(self, main_type, unique_id, escalatee_id, action='GET', params=None):
         """
 
         Args:
             main_type:
-            sub_type:
             unique_id:
             escalatee_id:
             action:
@@ -2554,13 +2555,13 @@ class TiTcRequest:
         """
         params = params or {}
 
-        url = f'/v2/{main_type}/{sub_type}/{unique_id}/escalatees/{escalatee_id}'
-        if action == 'GET':
-            return self.tcex.session.get(url, params=params)
-        if action == 'DELETE':
-            return self.tcex.session.delete(url)
+        url = f'/v2/{main_type}/{unique_id}/escalatees/{escalatee_id}'
         if action == 'ADD':
-            return self.tcex.session.post(url)
+            return self._post(url, {})
+        if action == 'GET':
+            return self._get(url=url, params=params)
+        if action == 'DELETE':
+            return self._delete(url=url)
         return None
 
     def get_escalatee(self, main_type, sub_type, unique_id, escalatee_id, params=None):
@@ -2592,7 +2593,7 @@ class TiTcRequest:
         Return:
 
         """
-        return self.escalatee(main_type, sub_type, unique_id, escalatee_id, action='DELETE')
+        return self.escalatee(main_type, sub_type, unique_id, escalatee_id, 'DELETE')
 
     def add_escalatee(self, main_type, sub_type, unique_id, escalatee_id):
         """
@@ -2606,7 +2607,7 @@ class TiTcRequest:
         Return:
 
         """
-        return self.escalatee(main_type, sub_type, unique_id, escalatee_id, action='ADD')
+        return self.escalatee(main_type, sub_type, unique_id, escalatee_id, 'ADD')
 
     @staticmethod
     def success(r):

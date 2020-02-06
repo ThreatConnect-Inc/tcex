@@ -178,7 +178,6 @@ class ThreatIntelligence:
             'report': Report,
             'signature': Signature,
             'threat': Threat,
-            'task': Task,
         }
 
         # if "name" is not in kwargs
@@ -321,6 +320,22 @@ class ThreatIntelligence:
             obj: An instance of Signature.
         """
         return Signature(self.tcex, **kwargs)
+
+    def task(self, **kwargs):
+        """Create the Task TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+            status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred
+            due_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+            reminder_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+            escalation_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+
+        Return:
+            obj: An instance of Task
+        """
+        return Task(self.tcex, **kwargs)
 
     def threat(self, **kwargs):
         """Create the Threat TI object.
