@@ -497,3 +497,50 @@ class TestUtils:
             tcex (TcEx, fixture): The tcex fixture.
         """
         assert len(tcex.playbook._variable_types) == 10
+
+    @pytest.mark.parametrize(
+        'variable,value,alt_variable,alt_value,expected',
+        [
+            ('#App:0001:s1!String', '1', '#App:0001:s2!String', '2', '1'),
+            ('-- Select --', None, '#App:0001:s2!String', '2', None),
+            ('-- Variable Input --', None, '#App:0001:s2!String', '2', '2'),
+        ],
+    )
+    def test_playbook_read_choice(
+        self, variable, value, alt_variable, alt_value, expected, playbook_app
+    ):
+        """Test the create output method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # parse variable and send to create_output() method
+        if value is not None:
+            parsed_variable = tcex.playbook.parse_variable(variable)
+            variable_name = parsed_variable.get('name')
+            variable_type = parsed_variable.get('type')
+            tcex.playbook.create_output(variable_name, value, variable_type)
+
+        # parse alt variable and send to create_output() method
+        parsed_variable = tcex.playbook.parse_variable(alt_variable)
+        variable_name = parsed_variable.get('name')
+        variable_type = parsed_variable.get('type')
+        tcex.playbook.create_output(variable_name, alt_value, variable_type)
+
+        # read choice
+        result = tcex.playbook.read_choice(variable, alt_variable)
+        assert result == expected, f'result of ({result}) does not match ({expected})'
+
+        # cleanup
+        if value is not None:
+            tcex.playbook.delete(variable)
+            assert tcex.playbook.read(variable) is None
+        if alt_value is not None:
+            tcex.playbook.delete(alt_variable)
+            assert tcex.playbook.read(alt_variable) is None

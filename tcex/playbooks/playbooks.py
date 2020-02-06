@@ -417,6 +417,29 @@ class Playbooks(PlaybooksBase):
 
         return value
 
+    def read_choice(self, key, alt_key):
+        """Read method for choice inputs.
+
+        Behavior:
+        * If key is "-- Select --" return None.
+        * If key is "-- Variable Input --" return resolved alt_key.
+        * Else return resolved value for key.
+
+        Args:
+            key (string): The variable to read from KeyValue Store.
+            alt_key (string): The alternate variable to read from the KeyValue Store.
+
+        Returns:
+            (None|str): Results retrieved from KeyValue Store
+        """
+        if key.strip() == '-- Select --':
+            return None
+
+        if key.strip() == '-- Variable Input --':
+            return self.read(alt_key)
+
+        return self.read(key)
+
     def read_array(self, key, embedded=True):
         """Read playbook variable and return array for any variable type.
 
