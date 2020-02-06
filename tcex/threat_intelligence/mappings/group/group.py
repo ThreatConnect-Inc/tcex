@@ -44,7 +44,7 @@ class Group(Mappings):
         }
 
     def can_create(self):
-        """Return True if registry key can be create."""
+        """Return True if group can be create."""
         return self.data.get('name') is not None
 
     def add_key_value(self, key, value):
