@@ -142,13 +142,6 @@ class TestCaseManagement:
     def obj_api_options(self):
         """Test filter keywords."""
         for f in self.cm_helper.cm_obj.fields:
-            # TODO: Remove this after core fixes issue
-            # caseid = workflow event obj
-            # useraccess = case obj
-            # user = workflow template obj
-            if f.get('name') in ['caseid', 'user', 'useraccess']:
-                continue
-
             if f.get('name') not in self.cm_helper.cm_obj.properties:
                 assert False, f"{f.get('name')} not in {self.cm_helper.cm_obj.properties.keys()}"
 
@@ -189,9 +182,7 @@ class TestCaseManagement:
             prop_camel = self.tcex.utils.snake_to_camel(prop)
 
             # handle additional properties
-            # TODO: remove items that are fixed in core
-            # id_dependent_on - bug on task object
-            if prop in ['id', 'id_dependent_on']:
+            if prop in ['id']:
                 continue
 
             # ensure class has property

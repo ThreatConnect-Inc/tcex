@@ -253,6 +253,42 @@ class TestTask(TestCaseManagement):
         assert task.workflow_phase == task_data.get('workflow_phase')
         assert task.workflow_step == task_data.get('workflow_step')
 
+    def test_task_task_config_mapping(self):
+        """Test Task Get Many"""
+        # create case
+        # task config data
+        task_config_data = [
+            {
+                'artifactType': 'ASN',
+                'dataType': 'String',
+                'intelType': 'indicator-ASN',
+                'name': 'dummy_field',
+                'uiElement': 'String',
+                'uiLabel': 'ui_label?',
+            }
+        ]
+
+        # create task
+        task_data = {'config_task': task_config_data}
+        task = self.cm.task(**task_data)
+
+        counter = 0
+        for config_task in task.config_task.config_tasks:
+            counter += 1
+            assert config_task.as_dict is not None
+            assert config_task.body == {}
+            assert config_task.artifact_type == 'ASN'
+            assert config_task.data_type == 'String'
+            assert config_task.intel_type == 'indicator-ASN'
+            assert config_task.name == 'dummy_field'
+            assert config_task.required is None
+            assert config_task.ui_element == 'String'
+            assert config_task.ui_label == 'ui_label?'
+        assert task.config_task.as_dict is not None
+        assert task.config_task.body == {}
+
+        assert counter == 1
+
     def test_task_get_single_by_id_properties(self, request):
         """Test Task Get Many"""
         # create case
@@ -330,10 +366,9 @@ class TestTask(TestCaseManagement):
         # assert read-only data
         assert task.completed_by is None  # not returned in the response
         assert task.config_playbook is None  # not returned in the response
-        assert task.config_task is None  # not returned in the response
+        assert task.config_task.config_tasks == []  # not returned in the response
         assert task.dependent_on_id is None  # not returned in the response
         assert task.duration is None  # not returned in the response
-        assert task.id_dependent_on is None  # not returned in the response
         assert task.parent_case.id == task_data.get('case_id')
         assert task.required is False
 

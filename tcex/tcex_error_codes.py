@@ -7,7 +7,7 @@ class TcExErrorCodes:
 
     @property
     def errors(self):
-        """TcEx defined error codes and messages.
+        """Return TcEx defined error codes and messages.
 
         .. note:: RuntimeErrors with a code of >= 10000 are considered critical.  Those < 10000
             are considered warning or errors and are up to the developer to determine the
@@ -58,6 +58,7 @@ class TcExErrorCodes:
                 'Error during create. {} does not have required values set and cannot be '
                 'created.'
             ),
+            # TODO: fix this and all references
             925: 'Error invalid {}. {} does not accept that {}, {}: {}.',
             950: 'Error during pagination. API status code: {}, API message: {}, API Url: {}.',
             951: 'Error during {}. API status code: {}, API message: {}, API Url: {}.',

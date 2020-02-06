@@ -128,6 +128,7 @@ class Inputs:
             # update default_args with AOT params
             params = self.aot_blpop()
             updated_params = self.update_params(params)
+            # log number of params returned from AOT
             self.config(updated_params)
 
     def _load_secure_params(self):

@@ -1,7 +1,6 @@
 [run]
 omit =
     tcex/bin/*
-    tcex/tcex_ti/*
     tcex/testing/*
     tcex/vault/*
     tests/*

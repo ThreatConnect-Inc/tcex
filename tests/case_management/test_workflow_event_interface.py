@@ -177,6 +177,7 @@ class TestWorkflowEvent(TestCaseManagement):
         # run assertions on returned data
         assert workflow_event.case_id == workflow_event_data.get('case_id')
         assert workflow_event.case_xid == workflow_event_data.get('case_xid')
+        assert workflow_event.user.user_name == os.getenv('API_ACCESS_ID')
         assert workflow_event.date_added
         assert workflow_event_data.get('event_date')[:17] in workflow_event.event_date
         assert workflow_event.id == workflow_event.id
@@ -222,6 +223,33 @@ class TestWorkflowEvent(TestCaseManagement):
 
         assert workflow_event.summary == workflow_event_data.get('summary')
         assert workflow_event_data.get('event_date')[:10] in workflow_event.event_date
+
+    def test_workflow_event_get_by_tql_filter_link(self, request):
+        """Test Workflow Event Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # workflow event data
+        workflow_event_data = {
+            'case_id': case.id,
+            'summary': request.node.name,
+        }
+
+        # create workflow_event
+        workflow_event = self.cm.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # retrieve workflow event using TQL
+        workflow_events = self.cm.workflow_events()
+        workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
+        workflow_events.filter.link(TQL.Operator.NE, 'invalid_link')
+
+        for we in workflow_events:
+            # more than one workflow event will always be returned
+            if we.summary == workflow_event_data.get('summary'):
+                break
+        else:
+            assert False, 'No workflow event returned for TQL'
 
     def test_workflow_event_get_by_tql_filter_case_id(self, request):
         """Test Workflow Event Get by TQL"""

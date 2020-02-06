@@ -121,7 +121,6 @@ class Task(CommonCaseManagement):
         self._description = kwargs.get('description', None)
         self._due_date = kwargs.get('due_date', None)
         self._duration = kwargs.get('duration', None)
-        self._id_dependent_on = kwargs.get('id_dependent_on', None)
         self._name = kwargs.get('name', None)
         self._notes = kwargs.get('notes', None)
         self._parent_case = kwargs.get('parent_case', None)
@@ -213,6 +212,10 @@ class Task(CommonCaseManagement):
     @property
     def config_task(self):
         """Return the **Config Task** for the Task"""
+        if self._config_task is None:
+            self._config_task = ConfigTasks()
+        elif isinstance(self._config_task, list):
+            self._config_task = ConfigTasks(config_tasks=self._config_task)
         return self._config_task
 
     @property
@@ -253,11 +256,6 @@ class Task(CommonCaseManagement):
         """
         new_case = Task(self.tcex, **entity)
         self.__dict__.update(new_case.__dict__)
-
-    @property
-    def id_dependent_on(self):
-        """Return the **ID Dependent On** for the Task"""
-        return self._id_dependent_on
 
     @property
     def name(self):
@@ -335,6 +333,133 @@ class Task(CommonCaseManagement):
     def xid(self, xid):
         """Set the **XID** for the Task"""
         self._xid = xid
+
+
+class ConfigTasks:
+    """Sub class of the Cases object. Used to map the config tasks to.
+
+    Args:
+        config_tasks (list): A array of config tasks
+    """
+
+    def __init__(self, config_tasks=None):
+        """Initialize Class properties."""
+        if config_tasks is None:
+            config_tasks = []
+        self._config_tasks = []
+
+        for config_task in config_tasks:
+            if isinstance(config_task, ConfigTask):
+                self._config_tasks.append(config_task)
+            else:
+                self._config_tasks.append(ConfigTask(**config_task))
+
+    @property
+    def config_tasks(self):
+        """Return the **ConfigTasks**."""
+        return self._config_tasks
+
+    @property
+    def as_dict(self):
+        """Return a dict representation of the ConfigTask class."""
+        data = []
+        for task in self.config_tasks:
+            data.append(task.as_dict)
+
+        return data
+
+    @property
+    def body(self):
+        """Return a body representation of the ConfigTask class."""
+        return {}
+
+
+class ConfigTask:
+    """Config Task Object for Tasks"""
+
+    def __init__(self, **kwargs):
+        """Config Task object for Tasks."""
+        self._transform_kwargs(kwargs)
+        self._artifact_type = kwargs.get('artifact_type', None)
+        self._data_type = kwargs.get('data_type', None)
+        self._intel_type = kwargs.get('intel_type', None)
+        self._name = kwargs.get('name', None)
+        self._required = kwargs.get('required', None)
+        self._ui_element = kwargs.get('ui_element', None)
+        self._ui_label = kwargs.get('ui_label', None)
+
+    @property
+    def as_dict(self):
+        """Return a dict representation of the Task Config class."""
+        properties = vars(self)
+        as_dict = {}
+        for key, value in properties.items():
+            key = key.lstrip('_')
+            if value is None:
+                continue
+            as_dict[key] = value
+
+        if not as_dict:
+            return None
+
+        return as_dict
+
+    @property
+    def artifact_type(self):
+        """Return the **Artifact Type** for the Config Task"""
+        return self._artifact_type
+
+    @property
+    def body(self):
+        """Return a dict representation of the Task Config class."""
+        return {}
+
+    @property
+    def data_type(self):
+        """Return the **Data Type** for the Config Task"""
+        return self._data_type
+
+    @property
+    def intel_type(self):
+        """Return the **Intel Type** for the Config Task"""
+        return self._intel_type
+
+    @property
+    def _metadata_map(self):
+        """Return a mapping of kwargs to expected args."""
+        return {
+            'artifactType': 'artifact_type',
+            'dataType': 'data_type',
+            'intelType': 'intel_type',
+            'uiElement': 'ui_element',
+            'uiLabel': 'ui_label',
+        }
+
+    @property
+    def name(self):
+        """Return the **Name** for the Config Task"""
+        return self._name
+
+    @property
+    def required(self):
+        """Return the **Required** for the Config Task"""
+        return self._required
+
+    def _transform_kwargs(self, kwargs):
+        """Map the provided kwargs to expected arguments."""
+        for key in dict(kwargs):
+            new_key = self._metadata_map.get(key, key)
+            kwargs[new_key] = kwargs.pop(key)
+
+    @property
+    def ui_label(self):
+        """Return the **UI Label** for the Config Task"""
+        return self._ui_label
+
+    @property
+    def ui_element(self):
+        """Return the **UI Element** for the Config Task"""
+        return self._ui_element
 
 
 class FilterTasks(Filter):
