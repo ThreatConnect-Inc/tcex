@@ -302,6 +302,15 @@ class FilterWorkflowEvents(Filter):
         """
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
 
+    def link(self, operator, link):
+        """Filter objects based on "link" field.
+
+        Args:
+            operator (enum): The enum for the required operator.
+            link (str): The filter value.
+        """
+        self._tql.add_filter('link', operator, link)
+
     def summary(self, operator, summary):
         """Filter Workflow Events based on **summary** keyword.
 

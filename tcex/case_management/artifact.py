@@ -117,6 +117,7 @@ class Artifact(CommonCaseManagement):
         self._case_id = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get('id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._date_added = kwargs.get('date_added', None)
+        self._field_name = kwargs.get('field_name', None)
         self._file_data = kwargs.get('file_data', None)
         self._intel_type = kwargs.get('intel_type', None)
         self._links = kwargs.get('links', None)
@@ -198,6 +199,11 @@ class Artifact(CommonCaseManagement):
         """
         new_artifact = Artifact(self.tcex, **entity)
         self.__dict__.update(new_artifact.__dict__)
+
+    @property
+    def field_name(self):
+        """Return the **File Data** for the Artifact."""
+        return self._field_name
 
     @property
     def file_data(self):

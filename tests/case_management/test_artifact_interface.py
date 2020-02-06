@@ -75,11 +75,12 @@ class TestArtifact(TestCaseManagement):
         assert artifact.intel_type == artifact_data.get('intel_type')
         assert artifact.summary == artifact_data.get('summary')
         assert artifact.type == artifact_data.get('type')
+        assert artifact.field_name is None
 
     def test_artifact_create_by_case_xid(self, request):
         """Test Artifact Creation"""
         # create case
-        case_xid = case_xid = f'{request.node.name}-{time.time()}'
+        case_xid = f'{request.node.name}-{time.time()}'
         self.cm_helper.create_case(xid=case_xid)
 
         # artifact data

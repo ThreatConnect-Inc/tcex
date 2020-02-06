@@ -5,6 +5,7 @@ import difflib
 import hashlib
 import json
 import math
+import numbers
 import operator
 import os
 import random
@@ -119,6 +120,7 @@ class Validator:
             'df': self.operator_date_format,
             'dd': self.operator_deep_diff,
             'is_date': self.operator_is_date,
+            'is_number': self.operator_is_number,
             'length_eq': self.operator_length_eq,
             'leq': self.operator_length_eq,
             'eq': self.operator_eq,
@@ -277,6 +279,22 @@ class Validator:
             except RuntimeError:
                 bad_data.append(data)
                 passed = False
+        return passed, ','.join(bad_data)
+
+    @staticmethod
+    def operator_is_number(app_data, test_data):  # pylint: disable=unused-argument
+        """Check if the app_data is a known date."""
+        if not isinstance(app_data, list):
+            app_data = [app_data]
+        bad_data = []
+        passed = True
+        for data in app_data:
+            if isinstance(data, str) and data.isdigit():
+                continue
+            if isinstance(data, numbers.Number):
+                continue
+            bad_data.append(data)
+            passed = False
         return passed, ','.join(bad_data)
 
     def operator_json_eq(self, app_data, test_data, **kwargs):
