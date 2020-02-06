@@ -432,6 +432,9 @@ class Playbooks(PlaybooksBase):
         Returns:
             (None|str): Results retrieved from KeyValue Store
         """
+        if key is None:
+            return None
+
         if key.strip() == '-- Select --':
             return None
 

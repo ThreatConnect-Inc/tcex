@@ -502,8 +502,10 @@ class TestUtils:
         'variable,value,alt_variable,alt_value,expected',
         [
             ('#App:0001:s1!String', '1', '#App:0001:s2!String', '2', '1'),
-            ('-- Select --', None, '#App:0001:s2!String', '2', None),
-            ('-- Variable Input --', None, '#App:0001:s2!String', '2', '2'),
+            ('-- Select --', None, '#App:0001:s2!String', '6', None),
+            ('-- Variable Input --', None, '#App:0001:s2!String', '7', '7'),
+            (None, None, '#App:0001:s2!String', '8', None),
+            ('-- Variable Input --', None, None, None, None),
         ],
     )
     def test_playbook_read_choice(
@@ -528,10 +530,11 @@ class TestUtils:
             tcex.playbook.create_output(variable_name, value, variable_type)
 
         # parse alt variable and send to create_output() method
-        parsed_variable = tcex.playbook.parse_variable(alt_variable)
-        variable_name = parsed_variable.get('name')
-        variable_type = parsed_variable.get('type')
-        tcex.playbook.create_output(variable_name, alt_value, variable_type)
+        if alt_value is not None:
+            parsed_variable = tcex.playbook.parse_variable(alt_variable)
+            variable_name = parsed_variable.get('name')
+            variable_type = parsed_variable.get('type')
+            tcex.playbook.create_output(variable_name, alt_value, variable_type)
 
         # read choice
         result = tcex.playbook.read_choice(variable, alt_variable)
