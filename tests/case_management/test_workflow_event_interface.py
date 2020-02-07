@@ -242,11 +242,11 @@ class TestWorkflowEvent(TestCaseManagement):
         # retrieve workflow event using TQL
         workflow_events = self.cm.workflow_events()
         workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
-        workflow_events.filter.link(TQL.Operator.NE, 'invalid_link')
+        workflow_events.filter.link(TQL.Operator.CONTAINS, case.id)
 
         for we in workflow_events:
             # more than one workflow event will always be returned
-            if we.summary == workflow_event_data.get('summary'):
+            if we.summary == 'Case created':
                 break
         else:
             assert False, 'No workflow event returned for TQL'

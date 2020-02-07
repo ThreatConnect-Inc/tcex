@@ -99,7 +99,7 @@ class Task(Mappings):
             self._data[key] = value
 
     def add_escalatee(self, escalatee):
-        """ Add the desired escalatee from the Task.
+        """Add the desired escalatee from the Task.
 
         Args:
             escalatee (str): The escalatee username
@@ -111,17 +111,17 @@ class Task(Mappings):
         return self.escalatee(escalatee)
 
     def assignee(self, assignee, action='ADD'):
-        """
-            General method to perform actions on assignees
-            Valid Actions:
-            + ADD
-            + GET
-            + DELETE
+        """General method to perform actions on assignees
+
+        Valid Actions:
+        + ADD
+        + GET
+        + DELETE
+
         Args:
             assignee (str): The username of the assignee.
             action: [ADD, DELETE, GET] the action to be done on the escalatee. Defaults to
                 ADD if not provided.
-
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
@@ -133,7 +133,7 @@ class Task(Mappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.assignees(self.api_type, self.unique_id)
+        return self.tc_requests.assignees(self.api_type, self.unique_id)
 
     def can_create(self):
         """
@@ -148,7 +148,7 @@ class Task(Mappings):
         return False
 
     def delete_assignee(self, assignee):
-        """ Delete the desired assignee from the Task.
+        """Delete the desired assignee from the Task.
 
         Args:
             assignee (str): The assignee username
@@ -160,7 +160,7 @@ class Task(Mappings):
         return self.assignee(assignee, action='DELETE')
 
     def delete_escalatee(self, escalatee):
-        """ Delete the desired escalatee from the Task.
+        """Delete the desired escalatee from the Task.
 
         Args:
             escalatee (str): The escalatee username
@@ -172,8 +172,8 @@ class Task(Mappings):
         return self.escalatee(escalatee, action='DELETE')
 
     def due_date(self, due_date):
-        """
-        Update the task due_date
+        """Update the task due_date
+
         Args:
             due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
@@ -208,7 +208,7 @@ class Task(Mappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.escalatees(self.api_type, self.unique_id)
+        return self.tc_requests.escalatees(self.api_type, self.unique_id)
 
     def escalation_date(self, escalation_date):
         """

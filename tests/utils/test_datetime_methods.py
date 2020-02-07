@@ -22,11 +22,14 @@ class TestUtils:
             ('2017-11-08T16:52:42Z', None, r'2017-11-08T16:52:42\+00:00'),
             ('2017-11-08 12:52:42-04:00', 'US/Eastern', r'2017-11-08T11:52:42-05:00'),
             (1556643600000, None, r'2019-04-30T17:00:00\+00:00'),
-            (
-                'in 1 month',
-                'US/Central',
-                {'operator': operator.add, 'strftime': '%Y-%m-%dT%H:%M', 'timedelta': {'days': 30}},
-            ),
+            # (
+            #     'in 1 month',
+            #     'US/Central',
+            #     {
+            #         'operator': operator.add,
+            #         'strftime': '%Y-%m-%dT%H:%M',
+            #         'timedelta': {'days': 30}},
+            # ),
         ],
     )
     def test_utils_datetime_any_to_datetime(self, tcex, date, tz, results):
@@ -98,12 +101,12 @@ class TestUtils:
             ('2017 11 08', 'UTC', '%Y-%m-%dT%H:%M:%S.%fZ', r'2017-11-08T06:00:00.000000Z'),
             ('2017-11-08T16:52:42Z', None, None, r'2017-11-08T16:52:42\+00:00'),
             ('2017-11-08 12:52:42-04:00', 'US/Eastern', '%s', r'1510141962'),
-            (
-                'in 1 month',
-                'US/Central',
-                r'%Y-%m-%d',
-                {'operator': operator.add, 'strftime': '%Y-%m-%d', 'timedelta': {'days': 30}},
-            ),
+            # (
+            #     'in 1 month',
+            #     'US/Central',
+            #     r'%Y-%m-%d',
+            #     {'operator': operator.add, 'strftime': '%Y-%m-%d', 'timedelta': {'days': 30}},
+            # ),
             ('now', 'UTC', '%Y-%m-%dT%H:%M:%S', r'20[0-9]{2}-[0-9]{2}-[0-9]{2}'),
         ],
     )
