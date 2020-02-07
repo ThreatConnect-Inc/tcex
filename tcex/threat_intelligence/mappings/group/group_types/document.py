@@ -12,7 +12,7 @@ class Document(Group):
         owner (str, kwargs): The name for this Group. Default to default Org when not provided
         file_name (str, kwargs): The name for the attached file for this Group.
         malware (bool, kwargs): If true the file is considered malware.
-        password (bool, kwargs): If malware is true a password for the zip archive is required.
+        password (str, kwargs): If malware is true a password for the zip archive is required.
     """
 
     def __init__(self, tcex, **kwargs):
