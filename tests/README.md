@@ -8,7 +8,7 @@ pytest tests/case_management/test_artifact_interface.py
 pytest tests/case_management/test_artifact_interface.py::test_artifact_type_api_options
 
 # Coverage Testing
-pytest -n 12 --cov=. --cov-report term-missing tests/
+pytest -n 12 --cov=. --cov-report=term-missing tests/
 
 pytest --ignore-glob='*tokens*' --cov=tcex/ --cov-report=term-missing tests
 # 2 failed, 871 passed, 28 warnings in 728.86s (0:12:08)

@@ -133,7 +133,7 @@ class Task(Mappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.assignees(self.api_type, self.unique_id)
+        return self.tc_requests.assignees(self.api_type, self.unique_id)
 
     def can_create(self):
         """
@@ -208,7 +208,7 @@ class Task(Mappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.escalatees(self.api_type, self.unique_id)
+        return self.tc_requests.escalatees(self.api_type, self.unique_id)
 
     def escalation_date(self, escalation_date):
         """

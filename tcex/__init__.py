@@ -24,7 +24,7 @@ try:
         ReadArg,
         WriteOutput,
     )
-    from .tcex_ti.tcex_ti import TcExTi
+    from .threat_intelligence import ThreatIntelligence
 except ImportError as e:
     print(f'Error: {e}')
     print('Try running tclib')
