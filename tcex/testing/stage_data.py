@@ -165,9 +165,8 @@ class ThreatConnect:
                     data.get('sub_type'), unique_id=data.get('id'), owner=data.get('owner')
                 )
             elif entity_type == 'Indicator':
-                ti = self.provider.tcex.ti.indicator(
-                    data.get('sub_type'), unique_id=data.get('id'), owner=data.get('owner')
-                )
+                ti = self.provider.tcex.ti.indicator(data.get('sub_type'), owner=data.get('owner'))
+                ti._set_unique_id(data)
             elif entity_type == 'Task':
                 ti = self.provider.tcex.ti.group(
                     entity_type, unique_id=data.get('id'), owner=data.get('owner')
