@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test the TcEx Metrics Module."""
+"""Test the TcEx ReadArg Decorator."""
 from tcex import ReadArg
 
 

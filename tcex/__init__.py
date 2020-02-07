@@ -16,7 +16,6 @@ try:
     from .decorators import (
         Benchmark,
         Debug,
-        FailOnInput,
         FailOnOutput,
         IterateOnArg,
         OnException,
