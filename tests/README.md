@@ -23,6 +23,7 @@ pytest -n 12 --cov=tcex/ --cov-report term-missing tests
 # '2020-01-24T22:19:36.597881'
 
 # Coverage on Single Module
+pytest --cov=tcex/decorators/ --cov-report term-missing tests/decorators/
 pytest --cov=tcex/case_management/ --cov-report term-missing tests/case_management/
 pytest --cov=tcex/utils/ --cov-report term-missing tests/utils/
 
