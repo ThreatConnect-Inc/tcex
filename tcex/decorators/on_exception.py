@@ -22,12 +22,15 @@ class OnException:
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
+        write_output (boolean): default True.
+            If enabled, will call app.write_output() when an exception is raised.
     """
 
-    def __init__(self, exit_msg=None, exit_enabled=True):
+    def __init__(self, exit_msg=None, exit_enabled=True, write_output=True):
         """Initialize Class properties"""
         self.exit_enabled = exit_enabled
         self.exit_msg = exit_msg or 'An exception has been caught. See the logs for more details.'
+        self.write_output = write_output
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -60,6 +63,8 @@ class OnException:
             except Exception as e:
                 app.tcex.log.error(f'method failure ({e})')
                 app.exit_message = self.exit_msg
+                if self.write_output and getattr(app, 'write_output'):
+                    app.write_output()
                 if enabled:
                     app.tcex.exit(1, self.exit_msg)
 
