@@ -24,7 +24,8 @@ class FailOnOutput:
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
         fail_msg (str, kwargs): The message to log when raising RuntimeError.
-        fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
+        fail_on (list, kwargs): Defaults to None.
+            Fail if return value from App method is in the list.
     """
 
     def __init__(self, **kwargs):
