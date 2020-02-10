@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Common Case Management"""
+from requests.exceptions import ProxyError
+
 from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
 
 
@@ -285,6 +287,8 @@ class CommonCaseManagement:
             self.tcex.log.debug(u'response text: (text to large to log)')
         if not self.success(r):
             err = r.text or r.reason
+            if r.status_code == 404:
+                self.tcex.handle_error(952, [r.request.method.upper(), r.status_code, err, r.url])
             self.tcex.handle_error(950, [r.status_code, err, r.url])
         return
 
@@ -331,7 +335,7 @@ class CommonCaseManagement:
 
         if not cm_id:  # pragma: no cover
             message = '{"message": "No ID provided.", "status": "Error"}'
-            self.tcex.handle_error(951, ['GET', '404', message, url])
+            self.tcex.handle_error(952, ['GET', '404', message, url])
 
         r = self.tcex.session.get(url, params=params)
         self.tcex.log.debug(
@@ -345,6 +349,8 @@ class CommonCaseManagement:
             self.tcex.log.debug(u'response text: (text to large to log)')
         if not self.success(r):
             err = r.text or r.reason
+            if r.status_code == 404:
+                self.tcex.handle_error(952, ['GET', r.status_code, err, r.url])
             self.tcex.handle_error(951, ['GET', r.status_code, err, r.url])
         self.entity_mapper(r.json().get('data', {}))
         return r
@@ -405,8 +411,10 @@ class CommonCaseManagement:
                 r = self.tcex.session.options(self.api_endpoint, params={'show': 'readOnly'})
                 if r.ok:
                     self._properties = r.json()
-            except ConnectionError:
-                self.tcex.handle_error(951, ['OPTIONS', 407, 'Connection Error', self.api_endpoint])
+            except (ConnectionError, ProxyError):
+                self.tcex.handle_error(
+                    951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
+                )
         return self._properties
 
     @property
@@ -448,6 +456,8 @@ class CommonCaseManagement:
 
         if not self.success(r):  # pragma: no cover
             err = r.text or r.reason
+            if r.status_code == 404:
+                self.tcex.handle_error(952, [r.request.method.upper(), r.status_code, err, r.url])
             self.tcex.handle_error(951, [r.request.method, r.status_code, err, r.url])
 
         r_json = r.json()

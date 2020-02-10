@@ -62,6 +62,7 @@ class TcExErrorCodes:
             925: 'Error invalid {}. {} does not accept that {}, {}: {}.',
             950: 'Error during pagination. API status code: {}, API message: {}, API Url: {}.',
             951: 'Error during {}. API status code: {}, API message: {}, API Url: {}.',
+            952: 'Error during {}. API status code: {}, API message: {}, API Url: {}.',
             # batch v2 critical:
             10500: 'Critical batch error ({}).',
             10505: 'Failed submitting batch job requests ({}).',
