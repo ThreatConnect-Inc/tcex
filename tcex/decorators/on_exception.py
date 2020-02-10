@@ -63,9 +63,12 @@ class OnException:
             except Exception as e:
                 app.tcex.log.error(f'method failure ({e})')
                 app.exit_message = self.exit_msg
-                if self.write_output and getattr(app, 'write_output'):
-                    app.write_output()
+                if self.write_output:
+                    app.tcex.playbook.write_output()
+                    if hasattr(app, 'write_output'):
+                        app.write_output()
                 if enabled:
+                    app.exit_message = self.exit_msg  # for test cases
                     app.tcex.exit(1, self.exit_msg)
 
         return exception

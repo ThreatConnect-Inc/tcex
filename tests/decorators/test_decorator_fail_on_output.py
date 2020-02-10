@@ -9,6 +9,7 @@ class TestFailOnOutputDecorator:
     """Test the TcEx Decorators."""
 
     args = None
+    exit_message = None
     tcex = None
 
     @FailOnOutput(
@@ -35,8 +36,10 @@ class TestFailOnOutputDecorator:
         try:
             self.fail_on_output(value=value)
             assert False, f'failed to catch invalid value {value}'
-        except RuntimeError as e:
-            assert e.args[0] == 'Failed due to invalid output'  # must match fail_msg on decorator
+        except SystemExit as e:
+            assert e.code == 1
+            # must match default value in decorator or value passed to decorator
+            assert self.exit_message == 'Failed due to invalid output'
 
     @pytest.mark.parametrize(
         'value', [('good data')],

@@ -8,6 +8,7 @@ class TestReadArgDecorators:
     """Test the TcEx ReadArg Decorators."""
 
     args = None
+    exit_message = None
     tcex = None
 
     @ReadArg('color')
@@ -45,8 +46,9 @@ class TestReadArgDecorators:
         try:
             self.read_arg_single_fail_on()
             assert False, 'fail on value was not caught'
-        except RuntimeError as e:
-            assert e.args[0] == 'Invalid value provided for color.'
+        except SystemExit as e:
+            assert e.code == 1
+            assert self.exit_message == 'Invalid value provided for color.'
 
     @ReadArg('color')
     @ReadArg('fruit')
@@ -89,8 +91,9 @@ class TestReadArgDecorators:
         try:
             self.read_arg_double_fail_on(**{})
             assert False, 'fail on value was not caught'
-        except RuntimeError as e:
-            assert e.args[0] == 'Invalid value provided for fruit.'
+        except SystemExit as e:
+            assert e.code == 1
+            assert self.exit_message == 'Invalid value provided for fruit.'
 
     @ReadArg('color')
     @ReadArg('fruit', default='pear')

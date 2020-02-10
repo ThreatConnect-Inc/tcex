@@ -105,8 +105,9 @@ class ReadArg:
             # check arg_data against fail_on_values
             if enabled and self.fail_on:
                 if arg_data in self.fail_on:
-                    app.tcex.log.debug(f'Invalid value ({arg_data}) found for {self.arg}.')
-                    raise RuntimeError(self.fail_msg)
+                    app.tcex.log.error(f'Invalid value ({arg_data}) found for {self.arg}.')
+                    app.exit_message = self.fail_msg  # for test cases
+                    app.tcex.exit(1, self.fail_msg)
 
             # add results to kwargs
             kwargs[self.arg] = arg_data

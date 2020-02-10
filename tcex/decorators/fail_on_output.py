@@ -79,9 +79,12 @@ class FailOnOutput:
                         failed = True
 
                 if failed:
-                    if self.write_output and getattr(app, 'write_output'):
-                        app.write_output()
-                    raise RuntimeError(self.fail_msg)
+                    if self.write_output:
+                        app.tcex.playbook.write_output()
+                        if hasattr(app, 'write_output'):
+                            app.write_output()
+                    app.exit_message = self.fail_msg  # for test cases
+                    app.tcex.exit(1, self.fail_msg)
             return data
 
         return fail
