@@ -36,7 +36,6 @@ class TestTask(TestCaseManagement):
         assert doc_string
         assert filter_map
         assert filter_class
-        print(filter_class)
 
     def test_task_filter_keywords(self):
         """Test filter keywords."""
@@ -209,7 +208,7 @@ class TestTask(TestCaseManagement):
         assert task.workflow_step == task_data.get('workflow_step')
 
     def test_task_update_properties(self, request):
-        """ Test updating artifacts properties"""
+        """Test updating artifacts properties"""
         case = self.cm_helper.create_case()
 
         task_data = {
@@ -374,6 +373,35 @@ class TestTask(TestCaseManagement):
 
         # test as_entity
         assert task.as_entity.get('value') == task_data.get('name')
+
+    def test_task_get_by_tql_filter_automated(self, request):
+        """Test Task Get by TQL"""
+        # create case
+        case = self.cm_helper.create_case()
+
+        # task data
+        task_data = {
+            'case_id': case.id,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+            'xid': f'{request.node.name}-{time.time()}',
+        }
+
+        # create task
+        task = self.cm.task(**task_data)
+        task.submit()
+
+        # retrieve tasks using TQL
+        tasks = self.cm.tasks()
+        tasks.filter.case_id(TQL.Operator.EQ, case.id)
+        tasks.filter.automated(TQL.Operator.EQ, False)
+
+        for task in tasks:
+            assert task.description == task_data.get('description')
+            assert task.name == task_data.get('name')
+            break
+        else:
+            assert False, 'No task returned for TQL'
 
     def test_task_get_by_tql_filter_case_id(self, request):
         """Test Task Get by TQL"""

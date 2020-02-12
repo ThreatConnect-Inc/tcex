@@ -326,7 +326,7 @@ class TestNote(TestCaseManagement):
         assert len(case.notes) == 1
         for note in case.notes:
             assert note.summary == note_data.get('text')
-        assert note.case_xid is None  # Case Xid is not returned
+        assert note.case_xid == case.xid
 
         # read-only
         assert note.author == os.getenv('API_ACCESS_ID')

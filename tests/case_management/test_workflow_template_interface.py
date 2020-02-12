@@ -166,7 +166,8 @@ class TestWorkflowTemplate(TestCaseManagement):
 
         # retrieve workflow event using TQL
         workflow_templates = self.cm.workflow_templates()
-        workflow_templates.filter.active(TQL.Operator.EQ, True)
+        workflow_templates.filter.active(TQL.Operator.EQ, False)
+        # workflow_templates.filter.id(TQL.Operator.EQ, workflow_template.id)
 
         for wt in workflow_templates:
             # more than one workflow event will always be returned

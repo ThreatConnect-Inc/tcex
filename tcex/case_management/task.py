@@ -465,6 +465,15 @@ class ConfigTask:
 class FilterTasks(Filter):
     """Filter Object for Tasks"""
 
+    def automated(self, operator, automated):
+        """Filter Tasks based on **automated** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            automated (bool): A flag indicating whether or not the task is automated.
+        """
+        self._tql.add_filter('automated', operator, automated, TQL.Type.BOOLEAN)
+
     def case_id(self, operator, case_id):
         """Filter Tasks based on **caseId** keyword.
 
@@ -500,24 +509,6 @@ class FilterTasks(Filter):
             completed_date (str): The completion date for the task.
         """
         self._tql.add_filter('completedDate', operator, completed_date, TQL.Type.STRING)
-
-    def config_playbook(self, operator, config_playbook):
-        """Filter Tasks based on **configPlaybook** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            config_playbook (str): The playbook configuration of the task.
-        """
-        self._tql.add_filter('configPlaybook', operator, config_playbook, TQL.Type.STRING)
-
-    def config_task(self, operator, config_task):
-        """Filter Tasks based on **configTask** keyword.
-
-        Args:
-            operator (enum): The operator enum for the filter.
-            config_task (str): The configuration of the task.
-        """
-        self._tql.add_filter('configTask', operator, config_task, TQL.Type.STRING)
 
     def description(self, operator, description):
         """Filter Tasks based on **description** keyword.
