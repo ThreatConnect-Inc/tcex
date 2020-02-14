@@ -350,7 +350,7 @@ class ThreatIntelligence:
         """
         return Threat(self.tcex, **kwargs)
 
-    def victim(self, name, owner=None, **kwargs):
+    def victim(self, **kwargs):
         """Create the Victim TI object.
 
         Args:
@@ -361,7 +361,7 @@ class ThreatIntelligence:
         Return:
 
         """
-        return Victim(self.tcex, name, owner=owner, **kwargs)
+        return Victim(self.tcex, **kwargs)
 
     def tag(self, name):
         """Create the Tag TI object.

@@ -178,76 +178,6 @@ class TiTcRequest:
         asset_data = {'url': value}
         return self._post_json(asset_url, asset_data)
 
-    def add_victim_email_asset(self, unique_id, value, **kwargs):
-        """Add an asset to an Victim.
-
-        Args:
-            unique_id (str): The unique ID of the Adversary
-            value (str): The asset value
-
-        Returns:
-            requests.Response: A request Response object.
-        """
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/emailAddresses'
-        asset_data = {'address': value, 'addressType': kwargs.get('address_type')}
-        return self._post_json(asset_url, asset_data)
-
-    def add_victim_network_asset(self, unique_id, value, **kwargs):
-        """Add an asset to an Victim.
-
-        Args:
-            unique_id (str): The unique ID of the Adversary
-            value (str): The asset value
-
-        Returns:
-            requests.Response: A request Response object.
-        """
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/networkAccounts'
-        asset_data = {'account': value, 'network': kwargs.get('network')}
-        return self._post_json(asset_url, asset_data)
-
-    def add_victim_phone_asset(self, unique_id, value):
-        """Add an asset to an Victim.
-
-        Args:
-            unique_id (str): The unique ID of the Adversary
-            value (str): The asset value
-
-        Returns:
-            requests.Response: A request Response object.
-        """
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/phoneNumbers'
-        asset_data = {'phoneType': value}
-        return self._post_json(asset_url, asset_data)
-
-    def add_victim_social_asset(self, unique_id, value, **kwargs):
-        """Add an asset to an Victim.
-
-        Args:
-            unique_id (str): The unique ID of the Adversary
-            value (str): The asset value
-
-        Returns:
-            requests.Response: A request Response object.
-        """
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/socialNetworks'
-        asset_data = {'account': value, 'network': kwargs.get('network')}
-        return self._post_json(asset_url, asset_data)
-
-    def add_victim_web_asset(self, unique_id, value):
-        """Add an asset to an Victim.
-
-        Args:
-            unique_id (str): The unique ID of the Adversary
-            value (str): The asset value
-
-        Returns:
-            requests.Response: A request Response object.
-        """
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/webSites'
-        asset_data = {'webSite': value}
-        return self._post_json(asset_url, asset_data)
-
     def adversary_assets(self, unique_id, params=None):
         """Return all Adversary assets
 
@@ -515,7 +445,7 @@ class TiTcRequest:
             sub_type (str): The TI sub type (e.g., adversaries or addresses).
             api_entity (str): The API entity value (e.g., address, file, etc).
             owner (str): The name of the TC owner.
-            filter (Filter, optional): A filter object.
+            filters (Filter, optional): A filter object.
             params (dict, optional): Optional dict of query params.
 
         Yields:
@@ -587,7 +517,7 @@ class TiTcRequest:
             sub_type (str): The TI sub type (e.g., adversaries or addresses).
             unique_id (str): The unique ID of the TI object.
             owner (str): The name of the TC owner.
-            filter (Filter, optional): A filter object.
+            filters (Filter, optional): A filter object.
             params (dict, optional): Optional dict of query params.
 
         Returns:
@@ -656,110 +586,140 @@ class TiTcRequest:
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/upload'
         return self._post(url, data=data, params=params)
 
-    def victim_email_asset(self, unique_id, asset_id, action='GET', params=None):
-        """Return Victim email asset by ID
+    def victim_add_asset(self, unique_id, asset_type, body):
+        """Add a Asset to a Victim.
+
+        Valid asset_type and optional identifier:
+        + email
+        + network
+        + phone
+        + social
+        + web
 
         Args:
-            unique_id (str): The unique ID of the Victim.
-            asset_id: (str) The ID of the asset.
-            action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
+            unique_id (str): The Victims ID.
+            asset_type: (str) The type of asset to be retrieved.
+            body (dict): The body of the Asset.
 
         Returns:
-            requests.Response: A request Response object.
+            request.Response: The response from the API call.
+        """
+        asset_type = self.victim_asset_type_mapping.get(asset_type.lower(), asset_type)
+        asset_url = f'/v2/victims/{unique_id}/victimAssets/{asset_type}'
+        return self._post_json(asset_url, body)
+
+    def victim_assets(self, main_type, sub_type, unique_id, asset_type=None, params=None):
+        """Retrieve the Assets of a Victim.
+
+        Valid asset_type and optional identifier:
+        + email
+        + network
+        + phone
+        + social
+        + web
+
+        Args:
+            main_type (str): The main type of the TI object.
+            sub_type (str): The sub type of the TI object.
+            unique_id (str): The unique id of the TI object.
+            asset_type: (str) The type of asset to be retrieved. Defaults to all of them.
+            params (dict, optional): Optional dict of query params.
+
+        Yields:
+            Json: The asset being retrieved.
         """
         params = params or {}
 
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/emailAddresses/{asset_id}'
+        # This is needed because of tasks
+        if not sub_type:
+            url = f'/v2/{main_type}/{unique_id}/victimAssets'
+        else:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets'
+        entity_type = 'victimAsset'
+        asset_type = self.victim_asset_type_mapping.get(asset_type)
+        if asset_type:
+            url += f'/{asset_type}'
+        return self._iterate(url, params, entity_type)
 
-        # handle DELETE action
-        if action == 'DELETE':
-            return self._delete(asset_url, params=params)
-        return self._get(asset_url, params=params)
+    def victim_get_asset(self, unique_id, asset_type, asset_id, params=None):
+        """Retrieve a Asset from a Victim.
 
-    def victim_network_asset(self, unique_id, asset_id, action='GET', params=None):
-        """Return Victim network asset by ID
-
-        Args:
-            unique_id (str): The unique ID of the Victim.
-            asset_id: (str) The ID of the asset.
-            action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
-
-        Returns:
-            requests.Response: A request Response object.
-        """
-        params = params or {}
-
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/networkAccounts/{asset_id}'
-
-        # handle DELETE action
-        if action == 'DELETE':
-            return self._delete(asset_url, params=params)
-        return self._get(asset_url, params=params)
-
-    def victim_phone_asset(self, unique_id, asset_id, action='GET', params=None):
-        """Return Victim phone asset by ID
+        Valid asset_type and optional identifier:
+        + email
+        + network
+        + phone
+        + social
+        + web
 
         Args:
-            unique_id (str): The unique ID of the Victim.
-            asset_id: (str) The ID of the asset.
-            action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
+            unique_id (str): The Victims ID.
+            asset_type: (str) The type of asset to be retrieved.
+            asset_id (str): The Assets ID .
+            params (dict, optional): Optional dict of query params.
 
         Returns:
-            requests.Response: A request Response object.
+            request.Response: The response from the API call.
         """
         params = params or {}
-
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/phoneNumbers/{asset_id}'
-
-        # handle DELETE action
-        if action == 'DELETE':
-            return self._delete(asset_url, params=params)
+        asset_type = self.victim_asset_type_mapping.get(asset_type.lower(), asset_type)
+        asset_url = f'/v2/victims/{unique_id}/victimAssets/{asset_type}/{asset_id}'
         return self._get(asset_url, params=params)
 
-    def victim_social_asset(self, unique_id, asset_id, action='GET', params=None):
-        """Return Victim social asset by ID
+    @property
+    def victim_asset_type_mapping(self):
+        """Maps the asset type to the api endpoints needed."""
+        return {
+            'email': 'emailAddresses',
+            'network': 'networkAccounts',
+            'phone': 'phoneNumbers',
+            'social': 'socialNetworks',
+            'web': 'webSites',
+        }
+
+    def victim_delete_asset(self, unique_id, asset_type, asset_id):
+        """Delete a Asset from a Victim.
+
+        Valid asset_type and optional identifier:
+        + email
+        + network
+        + phone
+        + social
+        + web
 
         Args:
-            unique_id (str): The unique ID of the Victim.
-            asset_id: (str) The ID of the asset.
-            action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
+            unique_id (str): The Victims ID.
+            asset_type: (str) The type of asset to be retrieved.
+            asset_id (str): The Assets ID .
 
         Returns:
-            requests.Response: A request Response object.
+            request.Response: The response from the API call.
         """
-        params = params or {}
+        asset_type = self.victim_asset_type_mapping.get(asset_type.lower(), asset_type)
+        asset_url = f'/v2/victims/{unique_id}/victimAssets/{asset_type}/{asset_id}'
+        return self._delete(asset_url)
 
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/socialNetworks/{asset_id}'
+    def victim_update_asset(self, unique_id, asset_type, asset_id, body):
+        """Update a Asset of a Victim.
 
-        # handle DELETE action
-        if action == 'DELETE':
-            return self._delete(asset_url, params=params)
-        return self._get(asset_url, params=params)
-
-    def victim_web_asset(self, unique_id, asset_id, action='GET', params=None):
-        """Return Victim social asset by ID
+        Valid asset_type and optional identifier:
+        + email
+        + network
+        + phone
+        + social
+        + web
 
         Args:
-            unique_id (str): The unique ID of the Victim.
-            asset_id: (str) The ID of the asset.
-            action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
+            unique_id (str): The Victims ID.
+            asset_type: (str) The type of asset to be retrieved.
+            asset_id (str): The Assets ID .
+            body (dict): The body of the Asset.
 
         Returns:
-            requests.Response: A request Response object.
+            request.Response: The response from the API call.
         """
-        params = params or {}
-
-        asset_url = f'/v2/victims/{unique_id}/victimAssets/webSites/{asset_id}'
-
-        # handle DELETE action
-        if action == 'DELETE':
-            return self._delete(asset_url, params=params)
-        return self._get(asset_url, params=params)
+        asset_type = self.victim_asset_type_mapping.get(asset_type.lower(), asset_type)
+        asset_url = f'/v2/victims/{unique_id}/victimAssets/{asset_type}/{asset_id}'
+        return self._put_json(asset_url, body)
 
     #
     # -- needs updates ---
@@ -1387,79 +1347,6 @@ class TiTcRequest:
             self.tcex.log.trace(f'url: {r.request.url}')
         return r
 
-    def update_victim_phone_asset(self, unique_id, asset_id, name):
-        """
-
-        Args:
-            unique_id:
-            asset_id:
-            name:
-
-        Return:
-
-        """
-        url = f'/v2/victims/{unique_id}/victimAssets/phoneNumbers/{asset_id}'
-        return self.tcex.session.post(url, json={'phoneType': name})
-
-    def update_victim_email_asset(self, unique_id, asset_id, name, asset_type):
-        """
-
-        Args:
-            unique_id:
-            asset_id:
-            name:
-            asset_type:
-
-        Return:
-
-        """
-        url = f'/v2/victims/{unique_id}/victimAssets/emailAddresses/{asset_id}'
-        return self.tcex.session.post(url, json={'address': name, 'addressType': asset_type})
-
-    def update_victim_network_asset(self, unique_id, asset_id, name, asset_type):
-        """
-
-        Args:
-            unique_id:
-            asset_id:
-            name:
-            asset_type:
-
-        Return:
-
-        """
-        url = f'/v2/victims/{unique_id}/victimAssets/networkAccounts/{asset_id}'
-        return self.tcex.session.post(url, json={'account': name, 'network': asset_type})
-
-    def update_victim_social_asset(self, unique_id, asset_id, name, asset_type):
-        """
-
-        Args:
-            unique_id:
-            asset_id:
-            name:
-            asset_type:
-
-        Return:
-
-        """
-        url = f'/v2/victims/{unique_id}/victimAssets/socialNetworks/{asset_id}'
-        return self.tcex.session.post(url, json={'account': name, 'network': asset_type})
-
-    def update_victim_web_asset(self, unique_id, asset_id, name):
-        """
-
-        Args:
-            unique_id:
-            asset_id:
-            name:
-
-        Return:
-
-        """
-        url = f'/v2/victims/{unique_id}/victimAssets/webSites/{asset_id}'
-        return self.tcex.session.post(url, json={'webSite': name})
-
     def victim(self, main_type, sub_type, unique_id, victim_id, params=None):
         """
 
@@ -1502,259 +1389,6 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/victims'
 
         yield from self._iterate(url, params, 'victim')
-
-    def victim_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/victimAssets'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets'
-
-        yield from self._iterate(url, params, 'victimAssets')
-
-    def victim_email_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/victimAssets/emailAddresses'
-        else:
-            url = f'/v2/{type}/{sub_type}/{unique_id}/victimAssets/emailAddresses'
-
-        yield from self._iterate(url, params, 'victimEmail')
-
-    def victim_network_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/victimAssets/networkAccounts'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets/networkAccounts'
-
-        yield from self._iterate(url, params, 'victimNetwork')
-
-    def victim_phone_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/victimAssets/phoneNumbers'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets/phoneNumbers'
-
-        yield from self._iterate(url, params, 'victimPhone')
-
-    def victim_social_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/victimAssets/socialNetworks'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets/socialNetworks'
-
-        yield from self._iterate(url, params, 'victimSocial')
-
-    def victim_web_assets(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/victimAssets/webSites'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets/webSites'
-
-        yield from self._iterate(url, params, 'victimWeb')
-
-    def get_victim_email_asset(self, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        return self.victim_email_asset(unique_id, asset_id, params=params)
-
-    def get_victim_network_asset(self, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        return self.victim_network_asset(unique_id, asset_id, params=params)
-
-    def get_victim_phone_asset(self, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        return self.victim_phone_asset(unique_id, asset_id, params=params)
-
-    def get_victim_social_asset(self, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        return self.victim_social_asset(unique_id, asset_id, params=params)
-
-    def get_victim_web_asset(self, unique_id, asset_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-            params:
-
-        Return:
-
-        """
-        params = params or {}
-
-        return self.victim_web_asset(unique_id, asset_id, params=params)
-
-    def delete_victim_email_asset(self, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.victim_email_asset(unique_id, asset_id, action='DELETE')
-
-    def delete_victim_network_asset(self, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.victim_network_asset(unique_id, asset_id, action='DELETE')
-
-    def delete_victim_phone_asset(self, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.victim_phone_asset(unique_id, asset_id, action='DELETE')
 
     def file_occurrences(self, main_type, sub_type, unique_id, owner=None):
         """
@@ -1854,34 +1488,6 @@ class TiTcRequest:
         if owner:
             params['owner'] = owner
         return self.tcex.session.post(url, json={'fileName': name, 'path': path, 'date': date})
-
-    def delete_victim_social_asset(self, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.victim_social_asset(unique_id, asset_id, action='DELETE')
-
-    def delete_victim_web_asset(self, unique_id, asset_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_id:
-
-        Return:
-
-        """
-        return self.victim_web_asset(unique_id, asset_id, action='DELETE')
 
     def tag(self, main_type, sub_type, unique_id, tag, action='GET', owner=None, params=None):
         """

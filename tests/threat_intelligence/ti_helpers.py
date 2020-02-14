@@ -375,6 +375,78 @@ class TIHelper:
 
         return ti
 
+    def create_victim(self, **kwargs):
+        """Create an Victim.
+
+        If a Victim name is not provide a dynamic case name will be used.
+
+        Args:
+            attributes (dict|list, kwargs): An attribute or attributes to add to group.
+            owner (str, kwargs): The owner for this Victim. Default to default Org when not provided
+            name (str, kwargs): The name of the victim being added.
+            security_labels (dict|list, kwargs): A label or labels to add to group.
+            tags (dict|list, kwargs): A tag or tags to add to group.
+
+        Returns:
+            Victim: A Victim object.
+        """
+        # use passed group type or global value
+        attributes = kwargs.pop('attributes', [])
+        labels = kwargs.pop('labels', [])
+        tags = kwargs.pop('tags', [])
+
+        if kwargs.get('name') is None:
+            kwargs['name'] = self.rand_name()
+
+        if kwargs.get('owner') is None:
+            kwargs['owner'] = os.getenv('TC_OWNER')
+
+        # add optional and/or required fields
+        self._add_fields(kwargs)
+
+        # setup group data
+        ti = self.ti.victim(**kwargs)
+        if not ti.is_victim():  # coverage
+            raise RuntimeError('Wrong TI object')
+
+        # add the group name to the ti object to be accessed in test case
+        setattr(ti, 'name', kwargs.get('name'))
+
+        # store task id for cleanup
+        self.ti_objects.append(ti)
+
+        # create task
+        r = ti.create()
+        if not r.ok:
+            raise RuntimeError(f"Failed to create victim ({kwargs.get('name')}). Error: ({r.text})")
+
+        # handle attribute inputs
+        if isinstance(attributes, dict):
+            attributes = [attributes]
+        for attribute in attributes:
+            ra = ti.add_attribute(**attribute)
+            if not ra.ok:
+                raise RuntimeError(f'Failed to add attribute ({attribute}). Error: ({ra.text})')
+
+        # handle label inputs
+        if isinstance(labels, dict):
+            labels = [labels]
+        for label in labels:
+            rl = ti.add_label(**label)
+            if not rl.ok:
+                raise RuntimeError(f'Failed to add label ({label}). Error: ({rl.text})')
+
+        # handle tag inputs
+        if isinstance(tags, dict):
+            tags = [tags]
+        tags.append({'name': 'PyTest'})
+        for tag in tags:
+            rt = ti.add_tag(**tag)
+            if not rt.ok:
+                raise RuntimeError(f'Failed to add tag ({tag}). Error: ({rt.text})')
+
+        return ti
+
     def cleanup(self):
         """Remove all cases and child data."""
         for obj in self.ti_objects:
