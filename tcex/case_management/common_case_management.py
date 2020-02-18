@@ -431,7 +431,9 @@ class CommonCaseManagement:
 
         This is determined based on if the id is already present in the object.
         """
+        print('before body')
         body = self.body
+        print(body)
 
         method = 'POST'
         url = self.api_endpoint
@@ -439,6 +441,11 @@ class CommonCaseManagement:
             # if the ID is included, its an update
             method = 'PUT'
             url = f'{self.api_endpoint}/{self.id}'
+            if not body:
+                self.tcex.log.debug(
+                    f'Attempting update on {url} but no updated data provided. Returning None'
+                )
+                return None
 
         # make the request
         r = self.tcex.session.request(method, url, json=body)
