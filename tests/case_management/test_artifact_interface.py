@@ -717,23 +717,3 @@ class TestArtifact(TestCaseManagement):
             assert False, 'TQL should have failed'
         except Exception:
             pass
-
-    def test_artifact_ignore_update(self):
-        """Test Artifact Update with no update values"""
-        # create case
-        case = self.cm_helper.create_case()
-
-        # artifact data
-        artifact_data = {
-            'case_id': case.id,
-            'intel_type': 'indicator-ASN',
-            'summary': f'asn{randint(100, 999)}',
-            'type': 'ASN',
-        }
-
-        # create artifact
-        artifact = self.cm.artifact(**artifact_data)
-        artifact.submit()
-        artifact = self.cm.artifact(id=artifact.id)
-        r = artifact.submit()
-        assert r is None
