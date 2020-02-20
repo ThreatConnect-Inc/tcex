@@ -127,6 +127,11 @@ class Victim(Mappings):
         asset_data = {'webSite': web_site}
         return self.add_asset('WEB', asset_data)
 
+    @property
+    def as_entity(self):
+        """Return the entity representation of the Victim."""
+        return {'type': 'Victim', 'value': self.name, 'id': self.unique_id}
+
     def assets(self, asset_type=None):
         """
         Gets the assets of a Victim

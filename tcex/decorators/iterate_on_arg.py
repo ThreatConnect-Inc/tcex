@@ -24,7 +24,7 @@ class IterateOnArg:
         # ** OR **
 
         # the args value of "colors" refers to ``self.args.colors``.
-        @iterateOnArgs(arg='colors')
+        @iterateOnArg(arg='colors')
         def my_method(**kwargs):
             return kwargs.get('colors')
 

@@ -24,13 +24,13 @@ class File(Indicator):
         """
         super().__init__(tcex, sub_type='File', api_entity='file', api_branch='files', **kwargs)
 
-        unique_id = (
+        self.unique_id = (
             kwargs.get('unique_id')
             or kwargs.get('md5', None)
             or kwargs.get('sha1', None)
             or kwargs.get('sha256', None)
         )
-        if unique_id:
+        if self.unique_id:
             self.data['md5'] = self._hash_from_unique_id(hash_type='md5')
             self.data['sha1'] = self._hash_from_unique_id(hash_type='sha1')
             self.data['sha256'] = self._hash_from_unique_id(hash_type='sha256')

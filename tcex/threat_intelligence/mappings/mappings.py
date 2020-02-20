@@ -34,6 +34,40 @@ class Mappings:
         self._tc_requests = TiTcRequest(self._tcex)
 
     @property
+    def _excluded_properties(self):
+        """
+        Returns a list of properties to exclude when creating a dict of the children Classes.
+        """
+        return ['tcex', 'kwargs', 'api_endpoint']
+
+    @property
+    def as_entity(self):  # pragma: no cover
+        """Return the object as an entity."""
+        raise NotImplementedError('Child class must implement this method.')
+
+    @property
+    def as_dict(self):
+        """
+        Returns the dict representation of the case management object.
+        """
+        properties = vars(self)
+        as_dict = {}
+        for key, value in properties.items():
+            key = key.lstrip('_')
+            if key in self._excluded_properties:
+                continue
+            try:
+                value = value.as_dict
+            except AttributeError:
+                pass
+            if value is None:
+                continue
+            as_dict[key] = value
+        if not as_dict:
+            return None
+        return as_dict
+
+    @property
     def type(self):
         """Return main type."""
         return self._type
@@ -193,10 +227,6 @@ class Mappings:
             self._tcex.handle_error(905, [self.type])
 
         response = self.tc_requests.create(self.api_type, self.api_branch, self._data, self.owner)
-
-        # print('response: ', response)
-        # print('text: ', response.text)
-        # print('data: ', self._data)
 
         if self.tc_requests.success(response):
             self._set_unique_id(response.json().get('data').get(self.api_entity))

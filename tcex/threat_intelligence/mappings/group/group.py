@@ -23,6 +23,11 @@ class Group(Mappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @property
+    def as_entity(self):
+        """Return the entity representation of the Indicator."""
+        return {'type': self.api_sub_type, 'value': self.name, 'id': self.unique_id}
+
     @staticmethod
     def is_group():
         """Return True if object is a group."""

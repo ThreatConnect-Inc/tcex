@@ -54,6 +54,11 @@ class Task(Mappings):
         }
 
     @property
+    def as_entity(self):
+        """Return the entity representation of the Task."""
+        return {'type': 'Task', 'value': self.name, 'id': None}
+
+    @property
     def name(self):
         """Return Task name."""
         return self._data.get('name')
