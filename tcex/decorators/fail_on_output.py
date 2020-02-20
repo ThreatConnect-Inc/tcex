@@ -13,7 +13,7 @@ class FailOnOutput:
         :lineno-start: 1
 
         @FailOnOutput(
-            arg='fail_on_false', values=['false'], msg='Operation returned a value of "false".'
+            fail_on=['false'], fail_msg='Operation returned a value of "false".'
         )
         def my_method(data):
             return data.lowercase()
@@ -32,7 +32,7 @@ class FailOnOutput:
 
     def __init__(self, **kwargs):
         """Initialize Class properties."""
-        self.fail_enabled = kwargs.get('fail_enabled', False)
+        self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg', f'Method returned invalid output.')
         self.fail_on = kwargs.get('fail_on', [])
         self.write_output = kwargs.get('write_output', True)

@@ -25,11 +25,7 @@ class Package(Bin):
     """
 
     def __init__(self, _args):
-        """Initialize Class properties.
-
-        Args:
-            _args (namespace): The argparser args Namespace.
-        """
+        """Initialize Class properties."""
         super().__init__(_args)
 
         # properties
@@ -39,6 +35,33 @@ class Package(Bin):
         self._app_packages = []
         self.package_data = {'errors': [], 'updates': [], 'bundle': [], 'package': []}
         self.validation_data = {}
+
+    @property
+    def _build_excludes(self):
+        """Return a list of files and folders that should be excluded during the build process."""
+        return [
+            'tcex.json',
+            self.args.outdir,
+            '__pycache__',
+            '.cache',  # local cache directory
+            '.c9',  # C9 IDE
+            '.coverage',  # coverage file
+            '.coveragerc',  # coverage configuration file file
+            '.git',  # git directory
+            '.gitmodules',  # git modules
+            '.idea',  # PyCharm
+            '.pytest_cache',  # pytest cache directory
+            '*.iml',  # PyCharm files
+            '*.pyc',  # any pyc file
+            '.python-version',  # pyenv
+            '.vscode',  # Visual Studio Code
+            'artifacts',  # pytest in BB Pipelines
+            'assets',  # pytest in BB Pipelines
+            'local-*',  # log directory
+            'log',  # log directory
+            'test-reports',  # pytest in BB Pipelines
+            'tests',  # pytest test directory
+        ]
 
     def _update_install_json(self, install_json):
         """Update install.json file.
@@ -62,9 +85,9 @@ class Package(Bin):
                     {'action': 'Updated Feature:', 'output': feature}
                 )
 
-        # all App should have an appId to uniquely identify the App. this is not used by core to
-        # identify an App.  using appId + major Version could be used for unique App identification
-        # in core.
+        # all App should have an appId to uniquely identify the App. this is not intended to be
+        # used by core to identify an App.  using appId + major Version could be used for unique
+        # App identification in core in a future release.
         if install_json.get('appId') is None:
             install_json['appId'] = str(
                 uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
@@ -178,37 +201,17 @@ class Package(Bin):
         if os.access(template_app_path, os.W_OK):
             # cleanup any previous failed builds
             shutil.rmtree(template_app_path)
+
         # update package data
         self.package_data['package'].append(
             {'action': 'Template Directory:', 'output': template_app_path}
         )
 
         # build exclude file/directory list
-        excludes = [
-            'tcex.json',
-            self.args.outdir,
-            '__pycache__',
-            '.cache',  # local cache directory
-            '.c9',  # C9 IDE
-            '.coverage',  # coverage file
-            '.coveragerc',  # coverage configuration file file
-            '.git',  # git directory
-            '.gitmodules',  # git modules
-            '.idea',  # PyCharm
-            '.pytest_cache',  # pytest cache directory
-            '*.iml',  # PyCharm files
-            '*.pyc',  # any pyc file
-            '.python-version',  # pyenv
-            '.vscode',  # Visual Studio Code
-            'artifacts',  # pytest in BB Pipelines
-            'assets',  # pytest in BB Pipelines
-            'local-*',  # log directory
-            'log',  # log directory
-            'test-reports',  # pytest in BB Pipelines
-            'tests',  # pytest test directory
-        ]
+        excludes = list(self._build_excludes)
         excludes.extend(self.args.exclude)
         excludes.extend(self.tcex_json.get('package', {}).get('excludes', []))
+
         # update package data
         self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
 
@@ -217,10 +220,9 @@ class Package(Bin):
         shutil.copytree(self.app_path, template_app_path, False, ignore_patterns)
 
         # build list of app json files
+        contents = os.listdir(self.app_path)
         if self.args.install_json is not None:
             contents = [self.args.install_json]
-        else:
-            contents = os.listdir(self.app_path)
 
         # package app
         for install_json_name in sorted(contents):
@@ -347,7 +349,7 @@ class Package(Bin):
                 )
 
         # Bundle
-        if self.package_data.get('bundle'):
+        if self.package_data.get('bundle', False):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Bundle:')
             for p in self.package_data['bundle']:
                 print(

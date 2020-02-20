@@ -63,7 +63,7 @@ class ReadArg:
         self.arg = arg
         self.array = kwargs.get('array')
         self.default = kwargs.get('default')
-        self.fail_enabled = kwargs.get('fail_enabled', False)
+        self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
         self.fail_on = kwargs.get('fail_on', [])
 
