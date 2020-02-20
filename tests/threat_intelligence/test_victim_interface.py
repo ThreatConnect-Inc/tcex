@@ -32,6 +32,7 @@ class TestVictim(TestThreatIntelligence):
         ti = self.ti.victim(**victim_data)
         ti.name = victim_data.get('name')
         r = ti.create()
+        assert ti.as_entity
 
         # assert response
         assert r.status_code == 201

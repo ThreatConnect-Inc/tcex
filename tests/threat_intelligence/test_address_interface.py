@@ -42,6 +42,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         }
         ti = self.ti.address(**indicator_data)
         r = ti.create()
+        assert ti.as_entity
 
         # assert response
         assert r.status_code == 201
