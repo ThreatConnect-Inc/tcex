@@ -42,6 +42,7 @@ class TiTcRequest:
         params = params or {}
 
         r = self.tcex.session.get(url, params=params)
+
         self.tcex.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Params: ({params}), '

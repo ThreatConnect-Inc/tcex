@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Indicator"""
 import json
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 from ..mappings import Mappings
 
@@ -111,6 +111,15 @@ class Indicator(Mappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @property
+    def as_entity(self):
+        """Return the entity representation of the Indicator."""
+        return {
+            'type': self.api_sub_type,
+            'value': unquote(self.unique_id),
+            'id': self._data.get('id'),
+        }
+
     @staticmethod
     def is_indicator():
         """Return true if object type is an indicator."""
@@ -174,7 +183,6 @@ class Indicator(Mappings):
             ['unlock', 'unlocked', '0'] will set it to inactive
 
         Returns:
-
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
@@ -183,10 +191,10 @@ class Indicator(Mappings):
         request_data = {}
         if status:
             status = str(status)
-            if status.lower() in ['active', '2', '1']:
-                request_data['active'] = 2
-            elif status.lower() in ['inactive', '-2', '-1', '0']:
-                request_data['active'] = -2
+            if status.lower() in ['active', '1']:
+                request_data['active'] = 1
+            elif status.lower() in ['inactive', '0']:
+                request_data['active'] = 0
         if cal_status:
             cal_status = str(cal_status)
             if cal_status.lower() in ['locked', 'lock', '1']:

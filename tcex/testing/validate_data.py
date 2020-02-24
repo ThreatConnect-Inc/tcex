@@ -339,7 +339,8 @@ class Validator:
             data = json.loads(data)
         for e in exclude:
             try:
-                del data[e]
+                es = e.split('.')
+                data = self.remove_excludes(data, es)
             except (KeyError, TypeError) as err:
                 self.log.error(f'Invalid validation configuration: ({err})')
         return data

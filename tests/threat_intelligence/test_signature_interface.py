@@ -43,6 +43,7 @@ class TestSignatureGroups(TestThreatIntelligence):
         }
         ti = self.ti.signature(**group_data)
         r = ti.create()
+        assert ti.as_entity
 
         # assert response
         assert r.status_code == 201

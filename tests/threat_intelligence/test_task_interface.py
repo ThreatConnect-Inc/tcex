@@ -34,6 +34,8 @@ class TestTask(TestThreatIntelligence):
         }
         ti = self.ti.task(**task_data)
         r = ti.create()
+        assert ti.as_entity
+        assert ti.as_dict
 
         # assert response
         assert r.status_code == 201

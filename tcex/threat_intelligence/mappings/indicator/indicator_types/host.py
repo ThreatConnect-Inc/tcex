@@ -23,12 +23,11 @@ class Host(Indicator):
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
         super().__init__(tcex, sub_type='Host', api_entity='host', api_branch='hosts', **kwargs)
-        self.unique_id = kwargs.get('unique_id', kwargs.get('hostname'))
+        self.unique_id = kwargs.get('unique_id', self._data.get('hostName'))
         self._data['hostName'] = self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.fully_decode_uri(self.unique_id))
 
-    # TODO: @bpurdy should this be property
     def can_create(self):
         """Return True if file can be create.
 
@@ -43,7 +42,7 @@ class Host(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('hostName', '')
+        self.unique_id = quote_plus(self.fully_decode_uri(json_response.get('hostName', '')))
 
     def dns_resolution(self):
         """Update the Host DNS resolution

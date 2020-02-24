@@ -435,7 +435,7 @@ class CommonCaseManagement:
 
         This is determined based on if the id is already present in the object.
         """
-        body = self.body
+        body = self.body or {}
 
         method = 'POST'
         url = self.api_endpoint
