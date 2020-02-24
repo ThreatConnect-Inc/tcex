@@ -5,24 +5,23 @@ Modules
    :maxdepth: 3
 
    tcex.batch
+   tcex.bin
+   tcex.case_management
+   tcex.datastore
    tcex.decorators
    tcex.inputs
+   tcex.key_value_store
    tcex.logger
-   tcex.tcex
-   tcex.bin
    tcex.metrics
    tcex.notifications
    tcex.playbooks
-   tcex.resources
+   tcex.services
    tcex.sessions
-   tcex.tcex_data_filter
+   tcex.tcex
    tcex.tcex_error_codes
-   tcex.tcex_key_value
-   tcex.tcex_redis
-   tcex.tcex_request
-   tcex.tcex_ti
-   tcex.vault
+   tcex.threat_intelligence
    tcex.utils
+   tcex.vault
 
 Module contents
 ===============

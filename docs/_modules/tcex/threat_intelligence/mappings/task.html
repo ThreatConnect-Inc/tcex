@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.threat_intelligence.mappings.task &mdash; TcEx 2.0.0 documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.threat_intelligence.mappings.task</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.threat_intelligence.mappings.task</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect TI Adversary &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote_plus</span>
+
+<span class="kn">from</span> <span class="nn">.mappings</span> <span class="k">import</span> <span class="n">Mappings</span>
+
+
+<div class="viewcode-block" id="Task"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task">[docs]</a><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Mappings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unique API calls for Tasks API Endpoints&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Valid status:</span>
+<span class="sd">        + Not Started</span>
+<span class="sd">        + In Progress</span>
+<span class="sd">        + Completed</span>
+<span class="sd">        + Waiting on Someone</span>
+<span class="sd">        + Deferred</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcex (TcEx): An instantiated instance of TcEx object.</span>
+<span class="sd">            name (str, kwargs): [Required for Create] The name for this Group.</span>
+<span class="sd">            owner (str, kwargs): The name for this Group. Default to default Org when not provided</span>
+<span class="sd">            status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred</span>
+<span class="sd">            due_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
+<span class="sd">            reminder_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
+<span class="sd">            escalation_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">tcex</span><span class="p">,</span>
+            <span class="n">main_type</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span>
+            <span class="n">api_type</span><span class="o">=</span><span class="s1">&#39;tasks&#39;</span><span class="p">,</span>
+            <span class="n">sub_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">api_entity</span><span class="o">=</span><span class="s1">&#39;task&#39;</span><span class="p">,</span>
+            <span class="n">api_branch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Task._set_unique_id"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task._set_unique_id">[docs]</a>    <span class="k">def</span> <span class="nf">_set_unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_response</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the unique id of the Group.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="n">json_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_metadata_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return metadata map for Group objects.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;due_date&#39;</span><span class="p">:</span> <span class="s1">&#39;dueDate&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;reminder_date&#39;</span><span class="p">:</span> <span class="s1">&#39;reminderDate&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;escalation_date&#39;</span><span class="p">:</span> <span class="s1">&#39;escalationDate&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Task name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the Group name.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+
+<div class="viewcode-block" id="Task.is_task"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.is_task">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_task</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Return True if object is a task.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Task.add_assignee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.add_assignee">[docs]</a>    <span class="k">def</span> <span class="nf">add_assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignee</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the desired assignee from the Task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assignee (str): The assignee username</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            obj: The response of the POST.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignee</span><span class="p">(</span><span class="n">assignee</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.add_key_value"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.add_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">add_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert the value and adds it as a data field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key:</span>
+<span class="sd">            value:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;unique_id&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="n">quote_plus</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dueDate&#39;</span><span class="p">,</span> <span class="s1">&#39;reminderDate&#39;</span><span class="p">,</span> <span class="s1">&#39;escalationDate&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+                <span class="n">value</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Task.add_escalatee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.add_escalatee">[docs]</a>    <span class="k">def</span> <span class="nf">add_escalatee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">escalatee</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the desired escalatee from the Task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            escalatee (str): The escalatee username</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            obj: The response of the POST.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">escalatee</span><span class="p">(</span><span class="n">escalatee</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.assignee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.assignee">[docs]</a>    <span class="k">def</span> <span class="nf">assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;General method to perform actions on assignees</span>
+
+<span class="sd">        Valid Actions:</span>
+<span class="sd">        + ADD</span>
+<span class="sd">        + GET</span>
+<span class="sd">        + DELETE</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assignee (str): The username of the assignee.</span>
+<span class="sd">            action: [ADD, DELETE, GET] the action to be done on the escalatee. Defaults to</span>
+<span class="sd">                ADD if not provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">assignee</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">assignee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.assignees"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.assignees">[docs]</a>    <span class="k">def</span> <span class="nf">assignees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Yield the Assignee Users&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">assignees</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.can_create"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.can_create">[docs]</a>    <span class="k">def</span> <span class="nf">can_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the Object can be created.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            bool: Boolean value indicating whether the object can be created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Task.delete_assignee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.delete_assignee">[docs]</a>    <span class="k">def</span> <span class="nf">delete_assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignee</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete the desired assignee from the Task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assignee (str): The assignee username</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            obj: The response of the DELETE.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignee</span><span class="p">(</span><span class="n">assignee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.delete_escalatee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.delete_escalatee">[docs]</a>    <span class="k">def</span> <span class="nf">delete_escalatee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">escalatee</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete the desired escalatee from the Task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            escalatee (str): The escalatee username</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            obj: The response of the DELETE.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">escalatee</span><span class="p">(</span><span class="n">escalatee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.due_date"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.due_date">[docs]</a>    <span class="k">def</span> <span class="nf">due_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">due_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the task due_date</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="n">due_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="n">due_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;dueDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">due_date</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dueDate&#39;</span><span class="p">:</span> <span class="n">due_date</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_sub_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.escalatee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.escalatee">[docs]</a>    <span class="k">def</span> <span class="nf">escalatee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">escalatee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;General method to perform actions on escalatees</span>
+
+<span class="sd">        Valid Actions:</span>
+<span class="sd">        + ADD</span>
+<span class="sd">        + GET</span>
+<span class="sd">        + DELETE</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            escalatee (str): The username of the escalatee.</span>
+<span class="sd">            action: [ADD, DELETE, GET] the action to be done on the escalatee. Defaults to</span>
+<span class="sd">                ADD if not provided.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">escalatee</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">escalatee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.escalatees"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.escalatees">[docs]</a>    <span class="k">def</span> <span class="nf">escalatees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Yield the Escalatees Users&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">escalatees</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.escalation_date"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.escalation_date">[docs]</a>    <span class="k">def</span> <span class="nf">escalation_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">escalation_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the task escalation_date</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="n">escalation_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">escalation_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;escalationDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">escalation_date</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;escalationDate&#39;</span><span class="p">:</span> <span class="n">escalation_date</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_sub_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.get_assignee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.get_assignee">[docs]</a>    <span class="k">def</span> <span class="nf">get_assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignee</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve the desired assignee from the Task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assignee (str): The assignee username</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            obj: The response of the GET.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignee</span><span class="p">(</span><span class="n">assignee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.get_escalatee"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.get_escalatee">[docs]</a>    <span class="k">def</span> <span class="nf">get_escalatee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">escalatee</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve the desired escalatee from the Task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            escalatee (str): The escalatee username</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            obj: The response of the GET.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">escalatee</span><span class="p">(</span><span class="n">escalatee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.reminder_date"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.reminder_date">[docs]</a>    <span class="k">def</span> <span class="nf">reminder_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reminder_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the task reminder_date</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="n">reminder_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">reminder_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;reminderDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reminder_date</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;reminderDate&#39;</span><span class="p">:</span> <span class="n">reminder_date</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_sub_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.status"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the Task Status</span>
+
+<span class="sd">        Valid status:</span>
+<span class="sd">        + Not Started</span>
+<span class="sd">        + In Progress</span>
+<span class="sd">        + Completed</span>
+<span class="sd">        + Waiting on Someone</span>
+<span class="sd">        + Deferred</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            status: Not Started, In Progress, Completed, Waiting on Someone, Deferred</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_sub_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

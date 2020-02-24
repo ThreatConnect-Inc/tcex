@@ -1,0 +1,864 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.case_management.task &mdash; TcEx 2.0.0 documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.case_management.task</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.case_management.task</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect Task&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.assignee</span> <span class="k">import</span> <span class="n">Assignee</span>
+<span class="kn">from</span> <span class="nn">.api_endpoints</span> <span class="k">import</span> <span class="n">ApiEndpoints</span>
+<span class="kn">from</span> <span class="nn">.common_case_management</span> <span class="k">import</span> <span class="n">CommonCaseManagement</span>
+<span class="kn">from</span> <span class="nn">.common_case_management_collection</span> <span class="k">import</span> <span class="n">CommonCaseManagementCollection</span>
+<span class="kn">from</span> <span class="nn">.filter</span> <span class="k">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">.tql</span> <span class="k">import</span> <span class="n">TQL</span>
+
+
+<div class="viewcode-block" id="Tasks"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Tasks">[docs]</a><span class="k">class</span> <span class="nc">Tasks</span><span class="p">(</span><span class="n">CommonCaseManagementCollection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tasks Class for Case Management Collection</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        # Example of params input</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;result_limit&#39;: 100,  # How many results are retrieved.</span>
+<span class="sd">            &#39;result_start&#39;: 10,  # Starting point on retrieved results.</span>
+<span class="sd">            &#39;fields&#39;: [&#39;caseId&#39;, &#39;summary&#39;]  # Additional fields returned on the results</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (TcEx): An instantiated instance of TcEx object.</span>
+<span class="sd">        initial_response (dict, optional): Initial data in</span>
+<span class="sd">            Case Object for Task. Defaults to None.</span>
+<span class="sd">        tql_filters (list, optional): List of TQL filters. Defaults to None.</span>
+<span class="sd">        params(dict, optional): Dict of the params to be sent while</span>
+<span class="sd">            retrieving the Task objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">initial_response</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">tcex</span><span class="p">,</span>
+            <span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">TASKS</span><span class="p">,</span>
+            <span class="n">initial_response</span><span class="o">=</span><span class="n">initial_response</span><span class="p">,</span>
+            <span class="n">tql_filters</span><span class="o">=</span><span class="n">tql_filters</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">initial_response</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">initial_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">added_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Task</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">item</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Tasks.__iter__"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Tasks.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Object iterator&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">initial_response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Tasks.add_task"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Tasks.add_task">[docs]</a>    <span class="k">def</span> <span class="nf">add_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add an task to a case.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task (Task): The Task Object to add.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">added_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Tasks.entity_map"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Tasks.entity_map">[docs]</a>    <span class="k">def</span> <span class="nf">entity_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Map a dict to a Task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (dict): The Task data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CaseManagement.Task: An Task Object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of FilterTasks Object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FilterTasks</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">TASKS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tql</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Task"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Task">[docs]</a><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">CommonCaseManagement</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Task object for Case Management.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (TcEx): An instantiated instance of TcEx object.</span>
+<span class="sd">        artifacts (Artifact, kwargs): a list of Artifacts corresponding to the Task</span>
+<span class="sd">        assignee (Assignee, kwargs): the user or group Assignee object for the Task</span>
+<span class="sd">        case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Task.</span>
+<span class="sd">        case_xid (str, kwargs): [Required (alt: caseId)] The **Case Xid** for the Task.</span>
+<span class="sd">        completed_by (str, kwargs): [Read-Only] The **Completed By** for the Task.</span>
+<span class="sd">        completed_date (str, kwargs): the completion date of the Task</span>
+<span class="sd">        config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Task.</span>
+<span class="sd">        config_task (dict, kwargs): [Read-Only] The **Config Task** for the Task.</span>
+<span class="sd">        dependent_on_id (str, kwargs): [Read-Only] The **Dependent On ID** for the Task.</span>
+<span class="sd">        description (str, kwargs): The **Description** for the Task.</span>
+<span class="sd">        due_date (str, kwargs): the due date of the Task</span>
+<span class="sd">        duration (int, kwargs): [Read-Only] The **Duration** for the Task.</span>
+<span class="sd">        id_dependent_on (int, kwargs): [Read-Only] The **Id_Dependent On** for the Task.</span>
+<span class="sd">        name (str, kwargs): [Required] The **Name** for the Task.</span>
+<span class="sd">        notes (Note, kwargs): a list of Notes corresponding to the Task</span>
+<span class="sd">        parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Task.</span>
+<span class="sd">        required (bool, kwargs): [Read-Only] The **Required** flag for the Task.</span>
+<span class="sd">        status (str, kwargs): The **Status** for the Task.</span>
+<span class="sd">        workflow_phase (int, kwargs): the phase of the workflow</span>
+<span class="sd">        workflow_step (int, kwargs): the step of the workflow</span>
+<span class="sd">        xid (str, kwargs): The **Xid** for the Task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">TASKS</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_filter</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;keyword&#39;</span><span class="p">:</span> <span class="s1">&#39;taskId&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;operator&#39;</span><span class="p">:</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span>
+                <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;artifact&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;assignee&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_xid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_xid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed_by</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;completed_by&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed_date</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;completed_date&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_playbook</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config_playbook&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config_task&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dependent_on_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dependent_on_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_due_date</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;due_date&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent_case&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_required</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_phase</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;workflow_phase&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;workflow_step&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Task.add_artifact"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Task.add_artifact">[docs]</a>    <span class="k">def</span> <span class="nf">add_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a artifact to the task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">artifacts</span><span class="o">.</span><span class="n">add_artifact</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Task.add_note"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Task.add_note">[docs]</a>    <span class="k">def</span> <span class="nf">add_note</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a note to the task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notes</span><span class="o">.</span><span class="n">add_note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">note</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">artifacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Artifacts** for the Task.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">artifacts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifacts</span><span class="p">(</span>
+                <span class="n">initial_response</span><span class="o">=</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">task_filter</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the entity representation of the Task.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Assignee** for the Task.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">assignee</span><span class="p">(</span>
+                <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;User&#39;</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span>
+
+    <span class="nd">@assignee</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignee</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Assignee** for the Task.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assignee</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">assignee</span> <span class="o">=</span> <span class="n">Assignee</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">assignee</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">assignee</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span> <span class="o">=</span> <span class="n">assignee</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case ID** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_id</span>
+
+    <span class="nd">@case_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">case_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Case ID** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_id</span> <span class="o">=</span> <span class="n">case_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_xid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case XID** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_xid</span>
+
+    <span class="nd">@case_xid</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">case_xid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_xid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Case XID** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_xid</span> <span class="o">=</span> <span class="n">case_xid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">completed_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Completed By** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed_by</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">completed_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Completed Date** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed_date</span>
+
+    <span class="nd">@completed_date</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">completed_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">completed_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Completed Date** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed_date</span> <span class="o">=</span> <span class="n">completed_date</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config_playbook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Config Playbook** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_playbook</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Config Task** for the Task&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span> <span class="o">=</span> <span class="n">ConfigTasks</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span> <span class="o">=</span> <span class="n">ConfigTasks</span><span class="p">(</span><span class="n">config_tasks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dependent_on_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Depend On ID** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dependent_on_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Description** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+
+    <span class="nd">@description</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Description** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">due_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Due Date** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_due_date</span>
+
+    <span class="nd">@due_date</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">due_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">due_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Completed Date** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_due_date</span> <span class="o">=</span> <span class="n">due_date</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">duration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Duration** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span>
+
+<div class="viewcode-block" id="Task.entity_mapper"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.Task.entity_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">entity_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update current object with provided object properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (dict): An entity dict used to update the Object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_case</span> <span class="o">=</span> <span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_case</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Name** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Name** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">notes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Notes** for the Task&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_notes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">notes</span><span class="p">(</span><span class="n">initial_response</span><span class="o">=</span><span class="n">notes</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">task_filter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span>
+
+    <span class="nd">@notes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">notes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Notes** for the Task&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">notes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">notes</span><span class="p">(</span><span class="n">initial_response</span><span class="o">=</span><span class="n">notes</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">task_filter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="n">notes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parent_case</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Parent Case** for the Task.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">required</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Required** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_required</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Status** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+
+    <span class="nd">@status</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Status** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">status</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">workflow_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Workflow Phase** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_phase</span>
+
+    <span class="nd">@workflow_phase</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">workflow_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow_phase</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Workflow Phase** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_phase</span> <span class="o">=</span> <span class="n">workflow_phase</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">workflow_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Workflow Step** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_step</span>
+
+    <span class="nd">@workflow_step</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">workflow_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow_step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Workflow Step** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_step</span> <span class="o">=</span> <span class="n">workflow_step</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **XID** for the Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xid</span>
+
+    <span class="nd">@xid</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">xid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **XID** for the Task&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xid</span> <span class="o">=</span> <span class="n">xid</span></div>
+
+
+<div class="viewcode-block" id="ConfigTasks"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.ConfigTasks">[docs]</a><span class="k">class</span> <span class="nc">ConfigTasks</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Sub class of the Cases object. Used to map the config tasks to.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config_tasks (list): A array of config tasks</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_tasks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">config_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config_tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_tasks</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">config_task</span> <span class="ow">in</span> <span class="n">config_tasks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_task</span><span class="p">,</span> <span class="n">ConfigTask</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_config_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config_task</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_config_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ConfigTask</span><span class="p">(</span><span class="o">**</span><span class="n">config_task</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **ConfigTasks**.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_tasks</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a dict representation of the ConfigTask class.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_tasks</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">as_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a body representation of the ConfigTask class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="ConfigTask"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.ConfigTask">[docs]</a><span class="k">class</span> <span class="nc">ConfigTask</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Config Task Object for Tasks&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Config Task object for Tasks.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_artifact_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;artifact_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_intel_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;intel_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_required</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ui_element</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ui_element&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ui_label</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ui_label&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a dict representation of the Task Config class.&quot;&quot;&quot;</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">as_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">as_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">as_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">as_dict</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">artifact_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Artifact Type** for the Config Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_artifact_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a dict representation of the Task Config class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Data Type** for the Config Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">intel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Intel Type** for the Config Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intel_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_metadata_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a mapping of kwargs to expected args.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;artifactType&#39;</span><span class="p">:</span> <span class="s1">&#39;artifact_type&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;dataType&#39;</span><span class="p">:</span> <span class="s1">&#39;data_type&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;intelType&#39;</span><span class="p">:</span> <span class="s1">&#39;intel_type&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;uiElement&#39;</span><span class="p">:</span> <span class="s1">&#39;ui_element&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;uiLabel&#39;</span><span class="p">:</span> <span class="s1">&#39;ui_label&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Name** for the Config Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">required</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Required** for the Config Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_required</span>
+
+<div class="viewcode-block" id="ConfigTask._transform_kwargs"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.ConfigTask._transform_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">_transform_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Map the provided kwargs to expected arguments.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">new_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ui_label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **UI Label** for the Config Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ui_label</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ui_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **UI Element** for the Config Task&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ui_element</span></div>
+
+
+<div class="viewcode-block" id="FilterTasks"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks">[docs]</a><span class="k">class</span> <span class="nc">FilterTasks</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Filter Object for Tasks&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FilterTasks.automated"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.automated">[docs]</a>    <span class="k">def</span> <span class="nf">automated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">automated</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **automated** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            automated (bool): A flag indicating whether or not the task is automated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;automated&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">automated</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.case_id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.case_id">[docs]</a>    <span class="k">def</span> <span class="nf">case_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **caseId** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_id (int): The ID of the case this Task is associated with.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.case_severity"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.case_severity">[docs]</a>    <span class="k">def</span> <span class="nf">case_severity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_severity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **caseSeverity** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_severity (str): The severity of the case associated with the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseSeverity&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_severity</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.completed_by"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.completed_by">[docs]</a>    <span class="k">def</span> <span class="nf">completed_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">completed_by</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **completedBy** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            completed_by (str): The account login of the user who completed the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;completedBy&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">completed_by</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.completed_date"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.completed_date">[docs]</a>    <span class="k">def</span> <span class="nf">completed_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">completed_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **completedDate** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            completed_date (str): The completion date for the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;completedDate&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">completed_date</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.description"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.description">[docs]</a>    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **description** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            description (str): The description of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.due_date"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.due_date">[docs]</a>    <span class="k">def</span> <span class="nf">due_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">due_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **dueDate** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            due_date (str): The due date for the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;dueDate&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">due_date</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+    <span class="c1"># there is not way to add an **actual** artifact to a task through the API.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="sd">&quot;&quot;&quot;Return **FilterArtifacts** for further filtering.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.artifact</span> <span class="k">import</span> <span class="n">FilterArtifacts</span>
+
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="n">FilterArtifacts</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">ARTIFACTS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasArtifact&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">artifacts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_case</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return **FilterCases** for further filtering.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.case</span> <span class="k">import</span> <span class="n">FilterCases</span>
+
+        <span class="n">cases</span> <span class="o">=</span> <span class="n">FilterCases</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">CASES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasCase&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">cases</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cases</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_note</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return **FilterNotes** for further filtering.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.note</span> <span class="k">import</span> <span class="n">FilterNotes</span>
+
+        <span class="n">notes</span> <span class="o">=</span> <span class="n">FilterNotes</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">NOTES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasNote&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">notes</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">notes</span>
+
+<div class="viewcode-block" id="FilterTasks.id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **id** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            id (int): The ID of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.name"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **name** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            name (str): The name of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.required"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.required">[docs]</a>    <span class="k">def</span> <span class="nf">required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">required</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **required** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            required (bool): Flag indicating whether or not the task is required.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">required</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.status"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **status** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            status (str): The status of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.target_id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.target_id">[docs]</a>    <span class="k">def</span> <span class="nf">target_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **targetId** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            target_id (int): The assigned user or group ID for the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;targetId&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.target_type"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.target_type">[docs]</a>    <span class="k">def</span> <span class="nf">target_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **targetType** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            target_type (str): The target type for this task (either User or Group).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;targetType&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.workflow_phase"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.workflow_phase">[docs]</a>    <span class="k">def</span> <span class="nf">workflow_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">workflow_phase</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **workflowPhase** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            workflow_phase (int): The workflow phase of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;workflowPhase&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">workflow_phase</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.workflow_step"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.workflow_step">[docs]</a>    <span class="k">def</span> <span class="nf">workflow_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">workflow_step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **workflowStep** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            workflow_step (int): The workflow step of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;workflowStep&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">workflow_step</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterTasks.xid"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.task.FilterTasks.xid">[docs]</a>    <span class="k">def</span> <span class="nf">xid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">xid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Tasks based on **xid** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            xid (str): The XID of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

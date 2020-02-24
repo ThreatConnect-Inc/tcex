@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.case_management.workflow_template &mdash; TcEx 2.0.0 documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.case_management.workflow_template</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.case_management.workflow_template</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect Workflow Template&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.api_endpoints</span> <span class="k">import</span> <span class="n">ApiEndpoints</span>
+<span class="kn">from</span> <span class="nn">.common_case_management</span> <span class="k">import</span> <span class="n">CommonCaseManagement</span>
+<span class="kn">from</span> <span class="nn">.common_case_management_collection</span> <span class="k">import</span> <span class="n">CommonCaseManagementCollection</span>
+<span class="kn">from</span> <span class="nn">.filter</span> <span class="k">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">.tql</span> <span class="k">import</span> <span class="n">TQL</span>
+
+
+<div class="viewcode-block" id="WorkflowTemplates"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.WorkflowTemplates">[docs]</a><span class="k">class</span> <span class="nc">WorkflowTemplates</span><span class="p">(</span><span class="n">CommonCaseManagementCollection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Workflow Template Class for Case Management Collection</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        # Example of params input</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;result_limit&#39;: 100,  # How many results are retrieved.</span>
+<span class="sd">            &#39;result_start&#39;: 10,  # Starting point on retrieved results.</span>
+<span class="sd">            &#39;fields&#39;: [&#39;caseId&#39;, &#39;summary&#39;]  # Additional fields returned on the results</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex ([type]): [description]</span>
+<span class="sd">        initial_response ([type], optional): [description]. Defaults to None.</span>
+<span class="sd">        tql_filters ([type], optional): [description]. Defaults to None.</span>
+<span class="sd">        params(dict, optional): Dict of the params to be sent while</span>
+<span class="sd">            retrieving the Workflow Template objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">initial_response</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">tcex</span><span class="p">,</span>
+            <span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">WORKFLOW_TEMPLATES</span><span class="p">,</span>
+            <span class="n">initial_response</span><span class="o">=</span><span class="n">initial_response</span><span class="p">,</span>
+            <span class="n">tql_filters</span><span class="o">=</span><span class="n">tql_filters</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="WorkflowTemplates.__iter__"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.WorkflowTemplates.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterate on Workflow Templates&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">initial_response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkflowTemplates.entity_map"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.WorkflowTemplates.entity_map">[docs]</a>    <span class="k">def</span> <span class="nf">entity_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Map a dict to a Workflow Template.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (dict): The Workflow Template data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CaseManagement.WorkflowTemplate: An Workflow Template Object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">WorkflowTemplate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of FilterWorkflowTemplate Object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FilterWorkflowTemplates</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">WORKFLOW_TEMPLATES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tql</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WorkflowTemplate"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.WorkflowTemplate">[docs]</a><span class="k">class</span> <span class="nc">WorkflowTemplate</span><span class="p">(</span><span class="n">CommonCaseManagement</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;WorkflowTemplate object for Case Management.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (TcEx): An instantiated instance of TcEx object.</span>
+<span class="sd">        active (bool, kwargs): [Read-Only] The **Active** flag for the Workflow Template.</span>
+<span class="sd">        assignee (Assignee, kwargs): [Read-Only] The **Assignee** for the Workflow Template.</span>
+<span class="sd">        cases (Case, kwargs): [Read-Only] The **Cases** for the Workflow Template.</span>
+<span class="sd">        config_artifact (str, kwargs): [Read-Only] The **Config Artifact** for the Workflow</span>
+<span class="sd">            Template.</span>
+<span class="sd">        config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Workflow</span>
+<span class="sd">            Template.</span>
+<span class="sd">        config_task (dict, kwargs): [Read-Only] The **Config Task** for the Workflow Template.</span>
+<span class="sd">        description (str, kwargs): The **Description** for the Workflow Template.</span>
+<span class="sd">        name (str, kwargs): [Required] The **Name** for the Workflow Template.</span>
+<span class="sd">        target_type (str, kwargs): [Read-Only] The **Target Type** for the Workflow Template.</span>
+<span class="sd">        version (int, kwargs): The **Version** for the Workflow Template.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">WORKFLOW_TEMPLATES</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;assignee&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cases</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cases&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_artifact</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config_artifact&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_playbook</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config_playbook&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config_task&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Active** flag for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Assignee** flag for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the entity representation of the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Workflow Template&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Cases** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">cases</span><span class="p">(</span><span class="n">initial_response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cases</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Config Artifact** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_artifact</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config_playbook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Config Playbook** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_playbook</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Config Task** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_task</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Description** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+
+    <span class="nd">@description</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the parent **Description** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+
+<div class="viewcode-block" id="WorkflowTemplate.entity_mapper"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.WorkflowTemplate.entity_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">entity_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update current object with provided object properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (dict): An entity dict used to update the Object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_case</span> <span class="o">=</span> <span class="n">WorkflowTemplate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_case</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Name** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the parent **Name** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent **Version** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span>
+
+    <span class="nd">@version</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the parent **Version** for the Workflow Template.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">version</span></div>
+
+
+<div class="viewcode-block" id="FilterWorkflowTemplates"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates">[docs]</a><span class="k">class</span> <span class="nc">FilterWorkflowTemplates</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Filter Object for WorkflowTemplates&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FilterWorkflowTemplates.active"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates.active">[docs]</a>    <span class="k">def</span> <span class="nf">active</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">active</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Templates based on **active** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            active (bool): The active status of this template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">active</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowTemplates.description"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates.description">[docs]</a>    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Templates based on **description** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            description (str): The description of this template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowTemplates.id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Templates based on **id** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            id (int): The ID of the template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowTemplates.name"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Templates based on **name** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            name (str): The name of this template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowTemplates.target_id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates.target_id">[docs]</a>    <span class="k">def</span> <span class="nf">target_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Templates based on **targetId** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            target_id (int): The ID of the target of this template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;targetId&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowTemplates.target_type"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates.target_type">[docs]</a>    <span class="k">def</span> <span class="nf">target_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Templates based on **targetType** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            target_type (str): The target type of this template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;targetType&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowTemplates.version"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_template.FilterWorkflowTemplates.version">[docs]</a>    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Templates based on **version** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            version (int): The version of this template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

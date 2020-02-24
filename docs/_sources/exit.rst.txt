@@ -52,7 +52,7 @@ Playbook App Example
         with open(datafile, 'r') as fh:
             data = fh.read()
     except:
-        tcex.exit_code = 3
+        tcex.exit_code = 1
 
     <snipped...>
 

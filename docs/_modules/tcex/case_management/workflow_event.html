@@ -1,0 +1,566 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.case_management.workflow_event &mdash; TcEx 2.0.0 documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.case_management.workflow_event</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.case_management.workflow_event</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect Workflow Event&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.api_endpoints</span> <span class="k">import</span> <span class="n">ApiEndpoints</span>
+<span class="kn">from</span> <span class="nn">.common_case_management</span> <span class="k">import</span> <span class="n">CommonCaseManagement</span>
+<span class="kn">from</span> <span class="nn">.common_case_management_collection</span> <span class="k">import</span> <span class="n">CommonCaseManagementCollection</span>
+<span class="kn">from</span> <span class="nn">.filter</span> <span class="k">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">.tql</span> <span class="k">import</span> <span class="n">TQL</span>
+
+
+<div class="viewcode-block" id="WorkflowEvents"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvents">[docs]</a><span class="k">class</span> <span class="nc">WorkflowEvents</span><span class="p">(</span><span class="n">CommonCaseManagementCollection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Workflow Events Class for Case Management Collection</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        # Example of params input</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;result_limit&#39;: 100,  # How many results are retrieved.</span>
+<span class="sd">            &#39;result_start&#39;: 10,  # Starting point on retrieved results.</span>
+<span class="sd">            &#39;fields&#39;: [&#39;caseId&#39;, &#39;summary&#39;]  # Additional fields returned on the results</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (TcEx): An instantiated instance of TcEx object.</span>
+<span class="sd">        initial_response (dict, optional): Initial data in</span>
+<span class="sd">            Case Object for Artifact. Defaults to None.</span>
+<span class="sd">        tql_filters (list, optional): List of TQL filters. Defaults to None.</span>
+<span class="sd">        params(dict, optional): Dict of the params to be sent while</span>
+<span class="sd">            retrieving the Workflow Event objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">initial_response</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">tcex</span><span class="p">,</span>
+            <span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">WORKFLOW_EVENTS</span><span class="p">,</span>
+            <span class="n">initial_response</span><span class="o">=</span><span class="n">initial_response</span><span class="p">,</span>
+            <span class="n">tql_filters</span><span class="o">=</span><span class="n">tql_filters</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="WorkflowEvents.__iter__"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvents.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterate on Workflow Events.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">initial_response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkflowEvents.entity_map"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvents.entity_map">[docs]</a>    <span class="k">def</span> <span class="nf">entity_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Map a dict to a Workflow Event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (dict): The Workflow Event data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CaseManagement.WorkflowEvent: An Workflow Event Object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">WorkflowEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of FilterWorkflowEvent Object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FilterWorkflowEvents</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">WORKFLOW_EVENTS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tql</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WorkflowEvent"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvent">[docs]</a><span class="k">class</span> <span class="nc">WorkflowEvent</span><span class="p">(</span><span class="n">CommonCaseManagement</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;WorkflowEvent object for Case Management.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (TcEx): An instantiated instance of TcEx object.</span>
+<span class="sd">        case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Workflow Event.</span>
+<span class="sd">        case_xid (str, kwargs): [Required (alt: caseId)] The **Case Xid** for the Workflow Event.</span>
+<span class="sd">        date_added (str, kwargs): [Read-Only] The **Date Added** for the Workflow Event.</span>
+<span class="sd">        deleted (bool, kwargs): [Read-Only] The **Deleted** flag for the Workflow Event.</span>
+<span class="sd">        deleted_reason (str, kwargs): the reason for deleting the event (required input for DELETE</span>
+<span class="sd">            operation only)</span>
+<span class="sd">        event_date (str, kwargs): the time that the Event is logged</span>
+<span class="sd">        link (str, kwargs): [Read-Only] The **Link** for the Workflow Event.</span>
+<span class="sd">        link_text (str, kwargs): [Read-Only] The **Link Text** for the Workflow Event.</span>
+<span class="sd">        notes (Note, kwargs): a list of Notes corresponding to the Event</span>
+<span class="sd">        parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Workflow Event.</span>
+<span class="sd">        summary (str, kwargs): [Required] The **Summary** for the Workflow Event.</span>
+<span class="sd">        system_generated (bool, kwargs): [Read-Only] The **System Generated** flag for the Workflow</span>
+<span class="sd">            Event.</span>
+<span class="sd">        user (User, kwargs): [Read-Only] The **User** for the Workflow Event.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">WORKFLOW_EVENTS</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workflow_event_filter</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;keyword&#39;</span><span class="p">:</span> <span class="s1">&#39;workflowEventId&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;operator&#39;</span><span class="p">:</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span>
+                <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent_case&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_xid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_xid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent_case&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s1">&#39;xid&#39;</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_date_added</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;date_added&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deleted</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deleted&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_reason</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deleted_reason&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_date</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_date&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_link_text</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;link_text&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent_case&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_summary</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_system_generated</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;system_generated&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WorkflowEvent.add_note"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvent.add_note">[docs]</a>    <span class="k">def</span> <span class="nf">add_note</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a note to the workflow event.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notes</span><span class="o">.</span><span class="n">add_note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">note</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the entity representation of the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Workflow Event&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+
+<div class="viewcode-block" id="WorkflowEvent.entity_mapper"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvent.entity_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">entity_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update current object with provided object properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (dict): An entity dict used to update the Object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_workflow_event</span> <span class="o">=</span> <span class="n">WorkflowEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_workflow_event</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case ID** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_id</span>
+
+    <span class="nd">@case_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">case_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Case ID** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_id</span> <span class="o">=</span> <span class="n">case_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_xid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case XID** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_xid</span>
+
+    <span class="nd">@case_xid</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">case_xid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_xid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Case XID** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_xid</span> <span class="o">=</span> <span class="n">case_xid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Date Added** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_date_added</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Deleted** flag for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deleted</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">deleted_reason</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Deleted Reason** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_reason</span>
+
+    <span class="c1"># TODO: @mj - confirm the status of this field</span>
+    <span class="c1"># @deleted_reason.setter</span>
+    <span class="c1"># def deleted_reason(self, deleted_reason):</span>
+    <span class="c1">#     &quot;&quot;&quot;Set the **Deleted Reason** for the Workflow Event.&quot;&quot;&quot;</span>
+    <span class="c1">#     self._deleted_reason = deleted_reason</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Event Date** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_date</span>
+
+    <span class="nd">@event_date</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Event Date** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_date</span> <span class="o">=</span> <span class="n">event_date</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **ID** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+
+    <span class="nd">@id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+        <span class="sd">&quot;&quot;&quot;Set the **ID** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Link** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Link Text** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link_text</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">notes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Notes** for the Task&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_notes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">notes</span><span class="p">(</span>
+                <span class="n">initial_response</span><span class="o">=</span><span class="n">notes</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workflow_event_filter</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span>
+
+    <span class="nd">@notes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">notes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Notes** for the Task&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">notes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">notes</span><span class="p">(</span>
+                <span class="n">initial_response</span><span class="o">=</span><span class="n">notes</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workflow_event_filter</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="n">notes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parent_case</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Parent Case** for the Task.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_case</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the &quot;Summary&quot; for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summary</span>
+
+    <span class="nd">@summary</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summary</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the &quot;Summary&quot; for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_summary</span> <span class="o">=</span> <span class="n">summary</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">system_generated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **System Generated** flag for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_system_generated</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **User** for the Workflow Event.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user</span></div>
+
+
+<div class="viewcode-block" id="FilterWorkflowEvents"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents">[docs]</a><span class="k">class</span> <span class="nc">FilterWorkflowEvents</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Filter Object for WorkflowEvents&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.case_id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.case_id">[docs]</a>    <span class="k">def</span> <span class="nf">case_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **caseId** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_id (int): The ID of the case this event is associated with.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.date_added"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.date_added">[docs]</a>    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">date_added</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **dateAdded** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            date_added (str): The date the event was added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">date_added</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.deleted"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.deleted">[docs]</a>    <span class="k">def</span> <span class="nf">deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">deleted</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **deleted** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            deleted (bool): The deletion status of the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;deleted&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">deleted</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO: @mj - confirm the status of these fields</span>
+    <span class="c1"># Response: https://threatconnect.slack.com/archives/GS2NQL5SP/p1579282668019800</span>
+<div class="viewcode-block" id="FilterWorkflowEvents.deleted_reason"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.deleted_reason">[docs]</a>    <span class="k">def</span> <span class="nf">deleted_reason</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">deleted_reason</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **deletedReason** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            deleted_reason (str): The reason the event was deleted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;deletedReason&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">deleted_reason</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.event_date"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.event_date">[docs]</a>    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">event_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **eventDate** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            event_date (str): The date the event occurred.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">event_date</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **id** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            id (int): The ID of the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.link"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.link">[docs]</a>    <span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter objects based on &quot;link&quot; field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The enum for the required operator.</span>
+<span class="sd">            link (str): The filter value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.summary"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">summary</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **summary** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            summary (str): Text of the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.system_generated"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.system_generated">[docs]</a>    <span class="k">def</span> <span class="nf">system_generated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">system_generated</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **systemGenerated** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            system_generated (bool): Flag determining if this event was created automatically by</span>
+<span class="sd">                the system.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;systemGenerated&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">system_generated</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterWorkflowEvents.user_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.FilterWorkflowEvents.user_name">[docs]</a>    <span class="k">def</span> <span class="nf">user_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">user_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Workflow Events based on **userName** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            user_name (str): The username associated with the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;userName&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

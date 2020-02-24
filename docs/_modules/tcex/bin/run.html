@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.run &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.bin.run &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -97,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
@@ -195,13 +196,11 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">string_types</span>
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
-
-
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="k">import</span> <span class="n">TcEx</span>
-<span class="kn">from</span> <span class="nn">.bin</span> <span class="k">import</span> <span class="n">Bin</span>
+
 <span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="k">import</span> <span class="n">InstallJson</span>
+<span class="kn">from</span> <span class="nn">.bin</span> <span class="k">import</span> <span class="n">Bin</span>
 
 
 <div class="viewcode-block" id="Run"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run">[docs]</a><span class="k">class</span> <span class="nc">Run</span><span class="p">(</span><span class="n">Bin</span><span class="p">):</span>
@@ -217,7 +216,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            _args (namespace): The argparser args Namespace.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Run</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
 
         <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler_init</span><span class="p">()</span>
@@ -270,20 +269,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">include_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">include_directory</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">include_directory</span><span class="p">):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Provided include directory does not exist (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">include_directory</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Provided include directory does not exist (</span><span class="si">{include_directory}</span><span class="s1">).&#39;</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="n">profiles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">include_directory</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading config: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Include File: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Loading config: </span><span class="si">{filename}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Include File: </span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}{filename}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">include_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">profiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">))</span>
                     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid JSON file: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Invalid JSON file: </span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{e}</span><span class="s1">&#39;</span><span class="p">)</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">profiles</span></div>
 
@@ -328,7 +327,7 @@
         <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Logging Level: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">)))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Logging Level: {logging.getLevelName(level)}&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">log</span></div>
 
 <div class="viewcode-block" id="Run._signal_handler_init"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run._signal_handler_init">[docs]</a>    <span class="k">def</span> <span class="nf">_signal_handler_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -345,9 +344,9 @@
 <span class="sd">            frame ([type]): [Description]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Stopping docker container.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.YELLOW}</span><span class="s1">Stopping docker container.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Interrupt signal received.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}</span><span class="s1">Interrupt signal received.&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;tcrun received an interrupt signal and will now exit.&#39;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
@@ -462,8 +461,8 @@
             <span class="k">return</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">] Deleting redis variable: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clear_type</span><span class="p">,</span> <span class="n">variable</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Clearing Variables: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span> <span class="n">variable</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{clear_type}</span><span class="s1">] Deleting redis variable: </span><span class="si">{variable}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Clearing Variables: </span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}{variable}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_redis_tracker</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span></div>
 
@@ -482,16 +481,8 @@
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_data</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="s1">&#39;Deleting ThreatConnect Group: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span> <span class="n">name</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">] Deleting ThreatConnect </span><span class="si">{}</span><span class="s1"> with name: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">clear_type</span><span class="p">,</span> <span class="n">tc_type</span><span class="p">,</span> <span class="n">name</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Deleting ThreatConnect Group: </span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}{name}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{clear_type}</span><span class="s1">] Deleting ThreatConnect </span><span class="si">{tc_type}</span><span class="s1"> with name: </span><span class="si">{name}</span><span class="s1">.&#39;</span><span class="p">)</span>
                 <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">tc_type</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">tc_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">indicator_types</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -502,20 +493,16 @@
             <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_data</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">summary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="s1">&#39;Deleting ThreatConnect Indicator: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span> <span class="n">summary</span>
-                    <span class="p">)</span>
+                    <span class="n">f</span><span class="s1">&#39;Deleting ThreatConnect Indicator: </span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}{summary}</span><span class="s1">&#39;</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">] Deleting ThreatConnect </span><span class="si">{}</span><span class="s1"> with value: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">clear_type</span><span class="p">,</span> <span class="n">tc_type</span><span class="p">,</span> <span class="n">summary</span>
-                    <span class="p">)</span>
+                    <span class="n">f</span><span class="s1">&#39;[</span><span class="si">{clear_type}</span><span class="s1">] Deleting ThreatConnect </span><span class="si">{tc_type}</span><span class="s1"> with value: </span><span class="si">{summary}</span><span class="s1">.&#39;</span>
                 <span class="p">)</span>
                 <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">tc_type</span><span class="p">,</span> <span class="n">summary</span><span class="p">)</span>
         <span class="n">batch_results</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">] Batch Results: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clear_type</span><span class="p">,</span> <span class="n">batch_results</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{clear_type}</span><span class="s1">] Batch Results: </span><span class="si">{batch_results}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">batch_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">] Batch Error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clear_type</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{clear_type}</span><span class="s1">] Batch Error: </span><span class="si">{error}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.data_endswith"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.data_endswith">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_endswith</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
@@ -581,8 +568,8 @@
             <span class="s1">&#39;dict&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">dict</span><span class="p">),</span>
             <span class="s1">&#39;entity&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">dict</span><span class="p">),</span>
             <span class="s1">&#39;list&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">),</span>
-            <span class="s1">&#39;str&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">string_types</span><span class="p">),</span>
-            <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">string_types</span><span class="p">),</span>
+            <span class="s1">&#39;str&#39;</span><span class="p">:</span> <span class="p">((</span><span class="nb">str</span><span class="p">,)),</span>
+            <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="p">((</span><span class="nb">str</span><span class="p">,)),</span>
         <span class="p">}</span>
         <span class="c1"># user_type_tuple = tuple([data_type[t] for t in user_types])</span>
         <span class="c1"># if isinstance(db_data, user_type_tuple):</span>
@@ -694,7 +681,7 @@
         <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">ddiff</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;[validate] Diff      : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ddiff</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[validate] Diff      : </span><span class="si">{ddiff}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
@@ -716,9 +703,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the data passed validation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">)):</span>
             <span class="n">db_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">db_data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">)):</span>
             <span class="n">user_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deep_diff</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">)</span></div>
 
@@ -732,14 +719,14 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--tc_log_file&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex.log&#39;</span><span class="p">])</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--tc_log_level&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">])</span>
             <span class="c1"># format key</span>
-            <span class="n">arg</span> <span class="o">=</span> <span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;--</span><span class="si">{arg}</span><span class="s1">&#39;</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">)):</span>
                 <span class="c1"># handle bool values as flags (e.g., --flag) with no value</span>
                 <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
                     <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 
@@ -819,12 +806,12 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Could not import jmespath module (try &quot;pip install jmespath&quot;).&#39;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_data</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># try to convert string into list/dict before using expression</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">variable_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">variable_data</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;String value (</span><span class="si">{}</span><span class="s1">) could not JSON serialized.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable_data</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;String value (</span><span class="si">{variable_data}</span><span class="s1">) could not JSON serialized.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
             <span class="n">expression</span> <span class="o">=</span> <span class="n">jmespath</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="n">variable_data</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
@@ -920,20 +907,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reports</span><span class="o">.</span><span class="n">add_profile</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">profile_selected</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_profiles</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">No profiles selected to run.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.YELLOW}</span><span class="s1">No profiles selected to run.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">selected_profiles</span>
 
 <div class="viewcode-block" id="Run.report"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.report">[docs]</a>    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format and output report data to screen.&quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="s1">&#39;Report:&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2">{&#39;Report:&#39;}&quot;</span><span class="p">)</span>
         <span class="c1"># report headers</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{!s:&lt;85}{!s:&lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Validations&#39;</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{!s:&lt;60}{!s:&lt;25}{!s:&lt;10}{!s:&lt;10}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="s1">&#39;Profile:&#39;</span><span class="p">,</span> <span class="s1">&#39;Execution:&#39;</span><span class="p">,</span> <span class="s1">&#39;Passed:&#39;</span><span class="p">,</span> <span class="s1">&#39;Failed:&#39;</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{&#39;&#39;!s:&lt;85}{&#39;Validations&#39;!s:&lt;20}&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{&#39;Profile:&#39;!s:&lt;60}{&#39;Execution:&#39;!s:&lt;25}{&#39;Passed:&#39;!s:&lt;10}{&#39;Failed:&#39;!s:&lt;10}&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reports</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">data</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;selected&#39;</span><span class="p">):</span>
@@ -957,15 +940,10 @@
 
             <span class="c1"># report row</span>
             <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;</span><span class="si">{!s:&lt;60}{}{!s:&lt;25}{}{!s:&lt;10}{}{!s:&lt;10}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
-                    <span class="n">execution_color</span><span class="p">,</span>
-                    <span class="n">execution_text</span><span class="p">,</span>
-                    <span class="n">pass_count_color</span><span class="p">,</span>
-                    <span class="n">pass_count</span><span class="p">,</span>
-                    <span class="n">fail_count_color</span><span class="p">,</span>
-                    <span class="n">fail_count</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">f</span><span class="s2">&quot;{d.get(&#39;name&#39;):&lt;60}&quot;</span>
+                <span class="n">f</span><span class="s1">&#39;</span><span class="si">{execution_color}{execution_text:&lt;25}</span><span class="s1">&#39;</span>
+                <span class="n">f</span><span class="s1">&#39;</span><span class="si">{pass_count_color}{pass_count!s:&lt;10}</span><span class="s1">&#39;</span>
+                <span class="n">f</span><span class="s1">&#39;</span><span class="si">{fail_count_color}{fail_count!s:&lt;10}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
         <span class="c1"># write report to disk</span>
@@ -981,7 +959,7 @@
         <span class="n">install_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">)</span>
         <span class="n">program_language</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programLanguage&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{c.Style.BRIGHT}</span><span class="s2">{&#39;-&#39; * 100}&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programMain&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">program_main</span> <span class="o">=</span> <span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programMain&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -989,7 +967,7 @@
             <span class="c1"># TODO: remove this option on version 1.0.0</span>
             <span class="n">program_main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">No Program Main or Script defined.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}</span><span class="s1">No Program Main or Script defined.&#39;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">run_display_profile</span><span class="p">(</span><span class="n">program_main</span><span class="p">)</span>
@@ -998,12 +976,10 @@
 
         <span class="c1"># get the commands</span>
         <span class="n">commands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_commands</span><span class="p">(</span><span class="n">program_language</span><span class="p">,</span> <span class="n">program_main</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[run] Running command </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;print_command&#39;</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;[run] Running command {commands.get(&#39;print_command&#39;)}&quot;</span><span class="p">)</span>
 
         <span class="c1"># output command</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="s1">&#39;Executing: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;print_command&#39;</span><span class="p">))</span>
-        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Executing: </span><span class="si">{c.Style.BRIGHT}{c.Fore.GREEN}</span><span class="s2">{commands.get(&#39;print_command&#39;)}&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">docker</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_docker</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
@@ -1040,7 +1016,7 @@
                     <span class="s1">&#39;--port&#39;</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">vscd_port</span><span class="p">,</span>
                     <span class="s1">&#39;--wait&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">program_main</span><span class="p">),</span>
+                    <span class="n">f</span><span class="s1">&#39;</span><span class="si">{program_main}</span><span class="s1">.py&#39;</span><span class="p">,</span>
                 <span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">python_exe</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">program_main</span><span class="p">]</span>
@@ -1121,9 +1097,8 @@
             <span class="kn">import</span> <span class="nn">docker</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Could not import docker module (try &quot;pip install docker&quot;).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
-                <span class="p">)</span>
+                <span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}</span><span class="s1">Could not import docker module &#39;</span>
+                <span class="n">f</span><span class="s1">&#39;(try &quot;pip install docker&quot;).&#39;</span>
             <span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
@@ -1136,25 +1111,25 @@
 
         <span class="c1"># app data</span>
         <span class="n">app_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="c1"># app_path = &#39;{}/{}&#39;.format(app_dir, program_main)</span>
+        <span class="c1"># app_path = f&#39;{app_dir}/{program_main}&#39;</span>
 
         <span class="c1"># ports</span>
         <span class="n">ports</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">vscd</span><span class="p">:</span>
-            <span class="n">ports</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/tcp&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">vscd_port</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">vscd_port</span><span class="p">}</span>
+            <span class="n">ports</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.args.vscd_port}</span><span class="s1">/tcp&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">vscd_port</span><span class="p">}</span>
 
         <span class="c1"># volumes</span>
         <span class="n">volumes</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">in_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_dir</span><span class="p">,</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_in_path&#39;</span><span class="p">))</span>
+        <span class="n">in_path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{app_dir}</span><span class="s2">/{app_args_data.get(&#39;tc_in_path&#39;)}&quot;</span>
         <span class="k">if</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_in_path&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">volumes</span><span class="p">[</span><span class="n">in_path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="n">in_path</span><span class="p">}</span>
-        <span class="n">log_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_dir</span><span class="p">,</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_log_path&#39;</span><span class="p">))</span>
+        <span class="n">log_path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{app_dir}</span><span class="s2">/{app_args_data.get(&#39;tc_log_path&#39;)}&quot;</span>
         <span class="k">if</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_log_path&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">volumes</span><span class="p">[</span><span class="n">log_path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="n">log_path</span><span class="p">}</span>
-        <span class="n">out_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_dir</span><span class="p">,</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_out_path&#39;</span><span class="p">))</span>
+        <span class="n">out_path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{app_dir}</span><span class="s2">/{app_args_data.get(&#39;tc_out_path&#39;)}&quot;</span>
         <span class="k">if</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_out_path&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">volumes</span><span class="p">[</span><span class="n">out_path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="n">out_path</span><span class="p">}</span>
-        <span class="n">temp_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_dir</span><span class="p">,</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_temp_path&#39;</span><span class="p">))</span>
+        <span class="n">temp_path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{app_dir}</span><span class="s2">/{app_args_data.get(&#39;tc_temp_path&#39;)}&quot;</span>
         <span class="k">if</span> <span class="n">app_args_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_temp_path&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">volumes</span><span class="p">[</span><span class="n">temp_path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="n">temp_path</span><span class="p">}</span>
         <span class="n">volumes</span><span class="p">[</span><span class="n">app_dir</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="n">app_dir</span><span class="p">}</span>
@@ -1174,7 +1149,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
                 <span class="n">docker_image</span><span class="p">,</span>
                 <span class="n">entrypoint</span><span class="o">=</span><span class="n">commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cli_command&#39;</span><span class="p">),</span>
-                <span class="n">environment</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH=</span><span class="si">{}</span><span class="s1">/lib_latest&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_dir</span><span class="p">)],</span>
+                <span class="n">environment</span><span class="o">=</span><span class="p">[</span><span class="n">f</span><span class="s1">&#39;PYTHONPATH=</span><span class="si">{app_dir}</span><span class="s1">/lib_latest&#39;</span><span class="p">],</span>
                 <span class="n">detach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="c1"># network_mode=install_json.get(&#39;docker_host&#39;, &#39;host&#39;),</span>
                 <span class="n">ports</span><span class="o">=</span><span class="n">ports</span><span class="p">,</span>
@@ -1186,9 +1161,9 @@
             <span class="n">status_code</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;StatusCode&#39;</span><span class="p">)</span>
             <span class="n">error</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Error&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{error}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{e}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
         <span class="c1"># Exit Code</span>
@@ -1202,8 +1177,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">err</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">e_</span> <span class="ow">in</span> <span class="n">err</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">e_</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[tcrun] App error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e_</span><span class="p">))</span></div>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{e_}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[tcrun] App error: </span><span class="si">{e_}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.run_display_app_output"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.run_display_app_output">[docs]</a>    <span class="k">def</span> <span class="nf">run_display_app_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print any App output.</span>
@@ -1214,18 +1189,14 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;App Output:&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">o</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[tcrun] App output: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="p">))</span></div>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;  </span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}{o}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[tcrun] App output: </span><span class="si">{o}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.run_display_description"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.run_display_description">[docs]</a>    <span class="k">def</span> <span class="nf">run_display_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print profile name with programMain.&quot;&quot;&quot;</span>
         <span class="c1"># display description if available</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;Description: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Description: </span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}</span><span class="s2">{self.profile.get(&#39;description&#39;)}&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.run_display_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.run_display_profile">[docs]</a>    <span class="k">def</span> <span class="nf">run_display_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program_main</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print profile name with programMain.</span>
@@ -1236,20 +1207,14 @@
         <span class="n">install_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;Profile: &#39;</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}{}{}{}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="n">f</span><span class="s2">&quot;</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2">{self.profile.get(&#39;profile_name&#39;)}</span><span class="si">{c.Style.RESET_ALL}</span><span class="s2"> &quot;</span>
         <span class="p">)</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;[</span><span class="si">{}{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span> <span class="n">program_main</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span>
-        <span class="p">)</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="n">f</span><span class="s1">&#39;[</span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}{program_main}{c.Style.RESET_ALL}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span><span class="p">)</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span>
-                <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span>
-                <span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">),</span>
-                <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}</span><span class="s1">:</span><span class="si">{c.Style.RESET_ALL}</span><span class="s1">&#39;</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}</span><span class="s1">&#39;</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;{install_json.get(&#39;programVersion&#39;)}</span><span class="si">{c.Style.RESET_ALL}</span><span class="s2">&quot;</span>
         <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;]&#39;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
 
@@ -1266,7 +1231,7 @@
 <span class="sd">            bool: True if exit code is a valid exit code, else False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">exit_status</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[run] Exit Code </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">returncode</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[run] Exit Code </span><span class="si">{returncode}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reports</span><span class="o">.</span><span class="n">increment_total</span><span class="p">()</span>  <span class="c1"># increment report execution total</span>
         <span class="n">valid_exit_codes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exit_codes&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -1275,22 +1240,17 @@
         <span class="k">if</span> <span class="n">returncode</span> <span class="ow">in</span> <span class="n">valid_exit_codes</span><span class="p">:</span>
             <span class="n">exit_status</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reports</span><span class="o">.</span><span class="n">profile_execution</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;App Exit Code: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">returncode</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;App Exit Code: </span><span class="si">{c.Style.BRIGHT}{c.Fore.GREEN}{returncode}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;App Exit Code: </span><span class="si">{}{}{}{}</span><span class="s1"> (Valid Exit Codes: </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span>
-                    <span class="n">returncode</span><span class="p">,</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exit_codes&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                <span class="p">)</span>
+                <span class="n">f</span><span class="s1">&#39;App Exit Code: </span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{returncode}{c.Fore.RESET}</span><span class="s1"> &#39;</span>
+                <span class="n">f</span><span class="s2">&quot;(Valid Exit Codes: {self.profile.get(&#39;exit_codes&#39;, [0])})&quot;</span>
             <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">reports</span><span class="o">.</span><span class="n">profile_execution</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">halt_on_fail</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;App exited with invalid exit code </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">returncode</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;App exited with invalid exit code </span><span class="si">{returncode}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">exit_status</span></div>
 
 <div class="viewcode-block" id="Run.run_validate_program_main"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.run_validate_program_main">[docs]</a>    <span class="k">def</span> <span class="nf">run_validate_program_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program_main</span><span class="p">):</span>
@@ -1300,12 +1260,8 @@
 <span class="sd">            program_main (str): The executable name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">program_language</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programLanguage&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">program_language</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">program_main</span><span class="p">)):</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Could not find program main file (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">program_main</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">program_language</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{program_main}</span><span class="s1">.py&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}</span><span class="s1">Could not find program main file (</span><span class="si">{program_main}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage">[docs]</a>    <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1406,7 +1362,7 @@
         <span class="k">for</span> <span class="n">sd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">staging_data</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="c1"># reported issue from qa where staging data is invalid</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Invalid staging data provided (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sd</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Invalid staging data provided (</span><span class="si">{sd}</span><span class="s1">).&#39;</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">data_type</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_type&#39;</span><span class="p">,</span> <span class="s1">&#39;redis&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;redis&#39;</span><span class="p">:</span>
@@ -1447,19 +1403,13 @@
             <span class="n">staging_data</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">staging_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_files&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">staging_file</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="s1">&#39;Staging Data: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="p">,</span> <span class="n">staging_file</span><span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[stage] Staging data file: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">staging_file</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Staging Data: </span><span class="si">{c.Style.BRIGHT}{c.Fore.MAGENTA}{staging_file}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] Staging data file: </span><span class="si">{staging_file}</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">staging_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
                     <span class="n">staging_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Could not find file </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">staging_file</span>
-                        <span class="p">)</span>
-                    <span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}</span><span class="s1">Could not find file </span><span class="si">{staging_file}</span><span class="s1">.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_staging_data</span> <span class="o">=</span> <span class="n">staging_data</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_staging_data</span>
 
@@ -1477,11 +1427,12 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">binascii</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;The Binary staging data for variable </span><span class="si">{}</span><span class="s1"> is not properly base64 encoded.&#39;</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                    <span class="n">f</span><span class="s1">&#39;The Binary staging data for variable </span><span class="si">{variable}</span><span class="s1"> &#39;</span>
+                    <span class="s1">&#39;is not properly base64 encoded.&#39;</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="n">variable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;BinaryArray&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -1492,10 +1443,11 @@
                     <span class="n">decoded_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d_decoded</span><span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">decoded_data</span>
             <span class="k">except</span> <span class="n">binascii</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;The BinaryArray staging data for variable </span><span class="si">{}</span><span class="s1"> is not properly base64 encoded.&#39;</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;[stage] Creating variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                    <span class="n">f</span><span class="s1">&#39;The BinaryArray staging data for variable </span><span class="si">{variable}</span><span class="s1"> &#39;</span>
+                    <span class="s1">&#39;is not properly base64 encoded.&#39;</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] Creating variable </span><span class="si">{variable}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage_tc"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage_tc">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">staging_data</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
@@ -1546,7 +1498,7 @@
             <span class="k">if</span> <span class="n">resource_type</span> <span class="o">==</span> <span class="s1">&#39;Email&#39;</span><span class="p">:</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;createVictims&#39;</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;body: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">staging_data</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;body: </span><span class="si">{staging_data}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">staging_data</span><span class="p">)</span>
 
             <span class="n">response</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
@@ -1554,23 +1506,20 @@
                 <span class="c1"># add resource id</span>
                 <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">indicator_types</span><span class="p">:</span>
                     <span class="n">resource_id</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="s1">&#39;[stage] Creating resource </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span>
-                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] Creating resource </span><span class="si">{resource_type}</span><span class="s1">:</span><span class="si">{resource_id}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">group_types</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="s1">&#39;[stage] Creating resource </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">resource_type</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-                        <span class="p">)</span>
+                        <span class="n">f</span><span class="s1">&#39;[stage] Creating resource </span><span class="si">{resource_type}</span><span class="s1">:&#39;</span>
+                        <span class="n">f</span><span class="s2">&quot;{response.get(&#39;data&#39;, </span><span class="si">{}</span><span class="s2">).get(&#39;name&#39;)}&quot;</span>
                     <span class="p">)</span>
                     <span class="n">resource_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[stage] resource_id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] resource_id: </span><span class="si">{resource_id}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
 
                 <span class="n">entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">json_to_entity</span><span class="p">(</span>
                     <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">resource</span><span class="o">.</span><span class="n">value_fields</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">parent</span>
                 <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[stage] Creating Entity: </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">entity</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] Creating Entity: </span><span class="si">{variable}</span><span class="s1"> (</span><span class="si">{entity[0]}</span><span class="s1">)&#39;</span><span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">stage_redis</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">entity</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="c1"># self.tcex.playbook.create_tc_entity(variable, entity[0])</span>
@@ -1585,7 +1534,7 @@
                 <span class="k">for</span> <span class="n">tag_data</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">stage_tc_create_tag</span><span class="p">(</span><span class="n">tag_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">resource</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[stage] Unsupported resource type </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_type</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] Unsupported resource type </span><span class="si">{resource_type}</span><span class="s1">.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage_tc_create_attribute"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage_tc_create_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_create_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_type</span><span class="p">,</span> <span class="n">attribute_value</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add an attribute to a resource.</span>
@@ -1608,9 +1557,8 @@
         <span class="n">a_response</span> <span class="o">=</span> <span class="n">attrib_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">a_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;[stage] Failed adding attribute type &quot;</span><span class="si">{}</span><span class="s1">&quot;:&quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">attribute_type</span><span class="p">,</span> <span class="n">attribute_value</span><span class="p">,</span> <span class="n">a_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-                <span class="p">)</span>
+                <span class="n">f</span><span class="s1">&#39;[stage] Failed adding attribute type &quot;</span><span class="si">{attribute_type}</span><span class="s1">&quot;:&quot;</span><span class="si">{attribute_value}</span><span class="s1">&quot; &#39;</span>
+                <span class="n">f</span><span class="s2">&quot;({a_response.get(&#39;response&#39;).text}).&quot;</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage_tc_create_security_label"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage_tc_create_security_label">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_create_security_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
@@ -1625,9 +1573,8 @@
         <span class="n">sl_response</span> <span class="o">=</span> <span class="n">sl_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">sl_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;[tcex] Failed adding security label &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">label</span><span class="p">,</span> <span class="n">sl_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-                <span class="p">)</span>
+                <span class="n">f</span><span class="s1">&#39;[tcex] Failed adding security label &quot;</span><span class="si">{label}</span><span class="s1">&quot; &#39;</span>
+                <span class="n">f</span><span class="s2">&quot;({sl_response.get(&#39;response&#39;).text}).&quot;</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage_tc_create_tag"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage_tc_create_tag">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_create_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
@@ -1637,12 +1584,12 @@
 <span class="sd">            tag (str): The tag to be added to the resource.</span>
 <span class="sd">            resource (obj): An instance of tcex resource class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tag_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+        <span class="n">tag_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">safe_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
         <span class="n">tag_resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
         <span class="n">t_response</span> <span class="o">=</span> <span class="n">tag_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">t_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;[tcex] Failed adding tag &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">t_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">f</span><span class="s1">&#39;[tcex] Failed adding tag &quot;</span><span class="si">{tag}</span><span class="s1">&quot; &#39;</span> <span class="n">f</span><span class="s2">&quot;({t_response.get(&#39;response&#39;).text}).&quot;</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage_tc_associations"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage_tc_associations">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity1</span><span class="p">,</span> <span class="n">entity2</span><span class="p">):</span>
@@ -1684,13 +1631,9 @@
         <span class="n">response</span> <span class="o">=</span> <span class="n">a_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;[stage] Failed associating &quot;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&quot; with &quot;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">entity1_type</span><span class="p">,</span>
-                    <span class="n">entity1_id</span><span class="p">,</span>
-                    <span class="n">entity2_type</span><span class="p">,</span>
-                    <span class="n">entity2_id</span><span class="p">,</span>
-                    <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">f</span><span class="s1">&#39;[stage] Failed associating &quot;</span><span class="si">{entity1_type}</span><span class="s1">:</span><span class="si">{entity1_id}</span><span class="s1">&quot; &#39;</span>
+                <span class="n">f</span><span class="s1">&#39;with &quot;</span><span class="si">{entity2_type}</span><span class="s1">:</span><span class="si">{entity2_id}</span><span class="s1">&quot; &#39;</span>
+                <span class="n">f</span><span class="s2">&quot;({response.get(&#39;response&#39;).text})&quot;</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage_tc_batch"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage_tc_batch">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">staging_data</span><span class="p">):</span>
@@ -1736,9 +1679,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">stage_redis</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage_tc_indicator_entity</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
         <span class="c1"># submit batch</span>
         <span class="n">batch_results</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;[stage] Batch Results: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">batch_results</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] Batch Results: </span><span class="si">{batch_results}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">batch_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[stage] </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[stage] </span><span class="si">{error}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Run.stage_tc_batch_xid"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.stage_tc_batch_xid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stage_tc_batch_xid</span><span class="p">(</span><span class="n">xid_type</span><span class="p">,</span> <span class="n">xid_value</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
@@ -1752,7 +1695,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            [type]: [description]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">xid_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xid_type</span><span class="p">,</span> <span class="n">xid_value</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
+        <span class="n">xid_string</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{xid_type}</span><span class="s1">-</span><span class="si">{xid_value}</span><span class="s1">-</span><span class="si">{owner}</span><span class="s1">&#39;</span>
         <span class="n">hash_object</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">xid_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">hash_object</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
@@ -1789,11 +1732,9 @@
         <span class="sd">&quot;&quot;&quot;Run the App as a subprocess.&quot;&quot;&quot;</span>
         <span class="n">lib_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_latest&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;PYTHONPATH&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">lib_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span>
-            <span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{lib_path}{os.pathsep}{os.environ[&#39;PYTHONPATH&#39;]}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lib_path</span><span class="p">)</span></div>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{lib_path}</span><span class="s1">&#39;</span></div>
 
 <div class="viewcode-block" id="Run.validate"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Run.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate data in Redis.&quot;&quot;&quot;</span>
@@ -1803,7 +1744,7 @@
             <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;redis&#39;</span><span class="p">:</span>
                 <span class="n">user_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
                 <span class="n">user_data_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_path&#39;</span><span class="p">)</span>  <span class="c1"># jmespath expression</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="n">string_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
                     <span class="c1"># if user_data reference a redis variable retrieve the data</span>
                     <span class="k">if</span> <span class="n">user_data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;Binary&#39;</span><span class="p">):</span>
                         <span class="c1"># call specific method and do not decode data</span>
@@ -1835,9 +1776,8 @@
                 <span class="n">oper</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;operator&#39;</span><span class="p">,</span> <span class="s1">&#39;eq&#39;</span><span class="p">)</span>
 
                 <span class="c1"># validate if possible</span>
-                <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">10</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sep</span><span class="p">,</span> <span class="n">variable</span><span class="p">))</span>
-                <span class="c1"># self.log.info(&#39;[validate] Variable  : {}&#39;.format(variable))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{&quot;-&quot; * 10} </span><span class="si">{variable}</span><span class="s1"> {&quot;-&quot; * 10}&#39;</span><span class="p">)</span>
+                <span class="c1"># self.log.info(f&#39;[validate] Variable  : {variable}&#39;)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_redis</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">,</span> <span class="n">oper</span><span class="p">):</span>
                     <span class="n">passed</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># if any validation fails everything fails</span>
@@ -1877,7 +1817,7 @@
                 <span class="k">pass</span>
 
         <span class="k">if</span> <span class="n">oper</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid operator provided (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oper</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Invalid operator provided (</span><span class="si">{oper}</span><span class="s1">)&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="c1"># compare the data</span>
@@ -1906,32 +1846,32 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">truncate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">truncate</span>
         <span class="k">if</span> <span class="n">db_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">passed</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
                 <span class="n">db_data</span> <span class="o">=</span> <span class="n">db_data</span><span class="p">[:</span><span class="n">truncate</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">)):</span>
                 <span class="n">db_data_truncated</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">db_data</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">string_types</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
-                        <span class="n">db_data_truncated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">truncate</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
+                        <span class="n">db_data_truncated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{d[:self.args.truncate]}</span><span class="s1"> ...&#39;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">db_data_truncated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
                 <span class="n">db_data</span> <span class="o">=</span> <span class="n">db_data_truncated</span>
 
         <span class="k">if</span> <span class="n">user_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">passed</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
                 <span class="n">user_data</span> <span class="o">=</span> <span class="n">user_data</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">truncate</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">)):</span>
                 <span class="n">user_data_truncated</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">user_data</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
-                        <span class="n">user_data_truncated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">truncate</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
+                        <span class="n">user_data_truncated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{u[:self.args.truncate]}</span><span class="s1"> ...&#39;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">user_data_truncated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
                 <span class="n">user_data</span> <span class="o">=</span> <span class="n">user_data_truncated</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[validate] DB Data   : (</span><span class="si">{}</span><span class="s1">), Type: [</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">db_data</span><span class="p">)))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[validate] Operator  : (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oper</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[validate] User Data : (</span><span class="si">{}</span><span class="s1">), Type: [</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">user_data</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[validate] DB Data   : (</span><span class="si">{db_data}</span><span class="s1">), Type: [{type(db_data)}]&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[validate] Operator  : (</span><span class="si">{oper}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[validate] User Data : (</span><span class="si">{user_data}</span><span class="s1">), Type: [{type(user_data)}]&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">passed</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[validate] Results   : Passed&#39;</span><span class="p">)</span>
@@ -1943,12 +1883,12 @@
                     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">diff</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">difflib</span><span class="o">.</span><span class="n">ndiff</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">)):</span>
                         <span class="k">if</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39; &#39;</span><span class="p">:</span>  <span class="c1"># no difference</span>
                             <span class="k">continue</span>
-                        <span class="k">elif</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                                <span class="s1">&#39;[validate] Diff      : Missing data at index </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                            <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[validate] Diff      : Missing data at index </span><span class="si">{i}</span><span class="s1">&#39;</span><span class="p">)</span>
                         <span class="k">elif</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[validate] Diff      : Extra data at index </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[validate] Diff      : Extra data at index </span><span class="si">{i}</span><span class="s1">&#39;</span><span class="p">)</span>
+
                         <span class="k">if</span> <span class="n">diff_count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_diff</span><span class="p">:</span>
                             <span class="c1"># don&#39;t spam the logs if string are vastly different</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Max number of differences reached.&#39;</span><span class="p">)</span>
@@ -1964,7 +1904,7 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Failed validating data.&#39;</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="ArgBuilder"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.ArgBuilder">[docs]</a><span class="k">class</span> <span class="nc">ArgBuilder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ArgBuilder"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.ArgBuilder">[docs]</a><span class="k">class</span> <span class="nc">ArgBuilder</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Object container for CLI Args.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
@@ -2011,19 +1951,19 @@
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># true boolean values are flags and should not contain a value</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;--</span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;--</span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;--</span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;--</span><span class="si">{key}</span><span class="s1">=</span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">mask</span><span class="p">:</span>
                 <span class="c1"># mask sensitive values</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># quote all values that would get displayed</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;--</span><span class="si">{key}</span><span class="s1">=</span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;--</span><span class="si">{key}</span><span class="s1">=</span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArgBuilder._add_arg_java"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.ArgBuilder._add_arg_java">[docs]</a>    <span class="k">def</span> <span class="nf">_add_arg_java</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add CLI Arg formatted specifically for Java.</span>
@@ -2036,11 +1976,11 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-D&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-D&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{&#39;-D&#39;}</span><span class="si">{key}</span><span class="s2">=</span><span class="si">{value}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{&#39;-D&#39;}</span><span class="si">{key}</span><span class="s2">=</span><span class="si">{value}</span><span class="s2">&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">mask</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;-D&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{&#39;-D&#39;}</span><span class="si">{key}</span><span class="s2">=</span><span class="si">{value}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArgBuilder._add_arg"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.ArgBuilder._add_arg">[docs]</a>    <span class="k">def</span> <span class="nf">_add_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add CLI Arg for the correct language.</span>
@@ -2068,7 +2008,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_arg_python</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Dictionary types are not currently supported for field.&#39;</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{err}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">env_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\$env\.(.*)$&#39;</span><span class="p">)</span>
@@ -2098,7 +2038,7 @@
             <span class="n">quote_char</span> <span class="o">=</span> <span class="s2">&quot;&#39;&quot;</span>
 
         <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[!\-\=\s\$\&amp;]{1,}&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote_char</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{quote_char}{data}{quote_char}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="ArgBuilder.load"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.ArgBuilder.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_args</span><span class="p">):</span>
@@ -2111,7 +2051,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Report Object for a single profile.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
@@ -2169,13 +2109,13 @@
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="Reports"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Reports">[docs]</a><span class="k">class</span> <span class="nc">Reports</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Reports"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Reports">[docs]</a><span class="k">class</span> <span class="nc">Reports</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Object to hold the run report.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="n">python_version</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span>
+        <span class="n">python_version</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">f</span><span class="s1">&#39;</span><span class="si">{sys.version_info.major}</span><span class="s1">.</span><span class="si">{sys.version_info.minor}</span><span class="s1">.</span><span class="si">{sys.version_info.micro}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">report</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;profiles&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;selected&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;unselected&#39;</span><span class="p">:</span> <span class="p">[]},</span>
@@ -2254,8 +2194,7 @@
 
 <div class="viewcode-block" id="Reports.__iter__"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Reports.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Interate over all report profiles.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">profile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">yield</span> <span class="n">profile</span></div>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Reports.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.run.Reports.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return reports as a string.&quot;&quot;&quot;</span>

@@ -42,7 +42,16 @@ module = __import__(__name__)
 
 
 class Batch:
-    """ThreatConnect Batch Import Module"""
+    """ThreatConnect Batch Import Module
+
+    Args:
+        tcex (obj): An instance of TcEx object.
+        owner (str): The ThreatConnect owner for Batch action.
+        action (str, default:Create): Action for the batch job ['Create', 'Delete'].
+        attribute_write_type (str, default:Replace): Write type for Indicator attributes
+            ['Append', 'Replace'].
+        halt_on_error (bool, default:True): If True any batch error will halt the batch job.
+    """
 
     def __init__(
         self,
@@ -53,16 +62,7 @@ class Batch:
         halt_on_error=True,
         playbook_triggers_enabled=None,
     ):
-        """Initialize Class Properties.
-
-        Args:
-            tcex (obj): An instance of TcEx object.
-            owner (str): The ThreatConnect owner for Batch action.
-            action (str, default:Create): Action for the batch job ['Create', 'Delete'].
-            attribute_write_type (str, default:Replace): Write type for Indicator attributes
-                ['Append', 'Replace'].
-            halt_on_error (bool, default:True): If True any batch error will halt the batch job.
-        """
+        """Initialize Class properties."""
         self.tcex = tcex
         self._action = action or 'Create'
         self._attribute_write_type = attribute_write_type or 'Replace'

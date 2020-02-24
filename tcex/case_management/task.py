@@ -11,11 +11,16 @@ from .tql import TQL
 class Tasks(CommonCaseManagementCollection):
     """Tasks Class for Case Management Collection
 
-    params example: {
-        'result_limit': 100, # How many results are retrieved.
-        'result_start': 10,  # Starting point on retrieved results.
-        'fields': ['caseId', 'summary'] # Additional fields returned on the results
-    }
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        # Example of params input
+        {
+            'result_limit': 100,  # How many results are retrieved.
+            'result_start': 10,  # Starting point on retrieved results.
+            'fields': ['caseId', 'summary']  # Additional fields returned on the results
+        }
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
@@ -220,7 +225,7 @@ class Task(CommonCaseManagement):
 
     @property
     def dependent_on_id(self):
-        """Return the **Depend On ID* for the Task"""
+        """Return the **Depend On ID** for the Task"""
         return self._dependent_on_id
 
     @property

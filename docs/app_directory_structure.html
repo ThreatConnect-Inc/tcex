@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 1.1.8 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -121,6 +121,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
@@ -522,9 +523,7 @@ nbproject
  99
 100
 101
-102
-103
-104</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+102</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Set App lib directory for current version of Python&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
@@ -533,7 +532,7 @@ nbproject
 <span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;1.0.2&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">AppLib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AppLib</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Set App Lib Directory&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -545,9 +544,9 @@ nbproject
         <span class="bp">self</span><span class="o">.</span><span class="n">lib_directory</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="c1"># All Python Version that will be searched</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span> <span class="o">=</span> <span class="s1">&#39;lib_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span> <span class="o">=</span> <span class="s1">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lib_micro_version</span> <span class="o">=</span> <span class="s1">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;lib_{sys.version_info.major}&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;{self.lib_major_version}.{sys.version_info.minor}&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_micro_version</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;{self.lib_minor_version}.{sys.version_info.micro}&#39;</span>
 
     <span class="k">def</span> <span class="nf">find_lib_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find the optimal lib directory.&quot;&quot;&quot;</span>
@@ -586,7 +585,7 @@ nbproject
         <span class="sd">&quot;&quot;&quot;Run the App as a subprocess.&quot;&quot;&quot;</span>
         <span class="c1"># Update system arguments</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;{}.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;{sys.argv[1]}.py&#39;</span>
 
         <span class="c1"># Make sure to exit with the return value from the subprocess call</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_app_process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
@@ -602,11 +601,9 @@ nbproject
         <span class="c1">#             os.path.split(inspect.getfile(inspect.currentframe()))[0], lib_directory)))</span>
         <span class="n">lib_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">lib_directory</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;PYTHONPATH&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;{}{}{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">lib_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span>
-            <span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;{lib_path}{os.pathsep}{os.environ[&#39;PYTHONPATH&#39;]}&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lib_path</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;{lib_path}&#39;</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -617,7 +614,7 @@ nbproject
 
     <span class="c1"># No reason to continue if no appropriate lib directory found</span>
     <span class="k">if</span> <span class="n">ld</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Failed to find lib directory ({}).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">al</span><span class="o">.</span><span class="n">lib_directories</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Failed to find lib directory ({al.lib_directories}).&#39;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># update the OS environment for lib_directory path</span>
@@ -695,7 +692,7 @@ nbproject
 <span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">Args</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Args</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
@@ -904,7 +901,7 @@ nbproject
 <span class="kn">from</span> <span class="nn">args</span> <span class="kn">import</span> <span class="n">Args</span>
 
 
-<span class="k">class</span> <span class="nc">PlaybookApp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PlaybookApp</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Playbook App Class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
@@ -1046,21 +1043,11 @@ nbproject
 84
 85
 86
-87
-88
-89
-90
-91
-92</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+87</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="c1"># Python 2 unicode</span>
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-    <span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>  <span class="c1"># noqa: F821; pylint: disable=E0602</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>  <span class="c1"># pylint: disable=E1101</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
 
 
 <span class="k">def</span> <span class="nf">_update_app_path</span><span class="p">():</span>
@@ -1124,7 +1111,7 @@ nbproject
             <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
                 <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>  <span class="c1"># pylint: disable=E1101</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Action method ({}) was not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">))</span>
+                <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;Action method ({app.args.tc_action}) was not found.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># default to run method</span>
             <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -1140,7 +1127,7 @@ nbproject
         <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">exit_message</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">main_err</span> <span class="o">=</span> <span class="s1">&#39;Generic Error.  See logs for more details ({}).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">main_err</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Generic Error.  See logs for more details ({e}).&#39;</span>
         <span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
         <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">main_err</span><span class="p">)</span>
 </pre></div>
@@ -1167,7 +1154,7 @@ nbproject
 <span class="n">ignore</span> <span class="o">=</span> <span class="n">E203</span><span class="p">,</span><span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
 
 <span class="p">[</span><span class="n">pydocstyle</span><span class="p">]</span>
-<span class="n">ignore</span> <span class="o">=</span> <span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D400</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span>
+<span class="n">ignore</span> <span class="o">=</span> <span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D400</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span><span class="p">,</span><span class="n">D415</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -1201,14 +1188,9 @@ nbproject
 13
 14
 15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;app_name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;app_version&quot;</span><span class="p">:</span> <span class="s2">&quot;v1&quot;</span><span class="p">,</span>
     <span class="nt">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
       <span class="s2">&quot;.gitignore&quot;</span><span class="p">,</span>
       <span class="s2">&quot;.pre-commit-config.yaml&quot;</span><span class="p">,</span>
@@ -1220,10 +1202,7 @@ nbproject
       <span class="s2">&quot;tcex.d&quot;</span>
     <span class="p">],</span>
     <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;profile_include_dirs&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;tcex.d/profiles&quot;</span>
-  <span class="p">]</span>
+  <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>

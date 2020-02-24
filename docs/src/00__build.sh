@@ -22,6 +22,10 @@ wget https://raw.githubusercontent.com/ThreatConnect-Inc/threatconnect-developer
 
 # clean old build
 rm -fr _build
+rm -fr ../_modules/*
+rm -fr ../_sources/*
+rm -fr ../*.html
+rm -fr ../tcex_docs/*
 
 # generate html
 make html

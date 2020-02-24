@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Exit &mdash; TcEx 1.1.8 documentation</title>
+  <title>Exit &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -99,6 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
@@ -255,7 +256,7 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 <span class="k">except</span><span class="p">:</span>
-<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
 </span>
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 

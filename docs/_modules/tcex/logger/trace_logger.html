@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.logger.trace_logger &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.logger.trace_logger &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -97,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
@@ -180,7 +181,6 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Trace Logger Class&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">getframeinfo</span><span class="p">,</span> <span class="n">stack</span>
 
 <span class="c1"># Create trace logging level</span>
@@ -209,11 +209,7 @@
                 <span class="k">break</span>
             <span class="n">depth</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
-            <span class="c1"># return value for py2</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">caller</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
-        <span class="c1"># TODO: [py2] - remove py2 statement and remove coverage pragma</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">caller</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">caller</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">caller</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TraceLogger.trace"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.trace_logger.TraceLogger.trace">[docs]</a>    <span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set trace logging level</span>

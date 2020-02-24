@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Modules &mdash; TcEx 1.1.8 documentation</title>
+  <title>Modules &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -99,6 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
@@ -118,24 +119,23 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Modules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tcex.batch.html">Batch Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.bin.html">Bin Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.case_management.html">Case Management Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.datastore.html">Datastore Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.decorators.html">Decorators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.inputs.html">Inputs Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.key_value_store.html">Key Value Store Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.logger.html">Logger Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex.html">TcEx</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.bin.html">Bin Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.metrics.html">Metrics module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.notifications.html">Notifications Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.playbooks.html">Playbooks Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.resources.html">Resources Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.services.html">Services Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.sessions.html">Session Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_data_filter.html">Data Filter Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex.html">TcEx</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.tcex_error_codes.html">Error Codes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_key_value.html">Key Value Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_redis.html">Redis Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_request.html">Request Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_ti.html">TI (threat intel) module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.vault.html">Vault Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.threat_intelligence.html">Threat Intelligence Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.utils.html">Utils Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.vault.html">Vault Module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tcex">Module contents</a></li>
@@ -218,27 +218,6 @@
 <li class="toctree-l2"><a class="reference internal" href="tcex.batch.html#module-tcex.batch.tag">batch.tag</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.decorators.html">Decorators</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.app_decorators">decorators.app_decorators</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.inputs.html">Inputs Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.inputs.html#module-tcex.inputs.inputs">inputs.inputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tcex.inputs.html#module-tcex.inputs.argument_parser">inputs.argument_parser</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.logger.html">Logger Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.logger">logger.logger</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.api_handler">logger.api_handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.rotating_file_handler_custom">logger.rotating_file_handler_custom</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.thread_file_handler">logger.thread_file_handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.trace_logger">logger.trace_logger</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.tcex.html">TcEx</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.tcex.html#module-tcex.tcex">tcex.tcex</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="tcex.bin.html">Bin Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tcex.bin.html#module-tcex.bin.bin">bin.bin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tcex.bin.html#module-tcex.bin.init">bin.init</a></li>
@@ -250,6 +229,59 @@
 <li class="toctree-l2"><a class="reference internal" href="tcex.bin.html#module-tcex.bin.validate">bin.validate</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.case_management.html">Case Management Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.case_management">case_management.case_management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.api_endpoints">case_management.api_endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.artifact_type">case_management.artifact_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.artifact">case_management.artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.case">case_management.case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.common_case_management_collection">case_management.common_case_management_collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.common_case_management">case_management.common_case_management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.filter">case_management.filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.note">case_management.note</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.task">case_management.task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.tql">case_management.tql</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.workflow_event">case_management.workflow_event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.case_management.html#module-tcex.case_management.workflow_template">case_management.workflow_template</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.datastore.html">Datastore Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.datastore.html#module-tcex.datastore.cache">datastore.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.datastore.html#module-tcex.datastore.datastore">datastore.datastore</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.decorators.html">Decorators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.Benchmark">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.Debug">Debug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.FailOnOutput">FailOnOutput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.IterateOnArg">IterateOnArg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.OnException">OnException</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.OnSuccess">OnSuccess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.Output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.ReadArg">ReadArg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.decorators.html#module-tcex.decorators.WriteOutput">WriteOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.inputs.html">Inputs Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.inputs.html#module-tcex.inputs.inputs">inputs.inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.inputs.html#module-tcex.inputs.argument_parser">inputs.argument_parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.key_value_store.html">Key Value Store Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.key_value_store.html#module-tcex.key_value_store.key_value_api">key_value_store.key_value_api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.key_value_store.html#module-tcex.key_value_store.key_value_redis">key_value_store.key_value_redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.key_value_store.html#module-tcex.key_value_store.redis_client">key_value_store.redis_client</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.logger.html">Logger Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.logger">logger.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.api_handler">logger.api_handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.cache_handler">logger.cache_handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.rotating_file_handler_custom">logger.rotating_file_handler_custom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.thread_file_handler">logger.thread_file_handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.logger.html#module-tcex.logger.trace_logger">logger.trace_logger</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="tcex.metrics.html">Metrics module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tcex.metrics.html#module-tcex.metrics.metrics">metrics.metrics</a></li>
 </ul>
@@ -259,47 +291,44 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tcex.playbooks.html">Playbooks Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.playbooks.html#module-tcex.playbooks.playbooks_base">playbooks.playbooks_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tcex.playbooks.html#module-tcex.playbooks.playbooks">playbooks.playbooks</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.resources.html">Resources Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.resources.html#module-tcex.resources.resources">resources.resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.services.html">Services Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.services.html#module-tcex.services.services">services.services</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tcex.sessions.html">Session Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tcex.sessions.html#module-tcex.sessions.tc_session">sessions.tc_session</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.tcex_data_filter.html">Data Filter Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.tcex_data_filter.html#module-tcex.tcex_data_filter">tcex.tcex_data_filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.tcex.html">TcEx</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.tcex.html#module-tcex.tcex">tcex.tcex</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tcex.tcex_error_codes.html">Error Codes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tcex.tcex_error_codes.html#module-tcex.tcex_error_codes">tcex.tcex_error_codes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.tcex_key_value.html">Key Value Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.tcex_key_value.html#module-tcex.tcex_key_value">tcex.tcex_key_value</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.tcex_redis.html">Redis Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.tcex_redis.html#module-tcex.tcex_redis">tcex.tcex_redis</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.tcex_request.html">Request Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.tcex_request.html#module-tcex.tcex_request">tcex.tcex_request</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.tcex_ti.html">TI (threat intel) module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.tcex_ti.html#module-tcex.tcex_ti.tcex_ti">tcex.tcex_ti</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tcex.vault.html">Vault Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.vault.html#module-tcex.vault.vault">vault.vault</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.threat_intelligence.html">Threat Intelligence Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.threat_intelligence">threat_intelligence.threat_intelligence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.tcex_ti_tc_request">threat_intelligence.tcex_ti_tc_request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.mappings.filters">threat_intelligence.filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.mappings.mappings">threat_intelligence.mappings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.mappings.owner">threat_intelligence.owner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.mappings.security_label">threat_intelligence.security_label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.mappings.tag">threat_intelligence.tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.mappings.task">threat_intelligence.task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcex.threat_intelligence.html#module-tcex.threat_intelligence.mappings.victim">threat_intelligence.victim</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tcex.utils.html">Utils Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tcex.utils.html#module-tcex.utils.utils">utils.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcex.vault.html">Vault Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcex.vault.html#module-tcex.vault.vault">vault.vault</a></li>
 </ul>
 </li>
 </ul>

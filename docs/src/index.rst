@@ -22,6 +22,7 @@ Release |version|.
    app_directory_structure
    module_batch
    module_datastore
+   module_decorators
    module_metrics
    module_notifications
    module_playbook

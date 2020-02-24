@@ -69,7 +69,7 @@ class Task(Mappings):
         return True
 
     def add_assignee(self, assignee):
-        """ ADD the desired assignee from the Task.
+        """Add the desired assignee from the Task.
 
         Args:
             assignee (str): The assignee username
@@ -81,8 +81,7 @@ class Task(Mappings):
         return self.assignee(assignee)
 
     def add_key_value(self, key, value):
-        """
-        Converts the value and adds it as a data field.
+        """Convert the value and adds it as a data field.
 
         Args:
             key:
@@ -136,13 +135,11 @@ class Task(Mappings):
         return self.tc_requests.assignees(self.api_type, self.unique_id)
 
     def can_create(self):
+        """Return True if the Object can be created.
+
+        Return:
+            bool: Boolean value indicating whether the object can be created.
         """
-         If the name has been provided returns that the Task can be created, otherwise
-         returns that the Task cannot be created.
-
-         Return:
-
-         """
         if self.data.get('name'):
             return True
         return False
@@ -186,12 +183,13 @@ class Task(Mappings):
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def escalatee(self, escalatee, action='ADD'):
-        """
-            General method to perform actions on escalatees
-            Valid Actions:
-            + ADD
-            + GET
-            + DELETE
+        """General method to perform actions on escalatees
+
+        Valid Actions:
+        + ADD
+        + GET
+        + DELETE
+
         Args:
             escalatee (str): The username of the escalatee.
             action: [ADD, DELETE, GET] the action to be done on the escalatee. Defaults to
@@ -211,8 +209,8 @@ class Task(Mappings):
         return self.tc_requests.escalatees(self.api_type, self.unique_id)
 
     def escalation_date(self, escalation_date):
-        """
-        Update the task escalation_date
+        """Update the task escalation_date
+
         Args:
             escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
@@ -227,7 +225,7 @@ class Task(Mappings):
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def get_assignee(self, assignee):
-        """ Retrieve the desired assignee from the Task.
+        """Retrieve the desired assignee from the Task.
 
         Args:
             assignee (str): The assignee username
@@ -239,7 +237,7 @@ class Task(Mappings):
         return self.assignee(assignee, action='GET')
 
     def get_escalatee(self, escalatee):
-        """ Retrieve the desired escalatee from the Task.
+        """Retrieve the desired escalatee from the Task.
 
         Args:
             escalatee (str): The escalatee username
@@ -251,8 +249,8 @@ class Task(Mappings):
         return self.escalatee(escalatee, action='GET')
 
     def reminder_date(self, reminder_date):
-        """
-        Update the task reminder_date
+        """Update the task reminder_date
+
         Args:
             reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
@@ -267,8 +265,8 @@ class Task(Mappings):
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def status(self, status):
-        """
-        Update the Task Status
+        """Update the Task Status
+
         Valid status:
         + Not Started
         + In Progress

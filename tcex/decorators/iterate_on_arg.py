@@ -80,6 +80,10 @@ class IterateOnArg:
             results = []
             arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), array=True)
             arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
+            if arg_data is None:
+                arg_data = [None]
+            elif not isinstance(arg_data, list):
+                arg_data = [arg_data]
 
             for ad in arg_data:
                 if ad is None and self.default is not None:
@@ -93,7 +97,7 @@ class IterateOnArg:
                 if enabled and self.fail_on:
                     if ad in self.fail_on:
                         app.tcex.log.debug(f'Invalid value ({ad}) found for {self.arg}.')
-                        raise RuntimeError(self.fail_msg)
+                        app.tcex.exit(1, self.fail_msg)
 
                 # Add logging for debug/troubleshooting
                 if (

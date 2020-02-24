@@ -522,15 +522,19 @@ class Services:
     def process_run_service(self, message):
         """Process Webhook event messages.
 
-        {
-          "command": "RunService",
-          "apiToken": "abc123",
-          "bodyVariable": "request.body",
-          "headers": [ { key/value pairs } ],
-          "method": "GET",
-          "queryParams": [ { key/value pairs } ],
-          "requestKey": "123abc"
-        }
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            {
+              "command": "RunService",
+              "apiToken": "abc123",
+              "bodyVariable": "request.body",
+              "headers": [ { key/value pairs } ],
+              "method": "GET",
+              "queryParams": [ { key/value pairs } ],
+              "requestKey": "123abc"
+            }
 
         Args:
             message (dict): The broker message.

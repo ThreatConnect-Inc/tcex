@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 1.1.8 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -143,6 +143,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
@@ -362,7 +363,9 @@ optional arguments:
 50
 51
 52
-53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+53
+54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
@@ -375,7 +378,7 @@ optional arguments:
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">App</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch/downloads/malware_hashes.csv&#39;</span>
 
@@ -414,7 +417,9 @@ optional arguments:
         <span class="n">batch_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
         <span class="k">print</span><span class="p">(</span><span class="n">batch_status</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;Downloaded data and create batch job.&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># pylint: disable=attribute-defined-outside-init</span>
+            <span class="s1">&#39;Downloaded data and create batch job.&#39;</span>
+        <span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -480,7 +485,7 @@ optional arguments:
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_app_decorators</span></code></dt><dd><p>Inline documentation of App decorators</p>
+<dt><code class="xref py py-mod docutils literal notranslate"><span class="pre">decorators</span></code></dt><dd><p>Inline documentation of App decorators</p>
 </dd>
 </dl>
 </div>
@@ -582,7 +587,7 @@ optional arguments:
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">App</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
@@ -644,7 +649,7 @@ optional arguments:
     <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Write the Playbook output variables. &quot;&quot;&quot;</span>
         <span class="c1"># output</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;output_strings: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;output_strings: {self.output_strings}&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.operation&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">)</span>
@@ -737,7 +742,7 @@ optional arguments:
 
 <span class="sd">        This method can be OPTIONALLY overridden.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">App</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="c1"># def done(self):</span>
@@ -902,9 +907,7 @@ optional arguments:
 50
 51
 52
-53
-54
-55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
@@ -917,7 +920,7 @@ optional arguments:
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">App</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch/downloads/malware_hashes.csv&#39;</span>
 
@@ -956,9 +959,7 @@ optional arguments:
         <span class="n">batch_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">batch_status</span><span class="p">)</span>
 
-        <span class="c1"># self.exit_message = &#39;Downloaded and created {} file hashes.&#39;.format(</span>
-        <span class="c1">#     self.batch.indicator_len</span>
-        <span class="c1"># )</span>
+        <span class="c1"># self.exit_message = f&#39;Downloaded and created {self.batch.indicator_len} file hashes.&#39;</span>
 </pre></div>
 </td></tr></table></div>
 </div>

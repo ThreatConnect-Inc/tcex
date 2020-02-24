@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" TcEx Error Codes """
+"""TcEx Error Codes"""
 
 
 class TcExErrorCodes:

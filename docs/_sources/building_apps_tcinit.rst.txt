@@ -102,7 +102,7 @@ This template provides a working example of **actions** in a Playbook App. Using
 
 .. seealso::
 
-    :py:mod:`~tcex.tcex_app_decorators`
+    :py:mod:`~tcex.decorators`
         Inline documentation of App decorators
 
 app.py

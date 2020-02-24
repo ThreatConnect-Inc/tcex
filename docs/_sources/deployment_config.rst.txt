@@ -553,17 +553,39 @@ advantage of the Variables feature.
 
 .. note:: The Variables feature in the ThreatConnect platform allows any user to create variable key/value pairs. Once created, these values can be selected by the user in the Job Wizard or Spaces Configuration dialog box to reduce the need to copy and paste keys and plain-text data.
 
+The table below lists the valid the available variable types within the platform.
+
++-----------------+-----------------------------------------------------------------------------------+
+| Variable Type   | Description                                                                       |
++=================+===================================================================================+
+| TEXT            | This variable type is used to store non-sensitive information such as a username  |
+|                 | or email address to be used when authenticating with a 3rd party API.             |
++-----------------+-----------------------------------------------------------------------------------+
+| KEYCHAIN        | This variable type is used to store sensitive information such as a password or   |
+|                 | API Key to be used when authenticating with a 3rd party API.                      |
++-----------------+-----------------------------------------------------------------------------------+
+| FILE            | This variable type is used to store sensitive files such as an SSH Key            |
++-----------------+-----------------------------------------------------------------------------------+
+
 Since the variable names are not known by the App developer, the generic
 form of the variables is referenced instead in a **<level:type>**
 format.
 
-For example, to allow users to select one of their plain-text
+For example, to allow users to select one of their plain-text (TEXT)
 variables from Organization and User levels, the **install.json** file
 would reference them as follows:
 
 .. code:: json
 
-    "validValues": ["{USER:TEXT}", "${ORGANIZATION:TEXT}"]
+    "validValues": ["${USER:TEXT}", "${ORGANIZATION:TEXT}"]
+
+Another example, to allow users to select one of their encrypted (KEYCHAIN)
+variables from Organization and User levels, the **install.json** file
+would reference them as follows:
+
+.. code:: json
+
+    "validValues": ["${USER:KEYCHAIN}", "${ORGANIZATION:KEYCHAIN}"]
 
 The left-hand component of the variable is the level. The level can be
 any of the options listed in the table below.

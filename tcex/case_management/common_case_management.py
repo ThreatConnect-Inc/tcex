@@ -9,9 +9,8 @@ class CommonCaseManagement:
     """Common Class for Case Management.
 
     Args:
-        tcex ([type]): [description]
-        api_endpoint ([type]): [description]
-        kwargs ([type]): [description]
+        tcex (TcEx): An instance of tcex.
+        api_endpoint (str): The path to the API endpoint.
     """
 
     def __init__(self, tcex, api_endpoint, kwargs):
@@ -299,11 +298,16 @@ class CommonCaseManagement:
     def get(self, all_available_fields=False, case_management_id=None, params=None):
         """Get the Case Management Object.
 
-        params example: {
-            'result_limit': 100, # How many results are retrieved.
-            'result_start': 10,  # Starting point on retrieved results.
-            'fields': ['caseId', 'summary'] # Additional fields returned on the results
-        }
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            # Example of params input
+            {
+                'result_limit': 100,  # How many results are retrieved.
+                'result_start': 10,  # Starting point on retrieved results.
+                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+            }
 
         Args:
             all_available_fields (bool): If True all available fields will be returned.

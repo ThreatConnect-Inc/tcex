@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_error_codes &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.tcex_error_codes &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -97,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_playbook.html">Module: Playbooks</a></li>
@@ -178,15 +179,15 @@
 
   <h1>Source code for tcex.tcex_error_codes</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot; TcEx Error Codes &quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;TcEx Error Codes&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="TcExErrorCodes"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_error_codes.html#tcex.tcex_error_codes.TcExErrorCodes">[docs]</a><span class="k">class</span> <span class="nc">TcExErrorCodes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExErrorCodes"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_error_codes.html#tcex.tcex_error_codes.TcExErrorCodes">[docs]</a><span class="k">class</span> <span class="nc">TcExErrorCodes</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;TcEx Framework Error Codes.&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;TcEx defined error codes and messages.</span>
+        <span class="sd">&quot;&quot;&quot;Return TcEx defined error codes and messages.</span>
 
 <span class="sd">        .. note:: RuntimeErrors with a code of &gt;= 10000 are considered critical.  Those &lt; 10000</span>
 <span class="sd">            are considered warning or errors and are up to the developer to determine the</span>
@@ -237,8 +238,11 @@
                 <span class="s1">&#39;Error during create. </span><span class="si">{}</span><span class="s1"> does not have required values set and cannot be &#39;</span>
                 <span class="s1">&#39;created.&#39;</span>
             <span class="p">),</span>
+            <span class="c1"># TODO: fix this and all references</span>
             <span class="mi">925</span><span class="p">:</span> <span class="s1">&#39;Error invalid </span><span class="si">{}</span><span class="s1">. </span><span class="si">{}</span><span class="s1"> does not accept that </span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
             <span class="mi">950</span><span class="p">:</span> <span class="s1">&#39;Error during pagination. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">, API Url: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">951</span><span class="p">:</span> <span class="s1">&#39;Error during </span><span class="si">{}</span><span class="s1">. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">, API Url: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">952</span><span class="p">:</span> <span class="s1">&#39;Error during </span><span class="si">{}</span><span class="s1">. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">, API Url: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
             <span class="c1"># batch v2 critical:</span>
             <span class="mi">10500</span><span class="p">:</span> <span class="s1">&#39;Critical batch error (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
             <span class="mi">10505</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch job requests (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>

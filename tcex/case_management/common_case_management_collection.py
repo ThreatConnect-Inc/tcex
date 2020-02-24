@@ -8,11 +8,16 @@ class CommonCaseManagementCollection:
 
     Object encapsulates common methods used by child classes.
 
-    params example: {
-        'result_limit': 100, # How many results are retrieved.
-        'result_start': 10,  # Starting point on retrieved results.
-        'fields': ['caseId', 'summary'] # Additional fields returned on the results
-    }
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        # Example of params input
+        {
+            'result_limit': 100,  # How many results are retrieved.
+            'result_start': 10,  # Starting point on retrieved results.
+            'fields': ['caseId', 'summary']  # Additional fields returned on the results
+        }
 
     Args:
         tcex ([type]): [description]

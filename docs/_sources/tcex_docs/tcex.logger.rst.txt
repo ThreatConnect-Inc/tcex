@@ -18,6 +18,14 @@ logger.api_handler
     :undoc-members:
     :show-inheritance:
 
+logger.cache_handler
+--------------------
+
+.. automodule:: tcex.logger.cache_handler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 logger.rotating_file_handler_custom
 -----------------------------------
 

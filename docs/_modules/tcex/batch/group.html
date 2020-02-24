@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.group &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.batch.group &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.0
               </div>
 
 
@@ -97,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
@@ -188,20 +189,24 @@
 <span class="kn">from</span> <span class="nn">.tag</span> <span class="k">import</span> <span class="n">Tag</span>
 
 
-<div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Group Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = [</span>
-    <span class="c1">#     &#39;_attributes&#39;,</span>
-    <span class="c1">#     &#39;_file_content&#39;,</span>
-    <span class="c1">#     &#39;_group_data&#39;,</span>
-    <span class="c1">#     &#39;_labels&#39;,</span>
-    <span class="c1">#     &#39;_name&#39;,</span>
-    <span class="c1">#     &#39;_processed&#39;,</span>
-    <span class="c1">#     &#39;_type&#39;,</span>
-    <span class="c1">#     &#39;_tags&#39;,</span>
-    <span class="c1">#     &#39;_utils&#39;]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;_attributes&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_file_content&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_group_data&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_labels&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_processed&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_type&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_tags&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_utils&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;file_content&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;malware&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;password&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;status&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -274,7 +279,7 @@
         <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;firstSeen&#39;</span><span class="p">,</span> <span class="s1">&#39;publishDate&#39;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
                     <span class="n">value</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
                 <span class="p">)</span>
         <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;file_content&#39;</span><span class="p">:</span>
@@ -362,7 +367,7 @@
     <span class="nd">@date_added</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date_added</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Indicator dateAdded.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">date_added</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span>
 
@@ -454,8 +459,7 @@
 <div class="viewcode-block" id="Adversary"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Adversary">[docs]</a><span class="k">class</span> <span class="nc">Adversary</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Adversary Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -465,14 +469,13 @@
 <span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Adversary</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Campaign"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Campaign">[docs]</a><span class="k">class</span> <span class="nc">Campaign</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Campaign Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -483,7 +486,7 @@
 <span class="sd">            first_seen (str, kwargs): The first seen datetime expression for this Group.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Campaign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">first_seen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -493,7 +496,7 @@
     <span class="nd">@first_seen</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">first_seen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_seen</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Document first seen.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;firstSeen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;firstSeen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">first_seen</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span></div>
 
@@ -501,8 +504,7 @@
 <div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Document Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = [&#39;_file_data&#39;, &#39;_group_data&#39;]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_file_data&#39;</span><span class="p">,</span> <span class="s1">&#39;_group_data&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -517,7 +519,7 @@
 <span class="sd">            password (bool, kwargs): If malware is true a password for the zip archive is required.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_name</span>
         <span class="c1"># file data/content to upload</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_content&#39;</span><span class="p">)</span>
@@ -525,6 +527,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span>
 
     <span class="nd">@file_content</span><span class="o">.</span><span class="n">setter</span>
@@ -565,8 +569,7 @@
 <div class="viewcode-block" id="Email"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Email">[docs]</a><span class="k">class</span> <span class="nc">Email</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Email Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -581,7 +584,7 @@
 <span class="sd">            to_addr (str, kwargs): The **to** address for this Email.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Email</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subject</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">header</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">body</span>
@@ -621,8 +624,7 @@
 <div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Event Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -640,7 +642,7 @@
 <span class="sd">            status (str, kwargs): The status for this Group.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Event</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -650,7 +652,7 @@
     <span class="nd">@event_date</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_date</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the Events &quot;event date&quot; value.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;eventDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;eventDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">event_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span>
 
@@ -668,8 +670,7 @@
 <div class="viewcode-block" id="Incident"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Incident">[docs]</a><span class="k">class</span> <span class="nc">Incident</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Incident Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -692,7 +693,7 @@
 <span class="sd">            status (str, kwargs): The status for this Group.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Incident</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Incident&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Incident&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -702,7 +703,7 @@
     <span class="nd">@event_date</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_date</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Incident event_date.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;eventDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;eventDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">event_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span>
 
@@ -732,8 +733,7 @@
 <div class="viewcode-block" id="IntrusionSet"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.IntrusionSet">[docs]</a><span class="k">class</span> <span class="nc">IntrusionSet</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Adversary Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -743,14 +743,13 @@
 <span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">IntrusionSet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Intrusion Set&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Intrusion Set&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Report Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -764,13 +763,15 @@
 <span class="sd">            publish_date (str, kwargs): The publish datetime expression for this Group.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Report</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Report&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Report&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># file data/content to upload</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_content&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span>
 
     <span class="nd">@file_content</span><span class="o">.</span><span class="n">setter</span>
@@ -795,7 +796,7 @@
     <span class="nd">@publish_date</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">publish_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">publish_date</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Report publish date&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;publishDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;publishDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">publish_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span></div>
 
@@ -803,8 +804,7 @@
 <div class="viewcode-block" id="Signature"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Signature">[docs]</a><span class="k">class</span> <span class="nc">Signature</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Signature Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="p">,</span> <span class="n">file_text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -828,7 +828,7 @@
 <span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Signature</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Signature&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Signature&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileText&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_text</span></div>
@@ -837,8 +837,7 @@
 <div class="viewcode-block" id="Threat"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Threat">[docs]</a><span class="k">class</span> <span class="nc">Threat</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Threat Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -848,7 +847,7 @@
 <span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Threat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Threat&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Threat&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
