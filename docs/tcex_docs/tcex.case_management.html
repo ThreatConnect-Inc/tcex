@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -241,42 +241,201 @@
 <dt id="tcex.case_management.case_management.CaseManagement.artifact">
 <code class="sig-name descname">artifact</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.artifact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.artifact" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Artifact object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>analytics_priority</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Analytics Priority</strong> for the Artifact.</p></li>
+<li><p><strong>analytics_priority_level</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Analytics Priority Level</strong> for
+the Artifact.</p></li>
+<li><p><strong>analytics_score</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Analytics Score</strong> for the Artifact.</p></li>
+<li><p><strong>analytics_type</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Analytics Type</strong> for the Artifact.</p></li>
+<li><p><strong>artifact_type</strong> (<a class="reference internal" href="#tcex.case_management.artifact_type.ArtifactType" title="tcex.case_management.artifact_type.ArtifactType"><em>ArtifactType</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Artifact Type</strong> for the Artifact.</p></li>
+<li><p><strong>case_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Required (alt: caseXid)] The <strong>Case Id</strong> for the Artifact.</p></li>
+<li><p><strong>case_xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required (alt: caseId)] The <strong>Case Xid</strong> for the Artifact.</p></li>
+<li><p><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Date Added</strong> for the Artifact.</p></li>
+<li><p><strong>file_data</strong> (<em>str</em><em>, </em><em>kwargs</em>) – Base64 encoded file attachment required only for certain artifact
+types</p></li>
+<li><p><strong>intel_type</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Intel Type</strong> for the Artifact.</p></li>
+<li><p><strong>links</strong> (<em>Link</em><em>, </em><em>kwargs</em>) – The <strong>Links</strong> for the Artifact.</p></li>
+<li><p><strong>notes</strong> (<a class="reference internal" href="#tcex.case_management.note.Note" title="tcex.case_management.note.Note"><em>Note</em></a><em>, </em><em>kwargs</em>) – a list of Notes corresponding to the Artifact</p></li>
+<li><p><strong>parent_case</strong> (<a class="reference internal" href="#tcex.case_management.case.Case" title="tcex.case_management.case.Case"><em>Case</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Parent Case</strong> for the Artifact.</p></li>
+<li><p><strong>source</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Source</strong> for the Artifact.</p></li>
+<li><p><strong>summary</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Summary</strong> for the Artifact.</p></li>
+<li><p><strong>task</strong> (<a class="reference internal" href="#tcex.case_management.task.Task" title="tcex.case_management.task.Task"><em>Task</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Task</strong> for the Artifact.</p></li>
+<li><p><strong>task_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – the ID of the task which the Artifact references</p></li>
+<li><p><strong>task_xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – the XID of the task which the Artifact references</p></li>
+<li><p><strong>type</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Type</strong> for the Artifact.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.artifact_type">
 <code class="sig-name descname">artifact_type</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.artifact_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.artifact_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Artifact Type object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Data Type</strong> for the Artifact Type.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Description</strong> for the Artifact Type.</p></li>
+<li><p><strong>intel_type</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Intel Type</strong> for the Artifact Type.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Name</strong> for the Artifact Type.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.artifact_types">
 <code class="sig-name descname">artifact_types</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.artifact_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.artifact_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Artifact Types object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Artifact. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent
+while retrieving the Artifact Type objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.artifacts">
 <code class="sig-name descname">artifacts</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.artifacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.artifacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Artifacts object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Artifact. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
+retrieving the Artifacts objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.assignee">
 <em class="property">static </em><code class="sig-name descname">assignee</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.assignee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.assignee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Assignee object.</p>
+<p>For User type the user_name or id fields is required and
+for the Group type the name or id is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first_name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The first name of the User.</p></li>
+<li><p><strong>id</strong> (<em>id</em><em>, </em><em>kwargs</em>) – The id of the User.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The name of the Group.</p></li>
+<li><p><strong>last_name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The last name of the user.</p></li>
+<li><p><strong>pseudonym</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The pseudonym of the User.</p></li>
+<li><p><strong>role</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The role of the User.</p></li>
+<li><p><strong>user_name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The user name of the User.</p></li>
+<li><p><strong>type</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The assignee type. Default to User.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.case">
 <code class="sig-name descname">case</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.case" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Case object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>artifacts</strong> (<a class="reference internal" href="#tcex.case_management.artifact.Artifact" title="tcex.case_management.artifact.Artifact"><em>Artifact</em></a><em>, </em><em>kwargs</em>) – a list of Artifacts corresponding to the Case</p></li>
+<li><p><strong>assignee</strong> (<em>Assignee</em><em>, </em><em>kwargs</em>) – the user or group Assignee object for the Case</p></li>
+<li><p><strong>created_by</strong> (<em>User</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Created By</strong> for the Case.</p></li>
+<li><p><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Date Added</strong> for the Case.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Description</strong> for the Case.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Name</strong> for the Case.</p></li>
+<li><p><strong>notes</strong> (<a class="reference internal" href="#tcex.case_management.note.Note" title="tcex.case_management.note.Note"><em>Note</em></a><em>, </em><em>kwargs</em>) – a list of Notes corresponding to the Case</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The Org/Owner name for the Case.</p></li>
+<li><p><strong>related</strong> (<a class="reference internal" href="#tcex.case_management.case.Case" title="tcex.case_management.case.Case"><em>Case</em></a><em>, </em><em>kwargs</em>) – The <strong>Related</strong> for the Case.</p></li>
+<li><p><strong>resolution</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Resolution</strong> for the Case.</p></li>
+<li><p><strong>severity</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Severity</strong> for the Case.</p></li>
+<li><p><strong>status</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Status</strong> for the Case.</p></li>
+<li><p><strong>tags</strong> (<a class="reference internal" href="tcex.batch.html#tcex.batch.tag.Tag" title="tcex.batch.tag.Tag"><em>Tag</em></a><em>, </em><em>kwargs</em>) – a list of Tags corresponding to the Case
+(NOTE: Setting this parameter will replace any existing tag(s) with
+the one(s) specified)</p></li>
+<li><p><strong>tasks</strong> (<a class="reference internal" href="#tcex.case_management.task.Task" title="tcex.case_management.task.Task"><em>Task</em></a><em>, </em><em>kwargs</em>) – a list of Tasks corresponding to the Case</p></li>
+<li><p><strong>user_access</strong> (<em>User</em><em>, </em><em>kwargs</em>) – a list of Users that, when defined, are the only
+ones allowed to view or edit the Case</p></li>
+<li><p><strong>workflow_events</strong> (<a class="reference internal" href="#tcex.case_management.workflow_event.WorkflowEvent" title="tcex.case_management.workflow_event.WorkflowEvent"><em>WorkflowEvent</em></a><em>, </em><em>kwargs</em>) – The <strong>Events</strong> for the Case.</p></li>
+<li><p><strong>workflow_template</strong> (<a class="reference internal" href="#tcex.case_management.workflow_template.WorkflowTemplate" title="tcex.case_management.workflow_template.WorkflowTemplate"><em>WorkflowTemplate</em></a><em>, </em><em>kwargs</em>) – the Template that the Case is
+populated by.</p></li>
+<li><p><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Xid</strong> for the Case.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.cases">
 <code class="sig-name descname">cases</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.cases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.cases" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Cases object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Artifact. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
+retrieving the Case objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -289,72 +448,318 @@
 <dt id="tcex.case_management.case_management.CaseManagement.note">
 <code class="sig-name descname">note</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.note"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.note" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Note object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>artifact</strong> (<a class="reference internal" href="#tcex.case_management.artifact.Artifact" title="tcex.case_management.artifact.Artifact"><em>Artifact</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Artifact</strong> for the Note.</p></li>
+<li><p><strong>artifact_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – the ID of the Artifact on which to apply the Note</p></li>
+<li><p><strong>author</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Author</strong> for the Note.</p></li>
+<li><p><strong>case_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Required (alt: caseXid)] The <strong>Case Id</strong> for the Note.</p></li>
+<li><p><strong>case_xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required (alt: caseId)]</p></li>
+<li><p><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Date Added</strong> for the Note.</p></li>
+<li><p><strong>edited</strong> (<em>boolean</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Edited</strong> for the Note.</p></li>
+<li><p><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Last Modified</strong> for the Note.</p></li>
+<li><p><strong>parent_case</strong> (<a class="reference internal" href="#tcex.case_management.case.Case" title="tcex.case_management.case.Case"><em>Case</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Parent Case</strong> for the Note.</p></li>
+<li><p><strong>summary</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Summary</strong> for the Note.</p></li>
+<li><p><strong>task</strong> (<a class="reference internal" href="#tcex.case_management.task.Task" title="tcex.case_management.task.Task"><em>Task</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Task</strong> for the Note.</p></li>
+<li><p><strong>task_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – the ID of the Task on which to apply the Note</p></li>
+<li><p><strong>task_xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – the XID of the Task on which to apply the Note</p></li>
+<li><p><strong>text</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Text</strong> for the Note.</p></li>
+<li><p><strong>workflow_event</strong> (<a class="reference internal" href="#tcex.case_management.workflow_event.WorkflowEvent" title="tcex.case_management.workflow_event.WorkflowEvent"><em>WorkflowEvent</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Workflow Event</strong> for the Note.</p></li>
+<li><p><strong>workflow_event_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – the ID of the Event on which to apply the Note</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.notes">
 <code class="sig-name descname">notes</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.notes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.notes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Notes object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Note. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
+retrieving the Notes objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.tag">
 <code class="sig-name descname">tag</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Tag object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>cases</strong> (<a class="reference internal" href="#tcex.case_management.case.Case" title="tcex.case_management.case.Case"><em>Case</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Cases</strong> for the Tag.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>kwargs</em>) – a brief description of the Tag</p></li>
+<li><p><strong>last_used</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Last Used</strong> for the Tag.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Name</strong> for the Tag.</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Owner</strong> for the Tag.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.tags">
 <code class="sig-name descname">tags</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.tags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Tags object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Tag. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
+retrieving the Tag objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.task">
 <code class="sig-name descname">task</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Task object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>artifacts</strong> (<a class="reference internal" href="#tcex.case_management.artifact.Artifact" title="tcex.case_management.artifact.Artifact"><em>Artifact</em></a><em>, </em><em>kwargs</em>) – a list of Artifacts corresponding to the Task</p></li>
+<li><p><strong>assignee</strong> (<em>Assignee</em><em>, </em><em>kwargs</em>) – the user or group Assignee object for the Task</p></li>
+<li><p><strong>case_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Required (alt: caseXid)] The <strong>Case Id</strong> for the Task.</p></li>
+<li><p><strong>case_xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required (alt: caseId)] The <strong>Case Xid</strong> for the Task.</p></li>
+<li><p><strong>completed_by</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Completed By</strong> for the Task.</p></li>
+<li><p><strong>completed_date</strong> (<em>str</em><em>, </em><em>kwargs</em>) – the completion date of the Task</p></li>
+<li><p><strong>config_playbook</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Config Playbook</strong> for the Task.</p></li>
+<li><p><strong>config_task</strong> (<em>dict</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Config Task</strong> for the Task.</p></li>
+<li><p><strong>dependent_on_id</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Dependent On ID</strong> for the Task.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Description</strong> for the Task.</p></li>
+<li><p><strong>due_date</strong> (<em>str</em><em>, </em><em>kwargs</em>) – the due date of the Task</p></li>
+<li><p><strong>duration</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Duration</strong> for the Task.</p></li>
+<li><p><strong>id_dependent_on</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Id_Dependent On</strong> for the Task.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Name</strong> for the Task.</p></li>
+<li><p><strong>notes</strong> (<a class="reference internal" href="#tcex.case_management.note.Note" title="tcex.case_management.note.Note"><em>Note</em></a><em>, </em><em>kwargs</em>) – a list of Notes corresponding to the Task</p></li>
+<li><p><strong>parent_case</strong> (<a class="reference internal" href="#tcex.case_management.case.Case" title="tcex.case_management.case.Case"><em>Case</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Parent Case</strong> for the Task.</p></li>
+<li><p><strong>required</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Required</strong> flag for the Task.</p></li>
+<li><p><strong>status</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Status</strong> for the Task.</p></li>
+<li><p><strong>workflow_phase</strong> (<em>int</em><em>, </em><em>kwargs</em>) – the phase of the workflow</p></li>
+<li><p><strong>workflow_step</strong> (<em>int</em><em>, </em><em>kwargs</em>) – the step of the workflow</p></li>
+<li><p><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Xid</strong> for the Task.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.tasks">
 <code class="sig-name descname">tasks</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Tasks object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Task. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
+retrieving the Task objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.user">
 <em class="property">static </em><code class="sig-name descname">user</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of User object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first_name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The first name of the user.</p></li>
+<li><p><strong>id</strong> (<em>id</em><em>, </em><em>kwargs</em>) – The id of the user.</p></li>
+<li><p><strong>last_name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The last name of the user.</p></li>
+<li><p><strong>pseudonym</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The pseudonym of the user.</p></li>
+<li><p><strong>role</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The role of the user.</p></li>
+<li><p><strong>user_name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The user name of the user.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.users">
-<em class="property">static </em><code class="sig-name descname">users</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.users" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a instance of Users object.</p>
+<em class="property">static </em><code class="sig-name descname">users</code><span class="sig-paren">(</span><em class="sig-param">users</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub class of the Cases object. Used to map the users to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>users</strong> (<em>list</em>) – A array of user data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.workflow_event">
 <code class="sig-name descname">workflow_event</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.workflow_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.workflow_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Workflow Event object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>case_id</strong> (<em>int</em><em>, </em><em>kwargs</em>) – [Required (alt: caseXid)] The <strong>Case Id</strong> for the Workflow Event.</p></li>
+<li><p><strong>case_xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required (alt: caseId)] The <strong>Case Xid</strong> for the Workflow Event.</p></li>
+<li><p><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Date Added</strong> for the Workflow Event.</p></li>
+<li><p><strong>deleted</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Deleted</strong> flag for the Workflow Event.</p></li>
+<li><p><strong>deleted_reason</strong> (<em>str</em><em>, </em><em>kwargs</em>) – the reason for deleting the event (required input for DELETE
+operation only)</p></li>
+<li><p><strong>event_date</strong> (<em>str</em><em>, </em><em>kwargs</em>) – the time that the Event is logged</p></li>
+<li><p><strong>link</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Link</strong> for the Workflow Event.</p></li>
+<li><p><strong>link_text</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Link Text</strong> for the Workflow Event.</p></li>
+<li><p><strong>notes</strong> (<a class="reference internal" href="#tcex.case_management.note.Note" title="tcex.case_management.note.Note"><em>Note</em></a><em>, </em><em>kwargs</em>) – a list of Notes corresponding to the Event</p></li>
+<li><p><strong>parent_case</strong> (<a class="reference internal" href="#tcex.case_management.case.Case" title="tcex.case_management.case.Case"><em>Case</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Parent Case</strong> for the Workflow Event.</p></li>
+<li><p><strong>summary</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Summary</strong> for the Workflow Event.</p></li>
+<li><p><strong>system_generated</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>System Generated</strong> flag for the Workflow
+Event.</p></li>
+<li><p><strong>user</strong> (<em>User</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>User</strong> for the Workflow Event.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.workflow_events">
 <code class="sig-name descname">workflow_events</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.workflow_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.workflow_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Workflow Events object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Artifact. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
+retrieving the Workflow Event objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.workflow_template">
 <code class="sig-name descname">workflow_template</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.workflow_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.workflow_template" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Workflow Template object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>active</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Active</strong> flag for the Workflow Template.</p></li>
+<li><p><strong>assignee</strong> (<em>Assignee</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Assignee</strong> for the Workflow Template.</p></li>
+<li><p><strong>cases</strong> (<a class="reference internal" href="#tcex.case_management.case.Case" title="tcex.case_management.case.Case"><em>Case</em></a><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Cases</strong> for the Workflow Template.</p></li>
+<li><p><strong>config_artifact</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Config Artifact</strong> for the Workflow
+Template.</p></li>
+<li><p><strong>config_playbook</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Config Playbook</strong> for the Workflow
+Template.</p></li>
+<li><p><strong>config_task</strong> (<em>dict</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Config Task</strong> for the Workflow Template.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>Description</strong> for the Workflow Template.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required] The <strong>Name</strong> for the Workflow Template.</p></li>
+<li><p><strong>target_type</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Read-Only] The <strong>Target Type</strong> for the Workflow Template.</p></li>
+<li><p><strong>version</strong> (<em>int</em><em>, </em><em>kwargs</em>) – The <strong>Version</strong> for the Workflow Template.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.case_management.case_management.CaseManagement.workflow_templates">
 <code class="sig-name descname">workflow_templates</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/case_management/case_management.html#CaseManagement.workflow_templates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.case_management.case_management.CaseManagement.workflow_templates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a instance of Workflow Templates object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Example of params input</span>
+<span class="p">{</span>
+    <span class="s1">&#39;result_limit&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># How many results are retrieved.</span>
+    <span class="s1">&#39;result_start&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># Starting point on retrieved results.</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">]</span>  <span class="c1"># Additional fields returned on the results</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Workflow Template. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
+retrieving the Workflow Event objects.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3576,11 +3981,12 @@ Template.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tcex</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
-<li><p><strong>initial_response</strong> (<em>[</em><em>type</em><em>]</em><em>, </em><em>optional</em>) – [description]. Defaults to None.</p></li>
-<li><p><strong>tql_filters</strong> (<em>[</em><em>type</em><em>]</em><em>, </em><em>optional</em>) – [description]. Defaults to None.</p></li>
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instantiated instance of TcEx object.</p></li>
+<li><p><strong>initial_response</strong> (<em>dict</em><em>, </em><em>optional</em>) – Initial data in
+Case Object for Workflow Template. Defaults to None.</p></li>
+<li><p><strong>tql_filters</strong> (<em>list</em><em>, </em><em>optional</em>) – List of TQL filters. Defaults to None.</p></li>
 <li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dict of the params to be sent while
-retrieving the Workflow Template objects.</p></li>
+retrieving the Workflow Event objects.</p></li>
 </ul>
 </dd>
 </dl>

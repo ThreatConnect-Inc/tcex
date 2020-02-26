@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
 
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -123,6 +123,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#external-app-templates">External App Templates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-config-data">Example Config data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#external-external">External (external)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id5">app.py</a></li>
 </ul>
@@ -795,6 +796,8 @@ optional arguments:
 <h2>External App Templates<a class="headerlink" href="#external-app-templates" title="Permalink to this headline">¶</a></h2>
 <p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two init params are supported during the initialization of TcEx.  The first option, <code class="docutils literal notranslate"><span class="pre">TcEx(config_file='app_config.json)</span></code>, takes a JSON file as input for the App configuration file. The second option, <code class="docutils literal notranslate"><span class="pre">TcEx(config=app_config_dict)</span></code>, takes a dictionary of configuration data.  Either param will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the <strong>app.py</strong> file, if required.</p>
+<div class="section" id="example-config-data">
+<h3>Example Config data<a class="headerlink" href="#example-config-data" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;api_access_id&quot;</span><span class="o">:</span> <span class="s2">&quot;API_ACCESS_ID&quot;</span><span class="p">,</span>
   <span class="s2">&quot;api_default_org&quot;</span><span class="o">:</span> <span class="s2">&quot;API_DEFAULT_ORG&quot;</span><span class="p">,</span>
@@ -812,6 +815,7 @@ optional arguments:
 </pre></div>
 </div>
 <p>In the example above the proxy configuration is only required if using a proxy server in the environment.</p>
+</div>
 <div class="section" id="external-external">
 <h3>External (external)<a class="headerlink" href="#external-external" title="Permalink to this headline">¶</a></h3>
 <p>This basic template provides the structure for an External App without any logic.  This template is intended for advanced users that only require the App structure.</p>

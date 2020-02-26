@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -202,11 +202,12 @@
 <span class="sd">        }</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        tcex ([type]): [description]</span>
-<span class="sd">        initial_response ([type], optional): [description]. Defaults to None.</span>
-<span class="sd">        tql_filters ([type], optional): [description]. Defaults to None.</span>
+<span class="sd">        tcex (TcEx): An instantiated instance of TcEx object.</span>
+<span class="sd">        initial_response (dict, optional): Initial data in</span>
+<span class="sd">            Case Object for Workflow Template. Defaults to None.</span>
+<span class="sd">        tql_filters (list, optional): List of TQL filters. Defaults to None.</span>
 <span class="sd">        params(dict, optional): Dict of the params to be sent while</span>
-<span class="sd">            retrieving the Workflow Template objects.</span>
+<span class="sd">            retrieving the Workflow Event objects.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">initial_response</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

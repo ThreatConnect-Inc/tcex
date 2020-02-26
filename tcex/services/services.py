@@ -131,9 +131,11 @@ class Services:
                 session_id = self.session_id(trigger_id)
 
                 # get instance of playbook specifically for this thread
-                playbook = self.tcex.pb(
-                    context=session_id, output_variables=config.get('tc_playbook_out_variables', [])
-                )
+                outputs = config.get('tc_playbook_out_variables') or []
+                if isinstance(outputs, str):
+                    outputs = outputs.split(',')
+
+                playbook = self.tcex.pb(context=session_id, output_variables=outputs)
 
                 self.tcex.log.info(f'Trigger Session ID: {session_id}')
 
@@ -745,9 +747,11 @@ class Services:
             self.tcex.log.error(f"Could not find config for triggerId {message.get('triggerId')}")
 
         # get an instance of playbooks for App
-        playbook = self.tcex.pb(
-            context=self.thread_name, output_variables=config.get('tc_playbook_out_variables')
-        )
+        outputs = config.get('tc_playbook_out_variables') or []
+        if isinstance(outputs, str):
+            outputs = outputs.split(',')
+
+        playbook = self.tcex.pb(context=self.thread_name, output_variables=outputs)
 
         try:
             request_key = message.get('requestKey')
