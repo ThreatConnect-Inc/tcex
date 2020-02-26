@@ -56,6 +56,8 @@ class ReadArg:
             The value of this boolean will control enabling/disabling this feature.
         fail_msg (str, kwargs): The message to log when raising RuntimeError.
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
+        return_indicator_values (bool, kwargs): Defaults to False. If True, return a list of
+            indicator values from the given argument (e.g. ["foo.example.com", "bar.example.com"]).
     """
 
     def __init__(self, arg, **kwargs):
@@ -66,6 +68,7 @@ class ReadArg:
         self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
         self.fail_on = kwargs.get('fail_on', [])
+        self.return_indicator_values = kwargs.get('return_indicator_values', False)
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -94,7 +97,10 @@ class ReadArg:
             app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
 
             # retrieve data from Redis and call decorated function
-            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+            if self.return_indicator_values:
+                arg_data = app.tcex.playbook.read_indicator_values(getattr(app.args, self.arg))
+            else:
+                arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
             arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
             if self.default is not None and arg_data is None:
                 arg_data = self.default
