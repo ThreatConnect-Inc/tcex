@@ -499,6 +499,26 @@ class TestUtils:
         assert len(tcex.playbook._variable_types) == 10
 
     @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:s1!String', '1')],
+    )
+    def test_playbook_read_indicator_values(self, variable, value, playbook_app):
+        """Test the read_indicator_values method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # TODO: I need to test in a context where I can validate whether or not this test works - once it is working, add more parameters to this test
+
+        result = tcex.playbook.read_indicator_values(variable, True)
+        assert result == [value]
+
+    @pytest.mark.parametrize(
         'variable,value,alt_variable,alt_value,expected',
         [
             ('#App:0001:s1!String', '1', '#App:0001:s2!String', '2', '1'),

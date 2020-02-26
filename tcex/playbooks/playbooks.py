@@ -417,6 +417,34 @@ class Playbooks(PlaybooksBase):
 
         return value
 
+    def read_indicator_values(self, key):
+        """Read the value at the given key and return indicators from the value.
+
+        This method will call the `read` method and then will process the data so as to return a list of strings where each string is an indicator (the summary of an indicator - e.g. ["foo.example.com", "bar.example.com"])
+
+        Args:
+            key (string): The variable to read from the DB.
+
+        Returns:
+            (list): A list of strings containing the indicators
+        """
+        read_results = self.read(key, array=True)
+        variable_type = self.variable_type(key)
+
+        # handle the odd format of tcEnhancedEntityArrays which follow the format detailed here:
+        # https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#batch-indicator-input-file-format-v2
+        if variable_type.lower() == 'tcenhancedentityarray':
+            read_results = read_results[0].get('indicator', [])
+
+        if variable_type.lower() in ['tcenhancedentity', 'tcenhancedentityarray']:
+            indicator_values = [i['summary'] for i in read_results]
+        elif variable_type.lower() in ['tcentity', 'tcentityarray']:
+            indicator_values = [i['value'] for i in read_results]
+        else:
+            indicator_values = read_results
+
+        return indicator_values
+
     def read_choice(self, key, alt_key):
         """Read method for choice inputs.
 
