@@ -78,7 +78,7 @@ class IterateOnArg:
 
             # retrieve data from Redis if variable and always return and array.
             results = []
-            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), array=True)
+            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg))
             arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
             if arg_data is None:
                 arg_data = [None]
