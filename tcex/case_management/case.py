@@ -81,10 +81,10 @@ class Case(CommonCaseManagement):
         resolution (str, kwargs): The **Resolution** for the Case.
         severity (str, kwargs): [Required] The **Severity** for the Case.
         status (str, kwargs): [Required] The **Status** for the Case.
-        tags (Tag, kwargs): a list of Tags corresponding to the Case
+        tags (case_management.tag.Tag, kwargs): a list of Tags corresponding to the Case
             (NOTE: Setting this parameter will replace any existing tag(s) with
             the one(s) specified)
-        tasks (Task, kwargs): a list of Tasks corresponding to the Case
+        tasks (case_management.task.Task, kwargs): a list of Tasks corresponding to the Case
         user_access (User, kwargs): a list of Users that, when defined, are the only
             ones allowed to view or edit the Case
         workflow_events (WorkflowEvent, kwargs): The **Events** for the Case.
@@ -299,7 +299,7 @@ class Case(CommonCaseManagement):
     def user_access(self):
         """Return the **User Access** for the Case."""
         if self._user_access is None:
-            self._user_access = self.tcex.cm.users()
+            self._user_access = self.tcex.cm.users(users=None)
         elif isinstance(self._user_access, dict):
             self._user_access = self.tcex.cm.users(users=self._user_access.get('data', []))
         return self._user_access
