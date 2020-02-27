@@ -344,7 +344,7 @@ class CommonCaseManagement:
         r = None
         try:
             r = self.tcex.session.get(url, params=params)
-        except (ConnectionError, ProxyError):
+        except (ConnectionError, ProxyError):  # pragma: no cover
             self.tcex.handle_error(
                 951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
             )
