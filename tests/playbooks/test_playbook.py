@@ -514,8 +514,9 @@ class TestUtils:
         ).tcex
 
         # TODO: I need to test in a context where I can validate whether or not this test works - once it is working, add more parameters to this test
+        # TODO: Test the default argument for the read_indicator_values function
 
-        result = tcex.playbook.read_indicator_values(variable, True)
+        result = tcex.playbook.read_indicator_values(variable)
         assert result == [value]
 
     @pytest.mark.parametrize(
