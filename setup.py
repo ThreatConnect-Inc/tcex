@@ -12,10 +12,14 @@ if not metadata:
     raise RuntimeError(f'Could not load metadata file ({metadata_file}).')
 
 dev_packages = [
+    'black',
     'CommonMark==0.5.5',
     'deepdiff',
+    'flake8',
     'jmespath',
     'mako',
+    'pre-commit',
+    'pylint',
     'pytest',
     'pytest-cov',
     'pytest-html',

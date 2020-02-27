@@ -66,6 +66,7 @@ class ReadArg:
         self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
         self.fail_on = kwargs.get('fail_on', [])
+        self.embedded = kwargs.get('embedded', True)
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -94,7 +95,9 @@ class ReadArg:
             app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
 
             # retrieve data from Redis and call decorated function
-            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+            arg_data = app.tcex.playbook.read(
+                getattr(app.args, self.arg), self.array, embedded=self.embedded
+            )
             arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
             if self.default is not None and arg_data is None:
                 arg_data = self.default

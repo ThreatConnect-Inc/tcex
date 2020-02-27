@@ -20,9 +20,7 @@ class App(ExternalApp):
         self.batch = self.tcex.batch(self.args.tc_owner)
 
         # using tcex requests to get built-in features (e.g., proxy, logging, retries)
-        request = self.tcex.request()
-
-        with request.session as s:
+        with self.tcex.session_external as s:
             r = s.get(self.url)
 
             if r.ok:
