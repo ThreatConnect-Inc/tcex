@@ -18,10 +18,6 @@ class App(PlaybookApp):
         super().__init__(_tcex)
         self.pretty_json = {}
 
-    # def done(self):
-    #     """Perform cleanup work before after App main logic."""
-    #     self.tcex.log.debug('Running done.')
-
     def run(self):
         """Run the App main logic.
 
@@ -47,9 +43,13 @@ class App(PlaybookApp):
         # set the App exit message
         self.exit_message = 'JSON prettified.'
 
-    # def start(self):
-    #     """Perform prep work before running App main logic."""
-    #     self.tcex.log.debug('Running start.')
+    # def setup(self):
+    #     """Perform prep/setup work before running App main logic."""
+    #     self.tcex.log.debug('Running setup.')
+
+    # def teardown(self):
+    #     """Perform cleanup/teardown work before after App main logic."""
+    #     self.tcex.log.debug('Running teardown.')
 
     def write_output(self):
         """Write the Playbook output variables.

@@ -46,8 +46,8 @@ if __name__ == '__main__':
         # load App class
         app = App(tcex)
 
-        # perform prep/startup operations
-        app.start()
+        # perform prep/setup operations
+        app.setup()
 
         # run the App logic
         if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
@@ -75,8 +75,8 @@ if __name__ == '__main__':
         tcex.playbook.write_output()
         app.write_output()  # pylint: disable=E1101
 
-        # perform cleanup operations
-        app.done()
+        # perform cleanup/teardown operations
+        app.teardown()
 
         # explicitly call the exit method
         tcex.playbook.exit(msg=app.exit_message)
