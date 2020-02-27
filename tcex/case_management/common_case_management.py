@@ -341,7 +341,13 @@ class CommonCaseManagement:
             message = '{"message": "No ID provided.", "status": "Error"}'
             self.tcex.handle_error(952, ['GET', '404', message, url])
 
-        r = self.tcex.session.get(url, params=params)
+        r = None
+        try:
+            r = self.tcex.session.get(url, params=params)
+        except (ConnectionError, ProxyError):
+            self.tcex.handle_error(
+                951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
+            )
         self.tcex.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Status Code: {r.status_code}, '
