@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case Management Collection"""
+from requests.exceptions import ProxyError
+
 from .tql import TQL
 
 
@@ -250,13 +252,19 @@ class CommonCaseManagementCollection:
                 return
 
         while True:
-            r = self.tcex.session.get(url, params=parameters)
-            self.tcex.log.debug(
-                f'Method: ({r.request.method.upper()}), '
-                f'Status Code: {r.status_code}, '
-                f'URl: ({r.url})'
-            )
-            self.tcex.log.trace(f'response: {r.text}')
+            r = None
+            try:
+                r = self.tcex.session.get(url, params=parameters)
+                self.tcex.log.debug(
+                    f'Method: ({r.request.method.upper()}), '
+                    f'Status Code: {r.status_code}, '
+                    f'URl: ({r.url})'
+                )
+                self.tcex.log.trace(f'response: {r.text}')
+            except (ConnectionError, ProxyError):  # pragma: no cover
+                self.tcex.handle_error(
+                    951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
+                )
 
             if not self.success(r):
                 err = r.text or r.reason

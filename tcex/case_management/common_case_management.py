@@ -274,12 +274,18 @@ class CommonCaseManagement:
             return
 
         url = f'{self.api_endpoint}/{self.id}'
-        r = self.tcex.session.delete(url)
-        self.tcex.log.debug(
-            f'Method: ({r.request.method.upper()}), '
-            f'Status Code: {r.status_code}, '
-            f'URl: ({r.url})'
-        )
+        r = None
+        try:
+            r = self.tcex.session.delete(url)
+            self.tcex.log.debug(
+                f'Method: ({r.request.method.upper()}), '
+                f'Status Code: {r.status_code}, '
+                f'URl: ({r.url})'
+            )
+        except (ConnectionError, ProxyError):  # pragma: no cover
+            self.tcex.handle_error(
+                951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
+            )
         if len(r.content) < 5000:
             self.tcex.log.debug(u'response text: {}'.format(r.text))
         else:  # pragma: no cover
@@ -341,7 +347,13 @@ class CommonCaseManagement:
             message = '{"message": "No ID provided.", "status": "Error"}'
             self.tcex.handle_error(952, ['GET', '404', message, url])
 
-        r = self.tcex.session.get(url, params=params)
+        r = None
+        try:
+            r = self.tcex.session.get(url, params=params)
+        except (ConnectionError, ProxyError):  # pragma: no cover
+            self.tcex.handle_error(
+                951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
+            )
         self.tcex.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Status Code: {r.status_code}, '
