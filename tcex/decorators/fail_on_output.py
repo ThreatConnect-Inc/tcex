@@ -24,6 +24,7 @@ class FailOnOutput:
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
         fail_msg (str, kwargs): The message to log when raising RuntimeError.
+        fail_msg_property (str, kwargs): The App property containting the dynamic exit message.
         fail_on (list, kwargs): Defaults to None.
             Fail if return value from App method is in the list.
         write_output (bool, kwargs): Defaults to True.
@@ -35,6 +36,7 @@ class FailOnOutput:
         self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg', f'Method returned invalid output.')
         self.fail_on = kwargs.get('fail_on', [])
+        self.fail_msg_property = kwargs.get('fail_msg_property')
         self.write_output = kwargs.get('write_output', True)
 
     def __call__(self, fn):
@@ -67,7 +69,7 @@ class FailOnOutput:
             app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
 
             failed = False
-            if enabled is True:
+            if enabled:
                 if isinstance(data, list):
                     # validate each value in the list of results.
                     for d in data:
@@ -83,8 +85,15 @@ class FailOnOutput:
                         app.tcex.playbook.write_output()
                         if hasattr(app, 'write_output'):
                             app.write_output()
-                    app.exit_message = self.fail_msg  # for test cases
-                    app.tcex.exit(1, self.fail_msg)
+                    app.exit_message = self.get_fail_msg(app)  # for test cases
+                    app.tcex.exit(1, self.get_fail_msg(app))
             return data
 
         return fail
+
+    def get_fail_msg(self, app):
+        """Return the appropriate fail message."""
+        fail_msg = self.fail_msg
+        if self.fail_msg_property and hasattr(app, self.fail_msg_property):
+            fail_msg = getattr(app, self.fail_msg_property)
+        return fail_msg

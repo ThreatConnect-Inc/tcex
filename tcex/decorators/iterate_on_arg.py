@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import inspect
 
 
 class IterateOnArg:
@@ -39,6 +40,7 @@ class IterateOnArg:
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
         fail_msg (str, kwargs): The message to log when raising RuntimeError.
+        fail_msg_property (str, kwargs): The App property containting the dynamic exit message.
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
     """
 
@@ -48,6 +50,7 @@ class IterateOnArg:
         self.default = kwargs.get('default')
         self.fail_enabled = kwargs.get('fail_enabled', False)
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
+        self.fail_msg_property = kwargs.get('fail_msg_property')
         self.fail_on = kwargs.get('fail_on', [])
 
     def __call__(self, fn):
@@ -66,6 +69,9 @@ class IterateOnArg:
             Args:
                 app (class): The instance of the App class "self".
             """
+            # get the signature for the decorated method
+            fn_signature = inspect.signature(fn).parameters
+
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled
             if not isinstance(self.fail_enabled, bool):
@@ -85,7 +91,16 @@ class IterateOnArg:
             elif not isinstance(arg_data, list):
                 arg_data = [arg_data]
 
+            _index = 0
+            _array_length = len(arg_data)
             for ad in arg_data:
+
+                # add "magic" args
+                if '_index' in fn_signature:
+                    kwargs['_index'] = _index
+                if '_array_length' in fn_signature:
+                    kwargs['_array_length'] = _array_length
+
                 if ad is None and self.default is not None:
                     # set value passed to method to default if value is None.
                     ad = self.default
@@ -97,7 +112,8 @@ class IterateOnArg:
                 if enabled and self.fail_on:
                     if ad in self.fail_on:
                         app.tcex.log.debug(f'Invalid value ({ad}) found for {self.arg}.')
-                        app.tcex.exit(1, self.fail_msg)
+                        app.exit_message = self.get_fail_msg(app)  # for test case
+                        app.tcex.exit(1, self.get_fail_msg(app))
 
                 # Add logging for debug/troubleshooting
                 if (
@@ -112,6 +128,16 @@ class IterateOnArg:
                 # add results to kwargs
                 kwargs[self.arg] = ad
                 results.append(fn(app, *args, **kwargs))
+
+                # increment index
+                _index += 1
             return results
 
         return loop
+
+    def get_fail_msg(self, app):
+        """Return the appropriate fail message."""
+        fail_msg = self.fail_msg
+        if self.fail_msg_property and hasattr(app, self.fail_msg_property):
+            fail_msg = getattr(app, self.fail_msg_property)
+        return fail_msg

@@ -18,6 +18,7 @@ class OnException:
 
     Args:
         exit_msg (str): The message to send to exit method.
+        exit_msg_property (str, kwargs): The App property containting the dynamic exit message.
         exit_enabled (boolean|str, kwargs): Accepts a boolean or string value.  If a boolean value
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
@@ -26,10 +27,11 @@ class OnException:
             If enabled, will call app.write_output() when an exception is raised.
     """
 
-    def __init__(self, exit_msg=None, exit_enabled=True, write_output=True):
+    def __init__(self, exit_msg=None, exit_msg_property=None, exit_enabled=True, write_output=True):
         """Initialize Class properties"""
         self.exit_enabled = exit_enabled
         self.exit_msg = exit_msg or 'An exception has been caught. See the logs for more details.'
+        self.exit_msg_property = exit_msg_property
         self.write_output = write_output
 
     def __call__(self, fn):
@@ -62,13 +64,19 @@ class OnException:
                 return fn(app, *args, **kwargs)
             except Exception as e:
                 app.tcex.log.error(f'method failure ({e})')
-                app.exit_message = self.exit_msg
-                if self.write_output:
-                    app.tcex.playbook.write_output()
-                    if hasattr(app, 'write_output'):
-                        app.write_output()
+                app.exit_message = self.get_exit_msg(app)  # for test cases
                 if enabled:
-                    app.exit_message = self.exit_msg  # for test cases
-                    app.tcex.exit(1, self.exit_msg)
+                    if self.write_output:
+                        app.tcex.playbook.write_output()
+                        if hasattr(app, 'write_output'):
+                            app.write_output()
+                    app.tcex.exit(1, self.get_exit_msg(app))
 
         return exception
+
+    def get_exit_msg(self, app):
+        """Return the appropriate fail message."""
+        exit_msg = self.exit_msg
+        if self.exit_msg_property and hasattr(app, self.exit_msg_property):
+            exit_msg = getattr(app, self.exit_msg_property)
+        return exit_msg

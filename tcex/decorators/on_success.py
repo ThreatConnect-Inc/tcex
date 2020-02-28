@@ -18,11 +18,13 @@ class OnSuccess:
 
     Args:
         exit_msg (str): The message to send to exit method.
+        exit_msg_property (str, kwargs): The App property containting the dynamic exit message.
     """
 
-    def __init__(self, exit_msg=None):
+    def __init__(self, exit_msg=None, exit_msg_property=None):
         """Initialize Class properties"""
         self.exit_msg = exit_msg or 'App finished successfully.'
+        self.exit_msg_property = exit_msg_property
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -40,7 +42,14 @@ class OnSuccess:
             Args:
                 app (class): The instance of the App class "self".
             """
-            app.exit_message = self.exit_msg
+            app.exit_message = self.get_exit_msg(app)
             return fn(app, *args, **kwargs)
 
         return completion
+
+    def get_exit_msg(self, app):
+        """Return the appropriate fail message."""
+        exit_msg = self.exit_msg
+        if self.exit_msg_property and hasattr(app, self.exit_msg_property):
+            exit_msg = getattr(app, self.exit_msg_property)
+        return exit_msg

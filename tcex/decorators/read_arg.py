@@ -55,6 +55,7 @@ class ReadArg:
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
         fail_msg (str, kwargs): The message to log when raising RuntimeError.
+        fail_msg_property (str, kwargs): The App property containting the dynamic exit message.
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
     """
 
@@ -65,6 +66,7 @@ class ReadArg:
         self.default = kwargs.get('default')
         self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
+        self.fail_msg_property = kwargs.get('fail_msg_property')
         self.fail_on = kwargs.get('fail_on', [])
         self.embedded = kwargs.get('embedded', True)
 
@@ -109,8 +111,8 @@ class ReadArg:
             if enabled and self.fail_on:
                 if arg_data in self.fail_on:
                     app.tcex.log.error(f'Invalid value ({arg_data}) found for {self.arg}.')
-                    app.exit_message = self.fail_msg  # for test cases
-                    app.tcex.exit(1, self.fail_msg)
+                    app.exit_message = self.get_fail_msg(app)  # for test cases
+                    app.tcex.exit(1, self.get_fail_msg(app))
 
             # add results to kwargs
             kwargs[self.arg] = arg_data
@@ -125,3 +127,10 @@ class ReadArg:
             return fn(app, *args, **kwargs)
 
         return read
+
+    def get_fail_msg(self, app):
+        """Return the appropriate fail message."""
+        fail_msg = self.fail_msg
+        if self.fail_msg_property and hasattr(app, self.fail_msg_property):
+            fail_msg = getattr(app, self.fail_msg_property)
+        return fail_msg
