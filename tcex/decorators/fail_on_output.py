@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import wrapt
 
 
 class FailOnOutput:
@@ -39,7 +40,8 @@ class FailOnOutput:
         self.fail_msg_property = kwargs.get('fail_msg_property')
         self.write_output = kwargs.get('write_output', True)
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
@@ -56,7 +58,7 @@ class FailOnOutput:
                 app (class): The instance of the App class "self".
             """
             # call method to get output
-            data = fn(app, *args, **kwargs)
+            data = wrapped(*args, **kwargs)
 
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled
@@ -89,7 +91,7 @@ class FailOnOutput:
                     app.tcex.exit(1, self.get_fail_msg(app))
             return data
 
-        return fail
+        return fail(instance, *args, **kwargs)
 
     def get_fail_msg(self, app):
         """Return the appropriate fail message."""

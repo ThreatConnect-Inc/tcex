@@ -67,6 +67,7 @@ setup(
         'six>=1.11.0',
         'stdlib-list',
         'tzlocal',
+        'wrapt',
     ],
     license=metadata['__license__'],
     # long_description=readme,

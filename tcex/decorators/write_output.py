@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import wrapt
 
 
 class WriteOutput:
@@ -38,7 +39,8 @@ class WriteOutput:
         self.default = default
         self.variable_type = variable_type
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
@@ -54,7 +56,7 @@ class WriteOutput:
             Args:
                 app (class): The instance of the App class "self".
             """
-            data = fn(app, *args, **kwargs)
+            data = wrapped(*args, **kwargs)
             if data is None and self.default is not None:
                 data = self.default
 
@@ -67,4 +69,4 @@ class WriteOutput:
                 app.tcex.playbook.add_output(self.key, data, self.variable_type)
             return data
 
-        return output
+        return output(instance, *args, **kwargs)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import wrapt
 
 
 class OnSuccess:
@@ -18,15 +19,14 @@ class OnSuccess:
 
     Args:
         exit_msg (str): The message to send to exit method.
-        exit_msg_property (str, kwargs): The App property containting the dynamic exit message.
     """
 
-    def __init__(self, exit_msg=None, exit_msg_property=None):
+    def __init__(self, exit_msg=None):
         """Initialize Class properties"""
         self.exit_msg = exit_msg or 'App finished successfully.'
-        self.exit_msg_property = exit_msg_property
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
@@ -42,14 +42,7 @@ class OnSuccess:
             Args:
                 app (class): The instance of the App class "self".
             """
-            app.exit_message = self.get_exit_msg(app)
-            return fn(app, *args, **kwargs)
+            app.exit_message = self.exit_msg
+            return wrapped(*args, **kwargs)
 
-        return completion
-
-    def get_exit_msg(self, app):
-        """Return the appropriate fail message."""
-        exit_msg = self.exit_msg
-        if self.exit_msg_property and hasattr(app, self.exit_msg_property):
-            exit_msg = getattr(app, self.exit_msg_property)
-        return exit_msg
+        return completion(instance, *args, **kwargs)

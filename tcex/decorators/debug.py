@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import wrapt
 
 
 class Debug:
@@ -16,7 +17,8 @@ class Debug:
             print(arg1, arg2)
     """
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
@@ -32,10 +34,10 @@ class Debug:
             Args:
                 app (class): The instance of the App class "self".
             """
-            data = fn(app, *args, **kwargs)
+            data = wrapped(*args, **kwargs)
             app.tcex.log.debug(
                 f'function: "{self.__class__.__name__}", args: "{args}", kwargs: "{kwargs}"'
             )
             return data
 
-        return debug
+        return debug(instance, *args, **kwargs)

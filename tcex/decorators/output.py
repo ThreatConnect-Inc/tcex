@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import wrapt
 
 
 class Output:
@@ -32,7 +33,8 @@ class Output:
         self.attribute = attribute
         self.overwrite = overwrite
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
@@ -48,7 +50,7 @@ class Output:
             Args:
                 app (class): The instance of the App class "self".
             """
-            data = fn(app, *args, **kwargs)
+            data = wrapped(*args, **kwargs)
             attr = getattr(app, self.attribute)
 
             # tracker to indicate see if attribute has already been updated
@@ -82,4 +84,4 @@ class Output:
 
             return data
 
-        return output
+        return output(instance, *args, **kwargs)

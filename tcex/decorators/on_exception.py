@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import wrapt
 
 
 class OnException:
@@ -18,7 +19,6 @@ class OnException:
 
     Args:
         exit_msg (str): The message to send to exit method.
-        exit_msg_property (str, kwargs): The App property containting the dynamic exit message.
         exit_enabled (boolean|str, kwargs): Accepts a boolean or string value.  If a boolean value
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
@@ -27,18 +27,25 @@ class OnException:
             If enabled, will call app.write_output() when an exception is raised.
     """
 
-    def __init__(self, exit_msg=None, exit_msg_property=None, exit_enabled=True, write_output=True):
+    def __init__(self, exit_msg=None, exit_enabled=True, write_output=True):
         """Initialize Class properties"""
         self.exit_enabled = exit_enabled
         self.exit_msg = exit_msg or 'An exception has been caught. See the logs for more details.'
-        self.exit_msg_property = exit_msg_property
         self.write_output = write_output
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
-            fn (function): The decorated function.
+            wrapped (callable): The wrapped function which in turns
+                needs to be called by your wrapper function.
+            instance (App): The object to which the wrapped
+                function was bound when it was called.
+            args (list): The list of positional arguments supplied
+                when the decorated function was called.
+            kwargs (dict): The dictionary of keyword arguments
+                supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
@@ -61,22 +68,15 @@ class OnException:
             app.tcex.log.debug(f'Fail enabled is {enabled} ({self.exit_enabled}).')
 
             try:
-                return fn(app, *args, **kwargs)
+                return wrapped(*args, **kwargs)
             except Exception as e:
                 app.tcex.log.error(f'method failure ({e})')
-                app.exit_message = self.get_exit_msg(app)  # for test cases
+                app.exit_message = self.exit_msg  # for test cases
                 if enabled:
                     if self.write_output:
                         app.tcex.playbook.write_output()
                         if hasattr(app, 'write_output'):
                             app.write_output()
-                    app.tcex.exit(1, self.get_exit_msg(app))
+                    app.tcex.exit(1, self.exit_msg)
 
-        return exception
-
-    def get_exit_msg(self, app):
-        """Return the appropriate fail message."""
-        exit_msg = self.exit_msg
-        if self.exit_msg_property and hasattr(app, self.exit_msg_property):
-            exit_msg = getattr(app, self.exit_msg_property)
-        return exit_msg
+        return exception(instance, *args, **kwargs)
