@@ -7,7 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
-from distutils.version import StrictVersion  # pylint: disable=E0611
+from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from urllib.parse import quote
 
 import colorama as c
@@ -198,7 +198,7 @@ class Lib(Bin):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-            out, err = p.communicate()  # pylint: disable=W0612
+            out, err = p.communicate()  # pylint: disable=unused-variable
 
             if p.returncode != 0:
                 print(f'{c.Style.BRIGHT}{c.Fore.RED}FAIL')

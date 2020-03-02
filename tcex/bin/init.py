@@ -68,7 +68,7 @@ class Init(Bin):
         message = (
             f'{c.Fore.MAGENTA}Would you like to overwrite the contents of {filename} (y/[n])? '
         )
-        response = input(message)  # noqa: F821, pylint: disable=E0602
+        response = input(message)
         response = response.lower()
 
         if response in ['y', 'yes']:
@@ -158,7 +158,7 @@ class Init(Bin):
                 f'{c.Fore.YELLOW}The tcex.json file excludes "requirements.txt". '
                 f'This file is required to be App Builder compliant. Remove entry ([y]/n)? '
             )
-            response = input(message) or 'y'  # noqa: F821, pylint: disable=E0602
+            response = input(message) or 'y'
             if response in ['y', 'yes']:
                 self.tcex_json.get('package', {}).get('excludes', []).remove('requirements.txt')
 
@@ -175,7 +175,7 @@ class Init(Bin):
             message = (
                 f'{c.Fore.YELLOW}The tcex.json file is missing excludes items. Update ([y]/n)? '
             )
-            response = input(message) or 'y'  # noqa: F821, pylint: disable=E0602
+            response = input(message) or 'y'
 
             if response in ['y', 'yes']:
                 # get unique list of excludes
