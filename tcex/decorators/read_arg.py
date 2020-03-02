@@ -58,6 +58,10 @@ class ReadArg:
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
         indicator_values (bool, kwargs): Defaults to False. If True, return a list of
             indicator values from the given argument (e.g. ["foo.example.com", "bar.example.com"]).
+        group_values (bool, kwargs): Defaults to False. If True, return a list of group names from
+            the given argument.
+        group_ids (bool, kwargs): Defaults to False. If True, return a list of group ids from the
+            given argument.
     """
 
     def __init__(self, arg, **kwargs):
@@ -69,6 +73,8 @@ class ReadArg:
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
         self.fail_on = kwargs.get('fail_on', [])
         self.indicator_values = kwargs.get('indicator_values', False)
+        self.group_values = kwargs.get('group_values', False)
+        self.group_ids = kwargs.get('group_ids', False)
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -99,6 +105,10 @@ class ReadArg:
             # retrieve data from Redis and call decorated function
             if self.indicator_values:
                 arg_data = app.tcex.playbook.read_indicator_values(getattr(app.args, self.arg))
+            elif self.group_values:
+                arg_data = app.tcex.playbook.read_group_values(getattr(app.args, self.arg))
+            elif self.group_ids:
+                arg_data = app.tcex.playbook.read_group_ids(getattr(app.args, self.arg))
             else:
                 arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
             arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
