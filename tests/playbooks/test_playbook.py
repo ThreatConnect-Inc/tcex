@@ -499,6 +499,72 @@ class TestUtils:
         assert len(tcex.playbook._variable_types) == 10
 
     @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:s1!String', 's1')],
+    )
+    def test_playbook_read_indicator_values(self, variable, value, playbook_app):
+        """Test the read_indicator_values method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # TODO: Validate that this test is working properly
+        # TODO: Provide more parametrized input arguments to this test
+        # TODO: Test the default argument for the read_indicator_values function
+
+        result = tcex.playbook.read_indicator_values(variable)
+        assert result == [value]
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:s1!String', 's1')],
+    )
+    def test_playbook_read_group_values(self, variable, value, playbook_app):
+        """Test the read_group_values method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # TODO: Validate that this test is working properly
+        # TODO: Provide more parametrized input arguments to this test
+        # TODO: Test the default argument for the read_group_values function
+
+        result = tcex.playbook.read_group_values(variable)
+        assert result == [value]
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:s1!String', 's1')],
+    )
+    def test_playbook_read_group_ids(self, variable, value, playbook_app):
+        """Test the read_group_ids method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # TODO: Validate that this test is working properly
+        # TODO: Provide more parametrized input arguments to this test
+        # TODO: Test the default argument for the read_group_ids function
+
+        result = tcex.playbook.read_group_ids(variable)
+        assert result == [value]
+
+    @pytest.mark.parametrize(
         'variable,value,alt_variable,alt_value,expected',
         [
             ('#App:0001:s1!String', '1', '#App:0001:s2!String', '2', '1'),
