@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Validate App outputs Class."""
 # flake8: noqa
-# pylint: disable=C0301
+# pylint: disable=line-too-long
 
 
 class Validate(object):

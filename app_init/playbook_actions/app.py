@@ -6,7 +6,7 @@ from playbook_app import PlaybookApp
 from tcex import IterateOnArg, OnException, OnSuccess, Output
 
 
-# pylint: disable=R0201
+# pylint: disable=no-self-use
 class App(PlaybookApp):
     """Playbook App"""
 

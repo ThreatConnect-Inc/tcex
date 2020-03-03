@@ -64,7 +64,7 @@ if __name__ == '__main__':
             elif hasattr(app, tc_action_formatted):
                 getattr(app, tc_action_formatted)()
             elif hasattr(app, tc_action_map):
-                app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=E1101
+                app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=no-member
             else:
                 tcex.exit(1, f'Action method ({app.args.tc_action}) was not found.')
         else:
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
         # write requested value for downstream Apps
         tcex.playbook.write_output()
-        app.write_output()  # pylint: disable=E1101
+        app.write_output()  # pylint: disable=no-member
 
         # perform cleanup/teardown operations
         app.teardown()

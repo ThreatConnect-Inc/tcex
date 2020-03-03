@@ -356,7 +356,6 @@ class Services:
         Returns:
             Bool: Returns True until shutdown received.
         """
-        self.tcex.log.info('Looping until shutdown')
         while True:
             deadline = time.time() + sleep
             while time.time() < deadline:

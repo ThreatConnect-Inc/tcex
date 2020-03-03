@@ -8,14 +8,14 @@ import pytest
 from tcex.testing import ${class_name}
 from ..profiles import profiles
 
-from .custom_feature import CustomFeature  # pylint: disable=E0402
-from .validate_feature import ValidateFeature  # pylint: disable=E0402
+from .custom_feature import CustomFeature  # pylint: disable=relative-beyond-top-level
+from .validate_feature import ValidateFeature  # pylint: disable=relative-beyond-top-level
 
 # get profile names
 profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d'))
 
 
-# pylint: disable=W0235,too-many-function-args
+# pylint: disable=useless-super-delegation,too-many-function-args
 class TestProfiles(${class_name}):
     """TcEx App Testing Template."""
 

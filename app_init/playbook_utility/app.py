@@ -6,7 +6,7 @@ import json
 from playbook_app import PlaybookApp
 
 
-# pylint: disable=W0201
+# pylint: disable=attribute-defined-outside-init
 class App(PlaybookApp):
     """Playbook App"""
 
