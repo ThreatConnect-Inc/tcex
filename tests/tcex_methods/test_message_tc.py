@@ -3,7 +3,6 @@
 import os
 
 
-# pylint: disable=R0201,W0201
 class TestUtils:
     """Test the TcEx Batch Module."""
 

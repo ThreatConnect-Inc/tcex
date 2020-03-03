@@ -24,7 +24,6 @@ class TestToken:
         # get clean instance of tcex
         tcex = service_app().tcex
 
-        # args = tcex.args  # noqa: F841; pylint: disable=unused-variable
         token_key = '666'
         tcex.token.register_token(
             key=token_key,

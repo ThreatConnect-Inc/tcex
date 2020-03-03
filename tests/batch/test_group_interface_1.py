@@ -3,7 +3,7 @@
 import pytest
 
 
-# pylint: disable=R0201,W0201
+# pylint: disable=no-self-use
 class TestGroup1:
     """Test the TcEx Batch Module."""
 
