@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
@@ -103,7 +104,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
@@ -276,7 +278,7 @@
 <span class="sd">        parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Artifact.</span>
 <span class="sd">        source (str, kwargs): The **Source** for the Artifact.</span>
 <span class="sd">        summary (str, kwargs): [Required] The **Summary** for the Artifact.</span>
-<span class="sd">        task (Task, kwargs): [Read-Only] The **Task** for the Artifact.</span>
+<span class="sd">        task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Artifact.</span>
 <span class="sd">        task_id (int, kwargs): the ID of the task which the Artifact references</span>
 <span class="sd">        task_xid (str, kwargs): the XID of the task which the Artifact references</span>
 <span class="sd">        type (str, kwargs): [Required] The **Type** for the Artifact.</span>

@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Module: Utils" href="module_utils.html" />
-    <link rel="prev" title="Module: Resources" href="module_resource.html" />
+    <link rel="prev" title="Module: Services" href="module_services.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
@@ -105,7 +106,10 @@
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Threat Intelligence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#single-results">Single Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-results">Multiple Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#get-groups-by-type">Get Groups by Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-groups-by-tag">Get Groups by Tag</a></li>
@@ -212,7 +216,23 @@
 
   <div class="section" id="module-threat-intelligence">
 <span id="module-ti"></span><h1>Module: Threat Intelligence<a class="headerlink" href="#module-threat-intelligence" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect TcEx Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExTi</span></code> module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.</p>
+<p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence" title="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ThreatIntelligence</span></code></a> module which provides the following functionality:</p>
+<ul class="simple">
+<li><p>Create - Groups, Indicators, Tasks, and Victims.</p></li>
+<li><p>Delete - Groups, Indicators, Tasks, and Victims.</p></li>
+<li><p>Get - Groups, Indicators, Tasks, and Victims.</p></li>
+<li><p>Update - Groups, Indicators, Tasks, and Victims.</p></li>
+<li><p>Get by Tag</p></li>
+<li><p>All Create, Get, and Update methods include TI metadata (e.g., attributes, security labels, and tags).</p></li>
+</ul>
+<div class="section" id="single-results">
+<h2>Single Results<a class="headerlink" href="#single-results" title="Permalink to this headline">¶</a></h2>
+<p>When using the create, delete, get, or update methods for a single object the module returns a Python Request Response Object (<a class="reference external" href="https://2.python-requests.org/en/v1.1.0/api/#requests.Response">https://2.python-requests.org/en/v1.1.0/api/#requests.Response</a>). The Python Requests Response object has the following common properties: status_code, headers, response.text, response.content. To get a Python dict from the response the <code class="docutils literal notranslate"><span class="pre">response.json()</span></code> method can be used.</p>
+</div>
+<div class="section" id="multiple-results">
+<h2>Multiple Results<a class="headerlink" href="#multiple-results" title="Permalink to this headline">¶</a></h2>
+<p>When working with multiple objects the modules yields the ThreatConnect object entity as a Python dict. The ThreatConnect entity dict format varies depending on the type and matches the <strong>data</strong> response from the API.</p>
+</div>
 <div class="section" id="groups">
 <h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="get-groups-by-type">
@@ -267,10 +287,12 @@
 <p>The example below retrieves a single Adversary with ID 416, if it exists.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">416</span><span class="p">)</span>
 </span><span class="hll"><span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">single</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span>
-</span></pre></div>
+</span><span class="n">group</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})</span>
+</pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="get-group-metadata">
@@ -436,10 +458,12 @@
 <p>The example below retrieves a single Address with Value 1.1.1.1, if it exists.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="s1">&#39;1.1.1.1&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">single</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span>
-</span></pre></div>
+</span><span class="n">indicator</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})</span>
+</pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="get-indicator-metadata">
@@ -603,7 +627,7 @@
         <a href="module_utils.html" class="btn btn-neutral float-right" title="Module: Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="module_resource.html" class="btn btn-neutral float-left" title="Module: Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="module_services.html" class="btn btn-neutral float-left" title="Module: Services" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 

@@ -5,11 +5,27 @@
 Module: Threat Intelligence
 ===========================
 
-The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.tcex_ti.tcex_ti.TcExTi` module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.
+The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.threat_intelligence.threat_intelligence.ThreatIntelligence` module which provides the following functionality:
+
+* Create - Groups, Indicators, Tasks, and Victims.
+* Delete - Groups, Indicators, Tasks, and Victims.
+* Get - Groups, Indicators, Tasks, and Victims.
+* Update - Groups, Indicators, Tasks, and Victims.
+* Get by Tag
+* All Create, Get, and Update methods include TI metadata (e.g., attributes, security labels, and tags).
+
+Single Results
+==============
+
+When using the create, delete, get, or update methods for a single object the module returns a Python Request Response Object (https://2.python-requests.org/en/v1.1.0/api/#requests.Response). The Python Requests Response object has the following common properties: status_code, headers, response.text, response.content. To get a Python dict from the response the ``response.json()`` method can be used.
+
+Multiple Results
+================
+
+When working with multiple objects the modules yields the ThreatConnect object entity as a Python dict. The ThreatConnect entity dict format varies depending on the type and matches the **data** response from the API.
 
 Groups
 ======
-
 
 Get Groups by Type
 ------------------
@@ -75,6 +91,7 @@ The example below retrieves a single Adversary with ID 416, if it exists.
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     ti = self.tcex.ti.group(group_type='Adversary', owner='MyOrg', unique_id=416)
     response = ti.single(params=parameters)
+    group = response.json().get("data", {})
 
 Get Group Metadata
 ------------------
@@ -223,6 +240,7 @@ The example below retrieves a single Address with Value 1.1.1.1, if it exists.
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     ti = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', unique_id='1.1.1.1')
     response = ti.single(params=parameters)
+    indicator = response.json().get("data", {})
 
 Get Indicator Metadata
 ----------------------

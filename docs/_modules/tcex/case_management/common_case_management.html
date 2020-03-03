@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
@@ -103,7 +104,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
@@ -454,12 +456,18 @@
             <span class="k">return</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.api_endpoint}</span><span class="s1">/</span><span class="si">{self.id}</span><span class="s1">&#39;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;URl: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
-        <span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
+                <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
+                <span class="n">f</span><span class="s1">&#39;URl: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ConnectionError</span><span class="p">,</span> <span class="n">ProxyError</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span>
+                <span class="mi">951</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;OPTIONS&#39;</span><span class="p">,</span> <span class="mi">407</span><span class="p">,</span> <span class="s1">&#39;{</span><span class="se">\&quot;</span><span class="s1">message</span><span class="se">\&quot;</span><span class="s1">: </span><span class="se">\&quot;</span><span class="s1">Connection Error</span><span class="se">\&quot;</span><span class="s1">}&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;response text: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -521,7 +529,13 @@
             <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;{&quot;message&quot;: &quot;No ID provided.&quot;, &quot;status&quot;: &quot;Error&quot;}&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">952</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;404&#39;</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">url</span><span class="p">])</span>
 
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ConnectionError</span><span class="p">,</span> <span class="n">ProxyError</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span>
+                <span class="mi">951</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;OPTIONS&#39;</span><span class="p">,</span> <span class="mi">407</span><span class="p">,</span> <span class="s1">&#39;{</span><span class="se">\&quot;</span><span class="s1">message</span><span class="se">\&quot;</span><span class="s1">: </span><span class="se">\&quot;</span><span class="s1">Connection Error</span><span class="se">\&quot;</span><span class="s1">}&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
             <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>

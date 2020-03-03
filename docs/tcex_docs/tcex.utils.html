@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
@@ -105,7 +106,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
@@ -136,6 +138,7 @@
 <li class="toctree-l3"><a class="reference internal" href="tcex.threat_intelligence.html">Threat Intelligence Module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Utils Module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#module-tcex.utils.utils">utils.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tcex.utils.date_utils">utils.date_utils</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.vault.html">Vault Module</a></li>
@@ -373,6 +376,203 @@ and for lists with a mix of lists and single values</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tcex.utils.date_utils">
+<span id="utils-date-utils"></span><h2>utils.date_utils<a class="headerlink" href="#module-tcex.utils.date_utils" title="Permalink to this headline">¶</a></h2>
+<p>TcEx Datetime Utilities Module</p>
+<dl class="class">
+<dt id="tcex.utils.date_utils.DatetimeUtils">
+<em class="property">class </em><code class="sig-prename descclassname">tcex.utils.date_utils.</code><code class="sig-name descname">DatetimeUtils</code><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>TcEx framework Datetime Utils module</p>
+<dl class="method">
+<dt id="tcex.utils.date_utils.DatetimeUtils._replace_timezone">
+<em class="property">static </em><code class="sig-name descname">_replace_timezone</code><span class="sig-paren">(</span><em class="sig-param">dateutil_parser</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils._replace_timezone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils._replace_timezone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace the timezone on a datetime object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.date_utils.DatetimeUtils.any_to_datetime">
+<code class="sig-name descname">any_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.any_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.any_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return datetime object from multiple formats.</p>
+<blockquote>
+<div><p>Formats:</p>
+<ol class="arabic simple">
+<li><p>Human Input (e.g 30 days ago, last friday)</p></li>
+<li><p>ISO 8601 (e.g. 2017-11-08T16:52:42Z)</p></li>
+<li><p>Loose Date format (e.g. 2017 12 25)</p></li>
+<li><p>Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</p></li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.date_utils.DatetimeUtils.date_to_datetime">
+<code class="sig-name descname">date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert ISO 8601 and other date strings to datetime.datetime type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.date_utils.DatetimeUtils.format_datetime">
+<code class="sig-name descname">format_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em>, <em class="sig-param">date_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.format_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.format_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return timestamp from multiple input formats.</p>
+<blockquote>
+<div><p>Formats:</p>
+<ol class="arabic simple">
+<li><p>Human Input (e.g 30 days ago, last friday)</p></li>
+<li><p>ISO 8601 (e.g. 2017-11-08T16:52:42Z)</p></li>
+<li><p>Loose Date format (e.g. 2017 12 25)</p></li>
+<li><p>Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</p></li>
+</ol>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To get a unix timestamp format use the strftime format <strong>%s</strong>. Python
+does not natively support <strong>%s</strong>, however this method has support.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
+<li><p><strong>date_format</strong> (<em>string</em>) – The strftime format to use, ISO by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Formatted datetime string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(string)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.date_utils.DatetimeUtils.human_date_to_datetime">
+<code class="sig-name descname">human_date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em>, <em class="sig-param">source_datetime=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Convert human readable date (e.g. 30 days ago) to datetime.datetime using</dt><dd><p>parsedatetime module.</p>
+</dd>
+</dl>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>August 25th, 2008</p></li>
+<li><p>25 Aug 2008</p></li>
+<li><p>Aug 25 5pm</p></li>
+<li><p>5pm August 25</p></li>
+<li><p>next saturday</p></li>
+<li><p>tomorrow</p></li>
+<li><p>next thursday at 4pm</p></li>
+<li><p>at 4pm</p></li>
+<li><p>eod</p></li>
+<li><p>tomorrow eod</p></li>
+<li><p>eod tuesday</p></li>
+<li><p>eoy</p></li>
+<li><p>eom</p></li>
+<li><p>in 5 minutes</p></li>
+<li><p>5 minutes from now</p></li>
+<li><p>5 hours before now</p></li>
+<li><p>2 hours before noon</p></li>
+<li><p>2 days from tomorrow</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime.</p></li>
+<li><p><strong>source_datetime</strong> (<em>datetime.datetime</em>) – The reference or source datetime.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.date_utils.DatetimeUtils.timedelta">
+<code class="sig-name descname">timedelta</code><span class="sig-paren">(</span><em class="sig-param">time_input1</em>, <em class="sig-param">time_input2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.timedelta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.timedelta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates time delta between two time expressions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input1</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>time_input2</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dict with delta values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime">
+<em class="property">static </em><code class="sig-name descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">time_input</em>, <em class="sig-param">tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753</dt><dd><p>to datetime.datetime type.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method assumes UTC for all inputs.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method only accepts a 9-10 character time_input.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime (e.g. UTC).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime.datetime object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(datetime.datetime)</p>
 </dd>
 </dl>
 </dd></dl>

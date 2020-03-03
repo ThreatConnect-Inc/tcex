@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
@@ -105,7 +106,8 @@
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
@@ -381,16 +383,17 @@
 <h2>2.0.0<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added support for ThreatConnect Case Management.</p></li>
-<li><p>Added support for ThreatConnect Playbook Service Apps.</p></li>
+<li><p>Added support for ThreatConnect Service Apps.</p></li>
 <li><p>Updated templates to support changes in tcex 2.0.</p></li>
 <li><p>Updated code to support Python 3.6+, removing support for all older versions of Python.</p></li>
 <li><p>Breaking Change: Multiple updates to <code class="docutils literal notranslate"><span class="pre">playbook</span></code> module logic.</p></li>
 <li><p>Breaking Change: Moved datetime methods in tcex.utils.xxx to tcex.utils.datetime.xxx.</p></li>
 <li><p>Breaking Change: Reworked App decorators to improve usability.</p></li>
+<li><p>Breaking Change: Renamed <code class="docutils literal notranslate"><span class="pre">start()</span></code> and <code class="docutils literal notranslate"><span class="pre">done()</span></code> methods in templates to <code class="docutils literal notranslate"><span class="pre">setup()</span></code> and <code class="docutils literal notranslate"><span class="pre">teardown()</span></code>.</p></li>
 <li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.s()</span></code> method.</p></li>
-<li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.data_filter</span></code> property.</p></li>
-<li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.request</span></code> property.</p></li>
-<li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.resources</span></code> property.</p></li>
+<li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.data_filter</span></code> property and module.</p></li>
+<li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.request</span></code> property and module.</p></li>
+<li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.resources</span></code> property and module.</p></li>
 <li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.safetag()</span></code> method.</p></li>
 <li><p>Breaking Change: Removed <code class="docutils literal notranslate"><span class="pre">tcex.safeurl()</span></code> method.</p></li>
 <li><p>Breaking Change: Updated <code class="docutils literal notranslate"><span class="pre">tcex.safe_indicator()</span></code> method input params.</p></li>

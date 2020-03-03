@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_metrics.html">Module: Metrics</a></li>
@@ -103,7 +104,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../exit.html">Exit</a></li>
@@ -393,7 +395,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;add_key_value&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c1"># pylint: disable=E1101</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
@@ -1086,7 +1088,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Mappings.can_create"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_create">[docs]</a>    <span class="k">def</span> <span class="nf">can_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=R0201</span>
+<div class="viewcode-block" id="Mappings.can_create"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_create">[docs]</a>    <span class="k">def</span> <span class="nf">can_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
         <span class="sd">&quot;&quot;&quot; Determines if the object can be created. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 

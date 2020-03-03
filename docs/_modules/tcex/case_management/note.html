@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
@@ -103,7 +104,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
@@ -231,7 +233,7 @@
         <span class="sd">&quot;&quot;&quot;Add a Note.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            note (Note): The Note Object to add.</span>
+<span class="sd">            note (case_management.note.Note): The Note Object to add.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">added_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">note</span><span class="p">)</span></div>
 
@@ -264,7 +266,7 @@
 <span class="sd">        last_modified (str, kwargs): [Read-Only] The **Last Modified** for the Note.</span>
 <span class="sd">        parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Note.</span>
 <span class="sd">        summary (str, kwargs): [Read-Only] The **Summary** for the Note.</span>
-<span class="sd">        task (Task, kwargs): [Read-Only] The **Task** for the Note.</span>
+<span class="sd">        task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Note.</span>
 <span class="sd">        task_id (int, kwargs): the ID of the Task on which to apply the Note</span>
 <span class="sd">        task_xid (str, kwargs): the XID of the Task on which to apply the Note</span>
 <span class="sd">        text (str, kwargs): [Required] The **Text** for the Note.</span>

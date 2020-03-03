@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Requests &mdash; TcEx 2.0.0 documentation</title>
+  <title>Module: Services &mdash; TcEx 2.0.0 documentation</title>
 
 
 
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module: Resources" href="module_resource.html" />
-    <link rel="prev" title="Module: Playbooks" href="module_playbook.html" />
+    <link rel="next" title="Module: Threat Intelligence" href="module_threat_intelligence.html" />
+    <link rel="prev" title="Module: Resources" href="module_resource.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -104,9 +104,9 @@
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
@@ -164,7 +164,7 @@
 
       <li><a href="index.html">Docs</a> &raquo;</li>
 
-      <li>Module: Requests</li>
+      <li>Module: Services</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -181,28 +181,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <div class="admonition important" id="module-requests">
+  <div class="section" id="module-services">
+<span id="id1"></span><h1>Module: Services<a class="headerlink" href="#module-services" title="Permalink to this headline">¶</a></h1>
+<div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>This module will be deprecated in a future release.  The <code class="docutils literal notranslate"><span class="pre">tcex.session</span></code> property can be used to make manual API calls to the ThreatConnect API.</p>
+<p>The Services module requires ThreatConnect version 6.0 or higher.</p>
 </div>
-<div class="section" id="id1">
-<h1>Module: Requests<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect TcEx Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExRequest</span></code> module accessed using the <code class="docutils literal notranslate"><span class="pre">tcex.request</span></code> property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request</span>
-<span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://remote_api.example&#39;</span>
-<span class="n">r</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">,</span> <span class="s1">&#39;abc123&#39;</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;{&quot;data&quot;: &quot;xyz321&quot;}&#39;</span>
-<span class="n">r</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
-</pre></div>
-</td></tr></table></div>
+<p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.services.html#tcex.services.services.Services" title="tcex.services.services.Services"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Services</span></code></a> module to work with Service Apps.</p>
 </div>
 
 
@@ -213,10 +198,10 @@
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="module_resource.html" class="btn btn-neutral float-right" title="Module: Resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="module_threat_intelligence.html" class="btn btn-neutral float-right" title="Module: Threat Intelligence" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="module_playbook.html" class="btn btn-neutral float-left" title="Module: Playbooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="module_resource.html" class="btn btn-neutral float-left" title="Module: Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 

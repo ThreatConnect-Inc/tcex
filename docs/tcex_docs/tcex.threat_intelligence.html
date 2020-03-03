@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
@@ -105,7 +106,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
@@ -3125,6 +3127,12 @@ modified.</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.threat_intelligence.mappings.security_label.SecurityLabel.as_entity">
+<em class="property">property </em><code class="sig-name descname">as_entity</code><a class="headerlink" href="#tcex.threat_intelligence.mappings.security_label.SecurityLabel.as_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object as an entity.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.threat_intelligence.mappings.security_label.SecurityLabel.can_create">
 <code class="sig-name descname">can_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/security_label.html#SecurityLabel.can_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.security_label.SecurityLabel.can_create" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the name has been provided returns that the SecurityLabel can be created, otherwise
@@ -3168,8 +3176,8 @@ returns that the SecurityLabel cannot be created.</p>
 <dl class="method">
 <dt id="tcex.threat_intelligence.mappings.security_label.SecurityLabel.is_security_label">
 <em class="property">static </em><code class="sig-name descname">is_security_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/security_label.html#SecurityLabel.is_security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.security_label.SecurityLabel.is_security_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicates that this is a security label object
-Returns:</p>
+<dd><p>Indicates that this is a security label object</p>
+<p>Returns:</p>
 </dd></dl>
 
 <dl class="method">
