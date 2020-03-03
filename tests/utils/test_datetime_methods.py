@@ -8,7 +8,7 @@ import pytz
 import pytest
 
 
-# pylint: disable=R0201,W0201
+# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Utils Module."""
 

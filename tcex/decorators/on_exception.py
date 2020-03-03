@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import wrapt
 
 
 class OnException:
@@ -32,11 +33,19 @@ class OnException:
         self.exit_msg = exit_msg or 'An exception has been caught. See the logs for more details.'
         self.write_output = write_output
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
-            fn (function): The decorated function.
+            wrapped (callable): The wrapped function which in turns
+                needs to be called by your wrapper function.
+            instance (App): The object to which the wrapped
+                function was bound when it was called.
+            args (list): The list of positional arguments supplied
+                when the decorated function was called.
+            kwargs (dict): The dictionary of keyword arguments
+                supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
@@ -59,16 +68,15 @@ class OnException:
             app.tcex.log.debug(f'Fail enabled is {enabled} ({self.exit_enabled}).')
 
             try:
-                return fn(app, *args, **kwargs)
+                return wrapped(*args, **kwargs)
             except Exception as e:
                 app.tcex.log.error(f'method failure ({e})')
-                app.exit_message = self.exit_msg
-                if self.write_output:
-                    app.tcex.playbook.write_output()
-                    if hasattr(app, 'write_output'):
-                        app.write_output()
+                app.exit_message = self.exit_msg  # for test cases
                 if enabled:
-                    app.exit_message = self.exit_msg  # for test cases
+                    if self.write_output:
+                        app.tcex.playbook.write_output()
+                        if hasattr(app, 'write_output'):
+                            app.write_output()
                     app.tcex.exit(1, self.exit_msg)
 
-        return exception
+        return exception(instance, *args, **kwargs)

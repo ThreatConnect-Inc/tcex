@@ -14,14 +14,22 @@ class ExternalApp:
         self.exit_message = 'Success'
         self.args = self.tcex.args
 
-    def done(self):
-        """Perform cleanup operations and gracefully exit the App."""
-        self.tcex.log.debug('Running done.')
-
     def run(self):
         """Run the App main logic."""
         self.tcex.log.info('No run logic provided.')
 
-    def start(self):
-        """Perform prep/startup operations."""
-        self.tcex.log.debug('Running start.')
+    def setup(self):
+        """Perform prep/setup logic."""
+        # run legacy method
+        if hasattr(self, 'start'):
+            self.tcex.log.warning('calling legacy start method')
+            self.start()  # pylint: disable=no-member
+        self.tcex.log.trace('setup')
+
+    def teardown(self):
+        """Perform cleanup/teardown logic."""
+        # run legacy method
+        if hasattr(self, 'done'):
+            self.tcex.log.warning('calling legacy done method')
+            self.done()  # pylint: disable=no-member
+        self.tcex.log.trace('teardown')

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import inspect
+import wrapt
 
 
 class IterateOnArg:
@@ -50,11 +52,19 @@ class IterateOnArg:
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
         self.fail_on = kwargs.get('fail_on', [])
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
-            fn (function): The decorated function.
+            wrapped (callable): The wrapped function which in turns
+                needs to be called by your wrapper function.
+            instance (App): The object to which the wrapped
+                function was bound when it was called.
+            args (list): The list of positional arguments supplied
+                when the decorated function was called.
+            kwargs (dict): The dictionary of keyword arguments
+                supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
@@ -66,6 +76,9 @@ class IterateOnArg:
             Args:
                 app (class): The instance of the App class "self".
             """
+            # get the signature for the decorated method
+            fn_signature = inspect.signature(wrapped, follow_wrapped=True).parameters
+
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled
             if not isinstance(self.fail_enabled, bool):
@@ -78,14 +91,23 @@ class IterateOnArg:
 
             # retrieve data from Redis if variable and always return and array.
             results = []
-            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), array=True)
+            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg))
             arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
             if arg_data is None:
                 arg_data = [None]
             elif not isinstance(arg_data, list):
                 arg_data = [arg_data]
 
+            _index = 0
+            _array_length = len(arg_data)
             for ad in arg_data:
+
+                # add "magic" args
+                if '_index' in fn_signature:
+                    kwargs['_index'] = _index
+                if '_array_length' in fn_signature:
+                    kwargs['_array_length'] = _array_length
+
                 if ad is None and self.default is not None:
                     # set value passed to method to default if value is None.
                     ad = self.default
@@ -97,6 +119,7 @@ class IterateOnArg:
                 if enabled and self.fail_on:
                     if ad in self.fail_on:
                         app.tcex.log.debug(f'Invalid value ({ad}) found for {self.arg}.')
+                        app.exit_message = self.fail_msg  # for test case
                         app.tcex.exit(1, self.fail_msg)
 
                 # Add logging for debug/troubleshooting
@@ -111,7 +134,10 @@ class IterateOnArg:
 
                 # add results to kwargs
                 kwargs[self.arg] = ad
-                results.append(fn(app, *args, **kwargs))
+                results.append(wrapped(*args, **kwargs))
+
+                # increment index
+                _index += 1
             return results
 
-        return loop
+        return loop(instance, *args, **kwargs)

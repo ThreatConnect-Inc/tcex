@@ -3,6 +3,7 @@
   "displayName": "Webhook",
   "features": [
     "appBuilderCompliant",
+    "fileParams",
     "secureParams"
   ],
   "labels": [],

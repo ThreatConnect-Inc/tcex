@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
 
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Decorators</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fail-on-output">Fail on Output</a></li>
@@ -113,7 +114,8 @@
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
@@ -189,6 +191,10 @@
 
   <div class="section" id="module-decorators">
 <span id="id1"></span><h1>Module: Decorators<a class="headerlink" href="#module-decorators" title="Permalink to this headline">¶</a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>App decorators have been updated with breaking changes in TcEx 2.0.</p>
+</div>
 <p>The ThreatConnect TcEx App Framework provides multiple Python decorators to help in setup of task that are common in Apps. Using multiple decorators on a single method is common.</p>
 <div class="section" id="fail-on-output">
 <h2>Fail on Output<a class="headerlink" href="#fail-on-output" title="Permalink to this headline">¶</a></h2>

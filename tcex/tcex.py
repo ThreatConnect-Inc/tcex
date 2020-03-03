@@ -90,7 +90,7 @@ class TcEx:
         except Exception as e:
             self.handle_error(200, [e])
 
-    def _signal_handler(self, signal_interupt, frame):  # pylint: disable=W0613
+    def _signal_handler(self, signal_interupt, frame):  # pylint: disable=unused-argument
         """Handle singal interrupt."""
         call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
         call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')

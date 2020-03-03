@@ -22,11 +22,12 @@ class WorkflowTemplates(CommonCaseManagementCollection):
         }
 
     Args:
-        tcex ([type]): [description]
-        initial_response ([type], optional): [description]. Defaults to None.
-        tql_filters ([type], optional): [description]. Defaults to None.
+        tcex (TcEx): An instantiated instance of TcEx object.
+        initial_response (dict, optional): Initial data in
+            Case Object for Workflow Template. Defaults to None.
+        tql_filters (list, optional): List of TQL filters. Defaults to None.
         params(dict, optional): Dict of the params to be sent while
-            retrieving the Workflow Template objects.
+            retrieving the Workflow Event objects.
     """
 
     def __init__(self, tcex, initial_response=None, tql_filters=None, params=None):

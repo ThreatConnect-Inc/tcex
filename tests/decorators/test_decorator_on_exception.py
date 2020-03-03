@@ -52,3 +52,6 @@ class TestIterateOnArgDecorators:
         # call method with decorator
         self.on_exception_exit_enabled_false()
         assert self.exit_message == 'on_exception method no exit'
+
+    def write_output(self):
+        """Pass for coverage of write_output input."""

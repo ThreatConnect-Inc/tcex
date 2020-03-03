@@ -46,8 +46,8 @@ if __name__ == '__main__':
         # load App class
         app = App(tcex)
 
-        # perform prep/startup operations
-        app.start()
+        # perform prep/setup operations
+        app.setup()
 
         # run the App logic
         if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
@@ -64,7 +64,7 @@ if __name__ == '__main__':
             elif hasattr(app, tc_action_formatted):
                 getattr(app, tc_action_formatted)()
             elif hasattr(app, tc_action_map):
-                app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=E1101
+                app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=no-member
             else:
                 tcex.exit(1, f'Action method ({app.args.tc_action}) was not found.')
         else:
@@ -73,10 +73,10 @@ if __name__ == '__main__':
 
         # write requested value for downstream Apps
         tcex.playbook.write_output()
-        app.write_output()  # pylint: disable=E1101
+        app.write_output()  # pylint: disable=no-member
 
-        # perform cleanup operations
-        app.done()
+        # perform cleanup/teardown operations
+        app.teardown()
 
         # explicitly call the exit method
         tcex.playbook.exit(msg=app.exit_message)

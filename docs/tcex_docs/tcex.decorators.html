@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
@@ -105,7 +106,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
@@ -281,6 +283,12 @@ The value of this boolean will control enabling/disabling this feature.</p>
 <dt class="field-even">type fail_msg</dt>
 <dd class="field-even"><p>str, kwargs</p>
 </dd>
+<dt class="field-odd">param fail_msg_property</dt>
+<dd class="field-odd"><p>The App property containting the dynamic exit message.</p>
+</dd>
+<dt class="field-even">type fail_msg_property</dt>
+<dd class="field-even"><p>str, kwargs</p>
+</dd>
 <dt class="field-odd">param fail_on</dt>
 <dd class="field-odd"><p>Defaults to None.
 Fail if return value from App method is in the list.</p>
@@ -324,7 +332,7 @@ processed.</p>
 <span class="c1"># ** OR **</span>
 
 <span class="c1"># the args value of &quot;colors&quot; refers to ``self.args.colors``.</span>
-<span class="nd">@iterateOnArgs</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
+<span class="nd">@iterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
 </pre></div>

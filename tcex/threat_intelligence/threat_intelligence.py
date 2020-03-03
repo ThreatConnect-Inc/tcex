@@ -694,7 +694,7 @@ class ThreatIntelligence:
         tcex = self.tcex
 
         # Add Method for each Custom Indicator class
-        def method_1(**kwargs):  # pylint: disable=W0641
+        def method_1(**kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             return custom_class(tcex, **kwargs)
 

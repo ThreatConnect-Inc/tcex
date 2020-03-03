@@ -46,14 +46,14 @@ if __name__ == '__main__':
         # load App class
         app = App(tcex)
 
-        # perform prep/startup operations
-        app.start()
+        # perform prep/setup operations
+        app.setup()
 
         # run the App logic
         app.run()
 
-        # perform cleanup operations
-        app.done()
+        # perform cleanup/teardown operations
+        app.teardown()
 
         # explicitly call the exit method
         tcex.exit(msg=app.exit_message)

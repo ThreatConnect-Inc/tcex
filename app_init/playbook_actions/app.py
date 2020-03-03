@@ -6,7 +6,7 @@ from playbook_app import PlaybookApp
 from tcex import IterateOnArg, OnException, OnSuccess, Output
 
 
-# pylint: disable=R0201
+# pylint: disable=no-self-use
 class App(PlaybookApp):
     """Playbook App"""
 
@@ -16,63 +16,63 @@ class App(PlaybookApp):
         self.output_strings = []
 
     @IterateOnArg(arg='input_strings')
-    @OnException(msg='Failed to run capitalize operation.')
-    @OnSuccess(msg='Successfully ran capitalize operation.')
+    @OnException(exit_msg='Failed to run capitalize operation.')
+    @OnSuccess(exit_msg='Successfully ran capitalize operation.')
     @Output(attribute='output_strings')
-    def capitalize(self, string):
+    def capitalize(self, input_strings):
         """Return capitalized string."""
-        return string.capitalize()
+        return input_strings.capitalize()
 
     @IterateOnArg(arg='input_strings')
-    @OnException(msg='Failed to run lowercase operation.')
-    @OnSuccess(msg='Successfully ran lowercase operation.')
+    @OnException(exit_msg='Failed to run lowercase operation.')
+    @OnSuccess(exit_msg='Successfully ran lowercase operation.')
     @Output(attribute='output_strings')
-    def lowercase(self, string):
+    def lowercase(self, input_strings):
         """Return string in lowercase."""
-        return string.lower()
+        return input_strings.lower()
 
     @IterateOnArg(arg='input_strings')
-    @OnException(msg='Failed to run reverse operation.')
-    @OnSuccess(msg='Successfully ran reverse operation.')
+    @OnException(exit_msg='Failed to run reverse operation.')
+    @OnSuccess(exit_msg='Successfully ran reverse operation.')
     @Output(attribute='output_strings')
-    def reverse(self, string=None):
+    def reverse(self, input_strings):
         """Return string reversed."""
-        return string[::-1]
+        return input_strings[::-1]
 
     @IterateOnArg(arg='input_strings')
-    @OnException(msg='Failed to run strip operation.')
-    @OnSuccess(msg='Successfully ran strip operation.')
+    @OnException(exit_msg='Failed to run strip operation.')
+    @OnSuccess(exit_msg='Successfully ran strip operation.')
     @Output(attribute='output_strings')
-    def strip(self, string):
+    def strip(self, input_strings):
         """Return string stripping any whitespaces at beginning and end."""
-        return string.strip()
+        return input_strings.strip()
 
     @IterateOnArg(arg='input_strings')
-    @OnException(msg='Failed to run swap case operation.')
-    @OnSuccess(msg='Successfully ran swap case operation.')
+    @OnException(exit_msg='Failed to run swap case operation.')
+    @OnSuccess(exit_msg='Successfully ran swap case operation.')
     @Output(attribute='output_strings')
-    def swap_case(self, string):
+    def swap_case(self, input_strings):
         """Return string with the case swapped."""
-        return string.swapcase()
+        return input_strings.swapcase()
 
     @IterateOnArg(arg='input_strings')
-    @OnException(msg='Failed to run title case operation.')
-    @OnSuccess(msg='Successfully ran title case operation.')
+    @OnException(exit_msg='Failed to run title case operation.')
+    @OnSuccess(exit_msg='Successfully ran title case operation.')
     @Output(attribute='output_strings')
-    def title_case(self, string):
+    def title_case(self, input_strings):
         """Return string in title case."""
-        return string.title()
+        return input_strings.title()
 
     @IterateOnArg(arg='input_strings')
-    @OnException(msg='Failed to run uppercase operation.')
-    @OnSuccess(msg='Successfully ran uppercase operation.')
+    @OnException(exit_msg='Failed to run uppercase operation.')
+    @OnSuccess(exit_msg='Successfully ran uppercase operation.')
     @Output(attribute='output_strings')
-    def uppercase(self, string):
+    def uppercase(self, input_strings):
         """Return string in uppercase."""
-        return string.upper()
+        return input_strings.upper()
 
     def write_output(self):
-        """ Write the Playbook output variables. """
+        """Write the Playbook output variables."""
         # output
         self.tcex.log.debug(f'output_strings: {self.output_strings}')
 

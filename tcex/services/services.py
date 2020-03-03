@@ -131,9 +131,11 @@ class Services:
                 session_id = self.session_id(trigger_id)
 
                 # get instance of playbook specifically for this thread
-                playbook = self.tcex.pb(
-                    context=session_id, output_variables=config.get('tc_playbook_out_variables', [])
-                )
+                outputs = config.get('tc_playbook_out_variables') or []
+                if isinstance(outputs, str):
+                    outputs = outputs.split(',')
+
+                playbook = self.tcex.pb(context=session_id, output_variables=outputs)
 
                 self.tcex.log.info(f'Trigger Session ID: {session_id}')
 
@@ -345,13 +347,22 @@ class Services:
         for message in p.listen():
             self.on_message_redis(message)
 
-    def loop_forever(self):
-        """Block and wait for shutdown."""
-        self.tcex.log.info('Looping until shutdown')
+    def loop_forever(self, sleep=1):
+        """Block and wait for shutdown.
+
+        Args:
+            sleep (int, optional): The amount of time to sleep between iterations. Defaults to 1.
+
+        Returns:
+            Bool: Returns True until shutdown received.
+        """
         while True:
-            time.sleep(1)
-            if self.shutdown is True:
-                break
+            deadline = time.time() + sleep
+            while time.time() < deadline:
+                if self.shutdown:
+                    return False
+                time.sleep(1)
+            return True
 
     def message_thread(self, name, target, args, kwargs=None):
         """Start a message thread.
@@ -745,9 +756,11 @@ class Services:
             self.tcex.log.error(f"Could not find config for triggerId {message.get('triggerId')}")
 
         # get an instance of playbooks for App
-        playbook = self.tcex.pb(
-            context=self.thread_name, output_variables=config.get('tc_playbook_out_variables')
-        )
+        outputs = config.get('tc_playbook_out_variables') or []
+        if isinstance(outputs, str):
+            outputs = outputs.split(',')
+
+        playbook = self.tcex.pb(context=self.thread_name, output_variables=outputs)
 
         try:
             request_key = message.get('requestKey')

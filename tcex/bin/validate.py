@@ -91,7 +91,7 @@ class Validate(Bin):
 
                 while code_lines:
                     m_status = True
-                    code, lineno = code_lines.popleft()  # pylint: disable=W0612
+                    code, lineno = code_lines.popleft()  # pylint: disable=unused-variable
                     try:
                         parsed_code = ast.parse(code)
                         for node in ast.walk(parsed_code):
@@ -146,11 +146,9 @@ class Validate(Bin):
             bool: Returns True if the module is in the stdlib or template.
         """
         if (
-            module in stdlib_list('2.7')  # pylint: disable=R0916
-            or module in stdlib_list('3.4')
-            or module in stdlib_list('3.5')
-            or module in stdlib_list('3.6')
+            module in stdlib_list('3.6')
             or module in stdlib_list('3.7')
+            or module in stdlib_list('3.8')
             or module in ['app', 'args', 'playbook_app']
         ):
             return True

@@ -68,7 +68,9 @@ if __name__ == '__main__':
         if hasattr(app, 'loop_forever'):
             app.loop_forever()  # pylint: disable=no-member
         else:
-            tcex.service.loop_forever()
+            tcex.log.info('Looping until shutdown')
+            while tcex.service.loop_forever(sleep=1):
+                pass
 
         # perform cleanup/teardown operations
         app.teardown()

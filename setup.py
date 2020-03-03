@@ -12,10 +12,14 @@ if not metadata:
     raise RuntimeError(f'Could not load metadata file ({metadata_file}).')
 
 dev_packages = [
+    'black',
     'CommonMark==0.5.5',
     'deepdiff',
+    'flake8',
     'jmespath',
     'mako',
+    'pre-commit',
+    'pylint',
     'pytest',
     'pytest-cov',
     'pytest-html',
@@ -63,6 +67,7 @@ setup(
         'six>=1.11.0',
         'stdlib-list',
         'tzlocal',
+        'wrapt',
     ],
     license=metadata['__license__'],
     # long_description=readme,
@@ -83,10 +88,6 @@ setup(
         'bin/tclib.cmd',
         'bin/tcpackage',
         'bin/tcpackage.cmd',
-        'bin/tcprofile',
-        'bin/tcprofile.cmd',
-        'bin/tcrun',
-        'bin/tcrun.cmd',
         'bin/tctest',
         'bin/tctest.cmd',
         'bin/tcvalidate',

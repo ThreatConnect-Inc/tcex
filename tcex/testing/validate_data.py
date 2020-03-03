@@ -870,13 +870,13 @@ class ThreatConnect:
         ti_response = ti_response.json().get('data', {}).get(ti_entity.api_entity, {})
         for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type', None)):
             ti_response_entity = entity
-            # pylint: disable=W0612
+            # pylint: disable=unused-variable
             valid_attributes, attributes_errors = self._response_attributes(ti_response, tc_entity)
-            # pylint: disable=W0612
+            # pylint: disable=unused-variable
             valid_tags, tag_errors = self._response_tags(ti_response, tc_entity)
-            # pylint: disable=W0612
+            # pylint: disable=unused-variable
             valid_labels, label_errors = self._response_labels(ti_response, tc_entity)
-            # pylint: disable=W0612
+            # pylint: disable=unused-variable
             valid_file, file_errors = self._file(ti_entity, file)
 
             errors = attributes_errors + tag_errors + label_errors + file_errors

@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
 
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Authorization (Token/HMAC)" href="authorization.html" />
-    <link rel="prev" title="Module: Threat Intelligence" href="module_ti.html" />
+    <link rel="prev" title="Module: Threat Intelligence" href="module_threat_intelligence.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
@@ -105,7 +106,8 @@
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#format-datetime">Format DateTime</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#unix-timestamp-integer">UNIX Timestamp Integer</a></li>
@@ -203,7 +205,7 @@
 <p>The ThreatConnect TcEx App Framework provides common <strong>utils</strong> methods to assist in writing Apps.</p>
 <div class="section" id="format-datetime">
 <h2>Format DateTime<a class="headerlink" href="#format-datetime" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">format_datetime</span></code> method accepts multiple input types and returns an ISO-formatted datetime string by default.  Optionally, the timezone of the timestamp can be provided as well as the <strong>strftime</strong> format.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.format_datetime" title="tcex.utils.date_utils.DatetimeUtils.format_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">format_datetime</span></code></a> method accepts multiple input types and returns an ISO-formatted datetime string by default.  Optionally, the timezone of the timestamp can be provided as well as the <strong>strftime</strong> format.</p>
 <p>Accepted Formats:</p>
 <ol class="arabic simple">
 <li><p>Human Input (e.g., 30 days ago, last Friday)</p></li>
@@ -220,7 +222,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="mi">1510052400</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="mi">1510052400</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -230,7 +232,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;1510686617.298753&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;1510686617.298753&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -240,7 +242,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -250,7 +252,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -260,7 +262,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-05:00&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-05:00&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -270,7 +272,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -280,7 +282,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -290,7 +292,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Central&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Central&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -300,7 +302,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;tomorrow at 6 am&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;tomorrow at 6 am&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -310,7 +312,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;next monday at noon&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;next monday at noon&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -320,7 +322,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;3 weeks ago&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;3 weeks ago&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>
@@ -328,11 +330,10 @@
 </div>
 <div class="section" id="date-to-datetime">
 <h2>Date to Datetime<a class="headerlink" href="#date-to-datetime" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">date_to_datetime</span></code> method uses the <strong>dateutil</strong> module to parse the provided data and return a <strong>datetime.datetime</strong> object.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.date_to_datetime" title="tcex.utils.date_utils.DatetimeUtils.date_to_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">date_to_datetime</span></code></a> method uses the <strong>dateutil</strong> module to parse the provided data and return a <strong>datetime.datetime</strong> object.</p>
 </div>
 <div class="section" id="human-time-to-datetime">
 <h2>Human Time to Datetime<a class="headerlink" href="#human-time-to-datetime" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">human_date_to_datetime</span></code> method uses the <strong>parsedatetime</strong> module to parse the provided data and return a <strong>datetime.datetime</strong> object.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>August 25, 2008</p></li>
@@ -357,7 +358,7 @@
 </div>
 <div class="section" id="unix-time-to-datetime">
 <h2>UNIX Time to Datetime<a class="headerlink" href="#unix-time-to-datetime" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">unix_time_to_datetime</span></code> method converts a UNIX timestamp to a <strong>datetime.datetime</strong> object.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime" title="tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">unix_time_to_datetime</span></code></a> method converts a UNIX timestamp to a <strong>datetime.datetime</strong> object.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>1510686617</p></li>
@@ -378,7 +379,7 @@
         <a href="authorization.html" class="btn btn-neutral float-right" title="Authorization (Token/HMAC)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="module_ti.html" class="btn btn-neutral float-left" title="Module: Threat Intelligence" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="module_threat_intelligence.html" class="btn btn-neutral float-left" title="Module: Threat Intelligence" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 

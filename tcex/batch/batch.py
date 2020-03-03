@@ -154,17 +154,19 @@ class Batch:
         method_name = name.replace(' ', '_').lower()
 
         # Add Method for each Custom Indicator class
-        def method_1(value1, xid, **kwargs):  # pylint: disable=W0641
+        def method_1(value1, xid, **kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, xid, **kwargs)
             return self._indicator(indicator_obj)
 
-        def method_2(value1, value2, xid, **kwargs):  # pylint: disable=W0641
+        def method_2(value1, value2, xid, **kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, value2, xid, **kwargs)
             return self._indicator(indicator_obj)
 
-        def method_3(value1, value2, value3, xid, **kwargs):  # pylint: disable=W0641
+        def method_3(
+            value1, value2, value3, xid, **kwargs
+        ):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, value2, value3, xid, **kwargs)
             return self._indicator(indicator_obj)
@@ -1391,7 +1393,7 @@ class Batch:
             if self.action.lower() == 'delete':
                 # while waiting of FR for delete support in createAndUpload submit delete request
                 # the old way (submit job + submit data), still using V2.
-                if len(self) > 0:  # pylint: disable=C1801
+                if len(self) > 0:  # pylint: disable=len-as-condition
                     batch_id = self.submit_job(halt_on_error)
                     if batch_id is not None:
                         batch_data = self.submit_data(batch_id, halt_on_error)

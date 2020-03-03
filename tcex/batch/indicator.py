@@ -16,21 +16,25 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
     """Return internal methods for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
-    def init_1(self, tcex, value1, xid, **kwargs):  # pylint: disable=W0641
+    def init_1(self, tcex, value1, xid, **kwargs):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with one value"""
         summary = self.build_summary(value1)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    def init_2(self, tcex, value1, value2, xid, **kwargs):  # pylint: disable=W0641
+    def init_2(
+        self, tcex, value1, value2, xid, **kwargs
+    ):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with two values."""
         summary = self.build_summary(value1, value2)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    def init_3(self, tcex, value1, value2, value3, xid, **kwargs):  # pylint: disable=W0641
+    def init_3(
+        self, tcex, value1, value2, value3, xid, **kwargs
+    ):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with three values."""
         summary = self.build_summary(value1, value2, value3)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)

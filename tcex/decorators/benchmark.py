@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
 import datetime
+import wrapt
 
 
 class Benchmark:
@@ -20,11 +21,19 @@ class Benchmark:
             time.sleep(1)
     """
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
-            fn (function): The decorated function.
+            wrapped (callable): The wrapped function which in turns
+                needs to be called by your wrapper function.
+            instance (App): The object to which the wrapped
+                function was bound when it was called.
+            args (list): The list of positional arguments supplied
+                when the decorated function was called.
+            kwargs (dict): The dictionary of keyword arguments
+                supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
@@ -39,7 +48,7 @@ class Benchmark:
 
             # before = float('{time.clock():.4f}')
             before = datetime.datetime.now()
-            data = fn(app, *args, **kwargs)
+            data = wrapped(*args, **kwargs)
             # after = float('{time.clock():.4f}')
             after = datetime.datetime.now()
             app.tcex.log.debug(
@@ -47,4 +56,4 @@ class Benchmark:
             )
             return data
 
-        return benchmark
+        return benchmark(instance, *args, **kwargs)

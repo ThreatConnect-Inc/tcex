@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ReadArg App Decorators."""
+import wrapt
 
 
 class ReadArg:
@@ -72,15 +73,24 @@ class ReadArg:
         self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
         self.fail_on = kwargs.get('fail_on', [])
+        self.embedded = kwargs.get('embedded', True)
         self.indicator_values = kwargs.get('indicator_values', False)
         self.group_values = kwargs.get('group_values', False)
         self.group_ids = kwargs.get('group_ids', False)
 
-    def __call__(self, fn):
+    @wrapt.decorator
+    def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
 
         Args:
-            fn (function): The decorated function.
+            wrapped (callable): The wrapped function which in turns
+                needs to be called by your wrapper function.
+            instance (App): The object to which the wrapped
+                function was bound when it was called.
+            args (list): The list of positional arguments supplied
+                when the decorated function was called.
+            kwargs (dict): The dictionary of keyword arguments
+                supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
@@ -110,7 +120,9 @@ class ReadArg:
             elif self.group_ids:
                 arg_data = app.tcex.playbook.read_group_ids(getattr(app.args, self.arg))
             else:
-                arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+                arg_data = app.tcex.playbook.read(
+                    getattr(app.args, self.arg), self.array, embedded=self.embedded
+                )
             arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
             if self.default is not None and arg_data is None:
                 arg_data = self.default
@@ -135,6 +147,6 @@ class ReadArg:
                     log_string = f'{log_string[:100]} ...'
                 app.tcex.log.debug(f'input value: {log_string}')
 
-            return fn(app, *args, **kwargs)
+            return wrapped(*args, **kwargs)
 
-        return read
+        return read(instance, *args, **kwargs)

@@ -26,18 +26,22 @@ class SecurityLabel(Mappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @property
+    def as_entity(self):
+        """Return the object as an entity."""
+        return {}
+
     @staticmethod
     def is_security_label():
-        """
-        Indicates that this is a security label object
+        """Indicates that this is a security label object
+
         Returns:
 
         """
         return True
 
     def can_create(self):
-        """
-        If the name has been provided returns that the SecurityLabel can be created, otherwise
+        """If the name has been provided returns that the SecurityLabel can be created, otherwise
         returns that the SecurityLabel cannot be created.
 
         Returns:
@@ -48,8 +52,7 @@ class SecurityLabel(Mappings):
         return False
 
     def add_key_value(self, key, value):
-        """
-          Converts the value and adds it as a data field.
+        """Converts the value and adds it as a data field.
 
           Args:
               key:
@@ -58,8 +61,7 @@ class SecurityLabel(Mappings):
         self._data[key] = value
 
     def name(self, name):
-        """
-        Updates the security labels name.
+        """Updates the security labels name.
 
         Args:
             name:
@@ -71,8 +73,7 @@ class SecurityLabel(Mappings):
         )
 
     def color(self, color):
-        """
-        Updates the security labels color.
+        """Updates the security labels color.
 
         Args:
             color:
@@ -85,8 +86,7 @@ class SecurityLabel(Mappings):
         )
 
     def description(self, description):
-        """
-        Updates the security labels description.
+        """Updates the security labels description.
 
         Args:
             description:
@@ -98,8 +98,7 @@ class SecurityLabel(Mappings):
         )
 
     def date_added(self, date_added):
-        """
-        Updates the security labels date_added
+        """Updates the security labels date_added
 
         Args:
             date_added: Converted to %Y-%m-%dT%H:%M:%SZ date format

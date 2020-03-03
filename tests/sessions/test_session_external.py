@@ -2,7 +2,6 @@
 """Test the TcEx Session Module."""
 
 
-# pylint: disable=R0201,W0201
 class TestUtils:
     """Test the TcEx Session Module."""
 

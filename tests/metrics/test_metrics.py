@@ -3,7 +3,6 @@
 import uuid
 
 
-# pylint: disable=W0201
 class TestMetrics:
     """Test the TcEx Metrics Module."""
 

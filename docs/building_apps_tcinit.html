@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
 
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -123,6 +123,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#external-app-templates">External App Templates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-config-data">Example Config data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#external-external">External (external)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id5">app.py</a></li>
 </ul>
@@ -142,6 +143,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
@@ -149,7 +151,8 @@
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
@@ -581,7 +584,7 @@ optional arguments:
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">IterateOnArg</span><span class="p">,</span> <span class="n">OnException</span><span class="p">,</span> <span class="n">OnSuccess</span><span class="p">,</span> <span class="n">Output</span>
 
 
-<span class="c1"># pylint: disable=R0201</span>
+<span class="c1"># pylint: disable=no-self-use</span>
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
 
@@ -591,63 +594,63 @@ optional arguments:
         <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to run capitalize operation.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran capitalize operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run capitalize operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran capitalize operation.&#39;</span><span class="p">)</span>
     <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to run lowercase operation.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran lowercase operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run lowercase operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran lowercase operation.&#39;</span><span class="p">)</span>
     <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">lowercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lowercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string in lowercase.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to run reverse operation.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran reverse operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run reverse operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran reverse operation.&#39;</span><span class="p">)</span>
     <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string reversed.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">string</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">input_strings</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to run strip operation.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran strip operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run strip operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran strip operation.&#39;</span><span class="p">)</span>
     <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">strip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">strip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string stripping any whitespaces at beginning and end.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to run swap case operation.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran swap case operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run swap case operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran swap case operation.&#39;</span><span class="p">)</span>
     <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">swap_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">swap_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string with the case swapped.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">swapcase</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">swapcase</span><span class="p">()</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to run title case operation.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran title case operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run title case operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran title case operation.&#39;</span><span class="p">)</span>
     <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">title_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">title_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string in title case.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
 
     <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to run uppercase operation.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran uppercase operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run uppercase operation.&#39;</span><span class="p">)</span>
+    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran uppercase operation.&#39;</span><span class="p">)</span>
     <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">uppercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">uppercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string in uppercase.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Write the Playbook output variables. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
         <span class="c1"># output</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;output_strings: {self.output_strings}&#39;</span><span class="p">)</span>
 
@@ -733,7 +736,7 @@ optional arguments:
 <span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
 
 
-<span class="c1"># pylint: disable=W0201</span>
+<span class="c1"># pylint: disable=attribute-defined-outside-init</span>
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
 
@@ -744,10 +747,6 @@ optional arguments:
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="c1"># def done(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;Perform cleanup work before after App main logic.&quot;&quot;&quot;</span>
-    <span class="c1">#     self.tcex.log.debug(&#39;Running done.&#39;)</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
@@ -774,9 +773,13 @@ optional arguments:
         <span class="c1"># set the App exit message</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;JSON prettified.&#39;</span>
 
-    <span class="c1"># def start(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;Perform prep work before running App main logic.&quot;&quot;&quot;</span>
-    <span class="c1">#     self.tcex.log.debug(&#39;Running start.&#39;)</span>
+    <span class="c1"># def setup(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;Perform prep/setup work before running App main logic.&quot;&quot;&quot;</span>
+    <span class="c1">#     self.tcex.log.debug(&#39;Running setup.&#39;)</span>
+
+    <span class="c1"># def teardown(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;Perform cleanup/teardown work before after App main logic.&quot;&quot;&quot;</span>
+    <span class="c1">#     self.tcex.log.debug(&#39;Running teardown.&#39;)</span>
 
     <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
@@ -795,6 +798,8 @@ optional arguments:
 <h2>External App Templates<a class="headerlink" href="#external-app-templates" title="Permalink to this headline">¶</a></h2>
 <p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two init params are supported during the initialization of TcEx.  The first option, <code class="docutils literal notranslate"><span class="pre">TcEx(config_file='app_config.json)</span></code>, takes a JSON file as input for the App configuration file. The second option, <code class="docutils literal notranslate"><span class="pre">TcEx(config=app_config_dict)</span></code>, takes a dictionary of configuration data.  Either param will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the <strong>app.py</strong> file, if required.</p>
+<div class="section" id="example-config-data">
+<h3>Example Config data<a class="headerlink" href="#example-config-data" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;api_access_id&quot;</span><span class="o">:</span> <span class="s2">&quot;API_ACCESS_ID&quot;</span><span class="p">,</span>
   <span class="s2">&quot;api_default_org&quot;</span><span class="o">:</span> <span class="s2">&quot;API_DEFAULT_ORG&quot;</span><span class="p">,</span>
@@ -812,6 +817,7 @@ optional arguments:
 </pre></div>
 </div>
 <p>In the example above the proxy configuration is only required if using a proxy server in the environment.</p>
+</div>
 <div class="section" id="external-external">
 <h3>External (external)<a class="headerlink" href="#external-external" title="Permalink to this headline">¶</a></h3>
 <p>This basic template provides the structure for an External App without any logic.  This template is intended for advanced users that only require the App structure.</p>
@@ -905,9 +911,7 @@ optional arguments:
 48
 49
 50
-51
-52
-53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
@@ -929,9 +933,7 @@ optional arguments:
         <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_owner</span><span class="p">)</span>
 
         <span class="c1"># using tcex requests to get built-in features (e.g., proxy, logging, retries)</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-
-        <span class="k">with</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session_external</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>

@@ -4,6 +4,9 @@
 ==================
 Module: Decorators
 ==================
+
+.. important:: App decorators have been updated with breaking changes in TcEx 2.0.
+
 The ThreatConnect TcEx App Framework provides multiple Python decorators to help in setup of task that are common in Apps. Using multiple decorators on a single method is common.
 
 
