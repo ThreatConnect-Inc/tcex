@@ -361,7 +361,7 @@ class Services:
             while time.time() < deadline:
                 if self.shutdown:
                     return False
-                sleep(1)
+                time.sleep(1)
             return True
 
     def message_thread(self, name, target, args, kwargs=None):
