@@ -418,19 +418,20 @@ class Playbooks(PlaybooksBase):
         return value
 
     def _entity_field(self, key, field, entity_type=None, default=None):
-        """Read the value at the given key and return the data at the given field.
+        """Read the value of the given key and return the data at the given field of the value.
 
-        This method is used by functions designed to make it easier to get data from a particular field from TC(Enhanced)Entity(Arrays).
+        This method is used by functions designed to make it easier to get data from a particular field from TC(Enhanced)Entity(Array).
 
         Args:
             key (string): The variable to read from the DB.
-            value (string): The value to find in the data.
-            entity_type (Any): The type of data being collected (valid values: ['groups', 'indicators']).
+            field (string): The field to find in the data.
+            entity_type (Any): Default is None. The type of data being collected (valid values:
+                ['groups', 'indicators']).
             default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities
+                TCEnhancedEntities.
 
         Returns:
-            (list): A list of strings containing the indicators
+            (list): A list of strings containing the desired values.
         """
         read_results = self.read(key, array=True)
         if not read_results:
@@ -467,14 +468,14 @@ class Playbooks(PlaybooksBase):
         return values
 
     def read_indicator_values(self, key, default=None):
-        """Read the value at the given key and return indicators from the value.
+        """Read the value of the given key and return indicators from the value.
 
         This method will call the `read` method and then will process the data so as to return a list of strings where each string is an indicator (the summary of an indicator - e.g. ["foo.example.com", "bar.example.com"]).
 
         Args:
             key (string): The variable to read from the DB.
             default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities
+                TCEnhancedEntities.
 
         Returns:
             (list): A list of strings containing the indicators
@@ -482,14 +483,14 @@ class Playbooks(PlaybooksBase):
         return self._entity_field(key, 'value', entity_type='indicator')
 
     def read_group_values(self, key, default=None):
-        """Read the value at the given key and return group names from the value.
+        """Read the value of the given key and return group names from the value.
 
         This method will call the `read` method and then will process the data so as to return a list of strings where each string is a group name.
 
         Args:
             key (string): The variable to read from the DB.
             default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities
+                TCEnhancedEntities.
 
         Returns:
             (list): A list of strings containing the group names
@@ -497,14 +498,14 @@ class Playbooks(PlaybooksBase):
         return self._entity_field(key, 'value', entity_type='group')
 
     def read_group_ids(self, key, default=None):
-        """Read the value at the given key and return group ids from the value.
+        """Read the value of the given key and return group ids from the value.
 
         This method will call the `read` method and then will process the data so as to return a list of strings where each string is a group id.
 
         Args:
             key (string): The variable to read from the DB.
             default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities
+                TCEnhancedEntities.
 
         Returns:
             (list): A list of strings containing the group ids
