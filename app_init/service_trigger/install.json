@@ -3,16 +3,54 @@
   "displayName": "",
   "features": [
     "appBuilderCompliant",
+    "fileParams",
     "secureParams"
   ],
   "labels": [],
   "languageVersion": "3.6",
   "listDelimiter": "|",
   "note": "",
-  "params": [],
+  "params": [
+    {
+      "label": "Example Service Input",
+      "name": "service_input",
+      "note": "An example input to the Trigger at the service level.",
+      "required": true,
+      "sequence": 1,
+      "serviceConfig": true,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "label": "Example Playbook Input",
+      "name": "playbook_input",
+      "note": "An example input to the Trigger at the playbook level.",
+      "playbookDataType": [
+        "String"
+      ],
+      "required": true,
+      "sequence": 2,
+      "serviceConfig": false,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    }
+  ],
   "playbook": {
-    "outputVariables": [],
-    "type": ""
+    "outputVariables": [
+      {
+        "name": "example.service_input",
+        "type": "String"
+      },
+      {
+        "name": "example.playbook_input",
+        "type": "StringArray"
+      }
+    ],
+    "type": "Service Trigger"
   },
   "programLanguage": "PYTHON",
   "programMain": "run",
