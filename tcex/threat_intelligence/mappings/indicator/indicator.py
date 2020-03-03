@@ -24,7 +24,7 @@ def custom_indicator_class_factory(
                 metadata_map[manipulated_value] = value
         return metadata_map
 
-    def init(self, tcex, **kwargs):  # pylint: disable=W0641
+    def init(self, tcex, **kwargs):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with one value"""
         base_class.__init__(
             self,
@@ -67,7 +67,7 @@ def custom_indicator_class_factory(
         elif len(values) == 1:
             self.unique_id = self.build_summary(values[0], values[1], values[2])
 
-    def can_create(self):  # pylint: disable=W0641,W0613
+    def can_create(self):  # pylint: disable=unused-argument,possibly-unused-variable
         """Determine if the required data that the API endpoint is expecting is present."""
         valid_create = True
         for field in value_fields:

@@ -96,7 +96,7 @@ class Artifact(CommonCaseManagement):
         parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Artifact.
         source (str, kwargs): The **Source** for the Artifact.
         summary (str, kwargs): [Required] The **Summary** for the Artifact.
-        task (Task, kwargs): [Read-Only] The **Task** for the Artifact.
+        task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Artifact.
         task_id (int, kwargs): the ID of the task which the Artifact references
         task_xid (str, kwargs): the XID of the task which the Artifact references
         type (str, kwargs): [Required] The **Type** for the Artifact.

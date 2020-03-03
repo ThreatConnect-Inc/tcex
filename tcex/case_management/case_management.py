@@ -46,7 +46,7 @@ class CaseManagement:
             parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Artifact.
             source (str, kwargs): The **Source** for the Artifact.
             summary (str, kwargs): [Required] The **Summary** for the Artifact.
-            task (Task, kwargs): [Read-Only] The **Task** for the Artifact.
+            task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Artifact.
             task_id (int, kwargs): the ID of the task which the Artifact references
             task_xid (str, kwargs): the XID of the task which the Artifact references
             type (str, kwargs): [Required] The **Type** for the Artifact.
@@ -149,10 +149,10 @@ class CaseManagement:
             resolution (str, kwargs): The **Resolution** for the Case.
             severity (str, kwargs): [Required] The **Severity** for the Case.
             status (str, kwargs): [Required] The **Status** for the Case.
-            tags (Tag, kwargs): a list of Tags corresponding to the Case
+            tags (tcex.case_management.tag.Tag, kwargs): a list of Tags corresponding to the Case
                 (NOTE: Setting this parameter will replace any existing tag(s) with
                 the one(s) specified)
-            tasks (Task, kwargs): a list of Tasks corresponding to the Case
+            tasks (case_management.task.Task, kwargs): a list of Tasks corresponding to the Case
             user_access (User, kwargs): a list of Users that, when defined, are the only
                 ones allowed to view or edit the Case
             workflow_events (WorkflowEvent, kwargs): The **Events** for the Case.
@@ -220,7 +220,7 @@ class CaseManagement:
             last_modified (str, kwargs): [Read-Only] The **Last Modified** for the Note.
             parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Note.
             summary (str, kwargs): [Read-Only] The **Summary** for the Note.
-            task (Task, kwargs): [Read-Only] The **Task** for the Note.
+            task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Note.
             task_id (int, kwargs): the ID of the Task on which to apply the Note
             task_xid (str, kwargs): the XID of the Task on which to apply the Note
             text (str, kwargs): [Required] The **Text** for the Note.

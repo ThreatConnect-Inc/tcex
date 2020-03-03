@@ -7,7 +7,7 @@ import os
 import sys
 
 
-# pylint: disable=R0201
+# pylint: disable=no-self-use
 class Stager:
     """Stage Data class"""
 

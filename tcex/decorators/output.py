@@ -38,7 +38,14 @@ class Output:
         """Implement __call__ function for decorator.
 
         Args:
-            fn (function): The decorated function.
+            wrapped (callable): The wrapped function which in turns
+                needs to be called by your wrapper function.
+            instance (App): The object to which the wrapped
+                function was bound when it was called.
+            args (list): The list of positional arguments supplied
+                when the decorated function was called.
+            kwargs (dict): The dictionary of keyword arguments
+                supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.

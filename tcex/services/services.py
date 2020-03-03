@@ -347,13 +347,23 @@ class Services:
         for message in p.listen():
             self.on_message_redis(message)
 
-    def loop_forever(self):
-        """Block and wait for shutdown."""
+    def loop_forever(self, sleep=1):
+        """Block and wait for shutdown.
+
+        Args:
+            sleep (int, optional): The amount of time to sleep between iterations. Defaults to 1.
+
+        Returns:
+            Bool: Returns True until shutdown received.
+        """
         self.tcex.log.info('Looping until shutdown')
         while True:
-            time.sleep(1)
-            if self.shutdown is True:
-                break
+            deadline = time.time() + sleep
+            while time.time() < deadline:
+                if self.shutdown:
+                    return False
+                sleep(1)
+            return True
 
     def message_thread(self, name, target, args, kwargs=None):
         """Start a message thread.

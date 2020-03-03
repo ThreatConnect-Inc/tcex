@@ -51,7 +51,7 @@ class Notes(CommonCaseManagementCollection):
         """Add a Note.
 
         Args:
-            note (Note): The Note Object to add.
+            note (case_management.note.Note): The Note Object to add.
         """
         self.added_items.append(note)
 
@@ -84,7 +84,7 @@ class Note(CommonCaseManagement):
         last_modified (str, kwargs): [Read-Only] The **Last Modified** for the Note.
         parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Note.
         summary (str, kwargs): [Read-Only] The **Summary** for the Note.
-        task (Task, kwargs): [Read-Only] The **Task** for the Note.
+        task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Note.
         task_id (int, kwargs): the ID of the Task on which to apply the Note
         task_xid (str, kwargs): the XID of the Task on which to apply the Note
         text (str, kwargs): [Required] The **Text** for the Note.

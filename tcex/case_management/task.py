@@ -53,7 +53,7 @@ class Tasks(CommonCaseManagementCollection):
         """Add an task to a case.
 
         Args:
-            task (Task): The Task Object to add.
+            task (case_management.task.Task): The Task Object to add.
         """
         self.added_items.append(task)
 

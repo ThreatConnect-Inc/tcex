@@ -213,7 +213,7 @@ class Mappings:
         """
         for arg, value in kwargs.items():
             if hasattr(self, 'add_key_value'):
-                self.add_key_value(arg, value)  # pylint: disable=E1101
+                self.add_key_value(arg, value)  # pylint: disable=no-member
             else:
                 self._data[arg] = value
 
@@ -906,7 +906,7 @@ class Mappings:
             self.api_type, self.api_branch, self.unique_id, attribute_id, label, owner=self.owner
         )
 
-    def can_create(self):  # pylint: disable=R0201
+    def can_create(self):  # pylint: disable=no-self-use
         """ Determines if the object can be created. """
         return True
 
