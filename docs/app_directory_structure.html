@@ -113,9 +113,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#requirements-txt-required">requirements.txt (required)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#run-py-required">run.py (required)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setup-cfg-optional">setup.cfg (optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tcex-d-optional">tcex.d (optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tcex-d-data-optional">tcex.d/data (optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tcex-d-profiles-optional">tcex.d/profiles (optional)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tcex-json-required">tcex.json (required)</a></li>
 </ul>
 </li>
@@ -845,7 +842,7 @@ nbproject
 </div>
 <div class="section" id="log-temporary">
 <h2>log (temporary)<a class="headerlink" href="#log-temporary" title="Permalink to this headline">¶</a></h2>
-<p>This directory is created when running a testing profile locally. All App output is written to this directory, as well as the output of the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command.</p>
+<p>This directory is created when running a testing profile locally. All App output is written to this directory, as well as the output from the test cases.</p>
 </div>
 <div class="section" id="log-app-log-temporary">
 <h2>log/app.log (temporary)<a class="headerlink" href="#log-app-log-temporary" title="Permalink to this headline">¶</a></h2>
@@ -857,11 +854,11 @@ nbproject
 </div>
 <div class="section" id="log-run-log-temporary">
 <h2>log/run.log (temporary)<a class="headerlink" href="#log-run-log-temporary" title="Permalink to this headline">¶</a></h2>
-<p>This log file contains the output from the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command and will contain information about validations rules.</p>
+<p>This log file contains the output from the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command and will contain information about validation rules.</p>
 </div>
 <div class="section" id="playbook-app-py-required">
 <h2>playbook_app.py (required)<a class="headerlink" href="#playbook-app-py-required" title="Permalink to this headline">¶</a></h2>
-<p>This template file contains base logic for a Playbook App. This file should not be edited and will get updated when using the <code class="docutils literal notranslate"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
+<p>This template file contains base logic for a Playbook App. This file should not be edited and will get updated when using the <code class="docutils literal notranslate"><span class="pre">tcinit</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -974,7 +971,7 @@ nbproject
 </div>
 <div class="section" id="run-py-required">
 <h2>run.py (required)<a class="headerlink" href="#run-py-required" title="Permalink to this headline">¶</a></h2>
-<p>This template file is called by ThreatConnect and <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to launch the App. This file should not be edited and will get updated when using the <code class="docutils literal notranslate"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
+<p>This template file is called by ThreatConnect to launch the App. This file should not be edited and will get updated when using the <code class="docutils literal notranslate"><span class="pre">tcinit</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -1175,18 +1172,6 @@ nbproject
 <span class="n">ignore</span> <span class="o">=</span> <span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D400</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span><span class="p">,</span><span class="n">D415</span>
 </pre></div>
 </td></tr></table></div>
-</div>
-<div class="section" id="tcex-d-optional">
-<h2>tcex.d (optional)<a class="headerlink" href="#tcex-d-optional" title="Permalink to this headline">¶</a></h2>
-<p>This directory is generated when creating a testing profile using the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command.  This directory holds both the staging data and JSON profile files.</p>
-</div>
-<div class="section" id="tcex-d-data-optional">
-<h2>tcex.d/data (optional)<a class="headerlink" href="#tcex-d-data-optional" title="Permalink to this headline">¶</a></h2>
-<p>This directory contains the JSON staging files.</p>
-</div>
-<div class="section" id="tcex-d-profiles-optional">
-<h2>tcex.d/profiles (optional)<a class="headerlink" href="#tcex-d-profiles-optional" title="Permalink to this headline">¶</a></h2>
-<p>This directory contains the JSON profile files.</p>
 </div>
 <div class="section" id="tcex-json-required">
 <h2>tcex.json (required)<a class="headerlink" href="#tcex-json-required" title="Permalink to this headline">¶</a></h2>

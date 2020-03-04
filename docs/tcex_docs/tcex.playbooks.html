@@ -481,6 +481,32 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <dd><p>Bases: <a class="reference internal" href="#tcex.playbooks.playbooks_base.PlaybooksBase" title="tcex.playbooks.playbooks_base.PlaybooksBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.playbooks.playbooks_base.PlaybooksBase</span></code></a></p>
 <p>Playbook methods for accessing key value store.</p>
 <dl class="method">
+<dt id="tcex.playbooks.playbooks.Playbooks._entity_field">
+<code class="sig-name descname">_entity_field</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">field</em>, <em class="sig-param">entity_type=None</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks._entity_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks._entity_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the value of the given key and return the data at the given field of the value.</p>
+<p>This method is used by functions designed to make it easier to get
+data from a particular field from TC(Enhanced)Entity(Array).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>field</strong> (<em>string</em>) – The field to find in the data.</p></li>
+<li><p><strong>entity_type</strong> (<em>Any</em>) – Default is None. The type of data being collected (valid values:
+[‘groups’, ‘indicators’]).</p></li>
+<li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
+TCEnhancedEntities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of strings containing the desired values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.playbooks.playbooks.Playbooks.add_output">
 <code class="sig-name descname">add_output</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">variable_type</em>, <em class="sig-param">append_array=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.add_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.add_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamically add output to output_data dictionary to be written to DB later.</p>
@@ -937,6 +963,76 @@ automatically determine the variable type to read.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>(None|str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.playbooks.playbooks.Playbooks.read_group_ids">
+<code class="sig-name descname">read_group_ids</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_group_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_group_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the value of the given key and return group ids from the value.</p>
+<p>This method will call the <cite>read</cite> method and then will process the data
+so as to return a list of strings where each string is a group id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
+TCEnhancedEntities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of strings containing the group ids</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.playbooks.playbooks.Playbooks.read_group_values">
+<code class="sig-name descname">read_group_values</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_group_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_group_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the value of the given key and return group names from the value.</p>
+<p>This method will call the <cite>read</cite> method and then will process the data
+so as to return a list of strings where each string is a group name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
+TCEnhancedEntities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of strings containing the group names</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.playbooks.playbooks.Playbooks.read_indicator_values">
+<code class="sig-name descname">read_indicator_values</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_indicator_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_indicator_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the value of the given key and return indicators from the value.</p>
+<p>This method will call the <cite>read</cite> method and then will process the data so as to return a
+list of strings where each string is an indicator (the summary of an indicator - e.g.
+[“foo.example.com”, “bar.example.com”]).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
+TCEnhancedEntities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of strings containing the indicators</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
 </dd>
 </dl>
 </dd></dl>

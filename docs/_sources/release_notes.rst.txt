@@ -3,12 +3,19 @@
 Release Notes
 #############
 
+2.0.1
+=====
++ Updated bin module to delete reference to removed profile and run files.
++ Updated setup.py for long_description.
++ Updated README.md to include all dependencies.
+
 2.0.0
 =====
 + Added support for ThreatConnect Case Management.
 + Added support for ThreatConnect Service Apps.
 + Updated templates to support changes in tcex 2.0.
 + Updated code to support Python 3.6+, removing support for all older versions of Python.
++ Removed old tcrun and tcprofile commands.
 + Breaking Change: Multiple updates to ``playbook`` module logic.
 + Breaking Change: Moved datetime methods in tcex.utils.xxx to tcex.utils.datetime.xxx.
 + Breaking Change: Reworked App decorators to improve usability.
@@ -23,19 +30,22 @@ Release Notes
 + Breaking Change: Updated ``tcex.safe_url()`` method input params.
 + Breaking Change: Updated ``tcex.safe_tag()`` method input params.
 
-1.1.8
+1.1.x
 =====
+
+1.1.8
+-----
 + Improved support for TI module to support creating files given a unique_id.
 + Updates to playbook modules to remove logging affecting environment servers.
 
 1.1.7
-=====
+-----
 + Updates to testing framework for custom validation.
 + Updates to the docs for multiple modules.
 + Multiple updates to testing framework.
 
 1.1.6
-=====
+-----
 + Updated deleted() method of TI module to yield results instead of returning raw response.
 + Updates to testing framework for custom methods when testing profiles.
 + Updated inputs to ensure args provided via sys.argv take precedent over all other args.
@@ -44,11 +54,11 @@ Release Notes
 + Updated excludes for tcpackage command for pytest report folders.
 
 1.1.5
-=====
+-----
 + Updated validation module to handle local imports and shared modules.
 
 1.1.4
-=====
+-----
 + Added additional support for v2 API endpoints.
 + Added support for new appId field in the install.json.
 + Updated validation command to better handle packages with nested modules.
@@ -59,7 +69,7 @@ Release Notes
 + Multiple updates for testing framework.
 
 1.1.3
-=====
+-----
 + Added cache handler to logging module.
 + Updated args module to use dict input over sys.argv when possible.
 + Updated args module replaced required args with a default value when possible.
@@ -69,20 +79,20 @@ Release Notes
 + Removed reference to args in logging module.
 
 1.1.2
-=====
+-----
 + Updates to token and args modules to better support testing framework and external Apps.
 + Added kwargs on tcex init for external Apps.
 + Updates to testing templates.
 
 1.1.1
-=====
+-----
 + Moved registration of default token to default_args method to address issue with secure params.
 + Updated template files.
 + Updated build process for wheel files.
 + Updated permutations generation to include hidden inputs.
 
 1.1.0
-=====
+-----
 + Restructured tcex modules into individual directories.
 + Added services module for service Apps.
 + Added token module to manage tokens for all types of Apps.

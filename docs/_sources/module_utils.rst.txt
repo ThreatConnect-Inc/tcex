@@ -19,6 +19,18 @@ Accepted Formats:
 
 .. note:: This module supports the use of ``%s`` to retrieve the datetime in UNIX format.
 
+3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect
+---------------------------------------------------------
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2
+
+    <...snipped>
+    tcex.utils.datetime.format_datetime('3 weeks ago', 'UTC', '%Y-%m-%dT%H:%M:%SZ')
+    <snipped...>
+
 UNIX Timestamp Integer
 ----------------------
 
@@ -137,18 +149,6 @@ Next Monday at Noon
 
     <...snipped>
     tcex.utils.datetime.format_datetime('next monday at noon')
-    <snipped...>
-
-3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect
----------------------------------------------------------
-
-.. code-block:: python
-    :linenos:
-    :lineno-start: 1
-    :emphasize-lines: 2
-
-    <...snipped>
-    tcex.utils.datetime.format_datetime('3 weeks ago', 'US/Eastern', '%Y-%m-%dT%H:%M:%SZ')
     <snipped...>
 
 Date to Datetime

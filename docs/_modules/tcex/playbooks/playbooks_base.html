@@ -467,7 +467,7 @@
                 <span class="c1"># coerce string values</span>
                 <span class="n">value_coerced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coerce_string_value</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value_coerced</span>
-        <span class="k">elif</span> <span class="n">variable_type</span> <span class="o">==</span> <span class="s1">&#39;TCEntityArray&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;TCEntityArray&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntity&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntityArray&#39;</span><span class="p">]:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="c1"># self.tcex.log.trace(f&#39;pb create - context: {self._context}, key: {key}, value: {value}&#39;)</span>

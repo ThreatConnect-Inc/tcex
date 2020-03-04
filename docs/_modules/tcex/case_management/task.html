@@ -279,8 +279,8 @@
 <span class="sd">        parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Task.</span>
 <span class="sd">        required (bool, kwargs): [Read-Only] The **Required** flag for the Task.</span>
 <span class="sd">        status (str, kwargs): The **Status** for the Task.</span>
-<span class="sd">        workflow_phase (int, kwargs): the phase of the workflow</span>
-<span class="sd">        workflow_step (int, kwargs): the step of the workflow</span>
+<span class="sd">        workflow_phase (int, kwargs): [Read-Only] the phase of the workflow</span>
+<span class="sd">        workflow_step (int, kwargs): [Read-Only] the step of the workflow</span>
 <span class="sd">        xid (str, kwargs): The **Xid** for the Task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -496,20 +496,10 @@
         <span class="sd">&quot;&quot;&quot;Return the **Workflow Phase** for the Task&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_phase</span>
 
-    <span class="nd">@workflow_phase</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">workflow_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow_phase</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the **Workflow Phase** for the Task&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_phase</span> <span class="o">=</span> <span class="n">workflow_phase</span>
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">workflow_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the **Workflow Step** for the Task&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_step</span>
-
-    <span class="nd">@workflow_step</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">workflow_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow_step</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the **Workflow Step** for the Task&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_step</span> <span class="o">=</span> <span class="n">workflow_step</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">xid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

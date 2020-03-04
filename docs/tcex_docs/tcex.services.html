@@ -413,8 +413,19 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.loop_forever">
-<code class="sig-name descname">loop_forever</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.loop_forever"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.loop_forever" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">loop_forever</code><span class="sig-paren">(</span><em class="sig-param">sleep=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.loop_forever"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.loop_forever" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block and wait for shutdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sleep</strong> (<em>int</em><em>, </em><em>optional</em>) – The amount of time to sleep between iterations. Defaults to 1.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns True until shutdown received.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

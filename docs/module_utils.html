@@ -110,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#format-datetime">Format DateTime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#weeks-ago-u-s-eastern-time-formatted-for-threatconnect">3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unix-timestamp-integer">UNIX Timestamp Integer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unix-timestamp-string">UNIX Timestamp String</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#iso-8601-date-zulu">ISO 8601 Date (Zulu)</a></li>
@@ -120,7 +121,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#now-in-u-s-central-time">Now in U.S. Central Time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tomorrow-at-6-a-m">Tomorrow at 6 A.M.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#next-monday-at-noon">Next Monday at Noon</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#weeks-ago-u-s-eastern-time-formatted-for-threatconnect">3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#date-to-datetime">Date to Datetime</a></li>
@@ -216,6 +216,16 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This module supports the use of <code class="docutils literal notranslate"><span class="pre">%s</span></code> to retrieve the datetime in UNIX format.</p>
+</div>
+<div class="section" id="weeks-ago-u-s-eastern-time-formatted-for-threatconnect">
+<h3>3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect<a class="headerlink" href="#weeks-ago-u-s-eastern-time-formatted-for-threatconnect" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;3 weeks ago&#39;</span><span class="p">,</span> <span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
+</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+</pre></div>
+</td></tr></table></div>
 </div>
 <div class="section" id="unix-timestamp-integer">
 <h3>UNIX Timestamp Integer<a class="headerlink" href="#unix-timestamp-integer" title="Permalink to this headline">¶</a></h3>
@@ -313,16 +323,6 @@
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;next monday at noon&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
-</pre></div>
-</td></tr></table></div>
-</div>
-<div class="section" id="weeks-ago-u-s-eastern-time-formatted-for-threatconnect">
-<h3>3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect<a class="headerlink" href="#weeks-ago-u-s-eastern-time-formatted-for-threatconnect" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;3 weeks ago&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
 </span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </td></tr></table></div>

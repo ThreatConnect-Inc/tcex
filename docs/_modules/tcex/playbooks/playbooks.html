@@ -423,8 +423,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): Result of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;TCEntityArray&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
+        <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TCEntityArray&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntity&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntityArray&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_variable_type</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_array</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
@@ -598,6 +598,111 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">return</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Playbooks._entity_field"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks._entity_field">[docs]</a>    <span class="k">def</span> <span class="nf">_entity_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">entity_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the value of the given key and return the data at the given field of the value.</span>
+
+<span class="sd">        This method is used by functions designed to make it easier to get</span>
+<span class="sd">        data from a particular field from TC(Enhanced)Entity(Array).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            field (string): The field to find in the data.</span>
+<span class="sd">            entity_type (Any): Default is None. The type of data being collected (valid values:</span>
+<span class="sd">                [&#39;groups&#39;, &#39;indicators&#39;]).</span>
+<span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
+<span class="sd">                TCEnhancedEntities.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list of strings containing the desired values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">read_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">read_results</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">variable_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">enhanced_entity_field</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">VALID_ENTITY_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="s1">&#39;indicator&#39;</span><span class="p">]</span>
+
+        <span class="c1"># handle the odd format of tcEnhancedEntityArrays which follow the format detailed here:</span>
+        <span class="c1"># https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#batch-indicator-input-file-format-v2</span>
+        <span class="k">if</span> <span class="n">read_results</span> <span class="ow">and</span> <span class="n">variable_type</span> <span class="o">==</span> <span class="s1">&#39;tcenhancedentityarray&#39;</span><span class="p">:</span>
+            <span class="c1"># type specific values</span>
+            <span class="k">if</span> <span class="n">entity_type</span> <span class="o">==</span> <span class="s1">&#39;indicator&#39;</span> <span class="ow">and</span> <span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
+                <span class="n">enhanced_entity_field</span> <span class="o">=</span> <span class="s1">&#39;summary&#39;</span>
+            <span class="k">elif</span> <span class="n">entity_type</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span> <span class="ow">and</span> <span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
+                <span class="n">enhanced_entity_field</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
+            <span class="k">elif</span> <span class="n">entity_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALID_ENTITY_TYPES</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">f</span><span class="s1">&#39;Invalid entity_type (</span><span class="si">{entity_type}</span><span class="s1">). Valid options: </span><span class="si">{VALID_ENTITY_TYPES}</span><span class="s1">.&#39;</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+            <span class="n">read_results</span> <span class="o">=</span> <span class="n">read_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">entity_type</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">is_tc_enhanced</span> <span class="o">=</span> <span class="n">enhanced_entity_field</span> <span class="ow">and</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s1">&#39;tcenhancedentity&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tcenhancedentityarray&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">is_tc_entity</span> <span class="o">=</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;tcentity&#39;</span><span class="p">,</span> <span class="s1">&#39;tcentityarray&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">is_tc_enhanced</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">enhanced_entity_field</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">read_results</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">is_tc_entity</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">read_results</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">read_results</span>
+
+        <span class="k">return</span> <span class="n">values</span></div>
+
+<div class="viewcode-block" id="Playbooks.read_indicator_values"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.read_indicator_values">[docs]</a>    <span class="k">def</span> <span class="nf">read_indicator_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the value of the given key and return indicators from the value.</span>
+
+<span class="sd">        This method will call the `read` method and then will process the data so as to return a</span>
+<span class="sd">        list of strings where each string is an indicator (the summary of an indicator - e.g.</span>
+<span class="sd">        [&quot;foo.example.com&quot;, &quot;bar.example.com&quot;]).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
+<span class="sd">                TCEnhancedEntities.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list of strings containing the indicators</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_entity_field</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">entity_type</span><span class="o">=</span><span class="s1">&#39;indicator&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Playbooks.read_group_values"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.read_group_values">[docs]</a>    <span class="k">def</span> <span class="nf">read_group_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the value of the given key and return group names from the value.</span>
+
+<span class="sd">        This method will call the `read` method and then will process the data</span>
+<span class="sd">        so as to return a list of strings where each string is a group name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
+<span class="sd">                TCEnhancedEntities.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list of strings containing the group names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_entity_field</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">entity_type</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Playbooks.read_group_ids"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.read_group_ids">[docs]</a>    <span class="k">def</span> <span class="nf">read_group_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the value of the given key and return group ids from the value.</span>
+
+<span class="sd">        This method will call the `read` method and then will process the data</span>
+<span class="sd">        so as to return a list of strings where each string is a group id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
+<span class="sd">                TCEnhancedEntities.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list of strings containing the group ids</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_entity_field</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">entity_type</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.read_choice"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.read_choice">[docs]</a>    <span class="k">def</span> <span class="nf">read_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">alt_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method for choice inputs.</span>
