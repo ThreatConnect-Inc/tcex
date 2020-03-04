@@ -120,6 +120,7 @@ if __name__ == '__main__':
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
             elif template.startswith('service'):
+                tci.download_file('app_lib.py')
                 tci.download_file('service/service_app.py', 'service_app.py')
                 tci.download_file(f'{template}/run.py', 'run.py')
 
