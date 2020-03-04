@@ -304,8 +304,12 @@ class TestCase(TestCaseManagement):
     def test_case_get_many(self, request):
         """Test Case get many"""
         # create cases
-        self.cm_helper.create_case(name=f'{request.node.name}-1', xid=f'{request.node.name}-1')
-        self.cm_helper.create_case(name=f'{request.node.name}-2', xid=f'{request.node.name}-2')
+        self.cm_helper.create_case(
+            name=f'{request.node.name}-1', xid=f'{request.node.name}-{random.randint(1000, 9999)}'
+        )
+        self.cm_helper.create_case(
+            name=f'{request.node.name}-2', xid=f'{request.node.name}-{random.randint(1000, 9999)}'
+        )
 
         # specifically match the count of the cases created.
         case_count = 0

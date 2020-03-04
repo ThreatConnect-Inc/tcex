@@ -44,6 +44,8 @@ class TestUtils:
             '#App:0001:tea2!TCEntityArray',
             '#App:0001:tea3!TCEntityArray',
             '#App:0001:tea4!TCEntityArray',
+            '#App:0001:tee1!TCEnhanceEntity',
+            '#App:0001:teea1!TCEnhanceEntityArray',
             '#App:0001:r1!Raw',
             '#App:0001:dup.name!String',
             '#App:0001:dup.name!StringArray',
@@ -499,7 +501,16 @@ class TestUtils:
         assert len(tcex.playbook._variable_types) == 10
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0001:s1!String', 's1')],
+        'variable,value',
+        [
+            (
+                '#App:0001:tea1!TCEntityArray',
+                [
+                    {'id': '001', 'type': 'Address', 'value': '1.1.1.1'},
+                    {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
+                ],
+            )
+        ],
     )
     def test_playbook_read_indicator_values(self, variable, value, playbook_app):
         """Test the read_indicator_values method of Playbook module.
@@ -512,16 +523,57 @@ class TestUtils:
         tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-
-        # TODO: Validate that this test is working properly
-        # TODO: Provide more parametrized input arguments to this test
-        # TODO: Test the default argument for the read_indicator_values function
+        # stage the data
+        tcex.playbook.create_tc_entity_array(variable, value)
 
         result = tcex.playbook.read_indicator_values(variable)
-        assert result == [value]
+        expected = [i.get('value') for i in value]
+        assert result == expected, f'result {result} do not match expected {expected}'
+
+    # https://threatconnect.slack.com/archives/G0HSGS4P9/p1556216921011000
+    @pytest.mark.parametrize(
+        'variable,value',
+        [
+            (
+                '#App:0001:tee1!TCEnhancedEntityArray',
+                {
+                    'indicator': [
+                        {'id': '001', 'type': 'Address', 'summary': '1.1.1.1'},
+                        {'id': '002', 'type': 'Address', 'summary': '2.2.2.2'},
+                    ],
+                },
+            )
+        ],
+    )
+    def test_playbook_read_indicator_values_enhanced_entity(self, variable, value, playbook_app):
+        """Test the read_indicator_values method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+        # stage the data
+        tcex.playbook.create_tc_entity_array(variable, value)
+
+        result = tcex.playbook.read_indicator_values(variable)
+        expected = [i.get('summary') for i in value.get('indicator')]
+        assert result == expected, f'result {result} do not match expected {expected}'
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0001:s1!String', 's1')],
+        'variable,value',
+        [
+            (
+                '#App:0001:tea1!TCEntityArray',
+                [
+                    {'id': '001', 'type': 'Adversary', 'value': 'adversary-001'},
+                    {'id': '002', 'type': 'Adversary', 'value': 'adversary-002'},
+                ],
+            )
+        ],
     )
     def test_playbook_read_group_values(self, variable, value, playbook_app):
         """Test the read_group_values method of Playbook module.
@@ -534,16 +586,57 @@ class TestUtils:
         tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-
-        # TODO: Validate that this test is working properly
-        # TODO: Provide more parametrized input arguments to this test
-        # TODO: Test the default argument for the read_group_values function
+        # stage the data
+        tcex.playbook.create_tc_entity_array(variable, value)
 
         result = tcex.playbook.read_group_values(variable)
-        assert result == [value]
+        expected = [i.get('value') for i in value]
+        assert result == expected, f'result {result} do not match expected {expected}'
+
+    # https://threatconnect.slack.com/archives/G0HSGS4P9/p1556216921011000
+    @pytest.mark.parametrize(
+        'variable,value',
+        [
+            (
+                '#App:0001:tee1!TCEnhancedEntityArray',
+                {
+                    'group': [
+                        {'id': '001', 'type': 'Adversary', 'name': 'adversary-001'},
+                        {'id': '002', 'type': 'Adversary', 'name': 'adversary-002'},
+                    ],
+                },
+            )
+        ],
+    )
+    def test_playbook_read_group_values_enhanced_entity(self, variable, value, playbook_app):
+        """Test the read_indicator_values method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+        # stage the data
+        tcex.playbook.create_tc_entity_array(variable, value)
+
+        result = tcex.playbook.read_group_values(variable)
+        expected = [i.get('name') for i in value.get('group')]
+        assert result == expected, f'result {result} do not match expected {expected}'
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0001:s1!String', 's1')],
+        'variable,value',
+        [
+            (
+                '#App:0001:tea1!TCEntityArray',
+                [
+                    {'id': '001', 'type': 'Adversary', 'value': 'adversary-001'},
+                    {'id': '002', 'type': 'Adversary', 'value': 'adversary-002'},
+                ],
+            )
+        ],
     )
     def test_playbook_read_group_ids(self, variable, value, playbook_app):
         """Test the read_group_ids method of Playbook module.
@@ -557,12 +650,47 @@ class TestUtils:
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
 
-        # TODO: Validate that this test is working properly
-        # TODO: Provide more parametrized input arguments to this test
-        # TODO: Test the default argument for the read_group_ids function
+        # stage the data
+        tcex.playbook.create_tc_entity_array(variable, value)
 
         result = tcex.playbook.read_group_ids(variable)
-        assert result == [value]
+        expected = [i.get('id') for i in value]
+        assert result == expected, f'result {result} do not match expected {expected}'
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:sa1!StringArray', ['1.1.1.1', '2.2.2.2'],)],
+    )
+    def test_playbook_read_indicator_value_string_array(self, variable, value, playbook_app):
+        """Test the indicator_value method using StringArray.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # stage the data
+        tcex.playbook.create_string_array(variable, value)
+
+        result = tcex.playbook.read_indicator_values(variable)
+        expected = value
+        assert result == expected, f'result {result} do not match expected {expected}'
+
+    def test_playbook_entity_field_null(self, playbook_app):
+        """Test the _entity_field method of Playbook module.
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        result = tcex.playbook._entity_field('#App:0001:null!String', 'value')
+        assert result == [], f'result {result} do not match expected []'
 
     @pytest.mark.parametrize(
         'variable,value,alt_variable,alt_value,expected',

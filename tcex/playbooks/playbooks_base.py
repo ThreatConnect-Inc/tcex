@@ -285,7 +285,7 @@ class PlaybooksBase:
                 # coerce string values
                 value_coerced.append(self._coerce_string_value(v))
             value = value_coerced
-        elif variable_type == 'TCEntityArray':
+        elif variable_type in ['TCEntityArray', 'TCEnhancedEntity', 'TCEnhancedEntityArray']:
             value = self._load_value(value)
 
         # self.tcex.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')

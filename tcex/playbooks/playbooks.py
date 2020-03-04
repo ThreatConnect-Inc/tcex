@@ -241,8 +241,8 @@ class Playbooks(PlaybooksBase):
         Returns:
             (string): Result of DB write.
         """
-        supported_variable_type = 'TCEntityArray'
-        if self.variable_type(key) != supported_variable_type:
+        supported_variable_type = ['TCEntityArray', 'TCEnhancedEntity', 'TCEnhancedEntityArray']
+        if self.variable_type(key) not in supported_variable_type:
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create_array(key, value)
 
@@ -420,7 +420,8 @@ class Playbooks(PlaybooksBase):
     def _entity_field(self, key, field, entity_type=None, default=None):
         """Read the value of the given key and return the data at the given field of the value.
 
-        This method is used by functions designed to make it easier to get data from a particular field from TC(Enhanced)Entity(Array).
+        This method is used by functions designed to make it easier to get
+        data from a particular field from TC(Enhanced)Entity(Array).
 
         Args:
             key (string): The variable to read from the DB.
@@ -449,13 +450,18 @@ class Playbooks(PlaybooksBase):
                 enhanced_entity_field = 'summary'
             elif entity_type == 'group' and field == 'value':
                 enhanced_entity_field = 'name'
-            elif entity_type not in VALID_ENTITY_TYPES:
-                message = f'Invalid entity_type ({entity_type}). Valid options: {VALID_ENTITY_TYPES}.'
+            elif entity_type not in VALID_ENTITY_TYPES:  # pragma: no cover
+                message = (
+                    f'Invalid entity_type ({entity_type}). Valid options: {VALID_ENTITY_TYPES}.'
+                )
                 raise RuntimeError(message)
 
             read_results = read_results[0].get(entity_type, [])
 
-        is_tc_enhanced = enhanced_entity_field and variable_type in ['tcenhancedentity', 'tcenhancedentityarray']
+        is_tc_enhanced = enhanced_entity_field and variable_type in [
+            'tcenhancedentity',
+            'tcenhancedentityarray',
+        ]
         is_tc_entity = variable_type in ['tcentity', 'tcentityarray']
 
         if is_tc_enhanced:
@@ -470,7 +476,9 @@ class Playbooks(PlaybooksBase):
     def read_indicator_values(self, key, default=None):
         """Read the value of the given key and return indicators from the value.
 
-        This method will call the `read` method and then will process the data so as to return a list of strings where each string is an indicator (the summary of an indicator - e.g. ["foo.example.com", "bar.example.com"]).
+        This method will call the `read` method and then will process the data so as to return a
+        list of strings where each string is an indicator (the summary of an indicator - e.g.
+        ["foo.example.com", "bar.example.com"]).
 
         Args:
             key (string): The variable to read from the DB.
@@ -480,12 +488,13 @@ class Playbooks(PlaybooksBase):
         Returns:
             (list): A list of strings containing the indicators
         """
-        return self._entity_field(key, 'value', entity_type='indicator')
+        return self._entity_field(key, 'value', entity_type='indicator', default=default)
 
     def read_group_values(self, key, default=None):
         """Read the value of the given key and return group names from the value.
 
-        This method will call the `read` method and then will process the data so as to return a list of strings where each string is a group name.
+        This method will call the `read` method and then will process the data
+        so as to return a list of strings where each string is a group name.
 
         Args:
             key (string): The variable to read from the DB.
@@ -495,12 +504,13 @@ class Playbooks(PlaybooksBase):
         Returns:
             (list): A list of strings containing the group names
         """
-        return self._entity_field(key, 'value', entity_type='group')
+        return self._entity_field(key, 'value', entity_type='group', default=default)
 
     def read_group_ids(self, key, default=None):
         """Read the value of the given key and return group ids from the value.
 
-        This method will call the `read` method and then will process the data so as to return a list of strings where each string is a group id.
+        This method will call the `read` method and then will process the data
+        so as to return a list of strings where each string is a group id.
 
         Args:
             key (string): The variable to read from the DB.
@@ -510,7 +520,7 @@ class Playbooks(PlaybooksBase):
         Returns:
             (list): A list of strings containing the group ids
         """
-        return self._entity_field(key, 'id', entity_type='group')
+        return self._entity_field(key, 'id', entity_type='group', default=default)
 
     def read_choice(self, key, alt_key):
         """Read method for choice inputs.

@@ -97,8 +97,8 @@ class Task(CommonCaseManagement):
         parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Task.
         required (bool, kwargs): [Read-Only] The **Required** flag for the Task.
         status (str, kwargs): The **Status** for the Task.
-        workflow_phase (int, kwargs): the phase of the workflow
-        workflow_step (int, kwargs): the step of the workflow
+        workflow_phase (int, kwargs): [Read-Only] the phase of the workflow
+        workflow_step (int, kwargs): [Read-Only] the step of the workflow
         xid (str, kwargs): The **Xid** for the Task.
     """
 
@@ -314,20 +314,10 @@ class Task(CommonCaseManagement):
         """Return the **Workflow Phase** for the Task"""
         return self._workflow_phase
 
-    @workflow_phase.setter
-    def workflow_phase(self, workflow_phase):
-        """Set the **Workflow Phase** for the Task"""
-        self._workflow_phase = workflow_phase
-
     @property
     def workflow_step(self):
         """Return the **Workflow Step** for the Task"""
         return self._workflow_step
-
-    @workflow_step.setter
-    def workflow_step(self, workflow_step):
-        """Set the **Workflow Step** for the Task"""
-        self._workflow_step = workflow_step
 
     @property
     def xid(self):

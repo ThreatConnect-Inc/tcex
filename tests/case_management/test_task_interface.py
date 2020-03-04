@@ -219,8 +219,8 @@ class TestTask(TestCaseManagement):
             'name': f'name-{request.node.name}',
             'note_text': f'a note for {request.node.name}',
             'status': 'Open',
-            'workflow_phase': 0,
-            'workflow_step': 1,
+            # 'workflow_phase': 0,
+            # 'workflow_step': 1,
             'xid': f'{request.node.name}-{time.time()}',
         }
         # create artifact
@@ -240,8 +240,8 @@ class TestTask(TestCaseManagement):
         task.description = task_data.get('description')
         task.due_date = task_data.get('due_date')
         task.name = task_data.get('name')
-        task.workflow_phase = task_data.get('workflow_phase')
-        task.workflow_step = task_data.get('workflow_step')
+        # task.workflow_phase = task_data.get('workflow_phase')
+        # task.workflow_step = task_data.get('workflow_step')
         task.submit()
         task.get(all_available_fields=True)
 
@@ -249,8 +249,8 @@ class TestTask(TestCaseManagement):
         assert task.description == task_data.get('description')
         assert task_data.get('due_date')[:10] in task.due_date
         assert task.name == task_data.get('name')
-        assert task.workflow_phase == task_data.get('workflow_phase')
-        assert task.workflow_step == task_data.get('workflow_step')
+        # assert task.workflow_phase == task_data.get('workflow_phase')
+        # assert task.workflow_step == task_data.get('workflow_step')
 
     def test_task_task_config_mapping(self):
         """Test Task Get Many"""
@@ -303,8 +303,8 @@ class TestTask(TestCaseManagement):
             'name': f'name-{request.node.name}',
             'note_text': f'a note for {request.node.name}',
             'status': 'Open',
-            'workflow_phase': 0,
-            'workflow_step': 1,
+            # 'workflow_phase': 0,
+            # 'workflow_step': 1,
             'xid': f'{request.node.name}-{time.time()}',
         }
 
@@ -319,8 +319,8 @@ class TestTask(TestCaseManagement):
         task.due_date = task_data.get('due_date')
         task.name = task_data.get('name')
         task.status = task_data.get('status')
-        task.workflow_phase = task_data.get('workflow_phase')
-        task.workflow_step = task_data.get('workflow_step')
+        # task.workflow_phase = task_data.get('workflow_phase')
+        # task.workflow_step = task_data.get('workflow_step')
         task.xid = task_data.get('xid')
 
         # add artifacts
@@ -358,8 +358,8 @@ class TestTask(TestCaseManagement):
         else:
             assert False, 'Note not found'
         assert task.status == task_data.get('status')
-        assert task.workflow_phase == task_data.get('workflow_phase')
-        assert task.workflow_step == task_data.get('workflow_step')
+        # assert task.workflow_phase == task_data.get('workflow_phase')
+        # assert task.workflow_step == task_data.get('workflow_step')
         assert task.xid == task_data.get('xid')
 
         # assert read-only data
