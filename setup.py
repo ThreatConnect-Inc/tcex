@@ -11,6 +11,9 @@ with open(metadata_file, mode='r', encoding='utf-8',) as f:
 if not metadata:
     raise RuntimeError(f'Could not load metadata file ({metadata_file}).')
 
+with open('README.md', 'r', 'utf-8') as f:
+    readme = f.read()
+
 dev_packages = [
     'black',
     'CommonMark==0.5.5',
@@ -70,8 +73,8 @@ setup(
         'wrapt',
     ],
     license=metadata['__license__'],
-    # long_description=readme,
-    # long_description_content_type='text/markdown',
+    long_description=readme,
+    long_description_content_type='text/markdown',
     name=metadata['__package_name__'],
     packages=find_packages(exclude=['tests', 'tests.*']),
     package_data={'': ['*.json']},

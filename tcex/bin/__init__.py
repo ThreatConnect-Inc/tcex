@@ -4,7 +4,5 @@
 from .init import Init
 from .lib import Lib
 from .package import Package
-from .profile import Profile
-from .run import Run
 from .test import Test
 from .validate import Validate
