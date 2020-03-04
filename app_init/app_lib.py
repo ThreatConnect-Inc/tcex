@@ -63,7 +63,7 @@ class AppLib:
         # after adding the current working directory.
         if lib_directory is None:
             lib_directory = lib_latest
-        sys.path.insert(0, lib_directory)
+        sys.path.insert(0, os.path.join(os.getcwd(), lib_directory))
 
         # insert the current working directory into the system Path for the App, ensuring that it is
         # always the first entry in the list.
