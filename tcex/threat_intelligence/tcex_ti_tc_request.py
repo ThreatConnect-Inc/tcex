@@ -1424,6 +1424,46 @@ class TiTcRequest:
         """
         return self.file_occurrence(main_type, sub_type, unique_id, occurrence_id, owner)
 
+    def delete_file_action(self, main_type, sub_type, unique_id, action, target, owner=None):
+        """Deletes a file action given a target"""
+        url = (
+            f'/v2/{main_type}/{sub_type}/{unique_id}/actions/{action}'
+            f'/{target.api_type}/{target.api_branch}/{target.unique_id}'
+        )
+        params = {}
+
+        if owner:
+            params['owner'] = owner
+
+        return self._delete(url, params)
+
+    def add_file_action(self, main_type, sub_type, unique_id, action, target, owner=None):
+        """Creates a file action given a target"""
+        url = (
+            f'/v2/{main_type}/{sub_type}/{unique_id}/actions/{action}'
+            f'/{target.api_type}/{target.api_branch}/{target.unique_id}'
+        )
+        params = {}
+
+        if owner:
+            params['owner'] = owner
+
+        return self._post(url, {}, params=params)
+
+    def get_file_actions(self, main_type, sub_type, unique_id, action, target, owner=None):
+        """Yields a file action given a file action and a target"""
+        url = f'/v2/{main_type}/{sub_type}/{unique_id}/actions/{action}/{target.api_type}'
+
+        if target.api_sub_type:
+            url = f'{url}/{target.api_branch}'
+
+        params = {}
+
+        if owner:
+            params['owner'] = owner
+
+        yield from self._iterate(url, params, target.api_entity)
+
     def delete_file_occurrence(self, main_type, sub_type, unique_id, occurrence_id, owner=None):
         """
         Deletes a file occurrence given a occurrence_id

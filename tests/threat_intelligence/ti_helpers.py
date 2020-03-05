@@ -2,6 +2,7 @@
 """Case Management PyTest Helper Method"""
 import os
 from random import randint
+import uuid
 
 from ..mock_app import MockApp
 
@@ -33,6 +34,7 @@ class TIHelper:
             'CIDR': self.rand_cidr,
             'EmailAddress': self.rand_email_address,
             'Email Subject': self.rand_email_subject,
+            'File': self.rand_md5,
             'Hashtag': self.rand_hashtag,
             'Host': self.rand_host,
             'Mutex': self.rand_mutex,
@@ -96,6 +98,11 @@ class TIHelper:
     def rand_ip():
         """Return a random IP address."""
         return f'222.{randint(0,255)}.{randint(0,255)}.{randint(0,255)}'
+
+    @staticmethod
+    def rand_md5():
+        """Return a random md5."""
+        return f'{uuid.uuid4().hex.upper()}'
 
     def rand_mutex(self):
         """Return a random Mutex."""

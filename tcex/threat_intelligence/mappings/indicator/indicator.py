@@ -103,7 +103,7 @@ class Indicator(Mappings):
             'Indicator',
             'indicators',
             kwargs.pop('sub_type', None),
-            kwargs.pop('api_entity', 'group'),
+            kwargs.pop('api_entity', 'indicator'),
             kwargs.pop('api_branch', None),
             kwargs.pop('owner', None),
         )

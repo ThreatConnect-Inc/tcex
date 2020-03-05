@@ -7,6 +7,7 @@ Release Notes
 =====
 + Updated requirement for stdlib-list to >= 0.6.0 to support Python 3.8.
 + Updated test cases to call setup/teardown instead of start/done.
++ Added support for ThreatConnect ThreatIntelligence File Actions
 
 2.0.1
 =====
