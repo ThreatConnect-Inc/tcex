@@ -29,6 +29,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * jmespath (https://pypi.org/project/jmespath/)
  * mako (https://pypi.org/project/mako/)
  * pre-commit (https://pypi.org/project/pre-commit/)
+ * pydocstyle (https://pypi.org/project/pydocstyle/)
  * pylint (https://pypi.org/project/pylint/)
  * pytest (https://pypi.org/project/pytest/)
  * pytest-cov (https://pypi.org/project/pytest-cov/)

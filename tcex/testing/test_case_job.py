@@ -36,8 +36,8 @@ class TestCaseJob(TestCase):
         self.log_data('run', 'args', args)
         self.app = self.app_init(args)
 
-        # Start
-        exit_code = self.run_app_method(self.app, 'start')
+        # Setup
+        exit_code = self.run_app_method(self.app, 'setup')
         if exit_code != 0:
             return exit_code
 
@@ -46,8 +46,8 @@ class TestCaseJob(TestCase):
         if exit_code != 0:
             return exit_code
 
-        # Done
-        exit_code = self.run_app_method(self.app, 'done')
+        # Teardown
+        exit_code = self.run_app_method(self.app, 'teardown')
         if exit_code != 0:
             return exit_code
 
