@@ -108,20 +108,6 @@ class File(Indicator):
             self.api_type, self.api_branch, self.unique_id, self.owner
         )
 
-    def get_occurrence(self, occurrence_id):
-        """Return a file occurrence given an occurrence id
-
-        Args:
-            occurrence_id:
-
-        Returns:
-
-        """
-        if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
-
-        return self.occurrence(occurrence_id)
-
     def occurrence(self, occurrence_id):
         """Get a file occurrence given a occurrence id
 
@@ -170,4 +156,73 @@ class File(Indicator):
 
         return self.tc_requests.delete_file_occurrence(
             self.api_type, self.api_branch, self.unique_id, occurrence_id, self.owner
+        )
+
+    def add_action(self, action, target):
+        """
+        Valid action types:
+            + Drop
+            + Traffic
+            + Archive
+            + registryKey
+            + userAgent
+            + dnsQuery
+        Args:
+            action (str, kwargs): The type of action to add.
+            target (bool, kwargs): The Item to add.
+
+        Returns:
+            Response: The response from the API call
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.add_file_action(
+            self.api_type, self.api_branch, self.unique_id, action, target, self.owner
+        )
+
+    def actions(self, action, target):
+        """
+        Valid action types:
+            + Drop
+            + Traffic
+            + Archive
+            + registryKey
+            + userAgent
+            + dnsQuery
+        Args:
+            action (str, kwargs): The type of action to retrieve.
+            target (bool, kwargs): The Item to retrieve.
+
+        Returns:
+            Yield: Yield a dict of data of the File Action
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.get_file_actions(
+            self.api_type, self.api_branch, self.unique_id, action, target, self.owner
+        )
+
+    def delete_action(self, action, target):
+        """
+        Valid action types:
+            + Drop
+            + Traffic
+            + Archive
+            + registryKey
+            + userAgent
+            + dnsQuery
+        Args:
+            action (str, kwargs): The type of action to delete.
+            target (bool, kwargs): The Item to delete.
+
+        Returns:
+            Response: The response from the API call
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.delete_file_action(
+            self.api_type, self.api_branch, self.unique_id, action, target, self.owner
         )
