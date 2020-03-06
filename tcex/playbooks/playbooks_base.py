@@ -335,11 +335,11 @@ class PlaybooksBase:
                 }]
 
         Args:
-            value (string): The value to parsed and updated from the DB.
-            parent_var_type (string): The parent type of the embedded variable.
+            value (str): The value to parsed and updated from the DB.
+            parent_var_type (str): The parent type of the embedded variable.
 
         Returns:
-            (string): Results retrieved from DB
+            (str): Results retrieved from DB
         """
         if value is None:  # pragma: no cover
             return value
@@ -400,10 +400,10 @@ class PlaybooksBase:
         """Wrap keyvalue embedded variable in double quotes.
 
         Args:
-            data (string): The data with embedded variables.
+            data (str): The data with embedded variables.
 
         Returns:
-            (string): Results retrieved from DB
+            (str): Results retrieved from DB
         """
         # TODO: need to verify if core still sends improper JSON for KeyValueArrays
         if data is not None:  # pragma: no cover
@@ -426,7 +426,7 @@ class PlaybooksBase:
             if self.tcex.default_args.tc_playbook_db_type == 'Redis':
                 from ..key_value_store import KeyValueRedis
 
-                self._key_value_store = KeyValueRedis(self._context, self.tcex.redis_client,)
+                self._key_value_store = KeyValueRedis(self._context, self.tcex.redis_client)
             elif self.tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
                 from ..key_value_store import KeyValueApi
 
@@ -444,7 +444,7 @@ class PlaybooksBase:
             (dict, list, etc) must be serialized.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (bytes|int|string): The data to write to the DB.
 
         Returns:
@@ -464,7 +464,7 @@ class PlaybooksBase:
             no way to determine data from redis originated as bytes or string.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
 
         Returns:
             (str): Results retrieved from DB.

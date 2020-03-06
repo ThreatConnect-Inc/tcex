@@ -290,7 +290,6 @@ class Validate(Bin):
                 with open('install.json') as fh:
                     ij = json.loads(fh.read())
                 for p in ij.get('params', []):
-                    print('name', p.get('name'))
                     if p.get('name') in ij_input_names:
                         # update validation data errors
                         self.validation_data['errors'].append(

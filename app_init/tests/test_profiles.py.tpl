@@ -83,7 +83,9 @@ class TestProfiles(${class_name}):
 
         # run output variable validation
         for context in self.context_tracker:
-            self.validator.tcex.default_args.tc_playbook_db_context = context
+            # for service Apps the context on playbooks needs to be set manually
+            self.validator.tcex.playbook.key_value_store.context = context
+            # the trigger id is stored via the monkey patched session_id method
             trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
             output_data = (profile_data.get('outputs') or {}).get(trigger_id)
             if output_data is not None:

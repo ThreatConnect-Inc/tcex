@@ -64,9 +64,6 @@ class TcEx:
         # init args (needs logger)
         self.inputs = Inputs(self, self._config, kwargs.get('config_file'))
 
-        # include resources module
-        # self._resources()
-
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
         # Dynamically create custom indicator class
@@ -206,8 +203,8 @@ class TcEx:
         during the call of this method.
 
         Args:
-            code (Optional [integer]): The exit code value for the app.
-            msg (Optional [string]): A message to log and add to message tc output.
+            code (int): The exit code value for the app.
+            msg (str): A message to log and add to message tc output.
         """
         # add exit message to message.tc file and log
         if msg is not None:
@@ -250,7 +247,7 @@ class TcEx:
         * 3 indicates a partial failure
 
         Args:
-            code (integer): The exit code value for the app.
+            code (int): The exit code value for the app.
         """
         if code is not None and code in [0, 1, 3]:
             self._exit_code = code
@@ -262,7 +259,7 @@ class TcEx:
         """Process indicators expanding file hashes/custom indicators into multiple entries.
 
         Args:
-            indicator (string): " : " delimited string
+            indicator (str): " : " delimited string
         Returns:
             (list): a list of indicators split on " : ".
         """
@@ -350,8 +347,8 @@ class TcEx:
         """Raise RuntimeError
 
         Args:
-            code (integer): The error code from API or SDK.
-            message (string): The error message from API or SDK.
+            code (int): The error code from API or SDK.
+            message (str): The error message from API or SDK.
             raise_error (bool, optional): Raise a Runtime error. Defaults to True.
 
         Raises:
@@ -447,11 +444,11 @@ class TcEx:
         """Get instance of the Metrics module.
 
         Args:
-            name (string): The name for the metric.
-            description (string): The description of the metric.
-            data_type (string): The type of metric: Sum, Count, Min, Max, First, Last, and Average.
-            interval (string): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
-            keyed (boolean): Indicates whether the data will have a keyed value.
+            name (str): The name for the metric.
+            description (str): The description of the metric.
+            data_type (str): The type of metric: Sum, Count, Min, Max, First, Last, and Average.
+            interval (str): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
+            keyed (bool): Indicates whether the data will have a keyed value.
 
         Returns:
             (object): An instance of the Metrics Class.
@@ -468,7 +465,7 @@ class TcEx:
         this limit will be truncated. The last <max_length> characters will be preserved.
 
         Args:
-            message (string): The message to add to message_tc file
+            message (str): The message to add to message_tc file
             max_length (int, optional): The maximum length of an exit message. Defaults to 255.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
@@ -620,8 +617,8 @@ class TcEx:
         method will store the values for TC to read and put into the Database.
 
         Args:
-            key (string): The data key to be stored.
-            value (string): The data value to be stored.
+            key (str): The data key to be stored.
+            value (str): The data value to be stored.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
             results_file = f'{self.default_args.tc_out_path}/results.tc'
@@ -656,11 +653,11 @@ class TcEx:
         """Format indicator value for safe HTTP request.
 
         Args:
-            indicator (string): Indicator to URL Encode
-            errors (string): The error handler type.
+            indicator (str): Indicator to URL Encode
+            errors (str): The error handler type.
 
         Returns:
-            (string): The urlencoded string
+            (str): The urlencoded string
         """
         if indicator is not None:
             indicator = quote(indicator, safe='~')
@@ -675,11 +672,11 @@ class TcEx:
         (e.g. *User Agent* is converted to User_Agent or user_agent.)
 
         Args:
-           resource_type (string): The resource type to format.
-           lower (boolean): Return type in all lower case
+           resource_type (str): The resource type to format.
+           lower (bool): Return type in all lower case
 
         Returns:
-            (string): The formatted resource type.
+            (str): The formatted resource type.
         """
         if resource_type is not None:
             resource_type = resource_type.replace(' ', '_')
@@ -694,12 +691,12 @@ class TcEx:
         .. note:: Currently the ThreatConnect group name limit is 100 characters.
 
         Args:
-           group_name (string): The raw group name to be truncated.
+           group_name (str): The raw group name to be truncated.
            group_max_length (int): The max length of the group name.
-           ellipsis (boolean): If true the truncated name will have '...' appended.
+           ellipsis (bool): If true the truncated name will have '...' appended.
 
         Returns:
-            (string): The truncated group name with optional ellipsis.
+            (str): The truncated group name with optional ellipsis.
         """
         ellipsis_value = ''
         if ellipsis:
@@ -723,10 +720,10 @@ class TcEx:
         """Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
-           tag (string): The tag to be truncated
+           tag (str): The tag to be truncated
 
         Returns:
-            (string): The truncated and quoted tag
+            (str): The truncated and quoted tag
         """
         if tag is not None:
             tag = quote(tag[:128], safe='~')
@@ -737,10 +734,10 @@ class TcEx:
         """Encode value for safe HTTP request.
 
         Args:
-            url (string): The string to URL Encode.
+            url (str): The string to URL Encode.
 
         Returns:
-            (string): The urlencoded string.
+            (str): The urlencoded string.
         """
         if url is not None:
             url = quote(url, safe='~')

@@ -31,6 +31,14 @@ class CustomFeature(Custom):
         """Perform action to trigger the event."""
         super(CustomFeature, self).trigger_method(test_feature, profile_data, monkeypatch)
 
+    def test_pre_create_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
+        """Run test method code before create configs."""
+        super(CustomFeature, self).test_pre_create_config(test_feature, profile_data, monkeypatch)
+
+    def test_pre_delete_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
+        """Run test method code before delete configs."""
+        super(CustomFeature, self).test_pre_delete_config(test_feature, profile_data, monkeypatch)
+
     % elif app_type in ['webhooktriggerservice']:
     def test_pre_create_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Run test method code before create configs."""
