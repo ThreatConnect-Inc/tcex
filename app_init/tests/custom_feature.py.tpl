@@ -3,6 +3,7 @@
 from ..custom import Custom  # pylint: disable=relative-beyond-top-level
 
 
+# pylint: disable=no-self-use,unused-argument
 class CustomFeature(Custom):
     """Custom test method class Apps."""
 

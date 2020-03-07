@@ -2,7 +2,6 @@
 """Test case template for App testing."""
 # flake8: noqa: F401
 import os
-import sys
 
 import pytest
 from tcex.testing import ${class_name}

@@ -2,6 +2,7 @@
 """Custom test method Class for app_type -> ${app_type}."""
 
 
+# pylint: disable=no-self-use,unused-argument
 class Custom(object):
     """Custom test method class Apps."""
 
