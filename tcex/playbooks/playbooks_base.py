@@ -44,8 +44,10 @@ class PlaybooksBase:
             value = str(value).lower()
 
         # coerce int to str type
-        if isinstance(value, int):
-            self.tcex.log.warning(f'Coercing int value ({value}) to a string ("{str(value)}").')
+        if isinstance(value, (float, int)):
+            self.tcex.log.warning(
+                f'Coercing float/int value ({value}) to a string ("{str(value)}").'
+            )
             value = str(value)
 
         return value

@@ -3,6 +3,7 @@
 import base64
 import json
 import os
+import sys
 import threading
 import time
 import uuid
@@ -231,10 +232,22 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """Run the micro-service."""
         self.log_data('run', 'service method', self.service_run_method)
         if self.service_run_method == 'thread':
+            # backup sys.argv
+            sys_argv_orig = sys.argv
+
+            # clear sys.argv
+            sys.argv = sys.argv[:1]
+
+            # run App in a thread
             t = threading.Thread(target=self.run, args=(self.args,))
             t.daemon = True  # use setter for py2
             t.start()
+
+            # give app some time to initialize before continuing
             time.sleep(1)
+
+            # restore sys.argv
+            sys.argv = sys_argv_orig
         elif self.service_run_method == 'multiprocess':
             p = Process(target=self.run, args=(self.args,))
             p.daemon = True
@@ -247,7 +260,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """Run once before all test cases."""
         super().setup_class()
         cls.args = {}
-        cls.service_file = 'SERVICE_STARTED'  # started file flag
+        # cls.service_file = 'SERVICE_STARTED'  # started file flag
 
     def setup_method(self):
         """Run before each test method runs."""
@@ -258,10 +271,8 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         # patch service for each profile (test case)
         self.patch_service()
 
-        # only start service if it hasn't been started already base on file flag.
-        if not os.path.isfile(self.service_file):
-            open(self.service_file, 'w+').close()  # create service started file flag
-            self.run_service()
+        # run the App Service
+        self.run_service()
 
     def stage_data(self, staged_data):
         """Stage the data in the profile."""
@@ -272,12 +283,12 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     def teardown_class(cls):
         """Run once before all test cases."""
         super().teardown_class()
-        try:
-            os.remove(cls.service_file)
-        except OSError:
-            pass
 
     def teardown_method(self):
         """Run after each test method runs."""
         time.sleep(0.5)
         super().teardown_method()
+
+        # shutdown the service between profiles
+        self.publish_shutdown()
+        time.sleep(2)  # allow Service App some time to shutdown

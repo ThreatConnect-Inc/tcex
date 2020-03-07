@@ -90,11 +90,6 @@ class TestProfiles(${class_name}):
             output_data = (profile_data.get('outputs') or {}).get(trigger_id)
             if output_data is not None:
                 ValidateFeature(self.validator).validate(output_data)
-
-    def test_shutdown(self):
-        """Run shutdown command."""
-        self.enable_update_profile = False  # pylint: disable=attribute-defined-outside-init
-        self.publish_shutdown()
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
