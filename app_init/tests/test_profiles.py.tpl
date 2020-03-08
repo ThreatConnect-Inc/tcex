@@ -89,6 +89,9 @@ class TestProfiles(${class_name}):
             output_data = (profile_data.get('outputs') or {}).get(trigger_id)
             if output_data is not None:
                 ValidateFeature(self.validator).validate(output_data)
+
+        # exit message can not be validated since it's written during teardown for Service Apps
+
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument

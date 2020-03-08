@@ -14,6 +14,13 @@ class Custom(object):
         % if app_type in ['triggerservice', 'webhooktriggerservice']:
         test_feature.args = {}
 
+        # uncomment and modify to control sleep times
+        # test_feature.sleep_after_publish_config = 0.5
+        # test_feature.sleep_after_publish_webhook_event = 0.5
+        # test_feature.sleep_after_service_start = 5
+        # test_feature.sleep_before_delete_config = 0.5
+        # test_feature.sleep_before_shutdown = 0.5
+
         # uncomment the following line to use static topics
         # test_feature.client_topic = 'client-topic-123'
         # test_feature.server_topic = 'server-topic-123'

@@ -58,6 +58,13 @@ class TestCase:
             variable_name = variable_name + '}'
         return variable_name
 
+    @staticmethod
+    def _encrypt_file_contents(key, data):
+        """Return encrypted data for file params."""
+        fp = FileParams()
+        fp.EVP_EncryptInit(fp.EVP_aes_128_cbc(), key.encode('utf-8'), b'\0' * 16)
+        return fp.EVP_EncryptUpdate(data) + fp.EVP_EncryptFinal()
+
     def _exit(self, code):
         """Log and return exit code"""
         self.log.info(f'[run] Exit Code: {code}')
@@ -68,18 +75,8 @@ class TestCase:
         """Return bool value from int or string."""
         return str(value).lower() in ['1', 'true']
 
-    def add_tc_output_variable(self, variable_name, variable_value):
-        """Add a TC output variable to the output variable dict"""
-        self._tc_output_variables[variable_name] = variable_value
-
-    def app_init(self, args):
-        """Return an instance of App."""
-        from app import App  # pylint: disable=import-error
-
-        # return App(self.get_tcex(args))
-        args = args or {}
-
-        # update App paths
+    def _update_path_args(self, args):
+        """Update path in args for each test profile."""
         args['tc_in_path'] = os.path.join(
             self.default_args.get('tc_in_path'), self.test_case_feature
         )
@@ -92,6 +89,20 @@ class TestCase:
         args['tc_temp_path'] = os.path.join(
             self.default_args.get('tc_temp_path'), self.test_case_feature, self.test_case_name
         )
+
+    def add_tc_output_variable(self, variable_name, variable_value):
+        """Add a TC output variable to the output variable dict"""
+        self._tc_output_variables[variable_name] = variable_value
+
+    def app_init(self, args):
+        """Return an instance of App."""
+        from app import App  # pylint: disable=import-error
+
+        # return App(self.get_tcex(args))
+        args = args or {}
+
+        # update path args
+        self._update_path_args(args)
 
         # update default args with app args
         app_args = dict(self.default_args)
@@ -106,10 +117,7 @@ class TestCase:
             # service Apps will get their args/params from encrypted file in the "in" directory
             data = json.dumps(app_args, sort_keys=True).encode('utf-8')
             key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
-
-            fp = FileParams()
-            fp.EVP_EncryptInit(fp.EVP_aes_128_cbc(), key.encode('utf-8'), b'\0' * 16)
-            encrypted_data = fp.EVP_EncryptUpdate(data) + fp.EVP_EncryptFinal()
+            encrypted_data = self._encrypt_file_contents(key, data)
 
             app_params_json = os.path.join(self.test_case_feature_dir, '.app_params.json')
             with open(app_params_json, 'wb') as fh:
@@ -125,6 +133,39 @@ class TestCase:
             tcex = TcEx(config=app_args)
 
         return App(tcex)
+
+    def app_init_create_config(self, args, output_variables, tcex_testing_context):
+        """Create files necessary to start a Service App."""
+        # resolve env vars
+        for k, v in list(args.items()):
+            if isinstance(v, str):
+                args[k] = self.resolve_env_args(v)
+        args['tc_playbook_out_variables'] = ','.join(output_variables)
+        args['tcex_testing_context'] = tcex_testing_context
+
+        # update path args
+        self._update_path_args(args)
+
+        # merge default and app args
+        app_args = dict(self.default_args)
+        app_args.update(args)
+
+        # service Apps will get their args/params from encrypted file in the "in" directory
+        data = json.dumps(app_args, sort_keys=True).encode('utf-8')
+        key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
+        encrypted_data = self._encrypt_file_contents(key, data)
+
+        # create files necessary to run Service App
+        if not os.path.exists(app_args.get('tc_in_path')):
+            os.mkdir(app_args.get('tc_in_path'))
+
+        app_params_json = os.path.join(app_args.get('tc_in_path'), '.app_params.json')
+        with open(app_params_json, 'wb') as fh:
+            fh.write(encrypted_data)
+
+        # create environment variable for tcex inputs method to pick up to read encrypted file
+        os.environ['TC_APP_PARAM_KEY'] = key
+        os.environ['TC_APP_PARAM_FILE'] = app_params_json
 
     @staticmethod
     def check_environment(environments):

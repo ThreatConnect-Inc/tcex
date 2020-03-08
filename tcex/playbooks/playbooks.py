@@ -325,6 +325,11 @@ class Playbooks(PlaybooksBase):
                 code = 0  # playbooks doesn't support partial failure
         elif code not in [0, 1]:
             code = 1
+
+        # required only for tcex testing framework
+        if self.tcex.args.tcex_testing_context is not None:
+            self.tcex.redis_client.hset(self.tcex.args.tcex_testing_context, '_exit_message', msg)
+
         self.tcex.exit(code, msg)
 
     @property

@@ -89,7 +89,7 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         exit_code = self.run(args)
 
         # add context for populating output variables
-        self.context_tracker.append(self.context)
+        self._context_tracker.append(self.context)
 
         return exit_code
 

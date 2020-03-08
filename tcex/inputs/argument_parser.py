@@ -234,6 +234,7 @@ class TcArgumentParser(ArgumentParser):
         --tc_svc_client_topic topic                 The topic to send client message.
         --tc_svc_hb_timeout_seconds seconds         The heartbeat interval in seconds.
         --tc_svc_server_topic topic                 The topic to receive server message.
+        --tcex_testing_context context              A context for TcEx Framework testing.
         """
         self.add_argument('--tc_svc_broker_cacert_file', help='Broker client ssl certificate')
         self.add_argument('--tc_svc_broker_cert_file', help='Broker client ssl certificate')
@@ -262,6 +263,7 @@ class TcArgumentParser(ArgumentParser):
             type=int,
         )
         self.add_argument('--tc_svc_server_topic', help='Topic to send server messages')
+        self.add_argument('--tcex_testing_context', help='A context for TcEx Framework testing')
 
     def _standard_arguments(self):
         """Define standard args passed to every TcEx App.
