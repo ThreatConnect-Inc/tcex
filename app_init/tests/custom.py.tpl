@@ -18,7 +18,7 @@ class Custom(object):
         # test_feature.sleep_after_publish_config = 0.5
         # test_feature.sleep_after_publish_webhook_event = 0.5
         # test_feature.sleep_after_service_start = 5
-        # test_feature.sleep_before_delete_config = 0.5
+        # test_feature.sleep_before_delete_config = 2
         # test_feature.sleep_before_shutdown = 0.5
 
         # uncomment the following line to use static topics
