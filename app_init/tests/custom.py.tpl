@@ -52,7 +52,7 @@ class Custom(object):
     def test_pre_delete_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Run test method code before delete configs."""
 
-    def test_pre_webhook(self, test_feature, profile_data):  # pylint: disable=useless-super-delegation
+    def test_pre_webhook(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Run test method code before webhook."""
 
     % else:

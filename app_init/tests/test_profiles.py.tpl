@@ -80,6 +80,10 @@ class TestProfiles(${class_name}):
         for config in profile_data.get('configs'):
             self.publish_delete_config(config)
 
+        # fail if there are no executions to validate
+        # if not self.context_tracker and profile_data.get('outputs'):
+        #     assert False, 'No context found in context_tracker, did event fire?'
+
         # run output variable validation
         for context in self.context_tracker:
             # for service Apps the context on playbooks needs to be set manually

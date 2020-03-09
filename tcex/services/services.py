@@ -820,6 +820,9 @@ class Services:
             elif isinstance(callback_response, bool) and callback_response:
                 self.increment_metric('Hits')
                 self.fire_event_publish(trigger_id, self.thread_name, request_key)
+
+                # only required for testing in tcex framework
+                self._tcex_testing(self.thread_name, trigger_id)
             else:
                 self.increment_metric('Misses')
         except Exception as e:
