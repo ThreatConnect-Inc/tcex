@@ -281,9 +281,6 @@ class TestCase:
     def input_params(self):
         """Return install.json params in a dict with name param as key.
 
-        Args:
-            ij (dict, optional): Defaults to None. The install.json contents.
-
         Returns:
             dict: A dictionary containing the install.json input params with name as key.
         """
@@ -490,7 +487,11 @@ class TestCase:
 
     def teardown_method(self):
         """Run after each test method runs."""
-        if self.enable_update_profile:
+        if self.enable_update_profile and self.install_json.get('runtimeLevel').lower() not in [
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
+            # exit message can not be validated for a Service App
             self.populate_exit_message()
         self.log_data('teardown method', 'finished', datetime.now().isoformat())
         self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)
