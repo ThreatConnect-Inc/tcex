@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.0 documentation</title>
+  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -91,8 +91,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
@@ -102,8 +100,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
@@ -183,31 +179,31 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">inflect</span>
-<span class="kn">from</span> <span class="nn">.mappings.filters</span> <span class="k">import</span> <span class="n">Filters</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.adversary</span> <span class="k">import</span> <span class="n">Adversary</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.campaign</span> <span class="k">import</span> <span class="n">Campaign</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.document</span> <span class="k">import</span> <span class="n">Document</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.email</span> <span class="k">import</span> <span class="n">Email</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.event</span> <span class="k">import</span> <span class="n">Event</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.incident</span> <span class="k">import</span> <span class="n">Incident</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.intrusion_set</span> <span class="k">import</span> <span class="n">IntrusionSet</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.report</span> <span class="k">import</span> <span class="n">Report</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.signature</span> <span class="k">import</span> <span class="n">Signature</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group_types.threat</span> <span class="k">import</span> <span class="n">Threat</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group</span> <span class="k">import</span> <span class="n">Group</span>
-<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.address</span> <span class="k">import</span> <span class="n">Address</span>
-<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.email_address</span> <span class="k">import</span> <span class="n">EmailAddress</span>
-<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.file</span> <span class="k">import</span> <span class="n">File</span>
-<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.host</span> <span class="k">import</span> <span class="n">Host</span>
-<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.url</span> <span class="k">import</span> <span class="n">URL</span>
-<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">.mappings.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.adversary</span> <span class="kn">import</span> <span class="n">Adversary</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.campaign</span> <span class="kn">import</span> <span class="n">Campaign</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.document</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.email</span> <span class="kn">import</span> <span class="n">Email</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.event</span> <span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.incident</span> <span class="kn">import</span> <span class="n">Incident</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.intrusion_set</span> <span class="kn">import</span> <span class="n">IntrusionSet</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.report</span> <span class="kn">import</span> <span class="n">Report</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.signature</span> <span class="kn">import</span> <span class="n">Signature</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group_types.threat</span> <span class="kn">import</span> <span class="n">Threat</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group</span> <span class="kn">import</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.address</span> <span class="kn">import</span> <span class="n">Address</span>
+<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.email_address</span> <span class="kn">import</span> <span class="n">EmailAddress</span>
+<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.file</span> <span class="kn">import</span> <span class="n">File</span>
+<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.host</span> <span class="kn">import</span> <span class="n">Host</span>
+<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.url</span> <span class="kn">import</span> <span class="n">URL</span>
+<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Indicator</span><span class="p">,</span>
     <span class="n">custom_indicator_class_factory</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.mappings.tag</span> <span class="k">import</span> <span class="n">Tag</span>
-<span class="kn">from</span> <span class="nn">.mappings.task</span> <span class="k">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">.mappings.owner</span> <span class="k">import</span> <span class="n">Owner</span>
-<span class="kn">from</span> <span class="nn">.mappings.victim</span> <span class="k">import</span> <span class="n">Victim</span>
+<span class="kn">from</span> <span class="nn">.mappings.tag</span> <span class="kn">import</span> <span class="n">Tag</span>
+<span class="kn">from</span> <span class="nn">.mappings.task</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">.mappings.owner</span> <span class="kn">import</span> <span class="n">Owner</span>
+<span class="kn">from</span> <span class="nn">.mappings.victim</span> <span class="kn">import</span> <span class="n">Victim</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 
@@ -218,7 +214,7 @@
 <div class="viewcode-block" id="ThreatIntelligence"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence">[docs]</a><span class="k">class</span> <span class="nc">ThreatIntelligence</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_custom_indicator_classes</span> <span class="o">=</span> <span class="p">{}</span>
@@ -326,7 +322,7 @@
                     <span class="n">indicator_type_map</span><span class="p">[</span><span class="n">custom_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">indicator_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indicator_type_map</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Invalid indicator type &quot;</span><span class="si">{indicator_type}</span><span class="s1">&quot; provided.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid indicator type &quot;</span><span class="si">{indicator_type}</span><span class="s1">&quot; provided.&#39;</span><span class="p">)</span>
 
         <span class="c1"># update kwargs</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
@@ -368,7 +364,7 @@
 
         <span class="n">group_type</span> <span class="o">=</span> <span class="n">group_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">group_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">group_type_map</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Invalid group type &quot;</span><span class="si">{group_type}</span><span class="s1">&quot; provided.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid group type &quot;</span><span class="si">{group_type}</span><span class="s1">&quot; provided.&#39;</span><span class="p">)</span>
 
         <span class="c1"># update kwargs</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
@@ -880,7 +876,7 @@
             <span class="sd">&quot;&quot;&quot;Add Custom Indicator data to Batch object&quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">custom_class</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">f</span><span class="s1">&#39;method_1&#39;</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;method_1&#39;</span><span class="p">]</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div></div>
 </pre></div>
 

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.0 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -91,8 +91,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
@@ -102,8 +100,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
@@ -191,7 +187,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
-<span class="kn">from</span> <span class="nn">.group</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">.group</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Adversary</span><span class="p">,</span>
     <span class="n">Campaign</span><span class="p">,</span>
     <span class="n">Document</span><span class="p">,</span>
@@ -204,7 +200,7 @@
     <span class="n">Signature</span><span class="p">,</span>
     <span class="n">Threat</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.indicator</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">.indicator</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ASN</span><span class="p">,</span>
     <span class="n">CIDR</span><span class="p">,</span>
     <span class="n">URL</span><span class="p">,</span>
@@ -235,7 +231,7 @@
 <span class="sd">        halt_on_error (bool, default:True): If True any batch error will halt the batch job.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tcex</span><span class="p">,</span>
         <span class="n">owner</span><span class="p">,</span>
@@ -353,7 +349,7 @@
             <span class="n">indicator_obj</span> <span class="o">=</span> <span class="n">custom_class</span><span class="p">(</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">value3</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator</span><span class="p">(</span><span class="n">indicator_obj</span><span class="p">)</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">f</span><span class="s1">&#39;method_</span><span class="si">{value_count}</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;method_</span><span class="si">{value_count}</span><span class="s1">&#39;</span><span class="p">]</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Batch._group"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch._group">[docs]</a>    <span class="k">def</span> <span class="nf">_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_data</span><span class="p">):</span>
@@ -523,7 +519,7 @@
             <span class="c1"># using the summary we can build the values</span>
             <span class="n">index</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_values</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)):</span>
-                <span class="n">indicator_data</span><span class="p">[</span><span class="n">f</span><span class="s1">&#39;value</span><span class="si">{index}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">indicator_data</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;value</span><span class="si">{index}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;File&#39;</span><span class="p">:</span>
             <span class="c1"># convert custom field name to the appropriate value for batch v2</span>
@@ -640,7 +636,7 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fqfn</span><span class="p">)</span>  <span class="c1"># remove previous file to prevent duplicates</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqfn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">xid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_xids</span><span class="p">:</span>
-                    <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{xid}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{xid}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># delete saved files</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_shelf_fqfn</span><span class="p">):</span>
@@ -876,12 +872,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;/v2/batch/</span><span class="si">{batch_id}</span><span class="s1">/errors&#39;</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/v2/batch/</span><span class="si">{batch_id}</span><span class="s1">/errors&#39;</span><span class="p">)</span>
             <span class="c1"># if r.status_code == 404:</span>
             <span class="c1">#     time.sleep(5)  # allow time for errors to be processed</span>
             <span class="c1">#     r = self.tcex.session.get(f&#39;/v2/batch/{batch_id}/errors&#39;)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;Retrieve Errors for ID </span><span class="si">{batch_id}</span><span class="s1">: status code </span><span class="si">{r.status_code}</span><span class="s1">, errors </span><span class="si">{r.text}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Retrieve Errors for ID </span><span class="si">{batch_id}</span><span class="s1">: status code </span><span class="si">{r.status_code}</span><span class="s1">, errors </span><span class="si">{r.text}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
             <span class="c1"># self.tcex.log.debug(f&#39;Retrieve Errors URL {r.url}&#39;)</span>
             <span class="c1"># API does not return correct content type</span>
@@ -995,7 +991,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_shelf_fqfn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># new shelf file</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_group_shelf_fqfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;groups-{str(uuid.uuid4())}&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;groups-{str(uuid.uuid4())}&#39;</span>
             <span class="p">)</span>
 
             <span class="c1"># saved shelf file</span>
@@ -1133,7 +1129,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_shelf_fqfn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># new shelf file</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_shelf_fqfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;indicators-{str(uuid.uuid4())}&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;indicators-{str(uuid.uuid4())}&#39;</span>
             <span class="p">)</span>
 
             <span class="c1"># saved shelf file</span>
@@ -1258,10 +1254,10 @@
             <span class="n">poll_count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">poll_time_total</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Batch poll time: </span><span class="si">{poll_time_total}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch poll time: </span><span class="si">{poll_time_total}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># retrieve job status</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;/v2/batch/</span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/v2/batch/</span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">545</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">data</span>
@@ -1294,7 +1290,7 @@
                     <span class="c1"># if completed on first poll, reduce poll interval.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">*</span> <span class="mf">0.85</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Batch Status: </span><span class="si">{data}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch Status: </span><span class="si">{data}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">data</span>
 
             <span class="c1"># update poll_interval for retry with max poll time of 20 seconds</span>
@@ -1519,7 +1515,7 @@
         <span class="p">)</span>
         <span class="n">batch_id</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Batch ID: </span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch ID: </span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="c1"># job hit queue</span>
             <span class="k">if</span> <span class="n">poll</span><span class="p">:</span>
                 <span class="c1"># poll for status</span>
@@ -1594,7 +1590,7 @@
                 <span class="k">break</span>
 
             <span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Batch ID: </span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch ID: </span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="c1"># job hit queue</span>
                 <span class="k">if</span> <span class="n">poll</span><span class="p">:</span>
                     <span class="c1"># poll for status</span>
@@ -1628,7 +1624,7 @@
 <div class="viewcode-block" id="Batch.write_error_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.write_error_json">[docs]</a>    <span class="k">def</span> <span class="nf">write_error_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Writes the errors for debuging purposes&quot;&quot;&quot;</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">error_json_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;errors-</span><span class="si">{timestamp}</span><span class="s1">.json&#39;</span><span class="p">)</span>
+        <span class="n">error_json_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;errors-</span><span class="si">{timestamp}</span><span class="s1">.json&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">error_json_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">errors</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
@@ -1649,14 +1645,14 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">write_batch_json</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 
             <span class="c1"># store the length of the batch data to use for poll interval calculations</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Batch Group Size: {len(content.get(&#39;group&#39;)):,}.&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Batch Indicator Size {len(content.get(&#39;indicator&#39;)):,}.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batch Group Size: {len(content.get(&#39;group&#39;)):,}.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batch Indicator Size {len(content.get(&#39;indicator&#39;)):,}.&quot;</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">files</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includeAdditional&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span><span class="p">}</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/v2/batch/createAndUpload&#39;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Batch Status Code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch Status Code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">10510</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -1676,11 +1672,11 @@
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
         <span class="c1"># store the length of the batch data to use for poll interval calculations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Batch Size: </span><span class="si">{self._batch_data_count:,}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch Size: </span><span class="si">{self._batch_data_count:,}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">):</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">}</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;/v2/batch/</span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/v2/batch/</span><span class="si">{batch_id}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">10520</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -1712,7 +1708,7 @@
 
             <span class="c1"># used for debug/testing to prevent upload of previously uploaded file</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="ow">and</span> <span class="n">xid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_xids</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;skipping previously saved file </span><span class="si">{xid}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping previously saved file </span><span class="si">{xid}</span><span class="s1">.&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
 
             <span class="c1"># process the file content</span>
@@ -1721,7 +1717,7 @@
                 <span class="n">content</span> <span class="o">=</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileContent&#39;</span><span class="p">)(</span><span class="n">xid</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">upload_status</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;uploaded&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;xid&#39;</span><span class="p">:</span> <span class="n">xid</span><span class="p">})</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;File content was null for xid </span><span class="si">{xid}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File content was null for xid </span><span class="si">{xid}</span><span class="s1">.&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
                 <span class="n">api_branch</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
@@ -1732,13 +1728,13 @@
                 <span class="c1"># special code for debugging App using batchV2.</span>
                 <span class="n">fqfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span>
-                    <span class="n">f</span><span class="s2">&quot;</span><span class="si">{api_branch}</span><span class="s2">--</span><span class="si">{xid}</span><span class="s2">--{content_data.get(&#39;fileName&#39;).replace(&#39;/&#39;, &#39;:&#39;)}&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{api_branch}</span><span class="s2">--</span><span class="si">{xid}</span><span class="s2">--{content_data.get(&#39;fileName&#39;).replace(&#39;/&#39;, &#39;:&#39;)}&quot;</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqfn</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                     <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 
             <span class="c1"># Post File</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/</span><span class="si">{api_branch}</span><span class="s1">/</span><span class="si">{xid}</span><span class="s1">/upload&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/</span><span class="si">{api_branch}</span><span class="s1">/</span><span class="si">{xid}</span><span class="s1">/upload&#39;</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">}</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span><span class="p">,</span> <span class="s1">&#39;updateIfExists&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span><span class="p">}</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_file_content</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">)</span>
@@ -1746,13 +1742,13 @@
                 <span class="c1"># use PUT method if file already exists</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Received 401 status code using POST. Trying PUT to update.&#39;</span><span class="p">)</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_file_content</span><span class="p">(</span><span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{content_data.get(&#39;type&#39;)} Upload URL: </span><span class="si">{r.url}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;{content_data.get(&#39;type&#39;)} Upload URL: </span><span class="si">{r.url}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">585</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">saved_xids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Status </span><span class="si">{r.status_code}</span><span class="s1"> for file upload with xid </span><span class="si">{xid}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Status </span><span class="si">{r.status_code}</span><span class="s1"> for file upload with xid </span><span class="si">{xid}</span><span class="s1">.&#39;</span><span class="p">)</span>
             <span class="n">upload_status</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;uploaded&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s1">&#39;xid&#39;</span><span class="p">:</span> <span class="n">xid</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">upload_status</span></div>
 
@@ -1792,7 +1788,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">10510</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Batch Submit Data: </span><span class="si">{data}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch Submit Data: </span><span class="si">{data}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchId&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Batch.threat"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.threat">[docs]</a>    <span class="k">def</span> <span class="nf">threat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1847,7 +1843,7 @@
         <span class="sd">&quot;&quot;&quot;Write batch json data to a file.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="n">batch_json_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;batch-</span><span class="si">{timestamp}</span><span class="s1">.json&#39;</span><span class="p">)</span>
+            <span class="n">batch_json_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;batch-</span><span class="si">{timestamp}</span><span class="s1">.json&#39;</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">batch_json_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
@@ -1866,11 +1862,11 @@
         <span class="sd">&quot;&quot;&quot;Return the number of current indicators.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicators</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicators_shelf</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Batch.__len__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Batch.__len__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the number of groups and indicators.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_len</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator_len</span></div>
 
-<div class="viewcode-block" id="Batch.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+<div class="viewcode-block" id="Batch.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Return string represtentation of object.&quot;&quot;&quot;</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">group_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>

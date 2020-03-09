@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Threat Intelligence &mdash; TcEx 2.0.0 documentation</title>
+  <title>Module: Threat Intelligence &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -93,8 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
@@ -104,8 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Threat Intelligence</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#single-results">Single Results</a></li>
@@ -245,7 +241,7 @@
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
-</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -259,7 +255,7 @@
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
-</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -277,7 +273,7 @@
 </span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
 </span><span class="n">filters</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -326,27 +322,27 @@
 
 <span class="c1"># get group associations</span>
 <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">group_associations</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
 
 <span class="c1"># get indicator associations</span>
 <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
 
 <span class="c1"># get victim asset associations</span>
 <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">victim_asset_associations</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
 
 <span class="c1"># get attributes</span>
 <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">attributes</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;attribute: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;attribute: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
 
 <span class="c1"># get tags</span>
 <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">tags</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tag: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tag: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
 
 <span class="c1"># get security labels</span>
 <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">labels</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;label: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;label: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -416,7 +412,7 @@
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
-</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
+</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -430,7 +426,7 @@
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">indicators</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
-</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
+</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -448,7 +444,7 @@
 </span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
 </span><span class="n">filters</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -493,23 +489,23 @@
 
 <span class="c1"># get group associations</span>
 <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">group_associations</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
 
 <span class="c1"># get indicator associations</span>
 <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
 
 <span class="c1"># get attributes</span>
 <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">attributes</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;attribute: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;attribute: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
 
 <span class="c1"># get tags</span>
 <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">tags</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tag: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tag: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
 
 <span class="c1"># get security labels</span>
 <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">labels</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;label: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;label: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -552,7 +548,7 @@
 <h3>Updating an Indicator<a class="headerlink" href="#updating-an-indicator" title="Permalink to this headline">¶</a></h3>
 <p>Updating an Indicator is similar to creating an Indicator, with the addition of providing the Indicator value.  The Indicator metadata can be updated using the same methods as were used in the Indicator Create example.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;example.com&#39;</span><span class="p">,</span> <span class="n">dns_active</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">whois_active</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;example.com&#39;</span><span class="p">,</span> <span class="n">dns_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">whois_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
@@ -576,7 +572,7 @@
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">owner</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">many</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;owner: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">owner</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;owner: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">owner</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -587,7 +583,7 @@
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">owner</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">mine</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;owner: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">owner</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;owner: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">owner</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -598,7 +594,7 @@
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">members</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;member: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">member</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;member: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">member</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -609,7 +605,7 @@
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">metrics</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.package &mdash; TcEx 2.0.0 documentation</title>
+  <title>tcex.bin.package &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -91,8 +91,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
@@ -102,8 +100,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
@@ -192,8 +188,8 @@
 
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 
-<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="k">import</span> <span class="n">InstallJson</span>
-<span class="kn">from</span> <span class="nn">.bin</span> <span class="k">import</span> <span class="n">Bin</span>
+<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="kn">import</span> <span class="n">InstallJson</span>
+<span class="kn">from</span> <span class="nn">.bin</span> <span class="kn">import</span> <span class="n">Bin</span>
 
 
 <div class="viewcode-block" id="Package"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package">[docs]</a><span class="k">class</span> <span class="nc">Package</span><span class="p">(</span><span class="n">Bin</span><span class="p">):</span>
@@ -206,7 +202,7 @@
 <span class="sd">        _args (namespace): The argparser args Namespace.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
 
@@ -293,7 +289,7 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Could not write file: </span><span class="si">{filename}</span><span class="s1">.&#39;</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Could not write file: </span><span class="si">{filename}</span><span class="s1">.&#39;</span>
             <span class="c1"># update package data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 
@@ -329,7 +325,7 @@
 <span class="sd">            bundle_name (str): The output name of the bundle zip file.</span>
 <span class="sd">            bundle_apps (list): A list of Apps to include in the bundle.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bundle_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{bundle_name}</span><span class="s1">-bundle.zip&#39;</span><span class="p">)</span>
+        <span class="n">bundle_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{bundle_name}</span><span class="s1">-bundle.zip&#39;</span><span class="p">)</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">bundle_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">bundle_apps</span><span class="p">:</span>
             <span class="c1"># update package data</span>
@@ -365,7 +361,7 @@
 
             <span class="c1"># get commit hash</span>
             <span class="k">if</span> <span class="n">branch</span><span class="p">:</span>
-                <span class="n">hash_file</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;.git/refs/heads/</span><span class="si">{branch}</span><span class="s1">&#39;</span>
+                <span class="n">hash_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;.git/refs/heads/</span><span class="si">{branch}</span><span class="s1">&#39;</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">hash_file</span><span class="p">):</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hash_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                         <span class="n">commit_hash</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -433,12 +429,12 @@
 
             <span class="c1"># update package data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Version:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{app_version}</span><span class="s1">&#39;</span><span class="p">}</span>
+                <span class="p">{</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Version:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{app_version}</span><span class="s1">&#39;</span><span class="p">}</span>
             <span class="p">)</span>
 
             <span class="c1"># !!! The name of the folder in the zip is the *key* for an App. This value must</span>
             <span class="c1"># !!! remain consistent for the App to upgrade successfully.</span>
-            <span class="n">app_name_version</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{app_name}</span><span class="s1">_</span><span class="si">{app_version}</span><span class="s1">&#39;</span>
+            <span class="n">app_name_version</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{app_name}</span><span class="s1">_</span><span class="si">{app_version}</span><span class="s1">&#39;</span>
 
             <span class="c1"># build app directory</span>
             <span class="n">tmp_app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">app_name_version</span><span class="p">)</span>
@@ -491,7 +487,7 @@
 <span class="sd">        3. Default to &#39;1.0.0&#39; updated to major version only (&#39;v1&#39;).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">major_version</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_version&#39;</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;v</span><span class="si">{major_version}</span><span class="s1">&#39;</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_version&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;v</span><span class="si">{major_version}</span><span class="s1">&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Package.print_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.print_json">[docs]</a>    <span class="k">def</span> <span class="nf">print_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print JSON output containing results of the package command.&quot;&quot;&quot;</span>
@@ -503,39 +499,39 @@
         <span class="sd">&quot;&quot;&quot;Print results of the package command.&quot;&quot;&quot;</span>
         <span class="c1"># Updates</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;updates&#39;</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{c.Style.BRIGHT}{c.Fore.BLUE}</span><span class="s1">Updates:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{c.Style.BRIGHT}{c.Fore.BLUE}</span><span class="s1">Updates:&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;updates&#39;</span><span class="p">]:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;{p.get(&#39;action&#39;)!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {p.get(&#39;output&#39;)!s:&lt;50}&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;{p.get(&#39;action&#39;)!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {p.get(&#39;output&#39;)!s:&lt;50}&quot;</span>
                 <span class="p">)</span>
 
         <span class="c1"># Packaging</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{c.Style.BRIGHT}{c.Fore.BLUE}</span><span class="s1">Package:&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{c.Style.BRIGHT}{c.Fore.BLUE}</span><span class="s1">Package:&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
                 <span class="n">list_data</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;{p.get(&#39;action&#39;):&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> &quot;</span>
-                    <span class="n">f</span><span class="s2">&quot;{&#39;, &#39;.join(p.get(&#39;output&#39;)[:n]):&lt;50}&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;{p.get(&#39;action&#39;):&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;{&#39;, &#39;.join(p.get(&#39;output&#39;)[:n]):&lt;50}&quot;</span>
                 <span class="p">)</span>
                 <span class="k">del</span> <span class="n">list_data</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span>
                     <span class="n">list_data</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_data</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>  <span class="c1"># noqa: E203</span>
                 <span class="p">]:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{&#39;&#39;!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {&#39;, &#39;.join(data)!s:&lt;50}&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;{&#39;&#39;!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {&#39;, &#39;.join(data)!s:&lt;50}&quot;</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;{p.get(&#39;action&#39;)!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {p.get(&#39;output&#39;)!s:&lt;50}&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;{p.get(&#39;action&#39;)!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {p.get(&#39;output&#39;)!s:&lt;50}&quot;</span>
                 <span class="p">)</span>
 
         <span class="c1"># Bundle</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{c.Style.BRIGHT}{c.Fore.BLUE}</span><span class="s1">Bundle:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{c.Style.BRIGHT}{c.Fore.BLUE}</span><span class="s1">Bundle:&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;bundle&#39;</span><span class="p">]:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;{p.get(&#39;action&#39;)!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {p.get(&#39;output&#39;)!s:&lt;50}&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;{p.get(&#39;action&#39;)!s:&lt;20}</span><span class="si">{c.Style.BRIGHT}{c.Fore.CYAN}</span><span class="s2"> {p.get(&#39;output&#39;)!s:&lt;50}&quot;</span>
                 <span class="p">)</span>
 
         <span class="c1"># ignore exit code</span>
@@ -543,7 +539,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># separate errors from normal output</span>
             <span class="c1"># print all errors</span>
             <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Fore.RED}{error}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{c.Fore.RED}{error}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="Package.zip_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.zip_file">[docs]</a>    <span class="k">def</span> <span class="nf">zip_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_path</span><span class="p">,</span> <span class="n">app_name</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">):</span>
@@ -556,8 +552,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># zip build directory</span>
         <span class="n">zip_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">app_name</span><span class="p">)</span>
-        <span class="n">zip_file_zip</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{zip_file}</span><span class="s1">.zip&#39;</span>
-        <span class="n">zip_file_tcx</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{zip_file}</span><span class="s1">.tcx&#39;</span>
+        <span class="n">zip_file_zip</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{zip_file}</span><span class="s1">.zip&#39;</span>
+        <span class="n">zip_file_tcx</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{zip_file}</span><span class="s1">.tcx&#39;</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="n">zip_file</span><span class="p">,</span> <span class="s1">&#39;zip&#39;</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">,</span> <span class="n">app_name</span><span class="p">)</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">zip_file_zip</span><span class="p">,</span> <span class="n">zip_file_tcx</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zip_file_tcx</span><span class="p">)</span>

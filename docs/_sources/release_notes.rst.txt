@@ -3,6 +3,18 @@
 Release Notes
 #############
 
+2.0.2
+=====
++ Updated requirement for stdlib-list to >= 0.6.0 to support Python 3.8.
++ Updated test cases to call setup/teardown instead of start/done.
++ Added pydocstyle as a development dependency.
++ Removed isort from App template pre-commit file.
++ Multiple updates for templates and testing logic for Service Apps.
++ Issue-103 - added support for ThreatConnect ThreatIntelligence File Actions.
++ Issue-107 - added check for missing config file for external Apps.
++ Issue-110 - added example for associations using Threat Intelligence Module.
++ Issue-111 - updated trace logger method for Python 3.8.x changes.
+
 2.0.1
 =====
 + Updated bin module to delete reference to removed profile and run files.

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Playbooks Module &mdash; TcEx 2.0.0 documentation</title>
+  <title>Playbooks Module &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -93,8 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
@@ -104,8 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
@@ -370,15 +366,15 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<em>string</em>) – The value to parsed and updated from the DB.</p></li>
-<li><p><strong>parent_var_type</strong> (<em>string</em>) – The parent type of the embedded variable.</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – The value to parsed and updated from the DB.</p></li>
+<li><p><strong>parent_var_type</strong> (<em>str</em>) – The parent type of the embedded variable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Results retrieved from DB</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -389,13 +385,13 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <dd><p>Wrap keyvalue embedded variable in double quotes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>string</em>) – The data with embedded variables.</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>str</em>) – The data with embedded variables.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Results retrieved from DB</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -411,7 +407,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>bytes|int|string</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -452,7 +448,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Results retrieved from DB.</p>
@@ -489,8 +485,8 @@ data from a particular field from TC(Enhanced)Entity(Array).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
-<li><p><strong>field</strong> (<em>string</em>) – The field to find in the data.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – The field to find in the data.</p></li>
 <li><p><strong>entity_type</strong> (<em>Any</em>) – Default is None. The type of data being collected (valid values:
 [‘groups’, ‘indicators’]).</p></li>
 <li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
@@ -560,9 +556,9 @@ stored inline, when it is generated and then written before the App completes.</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable name to write to storage.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable name to write to storage.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The value to write to storage.</p></li>
-<li><p><strong>variable_type</strong> (<em>string</em>) – The variable type being written.</p></li>
+<li><p><strong>variable_type</strong> (<em>str</em>) – The variable type being written.</p></li>
 <li><p><strong>append_array</strong> (<em>bool</em>) – If True arrays will be appended instead of being overwritten.</p></li>
 </ul>
 </dd>
@@ -577,7 +573,7 @@ stored inline, when it is generated and then written before the App completes.</
 variable was requested by downstream app.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable name, not the full variable.</p>
+<dd class="field-odd"><p><strong>variable</strong> (<em>str</em>) – The variable name, not the full variable.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean value indicator whether a match was found.</p>
@@ -598,7 +594,7 @@ type is provided the data will be written as RAW data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -606,7 +602,7 @@ type is provided the data will be written as RAW data.</p>
 <dd class="field-even"><p>Result string of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -618,7 +614,7 @@ type is provided the data will be written as RAW data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the Key Value Store.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the Key Value Store.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the Key Value Store.</p></li>
 </ul>
 </dd>
@@ -626,7 +622,7 @@ type is provided the data will be written as RAW data.</p>
 <dd class="field-even"><p>Result of Key Value Store write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -638,7 +634,7 @@ type is provided the data will be written as RAW data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the Key Value Store.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the Key Value Store.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the Key Value Store.</p></li>
 </ul>
 </dd>
@@ -646,7 +642,7 @@ type is provided the data will be written as RAW data.</p>
 <dd class="field-even"><p>Result of Key Value Store write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -658,7 +654,7 @@ type is provided the data will be written as RAW data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -666,7 +662,7 @@ type is provided the data will be written as RAW data.</p>
 <dd class="field-even"><p>Result of DB write</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -678,7 +674,7 @@ type is provided the data will be written as RAW data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -686,7 +682,7 @@ type is provided the data will be written as RAW data.</p>
 <dd class="field-even"><p>Result of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -700,16 +696,16 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
-<li><p><strong>variable_type</strong> (<em>string</em>) – The variable type being written.</p></li>
+<li><p><strong>variable_type</strong> (<em>str</em>) – The variable type being written.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Result string of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -721,7 +717,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -729,7 +725,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dd class="field-even"><p>Result of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -741,7 +737,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -749,7 +745,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dd class="field-even"><p>Result of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -761,7 +757,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -769,7 +765,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dd class="field-even"><p>Result of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -781,7 +777,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
@@ -789,7 +785,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dd class="field-even"><p>Result of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -800,13 +796,13 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dd><p>Delete method of CRUD operation for all data types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</p>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Result of DB write.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -814,12 +810,15 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="method">
 <dt id="tcex.playbooks.playbooks.Playbooks.exit">
 <code class="sig-name descname">exit</code><span class="sig-paren">(</span><em class="sig-param">code=None</em>, <em class="sig-param">msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.exit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Playbook wrapper on TcEx exit method</p>
+<dd><p>Exit the App</p>
 <p>Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
 it a partial success instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> (<em>int</em>) – The exit code value for the app.</p></li>
+<li><p><strong>msg</strong> (<em>str</em>) – A message to log and add to message tc output.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -846,7 +845,7 @@ it a partial success instead.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable name to parse.</p>
+<dd class="field-odd"><p><strong>variable</strong> (<em>str</em>) – The variable name to parse.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Result of parsed string.</p>
@@ -867,7 +866,7 @@ automatically determine the variable type to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>array</strong> (<em>boolean</em>) – Convert string/dict to Array/List before returning.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
@@ -888,7 +887,7 @@ automatically determine the variable type to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
 </dd>
@@ -908,7 +907,7 @@ automatically determine the variable type to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>b64decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</p></li>
 <li><p><strong>decode</strong> (<em>bool</em>) – If true the data will be decoded to a String.</p></li>
 </ul>
@@ -929,7 +928,7 @@ automatically determine the variable type to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>b64decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</p></li>
 <li><p><strong>decode</strong> (<em>bool</em>) – If true the data will be decoded to a String.</p></li>
 </ul>
@@ -954,8 +953,8 @@ automatically determine the variable type to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from KeyValue Store.</p></li>
-<li><p><strong>alt_key</strong> (<em>string</em>) – The alternate variable to read from the KeyValue Store.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from KeyValue Store.</p></li>
+<li><p><strong>alt_key</strong> (<em>str</em>) – The alternate variable to read from the KeyValue Store.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -976,7 +975,7 @@ so as to return a list of strings where each string is a group id.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
 TCEnhancedEntities.</p></li>
 </ul>
@@ -999,7 +998,7 @@ so as to return a list of strings where each string is a group name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
 TCEnhancedEntities.</p></li>
 </ul>
@@ -1023,7 +1022,7 @@ list of strings where each string is an indicator (the summary of an indicator -
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>default</strong> (<em>Any</em>) – Default is None. The value to use for malformed TCEntities or
 TCEnhancedEntities.</p></li>
 </ul>
@@ -1044,7 +1043,7 @@ TCEnhancedEntities.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
 </dd>
@@ -1064,7 +1063,7 @@ TCEnhancedEntities.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
 </dd>
@@ -1084,7 +1083,7 @@ TCEnhancedEntities.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
 </dd>
@@ -1092,7 +1091,7 @@ TCEnhancedEntities.</p></li>
 <dd class="field-even"><p>Results retrieved from DB.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1104,7 +1103,7 @@ TCEnhancedEntities.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
 </dd>
@@ -1124,7 +1123,7 @@ TCEnhancedEntities.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
 </dd>
@@ -1144,7 +1143,7 @@ TCEnhancedEntities.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The variable to read from the DB.</p></li>
 <li><p><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</p></li>
 </ul>
 </dd>
@@ -1173,13 +1172,13 @@ contains not “DB variable” and is just a String.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable to be parsed</p>
+<dd class="field-odd"><p><strong>variable</strong> (<em>str</em>) – The variable to be parsed</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The variable type.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>

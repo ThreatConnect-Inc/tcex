@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TcEx &mdash; TcEx 2.0.0 documentation</title>
+  <title>TcEx &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -93,8 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
@@ -104,8 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
@@ -349,8 +345,8 @@ during the call of this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</p></li>
-<li><p><strong>msg</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – A message to log and add to message tc output.</p></li>
+<li><p><strong>code</strong> (<em>int</em>) – The exit code value for the app.</p></li>
+<li><p><strong>msg</strong> (<em>str</em>) – A message to log and add to message tc output.</p></li>
 </ul>
 </dd>
 </dl>
@@ -368,7 +364,7 @@ during the call of this method.</p>
 <dd><p>Process indicators expanding file hashes/custom indicators into multiple entries.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>indicator</strong> (<em>string</em>) – ” : ” delimited string</p>
+<dd class="field-odd"><p><strong>indicator</strong> (<em>str</em>) – ” : ” delimited string</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a list of indicators split on ” : “.</p>
@@ -423,8 +419,8 @@ during the call of this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>code</strong> (<em>integer</em>) – The error code from API or SDK.</p></li>
-<li><p><strong>message</strong> (<em>string</em>) – The error message from API or SDK.</p></li>
+<li><p><strong>code</strong> (<em>int</em>) – The error code from API or SDK.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The error message from API or SDK.</p></li>
 <li><p><strong>raise_error</strong> (<em>bool</em><em>, </em><em>optional</em>) – Raise a Runtime error. Defaults to True.</p></li>
 </ul>
 </dd>
@@ -501,7 +497,7 @@ this limit will be truncated. The last &lt;max_length&gt; characters will be pre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>message</strong> (<em>string</em>) – The message to add to message_tc file</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The message to add to message_tc file</p></li>
 <li><p><strong>max_length</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum length of an exit message. Defaults to 255.</p></li>
 </ul>
 </dd>
@@ -515,11 +511,11 @@ this limit will be truncated. The last &lt;max_length&gt; characters will be pre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>string</em>) – The name for the metric.</p></li>
-<li><p><strong>description</strong> (<em>string</em>) – The description of the metric.</p></li>
-<li><p><strong>data_type</strong> (<em>string</em>) – The type of metric: Sum, Count, Min, Max, First, Last, and Average.</p></li>
-<li><p><strong>interval</strong> (<em>string</em>) – The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.</p></li>
-<li><p><strong>keyed</strong> (<em>boolean</em>) – Indicates whether the data will have a keyed value.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name for the metric.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – The description of the metric.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) – The type of metric: Sum, Count, Min, Max, First, Last, and Average.</p></li>
+<li><p><strong>interval</strong> (<em>str</em>) – The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.</p></li>
+<li><p><strong>keyed</strong> (<em>bool</em>) – Indicates whether the data will have a keyed value.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -651,8 +647,8 @@ method will store the values for TC to read and put into the Database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The data key to be stored.</p></li>
-<li><p><strong>value</strong> (<em>string</em>) – The data value to be stored.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The data key to be stored.</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – The data value to be stored.</p></li>
 </ul>
 </dd>
 </dl>
@@ -669,16 +665,16 @@ method will store the values for TC to read and put into the Database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group_name</strong> (<em>string</em>) – The raw group name to be truncated.</p></li>
+<li><p><strong>group_name</strong> (<em>str</em>) – The raw group name to be truncated.</p></li>
 <li><p><strong>group_max_length</strong> (<em>int</em>) – The max length of the group name.</p></li>
-<li><p><strong>ellipsis</strong> (<em>boolean</em>) – If true the truncated name will have ‘…’ appended.</p></li>
+<li><p><strong>ellipsis</strong> (<em>bool</em>) – If true the truncated name will have ‘…’ appended.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The truncated group name with optional ellipsis.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -690,15 +686,15 @@ method will store the values for TC to read and put into the Database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>indicator</strong> (<em>string</em>) – Indicator to URL Encode</p></li>
-<li><p><strong>errors</strong> (<em>string</em>) – The error handler type.</p></li>
+<li><p><strong>indicator</strong> (<em>str</em>) – Indicator to URL Encode</p></li>
+<li><p><strong>errors</strong> (<em>str</em>) – The error handler type.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The urlencoded string</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -712,15 +708,15 @@ method will store the values for TC to read and put into the Database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>resource_type</strong> (<em>string</em>) – The resource type to format.</p></li>
-<li><p><strong>lower</strong> (<em>boolean</em>) – Return type in all lower case</p></li>
+<li><p><strong>resource_type</strong> (<em>str</em>) – The resource type to format.</p></li>
+<li><p><strong>lower</strong> (<em>bool</em>) – Return type in all lower case</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The formatted resource type.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -731,13 +727,13 @@ method will store the values for TC to read and put into the Database.</p>
 <dd><p>Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tag</strong> (<em>string</em>) – The tag to be truncated</p>
+<dd class="field-odd"><p><strong>tag</strong> (<em>str</em>) – The tag to be truncated</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The truncated and quoted tag</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -748,13 +744,13 @@ method will store the values for TC to read and put into the Database.</p>
 <dd><p>Encode value for safe HTTP request.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>url</strong> (<em>string</em>) – The string to URL Encode.</p>
+<dd class="field-odd"><p><strong>url</strong> (<em>str</em>) – The string to URL Encode.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The urlencoded string.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(string)</p>
+<dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
 </dd></dl>

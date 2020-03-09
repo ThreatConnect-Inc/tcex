@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.0 documentation</title>
+  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -91,8 +91,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
@@ -102,8 +100,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
@@ -183,7 +179,7 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
 <span class="c1"># import hashlib</span>
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>
 
 <span class="c1"># import local modules for dynamic reference</span>
 <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -196,7 +192,7 @@
 <span class="sd">        tcex ([type]): [description]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_limit</span> <span class="o">=</span> <span class="mi">10000</span>
@@ -207,16 +203,16 @@
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error deleting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error deleting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest._get"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._get">[docs]</a>    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -226,16 +222,16 @@
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error getting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error getting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest._iterate"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._iterate">[docs]</a>    <span class="k">def</span> <span class="nf">_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">):</span>
@@ -266,18 +262,18 @@
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">50</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;body: </span><span class="si">{data}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{data}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest._post_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._post_json">[docs]</a>    <span class="k">def</span> <span class="nf">_post_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -286,17 +282,17 @@
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;body: </span><span class="si">{json_data}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{json_data}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest._put_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._put_json">[docs]</a>    <span class="k">def</span> <span class="nf">_put_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -305,18 +301,18 @@
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="n">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{params}</span><span class="s1">), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">50</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;body: </span><span class="si">{json_data}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{json_data}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{r.text}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error updating data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error updating data (</span><span class="si">{err}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.add_adversary_handle_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_adversary_handle_asset">[docs]</a>    <span class="k">def</span> <span class="nf">add_adversary_handle_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -329,7 +325,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            requests.Response: A request Response object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/handles&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/handles&#39;</span>
         <span class="n">asset_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;handle&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_json</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">asset_data</span><span class="p">)</span></div>
 
@@ -343,7 +339,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            requests.Response: A request Response object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/phoneNumbers&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/phoneNumbers&#39;</span>
         <span class="n">asset_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;phoneNumber&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_json</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">asset_data</span><span class="p">)</span></div>
 
@@ -357,7 +353,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            requests.Response: A request Response object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/urls&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/urls&#39;</span>
         <span class="n">asset_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_json</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">asset_data</span><span class="p">)</span></div>
 
@@ -373,7 +369,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets&#39;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;bucketAsset&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.adversary_handle_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.adversary_handle_asset">[docs]</a>    <span class="k">def</span> <span class="nf">adversary_handle_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -390,7 +386,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/handles/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/handles/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
 
         <span class="c1"># handle DELETE action</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span>
@@ -410,7 +406,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/handles&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/handles&#39;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;adversaryHandle&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.adversary_phone_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.adversary_phone_asset">[docs]</a>    <span class="k">def</span> <span class="nf">adversary_phone_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -427,7 +423,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/phoneNumbers/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/phoneNumbers/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
 
         <span class="c1"># handle DELETE action</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span>
@@ -447,7 +443,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/phoneNumbers&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/phoneNumbers&#39;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;adversaryPhoneNumber&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.adversary_url_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.adversary_url_asset">[docs]</a>    <span class="k">def</span> <span class="nf">adversary_url_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -464,7 +460,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/urls/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/urls/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
 
         <span class="c1"># handle DELETE action</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span>
@@ -484,7 +480,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/urls&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/groups/adversaries/</span><span class="si">{unique_id}</span><span class="s1">/adversaryAssets/urls&#39;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;adversaryUrl&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.create"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
@@ -499,9 +495,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            request.Response: The response from the API call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
@@ -520,10 +516,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            request.Response: The response from the API call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">unique_id</span><span class="p">:</span>
-                <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
@@ -577,9 +573,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            requests.Response: A request Response object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/download&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/download&#39;</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/download&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/download&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.get_adversary_handle_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.get_adversary_handle_asset">[docs]</a>    <span class="k">def</span> <span class="nf">get_adversary_handle_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -645,9 +641,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;filters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters_string</span>
 
         <span class="c1"># build url</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">)</span></div>
 
@@ -686,9 +682,9 @@
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultLimit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_limit</span> <span class="ow">or</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;result_limit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_limit</span><span class="p">)</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultStart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_start</span> <span class="ow">or</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;result_start&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span></div>
 
@@ -717,9 +713,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;filters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters_string</span>
 
         <span class="c1"># build url</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span></div>
 
@@ -736,10 +732,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            request.Response: The response from the API call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">unique_id</span><span class="p">:</span>
-                <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
@@ -766,7 +762,7 @@
         <span class="k">if</span> <span class="n">update_if_exists</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;updateIfExists&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/upload&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/upload&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.victim_add_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.victim_add_asset">[docs]</a>    <span class="k">def</span> <span class="nf">victim_add_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
@@ -788,7 +784,7 @@
 <span class="sd">            request.Response: The response from the API call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">asset_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">victim_asset_type_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asset_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">asset_type</span><span class="p">)</span>
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_json</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.victim_assets"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.victim_assets">[docs]</a>    <span class="k">def</span> <span class="nf">victim_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -815,13 +811,13 @@
 
         <span class="c1"># This is needed because of tasks</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets&#39;</span>
         <span class="n">entity_type</span> <span class="o">=</span> <span class="s1">&#39;victimAsset&#39;</span>
         <span class="n">asset_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">victim_asset_type_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asset_type</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">asset_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">+=</span> <span class="n">f</span><span class="s1">&#39;/</span><span class="si">{asset_type}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;/</span><span class="si">{asset_type}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.victim_get_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.victim_get_asset">[docs]</a>    <span class="k">def</span> <span class="nf">victim_get_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -845,7 +841,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">asset_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">victim_asset_type_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asset_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">asset_type</span><span class="p">)</span>
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -878,7 +874,7 @@
 <span class="sd">            request.Response: The response from the API call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">asset_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">victim_asset_type_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asset_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">asset_type</span><span class="p">)</span>
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">asset_url</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.victim_update_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.victim_update_asset">[docs]</a>    <span class="k">def</span> <span class="nf">victim_update_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
@@ -901,7 +897,7 @@
 <span class="sd">            request.Response: The response from the API call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">asset_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">victim_asset_type_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asset_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">asset_type</span><span class="p">)</span>
-        <span class="n">asset_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
+        <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/victims/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{asset_type}</span><span class="s1">/</span><span class="si">{asset_id}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_put_json</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span></div>
 
     <span class="c1">#</span>
@@ -922,11 +918,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner</span> <span class="k">else</span> <span class="p">{}</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/falsePositive&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/falsePositive&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.owners"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.owners">[docs]</a>    <span class="k">def</span> <span class="nf">owners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -943,13 +939,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/owners&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/owners&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/owners&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/owners&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.add_observations"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_observations">[docs]</a>    <span class="k">def</span> <span class="nf">add_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -968,10 +964,10 @@
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner</span> <span class="k">else</span> <span class="p">{}</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observations&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observations&#39;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.observation_count"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.observation_count">[docs]</a>    <span class="k">def</span> <span class="nf">observation_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -989,13 +985,13 @@
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observationCount&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observationCount&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observationCount&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observationCount&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.observations"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.observations">[docs]</a>    <span class="k">def</span> <span class="nf">observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1017,13 +1013,13 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observations&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observations&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observations&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/observations&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.dns_resolution"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.dns_resolution">[docs]</a>    <span class="k">def</span> <span class="nf">dns_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1041,13 +1037,13 @@
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/dnsResolution&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/dnsResolution&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/dnsResolution&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/dnsResolution&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.set_dns_resolution"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.set_dns_resolution">[docs]</a>    <span class="k">def</span> <span class="nf">set_dns_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1072,13 +1068,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;dns value&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.set_whois"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.set_whois">[docs]</a>    <span class="k">def</span> <span class="nf">set_whois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1103,13 +1099,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;whois value&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.is_false"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.is_false">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1152,9 +1148,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;deleteSince&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deleted_since</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/deleted&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/deleted&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/deleted&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/deleted&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 
@@ -1190,9 +1186,9 @@
         <span class="k">if</span> <span class="n">filters</span> <span class="ow">and</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;filters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters_string</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/tags/</span><span class="si">{tag_name}</span><span class="s1">/</span><span class="si">{api_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/tags/</span><span class="si">{tag_name}</span><span class="s1">/</span><span class="si">{api_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/tags/</span><span class="si">{tag_name}</span><span class="s1">/</span><span class="si">{api_type}</span><span class="s1">/&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/tags/</span><span class="si">{tag_name}</span><span class="s1">/</span><span class="si">{api_type}</span><span class="s1">/&#39;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.groups_from_tag"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.groups_from_tag">[docs]</a>    <span class="k">def</span> <span class="nf">groups_from_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1263,9 +1259,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;indicator&#39;</span><span class="p">)</span></div>
 
@@ -1287,9 +1283,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span></div>
 
@@ -1315,9 +1311,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{branch_type}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{branch_type}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{branch_type}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{branch_type}</span><span class="s1">&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;victimAsset&#39;</span><span class="p">)</span></div>
 
@@ -1354,9 +1350,9 @@
         <span class="n">api_branch</span> <span class="o">=</span> <span class="n">api_branch</span> <span class="ow">or</span> <span class="n">association_type</span><span class="o">.</span><span class="n">api_sub_type</span>
         <span class="n">api_entity</span> <span class="o">=</span> <span class="n">api_entity</span> <span class="ow">or</span> <span class="n">association_type</span><span class="o">.</span><span class="n">api_entity</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">)</span></div>
 
@@ -1394,13 +1390,13 @@
 
         <span class="k">if</span> <span class="n">target</span> <span class="ow">and</span> <span class="n">target</span><span class="o">.</span><span class="n">is_task</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-                <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tasks/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tasks/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tasks&#39;</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tasks&#39;</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/groups/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">)</span></div>
 
@@ -1503,18 +1499,18 @@
         <span class="c1"># Typically if victim to victim but other endpoints that are not</span>
         <span class="c1"># groups/indicators can exist in the future</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">target_sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
         <span class="c1"># Typically if victim to anything else</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_sub_type}</span><span class="s1">/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_sub_type}</span><span class="s1">/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
         <span class="c1"># If anything else to victim</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">target_sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Everything else</span>
             <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_sub_type}</span><span class="s1">&#39;</span>
-                <span class="n">f</span><span class="s1">&#39;/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/</span><span class="si">{target_type}</span><span class="s1">/</span><span class="si">{target_sub_type}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;/</span><span class="si">{target_unique_id}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1526,8 +1522,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;associations error&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{r.request.url}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.victim"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.victim">[docs]</a>    <span class="k">def</span> <span class="nf">victim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">victim_id</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1546,9 +1542,9 @@
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims/</span><span class="si">{victim_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims/</span><span class="si">{victim_id}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims/</span><span class="si">{victim_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims/</span><span class="si">{victim_id}</span><span class="s1">&#39;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
@@ -1567,9 +1563,9 @@
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victims&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;victim&#39;</span><span class="p">)</span></div>
 
@@ -1583,7 +1579,7 @@
 <span class="sd">            unique_id:</span>
 <span class="sd">            owner:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/fileOccurrences&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/fileOccurrences&#39;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
@@ -1605,6 +1601,46 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_occurrence</span><span class="p">(</span><span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">occurrence_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TiTcRequest.delete_file_action"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.delete_file_action">[docs]</a>    <span class="k">def</span> <span class="nf">delete_file_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deletes a file action given a target&quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/actions/</span><span class="si">{action}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;/</span><span class="si">{target.api_type}</span><span class="s1">/</span><span class="si">{target.api_branch}</span><span class="s1">/</span><span class="si">{target.unique_id}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TiTcRequest.add_file_action"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_file_action">[docs]</a>    <span class="k">def</span> <span class="nf">add_file_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a file action given a target&quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/actions/</span><span class="si">{action}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;/</span><span class="si">{target.api_type}</span><span class="s1">/</span><span class="si">{target.api_branch}</span><span class="s1">/</span><span class="si">{target.unique_id}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="p">{},</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TiTcRequest.get_file_actions"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.get_file_actions">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Yields a file action given a file action and a target&quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/actions/</span><span class="si">{action}</span><span class="s1">/</span><span class="si">{target.api_type}</span><span class="s1">&#39;</span>
+
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">api_sub_type</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{url}</span><span class="s1">/</span><span class="si">{target.api_branch}</span><span class="s1">&#39;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">api_entity</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.delete_file_occurrence"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.delete_file_occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">delete_file_occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">occurrence_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1637,7 +1673,7 @@
 <span class="sd">        Returns:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/fileOccurrences/</span><span class="si">{occurrence_id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/fileOccurrences/</span><span class="si">{occurrence_id}</span><span class="s1">&#39;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
@@ -1666,7 +1702,7 @@
 <span class="sd">        Returns:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/fileOccurrences&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/fileOccurrences&#39;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
@@ -1694,9 +1730,9 @@
 
         <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags/{quote(tag)}&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags/{quote(tag)}&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags/{quote(tag)}&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags/{quote(tag)}&#39;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;ADD&#39;</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
@@ -1777,9 +1813,9 @@
         <span class="k">if</span> <span class="n">filters</span> <span class="ow">and</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;filters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters_string</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/tags&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">)</span></div>
 
@@ -1804,9 +1840,9 @@
         <span class="k">if</span> <span class="n">filters</span> <span class="ow">and</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;filters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">filters_string</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;securityLabel&#39;</span><span class="p">)</span></div>
 
@@ -1883,9 +1919,9 @@
         <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels/{quote(label)}&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels/{quote(label)}&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels/{quote(label)}&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/securityLabels/{quote(label)}&#39;</span>
 
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;ADD&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
@@ -1918,9 +1954,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;attribute&#39;</span><span class="p">)</span></div>
 
@@ -1946,9 +1982,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
         <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
 
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
@@ -2026,9 +2062,9 @@
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes&#39;</span>
 
         <span class="n">json</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">attribute_type</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">attribute_value</span><span class="p">}</span>
 
@@ -2073,9 +2109,9 @@
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">&#39;</span>
 
         <span class="n">json</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">attribute_value</span><span class="p">}</span>
 
@@ -2108,9 +2144,9 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;securityLabel&#39;</span><span class="p">)</span></div>
 
@@ -2147,13 +2183,13 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels/&#39;</span>
-                <span class="n">f</span><span class="s1">&#39;{quote(label)}&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels/&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;{quote(label)}&#39;</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels/&#39;</span>
-                <span class="n">f</span><span class="s1">&#39;{quote(label)}&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/attributes/</span><span class="si">{attribute_id}</span><span class="s1">/securityLabels/&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;{quote(label)}&#39;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;ADD&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
@@ -2239,7 +2275,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/assignees&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/assignees&#39;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.assignee"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.assignee">[docs]</a>    <span class="k">def</span> <span class="nf">assignee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">assignee_id</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -2258,7 +2294,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/assignees/</span><span class="si">{assignee_id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/assignees/</span><span class="si">{assignee_id}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;ADD&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
@@ -2326,7 +2362,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/escalatees&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/escalatees&#39;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.escalatee"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.escalatee">[docs]</a>    <span class="k">def</span> <span class="nf">escalatee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">escalatee_id</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -2344,7 +2380,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/escalatees/</span><span class="si">{escalatee_id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/escalatees/</span><span class="si">{escalatee_id}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;ADD&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>

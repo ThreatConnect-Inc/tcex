@@ -16,8 +16,6 @@ Release |version|.
    building_apps_tcinit
    building_apps_tclib
    building_apps_tcpackage
-   testing_apps_tcprofile
-   testing_apps_tcrun
    app_deployment_configuration
    app_directory_structure
    module_batch
@@ -27,8 +25,6 @@ Release |version|.
    module_metrics
    module_notifications
    module_playbook
-   module_request
-   module_resource
    module_services
    module_threat_intelligence
    module_utils

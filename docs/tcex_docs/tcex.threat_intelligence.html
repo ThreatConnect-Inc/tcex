@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Threat Intelligence Module &mdash; TcEx 2.0.0 documentation</title>
+  <title>Threat Intelligence Module &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -93,8 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
@@ -104,8 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
@@ -1001,6 +997,12 @@ modified.</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_file_action">
+<code class="sig-name descname">add_file_action</code><span class="sig-paren">(</span><em class="sig-param">main_type</em>, <em class="sig-param">sub_type</em>, <em class="sig-param">unique_id</em>, <em class="sig-param">action</em>, <em class="sig-param">target</em>, <em class="sig-param">owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest.add_file_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_file_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a file action given a target</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_file_occurrence">
 <code class="sig-name descname">add_file_occurrence</code><span class="sig-paren">(</span><em class="sig-param">main_type</em>, <em class="sig-param">sub_type</em>, <em class="sig-param">unique_id</em>, <em class="sig-param">name</em>, <em class="sig-param">date</em>, <em class="sig-param">path</em>, <em class="sig-param">owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest.add_file_occurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_file_occurrence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a file occurrence to a File
@@ -1498,6 +1500,12 @@ modified.</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.delete_file_action">
+<code class="sig-name descname">delete_file_action</code><span class="sig-paren">(</span><em class="sig-param">main_type</em>, <em class="sig-param">sub_type</em>, <em class="sig-param">unique_id</em>, <em class="sig-param">action</em>, <em class="sig-param">target</em>, <em class="sig-param">owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest.delete_file_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.delete_file_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a file action given a target</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.delete_file_occurrence">
 <code class="sig-name descname">delete_file_occurrence</code><span class="sig-paren">(</span><em class="sig-param">main_type</em>, <em class="sig-param">sub_type</em>, <em class="sig-param">unique_id</em>, <em class="sig-param">occurrence_id</em>, <em class="sig-param">owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest.delete_file_occurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.delete_file_occurrence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes a file occurrence given a occurrence_id
@@ -1789,6 +1797,12 @@ modified.</p></li>
 </dd>
 </dl>
 <p>Return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.get_file_actions">
+<code class="sig-name descname">get_file_actions</code><span class="sig-paren">(</span><em class="sig-param">main_type</em>, <em class="sig-param">sub_type</em>, <em class="sig-param">unique_id</em>, <em class="sig-param">action</em>, <em class="sig-param">target</em>, <em class="sig-param">owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest.get_file_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.get_file_actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields a file action given a file action and a target</p>
 </dd></dl>
 
 <dl class="method">
