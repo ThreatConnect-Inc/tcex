@@ -176,7 +176,6 @@ class TestCase:
             data = self.update_staged_threatconnect_data(data)
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
-            fh.truncate()
 
     @staticmethod
     def update_staged_threatconnect_data(data):
