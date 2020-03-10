@@ -38,6 +38,7 @@ class Custom(object):
     % if app_type in ['triggerservice']:
     def trigger_method(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Perform action to trigger the event."""
+        # trigger = profile_data.get('trigger')
 
     def test_pre_create_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Run test method code before create configs."""

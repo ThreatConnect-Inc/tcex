@@ -741,3 +741,35 @@ class TestUtils:
         if alt_value is not None:
             tcex.playbook.delete(alt_variable)
             assert tcex.playbook.read(alt_variable) is None
+
+    @pytest.mark.parametrize(
+        'variable,expected',
+        [
+            ('#App:0001:b1!Binary', True),
+            ('#App:0001:ba1!BinaryArray', True),
+            ('#App:0001:kv1!KeyValue', True),
+            ('#App:0001:kva1!KeyValueArray', True),
+            ('#App:0001:s1!String', True),
+            ('#App:0001:sa1!StringArray', True),
+            ('#App:0001:te1!TCEntity', True),
+            ('#App:0001:tea1!TCEntityArray', True),
+            ('#App:0001:teea1!TCEnhanceEntityArray', True),
+            ('#App:0001:r1!Raw', True),
+            ('-- Select --', False),
+            ('-- Variable Input --', False),
+            (None, False),
+        ],
+    )
+    def test_playbook_is_variable(self, variable, expected, playbook_app):
+        """Test the create output method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app().tcex
+        is_variable = tcex.playbook.is_variable(variable)
+        assert (
+            is_variable == expected
+        ), f'{variable} result {is_variable} did not match expected result {expected}'

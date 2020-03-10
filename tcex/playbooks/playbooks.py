@@ -327,10 +327,18 @@ class Playbooks(PlaybooksBase):
             code = 1
 
         # required only for tcex testing framework
-        if self.tcex.args.tcex_testing_context is not None:
+        if self.tcex.args.tcex_testing_context is not None:  # pragma: no cover
             self.tcex.redis_client.hset(self.tcex.args.tcex_testing_context, '_exit_message', msg)
 
         self.tcex.exit(code, msg)
+
+    def is_variable(self, key):
+        """Return True if provided key is a properly formatted variable."""
+        if key is None:
+            return False
+        if re.match(self._variable_match, key):
+            return True
+        return False
 
     @property
     def output_variables_by_name(self):
