@@ -217,7 +217,6 @@ class TestCase:
             data = self.update_staged_threatconnect_data(data)
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
-            fh.truncate()
 
     @staticmethod
     def update_staged_threatconnect_data(data):
@@ -328,6 +327,13 @@ class TestCase:
                     group = m.group(1)[1:]
                     value = jmespath.search(group, value)
                     profile_str = profile_str.replace(key, str(value))
+        regex = r'\${env\.([^}]*)'
+        for m in re.finditer(regex, profile_str):
+            if m.group(1):
+                key = '${env.' + m.group(1) + '}'
+                group = m.group(1)
+                value = os.getenv(group)
+                profile_str = profile_str.replace(key, str(value))
         return json.loads(profile_str)
 
     def populate_exit_message(self):
