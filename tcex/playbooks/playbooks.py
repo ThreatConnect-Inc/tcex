@@ -58,9 +58,9 @@ class Playbooks(PlaybooksBase):
             }
 
         Args:
-            key (string): The variable name to write to storage.
+            key (str): The variable name to write to storage.
             value (any): The value to write to storage.
-            variable_type (string): The variable type being written.
+            variable_type (str): The variable type being written.
             append_array (bool): If True arrays will be appended instead of being overwritten.
 
         """
@@ -86,7 +86,7 @@ class Playbooks(PlaybooksBase):
         variable was requested by downstream app.
 
         Args:
-            variable (string): The variable name, not the full variable.
+            variable (str): The variable name, not the full variable.
 
         Returns:
             (boolean): Boolean value indicator whether a match was found.
@@ -101,11 +101,11 @@ class Playbooks(PlaybooksBase):
         type is provided the data will be written as RAW data.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result string of DB write.
+            (str): Result string of DB write.
         """
         data = None
         if key is not None:
@@ -130,11 +130,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for binary data.
 
         Args:
-            key (string): The variable to write to the Key Value Store.
+            key (str): The variable to write to the Key Value Store.
             value (any): The data to write to the Key Value Store.
 
         Returns:
-            (string): Result of Key Value Store write.
+            (str): Result of Key Value Store write.
         """
         supported_variable_type = 'Binary'
         if self.variable_type(key) != supported_variable_type:
@@ -145,11 +145,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for binary array data.
 
         Args:
-            key (string): The variable to write to the Key Value Store.
+            key (str): The variable to write to the Key Value Store.
             value (any): The data to write to the Key Value Store.
 
         Returns:
-            (string): Result of Key Value Store write.
+            (str): Result of Key Value Store write.
         """
         supported_variable_type = 'BinaryArray'
         if self.variable_type(key) != supported_variable_type:
@@ -160,11 +160,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for key/value data.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (str): Result of DB write
         """
         supported_variable_type = 'KeyValue'
         if self.variable_type(key) != supported_variable_type:
@@ -175,11 +175,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for key/value array data.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write.
+            (str): Result of DB write.
         """
         supported_variable_type = 'KeyValueArray'
         if self.variable_type(key) != supported_variable_type:
@@ -190,11 +190,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for string data.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write.
+            (str): Result of DB write.
         """
         supported_variable_type = 'String'
         if self.variable_type(key) != supported_variable_type:
@@ -205,11 +205,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for string array data.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write.
+            (str): Result of DB write.
         """
         supported_variable_type = 'StringArray'
         if self.variable_type(key) != supported_variable_type:
@@ -220,11 +220,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for TC entity data.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write.
+            (str): Result of DB write.
         """
         supported_variable_type = 'TCEntity'
         if self.variable_type(key) != supported_variable_type:
@@ -235,11 +235,11 @@ class Playbooks(PlaybooksBase):
         """Create method of CRUD operation for TC entity array data.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write.
+            (str): Result of DB write.
         """
         supported_variable_type = ['TCEntityArray', 'TCEnhancedEntity', 'TCEnhancedEntityArray']
         if self.variable_type(key) not in supported_variable_type:
@@ -253,12 +253,12 @@ class Playbooks(PlaybooksBase):
         a downstream app and if so create the data in the KeyValue DB.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
             value (any): The data to write to the DB.
-            variable_type (string): The variable type being written.
+            variable_type (str): The variable type being written.
 
         Returns:
-            (string): Result string of DB write.
+            (str): Result string of DB write.
         """
         #  This is if no downstream variables are requested then nothing should be returned.
         if not self.output_variables_by_type:  # pragma: no cover
@@ -296,10 +296,10 @@ class Playbooks(PlaybooksBase):
         """Delete method of CRUD operation for all data types.
 
         Args:
-            key (string): The variable to write to the DB.
+            key (str): The variable to write to the DB.
 
         Returns:
-            (string): Result of DB write.
+            (str): Result of DB write.
         """
         data = None
         if key is not None:
@@ -309,13 +309,14 @@ class Playbooks(PlaybooksBase):
         return data
 
     def exit(self, code=None, msg=None):
-        """Playbook wrapper on TcEx exit method
+        """Exit the App
 
         Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
         it a partial success instead.
 
         Args:
-            code (Optional [integer]): The exit code value for the app.
+            code (int): The exit code value for the app.
+            msg (str): A message to log and add to message tc output.
         """
         if code is None:
             code = self.tcex.exit_code
@@ -324,6 +325,11 @@ class Playbooks(PlaybooksBase):
                 code = 0  # playbooks doesn't support partial failure
         elif code not in [0, 1]:
             code = 1
+
+        # required only for tcex testing framework
+        if self.tcex.args.tcex_testing_context is not None:
+            self.tcex.redis_client.hset(self.tcex.args.tcex_testing_context, '_exit_message', msg)
+
         self.tcex.exit(code, msg)
 
     @property
@@ -348,7 +354,7 @@ class Playbooks(PlaybooksBase):
         #App:1234:output!String
 
         Args:
-            variable (string): The variable name to parse.
+            variable (str): The variable name to parse.
 
         Returns:
             (dictionary): Result of parsed string.
@@ -374,7 +380,7 @@ class Playbooks(PlaybooksBase):
         automatically determine the variable type to read.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             array (boolean): Convert string/dict to Array/List before returning.
             embedded (boolean): Resolve embedded variables.
 
@@ -424,8 +430,8 @@ class Playbooks(PlaybooksBase):
         data from a particular field from TC(Enhanced)Entity(Array).
 
         Args:
-            key (string): The variable to read from the DB.
-            field (string): The field to find in the data.
+            key (str): The variable to read from the DB.
+            field (str): The field to find in the data.
             entity_type (Any): Default is None. The type of data being collected (valid values:
                 ['groups', 'indicators']).
             default (Any): Default is None. The value to use for malformed TCEntities or
@@ -481,7 +487,7 @@ class Playbooks(PlaybooksBase):
         ["foo.example.com", "bar.example.com"]).
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             default (Any): Default is None. The value to use for malformed TCEntities or
                 TCEnhancedEntities.
 
@@ -497,7 +503,7 @@ class Playbooks(PlaybooksBase):
         so as to return a list of strings where each string is a group name.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             default (Any): Default is None. The value to use for malformed TCEntities or
                 TCEnhancedEntities.
 
@@ -513,7 +519,7 @@ class Playbooks(PlaybooksBase):
         so as to return a list of strings where each string is a group id.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             default (Any): Default is None. The value to use for malformed TCEntities or
                 TCEnhancedEntities.
 
@@ -531,8 +537,8 @@ class Playbooks(PlaybooksBase):
         * Else return resolved value for key.
 
         Args:
-            key (string): The variable to read from KeyValue Store.
-            alt_key (string): The alternate variable to read from the KeyValue Store.
+            key (str): The variable to read from KeyValue Store.
+            alt_key (str): The alternate variable to read from the KeyValue Store.
 
         Returns:
             (None|str): Results retrieved from KeyValue Store
@@ -552,7 +558,7 @@ class Playbooks(PlaybooksBase):
         """Read playbook variable and return array for any variable type.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             embedded (boolean): Resolve embedded variables.
 
         Returns:
@@ -564,7 +570,7 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for binary data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             b64decode (bool): If true the data will be base64 decoded.
             decode (bool): If true the data will be decoded to a String.
 
@@ -577,7 +583,7 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for binary array data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             b64decode (bool): If true the data will be base64 decoded.
             decode (bool): If true the data will be decoded to a String.
 
@@ -590,7 +596,7 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for key/value data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             embedded (boolean): Resolve embedded variables.
 
         Returns:
@@ -602,7 +608,7 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for key/value array data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             embedded (boolean): Resolve embedded variables.
 
         Returns:
@@ -614,11 +620,11 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for string data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             embedded (boolean): Resolve embedded variables.
 
         Returns:
-            (string): Results retrieved from DB.
+            (str): Results retrieved from DB.
         """
         return self._read(key, embedded=embedded)
 
@@ -626,7 +632,7 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for string array data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             embedded (boolean): Resolve embedded variables.
 
         Returns:
@@ -638,7 +644,7 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for TC entity data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             embedded (boolean): Resolve embedded variables.
 
         Returns:
@@ -650,7 +656,7 @@ class Playbooks(PlaybooksBase):
         """Read method of CRUD operation for TC entity array data.
 
         Args:
-            key (string): The variable to read from the DB.
+            key (str): The variable to read from the DB.
             embedded (boolean): Resolve embedded variables.
 
         Returns:
@@ -673,10 +679,10 @@ class Playbooks(PlaybooksBase):
             "My Data" returns **String**
 
         Args:
-            variable (string): The variable to be parsed
+            variable (str): The variable to be parsed
 
         Returns:
-            (string): The variable type.
+            (str): The variable type.
         """
         var_type = 'String'
         if variable is not None:

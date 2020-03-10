@@ -40,7 +40,11 @@ if __name__ == '__main__':
     from tcex import TcEx
     from app import App
 
-    tcex = TcEx(config_file='app_config.json')
+    config_file = 'app_config.json'
+    if not os.path.isfile(config_file):
+        print(f'Missing {config_file} config file.')
+
+    tcex = TcEx(config_file=config_file)
 
     try:
         # load App class

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.bin &mdash; TcEx 2.0.0 documentation</title>
+  <title>tcex.bin.bin &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -91,8 +91,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
@@ -102,8 +100,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
@@ -190,7 +186,7 @@
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 <span class="kn">import</span> <span class="nn">redis</span>
 
-<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="k">import</span> <span class="n">InstallJson</span><span class="p">,</span> <span class="n">LayoutJson</span>
+<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="kn">import</span> <span class="n">InstallJson</span><span class="p">,</span> <span class="n">LayoutJson</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">sqlite3</span>
@@ -206,7 +202,7 @@
 <span class="sd">        _args (namespace): The argparser args Namespace.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.</span>
 
 <span class="sd">        Args:</span>
@@ -257,10 +253,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">formatted_columns</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
-            <span class="n">formatted_columns</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;&quot;&quot;&quot;{col.strip(&#39;&quot;&#39;).strip(&quot;&#39;&quot;)}&quot; text, &quot;&quot;&quot;</span>
+            <span class="n">formatted_columns</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&quot;{col.strip(&#39;&quot;&#39;).strip(&quot;&#39;&quot;)}&quot; text, &quot;&quot;&quot;</span>
         <span class="n">formatted_columns</span> <span class="o">=</span> <span class="n">formatted_columns</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
 
-        <span class="n">create_table_sql</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;CREATE TABLE IF NOT EXISTS </span><span class="si">{table_name}</span><span class="s1"> (</span><span class="si">{formatted_columns}</span><span class="s1">);&#39;</span>
+        <span class="n">create_table_sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;CREATE TABLE IF NOT EXISTS </span><span class="si">{table_name}</span><span class="s1"> (</span><span class="si">{formatted_columns}</span><span class="s1">);&#39;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
             <span class="n">cr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_table_sql</span><span class="p">)</span>
@@ -276,7 +272,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bindings</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;?,&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;INSERT INTO </span><span class="si">{table_name}</span><span class="s2"> ({&#39;, &#39;.join(columns)}) VALUES (</span><span class="si">{bindings}</span><span class="s2">)&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;INSERT INTO </span><span class="si">{table_name}</span><span class="s2"> ({&#39;, &#39;.join(columns)}) VALUES (</span><span class="si">{bindings}</span><span class="s2">)&quot;</span>
         <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
         <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
@@ -288,7 +284,7 @@
 <span class="sd">            column (str): The column name in which the value is to be updated.</span>
 <span class="sd">            value (str): The value to update in the column.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;UPDATE </span><span class="si">{table_name}</span><span class="s1"> SET </span><span class="si">{column}</span><span class="s1"> = </span><span class="se">\&#39;</span><span class="si">{value}</span><span class="se">\&#39;</span><span class="s1">&#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;UPDATE </span><span class="si">{table_name}</span><span class="s1"> SET </span><span class="si">{column}</span><span class="s1"> = </span><span class="se">\&#39;</span><span class="si">{value}</span><span class="se">\&#39;</span><span class="s1">&#39;</span>
         <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
         <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span></div>
 
@@ -315,7 +311,7 @@
 
             <span class="n">input_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">input_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;No value found in install.json for &quot;</span><span class="si">{name}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No value found in install.json for &quot;</span><span class="si">{name}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;organization&#39;</span>
@@ -367,7 +363,7 @@
 <span class="sd">            err (str): The error message to print.</span>
 <span class="sd">            halt (bool, optional): Defaults to True. If True the script will exit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{err}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}{err}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">halt</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
@@ -437,7 +433,7 @@
                     <span class="c1"># add type stub for values</span>
                     <span class="n">types</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbookDataType&#39;</span><span class="p">,</span> <span class="p">[]))</span>
                     <span class="k">if</span> <span class="n">types</span><span class="p">:</span>
-                        <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;&lt;</span><span class="si">{types}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
+                        <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{types}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
@@ -461,7 +457,7 @@
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_fqpn</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Failed to load &quot;</span><span class="si">{file_fqpn}</span><span class="s1">&quot; file (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to load &quot;</span><span class="si">{file_fqpn}</span><span class="s1">&quot; file (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># self.handle_error(f&#39;File &quot;{file_fqpn}&quot; could not be found.&#39;)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span> <span class="o">=</span> <span class="p">{}</span>
@@ -501,7 +497,7 @@
         <span class="k">if</span> <span class="n">display_condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">display</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">display_query</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;select count(*) from </span><span class="si">{table}</span><span class="s1"> where </span><span class="si">{display_condition}</span><span class="s1">&#39;</span>
+            <span class="n">display_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;select count(*) from </span><span class="si">{table}</span><span class="s1"> where </span><span class="si">{display_condition}</span><span class="s1">&#39;</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
                 <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
@@ -509,7 +505,7 @@
                 <span class="k">if</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">display</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;&quot;</span><span class="si">{display_query}</span><span class="s1">&quot; query returned an error: (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{display_query}</span><span class="s1">&quot; query returned an error: (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">display</span></div></div>
 </pre></div>

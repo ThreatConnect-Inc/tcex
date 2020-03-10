@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.0 documentation</title>
+  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0
+                2.0.2
               </div>
 
 
@@ -91,8 +91,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
@@ -102,8 +100,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
@@ -184,13 +180,13 @@
 <span class="sd">&quot;&quot;&quot;TcEx Framework Playbook module&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">.playbooks_base</span> <span class="k">import</span> <span class="n">PlaybooksBase</span>
+<span class="kn">from</span> <span class="nn">.playbooks_base</span> <span class="kn">import</span> <span class="n">PlaybooksBase</span>
 
 
 <div class="viewcode-block" id="Playbooks"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks">[docs]</a><span class="k">class</span> <span class="nc">Playbooks</span><span class="p">(</span><span class="n">PlaybooksBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Playbook methods for accessing key value store.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
 
 <span class="sd">        Args:</span>
@@ -240,13 +236,13 @@
 <span class="sd">            }</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable name to write to storage.</span>
+<span class="sd">            key (str): The variable name to write to storage.</span>
 <span class="sd">            value (any): The value to write to storage.</span>
-<span class="sd">            variable_type (string): The variable type being written.</span>
+<span class="sd">            variable_type (str): The variable type being written.</span>
 <span class="sd">            append_array (bool): If True arrays will be appended instead of being overwritten.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1">-</span><span class="si">{variable_type}</span><span class="s1">&#39;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1">-</span><span class="si">{variable_type}</span><span class="s1">&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -268,7 +264,7 @@
 <span class="sd">        variable was requested by downstream app.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            variable (string): The variable name, not the full variable.</span>
+<span class="sd">            variable (str): The variable name, not the full variable.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (boolean): Boolean value indicator whether a match was found.</span>
@@ -283,11 +279,11 @@
 <span class="sd">        type is provided the data will be written as RAW data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result string of DB write.</span>
+<span class="sd">            (str): Result string of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -296,9 +292,9 @@
             <span class="n">variable_type</span> <span class="o">=</span> <span class="n">parsed_key</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
 
             <span class="c1"># log/debug</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;create variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;create variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Binary&#39;</span><span class="p">,</span> <span class="s1">&#39;BinaryArray&#39;</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;variable value: </span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;variable value: </span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_single_types</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -312,120 +308,120 @@
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for binary data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the Key Value Store.</span>
+<span class="sd">            key (str): The variable to write to the Key Value Store.</span>
 <span class="sd">            value (any): The data to write to the Key Value Store.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of Key Value Store write.</span>
+<span class="sd">            (str): Result of Key Value Store write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;Binary&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_binary_array"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_binary_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_binary_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for binary array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the Key Value Store.</span>
+<span class="sd">            key (str): The variable to write to the Key Value Store.</span>
 <span class="sd">            value (any): The data to write to the Key Value Store.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of Key Value Store write.</span>
+<span class="sd">            (str): Result of Key Value Store write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;BinaryArray&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_array</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_key_value"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">create_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for key/value data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of DB write</span>
+<span class="sd">            (str): Result of DB write</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;KeyValue&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_key_value_array"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_key_value_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_key_value_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for key/value array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of DB write.</span>
+<span class="sd">            (str): Result of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;KeyValueArray&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_array</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_string"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_string">[docs]</a>    <span class="k">def</span> <span class="nf">create_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for string data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of DB write.</span>
+<span class="sd">            (str): Result of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;String&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_string_array"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_string_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_string_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for string array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of DB write.</span>
+<span class="sd">            (str): Result of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;StringArray&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_array</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_tc_entity"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_tc_entity">[docs]</a>    <span class="k">def</span> <span class="nf">create_tc_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for TC entity data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of DB write.</span>
+<span class="sd">            (str): Result of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="s1">&#39;TCEntity&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_tc_entity_array"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_tc_entity_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_tc_entity_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for TC entity array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of DB write.</span>
+<span class="sd">            (str): Result of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">supported_variable_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TCEntityArray&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntity&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntityArray&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_variable_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The key provided (</span><span class="si">{key}</span><span class="s1">) is not a </span><span class="si">{supported_variable_type}</span><span class="s1"> key.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_array</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Playbooks.create_output"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.create_output">[docs]</a>    <span class="k">def</span> <span class="nf">create_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">variable_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -435,42 +431,42 @@
 <span class="sd">        a downstream app and if so create the data in the KeyValue DB.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 <span class="sd">            value (any): The data to write to the DB.</span>
-<span class="sd">            variable_type (string): The variable type being written.</span>
+<span class="sd">            variable_type (str): The variable type being written.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result string of DB write.</span>
+<span class="sd">            (str): Result string of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#  This is if no downstream variables are requested then nothing should be returned.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Key has a none value and will not be written.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key has a none value and will not be written.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> has a none value and will not be written.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> has a none value and will not be written.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">key_type</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1">-</span><span class="si">{variable_type}</span><span class="s1">&#39;</span>
+        <span class="n">key_type</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1">-</span><span class="si">{variable_type}</span><span class="s1">&#39;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_type</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># variable key-type has been requested</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_type</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream app.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream app.&quot;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">variable_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># variable key has been requested</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream app.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream app.&quot;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;requested output variables: </span><span class="si">{self.output_variables_by_name}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;requested output variables: </span><span class="si">{self.output_variables_by_name}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">results</span></div>
 
@@ -478,10 +474,10 @@
         <span class="sd">&quot;&quot;&quot;Delete method of CRUD operation for all data types.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            key (str): The variable to write to the DB.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Result of DB write.</span>
+<span class="sd">            (str): Result of DB write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -491,13 +487,14 @@
         <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="Playbooks.exit"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Playbook wrapper on TcEx exit method</span>
+        <span class="sd">&quot;&quot;&quot;Exit the App</span>
 
 <span class="sd">        Playbooks do not support partial failures so we change the exit method from 3 to 1 and call</span>
 <span class="sd">        it a partial success instead.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            code (Optional [integer]): The exit code value for the app.</span>
+<span class="sd">            code (int): The exit code value for the app.</span>
+<span class="sd">            msg (str): A message to log and add to message tc output.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span>
@@ -506,6 +503,11 @@
                 <span class="n">code</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># playbooks doesn&#39;t support partial failure</span>
         <span class="k">elif</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
             <span class="n">code</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># required only for tcex testing framework</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span><span class="p">,</span> <span class="s1">&#39;_exit_message&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -530,7 +532,7 @@
 <span class="sd">        #App:1234:output!String</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            variable (string): The variable name to parse.</span>
+<span class="sd">            variable (str): The variable name to parse.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): Result of parsed string.</span>
@@ -556,7 +558,7 @@
 <span class="sd">        automatically determine the variable type to read.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            array (boolean): Convert string/dict to Array/List before returning.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
@@ -570,7 +572,7 @@
             <span class="n">variable_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="c1"># only log key if it&#39;s a variable</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;read variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;read variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_single_types</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="n">embedded</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_array_types</span><span class="p">:</span>
@@ -606,8 +608,8 @@
 <span class="sd">        data from a particular field from TC(Enhanced)Entity(Array).</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
-<span class="sd">            field (string): The field to find in the data.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
+<span class="sd">            field (str): The field to find in the data.</span>
 <span class="sd">            entity_type (Any): Default is None. The type of data being collected (valid values:</span>
 <span class="sd">                [&#39;groups&#39;, &#39;indicators&#39;]).</span>
 <span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
@@ -634,7 +636,7 @@
                 <span class="n">enhanced_entity_field</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
             <span class="k">elif</span> <span class="n">entity_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALID_ENTITY_TYPES</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                 <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">f</span><span class="s1">&#39;Invalid entity_type (</span><span class="si">{entity_type}</span><span class="s1">). Valid options: </span><span class="si">{VALID_ENTITY_TYPES}</span><span class="s1">.&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Invalid entity_type (</span><span class="si">{entity_type}</span><span class="s1">). Valid options: </span><span class="si">{VALID_ENTITY_TYPES}</span><span class="s1">.&#39;</span>
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
@@ -663,7 +665,7 @@
 <span class="sd">        [&quot;foo.example.com&quot;, &quot;bar.example.com&quot;]).</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
 <span class="sd">                TCEnhancedEntities.</span>
 
@@ -679,7 +681,7 @@
 <span class="sd">        so as to return a list of strings where each string is a group name.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
 <span class="sd">                TCEnhancedEntities.</span>
 
@@ -695,7 +697,7 @@
 <span class="sd">        so as to return a list of strings where each string is a group id.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            default (Any): Default is None. The value to use for malformed TCEntities or</span>
 <span class="sd">                TCEnhancedEntities.</span>
 
@@ -713,8 +715,8 @@
 <span class="sd">        * Else return resolved value for key.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from KeyValue Store.</span>
-<span class="sd">            alt_key (string): The alternate variable to read from the KeyValue Store.</span>
+<span class="sd">            key (str): The variable to read from KeyValue Store.</span>
+<span class="sd">            alt_key (str): The alternate variable to read from the KeyValue Store.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (None|str): Results retrieved from KeyValue Store</span>
@@ -734,7 +736,7 @@
         <span class="sd">&quot;&quot;&quot;Read playbook variable and return array for any variable type.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
@@ -746,7 +748,7 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for binary data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            b64decode (bool): If true the data will be base64 decoded.</span>
 <span class="sd">            decode (bool): If true the data will be decoded to a String.</span>
 
@@ -759,7 +761,7 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for binary array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            b64decode (bool): If true the data will be base64 decoded.</span>
 <span class="sd">            decode (bool): If true the data will be decoded to a String.</span>
 
@@ -772,7 +774,7 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for key/value data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
@@ -784,7 +786,7 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for key/value array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
@@ -796,11 +798,11 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for string data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Results retrieved from DB.</span>
+<span class="sd">            (str): Results retrieved from DB.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="n">embedded</span><span class="p">)</span></div>
 
@@ -808,7 +810,7 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for string array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
@@ -820,7 +822,7 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for TC entity data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
@@ -832,7 +834,7 @@
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for TC entity array data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            key (str): The variable to read from the DB.</span>
 <span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
@@ -855,10 +857,10 @@
 <span class="sd">            &quot;My Data&quot; returns **String**</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            variable (string): The variable to be parsed</span>
+<span class="sd">            variable (str): The variable to be parsed</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): The variable type.</span>
+<span class="sd">            (str): The variable type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">var_type</span> <span class="o">=</span> <span class="s1">&#39;String&#39;</span>
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

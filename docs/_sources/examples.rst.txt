@@ -1,40 +1,18 @@
 .. include:: <isonum.txt>
 .. _examples:
 
-=========
+========
 Examples
-=========
-.. _custom_metric_examples:
+========
 
-----------------------
-Custom Metric Examples
-----------------------
-.. include:: resource_custom_metrics.inc
+Threat Intelligence
+===================
 
-.. _datastore_examples:
+.. include:: examples_ti_association.inc
 
--------------------
-Data Store Examples
--------------------
-.. include:: resource_data_store.inc
+.. include:: examples_ti_status.inc
 
-.. _indicator_examples:
+Snippets
+========
 
----------------------------
-Indicator Resource Examples
----------------------------
-.. include:: resource_indicators.inc
-
-.. _security_label_examples:
-
---------------------------------
-Security Label Resource Examples
---------------------------------
-.. include:: resource_security_labels.inc
-
-.. _tag_examples:
-
----------------------
-Tag Resource Examples
----------------------
-.. include:: resource_tags.inc
+.. include:: snippets.inc

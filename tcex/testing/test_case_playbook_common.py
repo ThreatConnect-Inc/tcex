@@ -9,14 +9,26 @@ from .test_case import TestCase
 class TestCasePlaybookCommon(TestCase):
     """Playbook TestCase Class"""
 
+    _context_tracker = []
     _output_variables = None
-    context_tracker = []
     redis_client = None
     redis_staging_data = {
         '#App:1234:empty!String': '',
         '#App:1234:null!String': None,
         '#App:1234:non-ascii!String': 'ドメイン.テスト',
     }
+
+    def clear_context(self, context):
+        """Delete data in redis"""
+        keys = self.redis_client.hkeys(context)
+        if keys:
+            return self.redis_client.hdel(context, *keys)
+        return 0
+
+    @property
+    def context_tracker(self):
+        """Return the current context trackers."""
+        return self._context_tracker
 
     @property
     def default_args(self):
@@ -69,9 +81,7 @@ class TestCasePlaybookCommon(TestCase):
                 pov = self.output_variable_creator(pov)
 
             outputs = {}
-            # for context in self.context_tracker:
-            while self.context_tracker:
-                context = self.context_tracker.pop(0)
+            for context in self.context_tracker:
                 # get all current keys in current context
                 redis_data = self.redis_client.hgetall(context)
                 trigger_id = self.redis_client.hget(context, '_trigger_id')
@@ -118,6 +128,9 @@ class TestCasePlaybookCommon(TestCase):
                     else:
                         outputs[variable] = output_data
 
+                # cleanup redis
+                self.clear_context(context)
+
             if profile_data.get('outputs') is None:
                 # update the profile
                 profile_data['outputs'] = outputs
@@ -139,10 +152,12 @@ class TestCasePlaybookCommon(TestCase):
         """Run after each test method runs."""
         if self.enable_update_profile:
             self.populate_output_variables()
-        self.context_tracker = []
-        # delete redis context data after populate_output_variable
-        r = self.stager.redis.delete_context(self.context)
-        self.log_data('teardown method', 'delete count', r)
+
+        # clear context tracker
+        self._context_tracker = []
+
         # delete threatconnect staged data
         self.stager.threatconnect.delete_staged(self._staged_tc_data)
+
+        # run test_case teardown_method
         super().teardown_method()

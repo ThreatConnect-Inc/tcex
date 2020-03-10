@@ -39,6 +39,8 @@ class Validator:
         try:
             f = float(x)
             i = int(f)
+        except TypeError:
+            return x  # return original value
         except ValueError:
             return x  # return original value
         else:

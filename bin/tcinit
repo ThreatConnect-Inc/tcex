@@ -101,6 +101,7 @@ if __name__ == '__main__':
 
             # download common files
             tci.download_file('.pre-commit-config.yaml')
+            tci.download_file('coveragerc', '.coveragerc')
             tci.download_file('gitignore', '.gitignore')
             tci.download_file('pyproject.toml')
             tci.download_file('README.md')
@@ -172,6 +173,8 @@ if __name__ == '__main__':
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
             elif template.startswith('service'):
+                tci.download_file('app_lib.py')
+                tci.download_file(f'{template}/run.py', 'run.py')
                 tci.download_file('service/service_app.py', 'service_app.py')
 
             # update tcex.json file

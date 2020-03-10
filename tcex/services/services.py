@@ -54,6 +54,22 @@ class Services:
         self.shutdown_callback = None
         self.webhook_event_callback = None
 
+    def _tcex_testing(self, session_id, trigger_id):
+        """Write data required for testing framework to Redis."""
+        if self.tcex.args.tcex_testing_context is not None:
+            _context_tracker = (
+                self.redis_client.hget(self.tcex.args.tcex_testing_context, '_context_tracker')
+                or '[]'
+            )
+            _context_tracker = json.loads(_context_tracker)
+            _context_tracker.append(session_id)
+            self.redis_client.hset(
+                self.tcex.args.tcex_testing_context,
+                '_context_tracker',
+                json.dumps(_context_tracker),
+            )
+            self.redis_client.hset(session_id, '_trigger_id', trigger_id)
+
     def add_metric(self, label, value):
         """Add a metric.
 
@@ -129,6 +145,9 @@ class Services:
                 self.tcex.log.trace(f'triggering callback for config id: {trigger_id}')
                 # get a session_id specifically for this thread
                 session_id = self.session_id(trigger_id)
+
+                # only required for testing in tcex framework
+                self._tcex_testing(session_id, trigger_id)
 
                 # get instance of playbook specifically for this thread
                 outputs = config.get('tc_playbook_out_variables') or []
@@ -715,8 +734,10 @@ class Services:
             self.mqtt_client.unsubscribe(self.tcex.default_args.tc_svc_server_topic)
             self.mqtt_client.disconnect()
 
-        # delay shutdown to give App time to cleanup
+        # update shutdown flag
         self.shutdown = True
+
+        # delay shutdown to give App time to cleanup
         time.sleep(5)
         self.tcex.exit(0)  # final shutdown in case App did not
 
@@ -799,6 +820,9 @@ class Services:
             elif isinstance(callback_response, bool) and callback_response:
                 self.increment_metric('Hits')
                 self.fire_event_publish(trigger_id, self.thread_name, request_key)
+
+                # only required for testing in tcex framework
+                self._tcex_testing(self.thread_name, trigger_id)
             else:
                 self.increment_metric('Misses')
         except Exception as e:

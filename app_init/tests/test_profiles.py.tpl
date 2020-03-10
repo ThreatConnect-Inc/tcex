@@ -2,7 +2,6 @@
 """Test case template for App testing."""
 # flake8: noqa: F401
 import os
-import sys
 
 import pytest
 from tcex.testing import ${class_name}
@@ -81,18 +80,22 @@ class TestProfiles(${class_name}):
         for config in profile_data.get('configs'):
             self.publish_delete_config(config)
 
+        # fail if there are no executions to validate
+        # if not self.context_tracker and profile_data.get('outputs'):
+        #     assert False, 'No context found in context_tracker, did event fire?'
+
         # run output variable validation
         for context in self.context_tracker:
-            self.validator.tcex.default_args.tc_playbook_db_context = context
+            # for service Apps the context on playbooks needs to be set manually
+            self.validator.tcex.playbook.key_value_store.context = context
+            # the trigger id is stored via the monkey patched session_id method
             trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
             output_data = (profile_data.get('outputs') or {}).get(trigger_id)
             if output_data is not None:
                 ValidateFeature(self.validator).validate(output_data)
 
-    def test_shutdown(self):
-        """Run shutdown command."""
-        self.enable_update_profile = False  # pylint: disable=attribute-defined-outside-init
-        self.publish_shutdown()
+        # exit message can not be validated since it's written during teardown for Service Apps
+
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
