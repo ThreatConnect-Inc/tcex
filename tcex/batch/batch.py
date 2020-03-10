@@ -569,7 +569,10 @@ class Batch:
         """
         data = []
         # process group objects
-        for xid in groups.keys():
+        # we are converting groups.keys() to a list because the data_group_association function
+        # will be deleting items the groups dictionary which would raise a
+        # "dictionary changed size during iteration" error
+        for xid in list(groups.keys()):
             # get association from group data
             assoc_group_data = self.data_group_association(xid)
             data += assoc_group_data
