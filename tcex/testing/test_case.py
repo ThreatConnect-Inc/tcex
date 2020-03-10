@@ -333,7 +333,6 @@ class TestCase:
                 key = '${env.' + m.group(1) + '}'
                 group = m.group(1)
                 value = os.getenv(group)
-                print(f'{value} - {group} - {key}')
                 profile_str = profile_str.replace(key, str(value))
         return json.loads(profile_str)
 
