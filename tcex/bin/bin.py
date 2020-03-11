@@ -113,7 +113,7 @@ class Bin:
     def gen_permutations(self, index=0, args=None):
         """Iterate recursively over layout.json parameter names to build permutations.
 
-        .. NOTE:: Permutations are for layout.json based playbook Apps.
+        .. NOTE:: Permutations are for layout.json based Apps.
 
         Args:
             index (int, optional): The current index position in the layout names list.
@@ -123,7 +123,11 @@ class Bin:
             args = []
         try:
             hidden = False
-            if self.ij.runtime_level.lower() == 'playbook':
+            if self.ij.runtime_level.lower() in [
+                'playbook',
+                'triggerservice',
+                'webhooktriggerservice',
+            ]:
                 name = list(self.lj.parameters_names)[index]
                 display = self.lj.parameters_dict.get(name, {}).get('display')
                 hidden = self.lj.parameters_dict.get(name, {}).get('hidden', False)

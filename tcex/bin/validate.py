@@ -297,7 +297,10 @@ class Validate(Bin):
                         )
                         status = False
                     else:
-                        ij_input_names.append(p.get('name'))
+                        # don't track serviceConfig values since they
+                        # should not be included in permutations
+                        if p.get('serviceConfig', False) is False:
+                            ij_input_names.append(p.get('name'))
                 for o in ij.get('playbook', {}).get('outputVariables', []):
                     # build name type to ensure check for duplicates on name-type value
                     name_type = f"{o.get('name')}-{o.get('type')}"
