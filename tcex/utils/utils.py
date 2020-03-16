@@ -7,7 +7,7 @@ import re
 import string
 import uuid
 
-from typing import List, Any, Union
+from typing import List, Any
 
 from .date_utils import DatetimeUtils
 
