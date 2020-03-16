@@ -393,8 +393,9 @@ class ThreatIntelligence:
         file_content = None
         if entity_type.lower() in ['document', 'report']:
             file_content = entity.pop('file_content', None) or entity.pop('fileContent', None)
-        ti = self.indicator(entity_type, owner, **entity)
-        if not ti:
+        try:
+            ti = self.indicator(entity_type, owner, **entity)
+        except Exception:
             entity['name'] = entity.pop('summary', None)
             ti = self.group(entity_type, owner, **entity)
         r = ti.create()
