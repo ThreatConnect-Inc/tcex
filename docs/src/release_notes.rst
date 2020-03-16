@@ -3,6 +3,13 @@
 Release Notes
 #############
 
+2.0.3
+=====
++ Updated ReadArgs decorator to return None when arg doesn't exist.
++ Updated ReadArgs to not log input value.
++ Updated testing framework to support permutations for Service Apps.
++ Added ``is_variable()`` method to Playbook module.
+
 2.0.2
 =====
 + Updated requirement for stdlib-list to >= 0.6.0 to support Python 3.8.

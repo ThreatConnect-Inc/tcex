@@ -157,7 +157,7 @@ class InstallJson:
         """Return params as name/data dict."""
         params = {}
         for p in self.params:
-            if p.get('serviceConfig'):
+            if p.get('serviceConfig') is True:
                 params.setdefault(p.get('name'), p)
         return params
 
@@ -166,7 +166,7 @@ class InstallJson:
         """Return params as name/data dict."""
         params = {}
         for p in self.params:
-            if p.get('serviceConfig') is False:
+            if p.get('serviceConfig', False) is False:
                 params.setdefault(p.get('name'), p)
         return params
 

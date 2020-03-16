@@ -154,21 +154,6 @@
             "type": "string"
           },
           "playbookDataType": {
-            "items": {
-              "enum": [
-                "Any",
-                "Binary",
-                "BinaryArray",
-                "KeyValue",
-                "KeyValueArray",
-                "String",
-                "StringArray",
-                "TCEntity",
-                "TCEntityArray",
-                "TCEnhancedEntity",
-                "TCEnhancedEntityArray"
-              ]
-            },
             "type": "array"
           },
           "required": {
@@ -224,18 +209,6 @@
                 "type": "string"
               },
               "type": {
-                "enum": [
-                  "Binary",
-                  "BinaryArray",
-                  "KeyValue",
-                  "KeyValueArray",
-                  "String",
-                  "StringArray",
-                  "TCEntity",
-                  "TCEntityArray",
-                  "TCEnhancedEntity",
-                  "TCEnhancedEntityArray"
-                ],
                 "type": "string"
               }
             },

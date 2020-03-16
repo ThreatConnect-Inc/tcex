@@ -57,12 +57,12 @@ class ReadArg:
             The value of this boolean will control enabling/disabling this feature.
         fail_msg (str, kwargs): The message to log when raising RuntimeError.
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
-        indicator_values (bool, kwargs): Defaults to False. If True, return a list of
-            indicator values from the given argument (e.g. ["foo.example.com", "bar.example.com"]).
         group_values (bool, kwargs): Defaults to False. If True, return a list of group names from
             the given argument.
         group_ids (bool, kwargs): Defaults to False. If True, return a list of group ids from the
             given argument.
+        indicator_values (bool, kwargs): Defaults to False. If True, return a list of
+            indicator values from the given argument (e.g. ["foo.example.com", "bar.example.com"]).
     """
 
     def __init__(self, arg, **kwargs):
@@ -112,18 +112,29 @@ class ReadArg:
                     )
             app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
 
+            try:
+                # read arg from namespace
+                arg = getattr(app.args, self.arg)
+            except AttributeError:
+                if enabled:
+                    app.tcex.log.error(f'Arg {self.arg} was not found in Arg namespace.')
+                    app.exit_message = self.fail_msg  # for test cases
+                    app.tcex.exit(1, self.fail_msg)
+                else:
+                    # add results to kwargs
+                    kwargs[self.arg] = self.default
+                    return wrapped(*args, **kwargs)
+
             # retrieve data from Redis and call decorated function
             if self.indicator_values:
-                arg_data = app.tcex.playbook.read_indicator_values(getattr(app.args, self.arg))
+                arg_data = app.tcex.playbook.read_indicator_values(arg)
             elif self.group_values:
-                arg_data = app.tcex.playbook.read_group_values(getattr(app.args, self.arg))
+                arg_data = app.tcex.playbook.read_group_values(arg)
             elif self.group_ids:
-                arg_data = app.tcex.playbook.read_group_ids(getattr(app.args, self.arg))
+                arg_data = app.tcex.playbook.read_group_ids(arg)
             else:
-                arg_data = app.tcex.playbook.read(
-                    getattr(app.args, self.arg), self.array, embedded=self.embedded
-                )
-            arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
+                arg_data = app.tcex.playbook.read(arg, self.array, embedded=self.embedded)
+
             if self.default is not None and arg_data is None:
                 arg_data = self.default
                 app.tcex.log.debug(
@@ -141,11 +152,14 @@ class ReadArg:
             kwargs[self.arg] = arg_data
 
             # Add logging for debug/troubleshooting
+            arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
             if arg_type not in ['Binary', 'BinaryArray'] and app.tcex.log.getEffectiveLevel() <= 10:
-                log_string = str(arg_data)
-                if len(log_string) > 100:  # pragma: no cover
-                    log_string = f'{log_string[:100]} ...'
-                app.tcex.log.debug(f'input value: {log_string}')
+                # only log variable data to prevent logging keychain data
+                if app.tcex.playbook.is_variable(arg):
+                    log_string = str(arg_data)
+                    if len(log_string) > 100:  # pragma: no cover
+                        log_string = f'{log_string[:100]} ...'
+                    app.tcex.log.debug(f'input value: {log_string}')
 
             return wrapped(*args, **kwargs)
 

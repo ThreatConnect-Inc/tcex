@@ -350,7 +350,7 @@ class Test(Bin):
                     'stage': {'redis': self.add_profile_staging(d.get('data_files', []))},
                 }
 
-        elif self.args.permutation_id is not None:
+        elif self.ij.runtime_level.lower() == 'playbook' and self.args.permutation_id is not None:
             profile_data = {
                 self.args.profile_name: {
                     'inputs': {
@@ -362,27 +362,27 @@ class Test(Bin):
                 }
             }
         elif self.ij.runtime_level.lower() == 'triggerservice':
+            config = self.ij.params_to_args(service_config=False)
+            if self.args.permutation_id is not None:
+                config = self.profile_settings_args_layout_json(True)
+                config.update(self.profile_settings_args_layout_json(False))
+
             profile_data = {
                 self.args.profile_name: {
-                    'configs': [
-                        {
-                            'trigger_id': str(randint(1000, 9999)),
-                            'config': self.ij.params_to_args(service_config=False),
-                        }
-                    ],
+                    'configs': [{'trigger_id': str(randint(1000, 9999)), 'config': config}],
                     'runtime_level': self.ij.runtime_level,
                     'trigger': {},
                 }
             }
         elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
+            config = self.ij.params_to_args(service_config=False)
+            if self.args.permutation_id is not None:
+                config = self.profile_settings_args_layout_json(True)
+                config.update(self.profile_settings_args_layout_json(False))
+
             profile_data = {
                 self.args.profile_name: {
-                    'configs': [
-                        {
-                            'trigger_id': str(randint(1000, 9999)),
-                            'config': self.ij.params_to_args(service_config=False),
-                        }
-                    ],
+                    'configs': [{'trigger_id': str(randint(1000, 9999)), 'config': config}],
                     'runtime_level': self.ij.runtime_level,
                     'webhook_event': {
                         'body': '',
