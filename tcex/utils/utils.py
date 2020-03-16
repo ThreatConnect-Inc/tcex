@@ -184,5 +184,5 @@ class Utils:
         """Return the ASN formatted for ThreatConnect."""
         numbers = re.findall('[0-9]+', asn)
         if len(numbers) == 1:
-            asn = 'ASN{}'.format(numbers[0])
+            asn = f'ASN{numbers[0]}'
         return asn
