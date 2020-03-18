@@ -262,13 +262,14 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.publish_shutdown()
 
         # give Service App x seconds to shutdown before terminating
-        for _ in range(1, 10):
-            time.sleep(0.5)
-            if self.app_process.poll() is not None:
-                break
-        else:
-            self.log.debug(f'terminating process: {self.app_process.pid}')
-            self.app_process.terminate()  # terminate subprocess
+        if self.service_run_method == 'multiprocess':
+            for _ in range(1, 10):
+                time.sleep(0.5)
+                if self.app_process.poll() is not None:
+                    break
+            else:
+                self.log.debug(f'terminating process: {self.app_process.pid}')
+                self.app_process.terminate()  # terminate subprocess
 
         # remove started file flag
         try:
