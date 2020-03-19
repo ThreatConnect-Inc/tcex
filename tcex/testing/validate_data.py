@@ -313,9 +313,15 @@ class Validator:
             bool: The results of the operator.
         """
         if isinstance(app_data, (str)):
-            app_data = json.loads(app_data)
+            try:
+                app_data = json.loads(app_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({app_data}).'
         if isinstance(test_data, (str)):
-            test_data = json.loads(test_data)
+            try:
+                test_data = json.loads(test_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({test_data}).'
 
         exclude = kwargs.pop('exclude', [])
         if isinstance(app_data, list) and isinstance(test_data, list):
