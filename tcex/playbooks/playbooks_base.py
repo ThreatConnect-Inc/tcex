@@ -37,7 +37,7 @@ class PlaybooksBase:
         """Return a string value from an bool or int."""
         # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
-            # coerce int to str type
+            # coerce bool to str type
             self.tcex.log.warning(
                 f'Coercing bool value ({value}) to a string ("{str(value).lower()}").'
             )

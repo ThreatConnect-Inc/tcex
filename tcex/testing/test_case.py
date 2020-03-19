@@ -101,7 +101,7 @@ class TestCase:
             key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
             encrypted_data = self._encrypt_file_contents(key, data)
 
-            app_params_json = os.path.join(self.test_case_feature_dir, '.app_params.json')
+            app_params_json = os.path.join(self.test_case_log_feature_dir, '.app_params.json')
             with open(app_params_json, 'wb') as fh:
                 fh.write(encrypted_data)
 
@@ -263,7 +263,7 @@ class TestCase:
 
         # setup per method instance of tcex
         args = dict(self.default_args)
-        args['tc_log_file'] = os.path.join(self.test_case_feature, self.test_case_name, 'setup.log')
+        args['tc_log_file'] = os.path.join(self.test_case_log_test_dir, 'setup.log')
         args['tc_logger_name'] = f'tcex-{self.test_case_feature}-{self.test_case_name}'
         self.tcex = TcEx(config=args)
 
@@ -280,7 +280,7 @@ class TestCase:
 
     def stager_init(self):
         """Return instance of Stager class."""
-        tc_log_file = os.path.join(self.test_case_feature, self.test_case_name, 'stage.log')
+        tc_log_file = os.path.join(self.test_case_log_test_dir, 'stage.log')
 
         # args data
         args = dict(self.default_args)
@@ -338,9 +338,16 @@ class TestCase:
         return os.path.join(self._app_path, 'tests', self.test_case_feature)
 
     @property
-    def test_case_profile_dir(self):
+    def test_case_log_feature_dir(self):
         """Return profile fully qualified filename."""
-        return os.path.join(self._app_path, 'tests', self.test_case_feature, 'profiles.d')
+        return os.path.join(
+            self._app_path, self.default_args.get('tc_log_path'), self.test_case_feature
+        )
+
+    @property
+    def test_case_log_test_dir(self):
+        """Return profile fully qualified filename."""
+        return os.path.join(self.test_case_log_feature_dir, self.test_case_name)
 
     @property
     def test_case_name(self):
@@ -378,7 +385,7 @@ class TestCase:
 
     def validator_init(self):
         """Return instance of Stager class."""
-        tc_log_file = os.path.join(self.test_case_feature, self.test_case_name, 'validate.log')
+        tc_log_file = os.path.join(self.test_case_log_test_dir, 'validate.log')
 
         # args data
         args = dict(self.default_args)
