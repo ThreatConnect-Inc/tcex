@@ -3,7 +3,6 @@
 """TcEx Library Builder."""
 import os
 import platform
-import re
 import shutil
 import subprocess
 import sys
@@ -38,6 +37,9 @@ class Lib(Bin):
         self.requirements_file = 'requirements.txt'
         self.static_lib_dir = 'lib_latest'
         self.use_temp_requirements_file = False
+
+        # update tcex.json
+        self.tj.update()
 
     def _build_command(self, python_executable, lib_dir_fq, proxy_enabled):
         """Build the pip command for installing dependencies.
@@ -140,9 +142,6 @@ class Lib(Bin):
 
     def install_libs(self):
         """Install Required Libraries using pip."""
-        # default or current python version
-        lib_data = [{'python_executable': sys.executable, 'lib_dir': self.lib_directory}]
-
         # check for requirements.txt
         if not os.path.isfile(self.requirements_file):
             self.handle_error('A requirements.txt file is required to install modules.')
@@ -151,9 +150,11 @@ class Lib(Bin):
         if self.args.branch is not None:
             self._create_temp_requirements()
 
-        # overwrite default with config data
-        if self.tcex_json.get('lib_versions'):
-            lib_data = self.tcex_json.get('lib_versions')
+        # default or current python version
+        lib_data = [{'python_executable': sys.executable, 'lib_dir': self.lib_directory}]
+        if self.tj.lib_versions:
+            # overwrite default with config data
+            lib_data = self.tj.lib_versions
             print(f'{c.Style.BRIGHT}Using "lib" directories defined in tcex.json file.')
 
         # configure proxy settings
@@ -161,19 +162,7 @@ class Lib(Bin):
 
         # install all requested lib directories
         for data in lib_data:
-            # pattern to match env vars in data
-            env_var = re.compile(r'\$env\.([a-zA-Z0-9]+)')
-
             lib_dir = data.get('lib_dir')
-            # replace env vars with env val in the lib dir
-            matches = re.findall(env_var, lib_dir)
-            if matches:
-                env_val = os.environ.get(matches[0])
-                if env_val is None:
-                    self.handle_error(
-                        f'"{matches[0]}" env variable set in tcex.json, but could not be resolved.'
-                    )
-                lib_dir = re.sub(env_var, env_val, lib_dir)
             lib_dir_fq = os.path.join(self.app_path, lib_dir)
 
             if os.access(lib_dir_fq, os.W_OK):
@@ -182,10 +171,6 @@ class Lib(Bin):
 
             # replace env vars with env val in the python executable
             python_executable = data.get('python_executable')
-            matches = re.findall(env_var, python_executable)
-            if matches:
-                env_val = os.environ.get(matches[0])
-                python_executable = re.sub(env_var, env_val, python_executable)
 
             print(f'Building Lib Dir: {c.Style.BRIGHT}{c.Fore.CYAN}{lib_dir_fq}')
             exe_command = self._build_command(python_executable, lib_dir_fq, proxy_enabled)

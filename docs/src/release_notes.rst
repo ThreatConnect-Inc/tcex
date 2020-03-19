@@ -5,10 +5,32 @@ Release Notes
 
 2.0.3
 =====
++ Added ``is_variable()`` method to Playbook module.
 + Updated ReadArgs decorator to return None when arg doesn't exist.
 + Updated ReadArgs to not log input value.
-+ Updated testing framework to support permutations for Service Apps.
-+ Added ``is_variable()`` method to Playbook module.
++ Added new Permutations class to app_config_object module.
++ Added new Profile and ProfileInteractive Classes to app_config_object module.
++ Added new TcexJson Class to app_config_object module.
++ Multiple updates for App testing framework.
+  + Updated testing framework to support permutations for Service Apps
+  + Added **--replace_exit_message** CLI flag for pytest to replace outputs for test cases
+  + Added **--replace_outputs** CLI flag for pytest to replace outputs for test cases
+  + Profile schema is not managed and old profiles will be automatically managed.
++ Updated **tctest** CLI command.
+  + Added **--interactive** flag to allow for dynamic creation of testing profile.
+  + Updated to use new Profile Class
+  + Updated to use new Template Classes
++ Multiple updates to App templates to remove subprocess.
+  + Added ``run()`` method to run.py template for job and playbook Apps
+  + Added app_lib.py dependencies for all App types
+  + Updated __main__.py to call run method of run.py
++ Multiple updates to **tcinit** CLI command.
+  + Removed "action" arg
+  + Added "update" arg
+  + Added "migrate" arg
++ Added schema management to install_json modules.
++ Added logging of TcEx path.
++ Updated Utils Class to no longer require tcex instance.
 
 2.0.2
 =====

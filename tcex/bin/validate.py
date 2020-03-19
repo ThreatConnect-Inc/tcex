@@ -282,45 +282,37 @@ class Validate(Bin):
         will validate that no reference appear for inputs in install.json that don't exist.
         """
 
-        ij_input_names = []
-        ij_output_name_type = []
-        ij_output_names = []
-        if os.path.isfile('install.json'):
-            try:
-                with open('install.json') as fh:
-                    ij = json.loads(fh.read())
-                for p in ij.get('params', []):
-                    if p.get('name') in ij_input_names:
-                        # update validation data errors
-                        self.validation_data['errors'].append(
-                            f"Duplicate input name found in install.json ({p.get('name')})"
-                        )
-                        status = False
-                    else:
-                        # don't track serviceConfig values since they
-                        # should not be included in permutations
-                        if p.get('serviceConfig', False) is False:
-                            ij_input_names.append(p.get('name'))
-                for o in ij.get('playbook', {}).get('outputVariables', []):
-                    # build name type to ensure check for duplicates on name-type value
-                    name_type = f"{o.get('name')}-{o.get('type')}"
-                    if name_type in ij_output_name_type:
-                        # update validation data errors
-                        self.validation_data['errors'].append(
-                            'Duplicate output variable name found in install.json '
-                            f"({o.get('name')})"
-                        )
-                        status = False
-                    else:
-                        ij_output_name_type.append(name_type)
-                        ij_output_names.append(o.get('name'))
-            except Exception:
-                # checking parameters isn't possible if install.json can't be parsed
-                return
+        # do not track hidden or serviceConfig inputs as they should not be in layouts.json
+        ij_input_names = [
+            p.get('name')
+            for p in self.ij.filter_params_dict(service_config=False, hidden=False).values()
+        ]
+        ij_output_names = [o.get('name') for o in self.ij.output_variables]
+
+        # Check for duplicate inputs
+        for name in self.ij.validate_duplicate_input_names():
+            self.validation_data['errors'].append(
+                f'Duplicate input name found in install.json ({name})'
+            )
+            status = False
+
+        # Check for duplicate sequence numbers
+        for sequence in self.ij.validate_duplicate_sequences():
+            self.validation_data['errors'].append(
+                f'Duplicate sequence number found in install.json ({sequence})'
+            )
+            status = False
+
+        # Check for duplicate outputs variables
+        for output in self.ij.validate_duplicate_outputs():
+            self.validation_data['errors'].append(
+                f'Duplicate output variable name found in install.json ({output})'
+            )
+            status = False
 
         if 'sqlite3' in sys.modules:
             # create temporary inputs tables
-            self.db_create_table(self.input_table, ij_input_names)
+            self.permutations.db_create_table(self.permutations.input_table, ij_input_names)
 
         # inputs
         status = True
@@ -330,18 +322,22 @@ class Validate(Bin):
                     # update validation data errors
                     self.validation_data['errors'].append(
                         'Layouts input.parameters[].name validations failed '
-                        f"""("{p.get('name')}" is defined in layout.json, but not found in """
-                        'install.json).'
+                        f"""("{p.get('name')}" is defined in layout.json, """
+                        'but hidden or not found in install.json).'
                     )
                     status = False
                 else:
+                    # any item in list afterwards is a problem
                     ij_input_names.remove(p.get('name'))
 
                 if 'sqlite3' in sys.modules:
                     if p.get('display'):
-                        display_query = f"SELECT * FROM {self.input_table} WHERE {p.get('display')}"
+                        display_query = (
+                            f'SELECT * FROM {self.permutations.input_table}'
+                            f" WHERE {p.get('display')}"
+                        )
                         try:
-                            self.db_conn.execute(display_query.replace('"', ''))
+                            self.permutations.db_conn.execute(display_query.replace('"', ''))
                         except sqlite3.Error:
                             self.validation_data['errors'].append(
                                 'Layouts input.parameters[].display validations failed '
@@ -374,9 +370,11 @@ class Validate(Bin):
 
             if 'sqlite3' in sys.modules:
                 if o.get('display'):
-                    display_query = f"SELECT * FROM {self.input_table} WHERE {o.get('display')}"
+                    display_query = (
+                        f"SELECT * FROM {self.permutations.input_table} WHERE {o.get('display')}"
+                    )
                     try:
-                        self.db_conn.execute(display_query.replace('"', ''))
+                        self.permutations.db_conn.execute(display_query.replace('"', ''))
                     except sqlite3.Error:
                         self.validation_data['errors'].append(
                             f"""Layouts outputs.display validations failed ("{o.get('display')}" """

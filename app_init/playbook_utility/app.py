@@ -24,20 +24,27 @@ class App(PlaybookApp):
         This method should contain the core logic of the App.
         """
         # read inputs
-        indent = int(self.tcex.playbook.read(self.args.indent))
+        try:
+            indent = self.tcex.playbook.read(self.args.indent)
+            indent = int(indent)
+        except ValueError:
+            self.tcex.exit(1, f'Invalid value ("{indent}") passed for indent.')
         json_data = self.tcex.playbook.read(self.args.json_data)
 
         # get the playbook variable type
         json_data_type = self.tcex.playbook.variable_type(self.args.json_data)
 
         # convert string input to dict
-        if json_data_type in ['String']:
-            json_data = json.loads(json_data)
+        try:
+            if json_data_type in ['String']:
+                json_data = json.loads(json_data)
+        except ValueError:
+            self.tcex.exit(1, 'Failed parsing JSON data.')
 
         # generate the new "pretty" json (this will be used as an option variable)
         try:
             self.pretty_json = json.dumps(json_data, indent=indent, sort_keys=self.args.sort_keys)
-        except Exception:
+        except ValueError:
             self.tcex.exit(1, 'Failed parsing JSON data.')
 
         # set the App exit message

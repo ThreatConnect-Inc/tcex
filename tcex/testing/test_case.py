@@ -4,17 +4,17 @@ import json
 import logging
 import os
 import random
-import re
 import string
 import time
 import traceback
 import uuid
 from datetime import datetime
-import jmespath
 
 import pytest
 from tcex import TcEx
 from tcex.inputs import FileParams
+from tcex.app_config_object.install_json import InstallJson
+from tcex.app_config_object.profile import Profile
 
 from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
@@ -34,29 +34,21 @@ class TestCase:
 
     _app_path = os.getcwd()
     _current_test = None
-    _input_params = None
-    _install_json = None
+    _profile = None
     _stager = None
     _staged_tc_data = []
-    _tc_output_variables = {}
     _timer_class_start = None
     _timer_method_start = None
     _validator = None
     app = None
     context = None
     enable_update_profile = False
+    ij = InstallJson()
     log = logger
     env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
+    redis_client = None
     tcex = None
-
-    @staticmethod
-    def _convert_variable_name(variable_name):
-        """Convert a TC output variable to the correct name"""
-        if not variable_name.startswith('${tcenv.'):
-            variable_name = '${tcenv.' + variable_name
-        if not variable_name.endswith('}'):
-            variable_name = variable_name + '}'
-        return variable_name
+    tcex_testing_context = None
 
     @staticmethod
     def _encrypt_file_contents(key, data):
@@ -77,22 +69,12 @@ class TestCase:
 
     def _update_path_args(self, args):
         """Update path in args for each test profile."""
-        args['tc_in_path'] = os.path.join(
-            self.default_args.get('tc_in_path'), self.test_case_feature
-        )
-        args['tc_log_path'] = os.path.join(
-            self.default_args.get('tc_log_path'), self.test_case_feature, self.test_case_name
-        )
-        args['tc_out_path'] = os.path.join(
-            self.default_args.get('tc_out_path'), self.test_case_feature, self.test_case_name
-        )
-        args['tc_temp_path'] = os.path.join(
-            self.default_args.get('tc_temp_path'), self.test_case_feature, self.test_case_name
-        )
-
-    def add_tc_output_variable(self, variable_name, variable_value):
-        """Add a TC output variable to the output variable dict"""
-        self._tc_output_variables[variable_name] = variable_value
+        # service Apps do not have a profile when this is needed.
+        profile = self.profile or Profile(default_args=self.default_args)
+        args['tc_in_path'] = profile.tc_in_path
+        args['tc_log_path'] = profile.tc_log_path
+        args['tc_out_path'] = profile.tc_out_path
+        args['tc_temp_path'] = profile.tc_temp_path
 
     def app_init(self, args):
         """Return an instance of App."""
@@ -110,7 +92,7 @@ class TestCase:
         # app_args['tc_log_file'] = f'{self.test_case_name}.log'
         app_args['tc_logger_name'] = self.context
 
-        if self.install_json.get('runtimeLevel').lower() in [
+        if self.ij.runtime_level.lower() in [
             'triggerservice',
             'webhooktriggerservice',
         ]:
@@ -136,10 +118,6 @@ class TestCase:
 
     def app_init_create_config(self, args, output_variables, tcex_testing_context):
         """Create files necessary to start a Service App."""
-        # resolve env vars
-        for k, v in list(args.items()):
-            if isinstance(v, str):
-                args[k] = self.resolve_env_args(v)
         args['tc_playbook_out_variables'] = ','.join(output_variables)
         args['tcex_testing_context'] = tcex_testing_context
 
@@ -205,207 +183,44 @@ class TestCase:
             args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
         return args
 
-    def generate_tc_output_variables(self, staged_tc_data):
-        """Generate all of the TC output variables given the profiles staged data"""
-        for staged_data in staged_tc_data:
-            self.add_tc_output_variable(staged_data.get('key'), staged_data.get('data'))
-
-    def update_profile(self, profile_name):
-        """Update the profile format"""
-        with open(os.path.join(self.test_case_profile_dir, f'{profile_name}.json'), 'r+') as fh:
-            data = json.load(fh)
-            data = self.update_staged_threatconnect_data(data)
-            fh.seek(0)
-            fh.write(json.dumps(data, indent=2, sort_keys=True))
-
-    @staticmethod
-    def update_staged_threatconnect_data(data):
-        """Update the stage threatconnect profile section"""
-        if 'stage' not in data.keys():
-            return data
-        tc_data = data.get('stage').get('threatconnect', None)
-        if not isinstance(tc_data, list):
-            return data
-
-        data['stage']['threatconnect'] = {}
-        if not tc_data:
-            return data
-
-        counter = 0
-        for item in tc_data:
-            data['stage']['threatconnect'][f'item_{counter}'] = item
-            counter += 1
-
-        return data
-
-    def init_profile(self, profile_name):
-        """Get a profile from the profiles.json file by name
-
-        Args:
-            profile_name (str): The profile name.
-
-        Returns:
-            dict: The profile data.
-        """
-        try:
-            self.update_profile(profile_name)
-            with open(os.path.join(self.test_case_profile_dir, f'{profile_name}.json'), 'r') as fh:
-                profile = json.load(fh)
-        except OSError:
-            self.log.error(f'No profile {profile_name} provided.')
-            return self._exit(1)
-        profile['name'] = profile_name
-
-        profile = self.populate_system_variables(profile)
-        self._staged_tc_data = self.stager.threatconnect.entities(
-            profile.get('stage', {}).get('threatconnect', {}), self.owner(profile)
+    def init_profile(
+        self, profile_name, merge_outputs=False, replace_exit_message=False, replace_outputs=False
+    ):
+        """Stages and sets up the profile given a profile name"""
+        self._profile = Profile(
+            default_args=self.default_args,
+            merge_outputs=merge_outputs,
+            name=profile_name,
+            redis_client=self.redis_client,
+            replace_exit_message=replace_exit_message,
+            replace_outputs=replace_outputs,
+            tcex_testing_context=self.tcex_testing_context,
+            logger=self.log,
         )
-        self.generate_tc_output_variables(self._staged_tc_data)
-        profile = self.populate_threatconnect_variables(profile)
-        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
-        return profile
 
-    @property
-    def install_json(self):
-        """Return install.json contents."""
-        file_fqpn = os.path.join(self._app_path, 'install.json')
-        if self._install_json is None:
-            if os.path.isfile(file_fqpn):
-                with open(file_fqpn, 'r') as fh:
-                    self._install_json = json.load(fh)
-            else:
-                print(f'File "{file_fqpn}" could not be found.')
-        return self._install_json
+        # stage ThreatConnect data based on current profile
+        self._staged_tc_data = self.stager.threatconnect.entities(
+            self._profile.stage_threatconnect, self._profile.owner
+        )
 
-    def input_params(self):
-        """Return install.json params in a dict with name param as key.
+        # insert staged data for replacement
+        self._profile.tc_staged_data = self._staged_tc_data
 
-        Returns:
-            dict: A dictionary containing the install.json input params with name as key.
-        """
-        if self._input_params is None:
-            self._input_params = {}
-            # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('params') or []:
-                self._input_params.setdefault(p.get('name'), p)
-        return self._input_params
+        # update schema
+        self._profile.init()
+
+        # stage kvstore data based on current profile
+        self.stager.redis.from_dict(self._profile.stage_kvstore)
 
     def log_data(self, stage, label, data, level='info'):
         """Log validation data."""
         msg = f"{f'[{stage}]'!s:>20} : {label!s:<15}: {data!s:<50}"
         getattr(self.log, level)(msg)
 
-    @staticmethod
-    def owner(profile):
-        """Get the owner provided a profile"""
-        return (
-            profile.get('required', {}).get('owner')
-            or profile.get('optional', {}).get('owner')
-            or profile.get('owner')
-        )
-
-    @staticmethod
-    def populate_system_variables(profile):
-        """Replace all System variables with their correct value"""
-        profile_str = json.dumps(profile)
-        system_var_regex = r'\${env.(.*?)}'
-        for m in re.finditer(system_var_regex, profile_str):
-            old_string = '${env.' + m.group(1) + '}'
-            if os.getenv(m.group(1)):
-                profile_str = profile_str.replace(old_string, os.getenv(m.group(1)))
-
-        return json.loads(profile_str)
-
-    def populate_threatconnect_variables(self, profile):
-        """Replace all of the TC output variables in the profile with their correct value"""
-        profile_str = json.dumps(profile)
-        for key, value in self._tc_output_variables.items():
-            regex = r'\${tcenv\.' + str(key) + '([^}]*)'
-            for m in re.finditer(regex, profile_str):
-                if m.group(1):
-                    key = '${tcenv.' + key + m.group(1) + '}'
-                    group = m.group(1)[1:]
-                    value = jmespath.search(group, value)
-                    profile_str = profile_str.replace(key, str(value))
-        regex = r'\${env\.([^}]*)'
-        for m in re.finditer(regex, profile_str):
-            if m.group(1):
-                key = '${env.' + m.group(1) + '}'
-                group = m.group(1)
-                value = os.getenv(group)
-                profile_str = profile_str.replace(key, str(value))
-        return json.loads(profile_str)
-
-    def populate_exit_message(self):
-        """Generate validation rules from App outputs."""
-        message_tc_file = os.path.join(
-            self.default_args.get('tc_out_path'),
-            self.test_case_feature,
-            self.test_case_name,
-            'message.tc',
-        )
-        message_tc = ''
-        if os.path.isfile(message_tc_file):
-            with open(message_tc_file, 'r') as mh:
-                message_tc = mh.read()
-
-        profile_filename = os.path.join(self.test_case_profile_dir, f'{self.profile_name}.json')
-        with open(profile_filename, 'r+') as fh:
-            profile_data = json.load(fh)
-
-            if profile_data.get('exit_message') is None or isinstance(
-                profile_data.get('exit_message'), str
-            ):
-                # update the profile
-                profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
-
-                fh.seek(0)
-                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
-                fh.truncate()
-
-    def profile(self, profile_name):
-        """Stages and sets up the profile given a profile name"""
-        return self.init_profile(profile_name)
-
     @property
-    def profile_name(self):
-        """Return partially parsed test case data."""
-        name_pattern = r'^test_[a-zA-Z0-9_]+\[(.+)\]$'
-        try:
-            return re.search(name_pattern, self.test_case_data[-1]).group(1)
-        except AttributeError:
-            return None
-
-    @property
-    def profile_names(self):
-        """Get a profile from the profiles.json file by name"""
-        profile_names = []
-        for filename in sorted(os.listdir(self.test_case_profile_dir)):
-            if filename.endswith('.json'):
-                profile_names.append(filename.replace('.json', ''))
-        return profile_names
-
-    @staticmethod
-    def resolve_env_args(value):
-        """Resolve env args
-
-        Args:
-            value (str): The value to resolve for environment variable.
-
-        Returns:
-            str: The original string or resolved string.
-        """
-        env_var = re.compile(r'^\$env\.(.*)$')
-        envs_var = re.compile(r'^\$envs\.(.*)$')
-        if env_var.match(value):
-            # read value from environment variable
-            env_key = env_var.match(str(value)).groups()[0]
-            value = os.getenv(env_key, value)
-        elif envs_var.match(value):
-            # read secure value from environment variable
-            env_key = envs_var.match(str(value)).groups()[0]
-            value = os.getenv(env_key, value)
-        return value
+    def profile(self):
+        """Return profile instance."""
+        return self._profile
 
     def run(self, args):
         """Implement in Child Class"""
@@ -493,12 +308,17 @@ class TestCase:
 
     def teardown_method(self):
         """Run after each test method runs."""
-        if self.enable_update_profile and self.install_json.get('runtimeLevel').lower() not in [
+        if self.enable_update_profile and self.ij.runtime_level.lower() not in [
             'triggerservice',
             'webhooktriggerservice',
         ]:
             # exit message can not be validated for a Service App
-            self.populate_exit_message()
+            self.profile.update_exit_message()
+
+        # delete threatconnect staged data
+        self.stager.threatconnect.delete_staged(self._staged_tc_data)
+
+        # log running times
         self.log_data('teardown method', 'finished', datetime.now().isoformat())
         self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)
 

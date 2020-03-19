@@ -47,7 +47,7 @@
       },
       {
         "name": "example.playbook_input",
-        "type": "StringArray"
+        "type": "String"
       }
     ],
     "type": "Service Trigger"

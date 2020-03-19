@@ -2,6 +2,7 @@
 """TcEx Framework Logger module"""
 import logging
 import os
+import pathlib
 import platform
 import sys
 
@@ -206,6 +207,7 @@ class Logger:
         self._log_app_data()
         self._log_python_version()
         self._log_tcex_version()
+        self._log_tcex_path()
         self._log_tc_proxy(args)
 
     def _log_app_data(self):
@@ -243,3 +245,10 @@ class Logger:
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
         self.log.info(f'TcEx Version: {__import__(__name__).__version__}')
+
+    def _log_tcex_path(self):
+        """Log the current TcEx path."""
+        app_path = str(pathlib.Path().parent.absolute())
+        full_path = str(pathlib.Path(__file__).parent.absolute())
+        tcex_path = os.path.dirname(full_path.replace(app_path, ''))
+        self.log.info(f'TcEx Path: {tcex_path}')

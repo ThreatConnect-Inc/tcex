@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-""" TcEx Framework Value Module """
+"""TcEx Framework Value Module"""
 import os
-
 import hvac
 
 
@@ -16,7 +15,7 @@ class Vault:
             token (string): The value token.
             cert (string): The value cert.
         """
-        token = token or os.environ.get('VAULT_TOKEN')
+        token = token or os.getenv('VAULT_TOKEN')
         url = url or 'http://localhost:8200'
         self._client = hvac.Client(url=url, token=token, cert=cert)
 

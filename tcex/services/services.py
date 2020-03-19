@@ -70,6 +70,10 @@ class Services:
             )
             self.redis_client.hset(session_id, '_trigger_id', trigger_id)
 
+            # log
+            self.tcex.log.info(f'Wrote context {session_id} to _context_tracker')
+            self.tcex.log.info(f'Wrote trigger id {trigger_id} to _trigger_id')
+
     def add_metric(self, label, value):
         """Add a metric.
 
@@ -136,11 +140,19 @@ class Services:
 
         Args:
             callback (callable): The trigger method in the App to call.
+            trigger_ids (list, kwargs): A list of trigger ids to trigger.
         """
         if not callable(callback):
             raise RuntimeError('Callback method (callback) is not a callable.')
 
-        for trigger_id, config in self.configs.items():
+        # get developer passed trigger_ids
+        trigger_ids = kwargs.pop('trigger_ids', None)
+
+        for trigger_id, config in list(self.configs.items()):
+            if trigger_ids is not None and trigger_id not in trigger_ids:
+                # skip config that don't match developer provided trigger ids
+                continue
+
             try:
                 self.tcex.log.trace(f'triggering callback for config id: {trigger_id}')
                 # get a session_id specifically for this thread

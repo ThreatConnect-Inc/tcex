@@ -249,7 +249,7 @@ class Inputs:
             }
 
         Args:
-            config (dict): A dictionary of configuration values.
+            config_data (dict): A dictionary of configuration values.
             preserve (bool): Don't overwrite arg values define in sys.argv
         """
         if isinstance(config_data, dict):

@@ -15,12 +15,12 @@ class Utils:
     """TcEx framework Utils Class
 
     Args:
-        tcex (object): Instance of TcEx.
+        temp_path (str, optional): The path to write temp files.
     """
 
-    def __init__(self, tcex=None):
+    def __init__(self, temp_path=None):
         """Initialize the Class properties."""
-        self.tcex = tcex
+        self.temp_path = temp_path or '/tmp'
 
         # properties
         self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
@@ -112,7 +112,7 @@ class Utils:
         """
         if filename is None:
             filename = str(uuid.uuid4())
-        fqpn = os.path.join(self.tcex.default_args.tc_temp_path, filename)
+        fqpn = os.path.join(self.temp_path, filename)
         os.makedirs(os.path.dirname(fqpn), exist_ok=True)
         with open(fqpn, mode) as fh:
             fh.write(content)
@@ -128,7 +128,7 @@ class Utils:
         Returns:
             bool: The boolean value
         """
-        return str(value).lower() in ['1', 't', 'true']
+        return str(value).lower() in ['1', 't', 'true', 'y', 'yes']
 
     @staticmethod
     def flatten_list(lst: List[Any]) -> List[Any]:

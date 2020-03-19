@@ -712,28 +712,29 @@ class ThreatConnect:
         """Initialize class properties"""
         self.provider = provider
 
-    def batch(self, context, owner, validation_criteria):
+    def batch(self, profile):
         """Validate the batch submission"""
 
-        validation_percent = validation_criteria.get('percent', 100)
-        validation_count = validation_criteria.get('count', None)
-        batch_submit_totals = self._get_batch_submit_totals(context)
+        validation_percent = profile.validation_criteria.get('percent', 100)
+        validation_count = profile.validation_criteria.get('count', None)
+        batch_submit_totals = self._get_batch_submit_totals(profile.feature, profile.name)
 
         if validation_count:
             validation_percent = self._convert_to_percent(validation_count, batch_submit_totals)
 
         batch_errors = []
-        for filename in os.listdir(os.path.join('.', 'log', context)):
-            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+        dir_path = os.path.join('.', 'log', profile.feature, f'test_profiles-{profile.name}')
+        for filename in os.listdir(dir_path):
+            with open(os.path.join(dir_path, filename), 'r') as fh:
                 if not filename.startswith('errors-') or not filename.endswith('.json'):
                     continue
                 batch_errors += json.load(fh)
 
-        for filename in os.listdir(os.path.join('.', 'log', context)):
+        for filename in os.listdir(dir_path):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
 
-            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename), 'r') as fh:
                 data = json.load(fh)
                 validation_data = self._partition_batch_data(data)
                 sample_validation_data = []
@@ -761,12 +762,12 @@ class ThreatConnect:
                         + '--'
                         + sample_data.get('name', '')
                     )
-                    filename = os.path.join('.', 'log', context, filename)
+                    filename = os.path.join(dir_path, filename)
                     if os.path.isfile(filename):
                         files.append(filename)
                     else:
                         files.append(None)
-                results = self.tc_entities(sample_validation_data, owner, files=files)
+                results = self.tc_entities(sample_validation_data, profile.owner, files=files)
                 for result in results:
                     if result.get('valid'):
                         continue
@@ -783,7 +784,7 @@ class ThreatConnect:
                         f'{name} in ThreatConnect did not match what was submitted. '
                         f"Errors:{result.get('errors')}"
                     )
-        self._log_batch_submit_details(batch_errors, owner)
+        self._log_batch_submit_details(batch_errors, profile.owner)
 
     def _log_batch_submit_details(self, batch_errors, owner):
         if not batch_errors:
@@ -1023,16 +1024,17 @@ class ThreatConnect:
 
         return ti_entity
 
-    def _get_batch_submit_totals(self, context):
+    def _get_batch_submit_totals(self, feature, name):
         """Break the batch submitions up into separate partitions.
 
         Each partition containing its total.
         """
         counts = {}
-        for filename in os.listdir(os.path.join('.', 'log', context)):
+        dir_path = os.path.join('.', 'log', feature, f'test_profiles-{name}')
+        for filename in os.listdir(dir_path):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
-            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename), 'r') as fh:
                 data = json.load(fh)
                 partitioned_data = self._partition_batch_data(data)
                 for key in partitioned_data:

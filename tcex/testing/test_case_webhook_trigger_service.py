@@ -17,12 +17,7 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
         Returns:
             [type]: [description]
         """
-        # resolve env vars
-        for k, v in list(args.items()):
-            if isinstance(v, str):
-                args[k] = self.resolve_env_args(v)
-
-        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
+        args['tc_playbook_out_variables'] = ','.join(self.ij.output_variable_array)
         self.log_data('run', 'args', args)
         self.app = self.app_init(args)
 

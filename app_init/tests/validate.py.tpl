@@ -24,7 +24,7 @@ class Validate(object):
         for k, v in output_variables.items():
             method = self.validation_methods.get(k)
             if method is not None:
-                method(v)
+                method(dict(v))
             else:
                 assert False, f'Unknown output variable found in profile: {k}'
 
@@ -36,5 +36,4 @@ class Validate(object):
             output_var, data.pop('expected_output'), data.pop('op', '='), **data
         )
         assert passed, assert_error
-
     % endfor
