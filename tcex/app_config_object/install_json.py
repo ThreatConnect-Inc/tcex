@@ -258,8 +258,11 @@ class InstallJson:
             if p.get('type').lower() == 'boolean':
                 args[n] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':
-                valid_values = '|'.join(self.expand_valid_values(p.get('validValues', [])))
-                args[n] = f'[{valid_values}]'
+                # use the value from input_permutations if available or provide valid values
+                valid_values = input_permutations.get(
+                    n, f"[{'|'.join(self.expand_valid_values(p.get('validValues', [])))}]"
+                )
+                args[n] = valid_values
             elif p.get('type').lower() == 'multichoice':
                 args[n] = p.get('validValues', [])
             elif p.get('type').lower() == 'keyvaluelist':

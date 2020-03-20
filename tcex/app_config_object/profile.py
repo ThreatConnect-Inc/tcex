@@ -94,7 +94,7 @@ class Profile:
         input_permutations = None
         if permutation_id is not None:
             try:
-                input_permutations = self.permutations.input_names[permutation_id]
+                input_permutations = self.permutations.input_dict(permutation_id)
             except Exception:
                 # catch any error
                 print(f'{c.Fore.RED}Invalid permutation id provided.')

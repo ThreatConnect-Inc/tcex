@@ -17,21 +17,16 @@ class Permutations:
 
     def __init__(self):
         """Initialize Class properties"""
-        # self.args = _args
 
         # properties
         self._db_conn = None
         self._input_names = None
         self._input_permutations = None
         self._output_permutations = None
-        # self._redis = None
-        # self._tcex_json = None
         self.app_path = os.getcwd()
-        # self.exit_code = 0
         self.ij = InstallJson()
         self.lj = LayoutJson()
         self.input_table = 'inputs'
-        # self.output = []
 
     def _gen_permutations(self, index=0, args=None):
         """Iterate recursively over layout.json parameter names to build permutations.
@@ -211,6 +206,23 @@ class Permutations:
             # drop database
             self.db_drop_table(self.input_table)
 
+    def input_dict(self, permutation_id):
+        """Return all input permutation names for provided permutation id.
+
+        {'tc_action': 'Append', 'input_strings': None, 'append_chars': None}
+
+        Args:
+            permutation_id (int): The index of the permutation input array.
+
+        Returns:
+            dict: A dict with key / value for each input for the provided permutation id.
+        """
+        input_dict = {}
+        if self.lj.has_layout:
+            for permutation in self.input_permutations[permutation_id]:
+                input_dict.setdefault(permutation.get('name'), permutation.get('value'))
+        return input_dict
+
     @property
     def input_names(self):
         """Return all input permutation names for current App."""
@@ -222,7 +234,11 @@ class Permutations:
 
     @property
     def input_permutations(self):
-        """Return all input permutations for current App."""
+        """Return all input permutations for current App.
+
+        self._input_permutations is an array of permutations arrays.
+        [[<perm obj #1], [<perm obj #2]]
+        """
         if self._input_permutations is None and self.lj.has_layout:
             self.init_permutations()
         return self._input_permutations
