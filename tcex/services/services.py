@@ -517,6 +517,7 @@ class Services:
 
         if command.lower() == 'createconfig':
             self.tcex.log.info(f'CreateConfig - trigger_id: {trigger_id} config : {config}')
+            valid_config = True
 
             # register config apiToken
             self.tcex.token.register_token(
@@ -530,17 +531,20 @@ class Services:
                     kwargs['url'] = message.get('url')
                 try:
                     # call callback for create config and handle exceptions to protect thread
-                    self.create_config_callback(  # pylint: disable=not-callable
+                    valid_config = self.create_config_callback(  # pylint: disable=not-callable
                         trigger_id, config, **kwargs
                     )
                 except Exception as e:
-                    msg = f'The create config callback method encountered an error ({e}).'
-                    self.tcex.log.error(msg)
+                    self.tcex.log.error(
+                        f'The create config callback method encountered an error ({e}).'
+                    )
                     self.tcex.log.trace(traceback.format_exc())
                     status = 'Failed'
+                    valid_config = False
 
             # create config after callback to report status and message
-            self.create_config(trigger_id, config, msg, status)
+            if valid_config is not False:
+                self.create_config(trigger_id, config, msg, status)
         elif command.lower() == 'deleteconfig':
             self.tcex.log.info(f'DeleteConfig - trigger_id: {trigger_id}')
 

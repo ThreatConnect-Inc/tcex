@@ -87,7 +87,7 @@ class Profile:
         """Add a profile."""
         profile_data = profile_data or {}
         if profile_name is not None:
-            # only used for profile migrations
+            # profile_name is only used for profile migrations
             self.name = profile_name
 
         # get input perutations when a permutation_id is passed
@@ -113,7 +113,7 @@ class Profile:
             profile['configs'] = [
                 {
                     'trigger_id': str(randint(1000, 9999)),
-                    'config': profile.get(
+                    'config': profile_data.get(
                         'inputs',
                         {
                             'optional': self.ij.params_to_args(
@@ -267,6 +267,14 @@ class Profile:
     def name(self, name):
         """Set the profile name"""
         self._name = name
+
+    def profile_inputs(self):
+        """Return the appropriate inputs (config) for the current App type."""
+        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            for config_data in self.configs:
+                yield config_data.get('config')
+        else:
+            yield self.inputs
 
     def replace_env_variables(self, profile_data):
         """Update the profile to the current schema.
@@ -632,6 +640,47 @@ class Profile:
                     print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
 
+    def validate_required_inputs(self):
+        """Present interactive menu to build profile."""
+        msg = 'All required inputs are valid'
+
+        def params_data():
+            # handle non-layout and layout based App appropriately
+            for input_ in self.profile_inputs():
+                if self.lj.has_layout:
+                    # using inputs from layout.json since they are required to be in order
+                    # (display field can only use inputs previously defined)
+                    for name in self.lj.params_dict:
+                        # get data from install.json based on name (has hidden and type fields)
+                        data = self.ij.params_dict.get(name)
+                        yield name, data, input_
+                else:
+                    for name, data in self.ij.params_dict.items():
+                        yield name, data, input_
+
+        inputs = {}
+        for name, data, input_ in params_data():
+            if data.get('serviceConfig'):
+                # inputs that are serviceConfig are not applicable for profiles
+                continue
+
+            if inputs:
+                # each input will be checked for permutations if the App has layout and not hidden
+                if not self.permutations.validate_input_variable(name, inputs) and not data.get(
+                    'hidden'
+                ):
+                    continue
+
+            # get value for playbook Apps
+            value = input_.get('required', {}).get(name)
+
+            if not value:
+                return False, f'Missing/Invalid value for required arg ({name})'
+
+            # update inputs
+            inputs[name] = value
+        return True, msg
+
     #
     # Properties
     #
@@ -693,11 +742,6 @@ class Profile:
             or self.data.get('optional', {}).get('owner')
             or self.data.get('owner')
         )
-
-    @property
-    def validation_criteria(self):
-        """Return the validation_criteria value."""
-        return self.data.get('validation_criteria', {})
 
     @property
     def outputs(self):
@@ -768,9 +812,9 @@ class Profile:
         return tc_temp_path
 
     @property
-    def validate_criteria(self):
-        """Return validate criteria."""
-        return self.data.get('validate_criteria', {})
+    def validation_criteria(self):
+        """Return the validation_criteria value."""
+        return self.data.get('validation_criteria', {})
 
     @property
     def webhook_event(self):
@@ -851,15 +895,31 @@ class ProfileInteractive:
 
     def present(self):
         """Present interactive menu to build profile."""
+
+        def params_data():
+            # handle non-layout and layout based App appropriately
+            if self.profile.lj.has_layout:
+                # using inputs from layout.json since they are required to be in order
+                # (display field can only use inputs previously defined)
+                for name in self.profile.lj.params_dict:
+                    # get data from install.json based on name (has hidden and type fields)
+                    data = self.profile.ij.params_dict.get(name)
+                    yield name, data
+            else:
+                for name, data in self.profile.ij.params_dict.items():
+                    yield name, data
+
         inputs = {}
-        for name, data in self.profile.ij.params_dict.items():
+        for name, data in params_data():
+            if data.get('serviceConfig'):
+                # inputs that are serviceConfig are not applicable for profiles
+                continue
+
             if inputs:
                 # each input will be checked for permutations if the App has layout and not hidden
-                if (
-                    self.profile.lj.has_layout
-                    and not self.profile.permutations.validate_input_variable(name, inputs)
-                    and not data.get('hidden')
-                ):
+                if not self.profile.permutations.validate_input_variable(
+                    name, inputs
+                ) and not data.get('hidden'):
                     continue
 
             # present the input
@@ -1017,7 +1077,11 @@ class ProfileInteractive:
 
         feedback_value = value
         input_value = value
-        if 'String' in data.get('playbookDataType', []):
+        # for non-service Apps replace user input with a variable and add to staging data
+        if self.profile.ij.runtime_level.lower() not in [
+            'triggerservice',
+            'webhooktriggerservice',
+        ] and 'String' in data.get('playbookDataType', []):
             # create variable and staging data
             variable = self.profile.ij.create_variable(data.get('name'), data.get('type'))
             self._staging_data['kvstore'].setdefault(variable, value)

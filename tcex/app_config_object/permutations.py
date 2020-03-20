@@ -52,8 +52,8 @@ class Permutations:
                 'webhooktriggerservice',
             ]:
                 name = list(self.lj.parameters_names)[index]
-                display = self.lj.parameters_dict.get(name, {}).get('display')
-                hidden = self.lj.parameters_dict.get(name, {}).get('hidden', False)
+                display = self.lj.params_dict.get(name, {}).get('display')
+                hidden = self.lj.params_dict.get(name, {}).get('hidden', False)
             else:
                 name = list(self.ij.params_dict.keys())[index]
                 display = False
@@ -295,6 +295,10 @@ class Permutations:
         Returns:
             bool: True if the display value returns results.
         """
+        if not self.lj.has_layout:
+            # always return try if current App doesn't have a layouts file
+            return True
+
         table = f'temp_{random.randint(100,999)}'
         self.db_create_table(table, self.ij.params_dict.keys())
         self.db_insert_record(table, self.ij.params_dict.keys())
@@ -302,7 +306,7 @@ class Permutations:
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 
-        lj_data = self.lj.parameters_dict.get(input_name)
+        lj_data = self.lj.params_dict.get(input_name)
         if lj_data is None:
             # this shouldn't happen as all ij inputs must be in lj
             raise RuntimeError(f'The provided input {input_name} was not found in layout.json.')

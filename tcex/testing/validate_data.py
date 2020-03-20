@@ -655,6 +655,16 @@ class Redis:
         # log validation data in a readable format
         self.provider.validate_log_output(passed, app_data, test_data, details.strip(), op)
 
+        # check for bad string values
+        suspect_values = ['null', 'None']
+        if app_data in suspect_values:
+            self.provider.log_data(
+                'validate',
+                'Suspect Value',
+                f'App data matched a suspect value ({suspect_values}).',
+                'warning',
+            )
+
         # build assert error
         assert_error = (
             f'\n App Data     : {app_data}\n Operator     : {op}\n '

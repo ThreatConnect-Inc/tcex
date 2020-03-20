@@ -55,7 +55,10 @@ class TestProfiles(${class_name}):
         """Run pre-created testing profiles."""
 
         # initialize profile
-        self.init_profile(profile_name, merge_outputs, replace_exit_message, replace_outputs)
+        valid, message = self.init_profile(
+            profile_name, merge_outputs, replace_exit_message, replace_outputs
+        )
+        assert valid, message
 
         # call pre-configuration setup per test
         self.custom.test_pre_create_config(self, self.profile.data, monkeypatch)
@@ -92,7 +95,7 @@ class TestProfiles(${class_name}):
             self.validator.tcex.playbook.key_value_store.context = context
             # the trigger id is stored via the monkey patched session_id method
             trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
-            output_data = self.profile.outputs.get(trigger_id)
+            output_data = (self.profile.outputs or {}).get(trigger_id)
             if output_data is not None:
                 ValidateFeature(self.validator).validate(output_data)
 

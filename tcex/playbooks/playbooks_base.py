@@ -354,7 +354,10 @@ class PlaybooksBase:
                 # for KeyValueArray with nested dict/list type replace the
                 # quoted value to ensure the resulting data is loadable JSON
                 value = re.sub(f'"{variable}"', v, value)
-            value = re.sub(variable, v, value)
+
+            if v is not None:
+                # only replace variable if a non-null value is returned from kv store
+                value = re.sub(variable, v, value)
         return value
 
     @property

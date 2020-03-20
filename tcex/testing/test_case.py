@@ -198,6 +198,9 @@ class TestCase:
             logger=self.log,
         )
 
+        # validate required fields
+        valid, message = self._profile.validate_required_inputs()
+
         # stage ThreatConnect data based on current profile
         self._staged_tc_data = self.stager.threatconnect.entities(
             self._profile.stage_threatconnect, self._profile.owner
@@ -212,9 +215,12 @@ class TestCase:
         # stage kvstore data based on current profile
         self.stager.redis.from_dict(self._profile.stage_kvstore)
 
+        return valid, message
+
     def log_data(self, stage, label, data, level='info'):
         """Log validation data."""
-        msg = f"{f'[{stage}]'!s:>20} : {label!s:<15}: {data!s:<50}"
+        stage_width = 25 - len(level)
+        msg = f"{f'[{stage}]'!s:>{stage_width}} : {label!s:<15}: {data!s:<50}"
         getattr(self.log, level)(msg)
 
     @property
