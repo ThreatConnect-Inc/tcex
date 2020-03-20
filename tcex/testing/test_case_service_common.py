@@ -163,6 +163,11 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     def run_service(self):
         """Run the micro-service."""
         self.log_data('run', 'service method', self.service_run_method)
+        # backup sys.argv
+        sys_argv_orig = sys.argv
+
+        # clear sys.argv
+        sys.argv = sys.argv[:1]
 
         # create required .app_params encrypted file. args are set in custom.py
         self.app_init_create_config(
@@ -172,24 +177,19 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             # run the Service App as a subprocess
             self.app_process = subprocess.Popen(['python', 'run.py'])
         elif self.service_run_method == 'thread':
-            # backup sys.argv
-            sys_argv_orig = sys.argv
-
-            # clear sys.argv
-            sys.argv = sys.argv[:1]
 
             # run App in a thread
             t = threading.Thread(target=self.run, args=(self.args,), daemon=True)
             t.start()
-
-            # restore sys.argv
-            sys.argv = sys_argv_orig
         elif self.service_run_method == 'multiprocess':
             p = Process(target=self.run, args=(self.args,), daemon=True)
             p.start()
 
         # give app some time to initialize before continuing
         time.sleep(self.sleep_after_service_start)
+
+        # restore sys.argv
+        sys.argv = sys_argv_orig
 
     @classmethod
     def setup_class(cls):

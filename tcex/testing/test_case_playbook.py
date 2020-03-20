@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Playbook Test Case module"""
+import sys
 import traceback
 
 from .test_case_playbook_common import TestCasePlaybookCommon
@@ -72,11 +73,20 @@ class TestCasePlaybook(TestCasePlaybookCommon):
 
     def run_profile(self):
         """Run an App using the profile name."""
+        # backup sys.argv
+        sys_argv_orig = sys.argv
+
+        # clear sys.argv
+        sys.argv = sys.argv[:1]
+
         # run the App
         exit_code = self.run(self.profile.args)
 
         # add context for populating output variables
         self.profile.add_context(self.context)
+
+        # restore sys.argv
+        sys.argv = sys_argv_orig
 
         return exit_code
 
