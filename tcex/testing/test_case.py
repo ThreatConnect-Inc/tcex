@@ -2,6 +2,7 @@
 """TcEx testing Framework."""
 import json
 import logging
+import math
 import os
 import random
 import string
@@ -20,6 +21,26 @@ from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
 from .validate_data import Validator
 
+
+class TestLogger(logging.Logger):
+    """Custom logger for test Case"""
+
+    def data(self, stage, label, data, level='info'):
+        """Log validation data."""
+        stage = f'[{stage}]'
+        stage_width = 25 - len(level)
+        msg = f'{stage!s:>{stage_width}} : {label!s:<15}: {data!s:<50}'
+        level = logging.getLevelName(level.upper())
+        # getattr(self.log, level)(msg)
+        self.log(level, msg)
+
+    def title(self, title, separator='-'):
+        """Log validation data."""
+        separator = separator * math.ceil((100 - len(title)) / 2)
+        self.log(logging.INFO, f'{separator} {title} {separator}')
+
+
+logging.setLoggerClass(TestLogger)
 logger = logging.getLogger('TestCase')
 lfh = RotatingFileHandlerCustom(filename='log/tests.log')
 lfh.setLevel(logging.DEBUG)
@@ -59,7 +80,7 @@ class TestCase:
 
     def _exit(self, code):
         """Log and return exit code"""
-        self.log.info(f'[run] Exit Code: {code}')
+        self.log.data('run', 'Exit Code', code)
         return code
 
     @staticmethod
@@ -217,12 +238,6 @@ class TestCase:
 
         return valid, message
 
-    def log_data(self, stage, label, data, level='info'):
-        """Log validation data."""
-        stage_width = 25 - len(level)
-        msg = f"{f'[{stage}]'!s:>{stage_width}} : {label!s:<15}: {data!s:<50}"
-        getattr(self.log, level)(msg)
-
     @property
     def profile(self):
         """Return profile instance."""
@@ -237,13 +252,22 @@ class TestCase:
         try:
             getattr(app, method)()
         except SystemExit as e:
-            self.log.info(f'[run] Exit Code: {e.code}')
-            self.log.error(f'App failed in {method}() method ({e}).')
+            self.log.data('run', 'Exit Code', e.code)
+            if e.code != 0 and self.profile and e.code not in self.profile.exit_codes:
+                self.log.data(
+                    'run',
+                    'App failed',
+                    f'App exited with code of {e.code} in method {method}',
+                    'error',
+                )
             app.tcex.log.info(f'Exit Code: {e.code}')
             return e.code
         except Exception:
-            self.log.error(
-                f'App encountered except in {method}() method ({traceback.format_exc()}).'
+            self.log.data(
+                'run',
+                'App failed',
+                f'App encountered except in {method}() method ({traceback.format_exc()})',
+                'error',
             )
             return 1
         return 0
@@ -252,20 +276,20 @@ class TestCase:
     def setup_class(cls):
         """Run once before all test cases."""
         cls._timer_class_start = time.time()
-        cls.log.info(f"{'#' * 10} Setup Class {'#' * 10}")
-        TestCase.log_data(TestCase(), 'setup class', 'started', datetime.now().isoformat())
-        TestCase.log_data(TestCase(), 'setup class', 'local envs', cls.env)
+        cls.log.title('Setup Class', '#')
+        TestCase.log.data('setup class', 'started', datetime.now().isoformat())
+        TestCase.log.data('setup class', 'local envs', cls.env)
 
     def setup_method(self):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
         self._current_test = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0]
-        self.log.info(f"{'=' * 10} {self._current_test} {'=' * 10}")
-        self.log_data('setup method', 'started', datetime.now().isoformat())
+        self.log.title(self._current_test, '=')
+        self.log.data('setup method', 'started', datetime.now().isoformat())
 
         # create and log current context
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
-        self.log_data('setup method', 'context', self.context)
+        self.log.data('setup method', 'context', self.context)
 
         # setup per method instance of tcex
         args = dict(self.default_args)
@@ -301,16 +325,14 @@ class TestCase:
         args['tc_logger_name'] = 'tcex-stager'
 
         tcex = TcEx(config=args)
-        return Stager(tcex, logger, self.log_data)
+        return Stager(tcex, logger)
 
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
-        cls.log.info(f"{'^' * 10} Teardown Class {'^' * 10}")
-        TestCase.log_data(TestCase(), 'teardown class', 'finished', datetime.now().isoformat())
-        TestCase.log_data(
-            TestCase(), 'teardown class', 'elapsed', time.time() - cls._timer_class_start
-        )
+        cls.log.title('Teardown Class', '^')
+        TestCase.log.data('teardown class', 'finished', datetime.now().isoformat())
+        TestCase.log.data('teardown class', 'elapsed', time.time() - cls._timer_class_start)
 
     def teardown_method(self):
         """Run after each test method runs."""
@@ -325,8 +347,8 @@ class TestCase:
         self.stager.threatconnect.delete_staged(self._staged_tc_data)
 
         # log running times
-        self.log_data('teardown method', 'finished', datetime.now().isoformat())
-        self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)
+        self.log.data('teardown method', 'finished', datetime.now().isoformat())
+        self.log.data('teardown method', 'elapsed', time.time() - self._timer_class_start)
 
     @property
     def test_case_data(self):
@@ -375,8 +397,9 @@ class TestCase:
                     app_exit_message = mh.read()
 
                 if app_exit_message:
+                    kwargs['title'] = 'Exit Message Validation'
                     passed, assert_error = self.validator.compare(
-                        app_exit_message, test_exit_message, op=op, **kwargs
+                        json.dumps(app_exit_message), json.dumps(test_exit_message), op=op, **kwargs
                     )
                     assert passed, assert_error
                 else:
@@ -406,4 +429,4 @@ class TestCase:
         args['tc_logger_name'] = 'tcex-validator'
 
         tcex = TcEx(config=args)
-        return Validator(tcex, logger, self.log_data)
+        return Validator(tcex, logger)

@@ -150,9 +150,12 @@ class Permutations:
         """
         bindings = ('?,' * len(columns)).strip(',')
         values = [None] * len(columns)
-        sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({bindings})"
-        cur = self.db_conn.cursor()
-        cur.execute(sql, values)
+        try:
+            sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({bindings})"
+            cur = self.db_conn.cursor()
+            cur.execute(sql, values)
+        except sqlite3.OperationalError as e:
+            raise RuntimeError(f'SQL insert failed - SQL: "{sql}", Error: "{e}"')
 
     def db_update_record(self, table_name, column, value):
         """Insert records into DB.
@@ -165,9 +168,13 @@ class Permutations:
         # escape any single quotes in value
         if isinstance(value, str):
             value = value.replace('\'', '\\')
-        sql = f'UPDATE {table_name} SET {column} = "{value}"'
-        cur = self.db_conn.cursor()
-        cur.execute(sql)
+        try:
+            # value should be wrapped in single quotes to be properly parsed
+            sql = f"UPDATE {table_name} SET {column} = '{value}'"
+            cur = self.db_conn.cursor()
+            cur.execute(sql)
+        except sqlite3.OperationalError as e:
+            raise RuntimeError(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
 
     def exists(self):
         """Return True if permutation file exists."""

@@ -25,7 +25,7 @@ class TestCaseJob(TestCase):
         Returns:
             int: The exit code fo the App.
         """
-        self.log_data('run', 'args', args)
+        self.log.data('run', 'args', args)
         self.app = self.app_init(args)
 
         # Setup

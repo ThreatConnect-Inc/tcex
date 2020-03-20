@@ -16,10 +16,9 @@ from urllib.parse import unquote  # Python
 class Validator:
     """Validator"""
 
-    def __init__(self, tcex, log, log_data):
+    def __init__(self, tcex, log):
         """Initialize class properties."""
         self.log = log
-        self.log_data = log_data
         self.tcex = tcex
         # TODO: validate this
         self.tcex.logger.update_handler_level('error')
@@ -68,11 +67,14 @@ class Validator:
         op = op or 'eq'
         variable = kwargs.pop('variable', app_data)  # get optional variable name for log header
         if not self.get_operator(op):
-            self.log.error(f'Invalid operator provided ({op})')
+            self.log.data(
+                'validate', 'Invalid Operator', f'Provided operator of {op} is invalid', 'error'
+            )
             return False
 
         # logging header
-        self.log.info(f'{"=" * 10} {app_data} {"=" * 10}')
+        title = kwargs.pop('title', app_data)
+        self.log.title(title, '=')
 
         # run operator
         passed, details = self.get_operator(op)(app_data, test_data, **kwargs)
@@ -104,7 +106,7 @@ class Validator:
                     if diff_count > self.max_diff:
                         details += '\n    * Max number of differences reached.'
                         # don't spam the logs if string are vastly different
-                        self.log_data(
+                        self.log.data(
                             'validate', 'Maximum Reached', 'Max number of differences reached.'
                         )
                         break
@@ -358,7 +360,12 @@ class Validator:
                 es = e.split('.')
                 data = self.remove_excludes(data, es)
             except (KeyError, TypeError) as err:
-                self.log.error(f'Invalid validation configuration: ({err})')
+                self.log.data(
+                    'validate',
+                    'Invalid Config',
+                    f'Invalid validation configuration: ({err})',
+                    'error',
+                )
         return data
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
@@ -556,15 +563,15 @@ class Validator:
                         user_data_truncated.append(u)
                 test_data = user_data_truncated
 
-        self.log_data('validate', 'App Data', f'({app_data}), Type: [{type(app_data)}]')
-        self.log_data('validate', 'Operator', op)
-        self.log_data('validate', 'Test Data', f'({test_data}), Type: [{type(test_data)}]')
+        self.log.data('validate', 'App Data', f'({app_data}), Type: [{type(app_data)}]')
+        self.log.data('validate', 'Operator', op)
+        self.log.data('validate', 'Test Data', f'({test_data}), Type: [{type(test_data)}]')
 
         if passed:
-            self.log_data('validate', 'Result', 'Passed')
+            self.log.data('validate', 'Result', 'Passed')
         else:
-            self.log_data('validate', 'Result', 'Failed', 'error')
-            self.log_data('validate', 'Details', details, 'error')
+            self.log.data('validate', 'Result', 'Failed', 'error')
+            self.log.data('validate', 'Details', details, 'error')
 
 
 class Redis:
@@ -575,7 +582,7 @@ class Redis:
         self.provider = provider
 
         # Properties
-        self.log_data = self.provider.log_data
+        self.log = self.provider.log
         self.redis_client = provider.tcex.redis_client
 
     def not_null(self, variable):
@@ -583,14 +590,18 @@ class Redis:
         # Could do something like self.ne(variable, None), but want to be pretty specific on
         # the errors on this one
         variable_data = self.provider.tcex.playbook.read(variable)
-        self.log_data('validate', 'Variable', variable)
-        self.log_data('validate', 'DB Data', variable_data)
+        self.log.data('validate', 'Variable', variable)
+        self.log.data('validate', 'DB Data', variable_data)
         if not variable:
-            self.provider.log.error('NoneError: Redis Variable not provided')
+            self.log.data(
+                'validate', 'None Error', f'Redis variable not provided', 'error',
+            )
             return False
 
         if not variable_data:
-            self.provider.log.error(f'NotFoundError: Redis Variable {variable} was not found.')
+            self.log.data(
+                'validate', 'None Found', f'Redis variable {variable} was not found', 'error',
+            )
             return False
 
         return True
@@ -598,8 +609,8 @@ class Redis:
     def type(self, variable):
         """Validate the type of a redis variable"""
         variable_data = self.provider.tcex.playbook.read(variable)
-        self.log_data('validate', 'Variable', variable)
-        self.log_data('validate', 'DB Data', variable_data)
+        self.log.data('validate', 'Variable', variable)
+        self.log.data('validate', 'DB Data', variable_data)
         redis_type = self.provider.tcex.playbook.variable_type(variable)
         if redis_type.endswith('Array'):
             redis_type = list
@@ -611,11 +622,16 @@ class Redis:
             redis_type = str
 
         if not variable_data:
-            self.provider.log.error(f'NotFoundError: Redis Variable {variable} was not found.')
+            self.log.data(
+                'validate', 'None Found', f'Redis variable {variable} was not found', 'error',
+            )
             return False
         if not isinstance(variable_data, redis_type):
-            self.provider.log.error(
-                f'TypeMismatchError: Redis Type: {redis_type} and Variable: {variable} do not match'
+            self.log.data(
+                'validate',
+                'Type Mismatch',
+                f'Redis Type: {redis_type}  and Variable: {variable} do not match',
+                'error',
             )
             return False
 
@@ -640,11 +656,16 @@ class Redis:
 
         op = op or 'eq'
         if not variable:
-            self.provider.log.error('NoneError: Redis Variable not provided')
+            self.log.data(
+                'validate', 'None Error', f'Redis variable not provided', 'error',
+            )
             return False
 
         if not self.provider.get_operator(op):
-            self.provider.log.error(f'Invalid operator provided ({op})')
+            self.log.error(f'Invalid operator provided ({op})')
+            self.log.data(
+                'validate', 'Invalid Operator', f'Provided operator of {op} is invalid', 'error'
+            )
             return False
 
         if variable.endswith('Binary'):
@@ -655,7 +676,7 @@ class Redis:
             app_data = self.provider.tcex.playbook.read(variable)
 
         # logging header
-        self.provider.log.info(f'{"-" * 10} {variable} {"-" * 10}')
+        self.log.title(variable, '-')
 
         # run operator
         passed, details = self.provider.get_operator(op)(app_data, test_data, **kwargs)
@@ -666,7 +687,7 @@ class Redis:
         # check for bad string values
         suspect_values = ['null', 'None']
         if app_data in suspect_values:
-            self.provider.log_data(
+            self.log.data(
                 'validate',
                 'Suspect Value',
                 f'App data matched a suspect value ({suspect_values}).',
@@ -735,6 +756,7 @@ class ThreatConnect:
     def __init__(self, provider):
         """Initialize class properties"""
         self.provider = provider
+        self.log = self.provider.log
 
     def batch(self, profile):
         """Validate the batch submission"""
@@ -798,8 +820,11 @@ class ThreatConnect:
                     name = result.get('name')
                     batch_error = self._batch_error(name, batch_errors)
                     if batch_error:
-                        self.provider.log.error(
-                            f'Errors validating {name} due to batch submission error: {batch_error}'
+                        self.log.data(
+                            'validate',
+                            'Batch Submission',
+                            f'Errors validating {name} ({batch_error})h',
+                            'error',
                         )
                         continue
                     # TODO: Should use pip install pytest-check is_true method so it wont fail after
@@ -830,7 +855,7 @@ class ThreatConnect:
                 self.provider.tcex.batch(owner).error_codes.get(code) + ': ' + str(count) + '\n'
             )
 
-        self.provider.log.error(log_message)
+        self.log.data('validate', 'Batch Submission', log_message, 'error')
 
     @staticmethod
     def _batch_error(key, batch_errors):

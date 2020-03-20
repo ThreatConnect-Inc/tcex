@@ -18,7 +18,7 @@ class TestCaseTriggerService(TestCaseServiceCommon):
             int: The App exit code
         """
         args['tc_playbook_out_variables'] = ','.join(self.ij.output_variable_array)
-        self.log_data('run', 'args', args)
+        self.log.data('run', 'args', args)
         self.app = self.app_init(args)
 
         # Setup
@@ -37,10 +37,21 @@ class TestCaseTriggerService(TestCaseServiceCommon):
             self.app.tcex.service.heartbeat()
             self.app.tcex.service.ready = True
         except SystemExit as e:
-            self.log.error(f'App failed in run() method ({e}).')
+            if e.code != 0 and self.profile and e.code not in self.profile.exit_codes:
+                self.log.data(
+                    'run',
+                    'App failed',
+                    f'App exited with code of {e.code} in method run()',
+                    'error',
+                )
             return self._exit(e.code)
         except Exception:
-            self.log.error(f'App encountered except in run() method ({traceback.format_exc()}).')
+            self.log.data(
+                'run',
+                'App failed',
+                f'App encountered except in run() method ({traceback.format_exc()})',
+                'error',
+            )
             return self._exit(1)
 
         # Run

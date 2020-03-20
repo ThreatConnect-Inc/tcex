@@ -162,7 +162,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
 
     def run_service(self):
         """Run the micro-service."""
-        self.log_data('run', 'service method', self.service_run_method)
+        self.log.data('run', 'service method', self.service_run_method)
         # backup sys.argv
         sys_argv_orig = sys.argv
 
@@ -231,7 +231,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 if self.app_process.poll() is not None:
                     break
             else:
-                self.log.debug(f'terminating process: {self.app_process.pid}')
+                self.log.data('run', 'Terminating Process', f'PID: {self.app_process.pid}', 'debug')
                 self.app_process.terminate()  # terminate subprocess
 
         # remove started file flag

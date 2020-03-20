@@ -11,11 +11,10 @@ import sys
 class Stager:
     """Stage Data class"""
 
-    def __init__(self, tcex, log, log_data):
+    def __init__(self, tcex, log):
         """Initialize class properties"""
         # self.args = tcex.args  # required for args to be parsed
         self.log = log
-        self.log_data = log_data
         self.tcex = tcex
         # TODO: validate this
         self.tcex.logger.update_handler_level('error')
@@ -46,15 +45,15 @@ class Redis:
         """Initialize class properties."""
         self.provider = provider
         self.redis_client = provider.tcex.redis_client
-        self.log_data = self.provider.log_data
+        self.log = self.provider.log
 
     def from_dict(self, staging_data):
         """Stage redis data from dict"""
         for variable, data in staging_data.items():
             variable_type = self.provider.tcex.playbook.variable_type(variable)
 
-            self.log_data('stage', 'variable', variable)
-            self.log_data('stage', 'data', data)
+            self.log.data('stage', 'variable', variable)
+            self.log.data('stage', 'data', data)
             if variable_type == 'Binary':
                 data = self._decode_binary(data, variable)
             elif variable_type == 'BinaryArray':

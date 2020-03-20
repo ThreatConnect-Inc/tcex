@@ -446,7 +446,7 @@ class Profile:
             # validate redis variables
             if data is None:
                 # log error for missing output data
-                self.log.warning(f'[{self.name}] Missing redis output for variable {variable}')
+                self.log.warning(f'[{self.name}] Missing KV store output for variable {variable}')
             else:
                 data = json.loads(data.decode('utf-8'))
 
