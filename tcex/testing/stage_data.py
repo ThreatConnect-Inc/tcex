@@ -161,16 +161,17 @@ class ThreatConnect:
             entity_type = data.pop('main_type')
             ti = None
             if entity_type == 'Group':
-                ti = self.provider.tcex.ti.group(
-                    data.get('sub_type'), unique_id=data.get('id'), owner=data.get('owner')
-                )
+                ti = self.provider.tcex.ti.group(data.get('sub_type'), owner=data.get('owner'))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
             elif entity_type == 'Indicator':
                 ti = self.provider.tcex.ti.indicator(data.get('sub_type'), owner=data.get('owner'))
-                ti._set_unique_id(data.get(ti.api_entity))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
             elif entity_type == 'Task':
-                ti = self.provider.tcex.ti.group(
-                    entity_type, unique_id=data.get('id'), owner=data.get('owner')
-                )
+                ti = self.provider.tcex.ti.group(entity_type, owner=data.get('owner'))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
             if ti:
                 ti.delete()
             if entity_type == 'Case_Management':
