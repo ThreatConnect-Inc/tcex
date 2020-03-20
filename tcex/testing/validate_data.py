@@ -165,7 +165,9 @@ class Validator:
                 passed = False
         return passed, ','.join(bad_data)
 
-    def operator_deep_diff(self, app_data, test_data, **kwargs):
+    def operator_deep_diff(
+        self, app_data, test_data, **kwargs
+    ):  # pylint: disable=too-many-return-statements
         """Compare app data equals tests data.
 
         Args:
@@ -178,15 +180,22 @@ class Validator:
         try:
             from deepdiff import DeepDiff
         except ImportError:
-            self.log.error('Could not import DeepDiff module (try "pip install deepdiff").')
-            return False
+            return False, 'Could not import DeepDiff module (try "pip install deepdiff").'
 
+        # pull out exclude_paths from kwargs
         exclude_paths = kwargs.pop('exclude_paths', [])
-        try:
-            app_data = json.loads(json.dumps(app_data))
-            test_data = json.loads(json.dumps(test_data))
-        except ValueError:
-            pass
+
+        if isinstance(app_data, (str)):
+            try:
+                app_data = json.loads(app_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({app_data}).'
+
+        if isinstance(test_data, (str)):
+            try:
+                test_data = json.loads(test_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({test_data}).'
 
         try:
             if isinstance(app_data, list) and isinstance(test_data, list):
@@ -205,8 +214,8 @@ class Validator:
                     paths = path.split('.')
                     app_data = self.remove_excludes(app_data, paths)
                     test_data = self.remove_excludes(test_data, paths)
-        except AttributeError:
-            pass
+        except AttributeError as e:
+            return False, f'Deep diff remove excludes failed with ({e}).'
 
         # run operator
         try:
@@ -317,6 +326,7 @@ class Validator:
                 app_data = json.loads(app_data)
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
+
         if isinstance(test_data, (str)):
             try:
                 test_data = json.loads(test_data)
@@ -343,8 +353,6 @@ class Validator:
         Returns:
             dict: The data with excluded values removed.
         """
-        if isinstance(data, (str)):
-            data = json.loads(data)
         for e in exclude:
             try:
                 es = e.split('.')
@@ -701,7 +709,7 @@ class Redis:
         return self.data(variable, data, op='kveq', **kwargs)
 
     def keyvalue_eq(self, variable, data, **kwargs):
-        """Validate JSON data equality"""
+        """Validate KeyValue JSON data equality"""
         return self.data(variable, data, op='kveq', **kwargs)
 
     def lt(self, variable, data):
