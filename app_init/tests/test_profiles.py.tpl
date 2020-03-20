@@ -117,7 +117,7 @@ class TestProfiles(${class_name}):
         # run custom test method before run method
         self.custom.test_pre_run(self, self.profile.data, monkeypatch)
 
-        assert self.run_profile(self.profile) in self.profile.exit_codes
+        assert self.run_profile() in self.profile.exit_codes
 
         % if runtime_level=='organization':
         self.validator.threatconnect.batch(self.profile)
