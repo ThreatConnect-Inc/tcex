@@ -862,8 +862,6 @@ class ProfileInteractive:
                     default = valid_values.index(data.get('default'))
                 except ValueError:
                     default = 0
-            if not default and valid_values:
-                default = valid_values[0]
         elif data.get('type').lower() == 'multichoice':
             default = data.get('default').split('|')
         else:
