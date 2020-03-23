@@ -40,7 +40,7 @@ class Tag:
             group_type:
         """
         group = self._tcex.ti.group(group_type)
-        yield from self.tc_requests.groups_from_tag(
+        return self.tc_requests.groups_from_tag(
             group, self.name, filters=filters, owner=owner, params=params
         )
 

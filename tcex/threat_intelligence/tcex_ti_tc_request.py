@@ -69,6 +69,7 @@ class TiTcRequest:
             r = self._get(url, params=params)
             if not self.success(r):
                 err = r.text or r.reason
+                print(err)
                 self.tcex.handle_error(950, [r.status_code, err, r.url])
 
             data = r.json().get('data', {})
@@ -1017,7 +1018,7 @@ class TiTcRequest:
             url = f'/v2/tags/{tag_name}/{api_type}/{sub_type}'
         else:
             url = f'/v2/tags/{tag_name}/{api_type}/'
-        yield from self._iterate(url, params, api_entity)
+        return self._iterate(url, params, api_entity)
 
     def groups_from_tag(self, group, tag_name, filters=None, owner=None, params=None):
         """
@@ -1032,7 +1033,7 @@ class TiTcRequest:
         Return:
 
         """
-        yield from self.pivot_from_tag(group, tag_name, filters=filters, owner=owner, params=params)
+        return self.pivot_from_tag(group, tag_name, filters=filters, owner=owner, params=params)
 
     def indicators_from_tag(self, indicator, tag_name, filters=None, owner=None, params=None):
         """

@@ -187,17 +187,23 @@ class Validator:
         # pull out exclude_paths from kwargs
         exclude_paths = kwargs.pop('exclude_paths', [])
 
-        if isinstance(app_data, (str)):
+        if isinstance(app_data, str):
             try:
                 app_data = json.loads(app_data)
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
+        else:
+            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
+            app_data = json.loads(json.dumps(app_data))
 
-        if isinstance(test_data, (str)):
+        if isinstance(test_data, str):
             try:
                 test_data = json.loads(test_data)
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
+        else:
+            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
+            test_data = json.loads(json.dumps(test_data))
 
         try:
             if isinstance(app_data, list) and isinstance(test_data, list):
