@@ -402,8 +402,6 @@ class ThreatIntelligence:
             else:
                 ti = self.group(entity_type, owner, **entity)
         r = ti.create()
-        print(r)
-        print(r.text)
         if entity_type.lower() in ['document', 'report']:
             ti.file_content(file_content)
 
