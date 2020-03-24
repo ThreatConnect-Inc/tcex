@@ -397,8 +397,13 @@ class ThreatIntelligence:
             ti = self.indicator(entity_type, owner, **entity)
         except Exception:
             entity['name'] = entity.pop('summary', None)
-            ti = self.group(entity_type, owner, **entity)
+            if entity_type.lower() in ['task']:
+                ti = self.task(owner=owner, **entity)
+            else:
+                ti = self.group(entity_type, owner, **entity)
         r = ti.create()
+        print(r)
+        print(r.text)
         if entity_type.lower() in ['document', 'report']:
             ti.file_content(file_content)
 
