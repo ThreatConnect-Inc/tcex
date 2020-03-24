@@ -171,7 +171,7 @@ class ThreatConnect:
                 data = data.get(ti.api_entity) or data
                 ti._set_unique_id(data)
             elif entity_type == 'Task':
-                ti = self.provider.tcex.ti.group(entity_type, owner=data.get('owner'))
+                ti = self.provider.tcex.ti.task(owner=data.get('owner'))
                 data = data.get(ti.api_entity) or data
                 ti._set_unique_id(data)
             if ti:
