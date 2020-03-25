@@ -109,7 +109,10 @@ class TestProfiles(${class_name}):
         """Run pre-created testing profiles."""
 
         # initialize profile
-        self.init_profile(profile_name, merge_outputs, replace_exit_message, replace_outputs)
+        valid, message = self.init_profile(
+            profile_name, merge_outputs, replace_exit_message, replace_outputs
+        )
+        assert valid, message
 
         # run custom test method before run method
         self.custom.test_pre_run(self, self.profile.data, monkeypatch)
