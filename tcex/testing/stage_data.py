@@ -147,6 +147,9 @@ class ThreatConnect:
         owner = value.pop('owner', None) or owner
         created_entity = self.provider.tcex.cm.create_entity(value, owner)
         if created_entity is None:
+            # This is here because there is a type `Task` in both TI and CM
+            if value.get('type', '').lower().startswith('ti_'):
+                value['type'] = value.get('type')[3:]
             created_entity = self.provider.tcex.ti.create_entity(value, owner)
         return {'key': key, 'data': created_entity}
 
@@ -168,7 +171,7 @@ class ThreatConnect:
                 data = data.get(ti.api_entity) or data
                 ti._set_unique_id(data)
             elif entity_type == 'Task':
-                ti = self.provider.tcex.ti.group(entity_type, owner=data.get('owner'))
+                ti = self.provider.tcex.ti.task(owner=data.get('owner'))
                 data = data.get(ti.api_entity) or data
                 ti._set_unique_id(data)
             if ti:

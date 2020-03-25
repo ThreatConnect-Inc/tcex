@@ -295,10 +295,14 @@ class Profile:
 
                 if env_type in ['env', 'envs', 'os'] and os.getenv(env_key):
                     profile = profile.replace(full_match, os.getenv(env_key))
-                elif env_type in ['env', 'envs', 'vault'] and self.vault_client.read(env_key):
+                elif (
+                    self.vault_client.is_authenticated()
+                    and env_type in ['env', 'envs', 'vault']
+                    and self.vault_client.read(env_key)
+                ):
                     profile = profile.replace(full_match, self.vault_client.read(env_key))
             except IndexError:
-                print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
+                print(f'{c.Fore.YELLOW}Could not replace variable {full_match}).')
         return json.loads(profile)
 
     def replace_tc_variables(self, profile_data):
