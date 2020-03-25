@@ -73,7 +73,7 @@ if __name__ == '__main__':
         tc_test = Test(args)
 
         if args.interactive:
-            if not args.feature and not args.profile_name:
+            if not args.feature or not args.profile_name:
                 print(
                     f'{c.Fore.RED}Both --feature and --name must be provided for interactive mode.'
                 )

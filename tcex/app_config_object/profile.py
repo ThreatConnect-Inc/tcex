@@ -293,9 +293,9 @@ class Profile:
                 env_type = m.group(1)  # currently env, os, or vault
                 env_key = m.group(2)
 
-                if env_type in ['env', 'os'] and os.getenv(env_key):
+                if env_type in ['env', 'envs', 'os'] and os.getenv(env_key):
                     profile = profile.replace(full_match, os.getenv(env_key))
-                elif env_type in ['env', 'vault'] and self.vault_client.read(env_key):
+                elif env_type in ['env', 'envs', 'vault'] and self.vault_client.read(env_key):
                     profile = profile.replace(full_match, self.vault_client.read(env_key))
             except IndexError:
                 print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
