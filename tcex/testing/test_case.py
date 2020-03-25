@@ -219,6 +219,9 @@ class TestCase:
             logger=self.log,
         )
 
+        # check profile environment
+        self.check_environment(self._profile.environments)
+
         # validate required fields
         valid, message = self._profile.validate_required_inputs()
 

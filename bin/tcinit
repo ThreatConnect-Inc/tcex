@@ -114,12 +114,12 @@ if __name__ == '__main__':
                 line_color=c.Fore.YELLOW,
             )
             sys.exit(1)
-        elif os.listdir(os.getcwd()) and not os.getenv('TC_DEVELOPER'):
+        elif os.listdir(os.getcwd()) and not os.getenv('TCEX_DEVELOPER'):
             tci.print_message(
                 f'The current directory does not appear to be empty. Updating files can cause loss '
                 f'of data. It is STRONGLY recommend you commit/backup all your changes before '
-                f'proceeding. To disable this message set the TC_DEVELOPER environment variable '
-                f'(e.g. export TC_DEVELOPER=1).',
+                f'proceeding. To disable this message set the TCEX_DEVELOPER environment variable '
+                f'(e.g. export TCEX_DEVELOPER=1).',
                 line_color=c.Fore.YELLOW,
             )
             message = f'Continue (yes/[no]): '

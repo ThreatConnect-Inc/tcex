@@ -676,9 +676,9 @@ class Profile:
                     continue
 
             # get value for playbook Apps
-            value = input_.get('required', {}).get(name)
+            value = input_.get('required', {}).get(name) or input_.get('optional', {}).get(name)
 
-            if not value:
+            if data.get('required') and not value:
                 return False, f'Missing/Invalid value for required arg ({name})'
 
             # update inputs
