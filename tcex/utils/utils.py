@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Utilities Module"""
+import ipaddress
 import os
 import random
 import re
@@ -152,3 +153,36 @@ class Utils:
                 flat_list.append(sublist)
 
         return flat_list
+
+    @staticmethod
+    def is_cidr(possible_cidr_range: str) -> bool:
+        """Return whether the possible_cidr_range is a CIDR range."""
+        try:
+            ipaddress.ip_address(possible_cidr_range)
+        except ValueError:
+            try:
+                ipaddress.ip_interface(possible_cidr_range)
+            except Exception:
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    @staticmethod
+    def is_ip(possible_ip: str) -> bool:
+        """Return whether the possible_ip is an IP address range."""
+        try:
+            ipaddress.ip_address(possible_ip)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def standardize_asn(asn: str) -> str:
+        """Return the ASN formatted for ThreatConnect."""
+        numbers = re.findall('[0-9]+', asn)
+        if len(numbers) == 1:
+            asn = f'ASN{numbers[0]}'
+        return asn
