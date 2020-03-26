@@ -43,7 +43,7 @@ class TemplateBase:
     @staticmethod
     def download_template(url):
         """Return template file"""
-        r = requests.get(url, allow_redirects=True)
+        r = requests.get(url, allow_redirects=True, headers={'Cache-Control': 'no-cache'})
         if not r.ok:
             raise RuntimeError(f'Could not download template file ({url}).')
         return r.content
@@ -181,7 +181,7 @@ class DownloadTemplates(TemplateBase):
 
         status = 'Failed'
         if not os.path.isfile(destination) or overwrite is True:
-            r = requests.get(url, allow_redirects=True)
+            r = requests.get(url, allow_redirects=True, headers={'Cache-Control': 'no-cache'})
             if not r.ok:
                 raise RuntimeError(f'Could not download template file ({url}).')
 

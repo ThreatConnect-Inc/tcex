@@ -305,26 +305,29 @@ class InstallJson:
                 params.setdefault(p.get('name'), p)
         return params
 
-    def update_schema(self, migrate=False):
-        """Update the profile to the current schema."""
+    def update(self, migrate=False):
+        """Update the profile with all required changes."""
         with open(self.filename, 'r+') as fh:
             json_data = json.load(fh)
 
             # update appId field
-            json_data = self.update_schema_app_id(json_data)
+            json_data = self.update_app_id(json_data)
 
             # update commitHash field
-            json_data = self.update_schema_commit_hash(json_data)
+            json_data = self.update_commit_hash(json_data)
 
             # update displayName field
-            json_data = self.update_schema_display_name(json_data)
+            json_data = self.update_display_name(json_data)
 
             # update features array
-            json_data = self.update_schema_features(json_data)
+            json_data = self.update_features(json_data)
 
             if migrate:
                 # update programMain to run
-                json_data = self.update_schema_program_main(json_data)
+                json_data = self.update_program_main(json_data)
+
+            # update sequence numbers
+            json_data = self.update_sequence_numbers(json_data)
 
             # write updated profile
             fh.seek(0)
@@ -334,8 +337,8 @@ class InstallJson:
         self._contents = json_data
 
     @staticmethod
-    def update_schema_app_id(json_data):
-        """Update schema to ensure an appId field exists.
+    def update_app_id(json_data):
+        """Update to ensure an appId field exists.
 
         All App should have an appId to uniquely identify the App. this is not intended to be
         used by core to identify an App.  using appId + major Version could be used for unique
@@ -347,8 +350,8 @@ class InstallJson:
             )
         return json_data
 
-    def update_schema_commit_hash(self, json_data):
-        """Update schema to ensure an appId field exists.
+    def update_commit_hash(self, json_data):
+        """Update to ensure an appId field exists.
 
         Add/Update the commit hash to the install.json file if possible.
         """
@@ -356,7 +359,7 @@ class InstallJson:
             json_data['commitHash'] = self._commit_hash
         return json_data
 
-    def update_schema_display_name(self, json_data):
+    def update_display_name(self, json_data):
         """Update the displayName parameter."""
         if not json_data.get('displayName'):
             display_name = os.path.basename(os.getcwd()).replace(self.app_prefix, '')
@@ -365,7 +368,7 @@ class InstallJson:
             json_data['displayName'] = display_name
         return json_data
 
-    def update_schema_features(self, json_data):
+    def update_features(self, json_data):
         """Update feature set based on App type."""
         features = self.features
         if self.runtime_level.lower() in ['organization']:
@@ -378,13 +381,22 @@ class InstallJson:
         json_data['features'] = features
         return json_data
 
-    def update_schema_program_main(self, json_data):
+    def update_program_main(self, json_data):
         """Update program main on App type."""
         if self.program_main:
             if self.runtime_level.lower() in ['playbook']:
                 json_data['programMain'] = 'run'
             elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
                 json_data['programMain'] = 'run'
+        return json_data
+
+    @staticmethod
+    def update_sequence_numbers(json_data):
+        """Update program main on App type."""
+        sequence_number = 1
+        for param in json_data.get('params', []):
+            param['sequence'] = sequence_number
+            sequence_number += 1
         return json_data
 
     def validate(self):

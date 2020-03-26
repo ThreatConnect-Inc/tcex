@@ -66,7 +66,7 @@ class TcexJson:
         return os.path.join(self._path, self._filename)
 
     def replace_env_variables(self, json_data):
-        """Update the profile to the current schema.
+        """Update any env variable.
 
         Args:
             json_data (dict): The profile data dict.

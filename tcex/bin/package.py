@@ -154,7 +154,7 @@ class Package(Bin):
             ij = InstallJson(install_json_name)
 
             # automatically update install.json
-            ij.update_schema()
+            ij.update()
 
             # get App Name from config, install.json prefix or directory name.
             app_name = self.app_name(install_json_name)

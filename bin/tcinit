@@ -152,13 +152,13 @@ if __name__ == '__main__':
 
         # if we are migrating, update the install.json
         if (args.update or args.migrate) and not template.startswith('external'):
-            tci.ij.update_schema(migrate=args.migrate)
+            tci.ij.update(migrate=args.migrate)
 
         # print results
         tci.download_template.print_download_results()
 
         # update install.json
-        tci.ij.update_schema()
+        tci.ij.update()
 
         # update tcex.json
         tci.tj.update(template)

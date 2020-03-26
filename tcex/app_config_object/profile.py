@@ -243,8 +243,8 @@ class Profile:
 
     def init(self):
         """Return the Data (dict) from the current profile."""
-        # update profile schema
-        profile_data = self.update_schema()
+        # update profile
+        profile_data = self.update()
 
         # replace all variable references
         profile_data = self.replace_env_variables(profile_data)
@@ -269,7 +269,15 @@ class Profile:
         self._name = name
 
     def profile_inputs(self):
-        """Return the appropriate inputs (config) for the current App type."""
+        """Return the appropriate inputs (config) for the current App type.
+
+        Service App use config and others use inputs.
+
+        "inputs": {
+            "optional": {}
+            "required": {}
+        }
+        """
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             for config_data in self.configs:
                 yield config_data.get('config')
@@ -277,7 +285,7 @@ class Profile:
             yield self.inputs
 
     def replace_env_variables(self, profile_data):
-        """Update the profile to the current schema.
+        """Replace any env vars.
 
         Args:
             profile_data (dict): The profile data dict.
@@ -338,8 +346,34 @@ class Profile:
         return os.path.join(self._app_path, 'tests')
 
     def update(self):
-        """Update an existing profile."""
-        raise NotImplementedError('The update method is not currently implemented.')
+        """Update profile with all required changes."""
+        with open(os.path.join(self.filename), 'r+') as fh:
+            profile_data = json.load(fh)
+
+            # update all env variables to match latest pattern
+            self.update_permutation_output_variables(profile_data)
+
+            # change for threatconnect staged data
+            profile_data = self.update_stage_redis_name(profile_data)
+
+            # change for threatconnect staged data
+            profile_data = self.update_stage_threatconnect_data(profile_data)
+
+            # update all version 1 env variables to match latest pattern
+            profile_data = self.update_variable_pattern_env_v1(profile_data)
+
+            # update all version 2 env variables to match latest pattern
+            profile_data = self.update_variable_pattern_env_v2(profile_data)
+
+            # update all tcenv variables to match latest pattern
+            profile_data = self.update_variable_pattern_tcenv(profile_data)
+
+            # write updated profile
+            fh.seek(0)
+            fh.write(f'{json.dumps(profile_data, indent=2, sort_keys=True)}\n')
+            fh.truncate()
+
+        return profile_data
 
     def update_exit_message(self):
         """Update validation rules from exit_message section of profile."""
@@ -474,38 +508,8 @@ class Profile:
             else:
                 outputs[variable] = output_data
 
-    def update_schema(self):
-        """Update the profile to the current schema."""
-        with open(os.path.join(self.filename), 'r+') as fh:
-            profile_data = json.load(fh)
-
-            # update all env variables to match latest pattern
-            self.update_schema_permutation_output_variables(profile_data)
-
-            # schema change for threatconnect staged data
-            profile_data = self.update_schema_stage_redis_name(profile_data)
-
-            # schema change for threatconnect staged data
-            profile_data = self.update_schema_stage_threatconnect_data(profile_data)
-
-            # update all version 1 env variables to match latest pattern
-            profile_data = self.update_schema_variable_pattern_env_v1(profile_data)
-
-            # update all version 2 env variables to match latest pattern
-            profile_data = self.update_schema_variable_pattern_env_v2(profile_data)
-
-            # update all tcenv variables to match latest pattern
-            profile_data = self.update_schema_variable_pattern_tcenv(profile_data)
-
-            # write updated profile
-            fh.seek(0)
-            fh.write(f'{json.dumps(profile_data, indent=2, sort_keys=True)}\n')
-            fh.truncate()
-
-        return profile_data
-
     @staticmethod
-    def update_schema_permutation_output_variables(profile_data):
+    def update_permutation_output_variables(profile_data):
         """Remove permutation_output_variables field.
 
         Args:
@@ -521,10 +525,10 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_schema_stage_redis_name(profile_data):
-        """Update the schema for stage redis to kvstore
+    def update_stage_redis_name(profile_data):
+        """Update staged redis to kvstore
 
-        This schema change updates the previous value of redis with a
+        This change updates the previous value of redis with a
         more generic value of kvstore for staged data.
 
         Args:
@@ -544,10 +548,10 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_schema_stage_threatconnect_data(profile_data):
-        """Update the schema for stage threatconnect data section of profile
+    def update_stage_threatconnect_data(profile_data):
+        """Update for staged threatconnect data section of profile
 
-        This schema change updates the previous list to a dict with a key that
+        This change updates the previous list to a dict with a key that
         can be reference as a variable in other sections of the profile.
 
         Args:
@@ -573,7 +577,7 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_schema_variable_pattern_env_v1(profile_data):
+    def update_variable_pattern_env_v1(profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -597,7 +601,7 @@ class Profile:
         return json.loads(profile)
 
     @staticmethod
-    def update_schema_variable_pattern_env_v2(profile_data):
+    def update_variable_pattern_env_v2(profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -620,7 +624,7 @@ class Profile:
                 print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
 
-    def update_schema_variable_pattern_tcenv(self, profile_data):
+    def update_variable_pattern_tcenv(self, profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -675,10 +679,11 @@ class Profile:
                 ):
                     continue
 
-            # get value for playbook Apps
+            # get the value from the current profile
             value = input_.get('required', {}).get(name) or input_.get('optional', {}).get(name)
 
             if data.get('required') and not value:
+                # cause an assert failure if a required field doesn't have a valid value
                 return False, f'Missing/Invalid value for required arg ({name})'
 
             # update inputs
