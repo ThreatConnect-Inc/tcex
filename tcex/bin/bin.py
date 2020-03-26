@@ -49,7 +49,7 @@ class Bin:
             sys.exit(1)
 
     @staticmethod
-    def print_message(message, line_bright=False, line_color=None, line_limit=100):
+    def print_message(message, line_bright=False, line_color=None, line_limit=150):
         """Print the message ensuring lines don't exceed line limit."""
         bright = ''
         if line_bright:

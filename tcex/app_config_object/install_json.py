@@ -305,8 +305,15 @@ class InstallJson:
                 params.setdefault(p.get('name'), p)
         return params
 
-    def update(self, migrate=False):
-        """Update the profile with all required changes."""
+    def update(self, commit_hash=False, features=True, migrate=False, sequence=True):
+        """Update the profile with all required changes.
+
+        Args:
+            commit_hash (bool, optional): If True the commitHash value will be added.
+            features (bool, optional): If True the features array will be updated.
+            migrate (bool, optional): If True the programMain will be set to "run".
+            sequence (bool, optional): If True the sequence numbers will be updated.
+        """
         with open(self.filename, 'r+') as fh:
             json_data = json.load(fh)
 
@@ -314,20 +321,23 @@ class InstallJson:
             json_data = self.update_app_id(json_data)
 
             # update commitHash field
-            json_data = self.update_commit_hash(json_data)
+            if commit_hash is True:
+                json_data = self.update_commit_hash(json_data)
 
             # update displayName field
             json_data = self.update_display_name(json_data)
 
             # update features array
-            json_data = self.update_features(json_data)
+            if features is True:
+                json_data = self.update_features(json_data)
 
-            if migrate:
+            if migrate is True:
                 # update programMain to run
                 json_data = self.update_program_main(json_data)
 
             # update sequence numbers
-            json_data = self.update_sequence_numbers(json_data)
+            if sequence is True:
+                json_data = self.update_sequence_numbers(json_data)
 
             # write updated profile
             fh.seek(0)

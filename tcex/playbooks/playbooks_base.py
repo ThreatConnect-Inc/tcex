@@ -98,6 +98,9 @@ class PlaybooksBase:
         variable_type = self.variable_type(key)
 
         if variable_type == 'BinaryArray':
+            if validate and not isinstance(value, list):
+                raise RuntimeError('Invalid data provided for BinaryArray.')
+
             value_encoded = []
             for v in value:
                 if v is not None:
@@ -112,6 +115,9 @@ class PlaybooksBase:
             if validate and (not isinstance(value, list) or not self._is_key_value_array(value)):
                 raise RuntimeError('Invalid data provided for KeyValueArray.')
         elif variable_type == 'StringArray':
+            if validate and not isinstance(value, list):
+                raise RuntimeError('Invalid data provided for StringArray.')
+
             for v in value:
                 # coerce string values
                 v = self._coerce_string_value(v)

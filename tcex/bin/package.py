@@ -147,14 +147,11 @@ class Package(Bin):
         # package app
         for install_json_name in sorted(contents):
             # skip files that are not install.json files
-            if 'install.json' not in install_json_name:
+            if not install_json_name.endswith('install.json'):
                 continue
 
             # load install json
             ij = InstallJson(install_json_name)
-
-            # automatically update install.json
-            ij.update()
 
             # get App Name from config, install.json prefix or directory name.
             app_name = self.app_name(install_json_name)
@@ -184,6 +181,12 @@ class Package(Bin):
             # Copy install.json
             # TODO: do we need copy if writing the data in the next step?
             shutil.copy(install_json_name, os.path.join(tmp_app_path, 'install.json'))
+
+            # load template install json
+            ij_template = InstallJson(path=tmp_app_path)
+
+            # automatically update install.json in template directory
+            ij_template.update(commit_hash=True, sequence=False)
 
             # zip file
             self.zip_file(self.app_path, app_name_version, tmp_path)

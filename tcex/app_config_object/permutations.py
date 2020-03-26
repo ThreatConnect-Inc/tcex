@@ -372,7 +372,7 @@ class Permutations:
     def write_permutations_file(self):
         """Print all valid permutations."""
         permutations = []
-        for p, index in enumerate(self.input_permutations):
+        for index, p in enumerate(self.input_permutations):
             permutations.append({'index': index, 'args': p})
 
         with open(self.filename, 'w') as fh:
