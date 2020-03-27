@@ -149,7 +149,7 @@ class Validate(Bin):
             module in stdlib_list('3.6')
             or module in stdlib_list('3.7')
             or module in stdlib_list('3.8')
-            or module in ['app', 'args', 'playbook_app']
+            or module in ['app', 'args', 'job_app', 'playbook_app', 'run', 'service_app']
         ):
             return True
         return False
@@ -168,36 +168,16 @@ class Validate(Bin):
             del sys.modules[module]
         except (AttributeError, KeyError):
             pass
-        # TODO: if possible, update to a cleaner method that doesn't require importing the module
-        # and running inline code.
-        module_path = None
-        try:
-            imported_module = importlib.import_module(module)
-        except ImportError:
-            return False
-        if hasattr(imported_module, '__path__'):
-            # module in lib directory
-            module_path = imported_module.__path__
-        elif hasattr(imported_module, '__file__'):
-            # module in base App directory
-            module_path = imported_module.__file__
-        else:
-            return False
 
-        # possible unneeded check
-        if module_path is None:
-            return False
-
-        if isinstance(module_path, str):
-            module_path = [module_path]
-
-        for m_path in module_path:
+        find_spec = importlib.util.find_spec(module)
+        found = find_spec is not None
+        if found is True:
             # if dist-packages|site-packages in module_path the import doesn't count
-            if 'dist-packages' in m_path:
-                return False
-            if 'site-packages' in m_path:
-                return False
-        return True
+            if 'dist-packages' in find_spec.origin:
+                found = False
+            if 'site-packages' in find_spec.origin:
+                found = False
+        return found
 
     def check_install_json(self):
         """Check all install.json files for valid schema."""
