@@ -401,8 +401,11 @@ class Profile:
         """Update the validation rules for outputs section of a profile.
 
         By default this method will only update if the current value is null. If the
-        flag --update_outputs is passed to pytest (e.g., pytest --update_args) the
-        outputs will updated regardless of their current value.
+        flag --replace_outputs is passed to pytest (e.g., pytest --replace_outputs)
+        the outputs will replaced regardless of their current value. If the flag
+        --merge_outputs is passed to pytest (e.g., pytest --merge_outputs) any new
+        outputs will be added and any outputs that are not longer valid will be
+        removed.
         """
         if self.redis_client is None:
             # redis_client is only available for children of TestCasePlaybookCommon
@@ -417,6 +420,7 @@ class Profile:
             )
 
         outputs = {}
+        trigger_id = None
         for context in self.context_tracker:
             # get all current keys in current context
             redis_data = self.redis_client.hgetall(context)
@@ -436,7 +440,7 @@ class Profile:
             json_data['outputs'] = outputs
             self._write_file(json_data)
         elif self.merge_outputs:
-            if trigger_id:
+            if trigger_id is not None:
                 # service Apps have a different structure with id: data
                 merged_outputs = {}
                 for id_, data in outputs.items():
