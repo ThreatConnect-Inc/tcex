@@ -71,7 +71,7 @@ app.py
     :linenos:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-Job Ingress (job_ingress)
+Job Batch (job_batch)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx :ref:`Batch Module <module_batch>`.  The URL is defined in the ``init()`` method for convenience. In the ``run()`` method, the Batch module is instantiated. Next, the data is retrieved from the remote URL and written to the Batch module. Finally, the Batch Job is submitted to ThreatConnect for processing.

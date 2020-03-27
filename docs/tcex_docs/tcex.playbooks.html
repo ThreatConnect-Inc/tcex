@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Playbooks Module &mdash; TcEx 2.0.2 documentation</title>
+  <title>Playbooks Module &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -476,6 +476,15 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <em class="property">class </em><code class="sig-prename descclassname">tcex.playbooks.playbooks.</code><code class="sig-name descname">Playbooks</code><span class="sig-paren">(</span><em class="sig-param">tcex</em>, <em class="sig-param">context</em>, <em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.playbooks.playbooks_base.PlaybooksBase" title="tcex.playbooks.playbooks_base.PlaybooksBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.playbooks.playbooks_base.PlaybooksBase</span></code></a></p>
 <p>Playbook methods for accessing key value store.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<em>object</em>) – Instance of TcEx.</p></li>
+<li><p><strong>context</strong> (<em>str</em>) – The KV Store context/session_id.</p></li>
+<li><p><strong>output_variables</strong> (<em>list</em>) – The requested output variables.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="tcex.playbooks.playbooks.Playbooks._entity_field">
 <code class="sig-name descname">_entity_field</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">field</em>, <em class="sig-param">entity_type=None</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks._entity_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks._entity_field" title="Permalink to this definition">¶</a></dt>
@@ -821,6 +830,12 @@ it a partial success instead.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.playbooks.playbooks.Playbooks.is_variable">
+<code class="sig-name descname">is_variable</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.is_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.is_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if provided key is a properly formatted variable.</p>
 </dd></dl>
 
 <dl class="method">

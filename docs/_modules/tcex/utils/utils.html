@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.utils &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.utils.utils &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -178,6 +178,7 @@
   <h1>Source code for tcex.utils.utils</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Utilities Module&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">ipaddress</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -193,12 +194,12 @@
     <span class="sd">&quot;&quot;&quot;TcEx framework Utils Class</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        tcex (object): Instance of TcEx.</span>
+<span class="sd">        temp_path (str, optional): The path to write temp files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the Class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_path</span> <span class="o">=</span> <span class="n">temp_path</span> <span class="ow">or</span> <span class="s1">&#39;/tmp&#39;</span>
 
         <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_camel_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?&lt;!^)(?=[A-Z])&#39;</span><span class="p">)</span>
@@ -290,7 +291,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
-        <span class="n">fqpn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">fqpn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fqpn</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqpn</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
@@ -306,7 +307,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: The boolean value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Utils.flatten_list"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.flatten_list">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">flatten_list</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
@@ -329,7 +330,40 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">flat_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sublist</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">flat_list</span></div></div>
+        <span class="k">return</span> <span class="n">flat_list</span></div>
+
+<div class="viewcode-block" id="Utils.is_cidr"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.is_cidr">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_cidr</span><span class="p">(</span><span class="n">possible_cidr_range</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return whether the possible_cidr_range is a CIDR range.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="n">possible_cidr_range</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_interface</span><span class="p">(</span><span class="n">possible_cidr_range</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Utils.is_ip"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.is_ip">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_ip</span><span class="p">(</span><span class="n">possible_ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return whether the possible_ip is an IP address range.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="n">possible_ip</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Utils.standardize_asn"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.standardize_asn">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">standardize_asn</span><span class="p">(</span><span class="n">asn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the ASN formatted for ThreatConnect.&quot;&quot;&quot;</span>
+        <span class="n">numbers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;[0-9]+&#39;</span><span class="p">,</span> <span class="n">asn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">asn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;ASN</span><span class="si">{numbers[0]}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">asn</span></div></div>
 </pre></div>
 
            </div>

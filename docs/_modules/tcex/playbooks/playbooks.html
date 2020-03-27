@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -184,14 +184,16 @@
 
 
 <div class="viewcode-block" id="Playbooks"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks">[docs]</a><span class="k">class</span> <span class="nc">Playbooks</span><span class="p">(</span><span class="n">PlaybooksBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Playbook methods for accessing key value store.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Playbook methods for accessing key value store.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (object): Instance of TcEx.</span>
+<span class="sd">        context (str): The KV Store context/session_id.</span>
+<span class="sd">        output_variables (list): The requested output variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            tcex (object): Instance of TcEx.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">)</span>
 
         <span class="c1"># properties</span>
@@ -457,12 +459,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_type</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># variable key-type has been requested</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_type</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream app.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream App.&quot;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">variable_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># variable key has been requested</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream app.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream App.&quot;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;requested output variables: </span><span class="si">{self.output_variables_by_name}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -505,10 +507,18 @@
             <span class="n">code</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="c1"># required only for tcex testing framework</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span><span class="p">,</span> <span class="s1">&#39;_exit_message&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Playbooks.is_variable"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.is_variable">[docs]</a>    <span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if provided key is a properly formatted variable.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">output_variables_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

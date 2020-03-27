@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.services.services &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.services.services &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -246,7 +246,11 @@
                 <span class="s1">&#39;_context_tracker&#39;</span><span class="p">,</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_context_tracker</span><span class="p">),</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="s1">&#39;_trigger_id&#39;</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="s1">&#39;_trigger_id&#39;</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">)</span>
+
+            <span class="c1"># log</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Wrote context </span><span class="si">{session_id}</span><span class="s1"> to _context_tracker&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Wrote trigger id </span><span class="si">{trigger_id}</span><span class="s1"> to _trigger_id&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Services.add_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.add_metric">[docs]</a>    <span class="k">def</span> <span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a metric.</span>
@@ -314,11 +318,19 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            callback (callable): The trigger method in the App to call.</span>
+<span class="sd">            trigger_ids (list, kwargs): A list of trigger ids to trigger.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Callback method (callback) is not a callable.&#39;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># get developer passed trigger_ids</span>
+        <span class="n">trigger_ids</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;trigger_ids&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">trigger_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">trigger_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">trigger_ids</span><span class="p">:</span>
+                <span class="c1"># skip config that don&#39;t match developer provided trigger ids</span>
+                <span class="k">continue</span>
+
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;triggering callback for config id: </span><span class="si">{trigger_id}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="c1"># get a session_id specifically for this thread</span>
@@ -683,6 +695,7 @@
 
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;createconfig&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CreateConfig - trigger_id: </span><span class="si">{trigger_id}</span><span class="s1"> config : </span><span class="si">{config}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">valid_config</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="c1"># register config apiToken</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">register_token</span><span class="p">(</span>
@@ -696,17 +709,20 @@
                     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># call callback for create config and handle exceptions to protect thread</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">create_config_callback</span><span class="p">(</span>  <span class="c1"># pylint: disable=not-callable</span>
+                    <span class="n">valid_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_config_callback</span><span class="p">(</span>  <span class="c1"># pylint: disable=not-callable</span>
                         <span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;The create config callback method encountered an error (</span><span class="si">{e}</span><span class="s1">).&#39;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;The create config callback method encountered an error (</span><span class="si">{e}</span><span class="s1">).&#39;</span>
+                    <span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
+                    <span class="n">valid_config</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="c1"># create config after callback to report status and message</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">valid_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">command</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deleteconfig&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DeleteConfig - trigger_id: </span><span class="si">{trigger_id}</span><span class="s1">&#39;</span><span class="p">)</span>
 
