@@ -89,8 +89,8 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """
         # merge the message config (e.g., optional, required)
         message_config = message.pop('config')
-        config = message_config.get('optional')
-        config.update(message_config.get('required'))
+        config = message_config.get('optional', {})
+        config.update(message_config.get('required', {}))
         message['config'] = config
 
         # build config message
