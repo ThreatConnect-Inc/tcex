@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Pytest Profile Generation Module"""
 import argparse
+import os
 import sys
 import traceback
 
 import colorama as c
 from tcex.bin import Test
+from tcex.app_config_object import Profile
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -37,6 +39,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--branch', default='master', help='Git branch.')
 parser.add_argument('--feature', help='The sub directory under tests for this test logic')
 parser.add_argument(
+    '--interactive', action='store_true', help='Enable interactive mode for profile generation.',
+)
+parser.add_argument(
     '--permutation_id',
     help='The ID from the "--permutations" option to use for generating the profile.',
     type=int,
@@ -54,6 +59,12 @@ parser.add_argument(
     dest='profile_name',
     help='The profile name to create, delete, update.',
 )
+parser.add_argument(
+    '--update',
+    action='store_true',
+    default=False,
+    help='Update all non-editable template files for all features.',
+)
 args, extra_args = parser.parse_known_args()
 
 
@@ -61,25 +72,106 @@ if __name__ == '__main__':
     try:
         tc_test = Test(args)
 
-        if args.permutations:
-            tc_test.permutations()
-        elif args.feature and (args.profile_name or args.profile_file):
+        if args.interactive:
+            if not args.feature or not args.profile_name:
+                print(
+                    f'{c.Fore.RED}Both --feature and --name must be provided for interactive mode.'
+                )
+                sys.exit(1)
+
+            if os.path.isfile(tc_test.profile.filename):
+                print(f'{c.Fore.RED}A profile with the name already exists.')
+                sys.exit(1)
+
             # generates the tests and feature dir
             tc_test.create_dirs()
             # generates the custom.py and custom_feature.py files
-            tc_test.generate_custom_files()
+            tc_test.custom_templates.render_templates()
             # generates the test_profile.py file
-            tc_test.generate_test_profile_file()
-            # generates the validation.py and validation_feature.py files
-            tc_test.generate_validation_files()
+            tc_test.test_profile_template.render_templates()
+            # generates the validation.py, validation_custom.py, and validation_feature.py files
+            tc_test.validation_templates.render_templates()
             # adds the profile to the json
-            tc_test.add_profile()
+            tc_test.interactive_profile()
             # download conftest.py
-            tc_test.download_conftest()
+            tc_test.download_template.test_conftest_py()
             # download profiles.py
-            tc_test.download_profile()
+            tc_test.download_template.test_profiles_py()
+        elif args.permutations:
+            # write permutations file
+            tc_test.permutations.write_permutations_file()
+            sys.exit()
+        elif args.update:
+            # TODO: this sections needs an update
+            if os.path.isdir('tests'):
+                for feature in os.listdir('tests'):
+                    feature_path = os.path.join('tests', feature)
+                    # check for feature directory
+                    if not os.path.isdir(feature_path) or not os.path.isdir(
+                        os.path.join(feature_path, 'profiles.d')
+                    ):
+                        # not a feature directory
+                        continue
+                    # now we know this current directory is a feature directory
+                    profile = Profile(default_args={}, feature=feature, name='')
+                    print(f'{c.Fore.GREEN}Update template files for "{feature}" Feature')
+                    # update test_profiles.py
+                    tc_test.test_profile_template.profile = profile
+                    tc_test.test_profile_template.render_templates()
+
+                profile = Profile(default_args={}, feature='', name='')
+                # render validate.py
+                tc_test.validation_templates.profile = profile
+                tc_test.validation_templates.validate_py()
+                # download conftest.py and profiles.py
+                tc_test.download_template.test_conftest_py()
+                tc_test.download_template.test_profiles_py()
+        elif args.feature and args.profile_file:
+
+            # generates the tests and feature dir
+            tc_test.create_dirs()
+            # generates the custom.py and custom_feature.py files
+            tc_test.custom_templates.render_templates()
+            # generates the test_profile.py file
+            tc_test.test_profile_template.render_templates()
+            # generates the validation.py, validation_custom.py, and validation_feature.py files
+            tc_test.validation_templates.render_templates()
+            # migrate the profile to the json
+            tc_test.migrate_profile()
+            # download conftest.py
+            tc_test.download_template.test_conftest_py()
+            # download profiles.py
+            tc_test.download_template.test_profiles_py()
+        elif args.feature and args.profile_name:
+            if os.path.isfile(tc_test.profile.filename):
+                print(f'{c.Fore.RED}A profile with the name already exists.')
+                sys.exit(1)
+
+            # generates the tests and feature dir
+            tc_test.create_dirs()
+            # generates the custom.py and custom_feature.py files
+            tc_test.custom_templates.render_templates()
+            # generates the test_profile.py file
+            tc_test.test_profile_template.render_templates()
+            # generates the validation.py, validation_custom.py, and validation_feature.py files
+            tc_test.validation_templates.render_templates()
+            # adds the profile to the json
+            tc_test.profile.add(permutation_id=args.permutation_id)
+            # download conftest.py
+            tc_test.download_template.test_conftest_py()
+            # download profiles.py
+            tc_test.download_template.test_profiles_py()
         else:
-            print('Invalid options.')
+            print(f'{c.Fore.RED}Invalid options (try tctest --help).')
+            sys.exit(1)
+
+        # print results
+        print(f'{c.Style.BRIGHT}Download Results:')
+        tc_test.download_template.print_download_results()
+        print(f'{c.Style.BRIGHT}Template Render Results:')
+        tc_test.custom_templates.print_template_render_results()
+        tc_test.test_profile_template.print_template_render_results()
+        tc_test.validation_templates.print_template_render_results()
 
         # exit
         sys.exit()

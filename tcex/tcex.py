@@ -810,5 +810,5 @@ class TcEx:
         if self._utils is None:
             from .utils import Utils
 
-            self._utils = Utils(self)
+            self._utils = Utils(temp_path=self.default_args.tc_temp_path)
         return self._utils

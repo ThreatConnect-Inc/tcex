@@ -224,7 +224,7 @@ class Mappings:
         Args:
         """
         if not self.can_create():
-            self._tcex.handle_error(905, [self.type])
+            self._tcex.handle_error(920, [self.type])
 
         response = self.tc_requests.create(self.api_type, self.api_branch, self._data, self.owner)
 

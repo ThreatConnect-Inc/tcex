@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.inputs &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.inputs.inputs &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -183,6 +183,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">Namespace</span>
 
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">Utils</span>
 <span class="kn">from</span> <span class="nn">.argument_parser</span> <span class="kn">import</span> <span class="n">TcArgumentParser</span>
 <span class="kn">from</span> <span class="nn">.file_params</span> <span class="kn">import</span> <span class="n">FileParams</span>
 
@@ -214,6 +215,7 @@
         <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parsed_resolved</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
 
         <span class="c1"># parser</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">TcArgumentParser</span><span class="p">()</span>
@@ -427,7 +429,7 @@
 <span class="sd">            }</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config (dict): A dictionary of configuration values.</span>
+<span class="sd">            config_data (dict): A dictionary of configuration values.</span>
 <span class="sd">            preserve (bool): Don&#39;t overwrite arg values define in sys.argv</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -642,7 +644,7 @@
             <span class="c1"># JSON boolean and not a string.</span>
             <span class="n">param_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
             <span class="n">param_type</span> <span class="o">=</span> <span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-            <span class="n">param_allow_multiple</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allowMultiple&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+            <span class="n">param_allow_multiple</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">param_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allowMultiple&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">param_type</span> <span class="o">==</span> <span class="s1">&#39;multichoice&#39;</span> <span class="ow">or</span> <span class="n">param_allow_multiple</span><span class="p">:</span>
                 <span class="c1"># update delimited value to an array for params that have type of MultiChoice.</span>
@@ -650,10 +652,10 @@
                     <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">list_delimiter</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">param_type</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
                 <span class="c1"># convert boolean input that are passed in as a string (&quot;true&quot; -&gt; True)</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_bool_args</span><span class="p">:</span>
                 <span class="c1"># convert default boolean args that are passed in as a string (&quot;true&quot; -&gt; True)</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
             <span class="c1"># add args and updated value to dict</span>
             <span class="n">updated_params</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>

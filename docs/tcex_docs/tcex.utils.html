@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Utils Module &mdash; TcEx 2.0.2 documentation</title>
+  <title>Utils Module &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -216,12 +216,12 @@
 <p>TcEx Utilities Module</p>
 <dl class="class">
 <dt id="tcex.utils.utils.Utils">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.utils.utils.</code><code class="sig-name descname">Utils</code><span class="sig-paren">(</span><em class="sig-param">tcex=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.utils.utils.</code><code class="sig-name descname">Utils</code><span class="sig-paren">(</span><em class="sig-param">temp_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx framework Utils Class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tcex</strong> (<em>object</em>) – Instance of TcEx.</p>
+<dd class="field-odd"><p><strong>temp_path</strong> (<em>str</em><em>, </em><em>optional</em>) – The path to write temp files.</p>
 </dd>
 </dl>
 <dl class="method">
@@ -290,6 +290,18 @@ and for lists with a mix of lists and single values</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.utils.utils.Utils.is_cidr">
+<em class="property">static </em><code class="sig-name descname">is_cidr</code><span class="sig-paren">(</span><em class="sig-param">possible_cidr_range: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.is_cidr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.is_cidr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether the possible_cidr_range is a CIDR range.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.utils.Utils.is_ip">
+<em class="property">static </em><code class="sig-name descname">is_ip</code><span class="sig-paren">(</span><em class="sig-param">possible_ip: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.is_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.is_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether the possible_ip is an IP address range.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.utils.utils.Utils.random_string">
 <em class="property">static </em><code class="sig-name descname">random_string</code><span class="sig-paren">(</span><em class="sig-param">string_length=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.random_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.random_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a random string of fixed length</p>
@@ -315,6 +327,12 @@ and for lists with a mix of lists and single values</p>
 <dd class="field-odd"><p><strong>snake_string</strong> (<em>str</em>) – The snake case input string.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.utils.Utils.standardize_asn">
+<em class="property">static </em><code class="sig-name descname">standardize_asn</code><span class="sig-paren">(</span><em class="sig-param">asn: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.standardize_asn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.standardize_asn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ASN formatted for ThreatConnect.</p>
 </dd></dl>
 
 <dl class="method">

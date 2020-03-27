@@ -177,19 +177,27 @@ class TestUtils:
             (
                 'at 4pm',
                 'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T22:00:00', 'timedelta': {}},
+                {
+                    'operator': operator.add,
+                    'strftime': '%Y-%m-[0-9]{2}T[0-9]{2}:00:00',
+                    'timedelta': {},
+                },
             ),
             (
                 'eod',
                 'UTC',
-                {'operator': operator.add, 'strftime': '%Y-%m-[0-9]{2}T23:00:00', 'timedelta': {}},
+                {
+                    'operator': operator.add,
+                    'strftime': '%Y-%m-[0-9]{2}T[0-9]{2}:00:00',
+                    'timedelta': {},
+                },
             ),
             (
                 'tomorrow eod',
                 'UTC',
                 {
                     'operator': operator.add,
-                    'strftime': '%Y-%m-[0-9]{2}T23:00:00',
+                    'strftime': '%Y-%m-[0-9]{2}T[0-9]{2}:00:00',
                     'timedelta': {'days': 1},
                 },
             ),

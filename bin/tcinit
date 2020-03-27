@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """TcEx App Init."""
 import argparse
+import os
 import sys
 import traceback
 
@@ -45,14 +46,19 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('--branch', default='master', help='Git branch.')
 parser.add_argument(
-    '--action',
-    choices=['create', 'update', 'migrate'],
-    default='create',
-    help=(
-        '(default: create) Choose "create" to initialize a new App, "update" to download updates '
-        'to App framework files, and "migrate" to update a non App Builder compliant App to use a '
-        'standard template.'
-    ),
+    '--layout', action='store_true', help='Create a layout.json file.', default=False,
+)
+parser.add_argument(
+    '--migrate',
+    action='store_true',
+    help='Enable this flag to migrate an existing App.',
+    default=False,
+)
+parser.add_argument(
+    '--update',
+    action='store_true',
+    help='Enable this flag to update an existing App.',
+    default=False,
 )
 parser.add_argument(
     '--template',
@@ -72,113 +78,105 @@ parser.add_argument(
     ],
     help='Choose an appropriate App template for the current project.',
 )
-parser.add_argument(
-    '--force',
-    action='store_true',
-    help='Enable this flag to forcibly overwrite existing files in the current working directory.',
-    default=False,
-)
 args, extra_args = parser.parse_known_args()
 
 
 if __name__ == '__main__':
     try:
         tci = Init(args)
-        print(f'{c.Style.BRIGHT}{c.Fore.WHITE}Using files from "{args.branch}" branch')
 
-        if args.action == 'update' or args.action == 'migrate':
-            # check if the current directory is empty
-            tci.check_empty_app_dir()
+        if not args.template and not os.listdir(os.getcwd()) and not args.update:
+            tci.print_message(
+                f'The --template <template type> CLI arg is required when creating a new App. If '
+                f'trying to update an existing App please provide the --update CLI flag.',
+                line_color=c.Fore.YELLOW,
+            )
+            sys.exit(1)
+        elif not os.listdir(os.getcwd()) and args.update:
+            tci.print_message(
+                f'The are no files to update. Try removing --update CLI flag.',
+                line_color=c.Fore.YELLOW,
+            )
+            sys.exit(1)
 
-        # create a new app OR migrate an app of a different form to the new app format
-        if args.action == 'create' or args.action == 'migrate':
+        if os.listdir(os.getcwd()) and not args.update:
+            tci.print_message(
+                f'The current directory does not appear to be empty. Please initialize the App in '
+                f'an empty directory. If migrating an older App try the --migrate CLI flag or if '
+                f'updating an App try the --update CLI flag.',
+                line_color=c.Fore.YELLOW,
+            )
+            sys.exit(1)
+        elif args.update and args.template is None and tci.tj.template is None:
+            tci.print_message(
+                f'The template could not be determined. Please provide the template arg using '
+                f'--template <template name> to update template files.',
+                line_color=c.Fore.YELLOW,
+            )
+            sys.exit(1)
+        elif os.listdir(os.getcwd()) and not os.getenv('TCEX_DEVELOPER'):
+            tci.print_message(
+                f'The current directory does not appear to be empty. Updating files can cause loss '
+                f'of data. It is STRONGLY recommend you commit/backup all your changes before '
+                f'proceeding. To disable this message set the TCEX_DEVELOPER environment variable '
+                f'(e.g. export TCEX_DEVELOPER=1).',
+                line_color=c.Fore.YELLOW,
+            )
+            message = f'Continue (yes/[no]): '
+            response = input(message).strip()
+            if response not in ['y', 'yes']:
+                sys.exit()
 
-            # TODO: in updated command tool this should not be a default.
-            template = tci.args.template
-            if template is None:
-                template = 'playbook'
-                print(f'{c.Fore.YELLOW}No template provided, defaulting to {template}.')
+        # use previous template value from tcex.json if template not passed
+        template = args.template
+        if template is None:
+            template = tci.tj.template
 
-            # download common files
-            tci.download_file('.pre-commit-config.yaml')
-            tci.download_file('coveragerc', '.coveragerc')
-            tci.download_file('gitignore', '.gitignore')
-            tci.download_file('pyproject.toml')
-            tci.download_file('README.md')
-            tci.download_file('requirements.txt')
-            tci.download_file('setup.cfg')
+        print(
+            f'{c.Style.BRIGHT}Using files from {c.Fore.CYAN}"{args.branch}"{c.Fore.RESET} branch '
+            f'and {c.Fore.CYAN}"{template}"{c.Fore.RESET} template.'
+        )
 
-            # download type specific files
-            if template.startswith('external'):
-                tci.download_file('external/external_app.py', 'external_app.py')
-                tci.download_file('external/run.py', 'run.py')
-            elif template.startswith('job'):
-                tci.download_file('__main__.py')
-                tci.download_file('job/job_app.py', 'job_app.py')
-                tci.download_file('job/run.py', 'run.py')
-            elif template.startswith('playbook'):
-                tci.download_file('__main__.py')
-                tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
-                tci.download_file('playbook/run.py', 'run.py')
-            elif template.startswith('service'):
-                tci.download_file('app_lib.py')
-                tci.download_file('service/service_app.py', 'service_app.py')
-                tci.download_file(f'{template}/run.py', 'run.py')
+        # download common files
+        tci.download_template.init_common_files(template)
 
-            # download template specific files
-            tci.download_file(f'{template}/app.py', 'app.py')
-            if template.startswith('external'):
-                tci.download_file(f'{template}/app_config.json', 'app_config.json')
-            else:
-                tci.download_file(f'{template}/args.py', 'args.py')
-                tci.download_file(f'{template}/install.json', 'install.json')
-                tci.download_file(f'{template}/tcex.json', 'tcex.json')
+        # download type specific files
+        if template.startswith('external'):
+            tci.download_template.init_external(template)
+        elif template.startswith('job'):
+            tci.download_template.init_job()
+        elif template.startswith('playbook'):
+            tci.download_template.init_playbook()
+        elif template.startswith('service'):
+            tci.download_template.init_service(template)
 
-            # if we are migrating, update the install.json
-            if not template.startswith('external') and args.action == 'migrate':
-                tci.update_install_json()
+        # if we are migrating, update the install.json
+        if (args.update or args.migrate) and not template.startswith('external'):
+            tci.ij.update(migrate=args.migrate)
 
-        elif args.action == 'update':
-            template_map = {
-                'organization': 'job',
-                'playbook': 'playbook',
-                'apiservice': 'service_api',
-                'triggerservice': 'service_trigger',
-                'webhooktriggerservice': 'service_webhook',
-            }
-            # TODO: test on external App
-            template = tci.args.template
-            if template is None:
-                template = template_map.get(tci.ij.runtime_level.lower(), 'external')
-                print(f'{c.Fore.CYAN}Using template "{template}" for updates.')
+        # print results
+        tci.download_template.print_download_results()
 
-            # update common files
-            tci.download_file('.pre-commit-config.yaml')
-            tci.download_file('gitignore', '.gitignore')
-            tci.download_file('pyproject.toml')
-            tci.download_file('README.md')
-            tci.download_file('requirements.txt')
-            tci.download_file('setup.cfg')
+        # update install.json
+        tci.ij.update()
 
-            # update type specific files
-            if template.startswith('external'):
-                tci.download_file('external/external_app.py', 'external_app.py')
-                tci.download_file('external/run.py', 'run.py')
-            elif template.startswith('job'):
-                tci.download_file('__main__.py')
-                tci.download_file('job/job_app.py', 'job_app.py')
-                tci.download_file('job/run.py', 'run.py')
-            elif template.startswith('playbook'):
-                tci.download_file('__main__.py')
-                tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
-                tci.download_file('playbook/run.py', 'run.py')
-            elif template.startswith('service'):
-                tci.download_file('app_lib.py')
-                tci.download_file(f'{template}/run.py', 'run.py')
-                tci.download_file('service/service_app.py', 'service_app.py')
+        # update tcex.json
+        tci.tj.update(template)
 
-            # update tcex.json file
-            tci.update_tcex_json()
+        # provide helpful user info
+        if not args.update:
+            tci.print_message(
+                f'Please update displayName in install.json and package.app_name in tcex.json '
+                f'before packaging the App.',
+                line_bright=True,
+                line_color=c.Fore.GREEN,
+            )
+
+        # create layout.json file if requested
+        if args.layout:
+            tci.lj.create(tci.ij.params, tci.ij.output_variables)
+
+        # cleanly exit
         sys.exit()
 
     except Exception:

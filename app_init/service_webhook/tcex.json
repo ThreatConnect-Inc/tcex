@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "TCVW_-_Webhook",
+    "app_name": "TCVW_-_",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",

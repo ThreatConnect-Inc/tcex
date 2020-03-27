@@ -39,8 +39,11 @@ class Tag:
             params:
             group_type:
         """
-        group = self._tcex.ti.group(group_type)
-        yield from self.tc_requests.groups_from_tag(
+        if group_type and group_type.lower() == 'task':
+            group = self._tcex.ti.task()
+        else:
+            group = self._tcex.ti.group(group_type)
+        return self.tc_requests.groups_from_tag(
             group, self.name, filters=filters, owner=owner, params=params
         )
 

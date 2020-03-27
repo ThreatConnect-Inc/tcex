@@ -5,7 +5,6 @@ import json
 import os
 import re
 import shutil
-import uuid
 import zipfile
 
 import colorama as c
@@ -63,67 +62,15 @@ class Package(Bin):
             'tests',  # pytest test directory
         ]
 
-    def _update_install_json(self, install_json):
-        """Update install.json file.
-
-        Args:
-            install_json (dict): The contents of the install.json file.
-
-        Returns:
-            dict, bool: The contents of the install.json file and boolean value that is True if
-                an update was made.
-        """
-        updated = False
-        # Update features
-        install_json.setdefault('features', [])
-        for feature in self.features:
-            if feature not in install_json.get('features'):
-                install_json['features'].append(feature)
-                updated = True
-                # update package data
-                self.package_data['updates'].append(
-                    {'action': 'Updated Feature:', 'output': feature}
-                )
-
-        # all App should have an appId to uniquely identify the App. this is not intended to be
-        # used by core to identify an App.  using appId + major Version could be used for unique
-        # App identification in core in a future release.
-        if install_json.get('appId') is None:
-            install_json['appId'] = str(
-                uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
-            )
-            updated = True
-
-        return install_json, updated
-
-    def _write_install_json(self, filename, install_json):
-        """Write install.json file.
-
-        Some projects have bundles App with multiple install.json files.  Typically these files are
-        prefixed with the App name (e.g., MyApp.install.json).
-
-        Args:
-            filename (str): The install.json file name.
-            install_json (dict): The contents of the install.json file.
-        """
-        # TODO: why check if it exists?
-        if os.path.isfile(filename):
-            with open(filename, 'w') as fh:
-                json.dump(install_json, fh, indent=4, sort_keys=True)
-        else:
-            err = f'Could not write file: {filename}.'
-            # update package data
-            self.package_data['errors'].append(err)
-
     def bundle(self, bundle_name):
         """Bundle multiple Job or Playbook Apps into a single zip file.
 
         Args:
             bundle_name (str): The output name of the bundle zip file.
         """
-        if self.args.bundle or self.tcex_json.get('package', {}).get('bundle', False):
-            if self.tcex_json.get('package', {}).get('bundle_packages') is not None:
-                for bundle in self.tcex_json.get('package', {}).get('bundle_packages') or []:
+        if self.args.bundle or self.tj.package_bundle:
+            if self.tj.package_bundle_packages:
+                for bundle in self.tj.package_bundle_packages:
                     bundle_name = bundle.get('name')
                     bundle_patterns = bundle.get('patterns')
 
@@ -162,33 +109,6 @@ class Package(Bin):
         )
         z.close()
 
-    @property
-    def commit_hash(self):
-        """Return the current commit hash if available.
-
-        This is not a required task so best effort is fine. In other words this is not guaranteed
-        to work 100% of the time.
-        """
-        commit_hash = None
-        branch = None
-        branch_file = '.git/HEAD'  # ref: refs/heads/develop
-
-        # get current branch
-        if os.path.isfile(branch_file):
-            with open(branch_file, 'r') as f:
-                try:
-                    branch = f.read().strip().split('/')[2]
-                except IndexError:
-                    pass
-
-            # get commit hash
-            if branch:
-                hash_file = f'.git/refs/heads/{branch}'
-                if os.path.isfile(hash_file):
-                    with open(hash_file, 'r') as f:
-                        commit_hash = f.read().strip()
-        return commit_hash
-
     def package(self):
         """Build the App package for deployment to ThreatConnect Exchange."""
         # create build directory
@@ -210,7 +130,7 @@ class Package(Bin):
         # build exclude file/directory list
         excludes = list(self._build_excludes)
         excludes.extend(self.args.exclude)
-        excludes.extend(self.tcex_json.get('package', {}).get('excludes', []))
+        excludes.extend(self.tj.package_excludes)
 
         # update package data
         self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
@@ -227,18 +147,11 @@ class Package(Bin):
         # package app
         for install_json_name in sorted(contents):
             # skip files that are not install.json files
-            if 'install.json' not in install_json_name:
+            if not install_json_name.endswith('install.json'):
                 continue
 
             # load install json
             ij = InstallJson(install_json_name)
-
-            # automatically update install.json for feature sets supported by the SDK
-            ij, ij_modified = self._update_install_json(ij.contents)
-
-            # write update install.json
-            if ij_modified:
-                self._write_install_json(install_json_name, ij)
 
             # get App Name from config, install.json prefix or directory name.
             app_name = self.app_name(install_json_name)
@@ -269,15 +182,11 @@ class Package(Bin):
             # TODO: do we need copy if writing the data in the next step?
             shutil.copy(install_json_name, os.path.join(tmp_app_path, 'install.json'))
 
-            # Update commit hash after install.json has been copied.
-            if self.commit_hash is not None:
-                ij.setdefault('commitHash', self.commit_hash)
-            self._write_install_json(os.path.join(tmp_app_path, 'install.json'), ij)
+            # load template install json
+            ij_template = InstallJson(path=tmp_app_path)
 
-            # update package data
-            self.package_data['package'].append(
-                {'action': 'Commit Hash:', 'output': self.commit_hash}
-            )
+            # automatically update install.json in template directory
+            ij_template.update(commit_hash=True, sequence=False)
 
             # zip file
             self.zip_file(self.app_path, app_name_version, tmp_path)
@@ -287,7 +196,7 @@ class Package(Bin):
 
         # bundle zips (must have more than 1 app)
         if len(self._app_packages) > 1:
-            self.bundle(self.tcex_json.get('package', {}).get('bundle_name', app_name))
+            self.bundle(self.tj.package_bundle_name or app_name)
 
     def app_name(self, install_json_name):
         """Return the app package name without version.
@@ -298,7 +207,7 @@ class Package(Bin):
         """
         if install_json_name != 'install.json':
             return install_json_name.split('.')[0]
-        return self.tcex_json.get('package', {}).get('app_name', os.path.basename(self.app_path))
+        return self.tj.package_app_name or os.path.basename(self.app_path)
 
     def app_version(self, ij):
         """Return the app version "v1".
@@ -308,8 +217,8 @@ class Package(Bin):
         2. Use major version from programVersion field in install.json if available.
         3. Default to '1.0.0' updated to major version only ('v1').
         """
-        major_version = ij.get('programVersion', '1.0.0').split('.')[0]
-        return str(self.tcex_json.get('package', {}).get('app_version', f'v{major_version}'))
+        app_version = f"v{ij.program_version.split('.')[0]}"
+        return self.tj.package_app_version or app_version
 
     def print_json(self):
         """Print JSON output containing results of the package command."""

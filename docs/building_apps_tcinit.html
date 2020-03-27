@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.2 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -101,7 +101,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#app-py">app.py</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#job-ingress-job-ingress">Job Ingress (job_ingress)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#job-batch-job-batch">Job Batch (job_batch)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id1">app.py</a></li>
 </ul>
 </li>
@@ -305,8 +305,8 @@ optional arguments:
 </td></tr></table></div>
 </div>
 </div>
-<div class="section" id="job-ingress-job-ingress">
-<h3>Job Ingress (job_ingress)<a class="headerlink" href="#job-ingress-job-ingress" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="job-batch-job-batch">
+<h3>Job Batch (job_batch)<a class="headerlink" href="#job-batch-job-batch" title="Permalink to this headline">¶</a></h3>
 <p>This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx <a class="reference internal" href="module_batch.html#module-batch"><span class="std std-ref">Batch Module</span></a>.  The URL is defined in the <code class="docutils literal notranslate"><span class="pre">init()</span></code> method for convenience. In the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method, the Batch module is instantiated. Next, the data is retrieved from the remote URL and written to the Batch module. Finally, the Batch Job is submitted to ThreatConnect for processing.</p>
 <div class="section" id="id1">
 <h4>app.py<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
@@ -724,7 +724,14 @@ optional arguments:
 58
 59
 60
-61</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+61
+62
+63
+64
+65
+66
+67
+68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
@@ -750,20 +757,27 @@ optional arguments:
 <span class="sd">        This method should contain the core logic of the App.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># read inputs</span>
-        <span class="n">indent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">indent</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">indent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">indent</span><span class="p">)</span>
+            <span class="n">indent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid value (&quot;</span><span class="si">{indent}</span><span class="s1">&quot;) passed for indent.&#39;</span><span class="p">)</span>
         <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
 
         <span class="c1"># get the playbook variable type</span>
         <span class="n">json_data_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
 
         <span class="c1"># convert string input to dict</span>
-        <span class="k">if</span> <span class="n">json_data_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;String&#39;</span><span class="p">]:</span>
-            <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">json_data_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;String&#39;</span><span class="p">]:</span>
+                <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed parsing JSON data.&#39;</span><span class="p">)</span>
 
         <span class="c1"># generate the new &quot;pretty&quot; json (this will be used as an option variable)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">sort_keys</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed parsing JSON data.&#39;</span><span class="p">)</span>
 
         <span class="c1"># set the App exit message</span>

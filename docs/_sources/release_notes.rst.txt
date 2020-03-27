@@ -3,6 +3,46 @@
 Release Notes
 #############
 
+2.0.3
+=====
++ Added ``is_variable()`` method to Playbook module.
++ Updated ReadArgs decorator to return None when arg doesn't exist.
++ Updated ReadArgs to not log input value.
++ Added new Permutations class to app_config_object module.
++ Added new Profile and ProfileInteractive Classes to app_config_object module.
++ Added new TcexJson Class to app_config_object module.
++ Moved all testing template generation/download logic to consolidated templates.py file.
++ Added schema management to InstallJson class.
++ Added schema management to LayoutJson class.
++ Multiple updates for App testing framework.
+  + Updated testing framework to support permutations for Service Apps
+  + Added **--replace_exit_message** CLI flag for pytest to replace outputs for test cases
+  + Added **--replace_outputs** CLI flag for pytest to replace outputs for test cases
+  + Added **--merge_outputs** CLI flag for pytest to merge new outputs with existing outputs for test cases
+  + Profile schema is now managed and old profiles will be automatically updated
+  + Changed default run method for Serice Apps to be subprocess instead of thread.
++ Updated **tcinit** CLI command.
+  + Removed **--action** CLI arg
+  + Added **--update** CLI arg to enable updates of non-customized template files
+  + Added **--migrate** CLI arg to enable migration of non-compliant PB Apps
+  + Added **--layouts** CLI arg to allow for dynamic creation of example layout.json based on install.json
+  * The **tcinit** command now store the template in the tcex.json file to allow easier updates
++ Updated **tcpackage** CLI command.
+  * Moved logic that updates the install.json to the InstallJson class
+  * Updated to use InstallJson and LayoutJson objects
++ Updated **tctest** CLI command.
+  + Added **--interactive** flag to allow for dynamic creation of testing profile.
+  + Updated to use new Profile Class and Template Classes
++ Updated **tcvalidate** CLI command.
+  * Updated to use InstallJson and LayoutJson objects
+  * Updated validation logic for layout.json
++ Multiple updates to App templates to remove subprocess.
+  + Added ``run()`` method to run.py template for job and playbook Apps
+  + Added app_lib.py dependencies for all App types
+  + Updated __main__.py to call run method of run.py
++ Added logging of TcEx path.
++ Updated Utils Class to no longer require tcex instance.
+
 2.0.2
 =====
 + Updated requirement for stdlib-list to >= 0.6.0 to support Python 3.8.

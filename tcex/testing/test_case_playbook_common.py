@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 """TcEx Playbook Common module"""
-import json
+# import json
 import os
-
 from .test_case import TestCase
 
 
 class TestCasePlaybookCommon(TestCase):
     """Playbook TestCase Class"""
 
-    _context_tracker = []
-    _output_variables = None
     redis_client = None
     redis_staging_data = {
         '#App:1234:empty!String': '',
@@ -24,11 +21,6 @@ class TestCasePlaybookCommon(TestCase):
         if keys:
             return self.redis_client.hdel(context, *keys)
         return 0
-
-    @property
-    def context_tracker(self):
-        """Return the current context trackers."""
-        return self._context_tracker
 
     @property
     def default_args(self):
@@ -45,100 +37,6 @@ class TestCasePlaybookCommon(TestCase):
         )
         return args
 
-    @property
-    def output_variables(self):
-        """Return playbook output variables"""
-        if self._output_variables is None:
-            output_variables = self.install_json.get('playbook', {}).get('outputVariables') or []
-            self._output_variables = self.output_variable_creator(output_variables)
-        return self._output_variables
-
-    @staticmethod
-    def output_variable_creator(output_variables, job_id=9876):
-        """Create output variables.
-
-        Args:
-            output_variables (dict): A dict of the output variables
-            job_id (int): A job id to use in output variable string.
-        """
-        variables = []
-        if output_variables is None:
-            output_variables = []
-
-        for p in output_variables:
-            # "#App:9876:app.data.count!String"
-            variables.append(f"#App:{job_id}:{p.get('name')}!{p.get('type')}")
-        return variables
-
-    def populate_output_variables(self):
-        """Generate validation rules from App outputs."""
-        profile_filename = os.path.join(self.test_case_profile_dir, f'{self.profile_name}.json')
-        with open(profile_filename, 'r+') as fh:
-            profile_data = json.load(fh)
-            # get current permutations to ensure only valid output variables are included.
-            pov = profile_data.get('permutation_output_variables')
-            if pov is not None:
-                pov = self.output_variable_creator(pov)
-
-            outputs = {}
-            for context in self.context_tracker:
-                # get all current keys in current context
-                redis_data = self.redis_client.hgetall(context)
-                trigger_id = self.redis_client.hget(context, '_trigger_id')
-
-                for variable in self.output_variables:
-                    if pov is not None and variable not in pov:
-                        # variable is not in permutation output variables
-                        continue
-
-                    # get data from redis for current context
-                    data = redis_data.get(variable.encode('utf-8'))
-
-                    # validate redis variables
-                    if data is None:
-                        # log error for missing output data
-                        self.log.error(
-                            f'[{self.profile_name}] Missing redis output for variable {variable}'
-                        )
-                    else:
-                        data = json.loads(data.decode('utf-8'))
-
-                    # validate validation variables
-                    validation_output = (profile_data.get('outputs') or {}).get(variable)
-                    if (
-                        trigger_id is None
-                        and validation_output is None
-                        and profile_data.get('outputs') is not None
-                    ):
-                        self.log.error(
-                            f'[{self.profile_name}] Missing validations rule: {variable}'
-                        )
-                    output_data = {'expected_output': data, 'op': 'eq'}
-
-                    # make business rules based on data type or content
-                    if variable.endswith('json.raw!String'):
-                        output_data = {'expected_output': data, 'op': 'jeq'}
-
-                    # get trigger id for service Apps
-                    if trigger_id is not None:
-                        if isinstance(trigger_id, bytes):
-                            trigger_id = trigger_id.decode('utf-8')
-                        outputs.setdefault(trigger_id, {})
-                        outputs[trigger_id][variable] = output_data
-                    else:
-                        outputs[variable] = output_data
-
-                # cleanup redis
-                self.clear_context(context)
-
-            if profile_data.get('outputs') is None:
-                # update the profile
-                profile_data['outputs'] = outputs
-
-                fh.seek(0)
-                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
-                fh.truncate()
-
     def run(self, args):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
@@ -151,13 +49,11 @@ class TestCasePlaybookCommon(TestCase):
     def teardown_method(self):
         """Run after each test method runs."""
         if self.enable_update_profile:
-            self.populate_output_variables()
+            self.log.title('Update Outputs')
+            self.profile.update_outputs()
 
         # clear context tracker
-        self._context_tracker = []
-
-        # delete threatconnect staged data
-        self.stager.threatconnect.delete_staged(self._staged_tc_data)
+        self.profile._context_tracker = []
 
         # run test_case teardown_method
         super().teardown_method()

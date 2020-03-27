@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Bin Module &mdash; TcEx 2.0.2 documentation</title>
+  <title>Bin Module &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -229,79 +229,6 @@
 </dd>
 </dl>
 <dl class="method">
-<dt id="tcex.bin.bin.Bin._to_bool">
-<em class="property">static </em><code class="sig-name descname">_to_bool</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin._to_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin._to_bool" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert string value to bool.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.db_conn">
-<em class="property">property </em><code class="sig-name descname">db_conn</code><a class="headerlink" href="#tcex.bin.bin.Bin.db_conn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a temporary in memory DB and return the connection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.db_create_table">
-<code class="sig-name descname">db_create_table</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">columns</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.db_create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.db_create_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a temporary DB table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>table_name</strong> (<em>str</em>) – The name of the table.</p></li>
-<li><p><strong>columns</strong> (<em>list</em>) – List of columns to add to the DB.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.db_insert_record">
-<code class="sig-name descname">db_insert_record</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">columns</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.db_insert_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.db_insert_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert records into DB.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>table_name</strong> (<em>str</em>) – The name of the table.</p></li>
-<li><p><strong>columns</strong> (<em>list</em>) – List of columns for insert statement.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.db_update_record">
-<code class="sig-name descname">db_update_record</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.db_update_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.db_update_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert records into DB.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>table_name</strong> (<em>str</em>) – The name of the table.</p></li>
-<li><p><strong>column</strong> (<em>str</em>) – The column name in which the value is to be updated.</p></li>
-<li><p><strong>value</strong> (<em>str</em>) – The value to update in the column.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.gen_permutations">
-<code class="sig-name descname">gen_permutations</code><span class="sig-paren">(</span><em class="sig-param">index=0</em>, <em class="sig-param">args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.gen_permutations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.gen_permutations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate recursively over layout.json parameter names to build permutations.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Permutations are for layout.json based playbook Apps.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – The current index position in the layout names list.</p></li>
-<li><p><strong>args</strong> (<em>list</em><em>, </em><em>optional</em>) – Defaults to None. The current list of args.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.bin.bin.Bin.handle_error">
 <em class="property">static </em><code class="sig-name descname">handle_error</code><span class="sig-paren">(</span><em class="sig-param">err</em>, <em class="sig-param">halt=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.handle_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.handle_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print errors message and optionally exit.</p>
@@ -316,70 +243,15 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.bin.Bin.permutations">
-<code class="sig-name descname">permutations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.permutations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.permutations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process layout.json names/display to get all permutations of args.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.print_permutations">
-<code class="sig-name descname">print_permutations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.print_permutations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.print_permutations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print all valid permutations.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.profile_settings_args_layout_json">
-<code class="sig-name descname">profile_settings_args_layout_json</code><span class="sig-paren">(</span><em class="sig-param">required</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.profile_settings_args_layout_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.profile_settings_args_layout_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return args based on layout.json and conditional rendering.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>required</strong> (<em>bool</em>) – If True only required args will be returned.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Dictionary of required or optional App args.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.redis">
-<em class="property">property </em><code class="sig-name descname">redis</code><a class="headerlink" href="#tcex.bin.bin.Bin.redis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return instance of Redis.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.tcex_json">
-<em class="property">property </em><code class="sig-name descname">tcex_json</code><a class="headerlink" href="#tcex.bin.bin.Bin.tcex_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return tcex.json file contents.</p>
+<dt id="tcex.bin.bin.Bin.print_message">
+<em class="property">static </em><code class="sig-name descname">print_message</code><span class="sig-paren">(</span><em class="sig-param">message</em>, <em class="sig-param">line_bright=False</em>, <em class="sig-param">line_color=None</em>, <em class="sig-param">line_limit=150</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.print_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.print_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the message ensuring lines don’t exceed line limit.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.bin.bin.Bin.update_system_path">
 <em class="property">static </em><code class="sig-name descname">update_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.update_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.update_system_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the system path to ensure project modules and dependencies can be found.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.bin.Bin.validate_layout_display">
-<code class="sig-name descname">validate_layout_display</code><span class="sig-paren">(</span><em class="sig-param">table</em>, <em class="sig-param">display_condition</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.validate_layout_display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.validate_layout_display" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to see if the display condition passes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>table</strong> (<em>str</em>) – The name of the DB table which hold the App data.</p></li>
-<li><p><strong>display_condition</strong> (<em>str</em>) – The “where” clause of the DB SQL statement.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if the row count is greater than 0.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -398,72 +270,6 @@
 <dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
 </dd>
 </dl>
-<dl class="method">
-<dt id="tcex.bin.init.Init._confirm_overwrite">
-<em class="property">static </em><code class="sig-name descname">_confirm_overwrite</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init._confirm_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init._confirm_overwrite" title="Permalink to this definition">¶</a></dt>
-<dd><p>Confirm overwrite of template files.</p>
-<p>Make sure the user would like to continue downloading a file which will overwrite a file
-in the current directory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the file to overwrite.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if the user specifies a “yes” response.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.init.Init._print_results">
-<em class="property">static </em><code class="sig-name descname">_print_results</code><span class="sig-paren">(</span><em class="sig-param">file</em>, <em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init._print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init._print_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the download results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> (<em>str</em>) – The filename.</p></li>
-<li><p><strong>status</strong> (<em>str</em>) – The file download status.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.init.Init.check_empty_app_dir">
-<code class="sig-name descname">check_empty_app_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init.check_empty_app_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init.check_empty_app_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to see if the directory in which the app is going to be created is empty.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.init.Init.download_file">
-<code class="sig-name descname">download_file</code><span class="sig-paren">(</span><em class="sig-param">remote_filename</em>, <em class="sig-param">local_filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init.download_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init.download_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download file from github.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>remote_filename</strong> (<em>str</em>) – The name of the file as defined in git repository.</p></li>
-<li><p><strong>local_filename</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The name of the file as it should be
-be written to local filesystem.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.init.Init.update_install_json">
-<em class="property">static </em><code class="sig-name descname">update_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init.update_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init.update_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the install.json configuration file if exists.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.init.Init.update_tcex_json">
-<code class="sig-name descname">update_tcex_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init.update_tcex_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init.update_tcex_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the tcex.json configuration file if exists.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -544,43 +350,6 @@ install.json file or files will be automatically run before packaging the app.</
 </dd>
 </dl>
 <dl class="method">
-<dt id="tcex.bin.package.Package._update_install_json">
-<code class="sig-name descname">_update_install_json</code><span class="sig-paren">(</span><em class="sig-param">install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package._update_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package._update_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update install.json file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>install_json</strong> (<em>dict</em>) – The contents of the install.json file.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>The contents of the install.json file and boolean value that is True if</dt><dd><p>an update was made.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict, bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.package.Package._write_install_json">
-<code class="sig-name descname">_write_install_json</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package._write_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package._write_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write install.json file.</p>
-<p>Some projects have bundles App with multiple install.json files.  Typically these files are
-prefixed with the App name (e.g., MyApp.install.json).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – The install.json file name.</p></li>
-<li><p><strong>install_json</strong> (<em>dict</em>) – The contents of the install.json file.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.bin.package.Package.app_name">
 <code class="sig-name descname">app_name</code><span class="sig-paren">(</span><em class="sig-param">install_json_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.app_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.app_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the app package name without version.</p>
@@ -629,14 +398,6 @@ prefixed with the App name (e.g., MyApp.install.json).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.package.Package.commit_hash">
-<em class="property">property </em><code class="sig-name descname">commit_hash</code><a class="headerlink" href="#tcex.bin.package.Package.commit_hash" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the current commit hash if available.</p>
-<p>This is not a required task so best effort is fine. In other words this is not guaranteed
-to work 100% of the time.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.bin.package.Package.package">
 <code class="sig-name descname">package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.package" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the App package for deployment to ThreatConnect Exchange.</p>
@@ -674,101 +435,17 @@ to work 100% of the time.</p>
 </div>
 <div class="section" id="module-tcex.bin.test">
 <span id="bin-test"></span><h2>bin.test<a class="headerlink" href="#module-tcex.bin.test" title="Permalink to this headline">¶</a></h2>
-<p>TcEx Framework Profile Generation Module.</p>
-<dl class="class">
-<dt id="tcex.bin.test.CustomTemplates">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">CustomTemplates</code><span class="sig-paren">(</span><em class="sig-param">base_dir</em>, <em class="sig-param">branch='master'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#CustomTemplates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.CustomTemplates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Custom method Template Class</p>
-<dl class="method">
-<dt id="tcex.bin.test.CustomTemplates.feature_template">
-<em class="property">property </em><code class="sig-name descname">feature_template</code><a class="headerlink" href="#tcex.bin.test.CustomTemplates.feature_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the feature template file for custom methods</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.CustomTemplates.parent_template">
-<em class="property">property </em><code class="sig-name descname">parent_template</code><a class="headerlink" href="#tcex.bin.test.CustomTemplates.parent_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the parent template file for custom methods</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.CustomTemplates.render_templates">
-<code class="sig-name descname">render_templates</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">app_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#CustomTemplates.render_templates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.CustomTemplates.render_templates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Render the templates and write to disk conditionally.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="tcex.bin.test.Profiles">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">Profiles</code><span class="sig-paren">(</span><em class="sig-param">profile_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Profiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Profile Class</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>NotImplementedError</strong> – The delete method is not currently implemented.</p></li>
-<li><p><strong>NotImplementedError</strong> – The update method is not currently implemented.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="tcex.bin.test.Profiles.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">profile_name</em>, <em class="sig-param">profile_data</em>, <em class="sig-param">sort_keys=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Profiles.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Profiles.add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a profile.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Profiles.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">profile_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Profiles.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Profiles.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete an existing profile.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Profiles.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">profile_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Profiles.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Profiles.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update an existing profile.</p>
-</dd></dl>
-
-</dd></dl>
-
+<p>TcEx Framework Test Generation Module.</p>
 <dl class="class">
 <dt id="tcex.bin.test.Test">
 <em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">Test</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.bin.bin.Bin" title="tcex.bin.bin.Bin"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.bin.bin.Bin</span></code></a></p>
-<p>Create profiles for ThreatConnect Job or Playbook App.</p>
+<p>Create testing files for ThreatConnect Exchange App.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
 </dd>
 </dl>
-<dl class="method">
-<dt id="tcex.bin.test.Test._print_results">
-<em class="property">static </em><code class="sig-name descname">_print_results</code><span class="sig-paren">(</span><em class="sig-param">file</em>, <em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test._print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test._print_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the download results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> (<em>str</em>) – The filename.</p></li>
-<li><p><strong>status</strong> (<em>str</em>) – The file download status.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.add_profile">
-<code class="sig-name descname">add_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.add_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.add_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the desired profile</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.add_profile_staging">
-<em class="property">static </em><code class="sig-name descname">add_profile_staging</code><span class="sig-paren">(</span><em class="sig-param">staging_files</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.add_profile_staging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.add_profile_staging" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get existing staging data.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="tcex.bin.test.Test.create_dirs">
 <code class="sig-name descname">create_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.create_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.create_dirs" title="Permalink to this definition">¶</a></dt>
@@ -782,168 +459,21 @@ to work 100% of the time.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Test.download_conftest">
-<code class="sig-name descname">download_conftest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.download_conftest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.download_conftest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download conftest.py file from github.</p>
+<dt id="tcex.bin.test.Test.interactive_profile">
+<code class="sig-name descname">interactive_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.interactive_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.interactive_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Present interactive profile inputs.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Test.download_file">
-<code class="sig-name descname">download_file</code><span class="sig-paren">(</span><em class="sig-param">remote_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.download_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.download_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download file from github.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>remote_filename</strong> (<em>str</em>) – The name of the file as defined in git repository.</p>
-</dd>
-</dl>
+<dt id="tcex.bin.test.Test.load_legacy_profiles">
+<em class="property">static </em><code class="sig-name descname">load_legacy_profiles</code><span class="sig-paren">(</span><em class="sig-param">staging_files</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.load_legacy_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.load_legacy_profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load staging data to migrate legacy templates.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.bin.test.Test.download_profile">
-<code class="sig-name descname">download_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.download_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.download_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download conftest.py file from github.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.generate_custom_files">
-<code class="sig-name descname">generate_custom_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.generate_custom_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.generate_custom_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the custom.py and custom_feature.py files.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.generate_test_profile_file">
-<code class="sig-name descname">generate_test_profile_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.generate_test_profile_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.generate_test_profile_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the test_profiles.py file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.generate_validation_files">
-<code class="sig-name descname">generate_validation_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.generate_validation_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.generate_validation_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the validation.py and validation_feature.py files.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.output_variables">
-<em class="property">property </em><code class="sig-name descname">output_variables</code><a class="headerlink" href="#tcex.bin.test.Test.output_variables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return playbook output variables</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.permutation_file_exists">
-<code class="sig-name descname">permutation_file_exists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.permutation_file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.permutation_file_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to see if the permutations file exists</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.permutations_file">
-<em class="property">property </em><code class="sig-name descname">permutations_file</code><a class="headerlink" href="#tcex.bin.test.Test.permutations_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return permutations fully qualified filename.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.profiles_dir">
-<em class="property">property </em><code class="sig-name descname">profiles_dir</code><a class="headerlink" href="#tcex.bin.test.Test.profiles_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return profile fully qualified filename.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.test_file">
-<em class="property">property </em><code class="sig-name descname">test_file</code><a class="headerlink" href="#tcex.bin.test.Test.test_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return generate test filename.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.validation_base_file">
-<em class="property">property </em><code class="sig-name descname">validation_base_file</code><a class="headerlink" href="#tcex.bin.test.Test.validation_base_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return validations fully qualified filename.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.Test.validation_file">
-<em class="property">property </em><code class="sig-name descname">validation_file</code><a class="headerlink" href="#tcex.bin.test.Test.validation_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return validations fully qualified filename.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="tcex.bin.test.TestProfileTemplates">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">TestProfileTemplates</code><span class="sig-paren">(</span><em class="sig-param">base_dir</em>, <em class="sig-param">branch='master'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#TestProfileTemplates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.TestProfileTemplates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>TestProfile Template Class</p>
-<dl class="method">
-<dt id="tcex.bin.test.TestProfileTemplates.render_template">
-<code class="sig-name descname">render_template</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">app_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#TestProfileTemplates.render_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.TestProfileTemplates.render_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Render the templates and write to disk conditionally.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.TestProfileTemplates.test_profiles_template">
-<em class="property">property </em><code class="sig-name descname">test_profiles_template</code><a class="headerlink" href="#tcex.bin.test.TestProfileTemplates.test_profiles_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return template file</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="tcex.bin.test.ValidationTemplates">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">ValidationTemplates</code><span class="sig-paren">(</span><em class="sig-param">base_dir</em>, <em class="sig-param">branch='master'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Validation Template Class</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>NotImplementedError</strong> – The delete method is not currently implemented.</p></li>
-<li><p><strong>NotImplementedError</strong> – The update method is not currently implemented.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="tcex.bin.test.ValidationTemplates._method_name">
-<code class="sig-name descname">_method_name</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates._method_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates._method_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert variable name to a valid method name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable name to convert.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Method name</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(str)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.ValidationTemplates.custom_template">
-<em class="property">property </em><code class="sig-name descname">custom_template</code><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.custom_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return template file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.ValidationTemplates.feature_template">
-<em class="property">property </em><code class="sig-name descname">feature_template</code><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.feature_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return template file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.ValidationTemplates.output_data">
-<code class="sig-name descname">output_data</code><span class="sig-paren">(</span><em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates.output_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.output_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return formatted output data.</p>
-<p>#App:9876:http.content!Binary</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.ValidationTemplates.parent_template">
-<em class="property">property </em><code class="sig-name descname">parent_template</code><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.parent_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return template file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.bin.test.ValidationTemplates.render_templates">
-<code class="sig-name descname">render_templates</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">app_type</em>, <em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#ValidationTemplates.render_templates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.ValidationTemplates.render_templates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Render the templates and write to disk conditionally.</p>
+<dt id="tcex.bin.test.Test.migrate_profile">
+<code class="sig-name descname">migrate_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.migrate_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.migrate_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Migrate legacy profile to new framework.</p>
 </dd></dl>
 
 </dd></dl>

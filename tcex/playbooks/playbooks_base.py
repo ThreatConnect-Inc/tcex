@@ -37,7 +37,7 @@ class PlaybooksBase:
         """Return a string value from an bool or int."""
         # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
-            # coerce int to str type
+            # coerce bool to str type
             self.tcex.log.warning(
                 f'Coercing bool value ({value}) to a string ("{str(value).lower()}").'
             )
@@ -98,6 +98,9 @@ class PlaybooksBase:
         variable_type = self.variable_type(key)
 
         if variable_type == 'BinaryArray':
+            if validate and not isinstance(value, list):
+                raise RuntimeError('Invalid data provided for BinaryArray.')
+
             value_encoded = []
             for v in value:
                 if v is not None:
@@ -112,6 +115,9 @@ class PlaybooksBase:
             if validate and (not isinstance(value, list) or not self._is_key_value_array(value)):
                 raise RuntimeError('Invalid data provided for KeyValueArray.')
         elif variable_type == 'StringArray':
+            if validate and not isinstance(value, list):
+                raise RuntimeError('Invalid data provided for StringArray.')
+
             for v in value:
                 # coerce string values
                 v = self._coerce_string_value(v)
@@ -354,7 +360,10 @@ class PlaybooksBase:
                 # for KeyValueArray with nested dict/list type replace the
                 # quoted value to ensure the resulting data is loadable JSON
                 value = re.sub(f'"{variable}"', v, value)
-            value = re.sub(variable, v, value)
+
+            if v is not None:
+                # only replace variable if a non-null value is returned from kv store
+                value = re.sub(variable, v, value)
         return value
 
     @property

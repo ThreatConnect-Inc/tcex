@@ -11,11 +11,10 @@ import sys
 class Stager:
     """Stage Data class"""
 
-    def __init__(self, tcex, log, log_data):
+    def __init__(self, tcex, log):
         """Initialize class properties"""
         # self.args = tcex.args  # required for args to be parsed
         self.log = log
-        self.log_data = log_data
         self.tcex = tcex
         # TODO: validate this
         self.tcex.logger.update_handler_level('error')
@@ -46,15 +45,15 @@ class Redis:
         """Initialize class properties."""
         self.provider = provider
         self.redis_client = provider.tcex.redis_client
-        self.log_data = self.provider.log_data
+        self.log = self.provider.log
 
     def from_dict(self, staging_data):
         """Stage redis data from dict"""
         for variable, data in staging_data.items():
             variable_type = self.provider.tcex.playbook.variable_type(variable)
 
-            self.log_data('stage', 'variable', variable)
-            self.log_data('stage', 'data', data)
+            self.log.data('stage', 'variable', variable)
+            self.log.data('stage', 'data', data)
             if variable_type == 'Binary':
                 data = self._decode_binary(data, variable)
             elif variable_type == 'BinaryArray':
@@ -148,6 +147,9 @@ class ThreatConnect:
         owner = value.pop('owner', None) or owner
         created_entity = self.provider.tcex.cm.create_entity(value, owner)
         if created_entity is None:
+            # This is here because there is a type `Task` in both TI and CM
+            if value.get('type', '').lower().startswith('ti_'):
+                value['type'] = value.get('type')[3:]
             created_entity = self.provider.tcex.ti.create_entity(value, owner)
         return {'key': key, 'data': created_entity}
 
@@ -161,16 +163,17 @@ class ThreatConnect:
             entity_type = data.pop('main_type')
             ti = None
             if entity_type == 'Group':
-                ti = self.provider.tcex.ti.group(
-                    data.get('sub_type'), unique_id=data.get('id'), owner=data.get('owner')
-                )
+                ti = self.provider.tcex.ti.group(data.get('sub_type'), owner=data.get('owner'))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
             elif entity_type == 'Indicator':
                 ti = self.provider.tcex.ti.indicator(data.get('sub_type'), owner=data.get('owner'))
-                ti._set_unique_id(data.get(ti.api_entity))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
             elif entity_type == 'Task':
-                ti = self.provider.tcex.ti.group(
-                    entity_type, unique_id=data.get('id'), owner=data.get('owner')
-                )
+                ti = self.provider.tcex.ti.task(owner=data.get('owner'))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
             if ti:
                 ti.delete()
             if entity_type == 'Case_Management':

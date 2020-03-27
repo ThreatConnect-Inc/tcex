@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.bin &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.bin.bin &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -179,20 +179,13 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework Bin Command Base Module.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
-<span class="kn">import</span> <span class="nn">redis</span>
 
-<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="kn">import</span> <span class="n">InstallJson</span><span class="p">,</span> <span class="n">LayoutJson</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sqlite3</span>
-<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
-    <span class="c1"># this module is only required for certain CLI commands</span>
-    <span class="k">pass</span>
+<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="kn">import</span> <span class="n">InstallJson</span><span class="p">,</span> <span class="n">LayoutJson</span><span class="p">,</span> <span class="n">TcexJson</span>
+<span class="kn">from</span> <span class="nn">..app_config_object.permutations</span> <span class="kn">import</span> <span class="n">Permutations</span>
 
 
 <div class="viewcode-block" id="Bin"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin">[docs]</a><span class="k">class</span> <span class="nc">Bin</span><span class="p">:</span>
@@ -211,149 +204,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">_args</span>
 
         <span class="c1"># properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_db_conn</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_redis</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="s1">&#39;install.json&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lj</span> <span class="o">=</span> <span class="n">LayoutJson</span><span class="p">(</span><span class="s1">&#39;layout.json&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_table</span> <span class="o">=</span> <span class="s1">&#39;inputs&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ij</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lj</span> <span class="o">=</span> <span class="n">LayoutJson</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">Permutations</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tj</span> <span class="o">=</span> <span class="n">TcexJson</span><span class="p">()</span>
 
         <span class="c1"># initialize colorama</span>
         <span class="n">c</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Bin._to_bool"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin._to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert string value to bool.&quot;&quot;&quot;</span>
-        <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]:</span>
-            <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">bool_value</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">db_conn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a temporary in memory DB and return the connection.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_conn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_db_conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;:memory:&#39;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_conn</span>
-
-<div class="viewcode-block" id="Bin.db_create_table"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.db_create_table">[docs]</a>    <span class="k">def</span> <span class="nf">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a temporary DB table.</span>
-
-<span class="sd">        Arguments:</span>
-<span class="sd">            table_name (str): The name of the table.</span>
-<span class="sd">            columns (list): List of columns to add to the DB.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">formatted_columns</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
-            <span class="n">formatted_columns</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&quot;{col.strip(&#39;&quot;&#39;).strip(&quot;&#39;&quot;)}&quot; text, &quot;&quot;&quot;</span>
-        <span class="n">formatted_columns</span> <span class="o">=</span> <span class="n">formatted_columns</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
-
-        <span class="n">create_table_sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;CREATE TABLE IF NOT EXISTS </span><span class="si">{table_name}</span><span class="s1"> (</span><span class="si">{formatted_columns}</span><span class="s1">);&#39;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">cr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-            <span class="n">cr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_table_sql</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Bin.db_insert_record"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.db_insert_record">[docs]</a>    <span class="k">def</span> <span class="nf">db_insert_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Insert records into DB.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            table_name (str): The name of the table.</span>
-<span class="sd">            columns (list): List of columns for insert statement.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bindings</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;?,&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;INSERT INTO </span><span class="si">{table_name}</span><span class="s2"> ({&#39;, &#39;.join(columns)}) VALUES (</span><span class="si">{bindings}</span><span class="s2">)&quot;</span>
-        <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Bin.db_update_record"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.db_update_record">[docs]</a>    <span class="k">def</span> <span class="nf">db_update_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Insert records into DB.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            table_name (str): The name of the table.</span>
-<span class="sd">            column (str): The column name in which the value is to be updated.</span>
-<span class="sd">            value (str): The value to update in the column.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;UPDATE </span><span class="si">{table_name}</span><span class="s1"> SET </span><span class="si">{column}</span><span class="s1"> = </span><span class="se">\&#39;</span><span class="si">{value}</span><span class="se">\&#39;</span><span class="s1">&#39;</span>
-        <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Bin.gen_permutations"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.gen_permutations">[docs]</a>    <span class="k">def</span> <span class="nf">gen_permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterate recursively over layout.json parameter names to build permutations.</span>
-
-<span class="sd">        .. NOTE:: Permutations are for layout.json based playbook Apps.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            index (int, optional): The current index position in the layout names list.</span>
-<span class="sd">            args (list, optional): Defaults to None. The current list of args.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">hidden</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;playbook&#39;</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lj</span><span class="o">.</span><span class="n">parameters_names</span><span class="p">)[</span><span class="n">index</span><span class="p">]</span>
-                <span class="n">display</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lj</span><span class="o">.</span><span class="n">parameters_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
-                <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lj</span><span class="o">.</span><span class="n">parameters_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hidden&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">index</span><span class="p">]</span>
-                <span class="n">display</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="n">input_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">input_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No value found in install.json for &quot;</span><span class="si">{name}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;organization&#39;</span>
-                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">display</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="n">hidden</span>
-            <span class="p">):</span>
-                <span class="k">if</span> <span class="n">input_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">db_update_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-                        <span class="c1"># remove the previous arg before next iteration</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">input_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;choice&#39;</span><span class="p">:</span>
-                    <span class="n">valid_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">expand_valid_values</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;validValues&#39;</span><span class="p">,</span> <span class="p">[])</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">db_update_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-                        <span class="c1"># remove the previous arg before next iteration</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="c1"># when IndexError is reached all data has been processed.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-            <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">for</span> <span class="n">o_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">output_variables_dict</span><span class="p">():</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lj</span><span class="o">.</span><span class="n">outputs_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">display</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lj</span><span class="o">.</span><span class="n">outputs_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
-                    <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">display</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">display</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">output_variables_dict</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bin.handle_error"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.handle_error">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">handle_error</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">halt</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -367,101 +226,20 @@
         <span class="k">if</span> <span class="n">halt</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Bin.permutations"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.permutations">[docs]</a>    <span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process layout.json names/display to get all permutations of args.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The sqlite3 module needs to be build-in to Python for this feature.&#39;</span><span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="c1"># create db for permutations testing</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_insert_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-        <span class="c1"># only gen permutations if none have been generated previously</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">()</span>
-
-        <span class="c1"># output permutations</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">print_permutations</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Bin.print_permutations"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.print_permutations">[docs]</a>    <span class="k">def</span> <span class="nf">print_permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print all valid permutations.&quot;&quot;&quot;</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">permutations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span><span class="p">:</span>
-            <span class="n">permutations</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="n">p</span><span class="p">})</span>
-            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;permutations.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">permutations</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;All permutations written to the &quot;permutations.json&quot; file.&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Bin.profile_settings_args_layout_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.profile_settings_args_layout_json">[docs]</a>    <span class="k">def</span> <span class="nf">profile_settings_args_layout_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return args based on layout.json and conditional rendering.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            required (bool): If True only required args will be returned.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dict: Dictionary of required or optional App args.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_insert_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-        <span class="c1"># only gen permutations if none have been generated previously</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">()</span>
-
-        <span class="n">profile_args</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">pn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span><span class="p">]:</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">filter_params_dict</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">continue</span>
-
-                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
-                    <span class="c1"># use the value generated in the permutation</span>
-                    <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;choice&#39;</span><span class="p">:</span>
-                    <span class="c1"># use the value generated in the permutation</span>
-                    <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;keyvaluelist&#39;</span><span class="p">:</span>
-                    <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;&lt;KeyValueList&gt;&#39;</span>
-                <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;api_access_id&#39;</span><span class="p">,</span> <span class="s1">&#39;api_secret_key&#39;</span><span class="p">]:</span>
-                    <span class="c1"># leave these parameters set to the value defined in defaults</span>
-                    <span class="k">pass</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># add type stub for values</span>
-                    <span class="n">types</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbookDataType&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-                    <span class="k">if</span> <span class="n">types</span><span class="p">:</span>
-                        <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{types}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Invalid permutation index provided.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">profile_args</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">redis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return instance of Redis.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_redis</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">redis_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">redis_port</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">tcex_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return tcex.json file contents.&quot;&quot;&quot;</span>
-        <span class="n">file_fqpn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="s1">&#39;tcex.json&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_fqpn</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_fqpn</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to load &quot;</span><span class="si">{file_fqpn}</span><span class="s1">&quot; file (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="Bin.print_message"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.print_message">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">print_message</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">line_bright</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line_limit</span><span class="o">=</span><span class="mi">150</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print the message ensuring lines don&#39;t exceed line limit.&quot;&quot;&quot;</span>
+        <span class="n">bright</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">line_bright</span><span class="p">:</span>
+            <span class="n">bright</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span>
+        <span class="n">message_line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">message_line</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">line_limit</span><span class="p">:</span>
+                <span class="n">message_line</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{word}</span><span class="s1"> &#39;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># self.handle_error(f&#39;File &quot;{file_fqpn}&quot; could not be found.&#39;)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_json</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{bright}{line_color}</span><span class="s1">{message_line.rstrip()}&#39;</span><span class="p">)</span>
+                <span class="n">message_line</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{word}</span><span class="s1"> &#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{bright}{line_color}</span><span class="s1">{message_line.rstrip()}&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bin.update_system_path"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.update_system_path">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_system_path</span><span class="p">():</span>
@@ -481,33 +259,7 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Bin.validate_layout_display"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.bin.Bin.validate_layout_display">[docs]</a>    <span class="k">def</span> <span class="nf">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">display_condition</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check to see if the display condition passes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            table (str): The name of the DB table which hold the App data.</span>
-<span class="sd">            display_condition (str): The &quot;where&quot; clause of the DB SQL statement.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: True if the row count is greater than 0.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">display</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">display_condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">display</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">display_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;select count(*) from </span><span class="si">{table}</span><span class="s1"> where </span><span class="si">{display_condition}</span><span class="s1">&#39;</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-                <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-                <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">display</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{display_query}</span><span class="s1">&quot; query returned an error: (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">display</span></div></div>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

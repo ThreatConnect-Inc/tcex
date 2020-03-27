@@ -16,10 +16,9 @@ from urllib.parse import unquote  # Python
 class Validator:
     """Validator"""
 
-    def __init__(self, tcex, log, log_data):
+    def __init__(self, tcex, log):
         """Initialize class properties."""
         self.log = log
-        self.log_data = log_data
         self.tcex = tcex
         # TODO: validate this
         self.tcex.logger.update_handler_level('error')
@@ -68,11 +67,14 @@ class Validator:
         op = op or 'eq'
         variable = kwargs.pop('variable', app_data)  # get optional variable name for log header
         if not self.get_operator(op):
-            self.log.error(f'Invalid operator provided ({op})')
+            self.log.data(
+                'validate', 'Invalid Operator', f'Provided operator of {op} is invalid', 'error'
+            )
             return False
 
         # logging header
-        self.log.info(f'{"=" * 10} {app_data} {"=" * 10}')
+        title = kwargs.pop('title', app_data)
+        self.log.title(title, '=')
 
         # run operator
         passed, details = self.get_operator(op)(app_data, test_data, **kwargs)
@@ -104,7 +106,7 @@ class Validator:
                     if diff_count > self.max_diff:
                         details += '\n    * Max number of differences reached.'
                         # don't spam the logs if string are vastly different
-                        self.log_data(
+                        self.log.data(
                             'validate', 'Maximum Reached', 'Max number of differences reached.'
                         )
                         break
@@ -165,7 +167,9 @@ class Validator:
                 passed = False
         return passed, ','.join(bad_data)
 
-    def operator_deep_diff(self, app_data, test_data, **kwargs):
+    def operator_deep_diff(
+        self, app_data, test_data, **kwargs
+    ):  # pylint: disable=too-many-return-statements
         """Compare app data equals tests data.
 
         Args:
@@ -178,15 +182,28 @@ class Validator:
         try:
             from deepdiff import DeepDiff
         except ImportError:
-            self.log.error('Could not import DeepDiff module (try "pip install deepdiff").')
-            return False
+            return False, 'Could not import DeepDiff module (try "pip install deepdiff").'
 
+        # pull out exclude_paths from kwargs
         exclude_paths = kwargs.pop('exclude_paths', [])
-        try:
+
+        if isinstance(app_data, str):
+            try:
+                app_data = json.loads(app_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({app_data}).'
+        else:
+            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
             app_data = json.loads(json.dumps(app_data))
+
+        if isinstance(test_data, str):
+            try:
+                test_data = json.loads(test_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({test_data}).'
+        else:
+            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
             test_data = json.loads(json.dumps(test_data))
-        except ValueError:
-            pass
 
         try:
             if isinstance(app_data, list) and isinstance(test_data, list):
@@ -205,8 +222,8 @@ class Validator:
                     paths = path.split('.')
                     app_data = self.remove_excludes(app_data, paths)
                     test_data = self.remove_excludes(test_data, paths)
-        except AttributeError:
-            pass
+        except AttributeError as e:
+            return False, f'Deep diff remove excludes failed with ({e}).'
 
         # run operator
         try:
@@ -313,9 +330,16 @@ class Validator:
             bool: The results of the operator.
         """
         if isinstance(app_data, (str)):
-            app_data = json.loads(app_data)
+            try:
+                app_data = json.loads(app_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({app_data}).'
+
         if isinstance(test_data, (str)):
-            test_data = json.loads(test_data)
+            try:
+                test_data = json.loads(test_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({test_data}).'
 
         exclude = kwargs.pop('exclude', [])
         if isinstance(app_data, list) and isinstance(test_data, list):
@@ -337,14 +361,17 @@ class Validator:
         Returns:
             dict: The data with excluded values removed.
         """
-        if isinstance(data, (str)):
-            data = json.loads(data)
         for e in exclude:
             try:
                 es = e.split('.')
                 data = self.remove_excludes(data, es)
             except (KeyError, TypeError) as err:
-                self.log.error(f'Invalid validation configuration: ({err})')
+                self.log.data(
+                    'validate',
+                    'Invalid Config',
+                    f'Invalid validation configuration: ({err})',
+                    'error',
+                )
         return data
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
@@ -542,15 +569,15 @@ class Validator:
                         user_data_truncated.append(u)
                 test_data = user_data_truncated
 
-        self.log_data('validate', 'App Data', f'({app_data}), Type: [{type(app_data)}]')
-        self.log_data('validate', 'Operator', op)
-        self.log_data('validate', 'Test Data', f'({test_data}), Type: [{type(test_data)}]')
+        self.log.data('validate', 'App Data', f'({app_data}), Type: [{type(app_data)}]')
+        self.log.data('validate', 'Operator', op)
+        self.log.data('validate', 'Test Data', f'({test_data}), Type: [{type(test_data)}]')
 
         if passed:
-            self.log_data('validate', 'Result', 'Passed')
+            self.log.data('validate', 'Result', 'Passed')
         else:
-            self.log_data('validate', 'Result', 'Failed', 'error')
-            self.log_data('validate', 'Details', details, 'error')
+            self.log.data('validate', 'Result', 'Failed', 'error')
+            self.log.data('validate', 'Details', details, 'error')
 
 
 class Redis:
@@ -561,7 +588,7 @@ class Redis:
         self.provider = provider
 
         # Properties
-        self.log_data = self.provider.log_data
+        self.log = self.provider.log
         self.redis_client = provider.tcex.redis_client
 
     def not_null(self, variable):
@@ -569,14 +596,18 @@ class Redis:
         # Could do something like self.ne(variable, None), but want to be pretty specific on
         # the errors on this one
         variable_data = self.provider.tcex.playbook.read(variable)
-        self.log_data('validate', 'Variable', variable)
-        self.log_data('validate', 'DB Data', variable_data)
+        self.log.data('validate', 'Variable', variable)
+        self.log.data('validate', 'DB Data', variable_data)
         if not variable:
-            self.provider.log.error('NoneError: Redis Variable not provided')
+            self.log.data(
+                'validate', 'None Error', f'Redis variable not provided', 'error',
+            )
             return False
 
         if not variable_data:
-            self.provider.log.error(f'NotFoundError: Redis Variable {variable} was not found.')
+            self.log.data(
+                'validate', 'None Found', f'Redis variable {variable} was not found', 'error',
+            )
             return False
 
         return True
@@ -584,8 +615,8 @@ class Redis:
     def type(self, variable):
         """Validate the type of a redis variable"""
         variable_data = self.provider.tcex.playbook.read(variable)
-        self.log_data('validate', 'Variable', variable)
-        self.log_data('validate', 'DB Data', variable_data)
+        self.log.data('validate', 'Variable', variable)
+        self.log.data('validate', 'DB Data', variable_data)
         redis_type = self.provider.tcex.playbook.variable_type(variable)
         if redis_type.endswith('Array'):
             redis_type = list
@@ -597,11 +628,16 @@ class Redis:
             redis_type = str
 
         if not variable_data:
-            self.provider.log.error(f'NotFoundError: Redis Variable {variable} was not found.')
+            self.log.data(
+                'validate', 'None Found', f'Redis variable {variable} was not found', 'error',
+            )
             return False
         if not isinstance(variable_data, redis_type):
-            self.provider.log.error(
-                f'TypeMismatchError: Redis Type: {redis_type} and Variable: {variable} do not match'
+            self.log.data(
+                'validate',
+                'Type Mismatch',
+                f'Redis Type: {redis_type}  and Variable: {variable} do not match',
+                'error',
             )
             return False
 
@@ -626,11 +662,16 @@ class Redis:
 
         op = op or 'eq'
         if not variable:
-            self.provider.log.error('NoneError: Redis Variable not provided')
+            self.log.data(
+                'validate', 'None Error', f'Redis variable not provided', 'error',
+            )
             return False
 
         if not self.provider.get_operator(op):
-            self.provider.log.error(f'Invalid operator provided ({op})')
+            self.log.error(f'Invalid operator provided ({op})')
+            self.log.data(
+                'validate', 'Invalid Operator', f'Provided operator of {op} is invalid', 'error'
+            )
             return False
 
         if variable.endswith('Binary'):
@@ -641,13 +682,23 @@ class Redis:
             app_data = self.provider.tcex.playbook.read(variable)
 
         # logging header
-        self.provider.log.info(f'{"-" * 10} {variable} {"-" * 10}')
+        self.log.title(variable, '-')
 
         # run operator
         passed, details = self.provider.get_operator(op)(app_data, test_data, **kwargs)
 
         # log validation data in a readable format
         self.provider.validate_log_output(passed, app_data, test_data, details.strip(), op)
+
+        # check for bad string values
+        suspect_values = ['null', 'None']
+        if app_data in suspect_values:
+            self.log.data(
+                'validate',
+                'Suspect Value',
+                f'App data matched a suspect value ({suspect_values}).',
+                'warning',
+            )
 
         # build assert error
         assert_error = (
@@ -685,7 +736,7 @@ class Redis:
         return self.data(variable, data, op='kveq', **kwargs)
 
     def keyvalue_eq(self, variable, data, **kwargs):
-        """Validate JSON data equality"""
+        """Validate KeyValue JSON data equality"""
         return self.data(variable, data, op='kveq', **kwargs)
 
     def lt(self, variable, data):
@@ -711,29 +762,31 @@ class ThreatConnect:
     def __init__(self, provider):
         """Initialize class properties"""
         self.provider = provider
+        self.log = self.provider.log
 
-    def batch(self, context, owner, validation_criteria):
+    def batch(self, profile):
         """Validate the batch submission"""
 
-        validation_percent = validation_criteria.get('percent', 100)
-        validation_count = validation_criteria.get('count', None)
-        batch_submit_totals = self._get_batch_submit_totals(context)
+        validation_percent = profile.validation_criteria.get('percent', 100)
+        validation_count = profile.validation_criteria.get('count', None)
+        batch_submit_totals = self._get_batch_submit_totals(profile.feature, profile.name)
 
         if validation_count:
             validation_percent = self._convert_to_percent(validation_count, batch_submit_totals)
 
         batch_errors = []
-        for filename in os.listdir(os.path.join('.', 'log', context)):
-            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+        dir_path = os.path.join('.', 'log', profile.feature, f'test_profiles-{profile.name}')
+        for filename in os.listdir(dir_path):
+            with open(os.path.join(dir_path, filename), 'r') as fh:
                 if not filename.startswith('errors-') or not filename.endswith('.json'):
                     continue
                 batch_errors += json.load(fh)
 
-        for filename in os.listdir(os.path.join('.', 'log', context)):
+        for filename in os.listdir(dir_path):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
 
-            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename), 'r') as fh:
                 data = json.load(fh)
                 validation_data = self._partition_batch_data(data)
                 sample_validation_data = []
@@ -761,20 +814,23 @@ class ThreatConnect:
                         + '--'
                         + sample_data.get('name', '')
                     )
-                    filename = os.path.join('.', 'log', context, filename)
+                    filename = os.path.join(dir_path, filename)
                     if os.path.isfile(filename):
                         files.append(filename)
                     else:
                         files.append(None)
-                results = self.tc_entities(sample_validation_data, owner, files=files)
+                results = self.tc_entities(sample_validation_data, profile.owner, files=files)
                 for result in results:
                     if result.get('valid'):
                         continue
                     name = result.get('name')
                     batch_error = self._batch_error(name, batch_errors)
                     if batch_error:
-                        self.provider.log.error(
-                            f'Errors validating {name} due to batch submission error: {batch_error}'
+                        self.log.data(
+                            'validate',
+                            'Batch Submission',
+                            f'Errors validating {name} ({batch_error})h',
+                            'error',
                         )
                         continue
                     # TODO: Should use pip install pytest-check is_true method so it wont fail after
@@ -783,7 +839,7 @@ class ThreatConnect:
                         f'{name} in ThreatConnect did not match what was submitted. '
                         f"Errors:{result.get('errors')}"
                     )
-        self._log_batch_submit_details(batch_errors, owner)
+        self._log_batch_submit_details(batch_errors, profile.owner)
 
     def _log_batch_submit_details(self, batch_errors, owner):
         if not batch_errors:
@@ -805,7 +861,7 @@ class ThreatConnect:
                 self.provider.tcex.batch(owner).error_codes.get(code) + ': ' + str(count) + '\n'
             )
 
-        self.provider.log.error(log_message)
+        self.log.data('validate', 'Batch Submission', log_message, 'error')
 
     @staticmethod
     def _batch_error(key, batch_errors):
@@ -1023,16 +1079,17 @@ class ThreatConnect:
 
         return ti_entity
 
-    def _get_batch_submit_totals(self, context):
+    def _get_batch_submit_totals(self, feature, name):
         """Break the batch submitions up into separate partitions.
 
         Each partition containing its total.
         """
         counts = {}
-        for filename in os.listdir(os.path.join('.', 'log', context)):
+        dir_path = os.path.join('.', 'log', feature, f'test_profiles-{name}')
+        for filename in os.listdir(dir_path):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
-            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename), 'r') as fh:
                 data = json.load(fh)
                 partitioned_data = self._partition_batch_data(data)
                 for key in partitioned_data:

@@ -11,9 +11,8 @@ class LayoutJson:
 
     def __init__(self, filename=None, path=None):
         """Initialize class properties."""
-        self.filename = filename or 'layout.json'
-        if path is not None:
-            self.filename = os.path.join(path, self.filename)
+        self._filename = filename or 'layout.json'
+        self._path = path or os.getcwd()
 
         # properties
         self._contents = None
@@ -29,13 +28,54 @@ class LayoutJson:
     @property
     def contents(self):
         """Return layout.json contents."""
-        if self._contents is None:
+        if self._contents is None and self.has_layout:
             with open(self.filename, 'r') as fh:
                 self._contents = json.load(fh, object_pairs_hook=OrderedDict)
         return self._contents
 
+    def create(self, inputs, outputs):
+        """Create new layout.json file based on inputs and outputs."""
+
+        lj = {
+            'inputs': [
+                {'parameters': [], 'sequence': 1, 'title': 'Action'},
+                {'parameters': [], 'sequence': 2, 'title': 'Connection'},
+                {'parameters': [], 'sequence': 3, 'title': 'Configure'},
+                {'parameters': [], 'sequence': 4, 'title': 'Advanced'},
+            ],
+            'outputs': [],
+        }
+
+        for i in inputs:
+            if i.get('name') == 'tc_action':
+                lj['inputs'][0]['parameters'].append({'name': 'tc_action'})
+            elif i.get('hidden') is True:
+                lj['inputs'][2]['parameters'].append(
+                    {'display': "'hidden' != 'hidden'", 'hidden': 'true', 'name': i.get('name')}
+                )
+            else:
+                lj['inputs'][2]['parameters'].append({'display': '', 'name': i.get('name')})
+
+        for o in outputs:
+            lj['outputs'].append({'display': '', 'name': o.get('name')})
+
+        with open(self.filename, 'w') as fh:
+            fh.write(f'{json.dumps(lj, indent=2, sort_keys=False)}\n')
+
     @property
-    def parameters_dict(self):
+    def filename(self):
+        """Return the fqpn for the layout.json file."""
+        return os.path.join(self._path, self._filename)
+
+    @property
+    def has_layout(self):
+        """Return True if App has layout.json file."""
+        if os.path.isfile(self.filename):
+            return True
+        return False
+
+    @property
+    def params_dict(self):
         """Return layout.json params in a flattened dict with name param as key."""
         parameters = {}
         for i in self.inputs:
@@ -46,7 +86,7 @@ class LayoutJson:
     @property
     def parameters_names(self):
         """Return layout.json params in a flattened dict with name param as key."""
-        return self.parameters_dict.keys()
+        return self.params_dict.keys()
 
     @property
     def outputs_dict(self):

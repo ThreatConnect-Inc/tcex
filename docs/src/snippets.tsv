@@ -1,0 +1,62 @@
+Feature	Title	Code
+Batch	Initialize Batch Create	batch = self.tcex.batch(owner="MyOwner")\n
+Batch	Initialize Batch Delete	batch = self.tcex.batch(owner="MyOwner", action="Delete")\n
+Batch	Add Group Interface 1	ti = batch.campaign(name="camp-1", first_seen="12-12-08", xid="my-unique-external-id")\n
+Batch	Add Group Interface 2	ti = batch.group(group_type="Campaign", name="camp-2", date_added="12-12-2008", first_seen="12-12-08", xid="my-unique-external-id")\n
+Batch	Add Attribute	ti.attribute(attr_type="Description", attr_value="Example Description", displayed=True)\n
+Batch	Add Tag	ti.tag(name="Crimeware")\n
+Batch	Add Security Label	ti.security_label(name="My Custom Label", description="My Label Description", color="ffffff")\n
+Batch	Add Association	ti.association("my-unique-adversary-external-id")\n
+Batch	Save	# temporarily save group to disk to preserve memory\nbatch.save(ti)\n
+Batch	Add Indicator Interface 1	ti = batch.file(md5="43c3609411c83f363e051d455ade78a6", rating="5.0", confidence="100")\n
+Batch	Add Indicator Interface 2	ti = batch.indicator(indicator_type="File", summary="43c3609411c83f363e051d455ade78a6")\nti.confidence = "50"\nti.rating = "3.2"\nti.occurrence(file_name="drop1.exe", path="C:\\\\test\\\\", date="2017-02-02")\nti.occurrence(file_name="drop2.exe", path="C:\\\\test2\\\\", date="2017-01-01")\n
+Batch	Submit	batch_status = batch.submit_all()\n
+Case Management	Create Case	case_data = {\n    "name": "Case Name",\n    "severity": "Low",\n    "status": "Open",\n}\ncase = self.cm.case(**case_data)\ncase.submit()
+Case Management	Update Case	case = self.cm.case(id=2)\ncase.name = "Updated Name"\ncase.submit()
+Case Management	Delete Case	case = self.cm.case(id=2)\ncase.delete()
+Case Management	Get Case	case = self.cm.case(id=2)\ncase.get()
+Case Management	Get Sub Artifacts	case = self.cm.case(id=2)\ncase.get(all_available_fields=True)\nfor artifact in case.artifacts:\n    self.tcex.log.debug(f"artifact: {artifact}")
+Case Management	Create Case with Artifacts	case_data = {\n    "name": "Case Name",\n    "severity": "Low",\n    "status": "Open",\n}\n\ncase = self.cm.case(**case_data)\n\n# artifact data\nartifact_data = [\n    {"summary": "asn4455", "intel_type": "indicator-ASN", "type": "ASN"},\n    {"summary": "asn5544", "intel_type": "indicator-ASN", "type": "ASN"},\n]\n\n# add artifacts\nfor artifact in artifact_data:\n    case.add_artifact(**artifact)\ncase.submit()
+Case Management	Get Cases with TQL	cases = self.tcex.cm.cases()\ncases.filter.id(TQL.Operator.EQ, case.id)\n\nfor case in cases:\n    self.tcex.log.debug(f"case: {case}")
+Case Management	Get Cases with Linked TQL	cases = self.tcex.cm.cases()\ncases.filter.has_artifact.id(TQL.Operator.EQ, artifact.id)\n\nfor case in cases:\n    self.tcex.log.debug(f"case: {case}")
+Case Management	Create Artifact	artifact_data = {\n    "case_id": 1,\n    "summary": f"asn2342",\n    "type": "ASN",\n}\n\n# create artifact\nartifact = self.tcex.cm.artifact(**artifact_data)\nartifact.submit()
+Case Management	Create Note	note_data = {\n    "case_id": 1,\n    "text": f"sample note for test case."\n}\n\n# create note\nnote = self.tcex.cm.note(**note_data)\nnote.submit()
+Case Management	Add Tag	case = self.tcex.cm.case(id=1)\ncase.add_tag("sample tag")\ncase.submit()
+Case Management	Create Task	task_data = {\n    "case_id": 1,\n    "description": f"a description for new task",\n    "name": f"new task",\n    "xid": "unique-task-xid"\n}\n\n# create task\nself.tcex.cm.task(**task_data)\ntask.submit()
+Case Management	Create Workflow Event	workflow_event_data = {\n    "case_id": 1,\n    "summary": "workflow event summary"\n}\n\n# create workflow_event\nself.tcex.cm.workflow_event(**workflow_event_data)\nworkflow_event.submit()
+DataStore	Initialize Local	# when using a value of "local" the scope of the datastore is limited to this App in the current Playbook\nds = self.tcex.datastore("local", "myDnsData")\n
+DataStore	Initialize Organization	ds = self.tcex.datastore("organization", "myDnsData")\n
+DataStore	Get	response = ds.get(rid="one")\n
+DataStore	Add	response = ds.add(rid="one", data={"one": 1})\n
+DataStore	Add (dynamic id)	response = ds.add(rid=None, data={"one": 1})\n
+DataStore	Put	response = ds.put(rid="one", data={"one": 1})\n
+DataStore	Delete	response = ds.delete(rid="one")\n
+DataStore	Search	search = {"query": {"match_all": {}}}\nresponse = ds.get(rid="_search", data=search)\n
+Exit	Set exit message	self.exit_message = f"Created {indicator_count} indicators."\n
+Exit	Set exit code	# set the exit code and allow App to continue to process\nself.tcex.playbook.exit_code = 1\n
+Exit	Exit with error	# exit the App immediately with the provided exit message\nself.tcex.playbook.exit(code=1, msg="Failed to add indicators to Owner.")\n
+General	Action Method	@IterateOnArg(arg="input_arg")\n@OnException(exit_msg="Failed to run "do something" operation.")\n@OnSuccess(exit_msg="Successfully ran "do something" operation.")\n@Output(attribute="return_outputs")\ndef do_action(self, input_arg):\n    """Perform an action on interator_input and append return value to self.return_outputs."""\n    return input_arg\n
+General	Get variable type	var_type = self.tcex.playbook.variable_type(variable=self.args.input)\n
+Logging	Debug	self.tcex.log.debug("debug logging")\n
+Logging	Info	self.tcex.log.info("info logging")\n
+Logging	Warning	self.tcex.log.warning("warning logging")\n
+Logging	Error	self.tcex.log.error("error logging")\n
+Metrics	Add Metrics	metrics = self.tcex.metric(name="My Metric", description="Indicator Count", data_type="Sum", interval="Daily", keyed=False)\nmetrics.add(value=42, date="2008-12-12T12:12:12")\n
+Metrics	Add Keyed Metrics	metrics = self.tcex.metric(name="My Metric By Owner", description="Indicator Count by Owner", data_type="Sum", interval="Daily", keyed=True)\nmetrics.add_keyed(value=42, key="MyOrg", date="2008-12-12T12:12:12", return_value=True)\n
+Notifications	Send to Recipients	notification = self.tcex.notification()\nnotification.recipients(notification_type="My notification", recipients="myuser@example.com", priority="High")\nstatus = notification.send(message="High alert send to recipients.")\n
+Notifications	Sent to Organization	notification = self.tcex.notification()\nnotification.org(notification_type="My notification", priority="High")\nstatus = notification.send(message="High alert send to organization.")\n
+Threat Intelligence	Get Group by Id	parameters = {\n    "includes": ["additional", "attributes", "labels", "tags"]\n}        \nti = self.tcex.ti.group(group_type="Adversary", owner="MyOrg", unique_id=416) \nresponse = ti.single(params=parameters)\n
+Threat Intelligence	Get Groups	parameters = {\n    "includes": ["additional", "attributes", "labels", "tags"]\n}\ngroups = self.tcex.ti.group(group_type="Adversary", owner="MyOrg") \nfor group in groups.many(params=parameters):\n    self.tcex.log.debug(f"group: {group}")\n
+Threat Intelligence	Get Tags	for tag in ti.tags():\n    self.tcex.log.debug(f"tag: {tag}")\n
+Threat Intelligence	Get Attributes	for attribute in ti.attributes():\n    self.tcex.log.debug(f"attribute: {attribute}")\n
+Threat Intelligence	Get Associations	for association in ti.indicator_associations():\n    self.tcex.log.debug(f"association: {association}")\n
+Threat Intelligence	Create Group	ti = self.tcex.ti.group(group_type="Campaign", name="camp-3", owner="MyOrg", first_seen="2019-04-02") \nresponse = ti.create()\n
+Threat Intelligence	Add Tag	response = ti.add_tag(name="Crimeware")\n
+Threat Intelligence	Add Attribute	response = ti.add_attribute(attribute_type="Description", attribute_value="Example Description.")\n
+Threat Intelligence	Add Security Label	response = ti.add_label(label="TLP:GREEN")\n
+Threat Intelligence	Add Association	group_assoc = self.tcex.ti.group(group_type="Campaign", unique_id=417) \nresponse = ti.add_association(target=group_assoc)\n
+Threat Intelligence	Update Group	ti = self.tcex.ti.group(group_type="Campaign", first_seen="2019-04-03", unique_id=417) \nresponse = ti.update()\n
+Threat Intelligence	Delete Group	ti = self.tcex.ti.group(group_type="Campaign", unique_id=419) \nresponse = ti.delete()\n
+Threat Intelligence	Get Indicatory by Value	parameters = {\n    "includes": ["additional", "attributes", "labels", "tags"]\n}\nti = self.tcex.ti.indicator(indicator_type="Address", owner="MyOrg", unique_id="127.0.0.1") \nresponse = ti.single(params=parameters)\n
+Threat Intelligence	Get Indicators	parameters = {\n    "includes": ["additional", "attributes", "labels", "tags"]\n}\nindicators = self.tcex.ti.indicator(indicator_type="Address", owner="MyOrg") \nfor indicator in indicators.many(params=parameters):\n    self.tcex.log.debug(f"indicator: {indicator}")\n
+Threat Intelligence	Create Indicator	ti = self.tcex.ti.indicator(indicator_type="Address", owner="MyOrg", ip="12.13.14.15") \nresponse = ti.create()\n

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 import os
+import time
 from random import randint
 
 from .ti_helpers import TIHelper, TestThreatIntelligence
@@ -114,6 +115,9 @@ class TestDocumentGroups(TestThreatIntelligence):
         file_content = b'pytest content'
         r = helper_ti.file_content(file_content)
         assert r.status_code == 200
+
+        # add a small delay to allow file to be processed
+        time.sleep(2)
 
         # download file
         r = helper_ti.download()

@@ -22,6 +22,7 @@ class TiTcRequest:
     def _delete(self, url, params=None):
         """Delete data from API."""
         params = params or {}
+        params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
         r = self.tcex.session.delete(url, params=params)
         self.tcex.log.debug(
@@ -40,6 +41,7 @@ class TiTcRequest:
     def _get(self, url, params=None):
         """Delete data from API."""
         params = params or {}
+        params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
         r = self.tcex.session.get(url, params=params)
 
@@ -59,6 +61,7 @@ class TiTcRequest:
     def _iterate(self, url, params, api_entity):
         """Iterate over API pagination."""
         params['resultLimit'] = self.result_limit
+
         should_iterate = True
         result_start = 0
         while should_iterate:
@@ -81,6 +84,7 @@ class TiTcRequest:
     def _post(self, url, data, params=None):
         """Post data to API."""
         params = params or {}
+        params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
         r = self.tcex.session.post(url, data=data, params=params)
         self.tcex.log.debug(
@@ -101,6 +105,7 @@ class TiTcRequest:
     def _post_json(self, url, json_data, params=None):
         """Post JSON data to API."""
         params = params or {}
+        params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
         r = self.tcex.session.post(url, json=json_data, params=params)
         self.tcex.log.debug(
@@ -120,6 +125,7 @@ class TiTcRequest:
     def _put_json(self, url, json_data, params=None):
         """Post JSON data to API."""
         params = params or {}
+        params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
         r = self.tcex.session.put(url, json=json_data, params=params)
         self.tcex.log.debug(
@@ -742,7 +748,7 @@ class TiTcRequest:
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/falsePositive'
 
-        r = self.tcex.session.post(url, params=params)
+        r = self._post(url, {}, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -765,7 +771,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/owners'
 
-        r = self.tcex.session.get(url, params=params)
+        r = self._get(url, params=params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -787,7 +793,7 @@ class TiTcRequest:
         params = {'owner': owner} if owner else {}
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/observations'
-        r = self.tcex.session.post(url, json=data, params=params)
+        r = self._post(url, data, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -811,7 +817,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/observationCount'
 
-        r = self.tcex.session.get(url, params=params)
+        r = self._get(url, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -839,7 +845,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{type}/{sub_type}/{unique_id}/observations'
 
-        r = self.tcex.session.get(url, json=params)
+        r = self._get(url, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -863,7 +869,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/dnsResolution'
 
-        r = self.tcex.session.get(url, params=params)
+        r = self._get(url, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -894,7 +900,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
-        r = self.tcex.session.put(url, params=params, json=data)
+        r = self._put_json(url, data, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -925,7 +931,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
-        r = self.tcex.session.put(url, params=params, json=data)
+        r = self._put_json(url, data, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -974,7 +980,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/deleted'
 
-        r = self.tcex.session.get(url, params=params)
+        r = self._get(url, params)
 
         if not self.success(r):
             err = r.text or r.reason
@@ -1011,7 +1017,7 @@ class TiTcRequest:
             url = f'/v2/tags/{tag_name}/{api_type}/{sub_type}'
         else:
             url = f'/v2/tags/{tag_name}/{api_type}/'
-        yield from self._iterate(url, params, api_entity)
+        return self._iterate(url, params, api_entity)
 
     def groups_from_tag(self, group, tag_name, filters=None, owner=None, params=None):
         """
@@ -1026,7 +1032,7 @@ class TiTcRequest:
         Return:
 
         """
-        yield from self.pivot_from_tag(group, tag_name, filters=filters, owner=owner, params=params)
+        return self.pivot_from_tag(group, tag_name, filters=filters, owner=owner, params=params)
 
     def indicators_from_tag(self, indicator, tag_name, filters=None, owner=None, params=None):
         """
@@ -1318,6 +1324,7 @@ class TiTcRequest:
         """
         action = action.upper()
         params = {'owner': owner} if owner else {}
+        params['createActivityLog'] = False
         # Typically if victim to victim but other endpoints that are not
         # groups/indicators can exist in the future
         if not sub_type and not target_sub_type:
@@ -1336,10 +1343,11 @@ class TiTcRequest:
             )
 
         r = None
+        params['createActivityLog'] = params.get('createActivityLog') or False
         if action == 'ADD':
-            r = self.tcex.session.post(url, params=params)
+            r = self._post(url, {}, params)
         elif action == 'DELETE':
-            r = self.tcex.session.delete(url, params=params)
+            r = self._delete(url, params)
         else:
             self.tcex.log.error('associations error')
 
@@ -1362,13 +1370,14 @@ class TiTcRequest:
 
         """
         params = params or {}
+        params['createActivityLog'] = False
 
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}/victims/{victim_id}'
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/victims/{victim_id}'
 
-        return self.tcex.session.get(url, params=params)
+        return self._get(url, params)
 
     def victims(self, main_type, sub_type, unique_id, params=None):
         """
@@ -1502,10 +1511,10 @@ class TiTcRequest:
             params['owner'] = owner
 
         if action == 'GET':
-            return self.tcex.session.get(url, params=params)
+            return self._get(url, params)
 
         if action == 'DELETE':
-            return self.tcex.session.delete(url, params=params)
+            return self._delete(url, params)
 
         return None
 
@@ -1528,7 +1537,7 @@ class TiTcRequest:
         params = {}
         if owner:
             params['owner'] = owner
-        return self.tcex.session.post(url, json={'fileName': name, 'path': path, 'date': date})
+        return self._post_json(url, {'fileName': name, 'path': path, 'date': date})
 
     def tag(self, main_type, sub_type, unique_id, tag, action='GET', owner=None, params=None):
         """
@@ -1557,11 +1566,11 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{unique_id}/tags/{quote(tag)}'
         response = None
         if action == 'ADD':
-            response = self.tcex.session.post(url, params=params)
+            response = self._post(url, {}, params)
         elif action == 'DELETE':
-            response = self.tcex.session.delete(url, params=params)
+            response = self._delete(url, params)
         elif action == 'GET':
-            response = self.tcex.session.get(url, params=params)
+            response = self._get(url, params)
         else:
             self.tcex.log.error('_tags error')
         return response
@@ -1746,13 +1755,13 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/securityLabels/{quote(label)}'
 
         if action == 'ADD':
-            return self.tcex.session.post(url, params=params)
+            return self._post(url, {}, params)
 
         if action == 'DELETE':
-            return self.tcex.session.delete(url, params=params)
+            return self._delete(url, params)
 
         if action == 'GET':
-            return self.tcex.session.get(url, params=params)
+            return self._get(url, params)
 
         return None
 
@@ -1809,10 +1818,10 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/attributes/{attribute_id}'
 
         if action == 'GET':
-            return self.tcex.session.get(url, params=params)
+            return self._get(url, params)
 
         if action == 'DELETE':
-            return self.tcex.session.delete(url, params=params)
+            return self._delete(url, params)
 
         return None
 
@@ -1896,7 +1905,7 @@ class TiTcRequest:
         if displayed:
             json['displayed'] = displayed
 
-        return self.tcex.session.post(url, json=json, params=params)
+        return self._post_json(url, json, params)
 
     def update_attribute(
         self,
@@ -1943,7 +1952,7 @@ class TiTcRequest:
         if displayed:
             json['displayed'] = displayed
 
-        return self.tcex.session.put(url, json=json, params=params)
+        return self._put_json(url, json, params)
 
     def attribute_labels(
         self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None
@@ -2014,13 +2023,13 @@ class TiTcRequest:
                 f'{quote(label)}'
             )
         if action == 'ADD':
-            return self.tcex.session.post(url, params=params)
+            return self._post(url, {}, params)
 
         if action == 'DELETE':
-            return self.tcex.session.delete(url, params=params)
+            return self._delete(url, params)
 
         if action == 'GET':
-            return self.tcex.session.get(url, params=params)
+            return self._get(url, params)
 
         return None
 
@@ -2118,11 +2127,11 @@ class TiTcRequest:
 
         url = f'/v2/{main_type}/{unique_id}/assignees/{assignee_id}'
         if action == 'ADD':
-            return self._post(url, {})
+            return self._post(url, {}, params)
         if action == 'GET':
-            return self._get(url=url, params=params)
+            return self._get(url, params=params)
         if action == 'DELETE':
-            return self._delete(url=url)
+            return self._delete(url, params)
         return None
 
     def get_assignee(self, main_type, sub_type, unique_id, assignee_id, params=None):
@@ -2204,7 +2213,7 @@ class TiTcRequest:
 
         url = f'/v2/{main_type}/{unique_id}/escalatees/{escalatee_id}'
         if action == 'ADD':
-            return self._post(url, {})
+            return self._post(url, {}, params)
         if action == 'GET':
             return self._get(url=url, params=params)
         if action == 'DELETE':

@@ -27,7 +27,7 @@ class CustomFeature(Custom):
         """Run teardown method code."""
         super(CustomFeature, self).teardown_method(test_feature)
 
-    % if app_type in ['triggerservice']:
+    % if runtime_level in ['triggerservice']:
     def trigger_method(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Perform action to trigger the event."""
         super(CustomFeature, self).trigger_method(test_feature, profile_data, monkeypatch)
@@ -40,7 +40,7 @@ class CustomFeature(Custom):
         """Run test method code before delete configs."""
         super(CustomFeature, self).test_pre_delete_config(test_feature, profile_data, monkeypatch)
 
-    % elif app_type in ['webhooktriggerservice']:
+    % elif runtime_level in ['webhooktriggerservice']:
     def test_pre_create_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Run test method code before create configs."""
         super(CustomFeature, self).test_pre_create_config(test_feature, profile_data, monkeypatch)

@@ -35,7 +35,7 @@ class Task(Mappings):
             sub_type=None,
             api_entity='task',
             api_branch=None,
-            owner=kwargs.pop('owner'),
+            owner=kwargs.pop('owner', None),
         )
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)

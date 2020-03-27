@@ -20,12 +20,29 @@ pytest -n 12 --cov=tcex/ --cov-report=term-missing tests
 # 5 failed, 875 passed, 28 warnings in 105.23s (0:01:45)
 
 # Coverage on Single Module
-pytest --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
-pytest --cov=tcex/case_management/ --cov-report=term-missing tests/case_management/
-pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
+pytest -n 12 --cov=tcex/batch/ --cov-report=term-missing tests/batch/
+pytest -n 12 --cov=tcex/case_management/ --cov-report=term-missing tests/case_management/
+pytest -n 12 --cov=tcex/datastore/ --cov-report=term-missing tests/datastore/
+pytest -n 12 --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
+pytest -n 12 --cov=tcex/inputs/ --cov-report=term-missing tests/inputs/
+pytest -n 12 --cov=tcex/logger/ --cov-report=term-missing tests/logger/
+pytest -n 12 --cov=tcex/metrics/ --cov-report=term-missing tests/metrics/
+pytest -n 12 --cov=tcex/playbooks/ --cov-report=term-missing tests/playbooks/
+pytest -n 12 --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
+pytest -n 12 --cov=tcex/ --cov-report=term-missing tests/tcex_methods/
+pytest -n 12 --cov=tcex/threat_intelligence/ --cov-report=term-missing tests/threat_intelligence/
+pytest -n 12 --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
+pytest -n 12 --cov=tcex/utils/ --cov-report=term-missing tests/utils/
 
 # Release Testing Run
+# normal - in 1526.29s
+pytest --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
+# concurrent normal - in 170.33s (0:02:50)
 pytest -n 12 --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
+# concurrent loadscope - in 196.37s (0:03:16)
+pytest -n 12 --dist=loadscope --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
+# concurrent loadfile - in 210.22s (0:03:30)
+pytest -n 12 --dist=loadfile --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
 
 # Case Management Error Codes
 

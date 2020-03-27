@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.validate &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.bin.validate &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -327,7 +327,7 @@
             <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.6&#39;</span><span class="p">)</span>
             <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.7&#39;</span><span class="p">)</span>
             <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.8&#39;</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;playbook_app&#39;</span><span class="p">]</span>
+            <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;job_app&#39;</span><span class="p">,</span> <span class="s1">&#39;playbook_app&#39;</span><span class="p">,</span> <span class="s1">&#39;run&#39;</span><span class="p">,</span> <span class="s1">&#39;service_app&#39;</span><span class="p">]</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
@@ -346,36 +346,16 @@
             <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">]</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
             <span class="k">pass</span>
-        <span class="c1"># TODO: if possible, update to a cleaner method that doesn&#39;t require importing the module</span>
-        <span class="c1"># and running inline code.</span>
-        <span class="n">module_path</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__path__&#39;</span><span class="p">):</span>
-            <span class="c1"># module in lib directory</span>
-            <span class="n">module_path</span> <span class="o">=</span> <span class="n">imported_module</span><span class="o">.</span><span class="n">__path__</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__file__&#39;</span><span class="p">):</span>
-            <span class="c1"># module in base App directory</span>
-            <span class="n">module_path</span> <span class="o">=</span> <span class="n">imported_module</span><span class="o">.</span><span class="vm">__file__</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># possible unneeded check</span>
-        <span class="k">if</span> <span class="n">module_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">module_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">module_path</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">m_path</span> <span class="ow">in</span> <span class="n">module_path</span><span class="p">:</span>
+        <span class="n">find_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="n">find_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># if dist-packages|site-packages in module_path the import doesn&#39;t count</span>
-            <span class="k">if</span> <span class="s1">&#39;dist-packages&#39;</span> <span class="ow">in</span> <span class="n">m_path</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="s1">&#39;site-packages&#39;</span> <span class="ow">in</span> <span class="n">m_path</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+            <span class="k">if</span> <span class="s1">&#39;dist-packages&#39;</span> <span class="ow">in</span> <span class="n">find_spec</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="s1">&#39;site-packages&#39;</span> <span class="ow">in</span> <span class="n">find_spec</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">found</span></div>
 
 <div class="viewcode-block" id="Validate.check_install_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.check_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">check_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check all install.json files for valid schema.&quot;&quot;&quot;</span>
@@ -460,42 +440,37 @@
 <span class="sd">        will validate that no reference appear for inputs in install.json that don&#39;t exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">ij_input_names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">ij_output_name_type</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">ij_output_names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;install.json&#39;</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;install.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                    <span class="n">ij</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="p">[]):</span>
-                    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ij_input_names</span><span class="p">:</span>
-                        <span class="c1"># update validation data errors</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Duplicate input name found in install.json ({p.get(&#39;name&#39;)})&quot;</span>
-                        <span class="p">)</span>
-                        <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">ij_input_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbook&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputVariables&#39;</span><span class="p">,</span> <span class="p">[]):</span>
-                    <span class="c1"># build name type to ensure check for duplicates on name-type value</span>
-                    <span class="n">name_type</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;{o.get(&#39;name&#39;)}-{o.get(&#39;type&#39;)}&quot;</span>
-                    <span class="k">if</span> <span class="n">name_type</span> <span class="ow">in</span> <span class="n">ij_output_name_type</span><span class="p">:</span>
-                        <span class="c1"># update validation data errors</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="s1">&#39;Duplicate output variable name found in install.json &#39;</span>
-                            <span class="sa">f</span><span class="s2">&quot;({o.get(&#39;name&#39;)})&quot;</span>
-                        <span class="p">)</span>
-                        <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">ij_output_name_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name_type</span><span class="p">)</span>
-                        <span class="n">ij_output_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="c1"># checking parameters isn&#39;t possible if install.json can&#39;t be parsed</span>
-                <span class="k">return</span>
+        <span class="c1"># do not track hidden or serviceConfig inputs as they should not be in layouts.json</span>
+        <span class="n">ij_input_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">filter_params_dict</span><span class="p">(</span><span class="n">service_config</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="n">ij_output_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">output_variables</span><span class="p">]</span>
+
+        <span class="c1"># Check for duplicate inputs</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">validate_duplicate_input_names</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Duplicate input name found in install.json (</span><span class="si">{name}</span><span class="s1">)&#39;</span>
+            <span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Check for duplicate sequence numbers</span>
+        <span class="k">for</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">validate_duplicate_sequences</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Duplicate sequence number found in install.json (</span><span class="si">{sequence}</span><span class="s1">)&#39;</span>
+            <span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Check for duplicate outputs variables</span>
+        <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">validate_duplicate_outputs</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Duplicate output variable name found in install.json (</span><span class="si">{output}</span><span class="s1">)&#39;</span>
+            <span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
             <span class="c1"># create temporary inputs tables</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">ij_input_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">ij_input_names</span><span class="p">)</span>
 
         <span class="c1"># inputs</span>
         <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
@@ -505,18 +480,22 @@
                     <span class="c1"># update validation data errors</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="s1">&#39;Layouts input.parameters[].name validations failed &#39;</span>
-                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;(&quot;{p.get(&#39;name&#39;)}&quot; is defined in layout.json, but not found in &quot;&quot;&quot;</span>
-                        <span class="s1">&#39;install.json).&#39;</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;(&quot;{p.get(&#39;name&#39;)}&quot; is defined in layout.json, &quot;&quot;&quot;</span>
+                        <span class="s1">&#39;but hidden or not found in install.json).&#39;</span>
                     <span class="p">)</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># any item in list afterwards is a problem</span>
                     <span class="n">ij_input_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 
                 <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
-                        <span class="n">display_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SELECT * FROM </span><span class="si">{self.input_table}</span><span class="s2"> WHERE {p.get(&#39;display&#39;)}&quot;</span>
+                        <span class="n">display_query</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;SELECT * FROM </span><span class="si">{self.permutations.input_table}</span><span class="s1">&#39;</span>
+                            <span class="sa">f</span><span class="s2">&quot; WHERE {p.get(&#39;display&#39;)}&quot;</span>
+                        <span class="p">)</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
                         <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                                 <span class="s1">&#39;Layouts input.parameters[].display validations failed &#39;</span>
@@ -549,9 +528,11 @@
 
             <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
-                    <span class="n">display_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SELECT * FROM </span><span class="si">{self.input_table}</span><span class="s2"> WHERE {o.get(&#39;display&#39;)}&quot;</span>
+                    <span class="n">display_query</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;SELECT * FROM </span><span class="si">{self.permutations.input_table}</span><span class="s2"> WHERE {o.get(&#39;display&#39;)}&quot;</span>
+                    <span class="p">)</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
                     <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Layouts outputs.display validations failed (&quot;{o.get(&#39;display&#39;)}&quot; &quot;&quot;&quot;</span>

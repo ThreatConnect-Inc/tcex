@@ -47,50 +47,55 @@ class TestProfiles(${class_name}):
             self.custom.teardown_method(self)
         super(TestProfiles, self).teardown_method()
 
-    % if app_type in ['triggerservice', 'webhooktriggerservice']:
+    % if runtime_level in ['triggerservice', 'webhooktriggerservice']:
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name, monkeypatch):
+    def test_profiles(
+        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+    ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
-        # profile data
-        profile_data = self.profile(profile_name)
+        # initialize profile
+        valid, message = self.init_profile(
+            profile_name, merge_outputs, replace_exit_message, replace_outputs
+        )
+        assert valid, message
 
         # call pre-configuration setup per test
-        self.custom.test_pre_create_config(self, profile_data, monkeypatch)
+        self.custom.test_pre_create_config(self, self.profile.data, monkeypatch)
 
         # publish createConfig
-        for config in profile_data.get('configs'):
+        for config in self.profile.configs:
             self.publish_create_config(config)
 
-        % if app_type == 'webhooktriggerservice':
+        % if runtime_level == 'webhooktriggerservice':
         # call pre-configuration setup per test
-        self.custom.test_pre_webhook(self, profile_data, monkeypatch)
+        self.custom.test_pre_webhook(self, self.profile.data, monkeypatch)
 
         # send webhook event
-        self.publish_webhook_event(**profile_data.get('webhook_event'))
+        self.publish_webhook_event(**self.profile.webhook_event)
         % else:
         # trigger custom event
-        self.custom.trigger_method(self, profile_data, monkeypatch)
+        self.custom.trigger_method(self, self.profile.data, monkeypatch)
         % endif
 
         # call pre-configuration setup or validation per test
-        self.custom.test_pre_delete_config(self, profile_data, monkeypatch)
+        self.custom.test_pre_delete_config(self, self.profile.data, monkeypatch)
 
         # publish deleteConfig
-        for config in profile_data.get('configs'):
+        for config in self.profile.configs:
             self.publish_delete_config(config)
 
         # fail if there are no executions to validate
-        # if not self.context_tracker and profile_data.get('outputs'):
-        #     assert False, 'No context found in context_tracker, did event fire?'
+        if not self.profile.context_tracker and self.profile.outputs:
+            assert False, 'No context found in context_tracker, did event fire?'
 
         # run output variable validation
-        for context in self.context_tracker:
+        for context in self.profile.context_tracker:
             # for service Apps the context on playbooks needs to be set manually
             self.validator.tcex.playbook.key_value_store.context = context
             # the trigger id is stored via the monkey patched session_id method
             trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
-            output_data = (profile_data.get('outputs') or {}).get(trigger_id)
+            output_data = (self.profile.outputs or {}).get(trigger_id)
             if output_data is not None:
                 ValidateFeature(self.validator).validate(output_data)
 
@@ -98,32 +103,33 @@ class TestProfiles(${class_name}):
 
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
+    def test_profiles(
+        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+    ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
-        # get profile
-        profile_data = self.profile(profile_name)
 
-        # check profile env
-        self.check_environment(profile_data.get('environments', ['build']))
+        # initialize profile
+        valid, message = self.init_profile(
+            profile_name, merge_outputs, replace_exit_message, replace_outputs
+        )
+        assert valid, message
 
         # run custom test method before run method
-        self.custom.test_pre_run(self, profile_data, monkeypatch)
+        self.custom.test_pre_run(self, self.profile.data, monkeypatch)
 
-        assert self.run_profile(profile_data) in profile_data.get('exit_codes', [0])
+        assert self.run_profile() in self.profile.exit_codes
 
-        % if app_type=='organization':
-        self.validator.threatconnect.batch(
-            self.context, self.owner(profile_data), profile_data.get('validation_criteria', {})
-        )
+        % if runtime_level=='organization':
+        self.validator.threatconnect.batch(self.profile)
         % else:
         # run custom test method before validation
-        self.custom.test_pre_validate(self, profile_data)
+        self.custom.test_pre_validate(self, self.profile.data)
 
-        ValidateFeature(self.validator).validate(profile_data.get('outputs'))
+        ValidateFeature(self.validator).validate(self.profile.outputs)
         % endif
 
         # validate exit message
-        exit_message_data = profile_data.get('exit_message')
+        exit_message_data = self.profile.exit_message
         if exit_message_data:
             self.validate_exit_message(
                 exit_message_data.pop('expected_output'),

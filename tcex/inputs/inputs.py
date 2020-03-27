@@ -5,6 +5,7 @@ import os
 import sys
 from argparse import Namespace
 
+from ..utils import Utils
 from .argument_parser import TcArgumentParser
 from .file_params import FileParams
 
@@ -36,6 +37,7 @@ class Inputs:
         # properties
         self._parsed = False
         self._parsed_resolved = False
+        self.utils = Utils()
 
         # parser
         self.parser = TcArgumentParser()
@@ -249,7 +251,7 @@ class Inputs:
             }
 
         Args:
-            config (dict): A dictionary of configuration values.
+            config_data (dict): A dictionary of configuration values.
             preserve (bool): Don't overwrite arg values define in sys.argv
         """
         if isinstance(config_data, dict):
@@ -464,7 +466,7 @@ class Inputs:
             # JSON boolean and not a string.
             param_data = self.tcex.ij.params_dict.get(arg) or {}
             param_type = param_data.get('type', '').lower()
-            param_allow_multiple = self.tcex.utils.to_bool(param_data.get('allowMultiple', False))
+            param_allow_multiple = self.utils.to_bool(param_data.get('allowMultiple', False))
 
             if param_type == 'multichoice' or param_allow_multiple:
                 # update delimited value to an array for params that have type of MultiChoice.
@@ -472,10 +474,10 @@ class Inputs:
                     value = value.split(self.tcex.ij.list_delimiter)
             elif param_type == 'boolean':
                 # convert boolean input that are passed in as a string ("true" -> True)
-                value = self.tcex.utils.to_bool(value)
+                value = self.utils.to_bool(value)
             elif arg in self.tc_bool_args:
                 # convert default boolean args that are passed in as a string ("true" -> True)
-                value = self.tcex.utils.to_bool(value)
+                value = self.utils.to_bool(value)
 
             # add args and updated value to dict
             updated_params[arg] = value

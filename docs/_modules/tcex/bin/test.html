@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.test &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.bin.test &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -178,428 +178,72 @@
   <h1>Source code for tcex.bin.test</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;TcEx Framework Profile Generation Module.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;TcEx Framework Test Generation Module.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
-
-<span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
-<span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="kn">from</span> <span class="nn">.bin</span> <span class="kn">import</span> <span class="n">Bin</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mako.template</span> <span class="kn">import</span> <span class="n">Template</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">pass</span>  <span class="c1"># mako is only required for local testing</span>
-
-
-<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/ThreatConnect-Inc/tcex&#39;</span>
-
-
-<div class="viewcode-block" id="CustomTemplates"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.CustomTemplates">[docs]</a><span class="k">class</span> <span class="nc">CustomTemplates</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Custom method Template Class&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="s1">&#39;master&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">=</span> <span class="n">branch</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">base_dir</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">feature_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the feature template file for custom methods&quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.branch}</span><span class="s2">/app_init/tests/{&#39;custom_feature.py.tpl&#39;}&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not download template file.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parent_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the parent template file for custom methods&quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.branch}</span><span class="s2">/app_init/tests/{&#39;custom.py.tpl&#39;}&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not download template file.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
-
-<div class="viewcode-block" id="CustomTemplates.render_templates"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.CustomTemplates.render_templates">[docs]</a>    <span class="k">def</span> <span class="nf">render_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">app_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Render the templates and write to disk conditionally.&quot;&quot;&quot;</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_type&#39;</span><span class="p">:</span> <span class="n">app_type</span><span class="p">}</span>
-
-        <span class="n">parent_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;custom.py&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">parent_file</span><span class="p">):</span>
-            <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_template</span><span class="p">)</span>
-            <span class="n">rendered_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parent_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
-
-        <span class="n">feature_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="s1">&#39;custom_feature.py&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">feature_file</span><span class="p">):</span>
-            <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_template</span><span class="p">)</span>
-            <span class="n">rendered_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">feature_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="Profiles"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Profiles">[docs]</a><span class="k">class</span> <span class="nc">Profiles</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Profile Class</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: The delete method is not currently implemented.</span>
-<span class="sd">        NotImplementedError: The update method is not currently implemented.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_dir</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">profile_dir</span>
-
-        <span class="c1"># properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_profiles</span> <span class="o">=</span> <span class="kc">None</span>
-
-<div class="viewcode-block" id="Profiles.add"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Profiles.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">profile_data</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a profile.&quot;&quot;&quot;</span>
-        <span class="n">profile_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{profile_name}</span><span class="s1">.json&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">profile_filename</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{c.Style.BRIGHT}{c.Fore.RED}</span><span class="s1">A profile with the name &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{profile_name}</span><span class="s1">) already exists.&#39;</span>
-            <span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="n">profile</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;exit_codes&#39;</span><span class="p">:</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exit_codes&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-            <span class="s1">&#39;exit_message&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;outputs&#39;</span><span class="p">:</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputs&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;stage&#39;</span><span class="p">:</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stage&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;redis&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;threatconnect&#39;</span><span class="p">:</span> <span class="p">{}}),</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtime_level&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;triggerservice&#39;</span><span class="p">:</span>
-            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;configs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;configs&#39;</span><span class="p">)</span>
-            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;trigger&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trigger&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtime_level&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;webhooktriggerservice&#39;</span><span class="p">:</span>
-            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;configs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;configs&#39;</span><span class="p">)</span>
-            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;webhook_event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;webhook_event&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;inputs&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output_variables&#39;</span><span class="p">):</span>
-            <span class="c1"># add a list of output variable for the current permutation</span>
-            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;permutation_output_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output_variables&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtime_level&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;organization&#39;</span><span class="p">:</span>
-            <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;validation_criteria&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;validation_criteria&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;percent&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
-            <span class="n">profile</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;outputs&#39;</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">profile_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="n">sort_keys</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Profiles.delete"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Profiles.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete an existing profile.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;The delete method is not currently implemented.&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Profiles.update"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Profiles.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update an existing profile.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;The update method is not currently implemented.&#39;</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="TestProfileTemplates"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.TestProfileTemplates">[docs]</a><span class="k">class</span> <span class="nc">TestProfileTemplates</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;TestProfile Template Class&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="s1">&#39;master&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">=</span> <span class="n">branch</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">base_dir</span>
-
-        <span class="c1"># map of app_type to class</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app_type_to_class</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;organization&#39;</span><span class="p">:</span> <span class="s1">&#39;TestCaseJob&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;playbook&#39;</span><span class="p">:</span> <span class="s1">&#39;TestCasePlaybook&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;triggerservice&#39;</span><span class="p">:</span> <span class="s1">&#39;TestCaseTriggerService&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;webhooktriggerservice&#39;</span><span class="p">:</span> <span class="s1">&#39;TestCaseWebhookTriggerService&#39;</span><span class="p">,</span>
-        <span class="p">}</span>
-
-<div class="viewcode-block" id="TestProfileTemplates.render_template"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.TestProfileTemplates.render_template">[docs]</a>    <span class="k">def</span> <span class="nf">render_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">app_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Render the templates and write to disk conditionally.&quot;&quot;&quot;</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_type&#39;</span><span class="p">:</span> <span class="n">app_type</span><span class="p">,</span> <span class="s1">&#39;class_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_type_to_class</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app_type</span><span class="p">)}</span>
-
-        <span class="n">test_profiles_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="s1">&#39;test_profiles.py&#39;</span><span class="p">)</span>
-        <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_profiles_template</span><span class="p">)</span>
-        <span class="n">rendered_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_profiles_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">test_profiles_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return template file&quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.branch}</span><span class="s2">/app_init/tests/{&#39;test_profiles.py.tpl&#39;}&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not download template file.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span></div>
-
-
-<div class="viewcode-block" id="ValidationTemplates"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.ValidationTemplates">[docs]</a><span class="k">class</span> <span class="nc">ValidationTemplates</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Validation Template Class</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: The delete method is not currently implemented.</span>
-<span class="sd">        NotImplementedError: The update method is not currently implemented.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="s1">&#39;master&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">=</span> <span class="n">branch</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">base_dir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;^</span><span class="si">{self._variable_pattern}</span><span class="s1">$&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_pattern</span><span class="p">)</span>
-
-<div class="viewcode-block" id="ValidationTemplates._method_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.ValidationTemplates._method_name">[docs]</a>    <span class="k">def</span> <span class="nf">_method_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert variable name to a valid method name.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            variable (string): The variable name to convert.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (str): Method name</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">method_name</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-                <span class="n">var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
-                <span class="n">variable_name</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-                <span class="n">variable_type</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-                <span class="n">method_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{variable_name}</span><span class="s1">_</span><span class="si">{variable_type}</span><span class="s1">&#39;</span>
-        <span class="k">return</span> <span class="n">method_name</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_variable_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Regex pattern to match and parse a playbook variable.&quot;&quot;&quot;</span>
-        <span class="n">variable_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;#([A-Za-z]+)&#39;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([\d]+)&#39;</span>  <span class="c1"># app id (:7979)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_\.\-\[\]]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;!(StringArray|BinaryArray|KeyValueArray&#39;</span>  <span class="c1"># variable type (array)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|TCEntityArray|TCEnhancedEntityArray&#39;</span>  <span class="c1"># variable type (array)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|String|Binary|KeyValue|TCEntity|TCEnhancedEntity&#39;</span>  <span class="c1"># variable type</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|(?:(?!String)(?!Binary)(?!KeyValue)&#39;</span>  <span class="c1"># non matching for custom</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;(?!TCEntity)(?!TCEnhancedEntity)&#39;</span>  <span class="c1"># non matching for custom</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;[A-Za-z0-9_-]+))&#39;</span>  <span class="c1"># variable type (custom)</span>
-        <span class="k">return</span> <span class="n">variable_pattern</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">custom_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return template file&quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.branch}</span><span class="s2">/app_init/tests/{&#39;validate_custom.py.tpl&#39;}&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not download template file.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">feature_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return template file&quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.branch}</span><span class="s2">/app_init/tests/{&#39;validate_feature.py.tpl&#39;}&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not download template file.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
-
-<div class="viewcode-block" id="ValidationTemplates.output_data"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.ValidationTemplates.output_data">[docs]</a>    <span class="k">def</span> <span class="nf">output_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return formatted output data.</span>
-
-<span class="sd">        #App:9876:http.content!Binary</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output_data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ov</span> <span class="ow">in</span> <span class="n">output_variables</span><span class="p">:</span>
-            <span class="n">output_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="p">(</span><span class="n">ov</span><span class="p">),</span> <span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="n">ov</span><span class="p">})</span>
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">output_data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">])</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parent_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return template file&quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.branch}</span><span class="s2">/app_init/tests/{&#39;validate.py.tpl&#39;}&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not download template file.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
-
-<div class="viewcode-block" id="ValidationTemplates.render_templates"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.ValidationTemplates.render_templates">[docs]</a>    <span class="k">def</span> <span class="nf">render_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">app_type</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Render the templates and write to disk conditionally.&quot;&quot;&quot;</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;app_type&#39;</span><span class="p">:</span> <span class="n">app_type</span><span class="p">,</span>
-            <span class="s1">&#39;feature&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="p">,</span>
-            <span class="s1">&#39;output_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span><span class="p">(</span><span class="n">output_variables</span><span class="p">),</span>
-        <span class="p">}</span>
-
-        <span class="n">parent_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;validate.py&#39;</span><span class="p">)</span>
-        <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_template</span><span class="p">)</span>
-        <span class="n">rendered_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parent_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
-
-        <span class="n">custom_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;validate_custom.py&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">custom_file</span><span class="p">):</span>
-            <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_template</span><span class="p">)</span>
-            <span class="n">rendered_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">custom_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
-
-        <span class="n">feature_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="s1">&#39;validate_feature.py&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">feature_file</span><span class="p">):</span>
-            <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_template</span><span class="p">)</span>
-            <span class="n">rendered_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">feature_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span></div></div>
+<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="kn">import</span> <span class="n">Profile</span><span class="p">,</span> <span class="n">ProfileInteractive</span>
+<span class="kn">from</span> <span class="nn">..app_config_object.templates</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CustomTemplates</span><span class="p">,</span>
+    <span class="n">DownloadTemplates</span><span class="p">,</span>
+    <span class="n">TestProfileTemplates</span><span class="p">,</span>
+    <span class="n">ValidationTemplates</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="Test"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test">[docs]</a><span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">Bin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create profiles for ThreatConnect Job or Playbook App.</span>
+    <span class="sd">&quot;&quot;&quot;Create testing files for ThreatConnect Exchange App.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        _args (namespace): The argparser args Namespace.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class properties.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            _args (namespace): The argparser args Namespace.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
 
         <span class="c1"># properties</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span>
+            <span class="n">default_args</span><span class="o">=</span><span class="p">{},</span> <span class="n">feature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_templates</span> <span class="o">=</span> <span class="n">CustomTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_template</span> <span class="o">=</span> <span class="n">DownloadTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span> <span class="o">=</span> <span class="n">ProfileInteractive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_profile_template</span> <span class="o">=</span> <span class="n">TestProfileTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_templates</span> <span class="o">=</span> <span class="n">ValidationTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="s1">&#39;tests&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">feature_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">feature_profile_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="s1">&#39;profiles.d&#39;</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">custom_templates</span> <span class="o">=</span> <span class="n">CustomTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">Profiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles_dir</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">test_profile_template</span> <span class="o">=</span> <span class="n">TestProfileTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">validation_templates</span> <span class="o">=</span> <span class="n">ValidationTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Test._print_results"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test._print_results">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_print_results</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print the download results.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            file (str): The filename.</span>
-<span class="sd">            status (str): The file download status.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">file_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
-        <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;Skipped&#39;</span><span class="p">:</span>
-            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c.Fore.CYAN}</span><span class="s2">{&#39;Downloading:&#39;!s:&lt;13}</span><span class="si">{file_color}{file!s:&lt;50}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c.Fore.CYAN}</span><span class="s2">{&#39;Status:&#39;!s:&lt;13}</span><span class="si">{status_color}{status}</span><span class="s2">&quot;</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="Test.add_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.add_profile">[docs]</a>    <span class="k">def</span> <span class="nf">add_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add the desired profile&quot;&quot;&quot;</span>
-        <span class="n">sort_keys</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_file</span><span class="p">:</span>
-            <span class="n">sort_keys</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">profile_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="s1">&#39;tcex.d&#39;</span><span class="p">,</span> <span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_file</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_file</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">profile_file</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">profile_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error reading in profile file: </span><span class="si">{self.args.profile_file}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-
-            <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">profile_data</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;exit_codes&#39;</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exit_codes&#39;</span><span class="p">),</span>
-                    <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">),</span>
-                    <span class="s1">&#39;runtime_level&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="p">,</span>
-                    <span class="s1">&#39;stage&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;redis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_profile_staging</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_files&#39;</span><span class="p">,</span> <span class="p">[]))},</span>
-                <span class="p">}</span>
-
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;optional&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_layout_json</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
-                        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_layout_json</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
-                    <span class="p">},</span>
-                    <span class="s1">&#39;output_variables&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span><span class="p">],</span>
-                    <span class="s1">&#39;runtime_level&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;triggerservice&#39;</span><span class="p">:</span>
-            <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;configs&#39;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="p">{</span>
-                            <span class="s1">&#39;trigger_id&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)),</span>
-                            <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">(</span><span class="n">service_config</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-                        <span class="p">}</span>
-                    <span class="p">],</span>
-                    <span class="s1">&#39;runtime_level&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="p">,</span>
-                    <span class="s1">&#39;trigger&#39;</span><span class="p">:</span> <span class="p">{},</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;webhooktriggerservice&#39;</span><span class="p">:</span>
-            <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;configs&#39;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="p">{</span>
-                            <span class="s1">&#39;trigger_id&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)),</span>
-                            <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">(</span><span class="n">service_config</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-                        <span class="p">}</span>
-                    <span class="p">],</span>
-                    <span class="s1">&#39;runtime_level&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="p">,</span>
-                    <span class="s1">&#39;webhook_event&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;headers&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;query_params&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s1">&#39;trigger_id&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_name</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;optional&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-                        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_to_args</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-                    <span class="p">},</span>
-                    <span class="s1">&#39;runtime_level&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-
-        <span class="c1"># add profiles</span>
-        <span class="k">for</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="n">sort_keys</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Test.add_profile_staging"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.add_profile_staging">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">add_profile_staging</span><span class="p">(</span><span class="n">staging_files</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get existing staging data.&quot;&quot;&quot;</span>
-        <span class="n">staging_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">staging_files</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+<div class="viewcode-block" id="Test.migrate_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.migrate_profile">[docs]</a>    <span class="k">def</span> <span class="nf">migrate_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Migrate legacy profile to new framework.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">profile_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="s1">&#39;tcex.d&#39;</span><span class="p">,</span> <span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">profile_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">staging_data</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">staging_data</span></div>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">profile_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">profile_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error reading in profile file: </span><span class="si">{self.args.profile_file}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;exit_codes&#39;</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;exit_codes&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;exit_message&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;stage&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;kvstore&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_legacy_profiles</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_files&#39;</span><span class="p">,</span> <span class="p">[]))},</span>
+            <span class="p">}</span>
+
+            <span class="c1"># add profile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">,</span> <span class="n">profile_name</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Test.create_dirs"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.create_dirs">[docs]</a>    <span class="k">def</span> <span class="nf">create_dirs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create tcex.d directory and sub directories.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_profile_dir</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">test_directory</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">feature_directory</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+        <span class="p">]:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
@@ -608,132 +252,30 @@
 
 <div class="viewcode-block" id="Test.create_dirs_init"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.create_dirs_init">[docs]</a>    <span class="k">def</span> <span class="nf">create_dirs_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the __init__.py file under dir.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_dir</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">test_directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">feature_directory</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">),</span> <span class="s1">&#39;a&#39;</span><span class="p">):</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">utime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Test.download_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.download_file">[docs]</a>    <span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Download file from github.</span>
+<div class="viewcode-block" id="Test.interactive_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.interactive_profile">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Present interactive profile inputs.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">present</span><span class="p">()</span>
+        <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+            <span class="s1">&#39;stage&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">staging_data</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">)</span></div>
 
-<span class="sd">        Args:</span>
-<span class="sd">            remote_filename (str): The name of the file as defined in git repository.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># TODO: can this method be merged with tcex_bin_init download_file?</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
-        <span class="n">local_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_file</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">local_filename</span><span class="p">):</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{BASE_URL}</span><span class="s1">/</span><span class="si">{self.args.branch}</span><span class="s1">/app_init/tests/</span><span class="si">{remote_filename}</span><span class="s1">&#39;</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-                <span class="nb">open</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error requesting: </span><span class="si">{url}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-            <span class="c1"># print download status</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Test.download_conftest"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.download_conftest">[docs]</a>    <span class="k">def</span> <span class="nf">download_conftest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Download conftest.py file from github.&quot;&quot;&quot;</span>
-        <span class="c1"># TODO: combine all download methods</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
-        <span class="n">local_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;conftest.py&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">local_filename</span><span class="p">):</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.args.branch}</span><span class="s2">/app_init/tests/{&#39;conftest.py&#39;}&quot;</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-                <span class="nb">open</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error requesting: </span><span class="si">{url}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-            <span class="c1"># print download status</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Test.download_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.download_profile">[docs]</a>    <span class="k">def</span> <span class="nf">download_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Download conftest.py file from github.&quot;&quot;&quot;</span>
-        <span class="c1"># TODO: combine all download methods</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
-        <span class="n">local_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;profiles.py&#39;</span><span class="p">)</span>
-
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{BASE_URL}</span><span class="s2">/</span><span class="si">{self.args.branch}</span><span class="s2">/app_init/tests/{&#39;profiles.py&#39;}&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="nb">open</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error requesting: </span><span class="si">{url}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-        <span class="c1"># print download status</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Test.generate_custom_files"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.generate_custom_files">[docs]</a>    <span class="k">def</span> <span class="nf">generate_custom_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate the custom.py and custom_feature.py files.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">custom_templates</span><span class="o">.</span><span class="n">render_templates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
-
-<div class="viewcode-block" id="Test.generate_test_profile_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.generate_test_profile_file">[docs]</a>    <span class="k">def</span> <span class="nf">generate_test_profile_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate the test_profiles.py file.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">test_profile_template</span><span class="o">.</span><span class="n">render_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
-
-<div class="viewcode-block" id="Test.generate_validation_files"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.generate_validation_files">[docs]</a>    <span class="k">def</span> <span class="nf">generate_validation_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate the validation.py and validation_feature.py files.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">validation_templates</span><span class="o">.</span><span class="n">render_templates</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables</span>
-        <span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return playbook output variables&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="c1"># Currently there is no support for projects with multiple install.json files.</span>
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputVariables&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
-                <span class="n">var_type</span> <span class="o">=</span> <span class="s1">&#39;App&#39;</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;triggerservice&#39;</span><span class="p">,</span> <span class="s1">&#39;webhooktriggerservice&#39;</span><span class="p">]:</span>
-                    <span class="n">var_type</span> <span class="o">=</span> <span class="s1">&#39;Trigger&#39;</span>
-                <span class="c1"># &quot;#App:9876:app.data.count!String&quot;</span>
-                <span class="c1"># &quot;#Trigger:9876:app.data.count!String&quot;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{var_type}</span><span class="s2">:</span><span class="si">{9876}</span><span class="s2">:{p.get(&#39;name&#39;)}!{p.get(&#39;type&#39;)}&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">permutations_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return permutations fully qualified filename.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;permutations.json&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Test.permutation_file_exists"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.permutation_file_exists">[docs]</a>    <span class="k">def</span> <span class="nf">permutation_file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check to see if the permutations file exists&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations_file</span><span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">profiles_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return profile fully qualified filename.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="s1">&#39;profiles.d&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">test_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return generate test filename.&quot;&quot;&quot;</span>
-        <span class="n">test_file</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">:</span>
-            <span class="c1"># TODO: add comment on what this does</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;test_&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;test_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span> <span class="o">+</span> <span class="s1">&#39;.py&#39;</span>
-            <span class="n">test_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">test_file</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">validation_base_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return validations fully qualified filename.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;validation_base.py&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">validation_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return validations fully qualified filename.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="s1">&#39;validation.py&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Test.load_legacy_profiles"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.load_legacy_profiles">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_legacy_profiles</span><span class="p">(</span><span class="n">staging_files</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load staging data to migrate legacy templates.&quot;&quot;&quot;</span>
+        <span class="n">staging_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">staging_files</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">staging_data</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">staging_data</span></div></div>
 </pre></div>
 
            </div>

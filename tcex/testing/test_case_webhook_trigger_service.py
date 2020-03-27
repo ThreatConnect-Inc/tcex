@@ -17,13 +17,8 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
         Returns:
             [type]: [description]
         """
-        # resolve env vars
-        for k, v in list(args.items()):
-            if isinstance(v, str):
-                args[k] = self.resolve_env_args(v)
-
-        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
-        self.log_data('run', 'args', args)
+        args['tc_playbook_out_variables'] = ','.join(self.ij.output_variable_array)
+        self.log.data('run', 'args', args)
         self.app = self.app_init(args)
 
         # Setup
@@ -47,10 +42,18 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
             else:
                 self.app.tcex.service.loop_forever()
         except SystemExit as e:
-            self.log.error(f'App failed in run() method ({e}).')
+            if e.code != 0 and self.profile and e.code not in self.profile.exit_codes:
+                self.log.data(
+                    'run', 'App failed', f'App exited with code of {e.code} in method run', 'error'
+                )
             return self._exit(e.code)
         except Exception:
-            self.log.error(f'App encountered except in run() method ({traceback.format_exc()}).')
+            self.log.data(
+                'run',
+                'App failed',
+                f'App encountered except in run() method ({traceback.format_exc()})',
+                'error',
+            )
             return self._exit(1)
 
         # Teardown

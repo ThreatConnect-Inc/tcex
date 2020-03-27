@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Playbook Test Case module"""
+import sys
 import traceback
 
 from .test_case_playbook_common import TestCasePlaybookCommon
@@ -17,13 +18,8 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         Returns:
             [type]: [description]
         """
-        # resolve env vars
-        for k, v in args.items():
-            if isinstance(v, str):
-                args[k] = self.resolve_env_args(v)
-
-        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
-        self.log_data('run', 'args', args)
+        args['tc_playbook_out_variables'] = self.ij.output_variable_array
+        self.log.data('run', 'args', args)
         self.app = self.app_init(args)
 
         # Setup
@@ -46,15 +42,28 @@ class TestCasePlaybook(TestCasePlaybookCommon):
                         self.app.args.tc_action
                     )()  # pylint: disable=no-member
                 else:
-                    self.log.error(f'Action method ({self.app.args.tc_action}) was not found.')
+                    self.log.data(
+                        'run',
+                        'App failed',
+                        f'Action method ({self.app.args.tc_action}) was not found',
+                        'error',
+                    )
                     self._exit(1)
             else:
                 self.app.run()
         except SystemExit as e:
-            self.log.error(f'App failed in run() method ({e}).')
+            if e.code != 0 and self.profile and e.code not in self.profile.exit_codes:
+                self.log.data(
+                    'run', 'App failed', f'App exited with code of {e.code} in method run', 'error'
+                )
             return self._exit(e.code)
         except Exception:
-            self.log.error(f'App encountered except in run() method ({traceback.format_exc()}).')
+            self.log.data(
+                'run',
+                'App failed',
+                f'App encountered except in run() method ({traceback.format_exc()})',
+                'error',
+            )
             return self._exit(1)
 
         # Write Output
@@ -75,21 +84,22 @@ class TestCasePlaybook(TestCasePlaybookCommon):
 
         return self._exit(self.app.tcex.exit_code)
 
-    def run_profile(self, profile):
+    def run_profile(self):
         """Run an App using the profile name."""
-        if isinstance(profile, str):
-            profile = self.init_profile(profile)
+        # backup sys.argv
+        sys_argv_orig = sys.argv
 
-        # build args from install.json
-        args = {}
-        args.update(profile.get('inputs', {}).get('required', {}))
-        args.update(profile.get('inputs', {}).get('optional', {}))
+        # clear sys.argv
+        sys.argv = sys.argv[:1]
 
         # run the App
-        exit_code = self.run(args)
+        exit_code = self.run(self.profile.args)
 
         # add context for populating output variables
-        self._context_tracker.append(self.context)
+        self.profile.add_context(self.context)
+
+        # restore sys.argv
+        sys.argv = sys_argv_orig
 
         return exit_code
 
@@ -97,4 +107,5 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         """Run before each test method runs."""
         super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
+
         self.redis_client = self.tcex.redis_client

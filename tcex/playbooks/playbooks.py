@@ -6,14 +6,16 @@ from .playbooks_base import PlaybooksBase
 
 
 class Playbooks(PlaybooksBase):
-    """Playbook methods for accessing key value store."""
+    """Playbook methods for accessing key value store.
+
+    Args:
+        tcex (object): Instance of TcEx.
+        context (str): The KV Store context/session_id.
+        output_variables (list): The requested output variables.
+    """
 
     def __init__(self, tcex, context, output_variables):
-        """Initialize the Class properties.
-
-        Args:
-            tcex (object): Instance of TcEx.
-        """
+        """Initialize the Class properties."""
         super().__init__(tcex, context, output_variables)
 
         # properties
@@ -279,12 +281,12 @@ class Playbooks(PlaybooksBase):
         if self.output_variables_by_type.get(key_type) is not None:
             # variable key-type has been requested
             v = self.output_variables_by_type.get(key_type)
-            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
+            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
             results = self.create(v.get('variable'), value)
         elif self.output_variables_by_name.get(key) is not None and variable_type is None:
             # variable key has been requested
             v = self.output_variables_by_name.get(key)
-            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream app.")
+            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
             results = self.create(v.get('variable'), value)
         else:
             self.tcex.log.trace(f'requested output variables: {self.output_variables_by_name}')
@@ -327,10 +329,18 @@ class Playbooks(PlaybooksBase):
             code = 1
 
         # required only for tcex testing framework
-        if self.tcex.args.tcex_testing_context is not None:
+        if self.tcex.args.tcex_testing_context is not None:  # pragma: no cover
             self.tcex.redis_client.hset(self.tcex.args.tcex_testing_context, '_exit_message', msg)
 
         self.tcex.exit(code, msg)
+
+    def is_variable(self, key):
+        """Return True if provided key is a properly formatted variable."""
+        if key is None:
+            return False
+        if re.match(self._variable_match, key):
+            return True
+        return False
 
     @property
     def output_variables_by_name(self):

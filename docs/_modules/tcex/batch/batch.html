@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.2 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
 
 
@@ -747,7 +747,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># process group objects</span>
-        <span class="k">for</span> <span class="n">xid</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="c1"># we are converting groups.keys() to a list because the data_group_association function</span>
+        <span class="c1"># will be deleting items the groups dictionary which would raise a</span>
+        <span class="c1"># &quot;dictionary changed size during iteration&quot; error</span>
+        <span class="k">for</span> <span class="n">xid</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="c1"># get association from group data</span>
             <span class="n">assoc_group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_group_association</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">+=</span> <span class="n">assoc_group_data</span>
