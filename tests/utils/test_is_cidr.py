@@ -33,6 +33,15 @@ class TestIsCidr:
         s = '2001:db8::/128'
         assert tcex.utils.is_cidr(s)
 
+    def test_invalid_ip_not_cidr(self, tcex):
+        """Test a string that is not a CIDR range
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        s = '8.8.8.8'
+        assert not tcex.utils.is_cidr(s)
+
     def test_invalid(self, tcex):
         """Test a string that is not a CIDR range
 

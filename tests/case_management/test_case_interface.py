@@ -311,6 +311,9 @@ class TestCase(TestCaseManagement):
             name=f'{request.node.name}-2', xid=f'{request.node.name}-{random.randint(1000, 9999)}'
         )
 
+        # add a small delay in case tc is busy
+        time.sleep(1)
+
         # specifically match the count of the cases created.
         case_count = 0
         for case in self.cm.cases():
