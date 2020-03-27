@@ -10,7 +10,12 @@ import math
 
 import colorama as c
 import hvac
-import jmespath
+
+try:
+    import jmespath
+except ImportError:
+    # jmespath is only required for local development
+    pass
 
 from .install_json import InstallJson
 from .layout_json import LayoutJson
@@ -322,6 +327,13 @@ class Profile:
         Returns:
             dict: The updated dict.
         """
+        if 'jmespath' not in sys.modules:
+            print(
+                f'{c.Fore.RED}Missing jmespath module. Try '
+                f'installing "pip install tcex[development]"'
+            )
+            sys.exit(1)
+
         profile = json.dumps(profile_data)
 
         for data in self.tc_staged_data:
@@ -637,6 +649,13 @@ class Profile:
         Returns:
             dict: The updated dict.
         """
+        if 'jmespath' not in sys.modules:
+            print(
+                f'{c.Fore.RED}Missing jmespath module. Try '
+                f'installing "pip install tcex[development]"'
+            )
+            sys.exit(1)
+
         profile = json.dumps(profile_data)
 
         for data in self.tc_staged_data:

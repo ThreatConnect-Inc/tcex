@@ -3,10 +3,16 @@
 """TcEx Framework Template Download/Generation Module."""
 import os
 import re
+import sys
 
 import colorama as c
 import requests
-from mako.template import Template
+
+try:
+    from mako.template import Template
+except ImportError:
+    # mako is only required for local development
+    pass
 
 from ..utils import Utils
 
@@ -102,6 +108,12 @@ class TemplateBase:
 
     def render(self, template_url, destination, variables, overwrite=False):
         """Render the provided template"""
+        if 'mako' not in sys.modules:
+            print(
+                f'{c.Fore.RED}Missing mako module. Try installing "pip install tcex[development]"'
+            )
+            sys.exit(1)
+
         status = 'Failed'
         if not os.path.isfile(destination) or overwrite:
             template_data = self.download_template(template_url)
