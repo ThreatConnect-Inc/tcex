@@ -3,6 +3,9 @@
 Release Notes
 #############
 
+2.0.4
+=====
+
 2.0.3
 =====
 + Added ``is_variable()`` method to Playbook module.

@@ -168,13 +168,16 @@ class Permutations:
         # escape any single quotes in value
         if isinstance(value, str):
             value = value.replace('\'', '\\')
-        try:
-            # value should be wrapped in single quotes to be properly parsed
-            sql = f"UPDATE {table_name} SET {column} = '{value}'"
-            cur = self.db_conn.cursor()
-            cur.execute(sql)
-        except sqlite3.OperationalError as e:
-            raise RuntimeError(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
+
+        # only column defined in install.json can be updated
+        if column in self.ij.params_dict:
+            try:
+                # value should be wrapped in single quotes to be properly parsed
+                sql = f"UPDATE {table_name} SET {column} = '{value}'"
+                cur = self.db_conn.cursor()
+                cur.execute(sql)
+            except sqlite3.OperationalError as e:
+                raise RuntimeError(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
 
     def exists(self):
         """Return True if permutation file exists."""
