@@ -37,7 +37,7 @@ def custom_indicator_class_factory(
         res = {v: k for k, v in self._metadata_map().items()}
         values = []
         for field in value_fields:
-            value = kwargs.pop(res.get(field), '')
+            value = kwargs.pop(res.get(field), kwargs.pop(field, ''))
             value = quote(self.fully_decode_uri(value), safe='')
             values.append(value)
 

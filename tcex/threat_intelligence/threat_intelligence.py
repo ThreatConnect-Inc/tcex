@@ -138,6 +138,7 @@ class ThreatIntelligence:
         }
 
         indicator_type = indicator_type.lower()
+        print(f'indicator_type: [{indicator_type}]')
         for custom_type in self._custom_indicator_classes:
             for a in dir(module):
                 if a.lower() == custom_type.replace(' ', ''):

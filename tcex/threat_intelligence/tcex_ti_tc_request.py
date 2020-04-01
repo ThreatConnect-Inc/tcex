@@ -1175,7 +1175,7 @@ class TiTcRequest:
         if owner:
             params['owner'] = owner
 
-        api_branch = api_branch or association_type.api_sub_type
+        api_branch = api_branch or association_type.api_branch
         api_entity = api_entity or association_type.api_entity
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}/indicators/{api_branch}'
