@@ -45,7 +45,7 @@ def custom_indicator_class_factory(
             self.unique_id = kwargs.get('unique_id', values[0])
         elif len(values) == 2:
             self.unique_id = kwargs.get('unique_id', self.build_summary(values[0], values[1]))
-        elif len(values) == 1:
+        elif len(values) == 3:
             self.unique_id = kwargs.get(
                 'unique_id', self.build_summary(values[0], values[1], values[2])
             )
