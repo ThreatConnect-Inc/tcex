@@ -56,7 +56,7 @@ class Task(Mappings):
     @property
     def as_entity(self):
         """Return the entity representation of the Task."""
-        return {'type': 'Task', 'value': self.name, 'id': None}
+        return {'type': 'Task', 'value': self.name, 'id': self.unique_id}
 
     @property
     def name(self):
@@ -93,7 +93,7 @@ class Task(Mappings):
             value:
         """
         key = self._metadata_map.get(key, key)
-        if key == 'unique_id':
+        if key in ['unique_id', 'id']:
             self._unique_id = quote_plus(str(value))
         elif key in ['dueDate', 'reminderDate', 'escalationDate']:
             self._data[key] = self._utils.datetime.format_datetime(
