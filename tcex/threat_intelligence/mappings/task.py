@@ -56,7 +56,7 @@ class Task(Mappings):
     @property
     def as_entity(self):
         """Return the entity representation of the Task."""
-        return {'type': 'Task', 'value': self.name, 'id': self.unique_id}
+        return {'type': 'Task', 'value': self.name, 'id': int(self.unique_id)}
 
     @property
     def name(self):
