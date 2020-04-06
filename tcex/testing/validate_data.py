@@ -123,6 +123,7 @@ class Validator:
             'date_format': self.operator_date_format,
             'df': self.operator_date_format,
             'dd': self.operator_deep_diff,
+            'is_url': self.operator_is_url,
             'is_date': self.operator_is_date,
             'is_number': self.operator_is_number,
             'length_eq': self.operator_length_eq,
@@ -249,6 +250,33 @@ class Validator:
         """
         results = operator.eq(app_data, test_data)
         return results, self.details(app_data, test_data, 'eq')
+
+    @staticmethod
+    def operator_is_url(app_data, test_data):  # pylint: disable=unused-argument
+        """Check if the app_data is a known date."""
+        if not isinstance(app_data, list):
+            app_data = [app_data]
+        bad_data = []
+        passed = True
+        regex = re.compile(
+            r'^(?:http|ftp)s?://'  # http:// or https://
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$',
+            re.IGNORECASE,
+        )
+        for data in app_data:
+            try:
+                matched = re.match(regex, data)
+                if not matched:
+                    bad_data.append(data)
+                    passed = False
+            except RuntimeError:
+                bad_data.append(data)
+                passed = False
+        return passed, ','.join(bad_data)
 
     def operator_ge(self, app_data, test_data):
         """Compare app data is greater than or equal to tests data.

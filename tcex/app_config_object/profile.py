@@ -480,6 +480,34 @@ class Profile:
             json_data['outputs'] = merged_outputs
             self._write_file(json_data)
 
+    @staticmethod
+    def output_data_rule(variable, data):
+        """Returns the default output data for a given variable"""
+        output_data = {'expected_output': data, 'op': 'eq'}
+        if variable.endswith('json.raw!String'):
+            output_data['exclude'] = []
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        elif variable.endswith('web_link!String') or variable.endswith('web_link!StringArray'):
+            output_data['op'] = 'is_url'
+        elif variable.endswith('.id!String') or variable.endswith('.id!StringArray'):
+            output_data['op'] = 'is_number'
+        elif (
+            variable.endswith('date_added!String')
+            or variable.endswith('date_added!StringArray')
+            or variable.endswith('last_modified!String')
+            or variable.endswith('last_modified!StringArray')
+        ):
+            output_data['op'] = 'is_date'
+        elif variable.endswith('StringArray'):
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        elif variable.endswith('TCEntity') or variable.endswith('TCEntityArray'):
+            output_data['exclude'] = ['id']
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        return output_data
+
     def update_outputs_variables(self, outputs, output_variables, redis_data, trigger_id):
         """Return the outputs section of a profile.
 
@@ -510,10 +538,7 @@ class Profile:
                 self.log.error(f'[{self.name}] Missing validations rule: {variable}')
 
             # make business rules based on data type or content
-            output_data = {'expected_output': data, 'op': 'eq'}
-            if variable.endswith('json.raw!String'):
-                output_data['exclude'] = []
-                output_data['op'] = 'jeq'
+            output_data = self.output_data_rule(variable, data)
 
             # get trigger id for service Apps
             if trigger_id is not None:
