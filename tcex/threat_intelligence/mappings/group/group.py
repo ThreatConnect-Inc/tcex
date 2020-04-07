@@ -26,7 +26,11 @@ class Group(Mappings):
     @property
     def as_entity(self):
         """Return the entity representation of the Indicator."""
-        return {'type': self.api_sub_type, 'value': self.name, 'id': int(self.unique_id)}
+        return {
+            'type': self.api_sub_type,
+            'value': self.name,
+            'id': int(self.unique_id) if self.unique_id else None,
+        }
 
     @staticmethod
     def is_group():

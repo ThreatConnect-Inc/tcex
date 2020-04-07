@@ -338,7 +338,7 @@ class Profile:
 
         for data in self.tc_staged_data:
             key = data.get('key')
-            value = data.get('data')
+            data_value = data.get('data')
 
             for m in re.finditer(r'\${tcenv:' + str(key) + r':(.*?)}', profile):
                 try:
@@ -346,7 +346,7 @@ class Profile:
                     jmespath_expression = m.group(1)
 
                     if jmespath_expression:
-                        value = jmespath.search(jmespath_expression, value)
+                        value = jmespath.search(jmespath_expression, data_value)
                         profile = profile.replace(full_match, str(value))
                 except IndexError:
                     print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
