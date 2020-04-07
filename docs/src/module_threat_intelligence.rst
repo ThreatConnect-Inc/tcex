@@ -296,6 +296,56 @@ Creating an Indicator and adding Associations and metadata are all separate API 
     # add tag
     response = ti.add_tag(name='Crimeware')
 
+Indicator Creation Examples
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To create an indicator, you will need to provide a keyword argument with the `indicator field <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`_ for the type indicators you would like to create. Here are examples for creating the five, basic indicator types:
+
+Address:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    ti = tcex_instance.ti.indicator(indicator_type='Address', owner=OWNER, ip='4.3.2.1')
+    response = ti.create()
+
+Email Address:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    ti = tcex_instance.ti.indicator(indicator_type='EmailAddress', owner=OWNER, address='foo@example.org')
+    response = ti.create()
+
+File:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    ti = tcex_instance.ti.indicator(indicator_type='File', owner=OWNER, md5='a'*32)
+    response = ti.create()
+
+Host:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    ti = tcex_instance.ti.indicator(indicator_type='Host', owner=OWNER, hostName='example.org')
+    response = ti.create()
+
+URL:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    ti = tcex_instance.ti.indicator(indicator_type='Host', owner=OWNER, hostName='https://example.org/foo')
+    response = ti.create()
+
 Updating an Indicator
 ---------------------
 Updating an Indicator is similar to creating an Indicator, with the addition of providing the Indicator value.  The Indicator metadata can be updated using the same methods as were used in the Indicator Create example.
