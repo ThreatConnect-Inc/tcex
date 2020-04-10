@@ -662,21 +662,20 @@ class Batch:
 
     @property
     def error_codes(self):
-        """Static list of Batch error codes and short description"""
-        error_codes = {}
-        error_codes['0x1001'] = 'General Error'
-        error_codes['0x1002'] = 'Permission Error'
-        error_codes['0x1003'] = 'JsonSyntax Error'
-        error_codes['0x1004'] = 'Internal Error'
-        error_codes['0x1005'] = 'Invalid Indicator Error'
-        error_codes['0x1006'] = 'Invalid Group Error'
-        error_codes['0x1007'] = 'Item Not Found Error'
-        error_codes['0x1008'] = 'Indicator Limit Error'
-        error_codes['0x1009'] = 'Association Error'
-        error_codes['0x100A'] = 'Duplicate Item Error'
-        error_codes['0x100B'] = 'File IO Error'
-
-        return error_codes
+        """Return static list of Batch error codes and short description"""
+        return {
+            '0x1001': 'General Error',
+            '0x1002': 'Permission Error',
+            '0x1003': 'JsonSyntax Error',
+            '0x1004': 'Internal Error',
+            '0x1005': 'Invalid Indicator Error',
+            '0x1006': 'Invalid Group Error',
+            '0x1007': 'Item Not Found Error',
+            '0x1008': 'Indicator Limit Error',
+            '0x1009': 'Association Error',
+            '0x100A': 'Duplicate Item Error',
+            '0x100B': 'File IO Error',
+        }
 
     def errors(self, batch_id, halt_on_error=True):
         """Retrieve Batch errors to ThreatConnect API.

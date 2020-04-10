@@ -83,10 +83,16 @@ class Test(Bin):
         """Present interactive profile inputs."""
         self.profile_interactive.present()
         profile_data = {
+            'exit_codes': self.profile_interactive.exit_codes,
             'inputs': self.profile_interactive.inputs,
             'stage': self.profile_interactive.staging_data,
         }
         self.profile.add(profile_data=profile_data)
+
+        # write user defaults file
+        if self.profile_interactive.user_defaults:
+            with open(self.profile_interactive.user_defaults_filename, 'w') as fh:
+                json.dump(self.profile_interactive.user_defaults, fh)
 
     @staticmethod
     def load_legacy_profiles(staging_files):

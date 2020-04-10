@@ -10,7 +10,9 @@ import operator
 import os
 import random
 import re
-from urllib.parse import unquote  # Python
+from urllib.parse import unquote
+
+from ..utils import Utils
 
 
 class Validator:
@@ -28,6 +30,7 @@ class Validator:
         self._threatconnect = None
         self.max_diff = 10
         self.truncate = 500
+        self.utils = Utils()
 
     @staticmethod
     def _string_to_int_float(x):
@@ -719,7 +722,7 @@ class Redis:
         self.provider.validate_log_output(passed, app_data, test_data, details.strip(), op)
 
         # check for bad string values
-        suspect_values = ['null', 'None']
+        suspect_values = ['False', 'null', 'None', 'True']
         if app_data in suspect_values:
             self.log.data(
                 'validate',
@@ -730,9 +733,13 @@ class Redis:
 
         # build assert error
         assert_error = (
-            f'\n App Data     : {app_data}\n Operator     : {op}\n '
-            f'Expected Data: {test_data}\n Details      : {details}\n'
+            f'\n Variable      : {variable}\n'
+            f' App Data      : {app_data}\n'
+            f' Operator      : {op}\n'
+            f' Expected Data : {test_data}\n'
         )
+        if details:
+            assert_error += f' Details       : {details}\n'
         return passed, assert_error
 
     def eq(self, variable, data):

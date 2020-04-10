@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Template Download/Generation Module."""
 import os
-import re
 import sys
 
 import colorama as c
@@ -417,41 +416,7 @@ class ValidationTemplates(TemplateBase):
         super().__init__(profile, branch)
 
         # properties
-        self._variable_match = re.compile(fr'^{self._variable_pattern}$')
-        self._variable_parse = re.compile(self._variable_pattern)
-
-    def _method_name(self, variable):
-        """Convert variable name to a valid method name.
-
-        Args:
-            variable (string): The variable name to convert.
-
-        Returns:
-            (str): Method name
-        """
-        method_name = None
-        if variable is not None:
-            variable = variable.strip()
-            if re.match(self._variable_match, variable):
-                var = re.search(self._variable_parse, variable)
-                variable_name = var.group(3).replace('.', '_').lower()
-                variable_type = var.group(4).lower()
-                method_name = f'{variable_name}_{variable_type}'
-        return method_name
-
-    @property
-    def _variable_pattern(self):
-        """Regex pattern to match and parse a playbook variable."""
-        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
-        variable_pattern += r':([\d]+)'  # app id (:7979)
-        variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
-        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
-        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
-        return variable_pattern
+        self.utils = Utils()
 
     def output_data(self, output_variables):
         """Return formatted output data.
@@ -460,7 +425,7 @@ class ValidationTemplates(TemplateBase):
         """
         output_data = []
         for ov in output_variables:
-            output_data.append({'method': self._method_name(ov), 'variable': ov})
+            output_data.append({'method': self.utils.variable_method_name(ov), 'variable': ov})
         return sorted(output_data, key=lambda i: i['method'])
 
     def validate_py(self):
@@ -468,7 +433,7 @@ class ValidationTemplates(TemplateBase):
         filename = os.path.join(self.profile.test_directory, 'validate.py')
         variables = {
             'feature': self.profile.feature,
-            'output_data': self.output_data(self.profile.ij.output_variable_array),
+            'output_data': self.output_data(self.profile.ij.tc_playbook_out_variables),
         }
         self.render(f'{self.url}/tests/validate.py.tpl', filename, variables, True)
 
@@ -477,7 +442,7 @@ class ValidationTemplates(TemplateBase):
         filename = os.path.join(self.profile.test_directory, 'validate_custom.py')
         variables = {
             'feature': self.profile.feature,
-            'output_data': self.output_data(self.profile.ij.output_variable_array),
+            'output_data': self.output_data(self.profile.ij.tc_playbook_out_variables),
         }
         self.render(f'{self.url}/tests/validate_custom.py.tpl', filename, variables)
 
@@ -486,7 +451,7 @@ class ValidationTemplates(TemplateBase):
         filename = os.path.join(self.profile.feature_directory, 'validate_feature.py')
         variables = {
             'feature': self.profile.feature,
-            'output_data': self.output_data(self.profile.ij.output_variable_array),
+            'output_data': self.output_data(self.profile.ij.tc_playbook_out_variables),
         }
         self.render(f'{self.url}/tests/validate_feature.py.tpl', filename, variables)
 

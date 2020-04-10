@@ -5,6 +5,9 @@ Release Notes
 
 2.0.4
 =====
++ Updated decorator method logging.
++ Updated testing framework validation template to support dynamic output variable.
++ Updated profile module to support variable from Vault server.
 
 2.0.3
 =====

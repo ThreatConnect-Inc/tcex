@@ -31,7 +31,6 @@ class TestLogger(logging.Logger):
         stage_width = 25 - len(level)
         msg = f'{stage!s:>{stage_width}} : {label!s:<15}: {data!s:<50}'
         level = logging.getLevelName(level.upper())
-        # getattr(self.log, level)(msg)
         self.log(level, msg)
 
     def title(self, title, separator='-'):
