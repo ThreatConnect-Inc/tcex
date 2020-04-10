@@ -2,6 +2,7 @@
 """Validate App outputs Class."""
 # flake8: noqa
 # pylint: disable=line-too-long
+import inspect
 
 
 class Validate(object):

@@ -72,7 +72,6 @@ class TestCasePlaybook(TestCasePlaybookCommon):
             return exit_code
 
         # call write output
-        print('write output', self.app.tcex.playbook.output_data)
         self.app.tcex.playbook.write_output()
 
         # Teardown

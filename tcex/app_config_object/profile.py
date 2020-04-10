@@ -282,7 +282,7 @@ class Profile:
 
     @staticmethod
     def output_data_rule(variable, data):
-        """Returns the default output data for a given variable"""
+        """Return the default output data for a given variable"""
         output_data = {'expected_output': data, 'op': 'eq'}
         if variable.endswith('json.raw!String'):
             output_data['exclude'] = []
@@ -346,6 +346,7 @@ class Profile:
             )
         except hvac.exceptions.VaultError:
             data = {}
+
         return data.get('data', {}).get('data', {}).get(key)
 
     def replace_env_variables(self, profile_data):
@@ -365,8 +366,8 @@ class Profile:
                 env_type = m.group(1)  # currently env, os, or vault
                 env_key = m.group(2)
 
-                if env_type in ['env', 'envs', 'os'] and os.getenv(env_key):
-                    profile = profile.replace(full_match, os.getenv(env_key))
+                if env_type in ['env', 'envs', 'os'] and os.getenv(env_key.replace('/', '_')):
+                    profile = profile.replace(full_match, os.getenv(env_key.replace('/', '_')))
                 elif env_type in ['env', 'envs', 'vault']:
                     value = self.read_from_vault(env_key)
                     if value is not None:
@@ -762,7 +763,7 @@ class Profile:
             vault_url = os.getenv('VAULT_URL')
             vault_token = os.getenv('VAULT_TOKEN')
             if vault_url is not None and vault_token is not None:
-                hvac.Client(
+                self._vault_client = hvac.Client(
                     url=os.getenv('VAULT_URL'), token=os.getenv('VAULT_TOKEN'),
                 )
         return self._vault_client
