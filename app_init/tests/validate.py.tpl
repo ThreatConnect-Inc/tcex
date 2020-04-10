@@ -31,12 +31,14 @@ class Validate(object):
 
     def dynamic_output_variable(self, variable, data):
         """Assert for dynamic output variables."""
-        passed, assert_error = self.validator.redis.data(
-            variable, data.pop('expected_output'), data.pop('op', '='), **data
-        )
-        assert passed, assert_error
+        expected_output = data.pop('expected_output')
+        op = data.pop('op', '=')
 
+        # assert variable data
+        passed, assert_error = self.validator.redis.data(variable, expected_output, op, **data)
+        assert passed, assert_error
     % for data in output_data:
+
     def ${data['method']}(self, variable, data):
         """Assert for ${data['variable']}."""
         expected_output = data.pop('expected_output')
@@ -45,5 +47,4 @@ class Validate(object):
         # assert variable data
         passed, assert_error = self.validator.redis.data(variable, expected_output, op, **data)
         assert passed, assert_error
-
     % endfor

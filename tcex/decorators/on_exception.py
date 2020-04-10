@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+import traceback
 import wrapt
 
 
@@ -69,8 +70,8 @@ class OnException:
 
             try:
                 return wrapped(*args, **kwargs)
-            except Exception as e:
-                app.tcex.log.error(f'method failure ({e})')
+            except Exception:
+                app.tcex.log.error(traceback.format_exc())
                 app.exit_message = self.exit_msg  # for test cases
                 if enabled:
                     if self.write_output:

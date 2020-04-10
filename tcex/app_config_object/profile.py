@@ -545,8 +545,11 @@ class Profile:
 
             # validate redis variables
             if data is None:
-                # log error for missing output data
-                self.log.warning(f'[{self.name}] Missing KV store output for variable {variable}')
+                if 1 not in self.exit_codes:
+                    # log error for missing output data if not a fail test case (exit code of 1)
+                    self.log.warning(
+                        f'[{self.name}] Missing KV store output for variable {variable}'
+                    )
             else:
                 data = json.loads(data.decode('utf-8'))
 
@@ -951,6 +954,15 @@ class ProfileInteractive:
     def __init__(self, profile):
         """Initialize Class properties."""
         self.profile = profile
+
+        # properties
+        self._inputs = {
+            'optional': {},
+            'required': {},
+        }
+        self._staging_data = {'kvstore': {}}
+        self._user_defaults = None
+        self.exit_codes = []
         self.input_type_map = {
             'boolean': self.present_boolean,
             'choice': self.present_choice,
@@ -959,11 +971,7 @@ class ProfileInteractive:
             'string': self.present_string,
         }
         self.utils = Utils()
-        self._inputs = {
-            'optional': {},
-            'required': {},
-        }
-        self._staging_data = {'kvstore': {}}
+        self.user_defaults_filename = os.path.join('tests', '.user_defaults')
 
     def _default(self, data):
         """Return the best option for default."""
@@ -984,7 +992,9 @@ class ProfileInteractive:
         elif data.get('type').lower() == 'multichoice':
             default = data.get('default').split('|')
         else:
-            default = data.get('default', '')
+            default = data.get('default')
+            if default is None:
+                default = self.user_defaults.get(data.get('name'))
         return default
 
     @staticmethod
@@ -1044,6 +1054,22 @@ class ProfileInteractive:
 
             # update inputs
             inputs[name] = value
+
+        self.present_exit_code()
+
+    def present_exit_code(self):
+        """Provide user input for exit code."""
+
+        self.print_header({'label': 'Exit Codes'})
+        values = input(self.choice(' [0]')).strip().split(',')
+
+        # add input
+        for e in values:
+            e = e or 0
+            self.exit_codes.append(int(e))
+
+        # user feedback
+        self.print_feedback(self.exit_codes)
 
     def present_boolean(self, name, data):
         """Build a question for boolean input."""
@@ -1134,7 +1160,9 @@ class ProfileInteractive:
         # add input
         variable = self.profile.ij.create_variable(data.get('name'), 'KeyValueArray')
         self.add_input(name, data, variable)
-        self._staging_data['kvstore'].setdefault(variable, [{'key': '', 'value': ''}])
+        self._staging_data['kvstore'].setdefault(
+            variable, [{'key': 'placeholder', 'value': 'placeholder'}]
+        )
 
         return variable
 
@@ -1211,6 +1239,10 @@ class ProfileInteractive:
         # add input
         self.add_input(name, data, input_value)
 
+        # update default
+        if default is None:
+            self.user_defaults[name] = value
+
         return value
 
     @staticmethod
@@ -1229,8 +1261,9 @@ class ProfileInteractive:
         label = data.get('label', 'NO LABEL')
         print(f'\n{c.Fore.GREEN}{label}')
 
-        note = data.get('note', '')[:100]
-        _print_metadata('Note', note)
+        note = data.get('note', '')[:200]
+        if note:
+            _print_metadata('Note', note)
 
         if data.get('required'):
             _print_metadata('Required', 'true')
@@ -1252,3 +1285,13 @@ class ProfileInteractive:
     def staging_data(self):
         """Return staging data dict."""
         return self._staging_data
+
+    @property
+    def user_defaults(self):
+        """Return user defaults"""
+        if self._user_defaults is None:
+            self._user_defaults = {}
+            if os.path.isfile(self.user_defaults_filename):
+                with open(self.user_defaults_filename, 'r') as fh:
+                    self._user_defaults = json.load(fh)
+        return self._user_defaults
