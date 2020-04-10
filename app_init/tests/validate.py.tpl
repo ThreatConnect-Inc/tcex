@@ -10,11 +10,6 @@ class Validate(object):
     def __init__(self, validator):
         """Initialize class properties."""
         self.validator = validator
-        self.validation_methods = {
-            % for data in output_data:
-            '${data['variable']}': self.${data['method']},
-            % endfor
-        }
 
     def validate(self, output_variables):
         """Validate Redis output data."""
@@ -22,18 +17,29 @@ class Validate(object):
             return
 
         for k, v in output_variables.items():
-            method = self.validation_methods.get(k)
-            if method is not None:
-                method(dict(v))
+            # get method name from variable name
+            method_name = self.validator.utils.variable_method_name(k)
+            if hasattr(self, method_name):
+                method = getattr(self, method_name)  # get the validation method by name
+                if 'variable' in [p.name for p in inspect.signature(method).parameters.values()]:
+                    method(k, dict(v))  # methods with new signature
+                else:
+                    method(dict(v))  # methods with old signature
             else:
-                assert False, f'Unknown output variable found in profile: {k}'
+                self.dynamic_output_variable(k, dict(v))
+
+    def dynamic_output_variable(self, variable, data):
+        """Assert for dynamic output variables."""
+        passed, assert_error = self.validator.redis.data(
+            variable, data.pop('expected_output'), data.pop('op', '='), **data
+        )
+        assert passed, assert_error
 
     % for data in output_data:
-    def ${data['method']}(self, data):
+    def ${data['method']}(self, variable, data):
         """Assert for ${data['variable']}."""
-        output_var = '${data['variable']}'
         passed, assert_error = self.validator.redis.data(
-            output_var, data.pop('expected_output'), data.pop('op', '='), **data
+            variable, data.pop('expected_output'), data.pop('op', '='), **data
         )
         assert passed, assert_error
     % endfor

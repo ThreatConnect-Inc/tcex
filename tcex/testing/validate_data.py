@@ -10,7 +10,9 @@ import operator
 import os
 import random
 import re
-from urllib.parse import unquote  # Python
+from urllib.parse import unquote
+
+from ..utils import Utils
 
 
 class Validator:
@@ -28,6 +30,7 @@ class Validator:
         self._threatconnect = None
         self.max_diff = 10
         self.truncate = 500
+        self.utils = Utils()
 
     @staticmethod
     def _string_to_int_float(x):

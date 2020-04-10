@@ -67,11 +67,7 @@ class Profile:
         self.permutations = Permutations()
         self.redis_client = redis_client
         self.tc_staged_data = {}
-        self.vault_client = hvac.Client(
-            url=os.getenv('VAULT_URL', 'http://localhost:8200'),
-            token=os.getenv('VAULT_TOKEN'),
-            cert=os.getenv('VAULT_CERT'),
-        )
+        self._vault_client = None
 
     @property
     def _test_case_data(self):
@@ -84,12 +80,23 @@ class Profile:
         return self._test_case_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
 
     def _write_file(self, json_data):
-        """Write updated profile file."""
+        """Write updated profile file.
+
+        Args:
+            json_data (dict): The profile data.
+        """
         with open(self.filename, 'w') as fh:
             fh.write(f'{json.dumps(json_data, indent=2, sort_keys=True)}\n')
 
     def add(self, profile_data=None, profile_name=None, sort_keys=True, permutation_id=None):
-        """Add a profile."""
+        """Add a profile.
+
+        Args:
+            profile_data (dict, optional): The profile data.
+            profile_name (str, optional): The name of the profile.
+            sort_keys (bool, optional): If True the keys will be sorted. Defaults to True.
+            permutation_id (int, optional): The index of the permutation id. Defaults to None.
+        """
         profile_data = profile_data or {}
         if profile_name is not None:
             # profile_name is only used for profile migrations
@@ -289,6 +296,30 @@ class Profile:
         else:
             yield self.inputs
 
+    def read_from_vault(self, path):
+        """Read data from Vault for the provided path.
+
+        Args:
+            path (string): The path to the vault data including the key
+                (e.g. myData/mySecret/myKey).
+
+        Returns:
+            str: The vault association with the provided path and key.
+        """
+        # the key stored in data object at the provided path ("myKey" from "myData/mySecret/myKey")
+        key = path.split('/')[-1].strip('/')
+
+        # the path with the key removed ("myData/mySecret/"" from "myData/mySecret/myKey")
+        path = '/'.join(path.split('/')[:-1]).strip('/')
+
+        try:
+            data = self.vault_client.secrets.kv.read_secret_version(
+                path=path, mount_point=os.getenv('VAULT_MOUNT_POINT')
+            )
+        except hvac.exceptions.VaultError:
+            data = {}
+        return data.get('data', {}).get('data', {}).get(key)
+
     def replace_env_variables(self, profile_data):
         """Replace any env vars.
 
@@ -308,12 +339,10 @@ class Profile:
 
                 if env_type in ['env', 'envs', 'os'] and os.getenv(env_key):
                     profile = profile.replace(full_match, os.getenv(env_key))
-                elif (
-                    self.vault_client.is_authenticated()
-                    and env_type in ['env', 'envs', 'vault']
-                    and self.vault_client.read(env_key)
-                ):
-                    profile = profile.replace(full_match, self.vault_client.read(env_key))
+                elif env_type in ['env', 'envs', 'vault']:
+                    value = self.read_from_vault(env_key)
+                    if value is not None:
+                        profile = profile.replace(full_match, value)
             except IndexError:
                 print(f'{c.Fore.YELLOW}Could not replace variable {full_match}).')
         return json.loads(profile)
@@ -424,13 +453,6 @@ class Profile:
             print(f'{c.Fore.RED}An instance of redis_client is not set.')
             sys.exit(1)
 
-        output_variables = self.ij.output_variable_array
-        if self.lj.has_layout:
-            # if layout based App get valid outputs
-            output_variables = self.ij.create_output_variables(
-                self.permutations.outputs_by_inputs(self.args)
-            )
-
         outputs = {}
         trigger_id = None
         for context in self.context_tracker:
@@ -439,7 +461,7 @@ class Profile:
             trigger_id = self.redis_client.hget(context, '_trigger_id')
 
             # updated outputs with validation data
-            self.update_outputs_variables(outputs, output_variables, redis_data, trigger_id)
+            self.update_outputs_variables(outputs, redis_data, trigger_id)
 
             # cleanup redis
             self.clear_context(context)
@@ -480,20 +502,15 @@ class Profile:
             json_data['outputs'] = merged_outputs
             self._write_file(json_data)
 
-    def update_outputs_variables(self, outputs, output_variables, redis_data, trigger_id):
+    def update_outputs_variables(self, outputs, redis_data, trigger_id):
         """Return the outputs section of a profile.
 
         Args:
             outputs (dict): The dict to add outputs.
-            output_variables (list): A valid list of output variables for this profile/permutation.
             redis_data (dict): The data from KV store for this profile.
             trigger_id (str): The current trigger_id (service Apps).
         """
-
-        for variable in self.ij.output_variable_array:
-            if variable not in output_variables:
-                continue
-
+        for variable in self.tc_playbook_out_variables:
             # get data from redis for current context
             data = redis_data.get(variable.encode('utf-8'))
 
@@ -713,6 +730,18 @@ class Profile:
             inputs[name] = value
         return True, msg
 
+    @property
+    def vault_client(self):
+        """Return configured vault client."""
+        if self._vault_client is None:
+            vault_url = os.getenv('VAULT_URL')
+            vault_token = os.getenv('VAULT_TOKEN')
+            if vault_url is not None and vault_token is not None:
+                hvac.Client(
+                    url=os.getenv('VAULT_URL'), token=os.getenv('VAULT_TOKEN'),
+                )
+        return self._vault_client
+
     #
     # Properties
     #
@@ -817,10 +846,6 @@ class Profile:
             )
         return tc_log_path
 
-    def tc_playbook_out_variables(self):
-        """Return all output variables for this profile."""
-        return self.ij.output_variable_csv_string
-
     @property
     def tc_out_path(self):
         """Return fqpn tc_out_path arg relative to profile."""
@@ -831,6 +856,42 @@ class Profile:
                 self._default_args.get('tc_out_path'), self.feature, self._test_case_name
             )
         return tc_out_path
+
+    @property
+    def tc_playbook_out_variables(self):
+        """Return calculated output variables.
+
+        * iterate over all inputs:
+          * if input key has exposePlaybookKeyAs defined
+          * if value a variable
+            * lookup value in stage.kvstore data
+            * for each key add to output variables
+        """
+        output_variables = self.ij.tc_playbook_out_variables
+        if self.lj.has_layout:
+            # if layout based App get valid outputs
+            output_variables = self.ij.create_output_variables(
+                self.permutations.outputs_by_inputs(self.args)
+            )
+
+        for arg, value in self.args.items():
+            # get full input data from install.json
+            input_data = self.ij.params_dict.get(arg, {})
+
+            # check to see if it support dynamic output variables
+            if 'exposePlaybookKeyAs' not in input_data:
+                continue
+
+            # get the output variable type from install.json input data
+            variable_type = input_data.get('exposePlaybookKeyAs')
+
+            # staged data for this dynamic input must be a KeyValueArray
+            for data in self.stage_kvstore.get(value, []):
+                # create a variable using key value
+                variable = self.ij.create_variable(data.get('key'), variable_type, job_id=9876)
+                output_variables.append(variable)
+
+        return output_variables
 
     @property
     def tc_temp_path(self):
@@ -887,7 +948,7 @@ class ProfileInteractive:
             valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
-                    if self.profile.feature.lower() == vv.lower():
+                    if self.profile.feature.lower() == vv.replace(' ', '_').lower():
                         default = valid_values.index(vv)
             else:
                 try:

@@ -17,7 +17,8 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
         Returns:
             [type]: [description]
         """
-        args['tc_playbook_out_variables'] = ','.join(self.ij.output_variable_array)
+        # TODO: tc_playbook_out_variables should not be needed here as they are passed in config
+        # args['tc_playbook_out_variables'] = ','.join(self.ij.tc_playbook_out_variables)
         self.log.data('run', 'args', args)
         self.app = self.app_init(args)
 
@@ -42,10 +43,9 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
             else:
                 self.app.tcex.service.loop_forever()
         except SystemExit as e:
-            if e.code != 0 and self.profile and e.code not in self.profile.exit_codes:
-                self.log.data(
-                    'run', 'App failed', f'App exited with code of {e.code} in method run', 'error'
-                )
+            self.log.data(
+                'run', 'App failed', f'App exited with code of {e.code} in method run', 'error'
+            )
             return self._exit(e.code)
         except Exception:
             self.log.data(

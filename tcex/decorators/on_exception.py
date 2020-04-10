@@ -65,7 +65,7 @@ class OnException:
                     raise RuntimeError(
                         'The exit_enabled value must be a boolean or resolved to bool.'
                     )
-            app.tcex.log.debug(f'Fail enabled is {enabled} ({self.exit_enabled}).')
+                app.tcex.log.debug(f'Fail enabled is {enabled} ({self.exit_enabled}).')
 
             try:
                 return wrapped(*args, **kwargs)

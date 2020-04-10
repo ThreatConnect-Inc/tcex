@@ -297,6 +297,16 @@ class InstallJson:
         return params
 
     @property
+    def tc_playbook_out_variables(self):
+        """Return playbook output variable name array"""
+        return self.create_output_variables(self.output_variables)
+
+    @property
+    def tc_playbook_out_variables_csv(self):
+        """Return playbook output variables as CSV string"""
+        return ','.join(self.tc_playbook_out_variables)
+
+    @property
     def trigger_config_params_dict(self):
         """Return params as name/data dict."""
         params = {}
@@ -506,16 +516,6 @@ class InstallJson:
     def note(self):
         """Return property."""
         return self.contents.get('note')
-
-    @property
-    def output_variable_array(self):
-        """Return playbook output variable name array"""
-        return self.create_output_variables(self.output_variables)
-
-    @property
-    def output_variable_csv_string(self):
-        """Return playbook output variables as CSV string"""
-        return ','.join(self.output_variable_array)
 
     @property
     def output_variables(self):
