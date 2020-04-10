@@ -39,8 +39,11 @@ class Validate(object):
     % for data in output_data:
     def ${data['method']}(self, variable, data):
         """Assert for ${data['variable']}."""
-        passed, assert_error = self.validator.redis.data(
-            variable, data.pop('expected_output'), data.pop('op', '='), **data
-        )
+        expected_output = data.pop('expected_output')
+        op = data.pop('op', '=')
+
+        # assert variable data
+        passed, assert_error = self.validator.redis.data(variable, expected_output, op, **data)
         assert passed, assert_error
+
     % endfor
