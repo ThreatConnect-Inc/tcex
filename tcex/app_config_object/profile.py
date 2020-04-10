@@ -280,6 +280,34 @@ class Profile:
         """Set the profile name"""
         self._name = name
 
+    @staticmethod
+    def output_data_rule(variable, data):
+        """Returns the default output data for a given variable"""
+        output_data = {'expected_output': data, 'op': 'eq'}
+        if variable.endswith('json.raw!String'):
+            output_data['exclude'] = []
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        elif variable.endswith('web_link!String') or variable.endswith('web_link!StringArray'):
+            output_data['op'] = 'is_url'
+        elif variable.endswith('.id!String') or variable.endswith('.id!StringArray'):
+            output_data['op'] = 'is_number'
+        elif (
+            variable.endswith('date_added!String')
+            or variable.endswith('date_added!StringArray')
+            or variable.endswith('last_modified!String')
+            or variable.endswith('last_modified!StringArray')
+        ):
+            output_data['op'] = 'is_date'
+        elif variable.endswith('StringArray'):
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        elif variable.endswith('TCEntity') or variable.endswith('TCEntityArray'):
+            output_data['exclude'] = ['id']
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        return output_data
+
     def profile_inputs(self):
         """Return the appropriate inputs (config) for the current App type.
 
@@ -367,7 +395,7 @@ class Profile:
 
         for data in self.tc_staged_data:
             key = data.get('key')
-            value = data.get('data')
+            data_value = data.get('data')
 
             for m in re.finditer(r'\${tcenv:' + str(key) + r':(.*?)}', profile):
                 try:
@@ -375,7 +403,7 @@ class Profile:
                     jmespath_expression = m.group(1)
 
                     if jmespath_expression:
-                        value = jmespath.search(jmespath_expression, value)
+                        value = jmespath.search(jmespath_expression, data_value)
                         profile = profile.replace(full_match, str(value))
                 except IndexError:
                     print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
@@ -527,10 +555,7 @@ class Profile:
                 self.log.error(f'[{self.name}] Missing validations rule: {variable}')
 
             # make business rules based on data type or content
-            output_data = {'expected_output': data, 'op': 'eq'}
-            if variable.endswith('json.raw!String'):
-                output_data['exclude'] = []
-                output_data['op'] = 'jeq'
+            output_data = self.output_data_rule(variable, data)
 
             # get trigger id for service Apps
             if trigger_id is not None:

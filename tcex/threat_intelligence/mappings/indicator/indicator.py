@@ -37,15 +37,15 @@ def custom_indicator_class_factory(
         res = {v: k for k, v in self._metadata_map().items()}
         values = []
         for field in value_fields:
-            value = kwargs.pop(res.get(field), '')
+            value = kwargs.pop(res.get(field), kwargs.pop(field, ''))
             value = quote(self.fully_decode_uri(value), safe='')
             values.append(value)
 
         if len(values) == 1:
-            self.unique_id = values[0]
+            self.unique_id = kwargs.get('unique_id', values[0])
         elif len(values) == 2:
             self.unique_id = kwargs.get('unique_id', self.build_summary(values[0], values[1]))
-        elif len(values) == 1:
+        elif len(values) == 3:
             self.unique_id = kwargs.get(
                 'unique_id', self.build_summary(values[0], values[1], values[2])
             )

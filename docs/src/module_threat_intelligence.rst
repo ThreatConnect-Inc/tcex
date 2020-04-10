@@ -151,6 +151,118 @@ Creating a Group and adding Associations and metadata constitute separate API ca
     # add tag
     response = ti.add_tag(name='Crimeware')
 
+To create a Group, you will need to provide a keyword argument with the each of the required `group fields <https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields>`_ for the type of Group you would like to create.
+
+Group Creation Examples
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Here are examples creating each Group type:
+
+Adversary:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Adversary', name='Adversary 1', owner='MyOrg')
+    response = group_object.create()
+
+Campaign:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Campaign', name='Campaign 1', owner='MyOrg')
+    response = group_object.create()
+
+Document:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Document', name='Document 1', owner='MyOrg', file_name='test.txt'))
+    response = group_object.create()
+    group_object.file_content('This is the content of the document')
+
+Email:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Email', name='Email 1', owner='MyOrg', subject='Foo', header='This an email header', body='This is an email body')
+    response = group_object.create()
+
+Event:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Event', name='Event 1', owner='MyOrg')
+    response = group_object.create()
+
+Incident
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Incident', name='Incident 1', owner='MyOrg')
+    response = group_object.create()
+
+Intrusion Set:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Intrusion Set' name='Intrusion Set 1', owner='MyOrg')
+    response = group_object.create()
+
+Report:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Report', name='Report 1', owner='MyOrg', file_name='report.html')
+    response = group_object.create()
+    group_object.file_content('<h1>New report</h1>\nReport contents here...')
+
+Signature:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    signature_text = '''rule silent_banker : banker
+    {
+        meta:
+            description = "This is just an example"
+            threat_level = 3
+            in_the_wild = true
+        strings:
+            $a = {6A 40 68 00 30 00 00 6A 14 8D 91}
+            $b = {8D 4D B0 2B C1 83 C0 27 99 6A 4E 59 F7 F9}
+            $c = "UVODFRYSIHLNWPEJXQZAKCBGMT"
+        condition:
+            $a or $b or $c
+    }'''
+    group_object = self.tcex.ti.group(group_type='Signature', name='s1', owner=OWNER, fileName='sig.yara', fileType='YARA', file_text=signature_text)
+    response = group_object.create()
+
+Threat:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group_object = self.tcex.ti.group(group_type='Threat', name='Threat 1', owner='MyOrg')
+    response = group_object.create()
+
 Updating a Group
 ----------------
 Updating a Group is similar to creating a Group, with the addition of providing the Group ID.  The Group metadata can be updated using the same methods as were used in the Group Create example.
@@ -295,6 +407,58 @@ Creating an Indicator and adding Associations and metadata are all separate API 
 
     # add tag
     response = ti.add_tag(name='Crimeware')
+
+To create an Indicator, you will need to provide a keyword argument with each of the required `indicator fields <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`_ for the type of Indicator you would like to create.
+
+Indicator Creation Examples
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here are examples creating the five, basic Indicator types:
+
+Address:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    indicator_object = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', ip='4.3.2.1')
+    response = indicator_object.create()
+
+Email Address:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    indicator_object = self.tcex.ti.indicator(indicator_type='EmailAddress', owner='MyOrg', address='foo@example.org')
+    response = indicator_object.create()
+
+File:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    indicator_object = self.tcex.ti.indicator(indicator_type='File', owner='MyOrg', md5='a'*32)
+    response = indicator_object.create()
+
+Host:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    indicator_object = self.tcex.ti.indicator(indicator_type='Host', owner='MyOrg', hostName='example.org')
+    response = indicator_object.create()
+
+URL:
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    indicator_object = self.tcex.ti.indicator(indicator_type='Host', owner='MyOrg', hostName='https://example.org/foo')
+    response = indicator_object.create()
 
 Updating an Indicator
 ---------------------
