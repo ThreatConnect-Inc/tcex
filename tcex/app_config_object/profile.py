@@ -255,8 +255,8 @@ class Profile:
 
     def init(self):
         """Return the Data (dict) from the current profile."""
-        # update profile
-        profile_data = self.update()
+        # migrate profile to latest schema
+        profile_data = self.migrate()
 
         # replace all variable references
         profile_data = self.replace_env_variables(profile_data)
@@ -366,8 +366,12 @@ class Profile:
                 env_type = m.group(1)  # currently env, os, or vault
                 env_key = m.group(2)
 
-                if env_type in ['env', 'envs', 'os'] and os.getenv(env_key.replace('/', '_')):
-                    profile = profile.replace(full_match, os.getenv(env_key.replace('/', '_')))
+                if env_type in ['env', 'envs', 'os'] and os.getenv(
+                    env_key.replace('/', '_').replace(' ', '_')
+                ):
+                    profile = profile.replace(
+                        full_match, os.getenv(env_key.replace('/', '_').replace(' ', '_'))
+                    )
                 elif env_type in ['env', 'envs', 'vault']:
                     value = self.read_from_vault(env_key)
                     if value is not None:
@@ -415,28 +419,28 @@ class Profile:
         """Return fully qualified test directory."""
         return os.path.join(self._app_path, 'tests')
 
-    def update(self):
+    def migrate(self):
         """Update profile with all required changes."""
         with open(os.path.join(self.filename), 'r+') as fh:
             profile_data = json.load(fh)
 
             # update all env variables to match latest pattern
-            self.update_permutation_output_variables(profile_data)
+            self.migrate_permutation_output_variables(profile_data)
 
             # change for threatconnect staged data
-            profile_data = self.update_stage_redis_name(profile_data)
+            profile_data = self.migrate_stage_redis_name(profile_data)
 
             # change for threatconnect staged data
-            profile_data = self.update_stage_threatconnect_data(profile_data)
+            profile_data = self.migrate_stage_threatconnect_data(profile_data)
 
             # update all version 1 env variables to match latest pattern
-            profile_data = self.update_variable_pattern_env_v1(profile_data)
+            profile_data = self.migrate_variable_pattern_env_v1(profile_data)
 
             # update all version 2 env variables to match latest pattern
-            profile_data = self.update_variable_pattern_env_v2(profile_data)
+            profile_data = self.migrate_variable_pattern_env_v2(profile_data)
 
             # update all tcenv variables to match latest pattern
-            profile_data = self.update_variable_pattern_tcenv(profile_data)
+            profile_data = self.migrate_variable_pattern_tcenv(profile_data)
 
             # write updated profile
             fh.seek(0)
@@ -571,7 +575,7 @@ class Profile:
                 outputs[variable] = output_data
 
     @staticmethod
-    def update_permutation_output_variables(profile_data):
+    def migrate_permutation_output_variables(profile_data):
         """Remove permutation_output_variables field.
 
         Args:
@@ -587,7 +591,7 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_stage_redis_name(profile_data):
+    def migrate_stage_redis_name(profile_data):
         """Update staged redis to kvstore
 
         This change updates the previous value of redis with a
@@ -610,7 +614,7 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_stage_threatconnect_data(profile_data):
+    def migrate_stage_threatconnect_data(profile_data):
         """Update for staged threatconnect data section of profile
 
         This change updates the previous list to a dict with a key that
@@ -639,7 +643,7 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_variable_pattern_env_v1(profile_data):
+    def migrate_variable_pattern_env_v1(profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -663,7 +667,7 @@ class Profile:
         return json.loads(profile)
 
     @staticmethod
-    def update_variable_pattern_env_v2(profile_data):
+    def migrate_variable_pattern_env_v2(profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -686,7 +690,7 @@ class Profile:
                 print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
 
-    def update_variable_pattern_tcenv(self, profile_data):
+    def migrate_variable_pattern_tcenv(self, profile_data):
         """Update the profile variable to latest pattern
 
         Args:
