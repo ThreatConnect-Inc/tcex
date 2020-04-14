@@ -132,7 +132,7 @@ class TestProfiles(${class_name}):
         validation.validate_outputs(self.profile.tc_playbook_out_variables, self.profile.outputs)
 
         # validate App outputs with Profile outputs
-        validation.validate(self.profile.outputs))
+        validation.validate(self.profile.outputs)
         % endif
 
         # validate exit message
