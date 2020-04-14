@@ -1198,6 +1198,12 @@ class ProfileInteractive:
             feedback_value = f'"{value}" - ({variable})'
             input_value = variable
 
+        # allow a null input
+        if input_value == 'null':
+            input_value = None
+        elif input_value == '"null"':
+            input_value = 'null'
+
         # user feedback
         self.print_feedback(feedback_value)
 
