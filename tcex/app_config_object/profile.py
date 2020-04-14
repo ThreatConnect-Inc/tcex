@@ -255,8 +255,8 @@ class Profile:
 
     def init(self):
         """Return the Data (dict) from the current profile."""
-        # update profile
-        profile_data = self.update()
+        # migrate profile to latest schema
+        profile_data = self.migrate()
 
         # replace all variable references
         profile_data = self.replace_env_variables(profile_data)
@@ -266,6 +266,184 @@ class Profile:
 
         # set update profile data
         self._data = profile_data
+
+    def migrate(self):
+        """Migrate profile to latest schema and rewrite data."""
+        with open(os.path.join(self.filename), 'r+') as fh:
+            profile_data = json.load(fh)
+
+            # update all env variables to match latest pattern
+            self.migrate_permutation_output_variables(profile_data)
+
+            # change for threatconnect staged data
+            profile_data = self.migrate_stage_redis_name(profile_data)
+
+            # change for threatconnect staged data
+            profile_data = self.migrate_stage_threatconnect_data(profile_data)
+
+            # update all version 1 env variables to match latest pattern
+            profile_data = self.migrate_variable_pattern_env_v1(profile_data)
+
+            # update all version 2 env variables to match latest pattern
+            profile_data = self.migrate_variable_pattern_env_v2(profile_data)
+
+            # update all tcenv variables to match latest pattern
+            profile_data = self.migrate_variable_pattern_tcenv(profile_data)
+
+            # write updated profile
+            fh.seek(0)
+            json.dump(profile_data, fh, indent=2, sort_keys=True)
+            fh.write('\n')  # add required newline
+            fh.truncate()
+
+        return profile_data
+
+    @staticmethod
+    def migrate_permutation_output_variables(profile_data):
+        """Remove permutation_output_variables field.
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        try:
+            del profile_data['permutation_output_variables']
+        except KeyError:
+            pass
+        return profile_data
+
+    @staticmethod
+    def migrate_stage_redis_name(profile_data):
+        """Update staged redis to kvstore
+
+        This change updates the previous value of redis with a
+        more generic value of kvstore for staged data.
+
+        Args:
+            profile_data (dict): The current profile data dict.
+
+        Returns:
+            dict: The update profile dict.
+        """
+        if profile_data.get('stage') is None:
+            return profile_data
+
+        kvstore_data = profile_data['stage'].get('redis', None)
+        if kvstore_data is not None:
+            del profile_data['stage']['redis']
+            profile_data['stage']['kvstore'] = kvstore_data
+
+        return profile_data
+
+    @staticmethod
+    def migrate_stage_threatconnect_data(profile_data):
+        """Update for staged threatconnect data section of profile
+
+        This change updates the previous list to a dict with a key that
+        can be reference as a variable in other sections of the profile.
+
+        Args:
+            profile_data (dict): The current profile data dict.
+
+        Returns:
+            dict: The update profile dict.
+        """
+        if 'stage' not in profile_data:
+            return profile_data
+
+        stage_tc = profile_data.get('stage').get('threatconnect')
+
+        # check if profile is using old list type
+        if isinstance(stage_tc, list):
+            profile_data['stage']['threatconnect'] = {}
+
+            counter = 0
+            for item in stage_tc:
+                profile_data['stage']['threatconnect'][f'item_{counter}'] = item
+                counter += 1
+
+        return profile_data
+
+    @staticmethod
+    def migrate_variable_pattern_env_v1(profile_data):
+        """Update the profile variable to latest pattern
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        profile = json.dumps(profile_data)
+
+        for m in re.finditer(r'\"\$(env|envs)\.(\w+)\"', profile):
+            try:
+                full_match = m.group(0)
+                env_type = m.group(1)  # currently env, os, or vault
+                env_key = m.group(2)
+
+                new_variable = f'"${{{env_type}:{env_key}}}"'
+                profile = profile.replace(full_match, new_variable)
+            except IndexError:
+                print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
+        return json.loads(profile)
+
+    @staticmethod
+    def migrate_variable_pattern_env_v2(profile_data):
+        """Update the profile variable to latest pattern
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        profile = json.dumps(profile_data)
+
+        for m in re.finditer(r'\${(env|envs|os|vault)\.(.*?)}', profile):
+            try:
+                full_match = m.group(0)
+                env_type = m.group(1)  # currently env, os, or vault
+                env_key = m.group(2)
+
+                new_variable = f'${{{env_type}:{env_key}}}'
+                profile = profile.replace(full_match, new_variable)
+            except IndexError:
+                print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
+        return json.loads(profile)
+
+    def migrate_variable_pattern_tcenv(self, profile_data):
+        """Update the profile variable to latest pattern
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        if 'jmespath' not in sys.modules:
+            print(
+                f'{c.Fore.RED}Missing jmespath module. Try '
+                f'installing "pip install tcex[development]"'
+            )
+            sys.exit(1)
+
+        profile = json.dumps(profile_data)
+
+        for data in self.tc_staged_data:
+            key = data.get('key')
+            for m in re.finditer(r'\${tcenv\.' + str(key) + r'\.(.*?)}', profile):
+                try:
+                    full_match = m.group(0)
+                    jmespath_expression = m.group(1)
+
+                    new_variable = f'${{tcenv:{key}:{jmespath_expression}}}'
+                    profile = profile.replace(full_match, new_variable)
+                except IndexError:
+                    print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
+        return json.loads(profile)
 
     @property
     def name(self):
@@ -366,8 +544,12 @@ class Profile:
                 env_type = m.group(1)  # currently env, os, or vault
                 env_key = m.group(2)
 
-                if env_type in ['env', 'envs', 'os'] and os.getenv(env_key.replace('/', '_')):
-                    profile = profile.replace(full_match, os.getenv(env_key.replace('/', '_')))
+                if env_type in ['env', 'envs', 'os'] and os.getenv(
+                    env_key.replace('/', '_').replace(' ', '_')
+                ):
+                    profile = profile.replace(
+                        full_match, os.getenv(env_key.replace('/', '_').replace(' ', '_'))
+                    )
                 elif env_type in ['env', 'envs', 'vault']:
                     value = self.read_from_vault(env_key)
                     if value is not None:
@@ -415,36 +597,6 @@ class Profile:
         """Return fully qualified test directory."""
         return os.path.join(self._app_path, 'tests')
 
-    def update(self):
-        """Update profile with all required changes."""
-        with open(os.path.join(self.filename), 'r+') as fh:
-            profile_data = json.load(fh)
-
-            # update all env variables to match latest pattern
-            self.update_permutation_output_variables(profile_data)
-
-            # change for threatconnect staged data
-            profile_data = self.update_stage_redis_name(profile_data)
-
-            # change for threatconnect staged data
-            profile_data = self.update_stage_threatconnect_data(profile_data)
-
-            # update all version 1 env variables to match latest pattern
-            profile_data = self.update_variable_pattern_env_v1(profile_data)
-
-            # update all version 2 env variables to match latest pattern
-            profile_data = self.update_variable_pattern_env_v2(profile_data)
-
-            # update all tcenv variables to match latest pattern
-            profile_data = self.update_variable_pattern_tcenv(profile_data)
-
-            # write updated profile
-            fh.seek(0)
-            fh.write(f'{json.dumps(profile_data, indent=2, sort_keys=True)}\n')
-            fh.truncate()
-
-        return profile_data
-
     def update_exit_message(self):
         """Update validation rules from exit_message section of profile."""
         message_tc = ''
@@ -463,8 +615,10 @@ class Profile:
                 # update the profile
                 profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
 
+                # write updated profile
                 fh.seek(0)
-                fh.write(f'{json.dumps(profile_data, indent=2, sort_keys=True)}\n')
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
                 fh.truncate()
 
     def update_outputs(self):
@@ -571,153 +725,6 @@ class Profile:
                 outputs[trigger_id][variable] = output_data
             else:
                 outputs[variable] = output_data
-
-    @staticmethod
-    def update_permutation_output_variables(profile_data):
-        """Remove permutation_output_variables field.
-
-        Args:
-            profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
-        """
-        try:
-            del profile_data['permutation_output_variables']
-        except KeyError:
-            pass
-        return profile_data
-
-    @staticmethod
-    def update_stage_redis_name(profile_data):
-        """Update staged redis to kvstore
-
-        This change updates the previous value of redis with a
-        more generic value of kvstore for staged data.
-
-        Args:
-            profile_data (dict): The current profile data dict.
-
-        Returns:
-            dict: The update profile dict.
-        """
-        if profile_data.get('stage') is None:
-            return profile_data
-
-        kvstore_data = profile_data['stage'].get('redis', None)
-        if kvstore_data is not None:
-            del profile_data['stage']['redis']
-            profile_data['stage']['kvstore'] = kvstore_data
-
-        return profile_data
-
-    @staticmethod
-    def update_stage_threatconnect_data(profile_data):
-        """Update for staged threatconnect data section of profile
-
-        This change updates the previous list to a dict with a key that
-        can be reference as a variable in other sections of the profile.
-
-        Args:
-            profile_data (dict): The current profile data dict.
-
-        Returns:
-            dict: The update profile dict.
-        """
-        if 'stage' not in profile_data:
-            return profile_data
-
-        stage_tc = profile_data.get('stage').get('threatconnect')
-
-        # check if profile is using old list type
-        if isinstance(stage_tc, list):
-            profile_data['stage']['threatconnect'] = {}
-
-            counter = 0
-            for item in stage_tc:
-                profile_data['stage']['threatconnect'][f'item_{counter}'] = item
-                counter += 1
-
-        return profile_data
-
-    @staticmethod
-    def update_variable_pattern_env_v1(profile_data):
-        """Update the profile variable to latest pattern
-
-        Args:
-            profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
-        """
-        profile = json.dumps(profile_data)
-
-        for m in re.finditer(r'\"\$(env|envs)\.(\w+)\"', profile):
-            try:
-                full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
-                env_key = m.group(2)
-
-                new_variable = f'"${{{env_type}:{env_key}}}"'
-                profile = profile.replace(full_match, new_variable)
-            except IndexError:
-                print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
-        return json.loads(profile)
-
-    @staticmethod
-    def update_variable_pattern_env_v2(profile_data):
-        """Update the profile variable to latest pattern
-
-        Args:
-            profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
-        """
-        profile = json.dumps(profile_data)
-
-        for m in re.finditer(r'\${(env|envs|os|vault)\.(.*?)}', profile):
-            try:
-                full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
-                env_key = m.group(2)
-
-                new_variable = f'${{{env_type}:{env_key}}}'
-                profile = profile.replace(full_match, new_variable)
-            except IndexError:
-                print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
-        return json.loads(profile)
-
-    def update_variable_pattern_tcenv(self, profile_data):
-        """Update the profile variable to latest pattern
-
-        Args:
-            profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
-        """
-        if 'jmespath' not in sys.modules:
-            print(
-                f'{c.Fore.RED}Missing jmespath module. Try '
-                f'installing "pip install tcex[development]"'
-            )
-            sys.exit(1)
-
-        profile = json.dumps(profile_data)
-
-        for data in self.tc_staged_data:
-            key = data.get('key')
-            for m in re.finditer(r'\${tcenv\.' + str(key) + r'\.(.*?)}', profile):
-                try:
-                    full_match = m.group(0)
-                    jmespath_expression = m.group(1)
-
-                    new_variable = f'${{tcenv:{key}:{jmespath_expression}}}'
-                    profile = profile.replace(full_match, new_variable)
-                except IndexError:
-                    print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
-        return json.loads(profile)
 
     def validate_required_inputs(self):
         """Present interactive menu to build profile."""

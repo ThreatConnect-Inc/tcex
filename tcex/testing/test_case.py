@@ -182,7 +182,7 @@ class TestCase:
         """Return App default args."""
         args = {
             'api_access_id': os.getenv('API_ACCESS_ID'),
-            'api_default_org': os.getenv('API_DEFAULT_ORG'),
+            'api_default_org': os.getenv('API_DEFAULT_ORG', 'TCI'),
             'api_secret_key': os.getenv('API_SECRET_KEY'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
