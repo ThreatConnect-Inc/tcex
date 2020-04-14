@@ -20,7 +20,6 @@ class Document(Group):
         super().__init__(
             tcex, sub_type='Document', api_entity='document', api_branch='documents', **kwargs
         )
-        self._data['fileName'] = kwargs.get('file_name')
 
     def download(self):
         """Download the documents context.
