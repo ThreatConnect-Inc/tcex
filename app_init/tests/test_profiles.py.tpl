@@ -125,7 +125,14 @@ class TestProfiles(${class_name}):
         # run custom test method before validation
         self.custom.test_pre_validate(self, self.profile.data)
 
-        ValidateFeature(self.validator).validate(self.profile.outputs)
+        # get Validation instance
+        validation = ValidateFeature(self.validator)
+
+        # validate App outputs and Profile outputs are consistent
+        validation.validate_outputs(self.profile.tc_playbook_out_variables, self.profile.outputs)
+
+        # validate App outputs with Profile outputs
+        validation.validate(self.profile.outputs))
         % endif
 
         # validate exit message
