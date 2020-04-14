@@ -37,7 +37,7 @@ class TestLogger(logging.Logger):
         """Log validation data."""
         stage = f'[{stage}]'
         stage_width = 25 - len(level)
-        msg = f'{stage!s:>{stage_width}} : {label!s:<15}: {data!s:<50}'
+        msg = f'{stage!s:>{stage_width}} : {label!s:<20}: {data!s:<50}'
         level = logging.getLevelName(level.upper())
         self.log(level, msg)
 
@@ -396,6 +396,7 @@ class TestCase:
             f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=False
         )
         if r.status_code == 200:
+            self.log.data('run', 'Token Elapsed', r.elapsed)
             token = r.json().get('data')
         return token
 
@@ -470,8 +471,13 @@ class TestCase:
 
                 if app_exit_message:
                     kwargs['title'] = 'Exit Message Validation'
+                    kwargs['log_app_data'] = json.dumps(app_exit_message)
+                    if op == 'eq':
+                        kwargs['log_test_data'] = json.dumps(test_exit_message)
+
+                    # compare
                     passed, assert_error = self.validator.compare(
-                        json.dumps(app_exit_message), json.dumps(test_exit_message), op=op, **kwargs
+                        app_exit_message, test_exit_message, op=op, **kwargs
                     )
                     assert passed, assert_error
                 else:

@@ -68,7 +68,6 @@ class Validator:
             pass
 
         op = op or 'eq'
-        variable = kwargs.pop('variable', app_data)  # get optional variable name for log header
         if not self.get_operator(op):
             self.log.data(
                 'validate', 'Invalid Operator', f'Provided operator of {op} is invalid', 'error'
@@ -79,11 +78,15 @@ class Validator:
         title = kwargs.pop('title', app_data)
         self.log.title(title, '=')
 
+        # allow dev to provide formatted data for logging
+        log_app_data = kwargs.pop('log_app_data', app_data)
+        log_test_data = kwargs.pop('log_test_data', test_data)
+
         # run operator
         passed, details = self.get_operator(op)(app_data, test_data, **kwargs)
 
         # log validation data in a readable format
-        self.validate_log_output(passed, variable, test_data, details.strip(), op)
+        self.validate_log_output(passed, log_app_data, log_test_data, details.strip(), op)
 
         # build assert error
         assert_error = (
