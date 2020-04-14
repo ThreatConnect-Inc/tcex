@@ -9,6 +9,7 @@ Release Notes
 + Updated testing framework validation template to support dynamic output variable.
 + Updated profile module to support variable from Vault server.
 + Updated OnException decorator to log traceback.
++ Moved hvac to development requirement.
 
 2.0.3
 =====

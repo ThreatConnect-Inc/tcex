@@ -12,14 +12,22 @@ import uuid
 from datetime import datetime
 
 import pytest
+from requests import Session
+import urllib3
+
 from tcex import TcEx
-from tcex.inputs import FileParams
 from tcex.app_config_object.install_json import InstallJson
 from tcex.app_config_object.profile import Profile
+from tcex.env_store import EnvStore
+from tcex.inputs import FileParams
+from tcex.sessions.tc_session import HmacAuth
 
 from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
 from .validate_data import Validator
+
+# disable ssl warning message
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class TestLogger(logging.Logger):
@@ -63,10 +71,12 @@ class TestCase:
     app = None
     context = None
     enable_update_profile = False
+    env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
+    env_store = EnvStore()
     ij = InstallJson()
     log = logger
-    env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
     redis_client = None
+    session = Session()
     tcex = None
     tcex_testing_context = None
 
@@ -181,9 +191,11 @@ class TestCase:
     def default_args(self):
         """Return App default args."""
         args = {
-            'api_access_id': os.getenv('API_ACCESS_ID'),
+            # local override TCI_EXCHANGE_ADMIN_API_ACCESS_ID
+            'api_access_id': self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_access_id'),
             'api_default_org': os.getenv('API_DEFAULT_ORG', 'TCI'),
-            'api_secret_key': os.getenv('API_SECRET_KEY'),
+            # local override TCI_EXCHANGE_ADMIN_API_SECRET_KEY
+            'api_secret_key': self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_secret_key'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
             'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
@@ -191,16 +203,37 @@ class TestCase:
             'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
             'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
             'tc_proxy_external': self._to_bool(os.getenv('TC_PROXY_EXTERNAL', 'false')),
-            'tc_proxy_host': os.getenv('TC_PROXY_HOST', 'localhost'),
-            'tc_proxy_password': os.getenv('TC_PROXY_PASSWORD', ''),
-            'tc_proxy_port': os.getenv('TC_PROXY_PORT', '4242'),
+            # local override TC_PROXY_HOST
+            'tc_proxy_host': self.env_store.getenv(
+                '/ninja/proxy/tc_proxy_host', default='localhost'
+            ),
+            # local override TC_PROXY_PASSWORD
+            'tc_proxy_password': self.env_store.getenv(
+                '/ninja/proxy/tc_proxy_password', default=''
+            ),
+            # local override TC_PROXY_PORT
+            'tc_proxy_port': self.env_store.getenv('/ninja/proxy/tc_proxy_port', default='4242'),
             'tc_proxy_tc': self._to_bool(os.getenv('TC_PROXY_TC', 'false')),
-            'tc_proxy_username': os.getenv('TC_PROXY_USERNAME', ''),
+            # local override TC_PROXY_USERNAME
+            'tc_proxy_username': self.env_store.getenv(
+                '/ninja/proxy/tc_proxy_username', default=''
+            ),
             'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
         }
         if os.getenv('TC_TOKEN'):
             args['tc_token'] = os.getenv('TC_TOKEN')
             args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
+        else:
+            # best effort on getting API token
+            token = self.tc_token(
+                args.get('tc_api_path'), args.get('api_access_id'), args.get('api_secret_key')
+            )
+            if token is not None:
+                # if token was successfully retrieved from TC use token and remove hmac values
+                args['tc_token'] = token
+                args['tc_token_expires'] = '1700000000'
+                del args['api_access_id']
+                del args['api_secret_key']
         return args
 
     def init_profile(
@@ -328,6 +361,43 @@ class TestCase:
 
         tcex = TcEx(config=args)
         return Stager(tcex, logger)
+
+    def tc_token(self, tc_api_path, api_access_id, api_secret_key):
+        """Return a valid API token.
+
+        note:: requires TC >= 6.0
+
+        Args:
+            tc_api_path (str): The URL for the tc instance (e.g. https://my.tc.org)
+            api_access_id (str): The TC Access ID for HMAC Auth
+            api_secret_key (str): The TC Secret Key for HMAC Auth
+
+        Returns:
+            str: A valid token if available.
+        """
+        data = None
+        token = None
+        token_url_path = self.env_store.getenv('/ninja/tc/token/url_path', env_type='vault')
+        if token_url_path is None:
+            # could not retrieve URL path
+            return None
+
+        # determine the token type
+        token_type = 'api'
+        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '407')}
+            token_type = 'svc'
+
+        # add auth
+        self.session.auth = HmacAuth(api_access_id, api_secret_key)
+
+        # retrieve token from API using HMAC auth
+        r = self.session.post(
+            f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=False
+        )
+        if r.status_code == 200:
+            token = r.json().get('data')
+        return token
 
     @classmethod
     def teardown_class(cls):

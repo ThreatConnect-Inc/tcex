@@ -19,6 +19,7 @@ dev_packages = [
     'CommonMark==0.5.5',
     'deepdiff',
     'flake8',
+    'hvac>=0.3.0',
     'jmespath',
     'mako',
     'pre-commit',
@@ -59,7 +60,6 @@ setup(
     install_requires=[
         'colorama>=0.3.9',
         'future',
-        'hvac>=0.3.0',
         'inflect>=0.2.5',
         'jsonschema>=2.6.0',
         'paho-mqtt',

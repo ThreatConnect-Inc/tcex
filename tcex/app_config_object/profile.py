@@ -9,7 +9,6 @@ from random import randint
 import math
 
 import colorama as c
-import hvac
 
 try:
     import jmespath
@@ -20,6 +19,7 @@ except ImportError:
 from .install_json import InstallJson
 from .layout_json import LayoutJson
 from .permutations import Permutations
+from ..env_store import EnvStore
 from ..utils import Utils
 
 # autoreset colorama
@@ -62,12 +62,12 @@ class Profile:
         self._data = None
         self._output_variables = None
         self._context_tracker = []
+        self.env_store = EnvStore()
         self.ij = InstallJson()
         self.lj = LayoutJson()
         self.permutations = Permutations()
         self.redis_client = redis_client
         self.tc_staged_data = {}
-        self._vault_client = None
 
     @property
     def _test_case_data(self):
@@ -502,31 +502,6 @@ class Profile:
         else:
             yield self.inputs
 
-    def read_from_vault(self, path):
-        """Read data from Vault for the provided path.
-
-        Args:
-            path (string): The path to the vault data including the key
-                (e.g. myData/mySecret/myKey).
-
-        Returns:
-            str: The vault association with the provided path and key.
-        """
-        # the key stored in data object at the provided path ("myKey" from "myData/mySecret/myKey")
-        key = path.split('/')[-1].strip('/')
-
-        # the path with the key removed ("myData/mySecret/"" from "myData/mySecret/myKey")
-        path = '/'.join(path.split('/')[:-1]).strip('/')
-
-        try:
-            data = self.vault_client.secrets.kv.read_secret_version(
-                path=path, mount_point=os.getenv('VAULT_MOUNT_POINT')
-            )
-        except hvac.exceptions.VaultError:
-            data = {}
-
-        return data.get('data', {}).get('data', {}).get(key)
-
     def replace_env_variables(self, profile_data):
         """Replace any env vars.
 
@@ -541,19 +516,12 @@ class Profile:
         for m in re.finditer(r'\${(env|envs|os|vault):(.*?)}', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)  # currently env, envs, os, or vault
                 env_key = m.group(2)
 
-                if env_type in ['env', 'envs', 'os'] and os.getenv(
-                    env_key.replace('/', '_').replace(' ', '_')
-                ):
-                    profile = profile.replace(
-                        full_match, os.getenv(env_key.replace('/', '_').replace(' ', '_'))
-                    )
-                elif env_type in ['env', 'envs', 'vault']:
-                    value = self.read_from_vault(env_key)
-                    if value is not None:
-                        profile = profile.replace(full_match, value)
+                env_value = self.env_store.getenv(env_key, env_type)
+                if env_value is not None:
+                    profile = profile.replace(full_match, env_value)
             except IndexError:
                 print(f'{c.Fore.YELLOW}Could not replace variable {full_match}).')
         return json.loads(profile)
@@ -767,18 +735,6 @@ class Profile:
             # update inputs
             inputs[name] = value
         return True, msg
-
-    @property
-    def vault_client(self):
-        """Return configured vault client."""
-        if self._vault_client is None:
-            vault_url = os.getenv('VAULT_URL')
-            vault_token = os.getenv('VAULT_TOKEN')
-            if vault_url is not None and vault_token is not None:
-                self._vault_client = hvac.Client(
-                    url=os.getenv('VAULT_URL'), token=os.getenv('VAULT_TOKEN'),
-                )
-        return self._vault_client
 
     #
     # Properties
