@@ -406,7 +406,7 @@ class Validator:
             try:
                 es = e.split('.')
                 data = self.remove_excludes(data, es)
-            except (KeyError, TypeError) as err:
+            except (AttributeError, KeyError, TypeError) as err:
                 self.log.data(
                     'validate',
                     'Invalid Config',
@@ -559,6 +559,9 @@ class Validator:
                 'status': 'Uploaded
             }
         """
+        if not isinstance(dict_1, dict):
+            raise RuntimeError(f'Provided value ({dict_1}) must be a dict.')
+
         path_0 = paths[0]
         if len(paths) == 1:
             dict_1.pop(path_0, None)
