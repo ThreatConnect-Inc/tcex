@@ -365,10 +365,20 @@ class Validator:
                 app_data = json.loads(app_data)
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
+        elif isinstance(app_data, (list)):
+            try:
+                app_data = [json.loads(d) for d in app_data]
+            except ValueError:
+                return False, f'Invalid JSON data provide ({app_data}).'
 
         if isinstance(test_data, (str)):
             try:
                 test_data = json.loads(test_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({test_data}).'
+        elif isinstance(test_data, (list)):
+            try:
+                test_data = [json.loads(d) for d in test_data]
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
 

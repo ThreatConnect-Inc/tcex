@@ -478,7 +478,7 @@ class Profile:
         ):
             output_data['op'] = 'is_date'
         elif variable.endswith('StringArray'):
-            output_data['op'] = 'jeq'
+            output_data['op'] = 'dd'
             output_data['ignore_order'] = False
         elif variable.endswith('TCEntity') or variable.endswith('TCEntityArray'):
             output_data['exclude'] = ['id']
