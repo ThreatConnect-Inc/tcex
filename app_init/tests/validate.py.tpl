@@ -12,6 +12,18 @@ class Validate(object):
         """Initialize class properties."""
         self.validator = validator
 
+    def validate_outputs(self, app_outputs, profile_outputs):
+        """Assert outputs match."""
+        diff_1 = list(set(app_outputs).difference(set(profile_outputs)))
+        diff_2 = list(set(profile_outputs).difference(set(app_outputs)))
+        if diff_1 or diff_2:
+            assertion_error = (
+                f'Profile outputs are not consistent with App outputs.\n'
+                f'App Output difference    : {diff_1}\n'
+                f'Profile Output difference: {diff_2}\n'
+            )
+            assert False, assertion_error
+
     def validate(self, output_variables):
         """Validate Redis output data."""
         if output_variables is None:

@@ -170,7 +170,14 @@ class Lib(Bin):
                 shutil.rmtree(lib_dir_fq)
 
             # replace env vars with env val in the python executable
-            python_executable = data.get('python_executable')
+            python_executable = os.path.expanduser(data.get('python_executable'))
+
+            if not os.path.isfile(python_executable) and not os.path.islink(python_executable):
+                print(
+                    f'{c.Style.BRIGHT}{c.Fore.RED}The link Python executable ({python_executable}) '
+                    f'could not be found. Skipping building lib directory for this Python version.'
+                )
+                continue
 
             print(f'Building Lib Dir: {c.Style.BRIGHT}{c.Fore.CYAN}{lib_dir_fq}')
             exe_command = self._build_command(python_executable, lib_dir_fq, proxy_enabled)

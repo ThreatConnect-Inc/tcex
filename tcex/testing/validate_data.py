@@ -68,7 +68,6 @@ class Validator:
             pass
 
         op = op or 'eq'
-        variable = kwargs.pop('variable', app_data)  # get optional variable name for log header
         if not self.get_operator(op):
             self.log.data(
                 'validate', 'Invalid Operator', f'Provided operator of {op} is invalid', 'error'
@@ -79,11 +78,15 @@ class Validator:
         title = kwargs.pop('title', app_data)
         self.log.title(title, '=')
 
+        # allow dev to provide formatted data for logging
+        log_app_data = kwargs.pop('log_app_data', app_data)
+        log_test_data = kwargs.pop('log_test_data', test_data)
+
         # run operator
         passed, details = self.get_operator(op)(app_data, test_data, **kwargs)
 
         # log validation data in a readable format
-        self.validate_log_output(passed, variable, test_data, details.strip(), op)
+        self.validate_log_output(passed, log_app_data, log_test_data, details.strip(), op)
 
         # build assert error
         assert_error = (
@@ -365,10 +368,20 @@ class Validator:
                 app_data = json.loads(app_data)
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
+        elif isinstance(app_data, (list)):
+            try:
+                app_data = [json.loads(d) for d in app_data]
+            except ValueError:
+                return False, f'Invalid JSON data provide ({app_data}).'
 
         if isinstance(test_data, (str)):
             try:
                 test_data = json.loads(test_data)
+            except ValueError:
+                return False, f'Invalid JSON data provide ({test_data}).'
+        elif isinstance(test_data, (list)):
+            try:
+                test_data = [json.loads(d) for d in test_data]
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
 
@@ -396,7 +409,7 @@ class Validator:
             try:
                 es = e.split('.')
                 data = self.remove_excludes(data, es)
-            except (KeyError, TypeError) as err:
+            except (AttributeError, KeyError, TypeError) as err:
                 self.log.data(
                     'validate',
                     'Invalid Config',
@@ -549,6 +562,9 @@ class Validator:
                 'status': 'Uploaded
             }
         """
+        if not isinstance(dict_1, dict):
+            raise RuntimeError(f'Provided value ({dict_1}) must be a dict.')
+
         path_0 = paths[0]
         if len(paths) == 1:
             dict_1.pop(path_0, None)

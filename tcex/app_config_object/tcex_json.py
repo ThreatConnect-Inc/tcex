@@ -6,9 +6,9 @@ import re
 from collections import OrderedDict
 
 import colorama as c
-import hvac
 
 from .install_json import InstallJson
+from ..env_store import EnvStore
 
 
 class TcexJson:
@@ -21,12 +21,8 @@ class TcexJson:
 
         # properties
         self._contents = None
+        self.env_store = EnvStore()
         self.ij = InstallJson()
-        self.vault_client = hvac.Client(
-            url=os.getenv('VAULT_URL', 'http://localhost:8200'),
-            token=os.getenv('VAULT_TOKEN'),
-            cert=os.getenv('VAULT_CERT'),
-        )
 
     @property
     def contents(self):
@@ -82,10 +78,9 @@ class TcexJson:
                 env_type = m.group(1)  # currently env, os, or vault
                 env_key = m.group(2)
 
-                if env_type in ['env', 'os'] and os.getenv(env_key):
-                    profile = profile.replace(full_match, os.getenv(env_key))
-                elif env_type in ['env', 'vault'] and self.vault_client.read(env_key):
-                    profile = profile.replace(full_match, self.vault_client.read(env_key))
+                env_value = self.env_store.getenv(env_key, env_type)
+                if env_value is not None:
+                    profile = profile.replace(full_match, env_value)
             except IndexError:
                 print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
@@ -201,7 +196,6 @@ class TcexJson:
         """
         data = json.dumps(json_data)
 
-        # for m in re.finditer(r'\$(env|os|vault)\.(.*?)', data):
         for m in re.finditer(r'\$(env|os|vault)\.([^(\/|\")]*)', data):
             try:
                 full_match = m.group(0)

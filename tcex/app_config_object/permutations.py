@@ -6,7 +6,11 @@ import os
 import random
 import sys
 
-import sqlite3
+try:
+    import sqlite3
+except ImportError:
+    # only required for local development
+    pass
 
 from .install_json import InstallJson
 from .layout_json import LayoutJson
