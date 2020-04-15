@@ -73,7 +73,7 @@ class Victim(Mappings):
     def add_key_value(self, key, value):
         """Add the key-value to the Victim. """
         key = self._metadata_map.get(key, key)
-        if key == 'unique_id':
+        if key in ['unique_id', 'id']:
             self._unique_id = str(value)
         else:
             self._data[key] = value
