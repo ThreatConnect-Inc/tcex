@@ -363,6 +363,10 @@ class Validator:
         Returns:
             bool: The results of the operator.
         """
+        if (test_data is None or app_data is not None) and app_data != test_data:
+            # handle "null" -> None match
+            return False, f'App Data {app_data} does not match Test Data {test_data}'
+
         if isinstance(app_data, (str)):
             try:
                 app_data = json.loads(app_data)
@@ -370,7 +374,7 @@ class Validator:
                 return False, f'Invalid JSON data provide ({app_data}).'
         elif isinstance(app_data, (list)):
             try:
-                app_data = [json.loads(d) for d in app_data]
+                app_data = [json.loads(json.dumps(d)) for d in app_data]
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
 
@@ -381,7 +385,7 @@ class Validator:
                 return False, f'Invalid JSON data provide ({test_data}).'
         elif isinstance(test_data, (list)):
             try:
-                test_data = [json.loads(d) for d in test_data]
+                test_data = [json.loads(json.dumps(d)) for d in test_data]
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
 
