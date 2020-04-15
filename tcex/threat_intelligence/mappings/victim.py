@@ -136,7 +136,11 @@ class Victim(Mappings):
     @property
     def as_entity(self):
         """Return the entity representation of the Victim."""
-        return {'type': 'Victim', 'value': self.name, 'id': self.unique_id}
+        return {
+            'type': 'Victim',
+            'value': self.name,
+            'id': int(self.unique_id) if self.unique_id else None,
+        }
 
     def assets(self, asset_type=None):
         """
