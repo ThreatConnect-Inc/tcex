@@ -363,7 +363,7 @@ class Validator:
         Returns:
             bool: The results of the operator.
         """
-        if (test_data is None or app_data is not None) and app_data != test_data:
+        if (test_data is None or app_data is None) and app_data != test_data:
             # handle "null" -> None match
             return False, f'App Data {app_data} does not match Test Data {test_data}'
 
