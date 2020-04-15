@@ -255,11 +255,9 @@ class Profile:
 
     def init(self):
         """Return the Data (dict) from the current profile."""
-        # migrate profile to latest schema
-        profile_data = self.migrate()
 
         # replace all variable references
-        profile_data = self.replace_env_variables(profile_data)
+        profile_data = self.replace_env_variables(self.data)
 
         # replace all staged variable
         profile_data = self.replace_tc_variables(profile_data)

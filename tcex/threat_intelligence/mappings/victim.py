@@ -72,10 +72,16 @@ class Victim(Mappings):
 
     def add_key_value(self, key, value):
         """Add the key-value to the Victim. """
-        if key == 'unique_id':
+        key = self._metadata_map.get(key, key)
+        if key in ['unique_id', 'id']:
             self._unique_id = str(value)
         else:
             self._data[key] = value
+
+    @property
+    def _metadata_map(self):
+        """Return metadata map for Group objects."""
+        return {'work_location': 'workLocation'}
 
     def add_network_asset(self, account, network):
         """Add a network asset to the Victim
@@ -130,7 +136,11 @@ class Victim(Mappings):
     @property
     def as_entity(self):
         """Return the entity representation of the Victim."""
-        return {'type': 'Victim', 'value': self.name, 'id': self.unique_id}
+        return {
+            'type': 'Victim',
+            'value': self.name,
+            'id': int(self.unique_id) if self.unique_id else None,
+        }
 
     def assets(self, asset_type=None):
         """
