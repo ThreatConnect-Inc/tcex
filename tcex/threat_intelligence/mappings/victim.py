@@ -72,10 +72,16 @@ class Victim(Mappings):
 
     def add_key_value(self, key, value):
         """Add the key-value to the Victim. """
+        key = self._metadata_map.get(key, key)
         if key == 'unique_id':
             self._unique_id = str(value)
         else:
             self._data[key] = value
+
+    @property
+    def _metadata_map(self):
+        """Return metadata map for Group objects."""
+        return {'work_location': 'workLocation'}
 
     def add_network_asset(self, account, network):
         """Add a network asset to the Victim
