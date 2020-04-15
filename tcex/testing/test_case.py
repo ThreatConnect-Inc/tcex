@@ -221,6 +221,9 @@ class TestCase:
         # check profile environment
         self.check_environment(self._profile.environments)
 
+        # migrate profile to latest schema
+        self._profile.data = self._profile.migrate()
+
         # validate required fields
         valid, message = self._profile.validate_required_inputs()
 
@@ -232,7 +235,7 @@ class TestCase:
         # insert staged data for replacement
         self._profile.tc_staged_data = self._staged_tc_data
 
-        # update schema
+        # replace all references and all staged variable
         self._profile.init()
 
         # stage kvstore data based on current profile
