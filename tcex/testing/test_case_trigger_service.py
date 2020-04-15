@@ -17,9 +17,10 @@ class TestCaseTriggerService(TestCaseServiceCommon):
         Returns:
             int: The App exit code
         """
-        # TODO: tc_playbook_out_variables should not be needed here as they are passed in config
-        # args['tc_playbook_out_variables'] = ','.join(self.ij.tc_playbook_out_variables)
-        self.log.data('run', 'args', args)
+        # safely log all args to tests.log
+        self._log_args(args)
+
+        # get a configured instance of the App
         self.app = self.app_init(args)
 
         # Setup

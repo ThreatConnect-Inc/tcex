@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Env Store Module"""
+import logging
 import os
 import sys
 
@@ -14,11 +15,12 @@ class EnvStore:
     """TcEx Key Value API Module.
 
     Args:
-        session (request.Session): A configured requests session for TC API (tcex.session).
+        logger (logging.Logger, optional): A instance of Logger. Defaults to None.
     """
 
-    def __init__(self):
+    def __init__(self, logger=None):
         """Initialize the Class properties."""
+        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
 
         # properties
         self._vault_client = None
@@ -62,20 +64,25 @@ class EnvStore:
             # return value from Vault
             value = self.read_from_vault(env_variable, default)
 
+        # provide an error so dev/qa engineer knows that
+        # an env var they provide could not be found
+        if value is None:
+            raise RuntimeError(f'Could not resolve env variable {env_variable}.')
+
         return value
 
-    def read_from_vault(self, path, default=None):
+    def read_from_vault(self, full_path, default=None):
         """Read data from Vault for the provided path.
 
         Args:
-            path (string): The path to the vault data including the key
+            full_path (string): The path to the vault data including the key
                 (e.g. myData/mySecret/myKey).
             default (str): The default value if no value is found.
 
         Returns:
             str|None: The vault association with the provided path and key.
         """
-        paths = path.lstrip('/').split('/')
+        paths = full_path.lstrip('/').split('/')
 
         # the key stored in data object at the provided path
         # (e.g., "/myData/myResource/token" -> "token")
@@ -95,10 +102,11 @@ class EnvStore:
                 path=path, mount_point=mount_point
             )
         except hvac.exceptions.InvalidPath:
-            # TODO: log a warning
-            pass
+            if hasattr(self.log, 'data'):
+                self.log.data('setup', 'vault', f'Path not found: {path}')
         except hvac.exceptions.VaultError:
-            pass
+            if hasattr(self.log, 'data'):
+                self.log.data('setup', 'vault', f'Error reading ({path})', 'error')
 
         return data.get('data', {}).get('data', {}).get(key) or default
 

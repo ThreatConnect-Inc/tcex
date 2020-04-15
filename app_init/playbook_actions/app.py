@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" ThreatConnect Playbook App """
+"""ThreatConnect Playbook App"""
 
 # Import default Playbook Class (Required)
 from playbook_app import PlaybookApp

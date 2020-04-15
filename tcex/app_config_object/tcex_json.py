@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework TcexJson Object."""
 import json
+import logging
 import os
 import re
 from collections import OrderedDict
@@ -12,12 +13,19 @@ from ..env_store import EnvStore
 
 
 class TcexJson:
-    """Object for tcex.json file."""
+    """Object for tcex.json file.
 
-    def __init__(self, filename=None, path=None):
+    Args:
+        filename (str, optional): The config filename. Defaults to tcex.json.
+        path (str, optional): The path to the file. Defaults to os.getcwd().
+        logger (logging.Logger, optional): A instance of Logger. Defaults to None.
+    """
+
+    def __init__(self, filename=None, path=None, logger=None):
         """Initialize class properties."""
         self._filename = filename or 'tcex.json'
         self._path = path or os.getcwd()
+        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
 
         # properties
         self._contents = None

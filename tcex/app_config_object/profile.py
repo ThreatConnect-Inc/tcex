@@ -62,10 +62,10 @@ class Profile:
         self._data = None
         self._output_variables = None
         self._context_tracker = []
-        self.env_store = EnvStore()
-        self.ij = InstallJson()
-        self.lj = LayoutJson()
-        self.permutations = Permutations()
+        self.env_store = EnvStore(logger=self.log)
+        self.ij = InstallJson(logger=self.log)
+        self.lj = LayoutJson(logger=self.log)
+        self.permutations = Permutations(logger=self.log)
         self.redis_client = redis_client
         self.tc_staged_data = {}
 

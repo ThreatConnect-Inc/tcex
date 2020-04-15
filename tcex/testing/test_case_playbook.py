@@ -18,8 +18,13 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         Returns:
             [type]: [description]
         """
+        # add requested output variables
         args['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
-        self.log.data('run', 'args', args)
+
+        # safely log all args to tests.log
+        self._log_args(args)
+
+        # get a configured instance of the App
         self.app = self.app_init(args)
 
         # Setup

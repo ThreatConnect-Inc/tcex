@@ -1,18 +1,26 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework InstallJson Object."""
 import json
+import logging
 import os
 import uuid
 from collections import OrderedDict
 
 
 class InstallJson:
-    """Object for install.json file."""
+    """Object for install.json file.
 
-    def __init__(self, filename=None, path=None):
+    Args:
+        filename (str, optional): The config filename. Defaults to install.json.
+        path (str, optional): The path to the file. Defaults to os.getcwd().
+        logger (logging.Logger, optional): A instance of Logger. Defaults to None.
+    """
+
+    def __init__(self, filename=None, path=None, logger=None):
         """Initialize class properties."""
         self._filename = filename or 'install.json'
         self._path = path or os.getcwd()
+        self.log = logger or logging.getLogger('install_json').addHandler(logging.NullHandler())
 
         # properties
         self._contents = None

@@ -25,7 +25,10 @@ class TestCaseJob(TestCase):
         Returns:
             int: The exit code fo the App.
         """
-        self.log.data('run', 'args', args)
+        # safely log all args to tests.log
+        self._log_args(args)
+
+        # get a configured instance of the App
         self.app = self.app_init(args)
 
         # Setup

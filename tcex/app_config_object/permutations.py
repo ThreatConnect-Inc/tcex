@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework LayoutJson."""
 import json
+import logging
 import os
 import random
 import sys
@@ -17,10 +18,15 @@ from .layout_json import LayoutJson
 
 
 class Permutations:
-    """Permutations Module"""
+    """Permutations Module
 
-    def __init__(self):
+    Args:
+        logger (logging.Logger, optional): A instance of Logger. Defaults to None.
+    """
+
+    def __init__(self, logger=None):
         """Initialize Class properties"""
+        self.log = logger or logging.getLogger('permutations').addHandler(logging.NullHandler())
 
         # properties
         self._db_conn = None
