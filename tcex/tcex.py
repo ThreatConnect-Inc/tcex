@@ -290,10 +290,10 @@ class TcEx:
             (list): A list of ThreatConnect Asset types.
         """
         return [
-            'E-Mail Address',
-            'Social Network Account',
-            'Network Account',
-            'Web Site',
+            'EmailAddress',
+            'SocialNetwork',
+            'NetworkAccount',
+            'WebSite',
             'Phone',
         ]
 
