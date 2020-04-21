@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing Framework."""
 import json
-import logging
-import math
 import os
 import random
 import string
@@ -22,39 +20,12 @@ from tcex.env_store import EnvStore
 from tcex.inputs import FileParams
 from tcex.sessions.tc_session import HmacAuth
 
-from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
+from .test_logger import logger
 from .validate_data import Validator
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-class TestLogger(logging.Logger):
-    """Custom logger for test Case"""
-
-    def data(self, stage, label, data, level='info'):
-        """Log validation data."""
-        stage = f'[{stage}]'
-        stage_width = 25 - len(level)
-        msg = f'{stage!s:>{stage_width}} : {label!s:<20}: {data!s:<50}'
-        level = logging.getLevelName(level.upper())
-        self.log(level, msg)
-
-    def title(self, title, separator='-'):
-        """Log validation data."""
-        separator = separator * math.ceil((100 - len(title)) / 2)
-        self.log(logging.INFO, f'{separator} {title} {separator}')
-
-
-logging.setLoggerClass(TestLogger)
-logger = logging.getLogger('TestCase')
-lfh = RotatingFileHandlerCustom(filename='log/tests.log')
-lfh.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-lfh.setFormatter(formatter)
-logger.addHandler(lfh)
-logger.setLevel(logging.DEBUG)
 
 
 class TestCase:
@@ -75,11 +46,18 @@ class TestCase:
     env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
     env_store = EnvStore(logger=logger)
     ij = InstallJson(logger=logger)
+    initialized = False
     log = logger
     redis_client = None
     session = Session()
     tcex = None
     tcex_testing_context = None
+
+    def _reset_property_flags(self):
+        """Reset all control flag."""
+        # used to prevent pytest from executing @property methods
+        self.initialized = False
+        self.tcex = False
 
     @staticmethod
     def _encrypt_file_contents(key, data):
@@ -116,7 +94,7 @@ class TestCase:
     def _update_path_args(self, args):
         """Update path in args for each test profile."""
         # service Apps do not have a profile when this is needed.
-        profile = self.profile or Profile(default_args=self.default_args)
+        profile = self.profile or Profile(default_args=self.default_args.copy())
         args['tc_in_path'] = profile.tc_in_path
         args['tc_log_path'] = profile.tc_log_path
         args['tc_out_path'] = profile.tc_out_path
@@ -133,7 +111,7 @@ class TestCase:
         self._update_path_args(args)
 
         # update default args with app args
-        app_args = self.default_args
+        app_args = self.default_args.copy()
         app_args.update(args)
 
         app_args['tc_logger_name'] = self.context
@@ -159,7 +137,6 @@ class TestCase:
             tcex = TcEx()
         else:
             tcex = TcEx(config=app_args)
-
         return App(tcex)
 
     def app_init_create_config(self, args, output_variables, tcex_testing_context):
@@ -171,7 +148,7 @@ class TestCase:
         self._update_path_args(args)
 
         # merge default and app args
-        app_args = self.default_args
+        app_args = self.default_args.copy()
         app_args.update(args)
 
         # service Apps will get their args/params from encrypted file in the "in" directory
@@ -206,7 +183,7 @@ class TestCase:
     @property
     def default_args(self):
         """Return App default args."""
-        if self._default_args is None:
+        if self._default_args is None and self.initialized:
             self._default_args = {
                 # local override TCI_EXCHANGE_ADMIN_API_ACCESS_ID
                 'api_access_id': self.env_store.getenv(
@@ -266,7 +243,7 @@ class TestCase:
     ):
         """Stages and sets up the profile given a profile name"""
         self._profile = Profile(
-            default_args=self.default_args,
+            default_args=self.default_args.copy(),
             merge_outputs=merge_outputs,
             name=profile_name,
             redis_client=self.redis_client,
@@ -338,6 +315,7 @@ class TestCase:
     @classmethod
     def setup_class(cls):
         """Run once before all test cases."""
+        cls.initialized = True
         cls._timer_class_start = time.time()
         cls.log.title('Setup Class', '#')
         TestCase.log.data('setup class', 'started', datetime.now().isoformat())
@@ -355,7 +333,7 @@ class TestCase:
         self.log.data('setup method', 'context', self.context)
 
         # setup per method instance of tcex
-        args = self.default_args
+        args = self.default_args.copy()
         args['tc_log_file'] = os.path.join(self.test_case_log_test_dir, 'setup.log')
         args['tc_logger_name'] = f'tcex-{self.test_case_feature}-{self.test_case_name}'
         self.tcex = TcEx(config=args)
@@ -376,7 +354,7 @@ class TestCase:
         tc_log_file = os.path.join(self.test_case_log_test_dir, 'stage.log')
 
         # args data
-        args = self.default_args
+        args = self.default_args.copy()
 
         # override default log level if profiled
         args['tc_log_level'] = 'warning'
@@ -425,13 +403,14 @@ class TestCase:
         )
         if r.status_code == 200:
             token = r.json().get('data')
-            self.log.data('run', 'Using Token', token)
-            self.log.data('run', 'Token Elapsed', r.elapsed, 'debug')
+            self.log.data('setup', 'Using Token', token)
+            self.log.data('setup', 'Token Elapsed', r.elapsed, 'trace')
         return token
 
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
+        cls.initialized = False
         cls.log.title('Teardown Class', '^')
         TestCase.log.data('teardown class', 'finished', datetime.now().isoformat())
         TestCase.log.data('teardown class', 'elapsed', time.time() - cls._timer_class_start)
@@ -522,7 +501,7 @@ class TestCase:
         tc_log_file = os.path.join(self.test_case_log_test_dir, 'validate.log')
 
         # args data
-        args = self.default_args
+        args = self.default_args.copy()
 
         # override default log level if profiled
         args['tc_log_level'] = 'warning'

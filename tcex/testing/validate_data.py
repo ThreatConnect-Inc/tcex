@@ -363,6 +363,7 @@ class Validator:
         Returns:
             bool: The results of the operator.
         """
+        # ADI-1002
         if (test_data is None or app_data is not None) and app_data != test_data:
             # handle "null" -> None match
             return False, f'App Data {app_data} does not match Test Data {test_data}'
@@ -373,6 +374,7 @@ class Validator:
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
         elif isinstance(app_data, (list)):
+            # ADI-1076
             try:
                 app_data = [json.loads(json.dumps(d)) for d in app_data]
             except ValueError:
@@ -384,6 +386,7 @@ class Validator:
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
         elif isinstance(test_data, (list)):
+            # ADI-1076
             try:
                 test_data = [json.loads(json.dumps(d)) for d in test_data]
             except ValueError:
@@ -741,6 +744,9 @@ class Redis:
         # log validation data in a readable format
         self.provider.validate_log_output(passed, app_data, test_data, details.strip(), op)
 
+        # TODO: move this to a value_rule_validator method so that
+        # more check like this can be performed
+
         # check for bad string values
         suspect_values = ['False', 'null', 'None', 'True']
         if app_data in suspect_values:
@@ -749,6 +755,12 @@ class Redis:
                 'Suspect Value',
                 f'App data matched a suspect value ({suspect_values}).',
                 'warning',
+            )
+
+        # ADI-1118 - log warning if string value is wrapped in quotes
+        if isinstance(app_data, (str)) and app_data.startswith('"') and app_data.endswitch('"'):
+            self.log.data(
+                'validate', 'Suspect Value', f'App data is wrapped in double quotes.', 'warning',
             )
 
         # build assert error

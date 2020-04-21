@@ -25,7 +25,7 @@ class TestCasePlaybookCommon(TestCase):
     @property
     def default_args(self):
         """Return App default args."""
-        args = super().default_args
+        args = super().default_args.copy()
         args.update(
             {
                 'tc_playbook_db_context': self.context,

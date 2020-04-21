@@ -103,10 +103,21 @@ class EnvStore:
             )
         except hvac.exceptions.InvalidPath:
             if hasattr(self.log, 'data'):
-                self.log.data('setup', 'vault', f'Path not found: {path}')
+                self.log.data('setup', 'env store', f'Path not found: {path}')
         except hvac.exceptions.VaultError:
             if hasattr(self.log, 'data'):
-                self.log.data('setup', 'vault', f'Error reading ({path})', 'error')
+                self.log.data('setup', 'env store', f'Error reading ({path})', 'error')
+        except Exception:
+            self.log.data(
+                'setup',
+                'env store',
+                'Generic failure. Please ensure Environment Store '
+                'connectivity and env are configured properly.',
+                'error',
+            )
+
+        if hasattr(self.log, 'data'):
+            self.log.data('setup', 'vault read', full_path, 'trace')
 
         return data.get('data', {}).get('data', {}).get(key) or default
 

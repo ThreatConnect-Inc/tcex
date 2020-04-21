@@ -36,7 +36,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     @property
     def default_args(self):
         """Return App default args."""
-        args = super().default_args
+        args = super().default_args.copy()
         args.update(
             {
                 'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
