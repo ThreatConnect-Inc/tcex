@@ -283,6 +283,21 @@ class TcEx:
         return indicator_list
 
     @property
+    def victim_asset_types(self):
+        """Return all defined ThreatConnect Asset types.
+
+        Returns:
+            (list): A list of ThreatConnect Asset types.
+        """
+        return [
+            'EmailAddress',
+            'SocialNetwork',
+            'NetworkAccount',
+            'WebSite',
+            'Phone',
+        ]
+
+    @property
     def group_types(self):
         """Return all defined ThreatConnect Group types.
 

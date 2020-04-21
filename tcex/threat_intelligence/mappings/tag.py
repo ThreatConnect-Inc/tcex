@@ -62,7 +62,7 @@ class Tag:
 
     def victims(self, filters=None, owner=None, params=None):
         """Get  all victims from a tag."""
-        victim = self._tcex.ti.victim(None)
+        victim = self._tcex.ti.victim()
         yield from self.tc_requests.victims_from_tag(
             victim, self.name, filters=filters, owner=owner, params=params
         )

@@ -177,6 +177,10 @@ class ThreatConnect:
                 ti = self.provider.tcex.ti.task(owner=data.get('owner'))
                 data = data.get(ti.api_entity) or data
                 ti._set_unique_id(data)
+            elif entity_type == 'Victim':
+                ti = self.provider.tcex.ti.victim(owner=data.get('owner'))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
             if ti:
                 ti.delete()
             if entity_type == 'Case_Management':
