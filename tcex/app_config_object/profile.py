@@ -379,7 +379,7 @@ class Profile:
         for m in re.finditer(r'\"\$(env|envs)\.(\w+)\"', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)
                 env_key = m.group(2)
 
                 new_variable = f'"${{{env_type}:{env_key}}}"'
@@ -400,10 +400,10 @@ class Profile:
         """
         profile = json.dumps(profile_data)
 
-        for m in re.finditer(r'\${(env|envs|os|vault)\.(.*?)}', profile):
+        for m in re.finditer(r'\${(env|envs|local|remote)\.(.*?)}', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)  # currently env, envs, local, remote
                 env_key = m.group(2)
 
                 new_variable = f'${{{env_type}:{env_key}}}'
@@ -511,10 +511,10 @@ class Profile:
         """
         profile = json.dumps(profile_data)
 
-        for m in re.finditer(r'\${(env|envs|os|vault):(.*?)}', profile):
+        for m in re.finditer(r'\${(env|envs|local|remote):(.*?)}', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, envs, os, or vault
+                env_type = m.group(1)  # currently env, envs, local, or remote
                 env_key = m.group(2)
 
                 env_value = self.env_store.getenv(env_key, env_type)

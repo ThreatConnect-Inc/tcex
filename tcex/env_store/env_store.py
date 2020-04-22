@@ -46,28 +46,30 @@ class EnvStore:
         """Return the value for the provide environment variable.
 
         Args:
-            env_variable (str): The env variable name or Vault path.
+            env_variable (str): The env variable name or env store path.
             env_type (str, optional): The type of environment variable to look up. Defaults
                 to 'env'.
             default (str): The default value if no value is found.
 
         Returns:
-            str|None: The value from OS env or Vault.
+            str|None: The value from OS env or env store.
         """
         env_var_updated = self._convert_env(env_variable)
         value = default
 
-        if env_type in ['env', 'envs', 'os'] and os.getenv(env_var_updated):
+        if env_type in ['env', 'envs', 'local'] and os.getenv(env_var_updated):
             # return value from OS environ
             value = os.getenv(env_var_updated, default)
-        elif env_type in ['env', 'envs', 'vault'] and 'hvac' in sys.modules:
+        elif env_type in ['env', 'envs', 'remote'] and 'hvac' in sys.modules:
             # return value from Vault
             value = self.read_from_vault(env_variable, default)
 
         # provide an error so dev/qa engineer knows that
         # an env var they provide could not be found
         if value is None:
-            raise RuntimeError(f'Could not resolve env variable {env_variable}.')
+            raise RuntimeError(
+                f'Could not resolve env variable {env_variable} ({env_var_updated}).'
+            )
 
         return value
 

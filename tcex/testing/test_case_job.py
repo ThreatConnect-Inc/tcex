@@ -54,9 +54,9 @@ class TestCaseJob(TestCase):
 
         return self._exit(self.app.tcex.exit_code)
 
-    def run_profile(self, profile):
+    def run_profile(self):
         """Run an App using the profile name."""
-        self.create_shelf_dir(profile.tc_temp_path)
+        self.create_shelf_dir(self.profile.tc_temp_path)
 
         # run the App
-        return self.run(profile.args)
+        return self.run(self.profile.args)

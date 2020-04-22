@@ -7,9 +7,10 @@ Release Notes
 =====
 + Updated decorator method logging.
 + Updated testing framework validation template to support dynamic output variable.
++ Updated testing framework validation template to validate output variable consistency.
 + Updated profile module to support variable from Vault server.
 + Updated OnException decorator to log traceback.
-+ Moved hvac to development requirement.
++ Moved hvac package to a development requirement.
 
 2.0.3
 =====
