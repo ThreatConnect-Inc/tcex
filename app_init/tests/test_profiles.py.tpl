@@ -119,12 +119,12 @@ class TestProfiles(${class_name}):
 
         assert self.run_profile() in self.profile.exit_codes
 
-        % if runtime_level=='organization':
-        self.validator.threatconnect.batch(self.profile)
-        % else:
         # run custom test method before validation
         self.custom.test_pre_validate(self, self.profile.data)
 
+        % if runtime_level=='organization':
+        self.validator.threatconnect.batch(self.profile)
+        % else:
         # get Validation instance
         validation = ValidateFeature(self.validator)
 
