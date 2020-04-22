@@ -383,7 +383,7 @@ class TestCase:
         """
         data = None
         token = None
-        token_url_path = self.env_store.getenv('/ninja/tc/token/url_path', env_type='vault')
+        token_url_path = self.env_store.getenv('/ninja/tc/token/url_path', env_type='remote')
         if token_url_path is None:
             # could not retrieve URL path
             return None
