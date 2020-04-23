@@ -91,8 +91,10 @@ class Validator:
 
         # build assert error
         assert_error = (
-            f'\n App Data     : {app_data}\n Operator     : {op}\n '
-            f'Expected Data: {test_data}\n Details      : {details}\n'
+            f'\n App Data     : {app_data}\n'
+            f' Operator     : {op}\n'
+            f' Expected Data: {test_data}\n'
+            f' Details      : {details}\n'
         )
         return passed, assert_error
 
@@ -506,7 +508,11 @@ class Validator:
             if re.match(test_data, data) is None:
                 bad_data.append(data)
                 passed = False
-        return passed, ','.join(bad_data)
+
+        bad_data = ','.join(bad_data)  # convert bad_data to string for assertion error
+        if bad_data:
+            bad_data = f'Failed inputs: {bad_data}'
+        return passed, bad_data
 
     @staticmethod
     def operator_skip(app_data, test_data):  # pylint: disable=unused-argument
