@@ -80,10 +80,10 @@ class TcexJson:
         """
         profile = json.dumps(json_data)
 
-        for m in re.finditer(r'\${(env|os|vault):(.*?)}', profile):
+        for m in re.finditer(r'\${(env|envs|local|remote):(.*?)}', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)
                 env_key = m.group(2)
 
                 env_value = self.env_store.getenv(env_key, env_type)
@@ -204,10 +204,10 @@ class TcexJson:
         """
         data = json.dumps(json_data)
 
-        for m in re.finditer(r'\$(env|os|vault)\.([^(\/|\")]*)', data):
+        for m in re.finditer(r'\$(env|envs|local|remote)\.([^(\/|\")]*)', data):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)
                 env_key = m.group(2)
 
                 new_variable = f'${{{env_type}:{env_key}}}'

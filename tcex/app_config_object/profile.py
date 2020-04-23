@@ -1185,22 +1185,24 @@ class ProfileInteractive:
 
         feedback_value = value
         input_value = value
-        # for non-service Apps replace user input with a variable and add to staging data
-        if self.profile.ij.runtime_level.lower() not in [
-            'triggerservice',
-            'webhooktriggerservice',
-        ] and 'String' in data.get('playbookDataType', []):
-            # create variable and staging data
-            variable = self.profile.ij.create_variable(data.get('name'), data.get('type'))
-            self._staging_data['kvstore'].setdefault(variable, value)
-            feedback_value = f'"{value}" - ({variable})'
-            input_value = variable
 
         # allow a null input
         if input_value == 'null':
             input_value = None
-        elif input_value == '"null"':
+        elif input_value in ['"null"', "'null'"]:
             input_value = 'null'
+
+        # for non-service Apps replace user input with a variable and add to staging data
+        if (
+            self.profile.ij.runtime_level.lower() not in ['triggerservice', 'webhooktriggerservice']
+            and 'String' in data.get('playbookDataType', [])
+            and not os.getenv('TCEX_NO_PROFILE_VARIABLE')
+        ):  # only stage String Type
+            # create variable and staging data
+            variable = self.profile.ij.create_variable(data.get('name'), data.get('type'))
+            self._staging_data['kvstore'].setdefault(variable, input_value)
+            feedback_value = f'"{value}" - ({variable})'
+            input_value = variable
 
         # user feedback
         self.print_feedback(feedback_value)
