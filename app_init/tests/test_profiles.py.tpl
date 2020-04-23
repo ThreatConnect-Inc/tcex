@@ -50,13 +50,13 @@ class TestProfiles(${class_name}):
     % if runtime_level in ['triggerservice', 'webhooktriggerservice']:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(
-        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+        self, profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
     ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
         # initialize profile
         valid, message = self.init_profile(
-            profile_name, merge_outputs, replace_exit_message, replace_outputs
+            profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs
         )
         assert valid, message
 
@@ -104,13 +104,13 @@ class TestProfiles(${class_name}):
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(
-        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+        self, profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
     ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
         # initialize profile
         valid, message = self.init_profile(
-            profile_name, merge_outputs, replace_exit_message, replace_outputs
+            profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs
         )
         assert valid, message
 

@@ -239,11 +239,17 @@ class TestCase:
         return self._default_args
 
     def init_profile(
-        self, profile_name, merge_outputs=False, replace_exit_message=False, replace_outputs=False
+        self,
+        profile_name,
+        merge_inputs=False,
+        merge_outputs=False,
+        replace_exit_message=False,
+        replace_outputs=False,
     ):
         """Stages and sets up the profile given a profile name"""
         self._profile = Profile(
             default_args=self.default_args.copy(),
+            merge_inputs=merge_inputs,
             merge_outputs=merge_outputs,
             name=profile_name,
             redis_client=self.redis_client,

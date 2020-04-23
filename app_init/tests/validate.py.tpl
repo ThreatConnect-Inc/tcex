@@ -12,7 +12,8 @@ class Validate(object):
         """Initialize class properties."""
         self.validator = validator
 
-    def validate_outputs(self, app_outputs, profile_outputs):
+    @staticmethod
+    def validate_outputs(app_outputs, profile_outputs):
         """Assert outputs match."""
         diff_1 = list(set(app_outputs).difference(set(profile_outputs)))
         diff_2 = list(set(profile_outputs).difference(set(app_outputs)))
