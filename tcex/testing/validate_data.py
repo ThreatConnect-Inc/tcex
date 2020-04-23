@@ -10,6 +10,7 @@ import operator
 import os
 import random
 import re
+from collections import OrderedDict
 from urllib.parse import unquote
 
 from ..utils import Utils
@@ -151,6 +152,7 @@ class Validator:
             'ne': self.operator_ne,
             '!=': self.operator_ne,
             'rex': self.operator_regex_match,
+            'skip': self.operator_skip,
         }
         return operators.get(op, None)
 
@@ -174,8 +176,9 @@ class Validator:
                 passed = False
         return passed, ','.join(bad_data)
 
+    @staticmethod
     def operator_deep_diff(
-        self, app_data, test_data, **kwargs
+        app_data, test_data, **kwargs
     ):  # pylint: disable=too-many-return-statements
         """Compare app data equals tests data.
 
@@ -191,46 +194,17 @@ class Validator:
         except ImportError:
             return False, 'Could not import DeepDiff module (try "pip install deepdiff").'
 
-        # pull out exclude_paths from kwargs
-        exclude_paths = kwargs.pop('exclude_paths', [])
+        if (test_data is None or app_data is None) and app_data != test_data:
+            # handle "null" -> None match
+            return False, f'App Data {app_data} does not match Test Data {test_data}'
 
-        if isinstance(app_data, str):
-            try:
-                app_data = json.loads(app_data)
-            except ValueError:
-                return False, f'Invalid JSON data provide ({app_data}).'
-        else:
-            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
-            app_data = json.loads(json.dumps(app_data))
+        # deepdiff doesn't handle ordered dicts properly
+        if isinstance(app_data, OrderedDict):
+            app_data = dict(app_data)
 
-        if isinstance(test_data, str):
-            try:
-                test_data = json.loads(test_data)
-            except ValueError:
-                return False, f'Invalid JSON data provide ({test_data}).'
-        else:
-            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
-            test_data = json.loads(json.dumps(test_data))
-
-        try:
-            if isinstance(app_data, list) and isinstance(test_data, list):
-                for index, data in enumerate(app_data):
-                    for path in exclude_paths:
-                        paths = path.split('.')
-                        data = self.remove_excludes(data, paths)
-                    app_data[index] = data
-                for index, data in enumerate(test_data):
-                    for path in exclude_paths:
-                        paths = path.split('.')
-                        data = self.remove_excludes(data, paths)
-                    test_data[index] = data
-            else:
-                for path in exclude_paths:
-                    paths = path.split('.')
-                    app_data = self.remove_excludes(app_data, paths)
-                    test_data = self.remove_excludes(test_data, paths)
-        except AttributeError as e:
-            return False, f'Deep diff remove excludes failed with ({e}).'
+        # deepdiff doesn't handle ordered dicts properly
+        if isinstance(test_data, OrderedDict):
+            test_data = dict(test_data)
 
         # run operator
         try:
@@ -534,6 +508,19 @@ class Validator:
                 passed = False
         return passed, ','.join(bad_data)
 
+    @staticmethod
+    def operator_skip(app_data, test_data):  # pylint: disable=unused-argument
+        """Skip validation and always return True.
+
+        Args:
+            app_data (str, list): The data created by the App.
+            test_data (str): The data provided in the test case.
+
+        Returns:
+            bool: The results of the operator.
+        """
+        return True, 'skipped'
+
     @property
     def redis(self):
         """Get the current instance of Redis for validating data"""
@@ -820,6 +807,10 @@ class Redis:
     def rex(self, variable, data):
         """Test App data with regex"""
         return self.data(variable, fr'{data}', op='rex')
+
+    def skip(self, variable, data):
+        """Test App data with regex"""
+        return self.data(variable, data, op='skip')
 
 
 class ThreatConnect:
