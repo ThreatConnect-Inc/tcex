@@ -1203,17 +1203,16 @@ class ProfileInteractive:
 
     def present_string(self, name, data):
         """Build a question for boolean input."""
-        default = self._default(data)
+        default = self._default(data)  # the default value from install.json or other
 
         option_text = ''
         if default is not None:
-            option_default = default
             option_text = f' [{default}]'
 
         self.print_header(data)
         value = input(self.choice(option_text)).strip()
         if not value:
-            value = option_default
+            value = default
 
         feedback_value = value
         input_value = value

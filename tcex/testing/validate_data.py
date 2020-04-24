@@ -166,6 +166,11 @@ class Validator:
             app_data: (list,str): One or more date strings.
             test_data: (str): A strptime string for comparision.
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -236,6 +241,9 @@ class Validator:
     @staticmethod
     def operator_is_url(app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -270,6 +278,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.ge(app_data, test_data)
@@ -288,6 +301,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.gt(app_data, test_data)
@@ -298,6 +316,11 @@ class Validator:
 
     def operator_is_date(self, app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -313,6 +336,9 @@ class Validator:
     @staticmethod
     def operator_is_number(app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -432,6 +458,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.le(app_data, test_data)
@@ -448,6 +479,11 @@ class Validator:
         If data passed in is 1 list and 1 int, validates length array and int value are the same.
         If data passed in is 1 str and 1 int, validates length str and int value are the same.
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if isinstance(test_data, (list, str)):
             results = operator.eq(len(app_data), len(test_data))
         else:
@@ -465,6 +501,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.lt(app_data, test_data)
@@ -497,6 +538,11 @@ class Validator:
         Returns:
             bool: The results of the operator.
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if isinstance(app_data, dict):
             return False, 'Invalid app_data, dict type is not supported.'
 
