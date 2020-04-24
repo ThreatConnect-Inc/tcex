@@ -15,6 +15,14 @@ class Validate(object):
     @staticmethod
     def validate_outputs(app_outputs, profile_outputs):
         """Assert outputs match."""
+        if not isinstance(app_outputs, list) or not isinstance(profile_outputs, list):
+            assertion_error = (
+                'Invalid value provided for App or profile outputs.\n'
+                f'App Output     : {app_outputs}\n'
+                f'Profile Output : {profile_outputs}\n'
+            )
+            assert False, assertion_error
+
         diff_1 = list(set(app_outputs).difference(set(profile_outputs)))
         diff_2 = list(set(profile_outputs).difference(set(app_outputs)))
         if diff_1 or diff_2:
