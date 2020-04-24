@@ -714,7 +714,7 @@ class Profile:
                 # (display field can only use inputs previously defined)
                 params = {}
                 for name in self.lj.params_dict:
-                    # get data from install.json based on name (has hidden and type fields)
+                    # get data from install.json based on name
                     params[name] = self.ij.params_dict.get(name)
 
             inputs = {}
@@ -727,8 +727,8 @@ class Profile:
                     # inputs that are serviceConfig are not applicable for profiles
                     continue
 
-                # each input will be checked for permutations if the App has layout
                 if not data.get('hidden'):
+                    # each non hidden input will be checked for permutations if the App has layout
                     if not self.permutations.validate_input_variable(name, inputs):
                         continue
 
@@ -1026,7 +1026,7 @@ class ProfileInteractive:
                 # using inputs from layout.json since they are required to be in order
                 # (display field can only use inputs previously defined)
                 for name in self.profile.lj.params_dict:
-                    # get data from install.json based on name (has hidden and type fields)
+                    # get data from install.json based on name
                     data = self.profile.ij.params_dict.get(name)
                     yield name, data
             else:
@@ -1039,11 +1039,9 @@ class ProfileInteractive:
                 # inputs that are serviceConfig are not applicable for profiles
                 continue
 
-            if inputs:
+            if not data.get('hidden'):
                 # each input will be checked for permutations if the App has layout and not hidden
-                if not self.profile.permutations.validate_input_variable(
-                    name, inputs
-                ) and not data.get('hidden'):
+                if not self.profile.permutations.validate_input_variable(name, inputs):
                     continue
 
             # present the input

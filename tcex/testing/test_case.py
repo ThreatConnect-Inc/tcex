@@ -404,9 +404,7 @@ class TestCase:
         self.session.auth = HmacAuth(api_access_id, api_secret_key)
 
         # retrieve token from API using HMAC auth
-        r = self.session.post(
-            f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=False
-        )
+        r = self.session.post(f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=True)
         if r.status_code == 200:
             token = r.json().get('data')
             self.log.data('setup', 'Using Token', token)
