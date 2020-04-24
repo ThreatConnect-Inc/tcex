@@ -33,7 +33,7 @@ class TestLogger(TraceLogger):
             title (str): The title for the section of data to be written using data method.
             separator (str, optional): The value to use as a separator. Defaults to '-'.
         """
-        separator = separator * math.ceil((100 - len(title)) / 2)
+        separator = separator * math.ceil((100 - len(str(title))) / 2)
         self.log(logging.INFO, f'{separator} {title} {separator}')
 
 

@@ -367,7 +367,7 @@ class Validator:
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
         elif isinstance(app_data, (list)):
-            # ADI-1076
+            # ADI-1076/ADI-1149
             try:
                 app_data_updated = []
                 for ad in app_data:
@@ -384,7 +384,7 @@ class Validator:
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
         elif isinstance(test_data, (list)):
-            # ADI-1076
+            # ADI-1076/ADI-1149
             try:
                 test_data_updated = []
                 for td in test_data:

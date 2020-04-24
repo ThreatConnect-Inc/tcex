@@ -667,10 +667,10 @@ class Profile:
             # validate redis variables
             if data is None:
                 if 1 not in self.exit_codes:
+                    # TODO: add feature in testing framework to allow writing null and
+                    #       then check if variables exist instead of null value.
                     # log error for missing output data if not a fail test case (exit code of 1)
-                    self.log.warning(
-                        f'[{self.name}] Missing KV store output for variable {variable}'
-                    )
+                    self.log.debug(f'[{self.name}] Missing KV store output for variable {variable}')
             else:
                 data = json.loads(data.decode('utf-8'))
 
