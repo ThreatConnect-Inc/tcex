@@ -706,6 +706,10 @@ class Redis:
         except KeyError:
             pass
 
+        # log skipped validations here so that variable can be logged
+        if op == 'skip':
+            self.log.data('validate', 'skipped validation', variable, 'warning')
+
         op = op or 'eq'
         if not variable:
             self.log.data(
