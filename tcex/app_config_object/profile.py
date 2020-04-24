@@ -717,6 +717,9 @@ class Profile:
                     # get data from install.json based on name
                     params[name] = self.ij.params_dict.get(name)
 
+                # hidden fields will not be in layout.json so they need to be include manually
+                params.update(self.ij.filter_params_dict(hidden=True))
+
             inputs = {}
             merged_inputs = {
                 'optional': {},
@@ -1028,6 +1031,10 @@ class ProfileInteractive:
                 for name in self.profile.lj.params_dict:
                     # get data from install.json based on name
                     data = self.profile.ij.params_dict.get(name)
+                    yield name, data
+
+                # hidden fields will not be in layout.json so they need to be include manually
+                for name, data in self.profile.ij.filter_params_dict(hidden=True).items():
                     yield name, data
             else:
                 for name, data in self.profile.ij.params_dict.items():
