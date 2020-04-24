@@ -205,14 +205,6 @@ class Validator:
             # handle "null" -> None match
             return False, f'App Data {app_data} does not match Test Data {test_data}'
 
-        # deepdiff doesn't handle ordered dicts properly
-        if isinstance(app_data, OrderedDict):
-            app_data = dict(app_data)
-
-        # deepdiff doesn't handle ordered dicts properly
-        if isinstance(test_data, OrderedDict):
-            test_data = dict(test_data)
-
         # run operator
         try:
             ddiff = DeepDiff(app_data, test_data, **kwargs)
@@ -377,7 +369,12 @@ class Validator:
         elif isinstance(app_data, (list)):
             # ADI-1076
             try:
-                app_data = [json.loads(json.dumps(d)) for d in app_data]
+                app_data_updated = []
+                for ad in app_data:
+                    if isinstance(ad, OrderedDict):
+                        ad = json.dumps(ad)
+                    app_data_updated.append(json.loads(ad))
+                app_data = app_data_updated
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
 
@@ -389,7 +386,12 @@ class Validator:
         elif isinstance(test_data, (list)):
             # ADI-1076
             try:
-                test_data = [json.loads(json.dumps(d)) for d in test_data]
+                test_data_updated = []
+                for td in test_data:
+                    if isinstance(td, OrderedDict):
+                        td = json.dumps(td)
+                    test_data_updated.append(json.loads(td))
+                test_data = test_data_updated
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
 
