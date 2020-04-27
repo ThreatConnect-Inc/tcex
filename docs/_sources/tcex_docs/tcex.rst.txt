@@ -21,7 +21,6 @@ Modules
    tcex.tcex_error_codes
    tcex.threat_intelligence
    tcex.utils
-   tcex.vault
 
 Module contents
 ===============

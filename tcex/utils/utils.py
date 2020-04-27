@@ -26,6 +26,8 @@ class Utils:
         # properties
         self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
         self._inflect = None
+        self.variable_match = re.compile(fr'^{self.variable_pattern}$')
+        self.variable_parse = re.compile(self.variable_pattern)
 
     def camel_to_snake(self, camel_string):
         """Return snake case string from a camel case string.
@@ -186,3 +188,39 @@ class Utils:
         if len(numbers) == 1:
             asn = f'ASN{numbers[0]}'
         return asn
+
+    def variable_method_name(self, variable):
+        """Convert variable name to a valid method name.
+
+        #App:9876:string.operation!String -> string_operation_string
+
+        Args:
+            variable (string): The variable name to convert.
+
+        Returns:
+            (str): Method name
+        """
+        method_name = None
+        if variable is not None:
+            variable = variable.strip()
+            if re.match(self.variable_match, variable):
+                var = re.search(self.variable_parse, variable)
+                variable_name = var.group(3).replace('.', '_').lower()
+                variable_type = var.group(4).lower()
+                method_name = f'{variable_name}_{variable_type}'
+        return method_name
+
+    @property
+    def variable_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        return (
+            r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+            r':([\d]+)'  # app id (:7979)
+            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+            r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        )

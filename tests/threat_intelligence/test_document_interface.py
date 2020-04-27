@@ -31,7 +31,7 @@ class TestDocumentGroups(TestThreatIntelligence):
     def tests_ti_document_create(self):
         """Create a group using specific interface."""
         group_data = {
-            'file_name': self.ti_helper.rand_filename(),
+            'fileName': self.ti_helper.rand_filename(),
             'name': self.ti_helper.rand_name(),
             'owner': self.owner,
         }

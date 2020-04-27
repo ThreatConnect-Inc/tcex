@@ -2,17 +2,25 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework LayoutJson."""
 import json
+import logging
 import os
 from collections import OrderedDict
 
 
 class LayoutJson:
-    """Object for layout.json file."""
+    """Object for layout.json file.
 
-    def __init__(self, filename=None, path=None):
+    Args:
+        filename (str, optional): The config filename. Defaults to layout.json.
+        path (str, optional): The path to the file. Defaults to os.getcwd().
+        logger (logging.Logger, optional): A instance of Logger. Defaults to None.
+    """
+
+    def __init__(self, filename=None, path=None, logger=None):
         """Initialize class properties."""
         self._filename = filename or 'layout.json'
         self._path = path or os.getcwd()
+        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
 
         # properties
         self._contents = None

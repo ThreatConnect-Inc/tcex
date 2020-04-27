@@ -87,7 +87,7 @@ class IterateOnArg:
                     raise RuntimeError(
                         'The fail_enabled value must be a boolean or resolved to bool.'
                     )
-            app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
+                app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
 
             # retrieve data from Redis if variable and always return and array.
             results = []

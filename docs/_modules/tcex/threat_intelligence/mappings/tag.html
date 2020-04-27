@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.mappings.tag &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.threat_intelligence.mappings.tag &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -240,7 +240,7 @@
 
 <div class="viewcode-block" id="Tag.victims"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.tag.Tag.victims">[docs]</a>    <span class="k">def</span> <span class="nf">victims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get  all victims from a tag.&quot;&quot;&quot;</span>
-        <span class="n">victim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">victim</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">victim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">victim</span><span class="p">()</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">victims_from_tag</span><span class="p">(</span>
             <span class="n">victim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span></div>

@@ -64,8 +64,7 @@ class Logger:
         Args:
             level (str): The logging level. Default to 'debug'.
         """
-        if level is None:
-            level = 'debug'
+        level = level or 'debug'
         return logging.getLevelName(level.upper())
 
     def remove_handler_by_name(self, handler_name):

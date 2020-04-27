@@ -75,10 +75,13 @@ class Redis:
     def _decode_binary(binary_data, variable):
         """Base64 decode binary data."""
         try:
-            data = base64.b64decode(binary_data)
-        except binascii.Error:
+            data = None
+            if binary_data is not None:
+                data = base64.b64decode(binary_data)
+        except binascii.Error as e:
             print(
-                f'The Binary staging data for variable {variable} is not properly base64 encoded.'
+                f'The Binary staging data for variable {variable} is not properly base64 encoded '
+                f'due to {e}'
             )
             sys.exit()
         return data
@@ -172,6 +175,10 @@ class ThreatConnect:
                 ti._set_unique_id(data)
             elif entity_type == 'Task':
                 ti = self.provider.tcex.ti.task(owner=data.get('owner'))
+                data = data.get(ti.api_entity) or data
+                ti._set_unique_id(data)
+            elif entity_type == 'Victim':
+                ti = self.provider.tcex.ti.victim(owner=data.get('owner'))
                 data = data.get(ti.api_entity) or data
                 ti._set_unique_id(data)
             if ti:

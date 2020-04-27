@@ -50,13 +50,13 @@ class TestProfiles(${class_name}):
     % if runtime_level in ['triggerservice', 'webhooktriggerservice']:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(
-        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+        self, profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
     ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
         # initialize profile
         valid, message = self.init_profile(
-            profile_name, merge_outputs, replace_exit_message, replace_outputs
+            profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs
         )
         assert valid, message
 
@@ -104,13 +104,13 @@ class TestProfiles(${class_name}):
     % else:
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(
-        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+        self, profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
     ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
         # initialize profile
         valid, message = self.init_profile(
-            profile_name, merge_outputs, replace_exit_message, replace_outputs
+            profile_name, merge_inputs, merge_outputs, replace_exit_message, replace_outputs
         )
         assert valid, message
 
@@ -119,13 +119,20 @@ class TestProfiles(${class_name}):
 
         assert self.run_profile() in self.profile.exit_codes
 
-        % if runtime_level=='organization':
-        self.validator.threatconnect.batch(self.profile)
-        % else:
         # run custom test method before validation
         self.custom.test_pre_validate(self, self.profile.data)
 
-        ValidateFeature(self.validator).validate(self.profile.outputs)
+        % if runtime_level=='organization':
+        self.validator.threatconnect.batch(self.profile)
+        % else:
+        # get Validation instance
+        validation = ValidateFeature(self.validator)
+
+        # validate App outputs and Profile outputs are consistent
+        validation.validate_outputs(self.profile.tc_playbook_out_variables, self.profile.outputs)
+
+        # validate App outputs with Profile outputs
+        validation.validate(self.profile.outputs)
         % endif
 
         # validate exit message

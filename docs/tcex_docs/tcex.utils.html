@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Utils Module &mdash; TcEx 2.0.3 documentation</title>
+  <title>Utils Module &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -36,7 +36,6 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Vault Module" href="tcex.vault.html" />
     <link rel="prev" title="Threat Intelligence Module" href="tcex.threat_intelligence.html" />
 </head>
 
@@ -61,7 +60,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -137,7 +136,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-tcex.utils.date_utils">utils.date_utils</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.vault.html">Vault Module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
@@ -350,6 +348,30 @@ and for lists with a mix of lists and single values</p>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.utils.Utils.variable_method_name">
+<code class="sig-name descname">variable_method_name</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.variable_method_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.variable_method_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert variable name to a valid method name.</p>
+<p>#App:9876:string.operation!String -&gt; string_operation_string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variable</strong> (<em>string</em>) – The variable name to convert.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Method name</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.utils.Utils.variable_pattern">
+<em class="property">property </em><code class="sig-name descname">variable_pattern</code><a class="headerlink" href="#tcex.utils.utils.Utils.variable_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regex pattern to match and parse a playbook variable.</p>
 </dd></dl>
 
 <dl class="method">
@@ -603,8 +625,6 @@ does not natively support <strong>%s</strong>, however this method has support.<
           <footer>
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-        <a href="tcex.vault.html" class="btn btn-neutral float-right" title="Vault Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
         <a href="tcex.threat_intelligence.html" class="btn btn-neutral float-left" title="Threat Intelligence Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

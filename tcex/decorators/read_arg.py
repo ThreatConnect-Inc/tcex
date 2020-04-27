@@ -110,7 +110,20 @@ class ReadArg:
                     raise RuntimeError(
                         'The fail_enabled value must be a boolean or resolved to bool.'
                     )
-            app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
+                app.tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
+
+            try:
+                # read arg from namespace
+                arg = getattr(app.args, self.arg)
+            except AttributeError:
+                if enabled:
+                    app.tcex.log.error(f'Arg {self.arg} was not found in Arg namespace.')
+                    app.exit_message = self.fail_msg  # for test cases
+                    app.tcex.exit(1, self.fail_msg)
+                else:
+                    # add results to kwargs
+                    kwargs[self.arg] = self.default
+                    return wrapped(*args, **kwargs)
 
             try:
                 # read arg from namespace

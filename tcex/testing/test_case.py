@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing Framework."""
 import json
-import logging
-import math
 import os
 import random
 import string
@@ -12,42 +10,22 @@ import uuid
 from datetime import datetime
 
 import pytest
+from requests import Session
+import urllib3
+
 from tcex import TcEx
-from tcex.inputs import FileParams
 from tcex.app_config_object.install_json import InstallJson
 from tcex.app_config_object.profile import Profile
+from tcex.env_store import EnvStore
+from tcex.inputs import FileParams
+from tcex.sessions.tc_session import HmacAuth
 
-from ..logger import RotatingFileHandlerCustom
 from .stage_data import Stager
+from .test_logger import logger
 from .validate_data import Validator
 
-
-class TestLogger(logging.Logger):
-    """Custom logger for test Case"""
-
-    def data(self, stage, label, data, level='info'):
-        """Log validation data."""
-        stage = f'[{stage}]'
-        stage_width = 25 - len(level)
-        msg = f'{stage!s:>{stage_width}} : {label!s:<15}: {data!s:<50}'
-        level = logging.getLevelName(level.upper())
-        # getattr(self.log, level)(msg)
-        self.log(level, msg)
-
-    def title(self, title, separator='-'):
-        """Log validation data."""
-        separator = separator * math.ceil((100 - len(title)) / 2)
-        self.log(logging.INFO, f'{separator} {title} {separator}')
-
-
-logging.setLoggerClass(TestLogger)
-logger = logging.getLogger('TestCase')
-lfh = RotatingFileHandlerCustom(filename='log/tests.log')
-lfh.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-lfh.setFormatter(formatter)
-logger.addHandler(lfh)
-logger.setLevel(logging.DEBUG)
+# disable ssl warning message
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class TestCase:
@@ -55,6 +33,7 @@ class TestCase:
 
     _app_path = os.getcwd()
     _current_test = None
+    _default_args = None
     _profile = None
     _stager = None
     _staged_tc_data = []
@@ -64,12 +43,21 @@ class TestCase:
     app = None
     context = None
     enable_update_profile = False
-    ij = InstallJson()
-    log = logger
     env = set(os.getenv('TCEX_TEST_ENVS', 'build').split(','))
+    env_store = EnvStore(logger=logger)
+    ij = InstallJson(logger=logger)
+    initialized = False
+    log = logger
     redis_client = None
+    session = Session()
     tcex = None
     tcex_testing_context = None
+
+    def _reset_property_flags(self):
+        """Reset all control flag."""
+        # used to prevent pytest from executing @property methods
+        self.initialized = False
+        self.tcex = False
 
     @staticmethod
     def _encrypt_file_contents(key, data):
@@ -83,6 +71,21 @@ class TestCase:
         self.log.data('run', 'Exit Code', code)
         return code
 
+    def _log_args(self, args):
+        """Log args masking any that are marked encrypted and log warning for unknown args.
+
+        Args:
+            args (dict): A dictionary of args.
+        """
+        for name, value in sorted(args.items()):
+            input_data = self.ij.params_dict.get(name)
+            if input_data is None and self.default_args.get(name) is None:
+                self.log.data('run', 'input', f'Unknown arg "{name}" provided.', 'warning')
+            elif input_data is not None and input_data.get('encrypt') is True:
+                self.log.data('run', 'input', f'{name}: ***')
+            else:
+                self.log.data('run', 'input', f'{name}: {value}')
+
     @staticmethod
     def _to_bool(value):
         """Return bool value from int or string."""
@@ -91,7 +94,7 @@ class TestCase:
     def _update_path_args(self, args):
         """Update path in args for each test profile."""
         # service Apps do not have a profile when this is needed.
-        profile = self.profile or Profile(default_args=self.default_args)
+        profile = self.profile or Profile(default_args=self.default_args.copy())
         args['tc_in_path'] = profile.tc_in_path
         args['tc_log_path'] = profile.tc_log_path
         args['tc_out_path'] = profile.tc_out_path
@@ -108,9 +111,9 @@ class TestCase:
         self._update_path_args(args)
 
         # update default args with app args
-        app_args = dict(self.default_args)
+        app_args = self.default_args.copy()
         app_args.update(args)
-        # app_args['tc_log_file'] = f'{self.test_case_name}.log'
+
         app_args['tc_logger_name'] = self.context
 
         if self.ij.runtime_level.lower() in [
@@ -134,7 +137,6 @@ class TestCase:
             tcex = TcEx()
         else:
             tcex = TcEx(config=app_args)
-
         return App(tcex)
 
     def app_init_create_config(self, args, output_variables, tcex_testing_context):
@@ -146,7 +148,7 @@ class TestCase:
         self._update_path_args(args)
 
         # merge default and app args
-        app_args = dict(self.default_args)
+        app_args = self.default_args.copy()
         app_args.update(args)
 
         # service Apps will get their args/params from encrypted file in the "in" directory
@@ -181,35 +183,73 @@ class TestCase:
     @property
     def default_args(self):
         """Return App default args."""
-        args = {
-            'api_access_id': os.getenv('API_ACCESS_ID'),
-            'api_default_org': os.getenv('API_DEFAULT_ORG'),
-            'api_secret_key': os.getenv('API_SECRET_KEY'),
-            'tc_api_path': os.getenv('TC_API_PATH'),
-            'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
-            'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
-            'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
-            'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
-            'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
-            'tc_proxy_external': self._to_bool(os.getenv('TC_PROXY_EXTERNAL', 'false')),
-            'tc_proxy_host': os.getenv('TC_PROXY_HOST', 'localhost'),
-            'tc_proxy_password': os.getenv('TC_PROXY_PASSWORD', ''),
-            'tc_proxy_port': os.getenv('TC_PROXY_PORT', '4242'),
-            'tc_proxy_tc': self._to_bool(os.getenv('TC_PROXY_TC', 'false')),
-            'tc_proxy_username': os.getenv('TC_PROXY_USERNAME', ''),
-            'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
-        }
-        if os.getenv('TC_TOKEN'):
-            args['tc_token'] = os.getenv('TC_TOKEN')
-            args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
-        return args
+        if self._default_args is None and self.initialized:
+            self._default_args = {
+                # local override TCI_EXCHANGE_ADMIN_API_ACCESS_ID
+                'api_access_id': self.env_store.getenv(
+                    '/ninja/tc/tci/exchange_admin/api_access_id'
+                ),
+                'api_default_org': os.getenv('API_DEFAULT_ORG', 'TCI'),
+                # local override TCI_EXCHANGE_ADMIN_API_SECRET_KEY
+                'api_secret_key': self.env_store.getenv(
+                    '/ninja/tc/tci/exchange_admin/api_secret_key'
+                ),
+                'tc_api_path': os.getenv('TC_API_PATH'),
+                'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
+                'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
+                'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
+                'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
+                'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
+                'tc_proxy_external': self._to_bool(os.getenv('TC_PROXY_EXTERNAL', 'false')),
+                # local override TC_PROXY_HOST
+                'tc_proxy_host': self.env_store.getenv(
+                    '/ninja/proxy/tc_proxy_host', default='localhost'
+                ),
+                # local override TC_PROXY_PASSWORD
+                'tc_proxy_password': self.env_store.getenv(
+                    '/ninja/proxy/tc_proxy_password', default=''
+                ),
+                # local override TC_PROXY_PORT
+                'tc_proxy_port': self.env_store.getenv(
+                    '/ninja/proxy/tc_proxy_port', default='4242'
+                ),
+                'tc_proxy_tc': self._to_bool(os.getenv('TC_PROXY_TC', 'false')),
+                # local override TC_PROXY_USERNAME
+                'tc_proxy_username': self.env_store.getenv(
+                    '/ninja/proxy/tc_proxy_username', default=''
+                ),
+                'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
+            }
+            if os.getenv('TC_TOKEN'):
+                self._default_args['tc_token'] = os.getenv('TC_TOKEN')
+                self._default_args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
+            else:
+                # best effort on getting API token
+                token = self.tc_token(
+                    self._default_args.get('tc_api_path'),
+                    self._default_args.get('api_access_id'),
+                    self._default_args.get('api_secret_key'),
+                )
+                if token is not None:
+                    # if token was successfully retrieved from TC use token and remove hmac values
+                    self._default_args['tc_token'] = token
+                    self._default_args['tc_token_expires'] = '1700000000'
+                    del self._default_args['api_access_id']
+                    del self._default_args['api_secret_key']
+        return self._default_args
 
     def init_profile(
-        self, profile_name, merge_outputs=False, replace_exit_message=False, replace_outputs=False
+        self,
+        profile_name,
+        merge_inputs=False,
+        merge_outputs=False,
+        replace_exit_message=False,
+        replace_outputs=False,
     ):
         """Stages and sets up the profile given a profile name"""
         self._profile = Profile(
-            default_args=self.default_args,
+            default_args=self.default_args.copy(),
+            merge_inputs=merge_inputs,
             merge_outputs=merge_outputs,
             name=profile_name,
             redis_client=self.redis_client,
@@ -222,6 +262,9 @@ class TestCase:
         # check profile environment
         self.check_environment(self._profile.environments)
 
+        # migrate profile to latest schema
+        self._profile.data = self._profile.migrate()
+
         # validate required fields
         valid, message = self._profile.validate_required_inputs()
 
@@ -233,7 +276,7 @@ class TestCase:
         # insert staged data for replacement
         self._profile.tc_staged_data = self._staged_tc_data
 
-        # update schema
+        # replace all references and all staged variable
         self._profile.init()
 
         # stage kvstore data based on current profile
@@ -278,6 +321,7 @@ class TestCase:
     @classmethod
     def setup_class(cls):
         """Run once before all test cases."""
+        cls.initialized = True
         cls._timer_class_start = time.time()
         cls.log.title('Setup Class', '#')
         TestCase.log.data('setup class', 'started', datetime.now().isoformat())
@@ -295,7 +339,7 @@ class TestCase:
         self.log.data('setup method', 'context', self.context)
 
         # setup per method instance of tcex
-        args = dict(self.default_args)
+        args = self.default_args.copy()
         args['tc_log_file'] = os.path.join(self.test_case_log_test_dir, 'setup.log')
         args['tc_logger_name'] = f'tcex-{self.test_case_feature}-{self.test_case_name}'
         self.tcex = TcEx(config=args)
@@ -316,7 +360,7 @@ class TestCase:
         tc_log_file = os.path.join(self.test_case_log_test_dir, 'stage.log')
 
         # args data
-        args = dict(self.default_args)
+        args = self.default_args.copy()
 
         # override default log level if profiled
         args['tc_log_level'] = 'warning'
@@ -330,9 +374,47 @@ class TestCase:
         tcex = TcEx(config=args)
         return Stager(tcex, logger)
 
+    def tc_token(self, tc_api_path, api_access_id, api_secret_key):
+        """Return a valid API token.
+
+        note:: requires TC >= 6.0
+
+        Args:
+            tc_api_path (str): The URL for the tc instance (e.g. https://my.tc.org)
+            api_access_id (str): The TC Access ID for HMAC Auth
+            api_secret_key (str): The TC Secret Key for HMAC Auth
+
+        Returns:
+            str: A valid token if available.
+        """
+        data = None
+        token = None
+        token_url_path = self.env_store.getenv('/ninja/tc/token/url_path', env_type='remote')
+        if token_url_path is None:
+            # could not retrieve URL path
+            return None
+
+        # determine the token type
+        token_type = 'api'
+        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '407')}
+            token_type = 'svc'
+
+        # add auth
+        self.session.auth = HmacAuth(api_access_id, api_secret_key)
+
+        # retrieve token from API using HMAC auth
+        r = self.session.post(f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=True)
+        if r.status_code == 200:
+            token = r.json().get('data')
+            self.log.data('setup', 'Using Token', token)
+            self.log.data('setup', 'Token Elapsed', r.elapsed, 'trace')
+        return token
+
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
+        cls.initialized = False
         cls.log.title('Teardown Class', '^')
         TestCase.log.data('teardown class', 'finished', datetime.now().isoformat())
         TestCase.log.data('teardown class', 'elapsed', time.time() - cls._timer_class_start)
@@ -371,9 +453,7 @@ class TestCase:
     @property
     def test_case_log_feature_dir(self):
         """Return profile fully qualified filename."""
-        return os.path.join(
-            self._app_path, self.default_args.get('tc_log_path'), self.test_case_feature
-        )
+        return os.path.join(self._app_path, os.getenv('TC_LOG_PATH', 'log'), self.test_case_feature)
 
     @property
     def test_case_log_test_dir(self):
@@ -389,7 +469,7 @@ class TestCase:
         """Validate App exit message."""
         if test_exit_message is not None:
             message_tc_file = os.path.join(
-                self.default_args.get('tc_out_path'),
+                os.getenv('TC_OUT_PATH', 'log'),
                 self.test_case_feature,
                 self.test_case_name,
                 'message.tc',
@@ -401,6 +481,11 @@ class TestCase:
 
                 if app_exit_message:
                     kwargs['title'] = 'Exit Message Validation'
+                    kwargs['log_app_data'] = json.dumps(app_exit_message)
+                    if op == 'eq':
+                        kwargs['log_test_data'] = json.dumps(test_exit_message)
+
+                    # compare
                     passed, assert_error = self.validator.compare(
                         json.dumps(app_exit_message), json.dumps(test_exit_message), op=op, **kwargs
                     )
@@ -420,7 +505,7 @@ class TestCase:
         tc_log_file = os.path.join(self.test_case_log_test_dir, 'validate.log')
 
         # args data
-        args = dict(self.default_args)
+        args = self.default_args.copy()
 
         # override default log level if profiled
         args['tc_log_level'] = 'warning'

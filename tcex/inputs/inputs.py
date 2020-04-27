@@ -429,6 +429,10 @@ class Inputs:
 
     def update_logging(self):
         """Update the TcEx logger with appropriate handlers."""
+        # custom loggers passed into tcex would not have log_info method
+        if not hasattr(self.tcex.logger, 'log_info'):
+            return
+
         if self._default_args.tc_log_level is None:
             # some Apps use logging while other us tc_log_level. ensure tc_log_level is always
             # available.

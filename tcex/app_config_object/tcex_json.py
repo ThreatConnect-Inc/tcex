@@ -1,32 +1,36 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework TcexJson Object."""
 import json
+import logging
 import os
 import re
 from collections import OrderedDict
 
 import colorama as c
-import hvac
 
 from .install_json import InstallJson
+from ..env_store import EnvStore
 
 
 class TcexJson:
-    """Object for tcex.json file."""
+    """Object for tcex.json file.
 
-    def __init__(self, filename=None, path=None):
+    Args:
+        filename (str, optional): The config filename. Defaults to tcex.json.
+        path (str, optional): The path to the file. Defaults to os.getcwd().
+        logger (logging.Logger, optional): A instance of Logger. Defaults to None.
+    """
+
+    def __init__(self, filename=None, path=None, logger=None):
         """Initialize class properties."""
         self._filename = filename or 'tcex.json'
         self._path = path or os.getcwd()
+        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
 
         # properties
         self._contents = None
+        self.env_store = EnvStore()
         self.ij = InstallJson()
-        self.vault_client = hvac.Client(
-            url=os.getenv('VAULT_URL', 'http://localhost:8200'),
-            token=os.getenv('VAULT_TOKEN'),
-            cert=os.getenv('VAULT_CERT'),
-        )
 
     @property
     def contents(self):
@@ -76,16 +80,15 @@ class TcexJson:
         """
         profile = json.dumps(json_data)
 
-        for m in re.finditer(r'\${(env|os|vault):(.*?)}', profile):
+        for m in re.finditer(r'\${(env|envs|local|remote):(.*?)}', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)
                 env_key = m.group(2)
 
-                if env_type in ['env', 'os'] and os.getenv(env_key):
-                    profile = profile.replace(full_match, os.getenv(env_key))
-                elif env_type in ['env', 'vault'] and self.vault_client.read(env_key):
-                    profile = profile.replace(full_match, self.vault_client.read(env_key))
+                env_value = self.env_store.getenv(env_key, env_type)
+                if env_value is not None:
+                    profile = profile.replace(full_match, env_value)
             except IndexError:
                 print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
@@ -201,11 +204,10 @@ class TcexJson:
         """
         data = json.dumps(json_data)
 
-        # for m in re.finditer(r'\$(env|os|vault)\.(.*?)', data):
-        for m in re.finditer(r'\$(env|os|vault)\.([^(\/|\")]*)', data):
+        for m in re.finditer(r'\$(env|envs|local|remote)\.([^(\/|\")]*)', data):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)
                 env_key = m.group(2)
 
                 new_variable = f'${{{env_type}:{env_key}}}'

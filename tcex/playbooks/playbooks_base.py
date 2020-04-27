@@ -118,12 +118,15 @@ class PlaybooksBase:
             if validate and not isinstance(value, list):
                 raise RuntimeError('Invalid data provided for StringArray.')
 
+            value_coerced = []
             for v in value:
                 # coerce string values
                 v = self._coerce_string_value(v)
 
                 if validate and not isinstance(v, (type(None), str)):
                     raise RuntimeError('Invalid data provided for StringArray.')
+                value_coerced.append(v)
+            value = value_coerced
         elif variable_type == 'TCEntityArray':
             if validate and (not isinstance(value, list) or not self._is_tc_entity_array(value)):
                 raise RuntimeError('Invalid data provided for TcEntityArray.')

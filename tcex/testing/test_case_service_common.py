@@ -36,7 +36,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     @property
     def default_args(self):
         """Return App default args."""
-        args = super().default_args
+        args = super().default_args.copy()
         args.update(
             {
                 'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
@@ -97,7 +97,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         message['apiToken'] = '000000000'
         message['expireSeconds'] = int(time.time() + 86400)
         message['command'] = 'CreateConfig'
-        message['config']['tc_playbook_out_variables'] = self.ij.output_variable_array
+        message['config']['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
         message['triggerId'] = message.pop('trigger_id')
         self.publish(json.dumps(message))
         time.sleep(self.sleep_after_publish_config)
@@ -171,7 +171,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
 
         # create required .app_params encrypted file. args are set in custom.py
         self.app_init_create_config(
-            self.args, self.ij.output_variable_array, self.tcex_testing_context
+            self.args, [], self.tcex_testing_context,
         )
         if self.service_run_method == 'subprocess':
             # run the Service App as a subprocess

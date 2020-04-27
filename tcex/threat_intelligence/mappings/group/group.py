@@ -26,7 +26,11 @@ class Group(Mappings):
     @property
     def as_entity(self):
         """Return the entity representation of the Indicator."""
-        return {'type': self.api_sub_type, 'value': self.name, 'id': self.unique_id}
+        return {
+            'type': self.api_sub_type,
+            'value': self.name,
+            'id': int(self.unique_id) if self.unique_id else None,
+        }
 
     @staticmethod
     def is_group():
@@ -67,7 +71,7 @@ class Group(Mappings):
         elif key == 'file_content':
             # file content arg is not part of Group JSON
             pass
-        elif key == 'unique_id':
+        elif key in ['unique_id', 'id']:
             self._unique_id = quote_plus(str(value))
         else:
             self._data[key] = value

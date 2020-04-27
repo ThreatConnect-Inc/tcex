@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -1296,7 +1296,7 @@
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.victim_asset_associations"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.victim_asset_associations">[docs]</a>    <span class="k">def</span> <span class="nf">victim_asset_associations</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">branch_type</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -1305,7 +1305,7 @@
 <span class="sd">            main_type:</span>
 <span class="sd">            sub_type:</span>
 <span class="sd">            unique_id:</span>
-<span class="sd">            branch_type:</span>
+<span class="sd">            asset_type:</span>
 <span class="sd">            params:</span>
 
 <span class="sd">        Return:</span>
@@ -1316,10 +1316,12 @@
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{branch_type}</span><span class="s1">&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets/</span><span class="si">{branch_type}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{url}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{url}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/victimAssets&#39;</span>
+        <span class="k">if</span> <span class="n">asset_type</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{url}</span><span class="s1">/</span><span class="si">{asset_type}</span><span class="s1">&#39;</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;victimAsset&#39;</span><span class="p">)</span></div>
 
@@ -1353,7 +1355,7 @@
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
-        <span class="n">api_branch</span> <span class="o">=</span> <span class="n">api_branch</span> <span class="ow">or</span> <span class="n">association_type</span><span class="o">.</span><span class="n">api_sub_type</span>
+        <span class="n">api_branch</span> <span class="o">=</span> <span class="n">api_branch</span> <span class="ow">or</span> <span class="n">association_type</span><span class="o">.</span><span class="n">api_branch</span>
         <span class="n">api_entity</span> <span class="o">=</span> <span class="n">api_entity</span> <span class="ow">or</span> <span class="n">association_type</span><span class="o">.</span><span class="n">api_entity</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/indicators/</span><span class="si">{api_branch}</span><span class="s1">&#39;</span>

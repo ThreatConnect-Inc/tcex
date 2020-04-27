@@ -13,8 +13,8 @@ if __name__ == '__main__':
     app_lib.update_path()
 
     # import modules after path has been updated
-    from tcex import TcEx
-    from app import App
+    from tcex import TcEx  # pylint: disable=import-outside-toplevel
+    from app import App  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()
 

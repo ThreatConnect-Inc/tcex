@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 2.0.3 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -863,13 +863,15 @@ py38.xml
 65
 66
 67
-68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+68
+69</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 <span class="kn">from</span> <span class="nn">app_lib</span> <span class="kn">import</span> <span class="n">AppLib</span>
 
 
+<span class="c1"># pylint: disable=no-member</span>
 <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Update path and run the App.&quot;&quot;&quot;</span>
 
@@ -878,8 +880,8 @@ py38.xml
     <span class="n">app_lib</span><span class="o">.</span><span class="n">update_path</span><span class="p">()</span>
 
     <span class="c1"># import modules after path has been updated</span>
-    <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
-    <span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">App</span>
+    <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+    <span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">App</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
 
     <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 

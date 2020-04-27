@@ -39,7 +39,6 @@ class TcEx:
 
         # Property defaults
         self._config = kwargs.get('config', {})
-        # self._cm = None
         self._default_args = None
         self._error_codes = None
         self._exit_code = 0
@@ -150,11 +149,6 @@ class TcEx:
 
         .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
         """
-        # if self._cm is None:
-        #     from .case_management import CaseManagement
-
-        #     self._cm = CaseManagement(self)
-        # return self._cm
         from .case_management import CaseManagement
 
         return CaseManagement(self)
@@ -287,6 +281,21 @@ class TcEx:
             indicator_list = [indicator]
 
         return indicator_list
+
+    @property
+    def victim_asset_types(self):
+        """Return all defined ThreatConnect Asset types.
+
+        Returns:
+            (list): A list of ThreatConnect Asset types.
+        """
+        return [
+            'EmailAddress',
+            'SocialNetwork',
+            'NetworkAccount',
+            'WebSite',
+            'Phone',
+        ]
 
     @property
     def group_types(self):

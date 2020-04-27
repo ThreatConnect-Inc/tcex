@@ -5,6 +5,7 @@ import traceback
 from app_lib import AppLib
 
 
+# pylint: disable=no-member
 def run():
     """Update path and run the App."""
 
@@ -13,8 +14,8 @@ def run():
     app_lib.update_path()
 
     # import modules after path has been updated
-    from tcex import TcEx
-    from app import App
+    from tcex import TcEx  # pylint: disable=import-outside-toplevel
+    from app import App  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()
 

@@ -3,6 +3,15 @@
 Release Notes
 #############
 
+2.0.4
+=====
++ Updated decorator method logging.
++ Updated testing framework validation template to support dynamic output variable.
++ Updated testing framework validation template to validate output variable consistency.
++ Updated profile module to support variable from env store server.
++ Updated OnException decorator to log traceback.
++ Multiple enhancement and fixes to testing framework.
+
 2.0.3
 =====
 + Added ``is_variable()`` method to Playbook module.

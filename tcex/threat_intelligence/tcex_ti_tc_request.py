@@ -1118,7 +1118,7 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'group')
 
     def victim_asset_associations(
-        self, main_type, sub_type, unique_id, branch_type, owner=None, params=None
+        self, main_type, sub_type, unique_id, asset_type=None, owner=None, params=None
     ):
         """
 
@@ -1127,7 +1127,7 @@ class TiTcRequest:
             main_type:
             sub_type:
             unique_id:
-            branch_type:
+            asset_type:
             params:
 
         Return:
@@ -1138,10 +1138,12 @@ class TiTcRequest:
         if owner:
             params['owner'] = owner
 
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/victimAssets/{branch_type}'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets/{branch_type}'
+        url = f'/v2/{main_type}'
+        if sub_type:
+            url = f'{url}/{sub_type}'
+        url = f'{url}/{unique_id}/victimAssets'
+        if asset_type:
+            url = f'{url}/{asset_type}'
 
         yield from self._iterate(url, params, 'victimAsset')
 
@@ -1175,7 +1177,7 @@ class TiTcRequest:
         if owner:
             params['owner'] = owner
 
-        api_branch = api_branch or association_type.api_sub_type
+        api_branch = api_branch or association_type.api_branch
         api_entity = api_entity or association_type.api_entity
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}/indicators/{api_branch}'

@@ -9,7 +9,6 @@ from random import randint
 import math
 
 import colorama as c
-import hvac
 
 try:
     import jmespath
@@ -20,6 +19,7 @@ except ImportError:
 from .install_json import InstallJson
 from .layout_json import LayoutJson
 from .permutations import Permutations
+from ..env_store import EnvStore
 from ..utils import Utils
 
 # autoreset colorama
@@ -39,6 +39,7 @@ class Profile:
         self,
         default_args=None,
         feature=None,
+        merge_inputs=False,
         merge_outputs=False,
         name=None,
         redis_client=None,
@@ -52,6 +53,7 @@ class Profile:
         self._feature = feature
         self._name = name
         self.log = logger or logging.getLogger('profile').addHandler(logging.NullHandler())
+        self.merge_inputs = merge_inputs
         self.merge_outputs = merge_outputs
         self.replace_exit_message = replace_exit_message
         self.replace_outputs = replace_outputs
@@ -62,16 +64,12 @@ class Profile:
         self._data = None
         self._output_variables = None
         self._context_tracker = []
-        self.ij = InstallJson()
-        self.lj = LayoutJson()
-        self.permutations = Permutations()
+        self.env_store = EnvStore(logger=self.log)
+        self.ij = InstallJson(logger=self.log)
+        self.lj = LayoutJson(logger=self.log)
+        self.permutations = Permutations(logger=self.log)
         self.redis_client = redis_client
         self.tc_staged_data = {}
-        self.vault_client = hvac.Client(
-            url=os.getenv('VAULT_URL', 'http://localhost:8200'),
-            token=os.getenv('VAULT_TOKEN'),
-            cert=os.getenv('VAULT_CERT'),
-        )
 
     @property
     def _test_case_data(self):
@@ -83,13 +81,15 @@ class Profile:
         """Return partially parsed test case data."""
         return self._test_case_data[-1].replace('/', '-').replace('[', '-').replace(']', '')
 
-    def _write_file(self, json_data):
-        """Write updated profile file."""
-        with open(self.filename, 'w') as fh:
-            fh.write(f'{json.dumps(json_data, indent=2, sort_keys=True)}\n')
-
     def add(self, profile_data=None, profile_name=None, sort_keys=True, permutation_id=None):
-        """Add a profile."""
+        """Add a profile.
+
+        Args:
+            profile_data (dict, optional): The profile data.
+            profile_name (str, optional): The name of the profile.
+            sort_keys (bool, optional): If True the keys will be sorted. Defaults to True.
+            permutation_id (int, optional): The index of the permutation id. Defaults to None.
+        """
         profile_data = profile_data or {}
         if profile_name is not None:
             # profile_name is only used for profile migrations
@@ -248,11 +248,9 @@ class Profile:
 
     def init(self):
         """Return the Data (dict) from the current profile."""
-        # update profile
-        profile_data = self.update()
 
         # replace all variable references
-        profile_data = self.replace_env_variables(profile_data)
+        profile_data = self.replace_env_variables(self.data)
 
         # replace all staged variable
         profile_data = self.replace_tc_variables(profile_data)
@@ -260,272 +258,39 @@ class Profile:
         # set update profile data
         self._data = profile_data
 
-    @property
-    def name(self):
-        """Return partially parsed test case data."""
-        if self._name is None:
-            name_pattern = r'^test_[a-zA-Z0-9_]+\[(.+)\]$'
-            self._name = re.search(name_pattern, self._test_case_data[-1]).group(1)
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        """Set the profile name"""
-        self._name = name
-
-    def profile_inputs(self):
-        """Return the appropriate inputs (config) for the current App type.
-
-        Service App use config and others use inputs.
-
-        "inputs": {
-            "optional": {}
-            "required": {}
-        }
-        """
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-            for config_data in self.configs:
-                yield config_data.get('config')
-        else:
-            yield self.inputs
-
-    def replace_env_variables(self, profile_data):
-        """Replace any env vars.
-
-        Args:
-            profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
-        """
-        profile = json.dumps(profile_data)
-
-        for m in re.finditer(r'\${(env|envs|os|vault):(.*?)}', profile):
-            try:
-                full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
-                env_key = m.group(2)
-
-                if env_type in ['env', 'envs', 'os'] and os.getenv(env_key):
-                    profile = profile.replace(full_match, os.getenv(env_key))
-                elif (
-                    self.vault_client.is_authenticated()
-                    and env_type in ['env', 'envs', 'vault']
-                    and self.vault_client.read(env_key)
-                ):
-                    profile = profile.replace(full_match, self.vault_client.read(env_key))
-            except IndexError:
-                print(f'{c.Fore.YELLOW}Could not replace variable {full_match}).')
-        return json.loads(profile)
-
-    def replace_tc_variables(self, profile_data):
-        """Replace all of the TC output variables in the profile with their correct value.
-
-        Args:
-            profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
-        """
-        if 'jmespath' not in sys.modules:
-            print(
-                f'{c.Fore.RED}Missing jmespath module. Try '
-                f'installing "pip install tcex[development]"'
-            )
-            sys.exit(1)
-
-        profile = json.dumps(profile_data)
-
-        for data in self.tc_staged_data:
-            key = data.get('key')
-            value = data.get('data')
-
-            for m in re.finditer(r'\${tcenv:' + str(key) + r':(.*?)}', profile):
-                try:
-                    full_match = m.group(0)
-                    jmespath_expression = m.group(1)
-
-                    if jmespath_expression:
-                        value = jmespath.search(jmespath_expression, value)
-                        profile = profile.replace(full_match, str(value))
-                except IndexError:
-                    print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
-        return json.loads(profile)
-
-    @property
-    def test_directory(self):
-        """Return fully qualified test directory."""
-        return os.path.join(self._app_path, 'tests')
-
-    def update(self):
-        """Update profile with all required changes."""
+    def migrate(self):
+        """Migrate profile to latest schema and rewrite data."""
         with open(os.path.join(self.filename), 'r+') as fh:
             profile_data = json.load(fh)
 
             # update all env variables to match latest pattern
-            self.update_permutation_output_variables(profile_data)
+            self.migrate_permutation_output_variables(profile_data)
 
             # change for threatconnect staged data
-            profile_data = self.update_stage_redis_name(profile_data)
+            profile_data = self.migrate_stage_redis_name(profile_data)
 
             # change for threatconnect staged data
-            profile_data = self.update_stage_threatconnect_data(profile_data)
+            profile_data = self.migrate_stage_threatconnect_data(profile_data)
 
             # update all version 1 env variables to match latest pattern
-            profile_data = self.update_variable_pattern_env_v1(profile_data)
+            profile_data = self.migrate_variable_pattern_env_v1(profile_data)
 
             # update all version 2 env variables to match latest pattern
-            profile_data = self.update_variable_pattern_env_v2(profile_data)
+            profile_data = self.migrate_variable_pattern_env_v2(profile_data)
 
             # update all tcenv variables to match latest pattern
-            profile_data = self.update_variable_pattern_tcenv(profile_data)
+            profile_data = self.migrate_variable_pattern_tcenv(profile_data)
 
             # write updated profile
             fh.seek(0)
-            fh.write(f'{json.dumps(profile_data, indent=2, sort_keys=True)}\n')
+            json.dump(profile_data, fh, indent=2, sort_keys=True)
+            fh.write('\n')  # add required newline
             fh.truncate()
 
         return profile_data
 
-    def update_exit_message(self):
-        """Update validation rules from exit_message section of profile."""
-        message_tc = ''
-        if os.path.isfile(self.message_tc_filename):
-            with open(self.message_tc_filename, 'r') as mh:
-                message_tc = mh.read()
-
-        with open(self.filename, 'r+') as fh:
-            profile_data = json.load(fh)
-
-            if (
-                profile_data.get('exit_message') is None
-                or isinstance(profile_data.get('exit_message'), str)
-                or self.replace_exit_message
-            ):
-                # update the profile
-                profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
-
-                fh.seek(0)
-                fh.write(f'{json.dumps(profile_data, indent=2, sort_keys=True)}\n')
-                fh.truncate()
-
-    def update_outputs(self):
-        """Update the validation rules for outputs section of a profile.
-
-        By default this method will only update if the current value is null. If the
-        flag --replace_outputs is passed to pytest (e.g., pytest --replace_outputs)
-        the outputs will replaced regardless of their current value. If the flag
-        --merge_outputs is passed to pytest (e.g., pytest --merge_outputs) any new
-        outputs will be added and any outputs that are not longer valid will be
-        removed.
-        """
-        if self.redis_client is None:
-            # redis_client is only available for children of TestCasePlaybookCommon
-            print(f'{c.Fore.RED}An instance of redis_client is not set.')
-            sys.exit(1)
-
-        output_variables = self.ij.output_variable_array
-        if self.lj.has_layout:
-            # if layout based App get valid outputs
-            output_variables = self.ij.create_output_variables(
-                self.permutations.outputs_by_inputs(self.args)
-            )
-
-        outputs = {}
-        trigger_id = None
-        for context in self.context_tracker:
-            # get all current keys in current context
-            redis_data = self.redis_client.hgetall(context)
-            trigger_id = self.redis_client.hget(context, '_trigger_id')
-
-            # updated outputs with validation data
-            self.update_outputs_variables(outputs, output_variables, redis_data, trigger_id)
-
-            # cleanup redis
-            self.clear_context(context)
-
-        if self.outputs is None or self.replace_outputs:
-            # update profile if current profile is not or user specifies --replace_outputs
-            with open(self.filename, 'r+') as fh:
-                json_data = json.load(fh)
-
-            json_data['outputs'] = outputs
-            self._write_file(json_data)
-        elif self.merge_outputs:
-            if trigger_id is not None:
-                # service Apps have a different structure with id: data
-                merged_outputs = {}
-                for id_, data in outputs.items():
-                    merged_outputs[id_] = {}
-                    for key in list(data):
-                        if key in self.outputs.get(id_, {}):
-                            # use current profile output value if exists
-                            merged_outputs[id_][key] = self.outputs[id_][key]
-                        else:
-                            merged_outputs[id_][key] = outputs[id_][key]
-            else:
-                # update playbook App profile outputs
-                merged_outputs = {}
-                for key in list(outputs):
-                    if key in self.outputs:
-                        # use current profile output value if exists
-                        merged_outputs[key] = self.outputs[key]
-                    else:
-                        merged_outputs[key] = outputs[key]
-
-            # update profile outputs
-            with open(self.filename, 'r+') as fh:
-                json_data = json.load(fh)
-
-            json_data['outputs'] = merged_outputs
-            self._write_file(json_data)
-
-    def update_outputs_variables(self, outputs, output_variables, redis_data, trigger_id):
-        """Return the outputs section of a profile.
-
-        Args:
-            outputs (dict): The dict to add outputs.
-            output_variables (list): A valid list of output variables for this profile/permutation.
-            redis_data (dict): The data from KV store for this profile.
-            trigger_id (str): The current trigger_id (service Apps).
-        """
-
-        for variable in self.ij.output_variable_array:
-            if variable not in output_variables:
-                continue
-
-            # get data from redis for current context
-            data = redis_data.get(variable.encode('utf-8'))
-
-            # validate redis variables
-            if data is None:
-                # log error for missing output data
-                self.log.warning(f'[{self.name}] Missing KV store output for variable {variable}')
-            else:
-                data = json.loads(data.decode('utf-8'))
-
-            # validate validation variables
-            validation_data = (self.outputs or {}).get(variable)
-            if trigger_id is None and validation_data is None and self.outputs:
-                self.log.error(f'[{self.name}] Missing validations rule: {variable}')
-
-            # make business rules based on data type or content
-            output_data = {'expected_output': data, 'op': 'eq'}
-            if variable.endswith('json.raw!String'):
-                output_data['exclude'] = []
-                output_data['op'] = 'jeq'
-
-            # get trigger id for service Apps
-            if trigger_id is not None:
-                if isinstance(trigger_id, bytes):
-                    trigger_id = trigger_id.decode('utf-8')
-                outputs.setdefault(trigger_id, {})
-                outputs[trigger_id][variable] = output_data
-            else:
-                outputs[variable] = output_data
-
     @staticmethod
-    def update_permutation_output_variables(profile_data):
+    def migrate_permutation_output_variables(profile_data):
         """Remove permutation_output_variables field.
 
         Args:
@@ -541,7 +306,7 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_stage_redis_name(profile_data):
+    def migrate_stage_redis_name(profile_data):
         """Update staged redis to kvstore
 
         This change updates the previous value of redis with a
@@ -564,7 +329,7 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_stage_threatconnect_data(profile_data):
+    def migrate_stage_threatconnect_data(profile_data):
         """Update for staged threatconnect data section of profile
 
         This change updates the previous list to a dict with a key that
@@ -593,7 +358,7 @@ class Profile:
         return profile_data
 
     @staticmethod
-    def update_variable_pattern_env_v1(profile_data):
+    def migrate_variable_pattern_env_v1(profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -607,7 +372,7 @@ class Profile:
         for m in re.finditer(r'\"\$(env|envs)\.(\w+)\"', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)
                 env_key = m.group(2)
 
                 new_variable = f'"${{{env_type}:{env_key}}}"'
@@ -617,7 +382,7 @@ class Profile:
         return json.loads(profile)
 
     @staticmethod
-    def update_variable_pattern_env_v2(profile_data):
+    def migrate_variable_pattern_env_v2(profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -628,10 +393,10 @@ class Profile:
         """
         profile = json.dumps(profile_data)
 
-        for m in re.finditer(r'\${(env|envs|os|vault)\.(.*?)}', profile):
+        for m in re.finditer(r'\${(env|envs|local|remote)\.(.*?)}', profile):
             try:
                 full_match = m.group(0)
-                env_type = m.group(1)  # currently env, os, or vault
+                env_type = m.group(1)  # currently env, envs, local, remote
                 env_key = m.group(2)
 
                 new_variable = f'${{{env_type}:{env_key}}}'
@@ -640,7 +405,7 @@ class Profile:
                 print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
 
-    def update_variable_pattern_tcenv(self, profile_data):
+    def migrate_variable_pattern_tcenv(self, profile_data):
         """Update the profile variable to latest pattern
 
         Args:
@@ -671,47 +436,340 @@ class Profile:
                     print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
 
+    @property
+    def name(self):
+        """Return partially parsed test case data."""
+        if self._name is None:
+            name_pattern = r'^test_[a-zA-Z0-9_]+\[(.+)\]$'
+            self._name = re.search(name_pattern, self._test_case_data[-1]).group(1)
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """Set the profile name"""
+        self._name = name
+
+    @staticmethod
+    def output_data_rule(variable, data):
+        """Return the default output data for a given variable"""
+        output_data = {'expected_output': data, 'op': 'eq'}
+        if variable.endswith('json.raw!String'):
+            output_data['exclude'] = []
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        elif variable.endswith('web_link!String') or variable.endswith('web_link!StringArray'):
+            output_data['op'] = 'is_url'
+        elif variable.endswith('.id!String') or variable.endswith('.id!StringArray'):
+            output_data['op'] = 'is_number'
+        elif (
+            variable.endswith('date_added!String')
+            or variable.endswith('date_added!StringArray')
+            or variable.endswith('last_modified!String')
+            or variable.endswith('last_modified!StringArray')
+        ):
+            output_data['op'] = 'is_date'
+        elif variable.endswith('StringArray'):
+            output_data['op'] = 'dd'
+            output_data['ignore_order'] = False
+        elif variable.endswith('TCEntity') or variable.endswith('TCEntityArray'):
+            output_data['exclude'] = ['id']
+            output_data['op'] = 'jeq'
+            output_data['ignore_order'] = False
+        return output_data
+
+    def profile_inputs(self):
+        """Return the appropriate inputs (config) for the current App type.
+
+        Service App use config and others use inputs.
+
+        "inputs": {
+            "optional": {}
+            "required": {}
+        }
+        """
+        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            for config_data in self.configs:
+                yield config_data.get('config')
+        else:
+            yield self.inputs
+
+    def replace_env_variables(self, profile_data):
+        """Replace any env vars.
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        profile = json.dumps(profile_data)
+
+        for m in re.finditer(r'\${(env|envs|local|remote):(.*?)}', profile):
+            try:
+                full_match = m.group(0)
+                env_type = m.group(1)  # currently env, envs, local, or remote
+                env_key = m.group(2)
+
+                env_value = self.env_store.getenv(env_key, env_type)
+                if env_value is not None:
+                    profile = profile.replace(full_match, env_value)
+            except IndexError:
+                print(f'{c.Fore.YELLOW}Could not replace variable {full_match}).')
+        return json.loads(profile)
+
+    def replace_tc_variables(self, profile_data):
+        """Replace all of the TC output variables in the profile with their correct value.
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        if 'jmespath' not in sys.modules:
+            print(
+                f'{c.Fore.RED}Missing jmespath module. Try '
+                f'installing "pip install tcex[development]"'
+            )
+            sys.exit(1)
+
+        profile = json.dumps(profile_data)
+
+        for data in self.tc_staged_data:
+            key = data.get('key')
+            data_value = data.get('data')
+
+            for m in re.finditer(r'\${tcenv:' + str(key) + r':(.*?)}', profile):
+                try:
+                    full_match = m.group(0)
+                    jmespath_expression = m.group(1)
+
+                    if jmespath_expression:
+                        value = jmespath.search(jmespath_expression, data_value)
+                        profile = profile.replace(full_match, str(value))
+                except IndexError:
+                    print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
+        return json.loads(profile)
+
+    @property
+    def test_directory(self):
+        """Return fully qualified test directory."""
+        return os.path.join(self._app_path, 'tests')
+
+    def update_exit_message(self):
+        """Update validation rules from exit_message section of profile."""
+        message_tc = ''
+        if os.path.isfile(self.message_tc_filename):
+            with open(self.message_tc_filename, 'r') as mh:
+                message_tc = mh.read()
+
+        with open(self.filename, 'r+') as fh:
+            profile_data = json.load(fh)
+
+            if (
+                profile_data.get('exit_message') is None
+                or isinstance(profile_data.get('exit_message'), str)
+                or self.replace_exit_message
+            ):
+                # update the profile
+                profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
+
+                # write updated profile
+                fh.seek(0)
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
+                fh.truncate()
+
+    def update_outputs(self):
+        """Update the validation rules for outputs section of a profile.
+
+        By default this method will only update if the current value is null. If the
+        flag --replace_outputs is passed to pytest (e.g., pytest --replace_outputs)
+        the outputs will replaced regardless of their current value. If the flag
+        --merge_outputs is passed to pytest (e.g., pytest --merge_outputs) any new
+        outputs will be added and any outputs that are not longer valid will be
+        removed.
+        """
+        if self.redis_client is None:
+            # redis_client is only available for children of TestCasePlaybookCommon
+            print(f'{c.Fore.RED}An instance of redis_client is not set.')
+            sys.exit(1)
+
+        outputs = {}
+        trigger_id = None
+        for context in self.context_tracker:
+            # get all current keys in current context
+            redis_data = self.redis_client.hgetall(context)
+            trigger_id = self.redis_client.hget(context, '_trigger_id')
+
+            # updated outputs with validation data
+            self.update_outputs_variables(outputs, redis_data, trigger_id)
+
+            # cleanup redis
+            self.clear_context(context)
+
+        if self.outputs is None or self.replace_outputs:
+            # update profile if current profile is not or user specifies --replace_outputs
+            with open(self.filename, 'r+') as fh:
+                profile_data = json.load(fh)
+                profile_data['outputs'] = outputs
+
+                # write updated profile
+                fh.seek(0)
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
+                fh.truncate()
+        elif self.merge_outputs:
+            if trigger_id is not None:
+                # service Apps have a different structure with id: data
+                merged_outputs = {}
+                for id_, data in outputs.items():
+                    merged_outputs[id_] = {}
+                    for key in list(data):
+                        if key in self.outputs.get(id_, {}):
+                            # use current profile output value if exists
+                            merged_outputs[id_][key] = self.outputs[id_][key]
+                        else:
+                            merged_outputs[id_][key] = outputs[id_][key]
+            else:
+                # update playbook App profile outputs
+                merged_outputs = {}
+                for key in list(outputs):
+                    if key in self.outputs:
+                        # use current profile output value if exists
+                        merged_outputs[key] = self.outputs[key]
+                    else:
+                        merged_outputs[key] = outputs[key]
+
+            # update profile outputs
+            with open(self.filename, 'r+') as fh:
+                profile_data = json.load(fh)
+                profile_data['outputs'] = merged_outputs
+
+                # write updated profile
+                fh.seek(0)
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
+                fh.truncate()
+
+    def update_outputs_variables(self, outputs, redis_data, trigger_id):
+        """Return the outputs section of a profile.
+
+        Args:
+            outputs (dict): The dict to add outputs.
+            redis_data (dict): The data from KV store for this profile.
+            trigger_id (str): The current trigger_id (service Apps).
+        """
+        for variable in self.tc_playbook_out_variables:
+            # get data from redis for current context
+            data = redis_data.get(variable.encode('utf-8'))
+
+            # validate redis variables
+            if data is None:
+                if 1 not in self.exit_codes:
+                    # TODO: add feature in testing framework to allow writing null and
+                    #       then check if variables exist instead of null value.
+                    # log error for missing output data if not a fail test case (exit code of 1)
+                    self.log.debug(f'[{self.name}] Missing KV store output for variable {variable}')
+            else:
+                data = json.loads(data.decode('utf-8'))
+
+            # validate validation variables
+            validation_data = (self.outputs or {}).get(variable)
+            if trigger_id is None and validation_data is None and self.outputs:
+                self.log.error(f'[{self.name}] Missing validations rule: {variable}')
+
+            # make business rules based on data type or content
+            output_data = {'expected_output': data, 'op': 'eq'}
+            if 1 not in self.exit_codes:
+                output_data = self.output_data_rule(variable, data)
+
+            # get trigger id for service Apps
+            if trigger_id is not None:
+                if isinstance(trigger_id, bytes):
+                    trigger_id = trigger_id.decode('utf-8')
+                outputs.setdefault(trigger_id, {})
+                outputs[trigger_id][variable] = output_data
+            else:
+                outputs[variable] = output_data
+
     def validate_required_inputs(self):
-        """Present interactive menu to build profile."""
-        msg = 'All required inputs are valid'
+        """Update interactive menu to build profile.
 
-        def params_data():
-            # handle non-layout and layout based App appropriately
-            for input_ in self.profile_inputs():
-                if self.lj.has_layout:
-                    # using inputs from layout.json since they are required to be in order
-                    # (display field can only use inputs previously defined)
-                    for name in self.lj.params_dict:
-                        # get data from install.json based on name (has hidden and type fields)
-                        data = self.ij.params_dict.get(name)
-                        yield name, data, input_
-                else:
-                    for name, data in self.ij.params_dict.items():
-                        yield name, data, input_
+        This method will also merge input is --merge_inputs is passed to pytest.
+        """
 
-        inputs = {}
-        for name, data, input_ in params_data():
-            if data.get('serviceConfig'):
-                # inputs that are serviceConfig are not applicable for profiles
-                continue
+        errors = []
+        status = True
+        updated_params = []
 
-            if inputs:
-                # each input will be checked for permutations if the App has layout and not hidden
-                if not self.permutations.validate_input_variable(name, inputs) and not data.get(
-                    'hidden'
-                ):
+        # handle non-layout and layout based App appropriately
+        for profile_inputs in self.profile_inputs():  # dict with optional, required nested dicts
+            profile_inputs_flattened = profile_inputs.get('optional', {})
+            profile_inputs_flattened.update(profile_inputs.get('required', {}))
+
+            params = self.ij.params_dict.items()
+            if self.lj.has_layout:
+                # using inputs from layout.json since they are required to be in order
+                # (display field can only use inputs previously defined)
+                params = {}
+                for name in self.lj.params_dict:
+                    # get data from install.json based on name
+                    params[name] = self.ij.params_dict.get(name)
+
+                # hidden fields will not be in layout.json so they need to be include manually
+                params.update(self.ij.filter_params_dict(hidden=True))
+
+            inputs = {}
+            merged_inputs = {
+                'optional': {},
+                'required': {},
+            }
+            for name, data, in params.items():
+                if data.get('serviceConfig'):
+                    # inputs that are serviceConfig are not applicable for profiles
                     continue
 
-            # get the value from the current profile
-            value = input_.get('required', {}).get(name) or input_.get('optional', {}).get(name)
+                if not data.get('hidden'):
+                    # each non hidden input will be checked for permutations if the App has layout
+                    if not self.permutations.validate_input_variable(name, inputs):
+                        continue
 
-            if data.get('required') and not value:
-                # cause an assert failure if a required field doesn't have a valid value
-                return False, f'Missing/Invalid value for required arg ({name})'
+                # get the value from the current profile
+                value = profile_inputs_flattened.get(name)
 
-            # update inputs
-            inputs[name] = value
-        return True, msg
+                input_type = 'optional'
+                if data.get('required'):
+                    input_type = 'required'
+                    if not value:
+                        # validation step
+                        errors.append(f'- Missing/Invalid value for required arg ({name})')
+                        status = False
+
+                # update inputs
+                inputs[name] = value
+                merged_inputs[input_type][name] = value
+
+            updated_params.append(merged_inputs)
+
+        if self.merge_inputs:
+            # update profile outputs
+            with open(self.filename, 'r+') as fh:
+                profile_data = json.load(fh)
+                if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+                    for index, config_item in enumerate(profile_data.get('configs', [])):
+                        config_item['config'] = updated_params[index]
+                else:
+                    profile_data['inputs'] = updated_params[0]
+
+                # write updated profile
+                fh.seek(0)
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
+                fh.truncate()
+
+        errors = '\n'.join(errors)  # convert error to string for assert message
+        return status, f'\n{errors}'
 
     #
     # Properties
@@ -817,10 +875,6 @@ class Profile:
             )
         return tc_log_path
 
-    def tc_playbook_out_variables(self):
-        """Return all output variables for this profile."""
-        return self.ij.output_variable_csv_string
-
     @property
     def tc_out_path(self):
         """Return fqpn tc_out_path arg relative to profile."""
@@ -831,6 +885,42 @@ class Profile:
                 self._default_args.get('tc_out_path'), self.feature, self._test_case_name
             )
         return tc_out_path
+
+    @property
+    def tc_playbook_out_variables(self):
+        """Return calculated output variables.
+
+        * iterate over all inputs:
+          * if input key has exposePlaybookKeyAs defined
+          * if value a variable
+            * lookup value in stage.kvstore data
+            * for each key add to output variables
+        """
+        output_variables = self.ij.tc_playbook_out_variables
+        if self.lj.has_layout:
+            # if layout based App get valid outputs
+            output_variables = self.ij.create_output_variables(
+                self.permutations.outputs_by_inputs(self.args)
+            )
+
+        for arg, value in self.args.items():
+            # get full input data from install.json
+            input_data = self.ij.params_dict.get(arg, {})
+
+            # check to see if it support dynamic output variables
+            if 'exposePlaybookKeyAs' not in input_data:
+                continue
+
+            # get the output variable type from install.json input data
+            variable_type = input_data.get('exposePlaybookKeyAs')
+
+            # staged data for this dynamic input must be a KeyValueArray
+            for data in self.stage_kvstore.get(value, []):
+                # create a variable using key value
+                variable = self.ij.create_variable(data.get('key'), variable_type, job_id=9876)
+                output_variables.append(variable)
+
+        return output_variables
 
     @property
     def tc_temp_path(self):
@@ -864,19 +954,24 @@ class ProfileInteractive:
     def __init__(self, profile):
         """Initialize Class properties."""
         self.profile = profile
-        self.input_type_map = {
-            'boolean': self.present_boolean,
-            'choice': self.present_choice,
-            'keyvaluelist': self.present_key_value_list,
-            'Multichoice': self.present_multichoice,
-            'string': self.present_string,
-        }
-        self.utils = Utils()
+
+        # properties
         self._inputs = {
             'optional': {},
             'required': {},
         }
         self._staging_data = {'kvstore': {}}
+        self._user_defaults = None
+        self.exit_codes = []
+        self.input_type_map = {
+            'boolean': self.present_boolean,
+            'choice': self.present_choice,
+            'keyvaluelist': self.present_key_value_list,
+            'multichoice': self.present_multichoice,
+            'string': self.present_string,
+        }
+        self.utils = Utils()
+        self.user_defaults_filename = os.path.join('tests', '.user_defaults')
 
     def _default(self, data):
         """Return the best option for default."""
@@ -887,7 +982,7 @@ class ProfileInteractive:
             valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
-                    if self.profile.feature.lower() == vv.lower():
+                    if self.profile.feature.lower() == vv.replace(' ', '_').lower():
                         default = valid_values.index(vv)
             else:
                 try:
@@ -897,7 +992,9 @@ class ProfileInteractive:
         elif data.get('type').lower() == 'multichoice':
             default = data.get('default').split('|')
         else:
-            default = data.get('default', '')
+            default = data.get('default')
+            if default is None:
+                default = self.user_defaults.get(data.get('name'))
         return default
 
     @staticmethod
@@ -932,8 +1029,12 @@ class ProfileInteractive:
                 # using inputs from layout.json since they are required to be in order
                 # (display field can only use inputs previously defined)
                 for name in self.profile.lj.params_dict:
-                    # get data from install.json based on name (has hidden and type fields)
+                    # get data from install.json based on name
                     data = self.profile.ij.params_dict.get(name)
+                    yield name, data
+
+                # hidden fields will not be in layout.json so they need to be include manually
+                for name, data in self.profile.ij.filter_params_dict(hidden=True).items():
                     yield name, data
             else:
                 for name, data in self.profile.ij.params_dict.items():
@@ -945,11 +1046,9 @@ class ProfileInteractive:
                 # inputs that are serviceConfig are not applicable for profiles
                 continue
 
-            if inputs:
+            if not data.get('hidden'):
                 # each input will be checked for permutations if the App has layout and not hidden
-                if not self.profile.permutations.validate_input_variable(
-                    name, inputs
-                ) and not data.get('hidden'):
+                if not self.profile.permutations.validate_input_variable(name, inputs):
                     continue
 
             # present the input
@@ -957,6 +1056,22 @@ class ProfileInteractive:
 
             # update inputs
             inputs[name] = value
+
+        self.present_exit_code()
+
+    def present_exit_code(self):
+        """Provide user input for exit code."""
+
+        self.print_header({'label': 'Exit Codes'})
+        values = input(self.choice(' [0]')).strip().split(',')
+
+        # add input
+        for e in values:
+            e = e or 0
+            self.exit_codes.append(int(e))
+
+        # user feedback
+        self.print_feedback(self.exit_codes)
 
     def present_boolean(self, name, data):
         """Build a question for boolean input."""
@@ -1047,7 +1162,9 @@ class ProfileInteractive:
         # add input
         variable = self.profile.ij.create_variable(data.get('name'), 'KeyValueArray')
         self.add_input(name, data, variable)
-        self._staging_data['kvstore'].setdefault(variable, [{'key': '', 'value': ''}])
+        self._staging_data['kvstore'].setdefault(
+            variable, [{'key': 'placeholder', 'value': 'placeholder'}]
+        )
 
         return variable
 
@@ -1093,28 +1210,35 @@ class ProfileInteractive:
 
     def present_string(self, name, data):
         """Build a question for boolean input."""
-        default = self._default(data)
+        default = self._default(data)  # the default value from install.json or other
 
         option_text = ''
         if default is not None:
-            option_default = default
             option_text = f' [{default}]'
 
         self.print_header(data)
         value = input(self.choice(option_text)).strip()
         if not value:
-            value = option_default
+            value = default
 
         feedback_value = value
         input_value = value
+
+        # allow a null input
+        if input_value == 'null':
+            input_value = None
+        elif input_value in ['"null"', "'null'"]:
+            input_value = 'null'
+
         # for non-service Apps replace user input with a variable and add to staging data
-        if self.profile.ij.runtime_level.lower() not in [
-            'triggerservice',
-            'webhooktriggerservice',
-        ] and 'String' in data.get('playbookDataType', []):
+        if (
+            self.profile.ij.runtime_level.lower() not in ['triggerservice', 'webhooktriggerservice']
+            and 'String' in data.get('playbookDataType', [])
+            and not os.getenv('TCEX_NO_PROFILE_VARIABLE')
+        ):  # only stage String Type
             # create variable and staging data
             variable = self.profile.ij.create_variable(data.get('name'), data.get('type'))
-            self._staging_data['kvstore'].setdefault(variable, value)
+            self._staging_data['kvstore'].setdefault(variable, input_value)
             feedback_value = f'"{value}" - ({variable})'
             input_value = variable
 
@@ -1123,6 +1247,10 @@ class ProfileInteractive:
 
         # add input
         self.add_input(name, data, input_value)
+
+        # update default
+        if default is None:
+            self.user_defaults[name] = value
 
         return value
 
@@ -1142,8 +1270,9 @@ class ProfileInteractive:
         label = data.get('label', 'NO LABEL')
         print(f'\n{c.Fore.GREEN}{label}')
 
-        note = data.get('note', '')[:100]
-        _print_metadata('Note', note)
+        note = data.get('note', '')[:200]
+        if note:
+            _print_metadata('Note', note)
 
         if data.get('required'):
             _print_metadata('Required', 'true')
@@ -1165,3 +1294,13 @@ class ProfileInteractive:
     def staging_data(self):
         """Return staging data dict."""
         return self._staging_data
+
+    @property
+    def user_defaults(self):
+        """Return user defaults"""
+        if self._user_defaults is None:
+            self._user_defaults = {}
+            if os.path.isfile(self.user_defaults_filename):
+                with open(self.user_defaults_filename, 'r') as fh:
+                    self._user_defaults = json.load(fh)
+        return self._user_defaults

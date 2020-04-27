@@ -2,21 +2,31 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework LayoutJson."""
 import json
+import logging
 import os
 import random
 import sys
 
-import sqlite3
+try:
+    import sqlite3
+except ImportError:
+    # only required for local development
+    pass
 
 from .install_json import InstallJson
 from .layout_json import LayoutJson
 
 
 class Permutations:
-    """Permutations Module"""
+    """Permutations Module
 
-    def __init__(self):
+    Args:
+        logger (logging.Logger, optional): A instance of Logger. Defaults to None.
+    """
+
+    def __init__(self, logger=None):
         """Initialize Class properties"""
+        self.log = logger or logging.getLogger('permutations').addHandler(logging.NullHandler())
 
         # properties
         self._db_conn = None
@@ -168,13 +178,16 @@ class Permutations:
         # escape any single quotes in value
         if isinstance(value, str):
             value = value.replace('\'', '\\')
-        try:
-            # value should be wrapped in single quotes to be properly parsed
-            sql = f"UPDATE {table_name} SET {column} = '{value}'"
-            cur = self.db_conn.cursor()
-            cur.execute(sql)
-        except sqlite3.OperationalError as e:
-            raise RuntimeError(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
+
+        # only column defined in install.json can be updated
+        if column in self.ij.params_dict:
+            try:
+                # value should be wrapped in single quotes to be properly parsed
+                sql = f"UPDATE {table_name} SET {column} = '{value}'"
+                cur = self.db_conn.cursor()
+                cur.execute(sql)
+            except sqlite3.OperationalError as e:
+                raise RuntimeError(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
 
     def exists(self):
         """Return True if permutation file exists."""
@@ -318,7 +331,7 @@ class Permutations:
         Returns:
             bool: True if the display value returns results.
         """
-        if not self.lj.has_layout:
+        if not self.lj.has_layout or not inputs:
             # always return try if current App doesn't have a layouts file
             return True
 

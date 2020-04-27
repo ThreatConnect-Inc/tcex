@@ -18,8 +18,13 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         Returns:
             [type]: [description]
         """
-        args['tc_playbook_out_variables'] = self.ij.output_variable_array
-        self.log.data('run', 'args', args)
+        # add requested output variables
+        args['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
+
+        # safely log all args to tests.log
+        self._log_args(args)
+
+        # get a configured instance of the App
         self.app = self.app_init(args)
 
         # Setup
@@ -70,6 +75,9 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         exit_code = self.run_app_method(self.app, 'write_output')
         if exit_code != 0:
             return exit_code
+
+        # call write output
+        self.app.tcex.playbook.write_output()
 
         # Teardown
         exit_code = self.run_app_method(self.app, 'teardown')

@@ -8,10 +8,17 @@ import pytest
 
 def pytest_addoption(parser):
     """Add arg flag to control replacement of outputs."""
+    parser.addoption('--merge_inputs', action='store_true')
     parser.addoption('--merge_outputs', action='store_true')
     parser.addoption('--replace_exit_message', action='store_true')
     parser.addoption('--replace_outputs', action='store_true')
     parser.addoption('--update', action='store_true')
+
+
+@pytest.fixture()
+def merge_inputs(pytestconfig):
+    """Return the current value for merge_inputs args."""
+    return pytestconfig.getoption('merge_inputs')
 
 
 @pytest.fixture()
@@ -105,8 +112,10 @@ def update_system_path():
 
 def pytest_unconfigure(config):  # pylint: disable=unused-argument
     """Execute unconfigure logic before test process is exited."""
-    directory = os.path.join(os.getcwd(), 'log')
-    for root, dirs, files in os.walk(directory):  # pylint: disable=unused-variable
+    log_directory = os.path.join(os.getcwd(), 'log')
+
+    # remove any 0 byte files from log directory
+    for root, dirs, files in os.walk(log_directory):  # pylint: disable=unused-variable
         for f in files:
             f = os.path.join(root, f)
             try:
@@ -114,6 +123,20 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
                     os.remove(f)
             except OSError:
                 continue
+
+    # display any Errors or Warnings in tests.log
+    test_log_file = os.path.join(log_directory, 'tests.log')
+    if os.path.isfile(test_log_file):
+        with open(test_log_file, 'r') as fh:
+            issues = []
+            for line in fh:
+                if '- ERROR - ' in line or '- WARNING - ' in line:
+                    issues.append(line.strip())
+
+            if issues:
+                print('\nErrors and Warnings:')
+                for i in issues:
+                    print(f'- {i}')
 
     # remove service started file
     try:
