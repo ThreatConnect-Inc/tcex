@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -217,7 +217,6 @@
 
         <span class="c1"># Property defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="c1"># self._cm = None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="mi">0</span>
@@ -328,11 +327,6 @@
 
 <span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># if self._cm is None:</span>
-        <span class="c1">#     from .case_management import CaseManagement</span>
-
-        <span class="c1">#     self._cm = CaseManagement(self)</span>
-        <span class="c1"># return self._cm</span>
         <span class="kn">from</span> <span class="nn">.case_management</span> <span class="kn">import</span> <span class="n">CaseManagement</span>
 
         <span class="k">return</span> <span class="n">CaseManagement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -465,6 +459,21 @@
             <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">indicator</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">indicator_list</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">victim_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return all defined ThreatConnect Asset types.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list of ThreatConnect Asset types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;EmailAddress&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;SocialNetwork&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;NetworkAccount&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;WebSite&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Phone&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">group_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

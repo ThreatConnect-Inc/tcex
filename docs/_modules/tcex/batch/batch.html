@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -840,21 +840,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Static list of Batch error codes and short description&quot;&quot;&quot;</span>
-        <span class="n">error_codes</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1001&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;General Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1002&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Permission Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1003&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;JsonSyntax Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1004&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Internal Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1005&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Invalid Indicator Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1006&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Invalid Group Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1007&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Item Not Found Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1008&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Indicator Limit Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x1009&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Association Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x100A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Duplicate Item Error&#39;</span>
-        <span class="n">error_codes</span><span class="p">[</span><span class="s1">&#39;0x100B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;File IO Error&#39;</span>
-
-        <span class="k">return</span> <span class="n">error_codes</span>
+        <span class="sd">&quot;&quot;&quot;Return static list of Batch error codes and short description&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;0x1001&#39;</span><span class="p">:</span> <span class="s1">&#39;General Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1002&#39;</span><span class="p">:</span> <span class="s1">&#39;Permission Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1003&#39;</span><span class="p">:</span> <span class="s1">&#39;JsonSyntax Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1004&#39;</span><span class="p">:</span> <span class="s1">&#39;Internal Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1005&#39;</span><span class="p">:</span> <span class="s1">&#39;Invalid Indicator Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1006&#39;</span><span class="p">:</span> <span class="s1">&#39;Invalid Group Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1007&#39;</span><span class="p">:</span> <span class="s1">&#39;Item Not Found Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1008&#39;</span><span class="p">:</span> <span class="s1">&#39;Indicator Limit Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x1009&#39;</span><span class="p">:</span> <span class="s1">&#39;Association Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x100A&#39;</span><span class="p">:</span> <span class="s1">&#39;Duplicate Item Error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0x100B&#39;</span><span class="p">:</span> <span class="s1">&#39;File IO Error&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
 
 <div class="viewcode-block" id="Batch.errors"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.errors">[docs]</a>    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieve Batch errors to ThreatConnect API.</span>

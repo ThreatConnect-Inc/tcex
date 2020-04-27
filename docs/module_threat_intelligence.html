@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Threat Intelligence &mdash; TcEx 2.0.3 documentation</title>
+  <title>Module: Threat Intelligence &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -112,7 +112,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#get-groups-by-filter">Get Groups by Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-group-by-id">Get Group by ID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-group-metadata">Get Group Metadata</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-a-group">Create a Group</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-group">Create a Group</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#group-creation-examples">Group Creation Examples</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-a-group">Updating a Group</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#delete-a-group">Delete a Group</a></li>
 </ul>
@@ -123,7 +126,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#get-indicators-by-filter">Get Indicators by Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-indicator-by-value">Get Indicator by Value</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-indicator-metadata">Get Indicator Metadata</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-an-indicator">Create an Indicator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-an-indicator">Create an Indicator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#indicator-creation-examples">Indicator Creation Examples</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-an-indicator">Updating an Indicator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#delete-an-indicator">Delete an Indicator</a></li>
 </ul>
@@ -380,6 +386,101 @@
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
+<p>To create a Group, you will need to provide a keyword argument with the each of the required <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">group fields</a> for the type of Group you would like to create.</p>
+<div class="section" id="group-creation-examples">
+<h4>Group Creation Examples<a class="headerlink" href="#group-creation-examples" title="Permalink to this headline">¶</a></h4>
+<p>Here are examples creating each Group type:</p>
+<p>Adversary:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Adversary 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Campaign:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Campaign 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Document:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Document 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;test.txt&#39;</span><span class="p">))</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+<span class="n">group_object</span><span class="o">.</span><span class="n">file_content</span><span class="p">(</span><span class="s1">&#39;This is the content of the document&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Email:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Email 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Foo&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;This an email header&#39;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="s1">&#39;This is an email body&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Event:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Event 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Incident</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Incident&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Incident 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Intrusion Set:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Intrusion Set&#39;</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Intrusion Set 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Report:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Report&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Report 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;report.html&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+<span class="n">group_object</span><span class="o">.</span><span class="n">file_content</span><span class="p">(</span><span class="s1">&#39;&lt;h1&gt;New report&lt;/h1&gt;</span><span class="se">\n</span><span class="s1">Report contents here...&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Signature:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">signature_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;rule silent_banker : banker</span>
+<span class="s1">{</span>
+<span class="s1">    meta:</span>
+<span class="s1">        description = &quot;This is just an example&quot;</span>
+<span class="s1">        threat_level = 3</span>
+<span class="s1">        in_the_wild = true</span>
+<span class="s1">    strings:</span>
+<span class="s1">        $a = {6A 40 68 00 30 00 00 6A 14 8D 91}</span>
+<span class="s1">        $b = {8D 4D B0 2B C1 83 C0 27 99 6A 4E 59 F7 F9}</span>
+<span class="s1">        $c = &quot;UVODFRYSIHLNWPEJXQZAKCBGMT&quot;</span>
+<span class="s1">    condition:</span>
+<span class="s1">        $a or $b or $c</span>
+<span class="s1">}&#39;&#39;&#39;</span>
+<span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Signature&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;s1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">OWNER</span><span class="p">,</span> <span class="n">fileName</span><span class="o">=</span><span class="s1">&#39;sig.yara&#39;</span><span class="p">,</span> <span class="n">fileType</span><span class="o">=</span><span class="s1">&#39;YARA&#39;</span><span class="p">,</span> <span class="n">file_text</span><span class="o">=</span><span class="n">signature_text</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Threat:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Threat&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Threat 1&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">group_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="updating-a-group">
 <h3>Updating a Group<a class="headerlink" href="#updating-a-group" title="Permalink to this headline">¶</a></h3>
@@ -543,6 +644,41 @@
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
+<p>To create an Indicator, you will need to provide a keyword argument with each of the required <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">indicator fields</a> for the type of Indicator you would like to create.</p>
+<div class="section" id="indicator-creation-examples">
+<h4>Indicator Creation Examples<a class="headerlink" href="#indicator-creation-examples" title="Permalink to this headline">¶</a></h4>
+<p>Here are examples creating the five, basic Indicator types:</p>
+<p>Address:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;4.3.2.1&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">indicator_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Email Address:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;EmailAddress&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="s1">&#39;foo@example.org&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">indicator_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>File:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="o">*</span><span class="mi">32</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">indicator_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Host:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">hostName</span><span class="o">=</span><span class="s1">&#39;example.org&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">indicator_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>URL:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">hostName</span><span class="o">=</span><span class="s1">&#39;https://example.org/foo&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">indicator_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="updating-an-indicator">
 <h3>Updating an Indicator<a class="headerlink" href="#updating-an-indicator" title="Permalink to this headline">¶</a></h3>

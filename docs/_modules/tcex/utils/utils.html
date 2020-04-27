@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.utils &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.utils.utils &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -204,6 +204,8 @@
         <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_camel_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?&lt;!^)(?=[A-Z])&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;^</span><span class="si">{self.variable_pattern}</span><span class="s1">$&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_pattern</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Utils.camel_to_snake"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.camel_to_snake">[docs]</a>    <span class="k">def</span> <span class="nf">camel_to_snake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camel_string</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return snake case string from a camel case string.</span>
@@ -363,7 +365,43 @@
         <span class="n">numbers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;[0-9]+&#39;</span><span class="p">,</span> <span class="n">asn</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">asn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;ASN</span><span class="si">{numbers[0]}</span><span class="s1">&#39;</span>
-        <span class="k">return</span> <span class="n">asn</span></div></div>
+        <span class="k">return</span> <span class="n">asn</span></div>
+
+<div class="viewcode-block" id="Utils.variable_method_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.variable_method_name">[docs]</a>    <span class="k">def</span> <span class="nf">variable_method_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert variable name to a valid method name.</span>
+
+<span class="sd">        #App:9876:string.operation!String -&gt; string_operation_string</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable (string): The variable name to convert.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (str): Method name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_match</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
+                <span class="n">variable_name</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">variable_type</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">method_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{variable_name}</span><span class="s1">_</span><span class="si">{variable_type}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">method_name</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">variable_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Regex pattern to match and parse a playbook variable.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">r</span><span class="s1">&#39;#([A-Za-z]+)&#39;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
+            <span class="sa">r</span><span class="s1">&#39;:([\d]+)&#39;</span>  <span class="c1"># app id (:7979)</span>
+            <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_\.\-\[\]]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
+            <span class="sa">r</span><span class="s1">&#39;!(StringArray|BinaryArray|KeyValueArray&#39;</span>  <span class="c1"># variable type (array)</span>
+            <span class="sa">r</span><span class="s1">&#39;|TCEntityArray|TCEnhancedEntityArray&#39;</span>  <span class="c1"># variable type (array)</span>
+            <span class="sa">r</span><span class="s1">&#39;|String|Binary|KeyValue|TCEntity|TCEnhancedEntity&#39;</span>  <span class="c1"># variable type</span>
+            <span class="sa">r</span><span class="s1">&#39;|(?:(?!String)(?!Binary)(?!KeyValue)&#39;</span>  <span class="c1"># non matching for custom</span>
+            <span class="sa">r</span><span class="s1">&#39;(?!TCEntity)(?!TCEnhancedEntity)&#39;</span>  <span class="c1"># non matching for custom</span>
+            <span class="sa">r</span><span class="s1">&#39;[A-Za-z0-9_-]+))&#39;</span>  <span class="c1"># variable type (custom)</span>
+        <span class="p">)</span></div>
 </pre></div>
 
            </div>

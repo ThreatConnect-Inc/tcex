@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.logger.logger &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.logger.logger &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -242,8 +242,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            level (str): The logging level. Default to &#39;debug&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;debug&#39;</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">level</span> <span class="ow">or</span> <span class="s1">&#39;debug&#39;</span>
         <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Logger.remove_handler_by_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.remove_handler_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">remove_handler_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler_name</span><span class="p">):</span>

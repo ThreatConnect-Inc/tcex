@@ -705,8 +705,8 @@ class Profile:
 
         # handle non-layout and layout based App appropriately
         for profile_inputs in self.profile_inputs():  # dict with optional, required nested dicts
-            profile_inputs_flattened = profile_inputs.get('optional')
-            profile_inputs_flattened.update(profile_inputs.get('required'))
+            profile_inputs_flattened = profile_inputs.get('optional', {})
+            profile_inputs_flattened.update(profile_inputs.get('required', {}))
 
             params = self.ij.params_dict.items()
             if self.lj.has_layout:
@@ -967,7 +967,7 @@ class ProfileInteractive:
             'boolean': self.present_boolean,
             'choice': self.present_choice,
             'keyvaluelist': self.present_key_value_list,
-            'Multichoice': self.present_multichoice,
+            'multichoice': self.present_multichoice,
             'string': self.present_string,
         }
         self.utils = Utils()

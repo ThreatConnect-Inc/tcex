@@ -802,7 +802,7 @@ class Redis:
             )
 
         # ADI-1118 - log warning if string value is wrapped in quotes
-        if isinstance(app_data, (str)) and app_data.startswith('"') and app_data.endswitch('"'):
+        if isinstance(app_data, (str)) and app_data.startswith('"') and app_data.endswith('"'):
             self.log.data(
                 'validate', 'Suspect Value', f'App data is wrapped in double quotes.', 'warning',
             )
