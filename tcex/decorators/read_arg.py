@@ -125,19 +125,6 @@ class ReadArg:
                     kwargs[self.arg] = self.default
                     return wrapped(*args, **kwargs)
 
-            try:
-                # read arg from namespace
-                arg = getattr(app.args, self.arg)
-            except AttributeError:
-                if enabled:
-                    app.tcex.log.error(f'Arg {self.arg} was not found in Arg namespace.')
-                    app.exit_message = self.fail_msg  # for test cases
-                    app.tcex.exit(1, self.fail_msg)
-                else:
-                    # add results to kwargs
-                    kwargs[self.arg] = self.default
-                    return wrapped(*args, **kwargs)
-
             # retrieve data from Redis and call decorated function
             if self.indicator_values:
                 arg_data = app.tcex.playbook.read_indicator_values(arg)

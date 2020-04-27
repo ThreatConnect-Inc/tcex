@@ -487,7 +487,7 @@ class TestCase:
 
                     # compare
                     passed, assert_error = self.validator.compare(
-                        json.dumps(app_exit_message), json.dumps(test_exit_message), op=op, **kwargs
+                        app_exit_message, test_exit_message, op=op, **kwargs
                     )
                     assert passed, assert_error
                 else:
