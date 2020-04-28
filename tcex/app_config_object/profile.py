@@ -410,6 +410,12 @@ class Profile:
             fh.write('\n')  # add required newline
             fh.truncate()
 
+            # re-replace environment variables
+            profile_data = self.replace_env_variables(profile_data)
+
+            # replace all staged variable
+            profile_data = self.replace_tc_variables(profile_data)
+
         return profile_data
 
     @staticmethod
