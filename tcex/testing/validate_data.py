@@ -10,6 +10,7 @@ import operator
 import os
 import random
 import re
+from collections import OrderedDict
 from urllib.parse import unquote
 
 from ..utils import Utils
@@ -90,8 +91,10 @@ class Validator:
 
         # build assert error
         assert_error = (
-            f'\n App Data     : {app_data}\n Operator     : {op}\n '
-            f'Expected Data: {test_data}\n Details      : {details}\n'
+            f'\n App Data     : {app_data}\n'
+            f' Operator     : {op}\n'
+            f' Expected Data: {test_data}\n'
+            f' Details      : {details}\n'
         )
         return passed, assert_error
 
@@ -151,6 +154,7 @@ class Validator:
             'ne': self.operator_ne,
             '!=': self.operator_ne,
             'rex': self.operator_regex_match,
+            'skip': self.operator_skip,
         }
         return operators.get(op, None)
 
@@ -162,6 +166,11 @@ class Validator:
             app_data: (list,str): One or more date strings.
             test_data: (str): A strptime string for comparision.
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -174,8 +183,9 @@ class Validator:
                 passed = False
         return passed, ','.join(bad_data)
 
+    @staticmethod
     def operator_deep_diff(
-        self, app_data, test_data, **kwargs
+        app_data, test_data, **kwargs
     ):  # pylint: disable=too-many-return-statements
         """Compare app data equals tests data.
 
@@ -191,46 +201,9 @@ class Validator:
         except ImportError:
             return False, 'Could not import DeepDiff module (try "pip install deepdiff").'
 
-        # pull out exclude_paths from kwargs
-        exclude_paths = kwargs.pop('exclude_paths', [])
-
-        if isinstance(app_data, str):
-            try:
-                app_data = json.loads(app_data)
-            except ValueError:
-                return False, f'Invalid JSON data provide ({app_data}).'
-        else:
-            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
-            app_data = json.loads(json.dumps(app_data))
-
-        if isinstance(test_data, str):
-            try:
-                test_data = json.loads(test_data)
-            except ValueError:
-                return False, f'Invalid JSON data provide ({test_data}).'
-        else:
-            # Convert OrderedDicts and [OrderedDicts] to dicts and [dicts]
-            test_data = json.loads(json.dumps(test_data))
-
-        try:
-            if isinstance(app_data, list) and isinstance(test_data, list):
-                for index, data in enumerate(app_data):
-                    for path in exclude_paths:
-                        paths = path.split('.')
-                        data = self.remove_excludes(data, paths)
-                    app_data[index] = data
-                for index, data in enumerate(test_data):
-                    for path in exclude_paths:
-                        paths = path.split('.')
-                        data = self.remove_excludes(data, paths)
-                    test_data[index] = data
-            else:
-                for path in exclude_paths:
-                    paths = path.split('.')
-                    app_data = self.remove_excludes(app_data, paths)
-                    test_data = self.remove_excludes(test_data, paths)
-        except AttributeError as e:
-            return False, f'Deep diff remove excludes failed with ({e}).'
+        if (test_data is None or app_data is None) and app_data != test_data:
+            # handle "null" -> None match
+            return False, f'App Data {app_data} does not match Test Data {test_data}'
 
         # run operator
         try:
@@ -260,6 +233,9 @@ class Validator:
     @staticmethod
     def operator_is_url(app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -294,6 +270,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.ge(app_data, test_data)
@@ -312,6 +293,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.gt(app_data, test_data)
@@ -322,6 +308,11 @@ class Validator:
 
     def operator_is_date(self, app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -337,6 +328,9 @@ class Validator:
     @staticmethod
     def operator_is_number(app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+
         if not isinstance(app_data, list):
             app_data = [app_data]
         bad_data = []
@@ -373,9 +367,14 @@ class Validator:
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
         elif isinstance(app_data, (list)):
-            # ADI-1076
+            # ADI-1076/ADI-1149
             try:
-                app_data = [json.loads(json.dumps(d)) for d in app_data]
+                app_data_updated = []
+                for ad in app_data:
+                    if isinstance(ad, OrderedDict):
+                        ad = json.dumps(ad)
+                    app_data_updated.append(json.loads(ad))
+                app_data = app_data_updated
             except ValueError:
                 return False, f'Invalid JSON data provide ({app_data}).'
 
@@ -385,9 +384,14 @@ class Validator:
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
         elif isinstance(test_data, (list)):
-            # ADI-1076
+            # ADI-1076/ADI-1149
             try:
-                test_data = [json.loads(json.dumps(d)) for d in test_data]
+                test_data_updated = []
+                for td in test_data:
+                    if isinstance(td, OrderedDict):
+                        td = json.dumps(td)
+                    test_data_updated.append(json.loads(td))
+                test_data = test_data_updated
             except ValueError:
                 return False, f'Invalid JSON data provide ({test_data}).'
 
@@ -456,6 +460,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.le(app_data, test_data)
@@ -472,6 +481,11 @@ class Validator:
         If data passed in is 1 list and 1 int, validates length array and int value are the same.
         If data passed in is 1 str and 1 int, validates length str and int value are the same.
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if isinstance(test_data, (list, str)):
             results = operator.eq(len(app_data), len(test_data))
         else:
@@ -489,6 +503,11 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
         results = operator.lt(app_data, test_data)
@@ -521,6 +540,11 @@ class Validator:
         Returns:
             bool: The results of the operator.
         """
+        if app_data is None:
+            return False, 'Invalid app_data: {app_data}'
+        if test_data is None:
+            return False, 'Invalid test_data: {test_data}'
+
         if isinstance(app_data, dict):
             return False, 'Invalid app_data, dict type is not supported.'
 
@@ -532,7 +556,24 @@ class Validator:
             if re.match(test_data, data) is None:
                 bad_data.append(data)
                 passed = False
-        return passed, ','.join(bad_data)
+
+        bad_data = ','.join(bad_data)  # convert bad_data to string for assertion error
+        if bad_data:
+            bad_data = f'Failed inputs: {bad_data}'
+        return passed, bad_data
+
+    @staticmethod
+    def operator_skip(app_data, test_data):  # pylint: disable=unused-argument
+        """Skip validation and always return True.
+
+        Args:
+            app_data (str, list): The data created by the App.
+            test_data (str): The data provided in the test case.
+
+        Returns:
+            bool: The results of the operator.
+        """
+        return True, 'skipped'
 
     @property
     def redis(self):
@@ -713,6 +754,10 @@ class Redis:
         except KeyError:
             pass
 
+        # log skipped validations here so that variable can be logged
+        if op == 'skip':
+            self.log.data('validate', 'skipped validation', variable, 'warning')
+
         op = op or 'eq'
         if not variable:
             self.log.data(
@@ -757,7 +802,7 @@ class Redis:
             )
 
         # ADI-1118 - log warning if string value is wrapped in quotes
-        if isinstance(app_data, (str)) and app_data.startswith('"') and app_data.endswitch('"'):
+        if isinstance(app_data, (str)) and app_data.startswith('"') and app_data.endswith('"'):
             self.log.data(
                 'validate', 'Suspect Value', f'App data is wrapped in double quotes.', 'warning',
             )
@@ -820,6 +865,10 @@ class Redis:
     def rex(self, variable, data):
         """Test App data with regex"""
         return self.data(variable, fr'{data}', op='rex')
+
+    def skip(self, variable, data):
+        """Test App data with regex"""
+        return self.data(variable, data, op='skip')
 
 
 class ThreatConnect:

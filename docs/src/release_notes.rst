@@ -8,9 +8,9 @@ Release Notes
 + Updated decorator method logging.
 + Updated testing framework validation template to support dynamic output variable.
 + Updated testing framework validation template to validate output variable consistency.
-+ Updated profile module to support variable from Vault server.
++ Updated profile module to support variable from env store server.
 + Updated OnException decorator to log traceback.
-+ Moved hvac package to a development requirement.
++ Multiple enhancement and fixes to testing framework.
 
 2.0.3
 =====

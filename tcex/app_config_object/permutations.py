@@ -331,7 +331,7 @@ class Permutations:
         Returns:
             bool: True if the display value returns results.
         """
-        if not self.lj.has_layout:
+        if not self.lj.has_layout or not inputs:
             # always return try if current App doesn't have a layouts file
             return True
 

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.test &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.bin.test &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -261,10 +261,16 @@
         <span class="sd">&quot;&quot;&quot;Present interactive profile inputs.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">present</span><span class="p">()</span>
         <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;exit_codes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">exit_codes</span><span class="p">,</span>
             <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
             <span class="s1">&#39;stage&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">staging_data</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">)</span>
+
+        <span class="c1"># write user defaults file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">user_defaults</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">user_defaults_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">user_defaults</span><span class="p">,</span> <span class="n">fh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Test.load_legacy_profiles"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.load_legacy_profiles">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_legacy_profiles</span><span class="p">(</span><span class="n">staging_files</span><span class="p">):</span>

@@ -68,6 +68,12 @@ def options(test_options, request):
 
 
 @pytest.fixture()
+def merge_inputs(pytestconfig):
+    """Return the current value for merge_inputs args."""
+    return pytestconfig.getoption('merge_inputs')
+
+
+@pytest.fixture()
 def merge_outputs(pytestconfig):
     """Return the current value for merge_outputs args."""
     return pytestconfig.getoption('--merge_outputs')

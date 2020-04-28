@@ -33,6 +33,7 @@ c.init(autoreset=True, strip=False)
 def profile_addoption(parser):
     """ Add profile options to pytest config parser """
 
+    parser.addoption('--merge_inputs', action='store_true')
     parser.addoption('--merge_outputs', action='store_true')
     parser.addoption('--replace_exit_message', action='store_true')
     parser.addoption('--replace_outputs', action='store_true')
@@ -55,7 +56,6 @@ class Profile:
     def __init__(
         self,
         default_args=None,
-        feature=None,
         name=None,
         redis_client=None,
         pytestconfig=None,
@@ -70,10 +70,12 @@ class Profile:
         self._name = name
         self.log = logger or logging.getLogger('profile').addHandler(logging.NullHandler())
         if pytestconfig:
+            self.merge_inputs = pytestconfig.getoption('--merge_inputs', False)
             self.merge_outputs = pytestconfig.getoption('--merge_outputs', False)
             self.replace_exit_message = pytestconfig.getoption('--replace_exit_message', False)
             self.replace_outputs = pytestconfig.getoption('--replace_outputs', False)
         else:
+            self.merge_inputs = False
             self.merge_outputs = False
             self.replace_exit_message = False
             self.replace_outputs = False
@@ -930,10 +932,14 @@ class Profile:
         if self.outputs is None or self.replace_outputs:
             # update profile if current profile is not or user specifies --replace_outputs
             with open(self.filename, 'r+') as fh:
-                json_data = json.load(fh)
+                profile_data = json.load(fh)
+                profile_data['outputs'] = outputs
 
-            json_data['outputs'] = outputs
-            self._write_file(json_data)
+                # write updated profile
+                fh.seek(0)
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
+                fh.truncate()
         elif self.merge_outputs:
             if trigger_id is not None:
                 # service Apps have a different structure with id: data
@@ -958,10 +964,14 @@ class Profile:
 
             # update profile outputs
             with open(self.filename, 'r+') as fh:
-                json_data = json.load(fh)
+                profile_data = json.load(fh)
+                profile_data['outputs'] = merged_outputs
 
-            json_data['outputs'] = merged_outputs
-            self._write_file(json_data)
+                # write updated profile
+                fh.seek(0)
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
+                fh.truncate()
 
     def update_outputs_variables(self, outputs, redis_data, trigger_id):
         """Return the outputs section of a profile.
@@ -978,10 +988,10 @@ class Profile:
             # validate redis variables
             if data is None:
                 if 1 not in self.exit_codes:
+                    # TODO: add feature in testing framework to allow writing null and
+                    #       then check if variables exist instead of null value.
                     # log error for missing output data if not a fail test case (exit code of 1)
-                    self.log.warning(
-                        f'[{self.name}] Missing KV store output for variable {variable}'
-                    )
+                    self.log.debug(f'[{self.name}] Missing KV store output for variable {variable}')
             else:
                 data = json.loads(data.decode('utf-8'))
 
@@ -1005,46 +1015,82 @@ class Profile:
                 outputs[variable] = output_data
 
     def validate_required_inputs(self):
-        """Present interactive menu to build profile."""
-        msg = 'All required inputs are valid'
+        """Update interactive menu to build profile.
 
-        def params_data():
-            # handle non-layout and layout based App appropriately
-            for input_ in self.profile_inputs():
-                if self.lj.has_layout:
-                    # using inputs from layout.json since they are required to be in order
-                    # (display field can only use inputs previously defined)
-                    for name in self.lj.params_dict:
-                        # get data from install.json based on name (has hidden and type fields)
-                        data = self.ij.params_dict.get(name)
-                        yield name, data, input_
-                else:
-                    for name, data in self.ij.params_dict.items():
-                        yield name, data, input_
+        This method will also merge input is --merge_inputs is passed to pytest.
+        """
 
-        inputs = {}
-        for name, data, input_ in params_data():
-            if data.get('serviceConfig'):
-                # inputs that are serviceConfig are not applicable for profiles
-                continue
+        errors = []
+        status = True
+        updated_params = []
 
-            if inputs:
-                # each input will be checked for permutations if the App has layout and not hidden
-                if not self.permutations.validate_input_variable(name, inputs) and not data.get(
-                    'hidden'
-                ):
+        # handle non-layout and layout based App appropriately
+        for profile_inputs in self.profile_inputs():  # dict with optional, required nested dicts
+            profile_inputs_flattened = profile_inputs.get('optional', {})
+            profile_inputs_flattened.update(profile_inputs.get('required', {}))
+
+            params = self.ij.params_dict.items()
+            if self.lj.has_layout:
+                # using inputs from layout.json since they are required to be in order
+                # (display field can only use inputs previously defined)
+                params = {}
+                for name in self.lj.params_dict:
+                    # get data from install.json based on name
+                    params[name] = self.ij.params_dict.get(name)
+
+                # hidden fields will not be in layout.json so they need to be include manually
+                params.update(self.ij.filter_params_dict(hidden=True))
+
+            inputs = {}
+            merged_inputs = {
+                'optional': {},
+                'required': {},
+            }
+            for name, data, in params.items():
+                if data.get('serviceConfig'):
+                    # inputs that are serviceConfig are not applicable for profiles
                     continue
 
-            # get the value from the current profile
-            value = input_.get('required', {}).get(name) or input_.get('optional', {}).get(name)
+                if not data.get('hidden'):
+                    # each non hidden input will be checked for permutations if the App has layout
+                    if not self.permutations.validate_input_variable(name, inputs):
+                        continue
 
-            if data.get('required') and not value:
-                # cause an assert failure if a required field doesn't have a valid value
-                return False, f'Missing/Invalid value for required arg ({name})'
+                # get the value from the current profile
+                value = profile_inputs_flattened.get(name)
 
-            # update inputs
-            inputs[name] = value
-        return True, msg
+                input_type = 'optional'
+                if data.get('required'):
+                    input_type = 'required'
+                    if not value:
+                        # validation step
+                        errors.append(f'- Missing/Invalid value for required arg ({name})')
+                        status = False
+
+                # update inputs
+                inputs[name] = value
+                merged_inputs[input_type][name] = value
+
+            updated_params.append(merged_inputs)
+
+        if self.merge_inputs:
+            # update profile outputs
+            with open(self.filename, 'r+') as fh:
+                profile_data = json.load(fh)
+                if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+                    for index, config_item in enumerate(profile_data.get('configs', [])):
+                        config_item['config'] = updated_params[index]
+                else:
+                    profile_data['inputs'] = updated_params[0]
+
+                # write updated profile
+                fh.seek(0)
+                json.dump(profile_data, fh, indent=2, sort_keys=True)
+                fh.write('\n')  # add required newline
+                fh.truncate()
+
+        errors = '\n'.join(errors)  # convert error to string for assert message
+        return status, f'\n{errors}'
 
     #
     # Properties
@@ -1242,7 +1288,7 @@ class ProfileInteractive:
             'boolean': self.present_boolean,
             'choice': self.present_choice,
             'keyvaluelist': self.present_key_value_list,
-            'Multichoice': self.present_multichoice,
+            'multichoice': self.present_multichoice,
             'string': self.present_string,
         }
         self.utils = Utils()
@@ -1304,8 +1350,12 @@ class ProfileInteractive:
                 # using inputs from layout.json since they are required to be in order
                 # (display field can only use inputs previously defined)
                 for name in self.profile.lj.params_dict:
-                    # get data from install.json based on name (has hidden and type fields)
+                    # get data from install.json based on name
                     data = self.profile.ij.params_dict.get(name)
+                    yield name, data
+
+                # hidden fields will not be in layout.json so they need to be include manually
+                for name, data in self.profile.ij.filter_params_dict(hidden=True).items():
                     yield name, data
             else:
                 for name, data in self.profile.ij.params_dict.items():
@@ -1317,11 +1367,9 @@ class ProfileInteractive:
                 # inputs that are serviceConfig are not applicable for profiles
                 continue
 
-            if inputs:
+            if not data.get('hidden'):
                 # each input will be checked for permutations if the App has layout and not hidden
-                if not self.profile.permutations.validate_input_variable(
-                    name, inputs
-                ) and not data.get('hidden'):
+                if not self.profile.permutations.validate_input_variable(name, inputs):
                     continue
 
             # present the input
@@ -1483,17 +1531,16 @@ class ProfileInteractive:
 
     def present_string(self, name, data):
         """Build a question for boolean input."""
-        default = self._default(data)
+        default = self._default(data)  # the default value from install.json or other
 
         option_text = ''
         if default is not None:
-            option_default = default
             option_text = f' [{default}]'
 
         self.print_header(data)
         value = input(self.choice(option_text)).strip()
         if not value:
-            value = option_default
+            value = default
 
         feedback_value = value
         input_value = value

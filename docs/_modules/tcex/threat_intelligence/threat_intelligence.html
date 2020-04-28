@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.3 documentation</title>
+  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
 
 
@@ -567,20 +567,23 @@
         <span class="n">associations</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;associations&#39;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">security_labels</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;securityLabel&#39;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">tags</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">entity_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="n">entity_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="n">file_content</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">entity_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="s1">&#39;report&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">entity_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="s1">&#39;report&#39;</span><span class="p">]:</span>
             <span class="n">file_content</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;file_content&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fileContent&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">entity_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;task&#39;</span><span class="p">]:</span>
-                <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">entity_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;victim&#39;</span><span class="p">]:</span>
+                <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">victim</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">entity_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;task&#39;</span><span class="p">]:</span>
+                    <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">entity</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">entity_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="s1">&#39;report&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">entity_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="s1">&#39;report&#39;</span><span class="p">]:</span>
             <span class="n">ti</span><span class="o">.</span><span class="n">file_content</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">}</span>

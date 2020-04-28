@@ -241,7 +241,7 @@ class TestCase:
     def init_profile(self, profile_name, pytestconfig=None, monkeypatch=None, options=None):
         """Stages and sets up the profile given a profile name"""
         self._profile = Profile(
-            default_args=self.default_args,
+            default_args=self.default_args.copy(),
             name=profile_name,
             pytestconfig=pytestconfig,
             monkeypatch=monkeypatch,
@@ -398,9 +398,7 @@ class TestCase:
         self.session.auth = HmacAuth(api_access_id, api_secret_key)
 
         # retrieve token from API using HMAC auth
-        r = self.session.post(
-            f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=False
-        )
+        r = self.session.post(f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=True)
         if r.status_code == 200:
             token = r.json().get('data')
             self.log.data('setup', 'Using Token', token)
