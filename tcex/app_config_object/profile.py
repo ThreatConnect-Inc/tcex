@@ -25,6 +25,7 @@ from .layout_json import LayoutJson
 from .permutations import Permutations
 from ..env_store import EnvStore
 from ..utils import Utils
+from ..__metadata__ import __version__ as tcex_version
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -383,13 +384,17 @@ class Profile:
 
         # Short circuit migrations if the profile is newer than this code
         # Ideally, we'd put a migration stamp in the profile instead
-        migration_date = os.stat(__file__).st_mtime
-        profile_date = os.stat(self.filename).st_mtime
-        if profile_date > migration_date:
-            return self.data
+        migration_mtime = os.stat(__file__).st_mtime
+        migration_target = f'{tcex_version}.{migration_mtime}'
 
         with open(os.path.join(self.filename), 'r+') as fh:
             profile_data = json.load(fh)
+
+            profile_version = profile_data.get('version', None)
+            if not profile_version or profile_version < migration_target:
+                profile_data['version'] = migration_target
+            else:
+                return self.data  # profile is already migrated
 
             # migrate test options
             self.migrate_options(profile_data)
