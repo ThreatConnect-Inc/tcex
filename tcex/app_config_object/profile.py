@@ -7,6 +7,10 @@ import re
 import sys
 from random import randint
 import math
+import base64
+import zlib
+import pickle
+from requests.sessions import Session
 
 import colorama as c
 
@@ -26,6 +30,19 @@ from ..utils import Utils
 c.init(autoreset=True, strip=False)
 
 
+def profile_addoption(parser):
+    """ Add profile options to pytest config parser """
+
+    parser.addoption('--merge_outputs', action='store_true')
+    parser.addoption('--replace_exit_message', action='store_true')
+    parser.addoption('--replace_outputs', action='store_true')
+    parser.addoption('--update', action='store_true')
+    parser.addoption('--record-session', action='store_true')
+    parser.addoption('--ignore-session', action='store_true')
+    parser.addoption('--enable-autostage', action='store_true')
+    parser.addoption('--disable-autostage', action='store_true')
+
+
 class Profile:
     """Testing Profile Class.
 
@@ -39,23 +56,31 @@ class Profile:
         self,
         default_args=None,
         feature=None,
-        merge_outputs=False,
         name=None,
         redis_client=None,
-        replace_exit_message=False,
-        replace_outputs=False,
+        pytestconfig=None,
+        monkeypatch=None,
         tcex_testing_context=None,
         logger=None,
+        options=None,
     ):
         """Initialize Class properties."""
         self._default_args = default_args or {}
         self._feature = feature
         self._name = name
         self.log = logger or logging.getLogger('profile').addHandler(logging.NullHandler())
-        self.merge_outputs = merge_outputs
-        self.replace_exit_message = replace_exit_message
-        self.replace_outputs = replace_outputs
+        if pytestconfig:
+            self.merge_outputs = pytestconfig.getoption('--merge_outputs', False)
+            self.replace_exit_message = pytestconfig.getoption('--replace_exit_message', False)
+            self.replace_outputs = pytestconfig.getoption('--replace_outputs', False)
+        else:
+            self.merge_outputs = False
+            self.replace_exit_message = False
+            self.replace_outputs = False
+        self.pytestconfig = pytestconfig
+        self.monkeypatch = monkeypatch
         self.tcex_testing_context = tcex_testing_context
+        self.options = options
 
         # properties
         self._app_path = os.getcwd()
@@ -85,6 +110,9 @@ class Profile:
         Args:
             json_data (dict): The profile data.
         """
+        # Permuted test cases set options to a true value, so disable writeback
+        if self.options:
+            return
         with open(self.filename, 'w') as fh:
             fh.write(f'{json.dumps(json_data, indent=2, sort_keys=True)}\n')
 
@@ -205,20 +233,21 @@ class Profile:
         """Return the Data (dict) from the current profile."""
         if self._data is None:
             try:
-                with open(os.path.join(self.filename), 'r') as fh:
+                with open(self.filename, 'r') as fh:
                     profile_data = json.load(fh)
 
-                    # replace all variable references
-                    profile_data = self.replace_env_variables(profile_data)
+                # replace all variable references
+                profile_data = self.replace_env_variables(profile_data)
 
-                    # replace all staged variable
-                    profile_data = self.replace_tc_variables(profile_data)
+                # replace all staged variable
+                profile_data = self.replace_tc_variables(profile_data)
 
-                    # set updated profile data
-                    self._data = profile_data
+                # set updated profile data
+                self._data = profile_data
             except OSError:
                 print(f'{c.Fore.RED}Could not open profile {self.filename}.')
-        self._data['name'] = self.name
+        if self._data:
+            self._data['name'] = self.name
         return self._data
 
     @data.setter
@@ -256,14 +285,94 @@ class Profile:
     def init(self):
         """Return the Data (dict) from the current profile."""
 
-        # replace all variable references
-        profile_data = self.replace_env_variables(self.data)
+        if self.data is None:
+            self.log.error('Profile init failed; loaded profile data is None')
 
-        # replace all staged variable
-        profile_data = self.replace_tc_variables(profile_data)
+        # Now can initialize anything that needs initializing
 
-        # set update profile data
-        self._data = profile_data
+        self.session_init()  # initialize session recording/playback
+
+        if self.options:
+            if self.options.get('autostage', False):
+                self.init_autostage()
+
+    def init_autostage(self):
+        """" Converts input arguments to staged data to automatically
+            test playbook data propagation.
+
+            The profile_data is checked for the key "auto_stage."
+
+            auto_stage, if set, constrains the list of inputs that
+            are converted to staged redis variables.  It will be the
+            list of input names that will be staged.
+        """
+        profile_data = self.data
+        auto_stage = profile_data.get('options', {}).get('autostage', {}).get('inputs')
+        install_params = self.ij.contents
+
+        # Scan for what inputs allow playbook data
+        playbook_variables = {}
+        for param in install_params.get('params', []):
+            name = param.get('name')
+            playbook_type = param.get('playbookDataType', None)
+            playbook_variables[name] = playbook_type
+
+        # make sure the staging area exists
+        if 'stage' not in profile_data:
+            profile_data['stage'] = {}
+        if 'redis' not in profile_data['stage']:
+            profile_data['stage']['redis'] = {}
+
+        # First optional inputs
+        inputs = profile_data.get('inputs', {})
+        optionals = inputs.get('optional', {})
+        requireds = inputs.get('required', {})
+
+        for input_name, input_value in optionals.items():
+            if input_name == 'tc_action':
+                continue
+            if isinstance(auto_stage, list) and input_name not in auto_stage:
+                continue
+            playbook_type = playbook_variables.get(input_name, None)
+            if not playbook_type:
+                continue
+            if isinstance(input_value, list):
+                if 'StringArray' not in playbook_type:
+                    continue
+                type_name = 'StringArray'
+            else:
+                type_name = 'String'
+
+            key = '#App:123:{}!{}'.format(input_name, type_name)
+
+            profile_data['stage']['redis'][key] = input_value
+            profile_data['inputs']['optional'][input_name] = key
+
+        for input_name, input_value in requireds.items():
+            if input_name == 'tc_action':
+                continue
+            if isinstance(auto_stage, list) and input_name not in auto_stage:
+                continue
+            playbook_type = playbook_variables.get(input_name, None)
+            if not playbook_type:
+                continue
+            if isinstance(input_value, list):
+                if 'StringArray' not in playbook_type:
+                    continue
+                type_name = 'StringArray'
+            else:
+                type_name = 'String'
+
+            key = '#App:123:{}!{}'.format(input_name, type_name)
+
+            profile_data['stage']['redis'][key] = input_value
+            profile_data['inputs']['required'][input_name] = key
+
+        # Hmm!  Only test_case knows how to stage data
+        if self.options:
+            request = self.options.get('request')
+            if request:
+                request.instance.stage_data(profile_data['stage'])  # re-stage data
 
     def migrate(self):
         """Migrate profile to latest schema and rewrite data."""
@@ -503,6 +612,18 @@ class Profile:
     def replace_env_variables(self, profile_data):
         """Replace any env vars.
 
+        Environment variables replaced follow the pattern ${type:name[=default]}
+        e.g. ${env:FOO} or ${env:FOO=bla} to have a default value of "bla" if FOO
+        is unset.
+
+        A warning is raised when a substitution is called for, but the source
+        does not contain a matching key.  A default value of '' will be used
+        when this happens.
+
+        An error is raised if the substitution would result in a new key
+        pattern being formed, i.e. if the substitution text contains '${',
+        which may or may not be expanded, or break profile expansion.
+
         Args:
             profile_data (dict): The profile data dict.
 
@@ -516,9 +637,18 @@ class Profile:
                 full_match = m.group(0)
                 env_type = m.group(1)  # currently env, envs, local, or remote
                 env_key = m.group(2)
+                if '=' in env_key:
+                    env_key, default_value = env_key.split('=', 1)
+                else:
+                    default_value = None
 
-                env_value = self.env_store.getenv(env_key, env_type)
+                env_value = self.env_store.getenv(env_key, env_type, default_value)
                 if env_value is not None:
+                    if '${' in env_value:
+                        self.log.error(
+                            f'Profile replacement value for {full_match} includes '
+                            f'recursive expansion {env_value}'
+                        )
                     profile = profile.replace(full_match, env_value)
             except IndexError:
                 print(f'{c.Fore.YELLOW}Could not replace variable {full_match}).')
@@ -558,10 +688,189 @@ class Profile:
                     print(f'{c.Fore.YELLOW}Invalid variable found {full_match}.')
         return json.loads(profile)
 
+    def session_init(self):
+        """ Initializes session recording/playback.  Configured ON
+            with the --record-session test flag, forcibly
+            disabled with the --ignore-session test flag.
+
+            The profile field options.session.enabled can be true
+            to enable session recording/playback.
+
+            The profile field options.session.blur may be a list of
+            fields to blur to force matching (ie, date/times, passwords, etc)
+        """
+
+        record_session = self.pytestconfig.getoption('--record-session', False)
+        ignore_session = self.pytestconfig.getoption('--ignore-session', False)
+
+        if ignore_session:
+            return
+
+        options = self.data.get('options', {})
+        session_options = options.get('session', {})
+        session_enabled = session_options.get('enabled', False)
+
+        if 'session' in self.data['stage'] and not session_enabled:
+            session_enabled = True
+            session_options['enabled'] = True
+            options['session'] = session_options
+            self.data['options'] = options
+            self.session_update_profile(force=True)  # add option to profile
+
+        if record_session:
+            session_enabled = True
+            session_options['enabled'] = session_enabled
+            options['session'] = session_options
+            self.data['options'] = options
+
+            # save session data in stage.session
+            stage = self.data.get('stage', {})
+            stage['session'] = {'_record': True}
+
+        if not session_enabled:
+            return
+
+        # stich in empty dictionaries as necessary
+        stage = self.data.get('stage', {})
+
+        # if stage.session doesn't exist, but session_enabled is true, implicitly turn
+        # on session recording (someone zapped the data out of the profile)
+        if 'session' not in stage:
+            session_data = {'_record': True}
+            stage['session'] = session_data
+        else:
+            session_data = stage['session']
+
+        blur = ['password']
+        blur_options = session_options.get('blur', [])
+        # if options.session.blur is not a list, make it a tuple
+        if not isinstance(blur_options, list):
+            blur_options = (blur_options,)
+        blur.extend(blur_options)
+
+        stage['session'] = session_data
+        self.data['stage'] = stage
+
+        _request = getattr(Session, 'request')
+
+        session_profile = self
+
+        # Monkeypatch method for requests.sessions.Session.request
+        def request(self, method, url, *args, **kwargs):
+            """ Interception method for Session.request.  """
+            params = kwargs.get('params', {})
+            parmlist = []
+            params_keys = sorted(params.keys())
+            for key in params_keys:
+                if key in blur:
+                    value = '***'
+                else:
+                    value = params.get(key)
+                parmlist.append((key, value))
+
+            # The key for this request e.g. GET https://... ('foo':'bla')
+            request_key = '{} {} {}'.format(method, url, parmlist)
+
+            # if not recording, we must be playing back
+            if not session_data.get('_record', False):
+                result_data = session_data.get(request_key, None)
+                if result_data is None:
+                    raise KeyError('No stage.session value found for key {}'.format(request_key))
+                return session_profile.session_unpickle_result(result_data)
+
+            result = _request(self, method, url, *args, **kwargs)
+            pickled_result = session_profile.session_pickle_result(result)
+            session_data[request_key] = pickled_result
+            return result
+
+        # Add the intercept
+        self.monkeypatch.setattr(Session, 'request', request)
+
+    def session_pickle_result(self, result):  # pylint: disable=no-self-use
+        """ Pickled the result object so we can reconstruct it later """
+
+        return base64.b64encode(zlib.compress(pickle.dumps(result))).decode('utf-8')
+
+    def session_unpickle_result(self, result):  # pylint: disable=no-self-use
+        """ Reverse the pickle operation """
+
+        return pickle.loads(zlib.decompress(base64.b64decode(result.encode('utf-8'))))
+
+    def session_update_profile(self, force=False):
+        """ Write back the profile *if* we recorded session data """
+
+        stage = self.data.get('stage', {})
+        session = stage.get('session', {})
+        _record = session.get('_record', False)
+
+        if not _record and not force:
+            return
+
+        if '_record' in session:
+            del session['_record']  # don't record _record!
+
+        with open(self.filename, 'r+') as fh:
+            json_data = json.load(fh)
+
+        json_data['stage']['session'] = session
+        options = json_data.get('options', {})
+        json_data['options'] = options
+        options['session'] = self.data.get('options').get('session')
+
+        self._write_file(json_data)
+
     @property
     def test_directory(self):
         """Return fully qualified test directory."""
         return os.path.join(self._app_path, 'tests')
+
+    def test_permutations(self):
+        """ Return a list of (id, profile_name, test_options) for
+            each possible permutation of this test to be run by
+            pytest.
+
+            Warning:  the profile at this point is being
+            called by conftest during test discovery.  Most
+            of the profile will NOT be set properly.
+        """
+
+        # Base response is an unadorned test
+        response = [(self.name, self.name, {})]
+
+        with open(self.filename, 'r+') as fh:
+            profile_data = json.load(fh)
+
+        enable_autostage = self.pytestconfig.getoption('--enable-autostage', False)
+        disable_autostage = self.pytestconfig.getoption('--disable-autostage', False)
+
+        options = profile_data.get('options', {})
+        if 'options' not in profile_data:
+            profile_data['options'] = options
+        autostage_options = options.get('autostage', {})
+        if 'autostage' not in options:
+            options['autostage'] = autostage_options
+
+        # do a little dance to see if we should write back the profile
+        autostage_enabled = autostage_options.get('enabled')
+
+        if disable_autostage:
+            autostage_options['enabled'] = False
+        elif enable_autostage:
+            autostage_options['enabled'] = True
+
+        if autostage_enabled != autostage_options.get('enabled'):
+            self._write_file(profile_data)
+
+        # now just read the option, after possibly having
+        # rewritten it
+        autostage_enabled = autostage_options.get('enabled')
+
+        # N.B. autostage could potentially add more runs, with additional
+        # options, e.g. migrating '' to empty or Null or whatever
+        if autostage_enabled:
+            response.append([self.name + ':autostage', self.name, {'autostage': True}])
+
+        return response
 
     def update_exit_message(self):
         """Update validation rules from exit_message section of profile."""
@@ -614,6 +923,9 @@ class Profile:
 
             # cleanup redis
             self.clear_context(context)
+
+        # Update any profile outputs
+        self.session_update_profile()
 
         if self.outputs is None or self.replace_outputs:
             # update profile if current profile is not or user specifies --replace_outputs
@@ -1223,7 +1535,7 @@ class ProfileInteractive:
 
     @staticmethod
     def print_header(data):
-        """Enrich the header with metatdata."""
+        """Enrich the header with metadata."""
 
         def _print_metadata(title, value):
             """Print the title and value"""

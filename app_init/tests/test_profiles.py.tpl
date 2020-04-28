@@ -5,13 +5,9 @@ import os
 
 import pytest
 from tcex.testing import ${class_name}
-from ..profiles import profiles
 
 from .custom_feature import CustomFeature  # pylint: disable=relative-beyond-top-level
 from .validate_feature import ValidateFeature  # pylint: disable=relative-beyond-top-level
-
-# get profile names
-profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d'))
 
 
 # pylint: disable=useless-super-delegation,too-many-function-args
@@ -48,15 +44,15 @@ class TestProfiles(${class_name}):
         super(TestProfiles, self).teardown_method()
 
     % if runtime_level in ['triggerservice', 'webhooktriggerservice']:
-    @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(
-        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+        self, profile_name, pytestconfig, monkeypatch, options
     ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
         # initialize profile
         valid, message = self.init_profile(
-            profile_name, merge_outputs, replace_exit_message, replace_outputs
+            profile_name, pytestconfig=pytestconfig, monkeypatch=monkeypatch,
+            options=options
         )
         assert valid, message
 
@@ -102,15 +98,15 @@ class TestProfiles(${class_name}):
         # exit message can not be validated since it's written during teardown for Service Apps
 
     % else:
-    @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(
-        self, profile_name, merge_outputs, replace_exit_message, replace_outputs, monkeypatch
+        self, profile_name, pytestconfig, monkeypatch, options
     ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
         # initialize profile
         valid, message = self.init_profile(
-            profile_name, merge_outputs, replace_exit_message, replace_outputs
+            profile_name, pytestconfig=pytestconfig, monkeypatch=monkeypatch,
+            options=options
         )
         assert valid, message
 

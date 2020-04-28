@@ -238,19 +238,17 @@ class TestCase:
                     del self._default_args['api_secret_key']
         return self._default_args
 
-    def init_profile(
-        self, profile_name, merge_outputs=False, replace_exit_message=False, replace_outputs=False
-    ):
+    def init_profile(self, profile_name, pytestconfig=None, monkeypatch=None, options=None):
         """Stages and sets up the profile given a profile name"""
         self._profile = Profile(
-            default_args=self.default_args.copy(),
-            merge_outputs=merge_outputs,
+            default_args=self.default_args,
             name=profile_name,
+            pytestconfig=pytestconfig,
+            monkeypatch=monkeypatch,
             redis_client=self.redis_client,
-            replace_exit_message=replace_exit_message,
-            replace_outputs=replace_outputs,
             tcex_testing_context=self.tcex_testing_context,
             logger=self.log,
+            options=options,
         )
 
         # check profile environment
@@ -381,6 +379,8 @@ class TestCase:
         Returns:
             str: A valid token if available.
         """
+        if tc_api_path is None:  # no API path, no token
+            return None
         data = None
         token = None
         token_url_path = self.env_store.getenv('/ninja/tc/token/url_path', env_type='remote')
