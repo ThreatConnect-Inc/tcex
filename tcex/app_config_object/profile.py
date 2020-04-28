@@ -151,6 +151,9 @@ class Profile:
         profile = {
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'kvstore': {}}),
+            'options': profile_data.get(
+                'options', {'autostage': {'enabled': False, 'inputs': None}, 'session': {'enabled': False, 'blur': []},}
+            )
         }
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             profile['configs'] = [
@@ -323,8 +326,8 @@ class Profile:
         # make sure the staging area exists
         if 'stage' not in profile_data:
             profile_data['stage'] = {}
-        if 'redis' not in profile_data['stage']:
-            profile_data['stage']['redis'] = {}
+        if 'kvstore' not in profile_data['stage']:
+            profile_data['stage']['kvstore'] = {}
 
         # First optional inputs
         inputs = profile_data.get('inputs', {})
@@ -348,7 +351,7 @@ class Profile:
 
             key = '#App:123:{}!{}'.format(input_name, type_name)
 
-            profile_data['stage']['redis'][key] = input_value
+            profile_data['stage']['kvstore'][key] = input_value
             profile_data['inputs']['optional'][input_name] = key
 
         for input_name, input_value in requireds.items():
@@ -368,19 +371,16 @@ class Profile:
 
             key = '#App:123:{}!{}'.format(input_name, type_name)
 
-            profile_data['stage']['redis'][key] = input_value
+            profile_data['stage']['kvstore'][key] = input_value
             profile_data['inputs']['required'][input_name] = key
-
-        # Hmm!  Only test_case knows how to stage data
-        if self.options:
-            request = self.options.get('request')
-            if request:
-                request.instance.stage_data(profile_data['stage'])  # re-stage data
 
     def migrate(self):
         """Migrate profile to latest schema and rewrite data."""
         with open(os.path.join(self.filename), 'r+') as fh:
             profile_data = json.load(fh)
+
+            # migrate test options
+            self.migrate_options(profile_data)
 
             # update all env variables to match latest pattern
             self.migrate_permutation_output_variables(profile_data)
@@ -423,6 +423,25 @@ class Profile:
         except KeyError:
             pass
         return profile_data
+
+    @staticmethod
+    def migrate_options(profile_data):
+        """ Migrate profile to use options for tests """
+
+        # N.B. Profile data is passed by reference, so we can
+        # modify it in place
+
+        options = profile_data.get('options', {})
+        autostage = options.get('autostage', {'enabled': False})
+        autostage['inputs'] = autostage.get('inputs', None)
+
+        session = options.get('session', {'enabled': False})
+        session['blur'] = session.get('blur', [])
+
+        options['autostage'] = autostage
+        options['session'] = session
+
+        profile_data['options'] = options
 
     @staticmethod
     def migrate_stage_redis_name(profile_data):
