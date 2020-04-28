@@ -983,14 +983,17 @@ class ProfileInteractive:
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
                     if self.profile.feature.lower() == vv.replace(' ', '_').lower():
-                        default = valid_values.index(vv)
+                        # default = valid_values.index(vv)
+                        default = vv
+                        break
             else:
-                try:
-                    default = valid_values.index(data.get('default'))
-                except ValueError:
-                    default = 0
+                default = data.get('default')
+                # try:
+                #     default = valid_values.index(data.get('default'))
+                # except ValueError:
+                #     default = 0
         elif data.get('type').lower() == 'multichoice':
-            default = data.get('default').split('|')
+            default = data.get('default', '').split('|')
         else:
             default = data.get('default')
             if default is None:
@@ -1105,17 +1108,35 @@ class ProfileInteractive:
     def present_choice(self, name, data):
         """Build a question for choice input."""
         default = self._default(data)
-        option_text = f' [{default}]'
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
-        if not valid_values:
-            option_text = ''
-        # enumerate options
+
+        # default value needs to be converted to index
+        if default:
+            try:
+                option_index = valid_values.index(default)
+                option_text = f' [{option_index}]'
+            except ValueError:
+                # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then use index 0.
+                # there is no way to tell if the default value is be part of the expansion.
+                if any([re.match(r'^\${.*}$', v) for v in valid_values]):
+                    option_index = 0
+                    option_text = f' [{option_index}]'
+                else:
+                    print(
+                        f'''{c.Fore.RED}Invalid value of ({default}) for {data.get('name')}, '''
+                        'check that default value and validValues match in install.json.'
+                    )
+                    sys.exit()
+
+        # build options list to display to the user in two columns
         options = []
         for i, v in enumerate(valid_values):
             options.append(f'{i}. {v}')
 
-        # display the options
+        # print header information
         self.print_header(data)
+
+        # display options list into two columns
         left, right = self._split_list(options)
         for i, _ in enumerate(left):
             ld = left[i]
@@ -1125,27 +1146,25 @@ class ProfileInteractive:
                 rd = ''
             print(f'{ld:40} {rd:40}')
 
+        # collect user input an process accordingly
         value = input(self.choice(option_text)).strip()
-
         if not value:
-            value = default
+            value = option_index
+        else:
+            try:
+                value = int(value)
+            except ValueError:
+                print(f'{c.Fore.RED}Please provide a integer between 0-{len(valid_values) - 1}.')
+                sys.exit(1)
 
         # get value from valid value index
         if valid_values:
-            index = None
             try:
-                index = valid_values.index(value)
-            except ValueError:
-                pass
-            try:
-                index = index or value
-                value = valid_values[int(index)]
-            except (TypeError, ValueError):
+                value = valid_values[value]
+            except IndexError:
                 print(
-                    (
-                        f'{c.Fore.RED}Invalid value of {value} provided. '
-                        f'Please provide a integer between 0-{len(valid_values) - 1}'
-                    )
+                    f'{c.Fore.RED}Invalid value of {value} provided. '
+                    f'Please provide a integer between 0-{len(valid_values) - 1}'
                 )
                 sys.exit(1)
 
@@ -1170,38 +1189,80 @@ class ProfileInteractive:
 
     def present_multichoice(self, name, data):
         """Build a question for choice input."""
-        default = self._default(data)
+        default = self._default(data)  # array of default values
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
 
-        option_default = []
-        option_text = ''
+        # default values will be return as an array (e.g., one|two -> ['one'. 'two']).
+        # using the valid values array we can look up these values to show as default in input.
+        option_indexes = []
+        for d in default:
+            try:
+                option_indexes.append(valid_values.index(d))
+            except ValueError:
+                # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then skip value.
+                # there is no way to tell if the default value is be part of the expansion.
+                if any([re.match(r'^\${.*}$', v) for v in valid_values]):
+                    continue
+
+                print(
+                    f'''{c.Fore.RED}Invalid value of ({d}) for {data.get('name')}, check '''
+                    'that default value(s) and validValues match in install.json.'
+                )
+                sys.exit()
+        option_text = f''' [{','.join([str(v) for v in option_indexes])}]'''
+
+        # build options list to display to the user in two columns
         options = []
         for i, v in enumerate(valid_values):
-            if v in default:
-                option_default.append(i)
-                option_text += f' [{v}]'
-            options.append(f'{i:02}. {v}\n')
+            options.append(f'{i}. {v}')
 
+        # print header information
         self.print_header(data)
+
+        # display options list into two columns
+        left, right = self._split_list(options)
+        for i, _ in enumerate(left):
+            ld = left[i]
+            try:
+                rd = right[i]
+            except IndexError:
+                rd = ''
+            print(f'{ld:40} {rd:40}')
+
+        # collect user input an process accordingly
         value = input(self.choice(option_text)).strip()
-        if not value and option_default:
-            value = option_default
+        if not value:
+            # use default values from option_index if no value is provided
+            value = option_indexes
         else:
-            value = value.split(',')
+            # parse values into index position based on valid value presented to the user
+            try:
+                value = [int(i) for i in value.strip().split(',')]
+            except ValueError:
+                print(
+                    f'{c.Fore.RED}Please provide one or more integers between '
+                    f'0-{len(valid_values) - 1} separated by commas.'
+                )
+                sys.exit(1)
 
         # get value from valid value index
         values = []
-        for v in value:
+        for index in value:
             try:
-                index = int(v.strip())
-            except TypeError:
-                print(f'{c.Fore.RED}Invalid value of {v} provided.')
+                values.append(valid_values[index])
+            except IndexError:
+                print(
+                    f'{c.Fore.RED}Invalid value of {index} provided. '
+                    f'Please provide one or more integers between 0-{len(valid_values) - 1} '
+                    'separated by commas.'
+                )
                 sys.exit(1)
-            values.append(valid_values[index])
+
+        # values stored in profile are pipe delimeted for multichoice
         delimited_values = '|'.join(values)
 
         # user feedback
-        self.print_feedback(value)
+        self.print_feedback(delimited_values)
 
         # add input
         self.add_input(name, data, delimited_values)
