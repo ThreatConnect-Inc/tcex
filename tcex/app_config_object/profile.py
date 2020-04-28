@@ -380,6 +380,14 @@ class Profile:
 
     def migrate(self):
         """Migrate profile to latest schema and rewrite data."""
+
+        # Short circuit migrations if the profile is newer than this code
+        # Ideally, we'd put a migration stamp in the profile instead
+        migration_date = os.stat(__file__).st_mtime
+        profile_date = os.stat(self.filename).st_mtime
+        if profile_date > migration_date:
+            return self.data
+
         with open(os.path.join(self.filename), 'r+') as fh:
             profile_data = json.load(fh)
 
