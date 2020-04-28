@@ -152,8 +152,12 @@ class Profile:
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'kvstore': {}}),
             'options': profile_data.get(
-                'options', {'autostage': {'enabled': False, 'inputs': None}, 'session': {'enabled': False, 'blur': []},}
-            )
+                'options',
+                {
+                    'autostage': {'enabled': False, 'inputs': None},
+                    'session': {'enabled': False, 'blur': []},
+                },
+            ),
         }
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             profile['configs'] = [
