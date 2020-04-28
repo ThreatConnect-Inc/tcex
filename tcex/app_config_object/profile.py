@@ -778,7 +778,7 @@ class Profile:
                 input_type = 'optional'
                 if data.get('required'):
                     input_type = 'required'
-                    if not value:
+                    if value in [None, '']:  # accept value of 0
                         # validation step
                         errors.append(f'- Missing/Invalid value for required arg ({name})')
                         status = False
@@ -1371,16 +1371,22 @@ class ProfileInteractive:
         label = data.get('label', 'NO LABEL')
         print(f'\n{c.Fore.GREEN}{label}')
 
+        # type
+        _print_metadata('Type', data.get('type'))
+
+        # note
         note = data.get('note', '')[:200]
         if note:
             _print_metadata('Note', note)
 
-        if data.get('required'):
-            _print_metadata('Required', 'true')
+        # required
+        _print_metadata('Required', str(data.get('required', False)).lower())
 
+        # hidden
         if data.get('hidden'):
             _print_metadata('Hidden', 'true')
 
+        # Input Types
         pbt = ','.join(data.get('playbookDataType', []))
         if pbt:
             _print_metadata('Playbook Data Types', pbt)
