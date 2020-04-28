@@ -983,15 +983,10 @@ class ProfileInteractive:
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
                     if self.profile.feature.lower() == vv.replace(' ', '_').lower():
-                        # default = valid_values.index(vv)
                         default = vv
                         break
             else:
                 default = data.get('default')
-                # try:
-                #     default = valid_values.index(data.get('default'))
-                # except ValueError:
-                #     default = 0
         elif data.get('type').lower() == 'multichoice':
             default = data.get('default', '').split('|')
         else:
@@ -1071,7 +1066,11 @@ class ProfileInteractive:
         # add input
         for e in values:
             e = e or 0
-            self.exit_codes.append(int(e))
+            try:
+                self.exit_codes.append(int(e))
+            except ValueError:
+                print(f'{c.Fore.RED}Please provide a integer between 0-3.')
+                sys.exit(1)
 
         # user feedback
         self.print_feedback(self.exit_codes)
@@ -1111,22 +1110,22 @@ class ProfileInteractive:
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
 
         # default value needs to be converted to index
+        option_index = 0
         if default:
             try:
                 option_index = valid_values.index(default)
-                option_text = f' [{option_index}]'
             except ValueError:
                 # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then use index 0.
                 # there is no way to tell if the default value is be part of the expansion.
                 if any([re.match(r'^\${.*}$', v) for v in valid_values]):
                     option_index = 0
-                    option_text = f' [{option_index}]'
                 else:
                     print(
                         f'''{c.Fore.RED}Invalid value of ({default}) for {data.get('name')}, '''
                         'check that default value and validValues match in install.json.'
                     )
                     sys.exit()
+        option_text = f' [{option_index}]'
 
         # build options list to display to the user in two columns
         options = []
@@ -1209,6 +1208,12 @@ class ProfileInteractive:
                     'that default value(s) and validValues match in install.json.'
                 )
                 sys.exit()
+
+        # if not defaults default to first option
+        if not option_indexes:
+            option_indexes = [0]
+
+        # define options text
         option_text = f''' [{','.join([str(v) for v in option_indexes])}]'''
 
         # build options list to display to the user in two columns
