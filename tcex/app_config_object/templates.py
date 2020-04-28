@@ -358,9 +358,9 @@ class DownloadTemplates(TemplateBase):
         """Download the profiles.py file."""
         if not self.profile:
             raise RuntimeError('Download of "profiles.py" requires a Profile object.')
-        url = f'{self.url}/tests/profiles.py'
-        destination = os.path.join(self.profile.test_directory, 'profiles.py')
-        self.download_file(url, destination, overwrite=True)
+        #url = f'{self.url}/tests/profiles.py'
+        #destination = os.path.join(self.profile.test_directory, 'profiles.py')
+        #self.download_file(url, destination, overwrite=True)
 
 
 class TestProfileTemplates(TemplateBase):
