@@ -154,7 +154,7 @@ class Profile:
             'options': profile_data.get(
                 'options',
                 {
-                    'autostage': {'enabled': False, 'inputs': None},
+                    'autostage': {'enabled': False, 'only_inputs': None},
                     'session': {'enabled': False, 'blur': []},
                 },
             ),
@@ -317,7 +317,7 @@ class Profile:
             list of input names that will be staged.
         """
         profile_data = self.data
-        auto_stage = profile_data.get('options', {}).get('autostage', {}).get('inputs')
+        auto_stage = profile_data.get('options', {}).get('autostage', {}).get('only_inputs')
         install_params = self.ij.contents
 
         # Scan for what inputs allow playbook data
@@ -437,7 +437,7 @@ class Profile:
 
         options = profile_data.get('options', {})
         autostage = options.get('autostage', {'enabled': False})
-        autostage['inputs'] = autostage.get('inputs', None)
+        autostage['only_inputs'] = autostage.get('only_inputs', None)
 
         session = options.get('session', {'enabled': False})
         session['blur'] = session.get('blur', [])
