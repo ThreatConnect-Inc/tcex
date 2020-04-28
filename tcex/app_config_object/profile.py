@@ -38,10 +38,10 @@ def profile_addoption(parser):
     parser.addoption('--replace_exit_message', action='store_true')
     parser.addoption('--replace_outputs', action='store_true')
     parser.addoption('--update', action='store_true')
-    parser.addoption('--record-session', action='store_true')
-    parser.addoption('--ignore-session', action='store_true')
-    parser.addoption('--enable-autostage', action='store_true')
-    parser.addoption('--disable-autostage', action='store_true')
+    parser.addoption('--record_session', action='store_true')
+    parser.addoption('--ignore_session', action='store_true')
+    parser.addoption('--enable_autostage', action='store_true')
+    parser.addoption('--disable_autostage', action='store_true')
 
 
 class Profile:
@@ -692,8 +692,8 @@ class Profile:
 
     def session_init(self):
         """ Initializes session recording/playback.  Configured ON
-            with the --record-session test flag, forcibly
-            disabled with the --ignore-session test flag.
+            with the --record_session test flag, forcibly
+            disabled with the --ignore_session test flag.
 
             The profile field options.session.enabled can be true
             to enable session recording/playback.
@@ -702,8 +702,8 @@ class Profile:
             fields to blur to force matching (ie, date/times, passwords, etc)
         """
 
-        record_session = self.pytestconfig.getoption('--record-session', False)
-        ignore_session = self.pytestconfig.getoption('--ignore-session', False)
+        record_session = self.pytestconfig.getoption('--record_session', False)
+        ignore_session = self.pytestconfig.getoption('--ignore_session', False)
 
         if ignore_session:
             return
@@ -842,8 +842,8 @@ class Profile:
         with open(self.filename, 'r+') as fh:
             profile_data = json.load(fh)
 
-        enable_autostage = self.pytestconfig.getoption('--enable-autostage', False)
-        disable_autostage = self.pytestconfig.getoption('--disable-autostage', False)
+        enable_autostage = self.pytestconfig.getoption('--enable_autostage', False)
+        disable_autostage = self.pytestconfig.getoption('--disable_autostage', False)
 
         options = profile_data.get('options', {})
         if 'options' not in profile_data:
