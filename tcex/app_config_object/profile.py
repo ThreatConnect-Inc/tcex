@@ -266,6 +266,9 @@ class Profile:
             # update all env variables to match latest pattern
             self.migrate_permutation_output_variables(profile_data)
 
+            # update config section of profile for service Apps
+            self.migrate_service_config_inputs(profile_data)
+
             # change for threatconnect staged data
             profile_data = self.migrate_stage_redis_name(profile_data)
 
@@ -303,6 +306,40 @@ class Profile:
             del profile_data['permutation_output_variables']
         except KeyError:
             pass
+        return profile_data
+
+    def migrate_service_config_inputs(self, profile_data):
+        """Change flat config inputs to include required/options.
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        for configs in profile_data.get('configs', []):
+            config = configs.get('config', {})
+
+            # handle updated configs
+            if config.get('optional') or config.get('required'):
+                continue
+
+            # new config schema
+            config_inputs = {'optional': {}, 'required': {}}
+
+            # iterate over defined inputs
+            for k, v in config.items():
+                input_data = self.ij.params_dict.get(k)
+                if input_data is not None:
+                    input_type = 'optional'
+                    if input_data.get('required') is True:
+                        input_type = 'required'
+
+                # add value back with appropriate input type
+                config_inputs[input_type][k] = v
+
+            # overwrite flattened config
+            configs['config'] = config_inputs
         return profile_data
 
     @staticmethod
@@ -708,7 +745,7 @@ class Profile:
             profile_inputs_flattened = profile_inputs.get('optional', {})
             profile_inputs_flattened.update(profile_inputs.get('required', {}))
 
-            params = self.ij.params_dict.items()
+            params = self.ij.params_dict
             if self.lj.has_layout:
                 # using inputs from layout.json since they are required to be in order
                 # (display field can only use inputs previously defined)
@@ -983,17 +1020,14 @@ class ProfileInteractive:
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
                     if self.profile.feature.lower() == vv.replace(' ', '_').lower():
-                        # default = valid_values.index(vv)
                         default = vv
                         break
             else:
                 default = data.get('default')
-                # try:
-                #     default = valid_values.index(data.get('default'))
-                # except ValueError:
-                #     default = 0
         elif data.get('type').lower() == 'multichoice':
-            default = data.get('default', '').split('|')
+            default = data.get('default')
+            if default is not None and isinstance(default, str):
+                default = default.split('|')
         else:
             default = data.get('default')
             if default is None:
@@ -1111,22 +1145,22 @@ class ProfileInteractive:
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
 
         # default value needs to be converted to index
+        option_index = 0
         if default:
             try:
                 option_index = valid_values.index(default)
-                option_text = f' [{option_index}]'
             except ValueError:
                 # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then use index 0.
                 # there is no way to tell if the default value is be part of the expansion.
                 if any([re.match(r'^\${.*}$', v) for v in valid_values]):
                     option_index = 0
-                    option_text = f' [{option_index}]'
                 else:
                     print(
                         f'''{c.Fore.RED}Invalid value of ({default}) for {data.get('name')}, '''
                         'check that default value and validValues match in install.json.'
                     )
                     sys.exit()
+        option_text = f' [{option_index}]'
 
         # build options list to display to the user in two columns
         options = []
@@ -1194,21 +1228,23 @@ class ProfileInteractive:
 
         # default values will be return as an array (e.g., one|two -> ['one'. 'two']).
         # using the valid values array we can look up these values to show as default in input.
-        option_indexes = []
-        for d in default:
-            try:
-                option_indexes.append(valid_values.index(d))
-            except ValueError:
-                # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then skip value.
-                # there is no way to tell if the default value is be part of the expansion.
-                if any([re.match(r'^\${.*}$', v) for v in valid_values]):
-                    continue
+        option_indexes = [0]
+        if default:
+            option_indexes = []
+            for d in default:
+                try:
+                    option_indexes.append(valid_values.index(d))
+                except ValueError:
+                    # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then skip value.
+                    # there is no way to tell if the default value is be part of the expansion.
+                    if any([re.match(r'^\${.*}$', v) for v in valid_values]):
+                        continue
 
-                print(
-                    f'''{c.Fore.RED}Invalid value of ({d}) for {data.get('name')}, check '''
-                    'that default value(s) and validValues match in install.json.'
-                )
-                sys.exit()
+                    print(
+                        f'''{c.Fore.RED}Invalid value of ({d}) for {data.get('name')}, check '''
+                        'that default value(s) and validValues match in install.json.'
+                    )
+                    sys.exit()
         option_text = f''' [{','.join([str(v) for v in option_indexes])}]'''
 
         # build options list to display to the user in two columns
