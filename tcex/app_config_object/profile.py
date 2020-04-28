@@ -56,6 +56,7 @@ class Profile:
     def __init__(
         self,
         default_args=None,
+        feature=None,
         name=None,
         redis_client=None,
         pytestconfig=None,
