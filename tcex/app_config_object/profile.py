@@ -1105,7 +1105,11 @@ class ProfileInteractive:
         # add input
         for e in values:
             e = e or 0
-            self.exit_codes.append(int(e))
+            try:
+                self.exit_codes.append(int(e))
+            except ValueError:
+                print(f'{c.Fore.RED}Please provide a integer between 0-3.')
+                sys.exit(1)
 
         # user feedback
         self.print_feedback(self.exit_codes)
