@@ -207,11 +207,11 @@ class Validator:
 
         # deepdiff doesn't handle ordered dicts properly
         if isinstance(app_data, OrderedDict):
-            app_data = json.dumps(json.loads(app_data))
+            app_data = json.loads(json.dumps(app_data))
 
         # deepdiff doesn't handle ordered dicts properly
         if isinstance(test_data, OrderedDict):
-            test_data = json.dumps(json.loads(test_data))
+            test_data = json.loads(json.dumps(test_data))
 
         # run operator
         try:
