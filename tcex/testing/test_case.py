@@ -261,9 +261,6 @@ class TestCase:
             if isinstance(environment, list):
                 # pytest is giving back a list of lists
                 os_environments = [x[0] for x in environment]
-                # Insert build unless -build is in environments
-                if 'build' not in os_environments and '-build' not in os_environments:
-                    os_environments.append('build')
 
         # check profile environment
         self.check_environment(self._profile.environments, os_environments)
