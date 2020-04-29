@@ -43,6 +43,12 @@ def profile_addoption(parser):
     parser.addoption('--ignore_session', action='store_true')
     parser.addoption('--enable_autostage', action='store_true')
     parser.addoption('--disable_autostage', action='store_true')
+    parser.addoption(
+        '--environment',
+        action='append',
+        nargs=1,
+        help='Sets the TCEX_TEST_ENVS environment variable',
+    )
 
 
 class Profile:
