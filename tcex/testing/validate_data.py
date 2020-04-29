@@ -205,6 +205,14 @@ class Validator:
             # handle "null" -> None match
             return False, f'App Data {app_data} does not match Test Data {test_data}'
 
+        # deepdiff doesn't handle ordered dicts properly
+        if isinstance(app_data, OrderedDict):
+            app_data = json.dumps(json.loads(app_data))
+
+        # deepdiff doesn't handle ordered dicts properly
+        if isinstance(test_data, OrderedDict):
+            test_data = json.dumps(json.loads(test_data))
+
         # run operator
         try:
             ddiff = DeepDiff(app_data, test_data, **kwargs)
