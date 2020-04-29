@@ -3,7 +3,6 @@
 # flake8: noqa: F401
 import os
 
-import pytest
 from tcex.testing import ${class_name}
 
 from .custom_feature import CustomFeature  # pylint: disable=relative-beyond-top-level
