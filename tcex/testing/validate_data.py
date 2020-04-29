@@ -210,6 +210,7 @@ class Validator:
         if isinstance(app_data, OrderedDict):
             safe_app_data = json.loads(json.dumps(app_data))
         elif isinstance(app_data, list):
+            safe_app_data = []
             for ad in app_data:
                 if isinstance(ad, OrderedDict):
                     ad = json.loads(json.dumps(ad))
