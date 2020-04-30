@@ -395,6 +395,8 @@ class ThreatIntelligence:
             file_content = entity.pop('file_content', None) or entity.pop('fileContent', None)
         try:
             ti = self.indicator(entity_type, owner, **entity)
+            if entity.get('falsePositive'):
+                ti.add_false_positive()
         except Exception:
             if entity_type in ['victim']:
                 ti = self.victim(owner=owner, **entity)
@@ -542,6 +544,7 @@ class ThreatIntelligence:
         Yields:
 
         """
+        print('getting here')
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
