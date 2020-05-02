@@ -5,7 +5,9 @@ Release Notes
 
 2.0.5
 =====
-
++ Updated testing framework to decouple App version of TcEx and testing version.
++ Updated deepdiff validation method to better handle OrderedDicts.
++ Added simple caching to env_store.
 
 2.0.4
 =====
