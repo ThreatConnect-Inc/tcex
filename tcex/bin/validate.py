@@ -169,6 +169,7 @@ class Validate(Bin):
         except (AttributeError, KeyError):
             pass
 
+        # https://docs.python.org/3/library/importlib.html#checking-if-a-module-can-be-imported
         find_spec = importlib.util.find_spec(module)
         found = find_spec is not None
         if found is True:

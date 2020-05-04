@@ -260,7 +260,7 @@ class TestCase:
         """Return profile instance."""
         return self._profile
 
-    def run(self, args):
+    def run(self):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 

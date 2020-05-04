@@ -6,7 +6,7 @@ from app_lib import AppLib
 
 
 # pylint: disable=no-member
-def run(config=None):
+def run():
     """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules
@@ -17,7 +17,7 @@ def run(config=None):
     from tcex import TcEx  # pylint: disable=import-outside-toplevel
     from app import App  # pylint: disable=import-outside-toplevel
 
-    tcex = TcEx(config=config)
+    tcex = TcEx()
 
     try:
         # load App class

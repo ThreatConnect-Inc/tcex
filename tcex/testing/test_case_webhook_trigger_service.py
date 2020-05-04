@@ -8,11 +8,8 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
     """WebhookTrigger App TestCase Class"""
 
     # TOOD: move to service command
-    def run(self, args):
+    def run(self):
         """Run the Playbook App.
-
-        Args:
-            args (dict): The App CLI args.
 
         Returns:
             int: The App exit code

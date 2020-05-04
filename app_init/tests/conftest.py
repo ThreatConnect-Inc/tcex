@@ -4,6 +4,8 @@ import os
 import shutil
 import pytest
 
+from app_lib import AppLib
+
 
 def pytest_addoption(parser):
     """Add arg flag to control replacement of outputs."""
@@ -52,19 +54,6 @@ def clear_log_directory():
                 os.remove(file_path)
 
 
-def get_lib_directories():
-    """Get all "lib" directories."""
-    lib_directories = []
-    contents = os.listdir(os.getcwd())
-    for c in contents:
-        # ensure content starts with lib, is directory, and is readable
-        if c.startswith('lib') and os.path.isdir(c) and (os.access(c, os.R_OK)):
-            lib_directories.append(c)
-
-    # return sorted lib directories with newest Python version first
-    return sorted(lib_directories, reverse=True)
-
-
 def pytest_unconfigure(config):  # pylint: disable=unused-argument
     """Execute unconfigure logic before test process is exited."""
     log_directory = os.path.join(os.getcwd(), 'log')
@@ -101,3 +90,7 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
 
 
 clear_log_directory()
+if os.getenv('TCEX_SITE_PACKAGE') is None:
+    # update the path to ensure the App has access to required modules
+    app_lib = AppLib()
+    app_lib.update_path()

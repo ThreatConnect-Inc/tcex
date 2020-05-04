@@ -156,7 +156,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.publish(json.dumps(event))
         time.sleep(self.sleep_after_publish_webhook_event)
 
-    def run(self, args):
+    def run(self):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 

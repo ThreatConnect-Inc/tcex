@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """TcEx Runtime App Test Case"""
 import os
+import subprocess
+import sys
 from .test_case import TestCase
 
 
 class TestCaseJob(TestCase):
     """App TestCase Class"""
+
+    run_method = 'inline'  # run service inline or a as subprocess
 
     @staticmethod
     def create_shelf_dir(shelf_path):
@@ -15,24 +19,18 @@ class TestCaseJob(TestCase):
             with open(os.path.join(shelf_path, 'DEBUG'), 'a'):
                 os.utime(os.path.join(shelf_path, 'DEBUG'), None)
 
-    def run(self, args):
+    def run(self):
         """Run the Playbook App.
-
-        Args:
-            args (dict): The App CLI args.
 
         Returns:
             int: The exit code fo the App.
         """
         from run import run
 
-        # update args to app_args
-        config = self._update_args(args)
-
         # run the app
         exit_code = 0
         try:
-            run(config)
+            run()
         except SystemExit as e:
             exit_code = e.code
 
@@ -43,5 +41,26 @@ class TestCaseJob(TestCase):
         """Run an App using the profile name."""
         self.create_shelf_dir(self.profile.tc_temp_path)
 
+        # create encrypted config file
+        self.create_config(self.profile.args)
+
+        # run the service App in 1 of 3 ways
+        if self.run_method == 'inline':
+            # backup sys.argv
+            sys_argv_orig = sys.argv
+
+            # clear sys.argv
+            sys.argv = sys.argv[:1]
+
+            # run the App
+            exit_code = self.run()
+
+            # restore sys.argv
+            sys.argv = sys_argv_orig
+        elif self.run_method == 'subprocess':
+            # run the Service App as a subprocess
+            app_process = subprocess.Popen(['python', 'run.py'])
+            exit_code = app_process.wait()
+
         # run the App
-        return self.run(self.profile.args)
+        return exit_code

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Playbook Test Case module"""
+import subprocess
 import sys
 from .test_case_playbook_common import TestCasePlaybookCommon
 
@@ -7,7 +8,9 @@ from .test_case_playbook_common import TestCasePlaybookCommon
 class TestCasePlaybook(TestCasePlaybookCommon):
     """Playbook TestCase Class"""
 
-    def run(self, args):
+    run_method = 'inline'  # run service inline or a as subprocess
+
+    def run(self):
         """Run the Playbook App.
 
         Args:
@@ -18,13 +21,10 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         """
         from run import run
 
-        # update args to app_args
-        config = self._update_args(args)
-
         # run the app
         exit_code = 0
         try:
-            run(config)
+            run()
         except SystemExit as e:
             exit_code = e.code
 
@@ -33,20 +33,29 @@ class TestCasePlaybook(TestCasePlaybookCommon):
 
     def run_profile(self):
         """Run an App using the profile name."""
-        # backup sys.argv
-        sys_argv_orig = sys.argv
+        # create encrypted config file
+        self.create_config(self.profile.args)
 
-        # clear sys.argv
-        sys.argv = sys.argv[:1]
+        # run the service App in 1 of 3 ways
+        if self.run_method == 'inline':
+            # backup sys.argv
+            sys_argv_orig = sys.argv
 
-        # run the App
-        exit_code = self.run(self.profile.args)
+            # clear sys.argv
+            sys.argv = sys.argv[:1]
+
+            # run the App
+            exit_code = self.run()
+
+            # restore sys.argv
+            sys.argv = sys_argv_orig
+        elif self.run_method == 'subprocess':
+            # run the Service App as a subprocess
+            app_process = subprocess.Popen(['python', 'run.py'])
+            exit_code = app_process.wait()
 
         # add context for populating output variables
         self.profile.add_context(self.context)
-
-        # restore sys.argv
-        sys.argv = sys_argv_orig
 
         return exit_code
 
