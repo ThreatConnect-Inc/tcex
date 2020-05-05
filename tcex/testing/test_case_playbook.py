@@ -19,7 +19,7 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         Returns:
             int: The exit code fo the App.
         """
-        from run import run
+        from run import run  # pylint: disable=no-name-in-module
 
         # run the app
         exit_code = 0

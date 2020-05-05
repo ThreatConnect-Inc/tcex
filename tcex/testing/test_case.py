@@ -359,7 +359,7 @@ class TestCase:
 
         note:: requires TC >= 6.0
         """
-        if tc_api_path is None:  # no API path, no token
+        if self.tc_api_path is None:  # no API path, no token
             return None
         data = None
         token = None
