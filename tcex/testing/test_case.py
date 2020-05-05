@@ -128,14 +128,17 @@ class TestCase:
         return self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_secret_key')
 
     @staticmethod
-    def check_environment(environments):
+    def check_environment(environments, os_environments=None):
         """Check if test case matches current environments, else skip test.
 
         Args:
             environments (list): The test case environments.
         """
         test_envs = environments or ['build']
-        os_envs = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
+        if os_environments:
+            os_envs = set(os_environments)
+        else:
+            os_envs = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
         if not os_envs.intersection(set(test_envs)):
             pytest.skip('Profile skipped based on current environment.')
 
@@ -222,8 +225,16 @@ class TestCase:
             options=options,
         )
 
+        # Override test environments if specified
+        os_environments = None
+        if pytestconfig:
+            environment = pytestconfig.getoption('--environment', None)
+            if isinstance(environment, list):
+                # pytest is giving back a list of lists
+                os_environments = [x[0] for x in environment]
+
         # check profile environment
-        self.check_environment(self._profile.environments)
+        self.check_environment(self._profile.environments, os_environments)
 
         # migrate profile to latest schema
         self._profile.data = self._profile.migrate()

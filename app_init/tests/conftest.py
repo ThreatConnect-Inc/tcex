@@ -52,19 +52,7 @@ def pytest_generate_tests(metafunc):
 
         ids.extend([x[0] for x in test_permutations])
 
-    metafunc.parametrize('profile_name,test_options', permutations, ids=ids)
-
-
-@pytest.fixture()
-def options(test_options, request):
-    """ Mark up the options, if it exists, with the request object, so
-        that the profile can access test case methods
-    """
-
-    if test_options and isinstance(test_options, dict):
-        test_options['request'] = request
-
-    return test_options
+    metafunc.parametrize('profile_name,options', permutations, ids=ids)
 
 
 @pytest.fixture()

@@ -25,6 +25,7 @@ from .layout_json import LayoutJson
 from .permutations import Permutations
 from ..env_store import EnvStore
 from ..utils import Utils
+from ..__metadata__ import __version__ as tcex_version
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -42,6 +43,12 @@ def profile_addoption(parser):
     parser.addoption('--ignore_session', action='store_true')
     parser.addoption('--enable_autostage', action='store_true')
     parser.addoption('--disable_autostage', action='store_true')
+    parser.addoption(
+        '--environment',
+        action='append',
+        nargs=1,
+        help='Sets the TCEX_TEST_ENVS environment variable',
+    )
 
 
 class Profile:
@@ -56,6 +63,7 @@ class Profile:
     def __init__(
         self,
         default_args=None,
+        feature=None,
         name=None,
         redis_client=None,
         pytestconfig=None,
@@ -150,6 +158,13 @@ class Profile:
         profile = {
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'kvstore': {}}),
+            'options': profile_data.get(
+                'options',
+                {
+                    'autostage': {'enabled': False, 'only_inputs': None},
+                    'session': {'enabled': False, 'blur': []},
+                },
+            ),
         }
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             profile['configs'] = [
@@ -309,7 +324,7 @@ class Profile:
             list of input names that will be staged.
         """
         profile_data = self.data
-        auto_stage = profile_data.get('options', {}).get('autostage', {}).get('inputs')
+        auto_stage = profile_data.get('options', {}).get('autostage', {}).get('only_inputs')
         install_params = self.ij.contents
 
         # Scan for what inputs allow playbook data
@@ -322,8 +337,8 @@ class Profile:
         # make sure the staging area exists
         if 'stage' not in profile_data:
             profile_data['stage'] = {}
-        if 'redis' not in profile_data['stage']:
-            profile_data['stage']['redis'] = {}
+        if 'kvstore' not in profile_data['stage']:
+            profile_data['stage']['kvstore'] = {}
 
         # First optional inputs
         inputs = profile_data.get('inputs', {})
@@ -347,7 +362,7 @@ class Profile:
 
             key = '#App:123:{}!{}'.format(input_name, type_name)
 
-            profile_data['stage']['redis'][key] = input_value
+            profile_data['stage']['kvstore'][key] = input_value
             profile_data['inputs']['optional'][input_name] = key
 
         for input_name, input_value in requireds.items():
@@ -367,19 +382,28 @@ class Profile:
 
             key = '#App:123:{}!{}'.format(input_name, type_name)
 
-            profile_data['stage']['redis'][key] = input_value
+            profile_data['stage']['kvstore'][key] = input_value
             profile_data['inputs']['required'][input_name] = key
-
-        # Hmm!  Only test_case knows how to stage data
-        if self.options:
-            request = self.options.get('request')
-            if request:
-                request.instance.stage_data(profile_data['stage'])  # re-stage data
 
     def migrate(self):
         """Migrate profile to latest schema and rewrite data."""
+
+        # Short circuit migrations if the profile is newer than this code
+        # Ideally, we'd put a migration stamp in the profile instead
+        migration_mtime = os.stat(__file__).st_mtime
+        migration_target = f'{tcex_version}.{migration_mtime}'
+
         with open(os.path.join(self.filename), 'r+') as fh:
             profile_data = json.load(fh)
+
+            profile_version = profile_data.get('version', None)
+            if not profile_version or profile_version < migration_target:
+                profile_data['version'] = migration_target
+            else:
+                return self.data  # profile is already migrated
+
+            # migrate test options
+            self.migrate_options(profile_data)
 
             # update all env variables to match latest pattern
             self.migrate_permutation_output_variables(profile_data)
@@ -407,6 +431,12 @@ class Profile:
             json.dump(profile_data, fh, indent=2, sort_keys=True)
             fh.write('\n')  # add required newline
             fh.truncate()
+
+            # re-replace environment variables
+            profile_data = self.replace_env_variables(profile_data)
+
+            # replace all staged variable
+            profile_data = self.replace_tc_variables(profile_data)
 
         return profile_data
 
@@ -459,6 +489,25 @@ class Profile:
             # overwrite flattened config
             configs['config'] = config_inputs
         return profile_data
+
+    @staticmethod
+    def migrate_options(profile_data):
+        """ Migrate profile to use options for tests """
+
+        # N.B. Profile data is passed by reference, so we can
+        # modify it in place
+
+        options = profile_data.get('options', {})
+        autostage = options.get('autostage', {'enabled': False})
+        autostage['only_inputs'] = autostage.get('only_inputs', None)
+
+        session = options.get('session', {'enabled': False})
+        session['blur'] = session.get('blur', [])
+
+        options['autostage'] = autostage
+        options['session'] = session
+
+        profile_data['options'] = options
 
     @staticmethod
     def migrate_stage_redis_name(profile_data):
