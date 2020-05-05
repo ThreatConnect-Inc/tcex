@@ -14,7 +14,7 @@ class TestCaseTriggerService(TestCaseServiceCommon):
         Returns:
             int: The App exit code
         """
-        from run import run
+        from run import run  # pylint: disable=no-name-in-module
 
         # backup sys.argv
         sys_argv_orig = sys.argv
