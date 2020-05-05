@@ -66,11 +66,6 @@ class TestCase:
         fp.EVP_EncryptInit(fp.EVP_aes_128_cbc(), key.encode('utf-8'), b'\0' * 16)
         return fp.EVP_EncryptUpdate(data) + fp.EVP_EncryptFinal()
 
-    def _exit(self, code):
-        """Log and return exit code"""
-        self.log.data('run', 'Exit Code', code)
-        return code
-
     def _log_args(self, args):
         """Log args masking any that are marked encrypted and log warning for unknown args.
 
@@ -91,6 +86,28 @@ class TestCase:
         """Return bool value from int or string."""
         return str(value).lower() in ['1', 'true']
 
+    def _update_args(self, args):
+        """Update args before running App."""
+
+        if self.ij.runtime_level.lower() in ['playbook']:
+            # set requested output variables
+            args['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
+
+        # update path args
+        self._update_path_args(args)
+
+        # update default args with app args
+        app_args = self.default_args.copy()
+        app_args.update(args)
+
+        # update default args with app args
+        app_args['tc_logger_name'] = self.context
+
+        # safely log all args to tests.log
+        self._log_args(app_args)
+
+        return app_args
+
     def _update_path_args(self, args):
         """Update path in args for each test profile."""
         # service Apps do not have a profile when this is needed.
@@ -100,73 +117,15 @@ class TestCase:
         args['tc_out_path'] = profile.tc_out_path
         args['tc_temp_path'] = profile.tc_temp_path
 
-    def app_init(self, args):
-        """Return an instance of App."""
-        from app import App  # pylint: disable=import-error
+    @property
+    def api_access_id(self):
+        """Return TC API Access ID"""
+        return self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_access_id')
 
-        # return App(self.get_tcex(args))
-        args = args or {}
-
-        # update path args
-        self._update_path_args(args)
-
-        # update default args with app args
-        app_args = self.default_args.copy()
-        app_args.update(args)
-
-        app_args['tc_logger_name'] = self.context
-
-        if self.ij.runtime_level.lower() in [
-            'triggerservice',
-            'webhooktriggerservice',
-        ]:
-            # service Apps will get their args/params from encrypted file in the "in" directory
-            data = json.dumps(app_args, sort_keys=True).encode('utf-8')
-            key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
-            encrypted_data = self._encrypt_file_contents(key, data)
-
-            app_params_json = os.path.join(self.test_case_log_feature_dir, '.app_params.json')
-            with open(app_params_json, 'wb') as fh:
-                fh.write(encrypted_data)
-
-            # create environment variable for tcex inputs method to pick up to read encrypted file
-            os.environ['TC_APP_PARAM_KEY'] = key
-            os.environ['TC_APP_PARAM_FILE'] = app_params_json
-
-            # tcex will read args/params from encrypted file
-            tcex = TcEx()
-        else:
-            tcex = TcEx(config=app_args)
-        return App(tcex)
-
-    def app_init_create_config(self, args, output_variables, tcex_testing_context):
-        """Create files necessary to start a Service App."""
-        args['tc_playbook_out_variables'] = ','.join(output_variables)
-        args['tcex_testing_context'] = tcex_testing_context
-
-        # update path args
-        self._update_path_args(args)
-
-        # merge default and app args
-        app_args = self.default_args.copy()
-        app_args.update(args)
-
-        # service Apps will get their args/params from encrypted file in the "in" directory
-        data = json.dumps(app_args, sort_keys=True).encode('utf-8')
-        key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
-        encrypted_data = self._encrypt_file_contents(key, data)
-
-        # create files necessary to run Service App
-        if not os.path.exists(app_args.get('tc_in_path')):
-            os.mkdir(app_args.get('tc_in_path'))
-
-        app_params_json = os.path.join(app_args.get('tc_in_path'), '.app_params.json')
-        with open(app_params_json, 'wb') as fh:
-            fh.write(encrypted_data)
-
-        # create environment variable for tcex inputs method to pick up to read encrypted file
-        os.environ['TC_APP_PARAM_KEY'] = key
-        os.environ['TC_APP_PARAM_FILE'] = app_params_json
+    @property
+    def api_secret_key(self):
+        """Return TC API Secret Key"""
+        return self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_secret_key')
 
     @staticmethod
     def check_environment(environments):
@@ -180,25 +139,44 @@ class TestCase:
         if not os_envs.intersection(set(test_envs)):
             pytest.skip('Profile skipped based on current environment.')
 
+    def create_config(self, args):
+        """Create files necessary to start a Service App."""
+        config = self._update_args(args)
+
+        # service Apps will get their args/params from encrypted file in the "in" directory
+        data = json.dumps(config, sort_keys=True).encode('utf-8')
+        key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
+        encrypted_data = self._encrypt_file_contents(key, data)
+
+        # create files necessary to run Service App
+        if not os.path.exists(config.get('tc_in_path')):
+            os.mkdir(config.get('tc_in_path'))
+
+        # write the file in/.app_params.json
+        app_params_json = os.path.join(config.get('tc_in_path'), '.app_params.json')
+        with open(app_params_json, 'wb') as fh:
+            fh.write(encrypted_data)
+
+        # create environment variable for tcex inputs method to pick up to read encrypted file
+        os.environ['TC_APP_PARAM_KEY'] = key
+        os.environ['TC_APP_PARAM_FILE'] = app_params_json
+
     @property
     def default_args(self):
         """Return App default args."""
         if self._default_args is None and self.initialized:
             self._default_args = {
                 # local override TCI_EXCHANGE_ADMIN_API_ACCESS_ID
-                'api_access_id': self.env_store.getenv(
-                    '/ninja/tc/tci/exchange_admin/api_access_id'
-                ),
+                'api_access_id': self.api_access_id,
                 'api_default_org': os.getenv('API_DEFAULT_ORG', 'TCI'),
                 # local override TCI_EXCHANGE_ADMIN_API_SECRET_KEY
-                'api_secret_key': self.env_store.getenv(
-                    '/ninja/tc/tci/exchange_admin/api_secret_key'
-                ),
-                'tc_api_path': os.getenv('TC_API_PATH'),
+                'api_secret_key': self.api_secret_key,
+                'tc_api_path': self.tc_api_path,
                 'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
                 'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
                 'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
                 'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
+                'tc_logger_name': 'tcex',
                 'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
                 'tc_proxy_external': self._to_bool(os.getenv('TC_PROXY_EXTERNAL', 'false')),
                 # local override TC_PROXY_HOST
@@ -220,22 +198,15 @@ class TestCase:
                 ),
                 'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
             }
-            if os.getenv('TC_TOKEN'):
-                self._default_args['tc_token'] = os.getenv('TC_TOKEN')
-                self._default_args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
-            else:
-                # best effort on getting API token
-                token = self.tc_token(
-                    self._default_args.get('tc_api_path'),
-                    self._default_args.get('api_access_id'),
-                    self._default_args.get('api_secret_key'),
-                )
-                if token is not None:
-                    # if token was successfully retrieved from TC use token and remove hmac values
-                    self._default_args['tc_token'] = token
-                    self._default_args['tc_token_expires'] = '1700000000'
-                    del self._default_args['api_access_id']
-                    del self._default_args['api_secret_key']
+
+            # try to use token when possible
+            token = os.getenv('TC_TOKEN', self.tc_token)
+            if token is not None:
+                # if token was successfully retrieved from TC use token and remove hmac values
+                self._default_args['tc_token'] = token
+                self._default_args['tc_token_expires'] = '1700000000'
+                del self._default_args['api_access_id']
+                del self._default_args['api_secret_key']
         return self._default_args
 
     def init_profile(self, profile_name, pytestconfig=None, monkeypatch=None, options=None):
@@ -281,7 +252,7 @@ class TestCase:
         """Return profile instance."""
         return self._profile
 
-    def run(self, args):
+    def run(self):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 
@@ -366,18 +337,16 @@ class TestCase:
         tcex = TcEx(config=args)
         return Stager(tcex, logger)
 
-    def tc_token(self, tc_api_path, api_access_id, api_secret_key):
+    @property
+    def tc_api_path(self):
+        """Return TC Api Path."""
+        return os.getenv('TC_API_PATH')
+
+    @property
+    def tc_token(self):
         """Return a valid API token.
 
         note:: requires TC >= 6.0
-
-        Args:
-            tc_api_path (str): The URL for the tc instance (e.g. https://my.tc.org)
-            api_access_id (str): The TC Access ID for HMAC Auth
-            api_secret_key (str): The TC Secret Key for HMAC Auth
-
-        Returns:
-            str: A valid token if available.
         """
         if tc_api_path is None:  # no API path, no token
             return None
@@ -395,10 +364,12 @@ class TestCase:
             token_type = 'svc'
 
         # add auth
-        self.session.auth = HmacAuth(api_access_id, api_secret_key)
+        self.session.auth = HmacAuth(self.api_access_id, self.api_secret_key)
 
         # retrieve token from API using HMAC auth
-        r = self.session.post(f'{tc_api_path}{token_url_path}/{token_type}', json=data, verify=True)
+        r = self.session.post(
+            f'{self.tc_api_path}{token_url_path}/{token_type}', json=data, verify=True
+        )
         if r.status_code == 200:
             token = r.json().get('data')
             self.log.data('setup', 'Using Token', token)

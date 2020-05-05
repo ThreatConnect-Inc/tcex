@@ -384,6 +384,9 @@ class Profile:
             # update all env variables to match latest pattern
             self.migrate_permutation_output_variables(profile_data)
 
+            # update config section of profile for service Apps
+            self.migrate_service_config_inputs(profile_data)
+
             # change for threatconnect staged data
             profile_data = self.migrate_stage_redis_name(profile_data)
 
@@ -421,6 +424,40 @@ class Profile:
             del profile_data['permutation_output_variables']
         except KeyError:
             pass
+        return profile_data
+
+    def migrate_service_config_inputs(self, profile_data):
+        """Change flat config inputs to include required/options.
+
+        Args:
+            profile_data (dict): The profile data dict.
+
+        Returns:
+            dict: The updated dict.
+        """
+        for configs in profile_data.get('configs', []):
+            config = configs.get('config', {})
+
+            # handle updated configs
+            if config.get('optional') or config.get('required'):
+                continue
+
+            # new config schema
+            config_inputs = {'optional': {}, 'required': {}}
+
+            # iterate over defined inputs
+            for k, v in config.items():
+                input_data = self.ij.params_dict.get(k)
+                if input_data is not None:
+                    input_type = 'optional'
+                    if input_data.get('required') is True:
+                        input_type = 'required'
+
+                # add value back with appropriate input type
+                config_inputs[input_type][k] = v
+
+            # overwrite flattened config
+            configs['config'] = config_inputs
         return profile_data
 
     @staticmethod
@@ -1029,7 +1066,7 @@ class Profile:
             profile_inputs_flattened = profile_inputs.get('optional', {})
             profile_inputs_flattened.update(profile_inputs.get('required', {}))
 
-            params = self.ij.params_dict.items()
+            params = self.ij.params_dict
             if self.lj.has_layout:
                 # using inputs from layout.json since they are required to be in order
                 # (display field can only use inputs previously defined)
@@ -1062,7 +1099,7 @@ class Profile:
                 input_type = 'optional'
                 if data.get('required'):
                     input_type = 'required'
-                    if not value:
+                    if value in [None, '']:  # accept value of 0
                         # validation step
                         errors.append(f'- Missing/Invalid value for required arg ({name})')
                         status = False
@@ -1304,14 +1341,14 @@ class ProfileInteractive:
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
                     if self.profile.feature.lower() == vv.replace(' ', '_').lower():
-                        default = valid_values.index(vv)
+                        default = vv
+                        break
             else:
-                try:
-                    default = valid_values.index(data.get('default'))
-                except ValueError:
-                    default = 0
+                default = data.get('default')
         elif data.get('type').lower() == 'multichoice':
-            default = data.get('default').split('|')
+            default = data.get('default')
+            if default is not None and isinstance(default, str):
+                default = default.split('|')
         else:
             default = data.get('default')
             if default is None:
@@ -1389,7 +1426,11 @@ class ProfileInteractive:
         # add input
         for e in values:
             e = e or 0
-            self.exit_codes.append(int(e))
+            try:
+                self.exit_codes.append(int(e))
+            except ValueError:
+                print(f'{c.Fore.RED}Please provide a integer between 0-3.')
+                sys.exit(1)
 
         # user feedback
         self.print_feedback(self.exit_codes)
@@ -1426,17 +1467,35 @@ class ProfileInteractive:
     def present_choice(self, name, data):
         """Build a question for choice input."""
         default = self._default(data)
-        option_text = f' [{default}]'
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
-        if not valid_values:
-            option_text = ''
-        # enumerate options
+
+        # default value needs to be converted to index
+        option_index = 0
+        if default:
+            try:
+                option_index = valid_values.index(default)
+            except ValueError:
+                # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then use index 0.
+                # there is no way to tell if the default value is be part of the expansion.
+                if any([re.match(r'^\${.*}$', v) for v in valid_values]):
+                    option_index = 0
+                else:
+                    print(
+                        f'''{c.Fore.RED}Invalid value of ({default}) for {data.get('name')}, '''
+                        'check that default value and validValues match in install.json.'
+                    )
+                    sys.exit()
+        option_text = f' [{option_index}]'
+
+        # build options list to display to the user in two columns
         options = []
         for i, v in enumerate(valid_values):
             options.append(f'{i}. {v}')
 
-        # display the options
+        # print header information
         self.print_header(data)
+
+        # display options list into two columns
         left, right = self._split_list(options)
         for i, _ in enumerate(left):
             ld = left[i]
@@ -1446,27 +1505,25 @@ class ProfileInteractive:
                 rd = ''
             print(f'{ld:40} {rd:40}')
 
+        # collect user input an process accordingly
         value = input(self.choice(option_text)).strip()
-
         if not value:
-            value = default
+            value = option_index
+        else:
+            try:
+                value = int(value)
+            except ValueError:
+                print(f'{c.Fore.RED}Please provide a integer between 0-{len(valid_values) - 1}.')
+                sys.exit(1)
 
         # get value from valid value index
         if valid_values:
-            index = None
             try:
-                index = valid_values.index(value)
-            except ValueError:
-                pass
-            try:
-                index = index or value
-                value = valid_values[int(index)]
-            except (TypeError, ValueError):
+                value = valid_values[value]
+            except IndexError:
                 print(
-                    (
-                        f'{c.Fore.RED}Invalid value of {value} provided. '
-                        f'Please provide a integer between 0-{len(valid_values) - 1}'
-                    )
+                    f'{c.Fore.RED}Invalid value of {value} provided. '
+                    f'Please provide a integer between 0-{len(valid_values) - 1}'
                 )
                 sys.exit(1)
 
@@ -1491,38 +1548,82 @@ class ProfileInteractive:
 
     def present_multichoice(self, name, data):
         """Build a question for choice input."""
-        default = self._default(data)
+        default = self._default(data)  # array of default values
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
 
-        option_default = []
-        option_text = ''
+        # default values will be return as an array (e.g., one|two -> ['one'. 'two']).
+        # using the valid values array we can look up these values to show as default in input.
+        option_indexes = [0]
+        if default:
+            option_indexes = []
+            for d in default:
+                try:
+                    option_indexes.append(valid_values.index(d))
+                except ValueError:
+                    # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then skip value.
+                    # there is no way to tell if the default value is be part of the expansion.
+                    if any([re.match(r'^\${.*}$', v) for v in valid_values]):
+                        continue
+
+                    print(
+                        f'''{c.Fore.RED}Invalid value of ({d}) for {data.get('name')}, check '''
+                        'that default value(s) and validValues match in install.json.'
+                    )
+                    sys.exit()
+        option_text = f''' [{','.join([str(v) for v in option_indexes])}]'''
+
+        # build options list to display to the user in two columns
         options = []
         for i, v in enumerate(valid_values):
-            if v in default:
-                option_default.append(i)
-                option_text += f' [{v}]'
-            options.append(f'{i:02}. {v}\n')
+            options.append(f'{i}. {v}')
 
+        # print header information
         self.print_header(data)
+
+        # display options list into two columns
+        left, right = self._split_list(options)
+        for i, _ in enumerate(left):
+            ld = left[i]
+            try:
+                rd = right[i]
+            except IndexError:
+                rd = ''
+            print(f'{ld:40} {rd:40}')
+
+        # collect user input an process accordingly
         value = input(self.choice(option_text)).strip()
-        if not value and option_default:
-            value = option_default
+        if not value:
+            # use default values from option_index if no value is provided
+            value = option_indexes
         else:
-            value = value.split(',')
+            # parse values into index position based on valid value presented to the user
+            try:
+                value = [int(i) for i in value.strip().split(',')]
+            except ValueError:
+                print(
+                    f'{c.Fore.RED}Please provide one or more integers between '
+                    f'0-{len(valid_values) - 1} separated by commas.'
+                )
+                sys.exit(1)
 
         # get value from valid value index
         values = []
-        for v in value:
+        for index in value:
             try:
-                index = int(v.strip())
-            except TypeError:
-                print(f'{c.Fore.RED}Invalid value of {v} provided.')
+                values.append(valid_values[index])
+            except IndexError:
+                print(
+                    f'{c.Fore.RED}Invalid value of {index} provided. '
+                    f'Please provide one or more integers between 0-{len(valid_values) - 1} '
+                    'separated by commas.'
+                )
                 sys.exit(1)
-            values.append(valid_values[index])
+
+        # values stored in profile are pipe delimeted for multichoice
         delimited_values = '|'.join(values)
 
         # user feedback
-        self.print_feedback(value)
+        self.print_feedback(delimited_values)
 
         # add input
         self.add_input(name, data, delimited_values)
@@ -1591,16 +1692,22 @@ class ProfileInteractive:
         label = data.get('label', 'NO LABEL')
         print(f'\n{c.Fore.GREEN}{label}')
 
+        # type
+        _print_metadata('Type', data.get('type'))
+
+        # note
         note = data.get('note', '')[:200]
         if note:
             _print_metadata('Note', note)
 
-        if data.get('required'):
-            _print_metadata('Required', 'true')
+        # required
+        _print_metadata('Required', str(data.get('required', False)).lower())
 
+        # hidden
         if data.get('hidden'):
             _print_metadata('Hidden', 'true')
 
+        # Input Types
         pbt = ','.join(data.get('playbookDataType', []))
         if pbt:
             _print_metadata('Playbook Data Types', pbt)

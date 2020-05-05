@@ -94,7 +94,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         message['config'] = config
 
         # build config message
-        message['apiToken'] = '000000000'
+        message['apiToken'] = self.tc_token
         message['expireSeconds'] = int(time.time() + 86400)
         message['command'] = 'CreateConfig'
         message['config']['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
@@ -156,7 +156,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.publish(json.dumps(event))
         time.sleep(self.sleep_after_publish_webhook_event)
 
-    def run(self, args):
+    def run(self):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 
@@ -170,9 +170,10 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         sys.argv = sys.argv[:1]
 
         # create required .app_params encrypted file. args are set in custom.py
-        self.app_init_create_config(
-            self.args, [], self.tcex_testing_context,
-        )
+        self.args['tcex_testing_context'] = self.tcex_testing_context
+        self.create_config(self.args)
+
+        # run the service App in 1 of 3 ways
         if self.service_run_method == 'subprocess':
             # run the Service App as a subprocess
             self.app_process = subprocess.Popen(['python', 'run.py'])

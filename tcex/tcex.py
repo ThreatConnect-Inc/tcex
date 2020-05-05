@@ -38,7 +38,7 @@ class TcEx:
             signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Property defaults
-        self._config = kwargs.get('config', {})
+        self._config = kwargs.get('config') or {}
         self._default_args = None
         self._error_codes = None
         self._exit_code = 0

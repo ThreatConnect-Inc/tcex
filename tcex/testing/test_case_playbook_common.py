@@ -37,7 +37,7 @@ class TestCasePlaybookCommon(TestCase):
         )
         return args
 
-    def run(self, args):
+    def run(self):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 

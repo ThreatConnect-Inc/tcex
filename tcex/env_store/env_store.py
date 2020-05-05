@@ -24,6 +24,7 @@ class EnvStore:
 
         # properties
         self._vault_client = None
+        self.cache = {}
         self.vault_token = os.getenv('VAULT_TOKEN')
         self.vault_url = os.getenv('VAULT_URL')
 
@@ -54,6 +55,11 @@ class EnvStore:
         Returns:
             str|None: The value from OS env or env store.
         """
+        cache_key = f'{env_type}-{env_variable}'
+        cache_value = self.cache.get(cache_key)
+        if cache_value is not None:
+            return cache_value
+
         env_var_updated = self._convert_env(env_variable)
         value = default
 
@@ -71,6 +77,7 @@ class EnvStore:
                 f'Could not resolve env variable {env_variable} ({env_var_updated}).'
             )
 
+        self.cache[cache_key] = value
         return value
 
     def read_from_vault(self, full_path, default=None):

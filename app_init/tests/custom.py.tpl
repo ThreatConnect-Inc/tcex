@@ -27,6 +27,11 @@ class Custom(object):
         # uncomment the following line to use static topics
         # test_feature.client_topic = 'client-topic-123'
         # test_feature.server_topic = 'server-topic-123'
+        % else:
+        # set the App run method (inline (default), subprocess)
+        # Note: using inline forces the App to use the tcex version
+        # from site-packages and not the lib_ directory.
+        # test_feature.run_method = 'inline'
         % endif
 
     def setup_method(self, test_feature):

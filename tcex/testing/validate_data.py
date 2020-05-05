@@ -205,9 +205,31 @@ class Validator:
             # handle "null" -> None match
             return False, f'App Data {app_data} does not match Test Data {test_data}'
 
+        # deepdiff doesn't handle ordered dicts properly
+        safe_app_data = app_data
+        if isinstance(app_data, OrderedDict):
+            safe_app_data = json.loads(json.dumps(app_data))
+        elif isinstance(app_data, list):
+            safe_app_data = []
+            for ad in app_data:
+                if isinstance(ad, OrderedDict):
+                    ad = json.loads(json.dumps(ad))
+                safe_app_data.append(ad)
+
+        # deepdiff doesn't handle ordered dicts properly
+        safe_test_data = test_data
+        if isinstance(test_data, OrderedDict):
+            safe_test_data = json.loads(json.dumps(test_data))
+        elif isinstance(test_data, list):
+            safe_test_data = []
+            for td in test_data:
+                if isinstance(td, OrderedDict):
+                    td = json.loads(json.dumps(td))
+                safe_test_data.append(td)
+
         # run operator
         try:
-            ddiff = DeepDiff(app_data, test_data, **kwargs)
+            ddiff = DeepDiff(safe_app_data, safe_test_data, **kwargs)
         except KeyError:
             return False, 'Encountered KeyError when running deepdiff'
         except NameError:
@@ -371,7 +393,7 @@ class Validator:
             try:
                 app_data_updated = []
                 for ad in app_data:
-                    if isinstance(ad, OrderedDict):
+                    if isinstance(ad, (OrderedDict, dict)):
                         ad = json.dumps(ad)
                     app_data_updated.append(json.loads(ad))
                 app_data = app_data_updated
@@ -388,7 +410,7 @@ class Validator:
             try:
                 test_data_updated = []
                 for td in test_data:
-                    if isinstance(td, OrderedDict):
+                    if isinstance(td, (OrderedDict, dict)):
                         td = json.dumps(td)
                     test_data_updated.append(json.loads(td))
                 test_data = test_data_updated
