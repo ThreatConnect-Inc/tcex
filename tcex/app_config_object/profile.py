@@ -31,26 +31,6 @@ from ..__metadata__ import __version__ as tcex_version
 c.init(autoreset=True, strip=False)
 
 
-def profile_addoption(parser):
-    """ Add profile options to pytest config parser """
-
-    parser.addoption('--merge_inputs', action='store_true')
-    parser.addoption('--merge_outputs', action='store_true')
-    parser.addoption('--replace_exit_message', action='store_true')
-    parser.addoption('--replace_outputs', action='store_true')
-    parser.addoption('--update', action='store_true')
-    parser.addoption('--record_session', action='store_true')
-    parser.addoption('--ignore_session', action='store_true')
-    parser.addoption('--enable_autostage', action='store_true')
-    parser.addoption('--disable_autostage', action='store_true')
-    parser.addoption(
-        '--environment',
-        action='append',
-        nargs=1,
-        help='Sets the TCEX_TEST_ENVS environment variable',
-    )
-
-
 class Profile:
     """Testing Profile Class.
 
@@ -77,16 +57,6 @@ class Profile:
         self._feature = feature
         self._name = name
         self.log = logger or logging.getLogger('profile').addHandler(logging.NullHandler())
-        if pytestconfig:
-            self.merge_inputs = pytestconfig.getoption('--merge_inputs', False)
-            self.merge_outputs = pytestconfig.getoption('--merge_outputs', False)
-            self.replace_exit_message = pytestconfig.getoption('--replace_exit_message', False)
-            self.replace_outputs = pytestconfig.getoption('--replace_outputs', False)
-        else:
-            self.merge_inputs = False
-            self.merge_outputs = False
-            self.replace_exit_message = False
-            self.replace_outputs = False
         self.pytestconfig = pytestconfig
         self.monkeypatch = monkeypatch
         self.tcex_testing_context = tcex_testing_context
@@ -97,6 +67,7 @@ class Profile:
         self._data = None
         self._output_variables = None
         self._context_tracker = []
+        self._pytest_args = None
         self.env_store = EnvStore(logger=self.log)
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
@@ -251,16 +222,7 @@ class Profile:
         if self._data is None:
             try:
                 with open(self.filename, 'r') as fh:
-                    profile_data = json.load(fh)
-
-                # replace all variable references
-                profile_data = self.replace_env_variables(profile_data)
-
-                # replace all staged variable
-                profile_data = self.replace_tc_variables(profile_data)
-
-                # set updated profile data
-                self._data = profile_data
+                    self._data = json.load(fh)
             except OSError:
                 print(f'{c.Fore.RED}Could not open profile {self.filename}.')
         if self._data:
@@ -314,14 +276,15 @@ class Profile:
                 self.init_autostage()
 
     def init_autostage(self):
-        """" Converts input arguments to staged data to automatically
+        """Converts input arguments to staged data to automatically
             test playbook data propagation.
 
-            The profile_data is checked for the key "auto_stage."
+        The profile_data is checked for the key "auto_stage."
 
-            auto_stage, if set, constrains the list of inputs that
-            are converted to staged redis variables.  It will be the
-            list of input names that will be staged.
+        auto_stage, if set, constrains the list of inputs that
+        are converted to staged redis variables.  It will be the
+        list of input names that will be staged.
+
         """
         profile_data = self.data
         auto_stage = profile_data.get('options', {}).get('autostage', {}).get('only_inputs')
@@ -697,6 +660,26 @@ class Profile:
         else:
             yield self.inputs
 
+    @property
+    def pytest_args(self):
+        """Return dict of pytest config args."""
+        if self._pytest_args is None:
+            self._pytest_args = {}
+            if self.pytestconfig:
+                args = self.pytestconfig.option  # argparse.Namespace
+                self._pytest_args = {
+                    'merge_inputs': args.merge_inputs or False,
+                    'merge_outputs': args.merge_outputs or False,
+                    'replace_exit_message': args.replace_exit_message or False,
+                    'replace_outputs': args.replace_outputs or False,
+                    'record_session': args.record_session or False,
+                    'ignore_session': args.ignore_session or False,
+                    'enable_autostage': args.enable_autostage or False,
+                    'disable_autostage': args.disable_autostage or False,
+                }
+
+        return self._pytest_args
+
     def replace_env_variables(self, profile_data):
         """Replace any env vars.
 
@@ -787,9 +770,8 @@ class Profile:
             The profile field options.session.blur may be a list of
             fields to blur to force matching (ie, date/times, passwords, etc)
         """
-
-        record_session = self.pytestconfig.getoption('--record_session', False)
-        ignore_session = self.pytestconfig.getoption('--ignore_session', False)
+        ignore_session = self.pytest_args.get('ignore_session')
+        record_session = self.pytest_args.get('record_session')
 
         if ignore_session:
             return
@@ -928,8 +910,8 @@ class Profile:
         with open(self.filename, 'r+') as fh:
             profile_data = json.load(fh)
 
-        enable_autostage = self.pytestconfig.getoption('--enable_autostage', False)
-        disable_autostage = self.pytestconfig.getoption('--disable_autostage', False)
+        enable_autostage = self.pytest_args.get('enable_autostage')
+        disable_autostage = self.pytest_args.get('disable_autostage')
 
         options = profile_data.get('options', {})
         if 'options' not in profile_data:
@@ -973,7 +955,7 @@ class Profile:
             if (
                 profile_data.get('exit_message') is None
                 or isinstance(profile_data.get('exit_message'), str)
-                or self.replace_exit_message
+                or self.pytest_args.get('replace_exit_message')
             ):
                 # update the profile
                 profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
@@ -1015,7 +997,7 @@ class Profile:
         # Update any profile outputs
         self.session_update_profile()
 
-        if self.outputs is None or self.replace_outputs:
+        if self.outputs is None or self.pytest_args.get('replace_outputs'):
             # update profile if current profile is not or user specifies --replace_outputs
             with open(self.filename, 'r+') as fh:
                 profile_data = json.load(fh)
@@ -1026,7 +1008,7 @@ class Profile:
                 json.dump(profile_data, fh, indent=2, sort_keys=True)
                 fh.write('\n')  # add required newline
                 fh.truncate()
-        elif self.merge_outputs:
+        elif self.pytest_args.get('merge_outputs'):
             if trigger_id is not None:
                 # service Apps have a different structure with id: data
                 merged_outputs = {}
@@ -1159,7 +1141,7 @@ class Profile:
 
             updated_params.append(merged_inputs)
 
-        if self.merge_inputs:
+        if self.pytest_args.get('merge_inputs'):
             # update profile outputs
             with open(self.filename, 'r+') as fh:
                 profile_data = json.load(fh)
