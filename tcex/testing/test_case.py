@@ -133,12 +133,12 @@ class TestCase:
 
         Args:
             environments (list): The test case environments.
+            os_environments (list): The user/os defined environment.
         """
         test_envs = environments or ['build']
+        os_envs = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
         if os_environments:
             os_envs = set(os_environments)
-        else:
-            os_envs = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
         if not os_envs.intersection(set(test_envs)):
             pytest.skip('Profile skipped based on current environment.')
 
@@ -228,10 +228,7 @@ class TestCase:
         # Override test environments if specified
         os_environments = None
         if pytestconfig:
-            environment = pytestconfig.getoption('--environment', None)
-            if isinstance(environment, list):
-                # pytest is giving back a list of lists
-                os_environments = [x[0] for x in environment]
+            os_environments = pytestconfig.option.environment
 
         # check profile environment
         self.check_environment(self._profile.environments, os_environments)
@@ -242,13 +239,20 @@ class TestCase:
         # validate required fields
         valid, message = self._profile.validate_required_inputs()
 
-        # stage ThreatConnect data based on current profile
+        # replace all variable references
+        profile_data = self._profile.replace_env_variables(self._profile.data)
+
+        # stage ThreatConnect data based on current profile, also used in teardown method
         self._staged_tc_data = self.stager.threatconnect.entities(
             self._profile.stage_threatconnect, self._profile.owner
         )
 
         # insert staged data for replacement
         self._profile.tc_staged_data = self._staged_tc_data
+
+        # Replace staged_data
+        profile_data = self._profile.replace_tc_variables(profile_data)
+        self._profile.data = profile_data
 
         # replace all references and all staged variable
         self._profile.init()
