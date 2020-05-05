@@ -63,6 +63,8 @@ class ReadArg:
             given argument.
         indicator_values (bool, kwargs): Defaults to False. If True, return a list of
             indicator values from the given argument (e.g. ["foo.example.com", "bar.example.com"]).
+        strip_values (bool, kwargs): Defaults to False.  If True, automatically strips whitespace
+            from arg value.  Not valid if group_values, group_ids, or indicator_values is True.
     """
 
     def __init__(self, arg, **kwargs):
@@ -77,6 +79,7 @@ class ReadArg:
         self.indicator_values = kwargs.get('indicator_values', False)
         self.group_values = kwargs.get('group_values', False)
         self.group_ids = kwargs.get('group_ids', False)
+        self.strip_values = kwargs.get('strip_values', False)
 
     @wrapt.decorator
     def __call__(self, wrapped, instance, args, kwargs):
@@ -134,6 +137,17 @@ class ReadArg:
                 arg_data = app.tcex.playbook.read_group_ids(arg)
             else:
                 arg_data = app.tcex.playbook.read(arg, self.array, embedded=self.embedded)
+                if self.strip_values and arg_data is not None:
+                    variable_type = app.tcex.playbook.variable_type(arg)
+                    if variable_type == 'String':
+                        arg_data = arg_data.strip()
+                    elif variable_type == 'StringArray':
+                        arg_data = [s.strip() for s in arg_data]
+                    else:
+                        app.tcex.log.warn(
+                            f'strip_values is enabled but variable is of type {variable_type}, '
+                            f'only String and StringArray variables can be stripped.'
+                        )
 
             if self.default is not None and arg_data is None:
                 arg_data = self.default

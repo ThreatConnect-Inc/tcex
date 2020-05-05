@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.5
+=====
++ Added ``strip_values`` option to the ReadArgs decorator.
+
 2.0.4
 =====
 + Updated decorator method logging.
