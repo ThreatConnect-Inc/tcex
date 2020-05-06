@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Playbook Test Case module"""
+import os
 import subprocess
 import sys
 from .test_case_playbook_common import TestCasePlaybookCommon
@@ -53,6 +54,13 @@ class TestCasePlaybook(TestCasePlaybookCommon):
             # run the Service App as a subprocess
             app_process = subprocess.Popen(['python', 'run.py'])
             exit_code = app_process.wait()
+
+        try:
+            # remove env var for encrypted file if there
+            del os.environ['TC_APP_PARAM_KEY']
+            del os.environ['TC_APP_PARAM_FILE']
+        except KeyError:
+            pass
 
         # add context for populating output variables
         self.profile.add_context(self.context)

@@ -17,8 +17,8 @@ from tcex import TcEx
 from tcex.app_config_object.install_json import InstallJson
 from tcex.app_config_object.profile import Profile
 from tcex.env_store import EnvStore
-from tcex.inputs import FileParams
 from tcex.sessions.tc_session import HmacAuth
+from tcex.utils import Utils
 
 from .stage_data import Stager
 from .test_logger import logger
@@ -52,19 +52,13 @@ class TestCase:
     session = Session()
     tcex = None
     tcex_testing_context = None
+    utils = Utils()
 
     def _reset_property_flags(self):
         """Reset all control flag."""
         # used to prevent pytest from executing @property methods
         self.initialized = False
         self.tcex = False
-
-    @staticmethod
-    def _encrypt_file_contents(key, data):
-        """Return encrypted data for file params."""
-        fp = FileParams()
-        fp.EVP_EncryptInit(fp.EVP_aes_128_cbc(), key.encode('utf-8'), b'\0' * 16)
-        return fp.EVP_EncryptUpdate(data) + fp.EVP_EncryptFinal()
 
     def _log_args(self, args):
         """Log args masking any that are marked encrypted and log warning for unknown args.
@@ -149,14 +143,13 @@ class TestCase:
         # service Apps will get their args/params from encrypted file in the "in" directory
         data = json.dumps(config, sort_keys=True).encode('utf-8')
         key = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
-        encrypted_data = self._encrypt_file_contents(key, data)
+        encrypted_data = self.utils.encrypt_aes_cbc(key, data)
 
-        # create files necessary to run Service App
-        if not os.path.exists(config.get('tc_in_path')):
-            os.mkdir(config.get('tc_in_path'))
+        # ensure that the in directory exists
+        os.makedirs(config.get('tc_in_path'), exist_ok=True)
 
         # write the file in/.app_params.json
-        app_params_json = os.path.join(config.get('tc_in_path'), '.app_params.json')
+        app_params_json = os.path.join(config.get('tc_in_path'), '.test_app_params.json')
         with open(app_params_json, 'wb') as fh:
             fh.write(encrypted_data)
 

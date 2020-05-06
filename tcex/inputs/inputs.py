@@ -7,7 +7,6 @@ from argparse import Namespace
 
 from ..utils import Utils
 from .argument_parser import TcArgumentParser
-from .file_params import FileParams
 
 
 class Inputs:
@@ -287,9 +286,7 @@ class Inputs:
                     with open(filename, 'rb') as fh:
                         encrypted_contents = fh.read()
 
-                    fp = FileParams()
-                    fp.EVP_DecryptInit(fp.EVP_aes_128_cbc(), key.encode(), b'\0' * 16)
-                    result = fp.EVP_DecryptUpdate(encrypted_contents) + fp.EVP_DecryptFinal()
+                    result = self.utils.decrypt_aes_cbc(key, encrypted_contents)
                     file_content = json.loads(result.decode('utf-8'))
                     file_content = self.update_params(file_content)
 

@@ -64,6 +64,7 @@ setup(
         'jsonschema>=2.6.0',
         'paho-mqtt',
         'parsedatetime',
+        'pyaes',
         'python-dateutil>=2.6.1',
         'pytz',
         'redis>=2.10.6',
