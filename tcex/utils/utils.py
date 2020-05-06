@@ -141,6 +141,15 @@ class Utils:
         return ''.join(random.choice(string.ascii_letters) for i in range(string_length))
 
     @staticmethod
+    def shorten_group_name(full_group_name: str):
+        MAX_GROUP_NAME_LENGTH = 100
+        if len(full_group_name) <= MAX_GROUP_NAME_LENGTH:
+            return full_group_name
+        else:
+            new_group_name = f'{full_group_name[:97]}...'
+            return new_group_name
+
+    @staticmethod
     def snake_to_camel(snake_string):
         """Convert snake_case to camelCase
 
