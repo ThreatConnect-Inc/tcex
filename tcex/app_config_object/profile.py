@@ -60,7 +60,7 @@ class Profile:
         self.pytestconfig = pytestconfig
         self.monkeypatch = monkeypatch
         self.tcex_testing_context = tcex_testing_context
-        self.options = options
+        self.test_options = options
 
         # properties
         self._app_path = os.getcwd()
@@ -92,7 +92,7 @@ class Profile:
             json_data (dict): The profile data.
         """
         # Permuted test cases set options to a true value, so disable writeback
-        if self.options:
+        if self.test_options:
             return
         with open(self.filename, 'w') as fh:
             fh.write(f'{json.dumps(json_data, indent=2, sort_keys=True)}\n')
@@ -271,8 +271,8 @@ class Profile:
 
         self.session_init()  # initialize session recording/playback
 
-        if self.options:
-            if self.options.get('autostage', False):
+        if self.test_options:
+            if self.test_options.get('autostage', False):
                 self.init_autostage()
 
     def init_autostage(self):
@@ -776,40 +776,33 @@ class Profile:
         if ignore_session:
             return
 
-        options = self.data.get('options', {})
-        session_options = options.get('session', {})
+        session_options = self.options.get('session', {})
         session_enabled = session_options.get('enabled', False)
 
-        if 'session' in self.data['stage'] and not session_enabled:
+        if 'session' in self.stage and not session_enabled:
             session_enabled = True
             session_options['enabled'] = True
-            options['session'] = session_options
-            self.data['options'] = options
+            self.options['session'] = session_options
             self.session_update_profile(force=True)  # add option to profile
 
         if record_session:
             session_enabled = True
             session_options['enabled'] = session_enabled
-            options['session'] = session_options
-            self.data['options'] = options
+            self.options['session'] = session_options
 
             # save session data in stage.session
-            stage = self.data.get('stage', {})
-            stage['session'] = {'_record': True}
+            self.stage['session'] = {'_record': True}
 
         if not session_enabled:
             return
 
-        # stich in empty dictionaries as necessary
-        stage = self.data.get('stage', {})
-
         # if stage.session doesn't exist, but session_enabled is true, implicitly turn
         # on session recording (someone zapped the data out of the profile)
-        if 'session' not in stage:
+        if 'session' not in self.stage:
             session_data = {'_record': True}
-            stage['session'] = session_data
+            self.stage['session'] = session_data
         else:
-            session_data = stage['session']
+            session_data = self.stage.get('session')
 
         blur = ['password']
         blur_options = session_options.get('blur', [])
@@ -818,8 +811,7 @@ class Profile:
             blur_options = (blur_options,)
         blur.extend(blur_options)
 
-        stage['session'] = session_data
-        self.data['stage'] = stage
+        self.stage['session'] = session_data
 
         _request = getattr(Session, 'request')
 
@@ -827,7 +819,7 @@ class Profile:
 
         # Monkeypatch method for requests.sessions.Session.request
         def request(self, method, url, *args, **kwargs):
-            """ Interception method for Session.request.  """
+            """Interception method for Session.request."""
             params = kwargs.get('params', {})
             parmlist = []
             params_keys = sorted(params.keys())
@@ -857,18 +849,16 @@ class Profile:
         self.monkeypatch.setattr(Session, 'request', request)
 
     def session_pickle_result(self, result):  # pylint: disable=no-self-use
-        """ Pickled the result object so we can reconstruct it later """
-
+        """Pickled the result object so we can reconstruct it later"""
         return base64.b64encode(zlib.compress(pickle.dumps(result))).decode('utf-8')
 
     def session_unpickle_result(self, result):  # pylint: disable=no-self-use
-        """ Reverse the pickle operation """
+        """Reverse the pickle operation"""
 
         return pickle.loads(zlib.decompress(base64.b64decode(result.encode('utf-8'))))
 
     def session_update_profile(self, force=False):
-        """ Write back the profile *if* we recorded session data """
-
+        """Write back the profile *if* we recorded session data"""
         stage = self.data.get('stage', {})
         session = stage.get('session', {})
         _record = session.get('_record', False)
@@ -907,7 +897,7 @@ class Profile:
         # Base response is an unadorned test
         response = [(self.name, self.name, {})]
 
-        with open(self.filename, 'r+') as fh:
+        with open(self.filename, 'r') as fh:
             profile_data = json.load(fh)
 
         enable_autostage = self.pytest_args.get('enable_autostage')
@@ -994,6 +984,7 @@ class Profile:
             # cleanup redis
             self.clear_context(context)
 
+        # TODO: move to teardown
         # Update any profile outputs
         self.session_update_profile()
 
@@ -1214,6 +1205,13 @@ class Profile:
         )
 
     @property
+    def options(self):
+        """Return options dict."""
+        if self.data.get('options') is None:
+            self.data['options'] = {}
+        return self.data.get('options')
+
+    @property
     def owner(self):
         """Return the owner value."""
         return (
@@ -1230,6 +1228,8 @@ class Profile:
     @property
     def stage(self):
         """Return stage dict."""
+        if self.data.get('stage') is None:
+            self.data['stage'] = {}
         return self.data.get('stage', {})
 
     @property
