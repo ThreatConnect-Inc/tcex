@@ -262,3 +262,64 @@ class TestReadArgDecorators:
         results = self.read_arg_indicator_values(**{})
         expected = [d.get('value') for d in value]
         assert results == expected, f'results {results} does not match expected {expected}'
+
+    @ReadArg('color', strip_values=True)
+    def read_arg_strip(self, **kwargs):
+        """Test fail on input decorator with no arg value (use first arg input)."""
+        return kwargs.get('color')
+
+    def test_read_arg_strip(self, playbook_app):
+        """Test the strip_values option.
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        config_data = {'color': ' red '}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.args = self.tcex.args
+        assert self.read_arg_strip() == config_data.get('color').strip()
+
+    def test_read_arg_strip_null(self, playbook_app):
+        """Test strip_values option handling of null values.
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        config_data = {'color': None}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.args = self.tcex.args
+        assert self.read_arg_strip() == config_data.get('color')
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:colours!StringArray', [' red ', ' blue '],)],
+    )
+    def test_read_arg_strip_string_array(self, variable, value, playbook_app):
+        """Test the strip_values handling of string arrays.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        config_data = {'color': variable}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.tcex.playbook.create_string_array(variable, value)
+        self.args = self.tcex.args
+        assert self.read_arg_strip() == [c.strip() for c in value]
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:colours!KeyValue', {'key': 'foo', 'value': 'bar'},)],
+    )
+    def test_read_arg_strip_unsupported_type(self, variable, value, playbook_app):
+        """Test the strip_values handling of unsupported types.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        config_data = {'color': variable}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.tcex.playbook.create_key_value(variable, value)
+        self.args = self.tcex.args
+        assert self.read_arg_strip() == value
