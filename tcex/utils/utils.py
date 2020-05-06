@@ -149,7 +149,7 @@ class Utils:
 
         Returns:
             str: A group name that is under the max limit.
-            """
+        """
         MAX_GROUP_NAME_LENGTH = 100
         if len(full_group_name) <= MAX_GROUP_NAME_LENGTH:
             return full_group_name
