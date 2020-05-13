@@ -316,6 +316,8 @@ class Profile:
             playbook_type = playbook_variables.get(input_name, None)
             if not playbook_type:
                 continue
+            if isinstance(input_value, str) and input_value in profile_data['stage']['kvstore']:
+                continue  # this is already staged
             if isinstance(input_value, list):
                 if 'StringArray' not in playbook_type:
                     continue
@@ -336,6 +338,8 @@ class Profile:
             playbook_type = playbook_variables.get(input_name, None)
             if not playbook_type:
                 continue
+            if isinstance(input_value, str) and input_value in profile_data['stage']['kvstore']:
+                continue  # this is already staged
             if isinstance(input_value, list):
                 if 'StringArray' not in playbook_type:
                     continue
