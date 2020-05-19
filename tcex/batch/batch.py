@@ -1447,6 +1447,8 @@ class Batch:
 
     def write_error_json(self, errors):
         """Writes the errors for debuging purposes"""
+        if not errors:
+            errors = []
         timestamp = str(time.time()).replace('.', '')
         error_json_file = os.path.join(self.tcex.args.tc_temp_path, f'errors-{timestamp}.json')
         with open(error_json_file, 'w') as fh:
@@ -1668,6 +1670,7 @@ class Batch:
         if content:
             timestamp = str(time.time()).replace('.', '')
             batch_json_file = os.path.join(self.tcex.args.tc_temp_path, f'batch-{timestamp}.json')
+            print(batch_json_file)
             with open(batch_json_file, 'w') as fh:
                 json.dump(content, fh, indent=2)
 

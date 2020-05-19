@@ -320,6 +320,8 @@ class TestCase:
 
         # initialize new validator instance
         self._validator = self.validator_init()
+        with open(os.path.join(self.test_case_log_test_dir, 'DEBUG'), 'w+') as fp:
+            fp.close()
 
     @property
     def stager(self):

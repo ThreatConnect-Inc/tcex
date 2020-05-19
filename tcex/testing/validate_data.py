@@ -1046,7 +1046,7 @@ class ThreatConnect:
             results.append({'name': name, 'valid': valid, 'errors': errors})
         return results
 
-    def tc_entity(self, tc_entity, owner, file=None):
+    def tc_entity(self, tc_entity, owner, file=None):  # pylint: disable=unused-argument
         """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
@@ -1072,9 +1072,10 @@ class ThreatConnect:
             # pylint: disable=unused-variable
             valid_labels, label_errors = self._response_labels(ti_response, tc_entity)
             # pylint: disable=unused-variable
-            valid_file, file_errors = self._file(ti_entity, file)
+            # valid_file, file_errors = self._file(ti_entity, file)
 
-            errors = attributes_errors + tag_errors + label_errors + file_errors
+            # errors = attributes_errors + tag_errors + label_errors + file_errors
+            errors = attributes_errors + tag_errors + label_errors
 
         if ti_entity.type == 'Indicator':
             provided_rating = tc_entity.get('rating', None)
