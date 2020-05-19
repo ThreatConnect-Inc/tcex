@@ -93,6 +93,22 @@ class Document(Group):
         request = {'fileName': self._data.get('fileName'), 'fileSize': file_size}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
+    def get_file_hash(self, hash_type='sha256'):
+        """
+        Getting the hash value of attached document
+        Args:
+            hash_type:
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.get_file_hash(
+            self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
+        )
+
     def malware(self, malware, password, file_name):
         """Update the Document file to be marked as malware.
 

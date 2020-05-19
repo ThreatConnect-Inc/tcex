@@ -1072,10 +1072,9 @@ class ThreatConnect:
             # pylint: disable=unused-variable
             valid_labels, label_errors = self._response_labels(ti_response, tc_entity)
             # pylint: disable=unused-variable
-            # valid_file, file_errors = self._file(ti_entity, file)
+            valid_file, file_errors = self._file(ti_entity, file)
 
-            # errors = attributes_errors + tag_errors + label_errors + file_errors
-            errors = attributes_errors + tag_errors + label_errors
+            errors = attributes_errors + tag_errors + label_errors + file_errors
 
         if ti_entity.type == 'Indicator':
             provided_rating = tc_entity.get('rating', None)
@@ -1313,6 +1312,8 @@ class ThreatConnect:
 
         errors = []
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
+            print(type(ti_entity))
+            print(dir(ti_entity))
             actual_hash = ti_entity.get_file_hash()
             actual_hash = actual_hash.hexdigest()
             provided_hash = hashlib.sha256()
