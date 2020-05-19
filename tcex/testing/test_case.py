@@ -320,6 +320,7 @@ class TestCase:
 
         # initialize new validator instance
         self._validator = self.validator_init()
+        # Adding this for batch to created the -batch and errors files
         with open(os.path.join(self.test_case_log_test_dir, 'DEBUG'), 'w+') as fp:
             fp.close()
 

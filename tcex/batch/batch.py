@@ -1670,7 +1670,6 @@ class Batch:
         if content:
             timestamp = str(time.time()).replace('.', '')
             batch_json_file = os.path.join(self.tcex.args.tc_temp_path, f'batch-{timestamp}.json')
-            print(batch_json_file)
             with open(batch_json_file, 'w') as fh:
                 json.dump(content, fh, indent=2)
 
