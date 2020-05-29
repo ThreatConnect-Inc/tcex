@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Module"""
-# import hashlib
+import hashlib
 from urllib.parse import quote
 
 # import local modules for dynamic reference
@@ -1419,6 +1419,26 @@ class TiTcRequest:
             params['owner'] = owner
 
         yield from self._iterate(url, params, 'fileOccurrence')
+
+    def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
+        """ Gets the hash of a file. """
+        if not sub_type:
+            url = f'/v2/{main_type}/{unique_id}/download'
+        else:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}/download'
+
+        if hash_type == 'sha256':
+            hashed_file = hashlib.sha256()
+        elif hash_type == 'sha1':
+            hashed_file = hashlib.sha1()
+        else:
+            hashed_file = hashlib.md5()
+
+        with self.tcex.session.get(url, stream=True) as r:
+            for chunk in r.iter_content(chunk_size=4096):
+                if chunk:  # filter out keep-alive new chunks
+                    hashed_file.update(chunk)
+        return hashed_file
 
     def get_file_occurrence(self, main_type, sub_type, unique_id, occurrence_id, owner=None):
         """

@@ -6,7 +6,9 @@ import os
 from tcex.testing import ${class_name}
 
 from .custom_feature import CustomFeature  # pylint: disable=relative-beyond-top-level
+% if runtime_level!='organization':
 from .validate_feature import ValidateFeature  # pylint: disable=relative-beyond-top-level
+% endif
 
 
 # pylint: disable=useless-super-delegation,too-many-function-args

@@ -1046,7 +1046,7 @@ class ThreatConnect:
             results.append({'name': name, 'valid': valid, 'errors': errors})
         return results
 
-    def tc_entity(self, tc_entity, owner, file=None):
+    def tc_entity(self, tc_entity, owner, file=None):  # pylint: disable=unused-argument
         """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
@@ -1312,6 +1312,8 @@ class ThreatConnect:
 
         errors = []
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
+            print(type(ti_entity))
+            print(dir(ti_entity))
             actual_hash = ti_entity.get_file_hash()
             actual_hash = actual_hash.hexdigest()
             provided_hash = hashlib.sha256()
