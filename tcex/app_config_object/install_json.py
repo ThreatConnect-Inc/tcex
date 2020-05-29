@@ -400,11 +400,17 @@ class InstallJson:
         """Update feature set based on App type."""
         features = self.features
         if self.runtime_level.lower() in ['organization']:
-            features = ['secureParams']
+            features = ['fileParams', 'secureParams']
         elif self.runtime_level.lower() in ['playbook']:
-            features = ['aotExecutionEnabled', 'appBuilderCompliant', 'secureParams']
+            features = [
+                'aotExecutionEnabled',
+                'appBuilderCompliant',
+                'fileParams',
+                'layoutEnabledApp',
+                'secureParams',
+            ]
         elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-            features = ['appBuilderCompliant', 'fileParams', 'secureParams']
+            features = ['appBuilderCompliant', 'fileParams', 'layoutEnabledApp', 'secureParams']
 
         json_data['features'] = features
         return json_data

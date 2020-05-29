@@ -13,7 +13,6 @@ from random import randint
 
 import paho.mqtt.client as mqtt
 
-
 from .test_case_playbook_common import TestCasePlaybookCommon
 
 
@@ -32,6 +31,10 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     sleep_after_service_start = 5
     sleep_before_delete_config = 2
     sleep_before_shutdown = 0.5
+
+    def _app_callback(self, app):
+        """Set app object from run.py callback"""
+        self.app = app
 
     @property
     def default_args(self):
@@ -180,10 +183,10 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         elif self.service_run_method == 'thread':
 
             # run App in a thread
-            t = threading.Thread(target=self.run, args=(self.args,), daemon=True)
+            t = threading.Thread(target=self.run, args=(), daemon=True)
             t.start()
         elif self.service_run_method == 'multiprocess':
-            p = Process(target=self.run, args=(self.args,), daemon=True)
+            p = Process(target=self.run, args=(), daemon=True)
             p.start()
 
         # give app some time to initialize before continuing

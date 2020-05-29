@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Setup for TcEx Module."""
 import os
+
 from setuptools import find_packages, setup
 
 metadata = {}
@@ -15,6 +16,7 @@ with open('README.md', 'r') as f:
     readme = f.read()
 
 dev_packages = [
+    'bandit',
     'black',
     'CommonMark==0.5.5',
     'deepdiff',
@@ -28,6 +30,7 @@ dev_packages = [
     'pytest-cov',
     'pytest-html',
     'pytest-xdist',
+    'pyupgrade',
     'recommonmark',
     'reno',
     'sphinx',

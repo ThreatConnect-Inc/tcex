@@ -6,7 +6,8 @@ from app_lib import AppLib
 
 
 # pylint: disable=no-member
-if __name__ == '__main__':
+def run(**kwargs):
+    """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules
     app_lib = AppLib()
@@ -21,6 +22,10 @@ if __name__ == '__main__':
     try:
         # load App class
         app = App(tcex)
+
+        # set app property in testing framework
+        if callable(kwargs.get('set_app')):
+            kwargs.get('set_app')(app)
 
         # configure custom trigger message handler
         tcex.service.create_config_callback = app.create_config_callback
@@ -52,3 +57,8 @@ if __name__ == '__main__':
         main_err = f'Generic Error.  See logs for more details ({e}).'
         tcex.log.error(traceback.format_exc())
         tcex.playbook.exit(1, main_err)
+
+
+if __name__ == '__main__':
+    # Run the App
+    run()

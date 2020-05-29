@@ -10,9 +10,8 @@ import uuid
 from datetime import datetime
 
 import pytest
-from requests import Session
 import urllib3
-
+from requests import Session
 from tcex import TcEx
 from tcex.app_config_object.install_json import InstallJson
 from tcex.app_config_object.profile import Profile
@@ -68,8 +67,10 @@ class TestCase:
         """
         for name, value in sorted(args.items()):
             input_data = self.ij.params_dict.get(name)
-            if input_data is None and self.default_args.get(name) is None:
-                self.log.data('run', 'input', f'Unknown arg "{name}" provided.', 'warning')
+            if input_data is None and name not in self.default_args:
+                # if name is not in install.json and not a default arg log a warning
+                if name not in ['tcex_testing_context']:  # values that should not cause a warning
+                    self.log.data('run', 'input', f'{name}: unknown arg.', 'warning')
             elif input_data is not None and input_data.get('encrypt') is True:
                 self.log.data('run', 'input', f'{name}: ***')
             else:
