@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.4 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.5 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.4
+                2.0.5
               </div>
 
 
@@ -1625,6 +1625,8 @@
 
 <div class="viewcode-block" id="Batch.write_error_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.write_error_json">[docs]</a>    <span class="k">def</span> <span class="nf">write_error_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Writes the errors for debuging purposes&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">error_json_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;errors-</span><span class="si">{timestamp}</span><span class="s1">.json&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">error_json_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>

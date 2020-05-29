@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.validate &mdash; TcEx 2.0.4 documentation</title>
+  <title>tcex.bin.validate &mdash; TcEx 2.0.5 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.4
+                2.0.5
               </div>
 
 
@@ -347,6 +347,7 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
             <span class="k">pass</span>
 
+        <span class="c1"># https://docs.python.org/3/library/importlib.html#checking-if-a-module-can-be-imported</span>
         <span class="n">find_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
         <span class="n">found</span> <span class="o">=</span> <span class="n">find_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>

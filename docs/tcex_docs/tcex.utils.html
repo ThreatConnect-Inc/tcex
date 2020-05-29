@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Utils Module &mdash; TcEx 2.0.4 documentation</title>
+  <title>Utils Module &mdash; TcEx 2.0.5 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.4
+                2.0.5
               </div>
 
 
@@ -260,6 +260,48 @@
 <dt id="tcex.utils.utils.Utils.datetime">
 <em class="property">property </em><code class="sig-name descname">datetime</code><a class="headerlink" href="#tcex.utils.utils.Utils.datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of DatetimeUtils.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.utils.Utils.decrypt_aes_cbc">
+<em class="property">static </em><code class="sig-name descname">decrypt_aes_cbc</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ciphertext</em>, <em class="sig-param">iv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.decrypt_aes_cbc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.decrypt_aes_cbc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return AES CBC decrypted string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>bytes</em>) – The encryption key.</p></li>
+<li><p><strong>ciphertext</strong> (<em>bytes</em>) – The ciphertext to decrypt.</p></li>
+<li><p><strong>iv</strong> (<em>bytes</em><em>, </em><em>optional</em>) – The CBC initial vector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The encoded string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.utils.Utils.encrypt_aes_cbc">
+<em class="property">static </em><code class="sig-name descname">encrypt_aes_cbc</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">plaintext</em>, <em class="sig-param">iv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.encrypt_aes_cbc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.encrypt_aes_cbc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return AES CBC encrypted string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>bytes</em>) – The encryption key.</p></li>
+<li><p><strong>plaintext</strong> (<em>str|bytes</em>) – The text to encrypt.</p></li>
+<li><p><strong>iv</strong> (<em>bytes</em><em>, </em><em>optional</em>) – The CBC initial vector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The encoded string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bytes</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

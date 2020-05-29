@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.inputs &mdash; TcEx 2.0.4 documentation</title>
+  <title>tcex.inputs.inputs &mdash; TcEx 2.0.5 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.4
+                2.0.5
               </div>
 
 
@@ -185,7 +185,6 @@
 
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">Utils</span>
 <span class="kn">from</span> <span class="nn">.argument_parser</span> <span class="kn">import</span> <span class="n">TcArgumentParser</span>
-<span class="kn">from</span> <span class="nn">.file_params</span> <span class="kn">import</span> <span class="n">FileParams</span>
 
 
 <div class="viewcode-block" id="Inputs"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs">[docs]</a><span class="k">class</span> <span class="nc">Inputs</span><span class="p">:</span>
@@ -465,9 +464,7 @@
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                         <span class="n">encrypted_contents</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-                    <span class="n">fp</span> <span class="o">=</span> <span class="n">FileParams</span><span class="p">()</span>
-                    <span class="n">fp</span><span class="o">.</span><span class="n">EVP_DecryptInit</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">EVP_aes_128_cbc</span><span class="p">(),</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">EVP_DecryptUpdate</span><span class="p">(</span><span class="n">encrypted_contents</span><span class="p">)</span> <span class="o">+</span> <span class="n">fp</span><span class="o">.</span><span class="n">EVP_DecryptFinal</span><span class="p">()</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">decrypt_aes_cbc</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">encrypted_contents</span><span class="p">)</span>
                     <span class="n">file_content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
                     <span class="n">file_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
 

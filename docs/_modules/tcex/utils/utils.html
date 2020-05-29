@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.utils &mdash; TcEx 2.0.4 documentation</title>
+  <title>tcex.utils.utils &mdash; TcEx 2.0.5 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.4
+                2.0.5
               </div>
 
 
@@ -184,8 +184,9 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">import</span> <span class="nn">pyaes</span>
 
 <span class="kn">from</span> <span class="nn">.date_utils</span> <span class="kn">import</span> <span class="n">DatetimeUtils</span>
 
@@ -229,10 +230,72 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camel_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">camel_string</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Utils.encrypt_aes_cbc"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.encrypt_aes_cbc">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">encrypt_aes_cbc</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">plaintext</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return AES CBC encrypted string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (bytes): The encryption key.</span>
+<span class="sd">            plaintext (str|bytes): The text to encrypt.</span>
+<span class="sd">            iv (bytes, optional): The CBC initial vector.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: The encoded string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span> <span class="ow">or</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">16</span>
+
+        <span class="c1"># ensure key is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="c1"># ensure plaintext is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">plaintext</span> <span class="o">=</span> <span class="n">plaintext</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="c1"># ensure iv is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="n">aes_cbc_encrypt</span> <span class="o">=</span> <span class="n">pyaes</span><span class="o">.</span><span class="n">Encrypter</span><span class="p">(</span><span class="n">pyaes</span><span class="o">.</span><span class="n">AESModeOfOperationCBC</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="n">iv</span><span class="p">))</span>
+        <span class="n">encrypted</span> <span class="o">=</span> <span class="n">aes_cbc_encrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">plaintext</span><span class="p">)</span>
+        <span class="n">encrypted</span> <span class="o">+=</span> <span class="n">aes_cbc_encrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">encrypted</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of DatetimeUtils.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DatetimeUtils</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Utils.decrypt_aes_cbc"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.decrypt_aes_cbc">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">decrypt_aes_cbc</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ciphertext</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return AES CBC decrypted string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (bytes): The encryption key.</span>
+<span class="sd">            ciphertext (bytes): The ciphertext to decrypt.</span>
+<span class="sd">            iv (bytes, optional): The CBC initial vector.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: The encoded string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span> <span class="ow">or</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">16</span>
+
+        <span class="c1"># ensure key is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="c1"># ensure plaintext is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">ciphertext</span> <span class="o">=</span> <span class="n">ciphertext</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="c1"># ensure iv is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="n">aes_cbc_decrypt</span> <span class="o">=</span> <span class="n">pyaes</span><span class="o">.</span><span class="n">Decrypter</span><span class="p">(</span><span class="n">pyaes</span><span class="o">.</span><span class="n">AESModeOfOperationCBC</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="n">iv</span><span class="p">))</span>
+        <span class="n">decrypted</span> <span class="o">=</span> <span class="n">aes_cbc_decrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">)</span>
+        <span class="n">decrypted</span> <span class="o">+=</span> <span class="n">aes_cbc_decrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">decrypted</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">inflect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

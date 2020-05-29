@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.4 documentation</title>
+  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.5 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.4
+                2.0.5
               </div>
 
 
@@ -178,7 +178,7 @@
   <h1>Source code for tcex.threat_intelligence.tcex_ti_tc_request</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
-<span class="c1"># import hashlib</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>
 
 <span class="c1"># import local modules for dynamic reference</span>
@@ -1597,6 +1597,26 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;fileOccurrence&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TiTcRequest.get_file_hash"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.get_file_hash">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">hash_type</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Gets the hash of a file. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/download&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{main_type}</span><span class="s1">/</span><span class="si">{sub_type}</span><span class="s1">/</span><span class="si">{unique_id}</span><span class="s1">/download&#39;</span>
+
+        <span class="k">if</span> <span class="n">hash_type</span> <span class="o">==</span> <span class="s1">&#39;sha256&#39;</span><span class="p">:</span>
+            <span class="n">hashed_file</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">hash_type</span> <span class="o">==</span> <span class="s1">&#39;sha1&#39;</span><span class="p">:</span>
+            <span class="n">hashed_file</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hashed_file</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>  <span class="c1"># filter out keep-alive new chunks</span>
+                    <span class="n">hashed_file</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hashed_file</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.get_file_occurrence"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.get_file_occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">occurrence_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
