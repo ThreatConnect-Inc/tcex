@@ -8,6 +8,8 @@ Release Notes
 + Updated testing framework to decouple App version of TcEx and testing version.
 + Updated deepdiff validation method to better handle OrderedDicts.
 + Added simple caching to env_store.
++ Added session recording & playback for testing framework.
++ Added automatic staging of inputs to kvstore for testing framework.
 
 2.0.4
 =====
