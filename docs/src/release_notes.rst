@@ -10,6 +10,7 @@ Release Notes
 + Added simple caching to env_store.
 + Added session recording & playback for testing framework.
 + Added automatic staging of inputs to kvstore for testing framework.
++ Added additional support for batch in testing framework.
 
 2.0.4
 =====
