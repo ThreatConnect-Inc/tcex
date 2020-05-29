@@ -1,18 +1,25 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
+import base64
 import json
 import logging
+import math
 import os
+import pickle
 import re
 import sys
-from random import randint
-import math
-import base64
 import zlib
-import pickle
-from requests.sessions import Session
+from random import randint
 
 import colorama as c
+from requests.sessions import Session
+
+from ..__metadata__ import __version__ as tcex_version
+from ..env_store import EnvStore
+from ..utils import Utils
+from .install_json import InstallJson
+from .layout_json import LayoutJson
+from .permutations import Permutations
 
 try:
     import jmespath
@@ -20,12 +27,6 @@ except ImportError:
     # jmespath is only required for local development
     pass
 
-from .install_json import InstallJson
-from .layout_json import LayoutJson
-from .permutations import Permutations
-from ..env_store import EnvStore
-from ..utils import Utils
-from ..__metadata__ import __version__ as tcex_version
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -35,9 +36,15 @@ class Profile:
     """Testing Profile Class.
 
     Args:
-        feature (str, optional): The feature name. Defaults to None.
-        name ([type], optional): The filename of the profile
-            in the profile.d director. Defaults to None.
+        default_args (dict, optional): The default Args for the profile.
+        feature (str, optional): The feature name.
+        name (str, optional): The filename of the profile in the profile.d director.
+        redis_client (redis.client.Redis, optional): An instance of Redis client.
+        pytestconfig (?, optional): Pytest config object.
+        monkeypatch (?, optional): Pytest monkeypatch object.
+        tcex_testing_context (str, optional): The current context for this profile.
+        logger (logging.Logger, optional): An logging instance.
+        options (dict, optional): ?
     """
 
     def __init__(
@@ -57,6 +64,7 @@ class Profile:
         self._feature = feature
         self._name = name
         self.log = logger or logging.getLogger('profile').addHandler(logging.NullHandler())
+        self.redis_client = redis_client
         self.pytestconfig = pytestconfig
         self.monkeypatch = monkeypatch
         self.tcex_testing_context = tcex_testing_context
@@ -72,7 +80,6 @@ class Profile:
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
         self.permutations = Permutations(logger=self.log)
-        self.redis_client = redis_client
         self.tc_staged_data = {}
 
     @property
@@ -94,6 +101,7 @@ class Profile:
         # Permuted test cases set options to a true value, so disable writeback
         if self.test_options:
             return
+
         with open(self.filename, 'w') as fh:
             fh.write(f'{json.dumps(json_data, indent=2, sort_keys=True)}\n')
 
@@ -111,7 +119,7 @@ class Profile:
             # profile_name is only used for profile migrations
             self.name = profile_name
 
-        # get input perutations when a permutation_id is passed
+        # get input permutations when a permutation_id is passed
         input_permutations = None
         if permutation_id is not None:
             try:
@@ -200,7 +208,11 @@ class Profile:
         self._context_tracker.append(context)
 
     def clear_context(self, context):
-        """Delete all context data in redis"""
+        """Delete all context data in redis.
+
+        Args:
+            context (str): The context (session_id) to clear in KV store.
+        """
         keys = self.redis_client.hkeys(context)
         if keys:
             return self.redis_client.hdel(context, *keys)
@@ -225,6 +237,7 @@ class Profile:
                     self._data = json.load(fh)
             except OSError:
                 print(f'{c.Fore.RED}Could not open profile {self.filename}.')
+
         if self._data:
             self._data['name'] = self.name
         return self._data
@@ -247,7 +260,7 @@ class Profile:
     def feature(self):
         """Return the current feature."""
         if self._feature is None:
-            # when called in testing framework get the feature from pytest env var.
+            # when called in testing framework will get the feature from pytest env var.
             self._feature = self._test_case_data[0].split('/')[1].replace('/', '-')
         return self._feature
 
@@ -276,8 +289,7 @@ class Profile:
                 self.init_autostage()
 
     def init_autostage(self):
-        """Converts input arguments to staged data to automatically
-            test playbook data propagation.
+        """Convert input arguments to staged data to automatically test playbook data propagation.
 
         The profile_data is checked for the key "auto_stage."
 
@@ -363,7 +375,7 @@ class Profile:
             if not profile_version or profile_version < migration_target:
                 profile_data['version'] = migration_target
             else:
-                return self.data  # profile is already migrated
+                return profile_data  # profile is already migrated
 
             # migrate test options
             self.migrate_options(profile_data)
@@ -455,7 +467,7 @@ class Profile:
 
     @staticmethod
     def migrate_options(profile_data):
-        """ Migrate profile to use options for tests """
+        """Migrate profile to use options for tests"""
 
         # N.B. Profile data is passed by reference, so we can
         # modify it in place
@@ -760,15 +772,14 @@ class Profile:
         return json.loads(profile)
 
     def session_init(self):
-        """ Initializes session recording/playback.  Configured ON
-            with the --record_session test flag, forcibly
-            disabled with the --ignore_session test flag.
+        """Initialize session recording/playback.
 
-            The profile field options.session.enabled can be true
-            to enable session recording/playback.
+        Configured ON with the --record_session test flag, forcibly disabled with the
+        --ignore_session test flag. The profile field options.session.enabled can be
+        true to enable session recording/playback.
 
-            The profile field options.session.blur may be a list of
-            fields to blur to force matching (ie, date/times, passwords, etc)
+        The profile field options.session.blur may be a list of fields to blur to force
+        matching (ie, date/times, passwords, etc)
         """
         ignore_session = self.pytest_args.get('ignore_session')
         record_session = self.pytest_args.get('record_session')
@@ -819,7 +830,7 @@ class Profile:
 
         # Monkeypatch method for requests.sessions.Session.request
         def request(self, method, url, *args, **kwargs):
-            """Interception method for Session.request."""
+            """Intercept method for Session.request."""
             params = kwargs.get('params', {})
             parmlist = []
             params_keys = sorted(params.keys())
@@ -831,7 +842,7 @@ class Profile:
                 parmlist.append((key, value))
 
             # The key for this request e.g. GET https://... ('foo':'bla')
-            request_key = '{} {} {}'.format(method, url, parmlist)
+            request_key = f'{method} {url} {parmlist}'
 
             # if not recording, we must be playing back
             if not session_data.get('_record', False):
@@ -854,7 +865,6 @@ class Profile:
 
     def session_unpickle_result(self, result):  # pylint: disable=no-self-use
         """Reverse the pickle operation"""
-
         return pickle.loads(zlib.decompress(base64.b64decode(result.encode('utf-8'))))
 
     def session_update_profile(self, force=False):
@@ -885,15 +895,11 @@ class Profile:
         return os.path.join(self._app_path, 'tests')
 
     def test_permutations(self):
-        """ Return a list of (id, profile_name, test_options) for
-            each possible permutation of this test to be run by
-            pytest.
+        """Return a list of (id, profile_name, test_options) for test permutations.
 
-            Warning:  the profile at this point is being
-            called by conftest during test discovery.  Most
-            of the profile will NOT be set properly.
+        Warning: the profile at this point is being called by conftest during test
+        discovery. Most of the profile will NOT be set properly.
         """
-
         # Base response is an unadorned test
         response = [(self.name, self.name, {})]
 

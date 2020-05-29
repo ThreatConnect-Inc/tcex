@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Webhook Trigger Server Test Case"""
 import sys
+
 from .test_case_service_common import TestCaseServiceCommon
 
 
@@ -14,7 +15,7 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
         Returns:
             int: The App exit code
         """
-        from run import run
+        from run import run  # pylint: disable=no-name-in-module
 
         # backup sys.argv
         sys_argv_orig = sys.argv
@@ -25,7 +26,7 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
         # run the app
         exit_code = 0
         try:
-            run()
+            run(set_app=self._app_callback)
         except SystemExit as e:
             exit_code = e.code
 

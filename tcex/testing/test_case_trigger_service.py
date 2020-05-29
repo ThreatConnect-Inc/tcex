@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
 import sys
+
 from .test_case_service_common import TestCaseServiceCommon
 
 
@@ -25,7 +26,7 @@ class TestCaseTriggerService(TestCaseServiceCommon):
         # run the app
         exit_code = 0
         try:
-            run()
+            run(set_app=self._app_callback)
         except SystemExit as e:
             exit_code = e.code
 
