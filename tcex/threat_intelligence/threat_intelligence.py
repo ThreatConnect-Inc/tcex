@@ -126,7 +126,7 @@ class ThreatIntelligence:
             obj: An instance of Indicator or specific indicator type.
         """
         if not indicator_type:
-            return Indicator(self.tcex, owner=owner, **kwargs)
+            return Indicator(self.tcex, **kwargs)
 
         indicator_type_map = {
             'address': Address,
@@ -165,7 +165,7 @@ class ThreatIntelligence:
 
         """
         if not group_type:
-            return Group(self.tcex, owner=owner, **kwargs)
+            return Group(self.tcex, **kwargs)
 
         group_type_map = {
             'adversary': Adversary,
@@ -708,5 +708,5 @@ class ThreatIntelligence:
             """Add Custom Indicator data to Batch object"""
             return custom_class(tcex, **kwargs)
 
-        method = locals()['method_1']
+        method = locals()[f'method_1']
         setattr(self, method_name, method)
