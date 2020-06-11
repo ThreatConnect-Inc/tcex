@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.6
+=====
++ Added flush to API logging handler on error message.
+
 2.0.5
 =====
 + Updated testing framework to decouple App version of TcEx and testing version.

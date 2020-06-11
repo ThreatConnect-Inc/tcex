@@ -38,7 +38,9 @@ class ApiHandler(logging.Handler):
         self._entries.append(self.format(record))
 
         # flush queue once limit is hit token module is currently renewing token
-        if len(self._entries) > self.flush_limit and not self.in_token_renewal:
+        if (
+            len(self._entries) > self.flush_limit or record.levelname == 'ERROR'
+        ) and not self.in_token_renewal:
             self.log_to_api(self.entries)
 
     @property

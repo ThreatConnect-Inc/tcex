@@ -83,6 +83,45 @@ class Profile:
         self.tc_staged_data = {}
 
     @property
+    def _reserved_args(self):
+        """Return a list of *all* ThreatConnect reserved arg values."""
+        return [
+            'api_access_id',
+            'api_default_org',
+            'api_secret_key',
+            'batch_action',
+            'batch_chunk',
+            'batch_halt_on_error',
+            'batch_interval_max',
+            'batch_poll_interval',
+            'batch_write_type',
+            'logging',
+            'tc_api_path',
+            'tc_in_path',
+            'tc_log_file',
+            'tc_log_level',
+            'tc_log_path',
+            'tc_log_to_api',
+            'tc_out_path',
+            'tc_playbook_db_context',
+            'tc_playbook_db_path',
+            'tc_playbook_db_port',
+            'tc_playbook_db_type',
+            'tc_playbook_out_variables',
+            'tc_proxy_host',
+            'tc_proxy_port',
+            'tc_proxy_username',
+            'tc_proxy_password',
+            'tc_proxy_external',
+            'tc_proxy_tc',
+            'tc_secure_params',
+            'tc_temp_path',
+            'tc_token',
+            'tc_token_expires',
+            'tc_user_id',
+        ]
+
+    @property
     def _test_case_data(self):
         """Return partially parsed test case data."""
         return os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
@@ -1086,9 +1125,8 @@ class Profile:
     def validate_required_inputs(self):
         """Update interactive menu to build profile.
 
-        This method will also merge input is --merge_inputs is passed to pytest.
+        This method will also merge input if --merge_inputs is passed to pytest.
         """
-
         errors = []
         status = True
         updated_params = []
@@ -1098,7 +1136,7 @@ class Profile:
             profile_inputs_flattened = profile_inputs.get('optional', {})
             profile_inputs_flattened.update(profile_inputs.get('required', {}))
 
-            params = self.ij.params_dict
+            params = self.ij.params_dict  # params section of install.json build as dict
             if self.lj.has_layout:
                 # using inputs from layout.json since they are required to be in order
                 # (display field can only use inputs previously defined)
@@ -1107,7 +1145,7 @@ class Profile:
                     # get data from install.json based on name
                     params[name] = self.ij.params_dict.get(name)
 
-                # hidden fields will not be in layout.json so they need to be include manually
+                # hidden fields will not be in layout.json so they need to be included manually
                 params.update(self.ij.filter_params_dict(hidden=True))
 
             inputs = {}
@@ -1125,13 +1163,16 @@ class Profile:
                     if not self.permutations.validate_input_variable(name, inputs):
                         continue
 
-                # get the value from the current profile
+                # get the value from the current profile, if non existing value will be None
                 value = profile_inputs_flattened.get(name)
+                if value is None and data.get('type').lower() == 'boolean':
+                    # boolean values are optional, and should be added as False by default
+                    value = data.get('default', False)
 
                 input_type = 'optional'
                 if data.get('required'):
                     input_type = 'required'
-                    if value in [None, '']:  # accept value of 0
+                    if value in [None, '']:  # exclude 0 or False from check
                         # validation step
                         errors.append(f'- Missing/Invalid value for required arg ({name})')
                         status = False
@@ -1140,12 +1181,20 @@ class Profile:
                 inputs[name] = value
                 merged_inputs[input_type][name] = value
 
+            # ADI-1376 - handle tcex default args (prevent removing)
+            for arg, val in profile_inputs_flattened.items():
+                if arg in self._reserved_args:
+                    # preserve overwritten default arg
+                    merged_inputs['optional'][arg] = val
+
             updated_params.append(merged_inputs)
 
         if self.pytest_args.get('merge_inputs'):
-            # update profile outputs
+            # update profile inputs
             with open(self.filename, 'r+') as fh:
                 profile_data = json.load(fh)
+
+                # use updated params from the validation section above to merge inputs
                 if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
                     for index, config_item in enumerate(profile_data.get('configs', [])):
                         config_item['config'] = updated_params[index]

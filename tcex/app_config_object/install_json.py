@@ -547,6 +547,11 @@ class InstallJson:
         return self.contents.get('playbook', {})
 
     @property
+    def playbook_type(self):
+        """Return property."""
+        return self.playbook.get('type')
+
+    @property
     def program_icon(self):
         """Return property."""
         return self.contents.get('programIcon')
