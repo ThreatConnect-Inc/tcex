@@ -80,6 +80,7 @@ class Profile:
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
         self.permutations = Permutations(logger=self.log)
+        self.utils = Utils()
         self.tc_staged_data = {}
 
     @property
@@ -672,32 +673,93 @@ class Profile:
         self._name = name
 
     @staticmethod
-    def output_data_rule(variable, data):
+    def matches_number_rule(outputs):
+        """Return if output should use the is_number operator."""
+        if not isinstance(outputs, list):
+            outputs = [outputs]
+        try:
+            for output in outputs:
+                int(output)
+        except Exception:
+            return False
+        return True
+
+    @staticmethod
+    def matches_url_rule(outputs):
+        """Return if output should use the is_url operator."""
+        if not isinstance(outputs, list):
+            outputs = [outputs]
+
+        regex = re.compile(
+            r'^(?:http|ftp)s?://'  # http:// or https://
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$',
+            re.IGNORECASE,
+        )
+        try:
+            for output in outputs:
+                matched = re.match(regex, output)
+                if not matched:
+                    return False
+        except Exception:
+            return False
+        return True
+
+    def matches_date_rule(self, outputs):
+        """Return if output should use the is_date operator."""
+        if not isinstance(outputs, list):
+            outputs = [outputs]
+
+        try:
+            for output in outputs:
+                if self.utils.datetime.any_to_datetime(output) is None:
+                    return False
+        except RuntimeError:
+            return False
+        return True
+
+    @staticmethod
+    def matches_jeq_rule(outputs):
+        """Return if output should use the jeq operator."""
+        if not isinstance(outputs, list):
+            outputs = [outputs]
+        try:
+            for output in outputs:
+                if not isinstance(output, dict):
+                    json.loads(output)
+        except Exception:
+            return False
+        return True
+
+    @staticmethod
+    def matches_dd_rule(outputs):
+        """Return if output should use the dd operator."""
+        if not isinstance(outputs, list):
+            return False
+
+        for output in outputs:
+            if not isinstance(output, str):
+                return False
+        return True
+
+    def output_data_rule(self, data):
         """Return the default output data for a given variable"""
-        output_data = {'expected_output': data, 'op': 'eq'}
-        if variable.endswith('json.raw!String'):
-            output_data['exclude'] = []
-            output_data['op'] = 'jeq'
-            output_data['ignore_order'] = False
-        elif variable.endswith('web_link!String') or variable.endswith('web_link!StringArray'):
-            output_data['op'] = 'is_url'
-        elif variable.endswith('.id!String') or variable.endswith('.id!StringArray'):
-            output_data['op'] = 'is_number'
-        elif (
-            variable.endswith('date_added!String')
-            or variable.endswith('date_added!StringArray')
-            or variable.endswith('last_modified!String')
-            or variable.endswith('last_modified!StringArray')
-        ):
-            output_data['op'] = 'is_date'
-        elif variable.endswith('StringArray'):
-            output_data['op'] = 'dd'
-            output_data['ignore_order'] = False
-        elif variable.endswith('TCEntity') or variable.endswith('TCEntityArray'):
-            output_data['exclude'] = ['id']
-            output_data['op'] = 'jeq'
-            output_data['ignore_order'] = False
-        return output_data
+
+        # NOTE: The order of these if statements matter.
+        if self.matches_url_rule(data):
+            return {'expected_output': data, 'op': 'is_url'}
+        if self.matches_number_rule(data):
+            return {'expected_output': data, 'op': 'is_number'}
+        if self.matches_jeq_rule(data):
+            return {'expected_output': data, 'op': 'jeq', 'ignore_order': False, 'exclude': []}
+        if self.matches_date_rule(data):
+            return {'expected_output': data, 'op': 'is_date'}
+        if self.matches_dd_rule(data):
+            return {'expected_output': data, 'op': 'dd', 'ignore_order': False, 'exclude': []}
+        return {'expected_output': data, 'op': 'eq'}
 
     def profile_inputs(self):
         """Return the appropriate inputs (config) for the current App type.
@@ -1111,7 +1173,7 @@ class Profile:
             # make business rules based on data type or content
             output_data = {'expected_output': data, 'op': 'eq'}
             if 1 not in self.exit_codes:
-                output_data = self.output_data_rule(variable, data)
+                output_data = self.output_data_rule(data)
 
             # get trigger id for service Apps
             if trigger_id is not None:
