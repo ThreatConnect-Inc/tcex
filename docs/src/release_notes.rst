@@ -6,6 +6,7 @@ Release Notes
 2.0.6
 =====
 + Added flush to API logging handler on error message.
++ Added additional support for batch in testing framework.
 
 2.0.5
 =====
