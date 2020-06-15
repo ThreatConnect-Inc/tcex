@@ -1129,11 +1129,20 @@ class ThreatConnect:
         errors = []
         for item in expected:
             if item in actual:
-                if str(expected.get(item)) != actual.get(item):
-                    errors.append(
-                        f'{error_type}{item} : {expected.get(item)} '
-                        f'did not match {item} : {actual.get(item)}'
-                    )
+                if isinstance(expected.get(item), list):
+                    actual_list_string = [str(i) for i in actual.get(item, [])]
+                    for value in expected.get(item):
+                        if str(value) not in actual_list_string:
+                            errors.append(
+                                f'{error_type}{item} : {expected.get(item)} '
+                                f'did not match {item} : {actual.get(item)}'
+                            )
+                else:
+                    if str(expected.get(item)) != actual.get(item):
+                        errors.append(
+                            f'{error_type}{item} : {expected.get(item)} '
+                            f'did not match {item} : {actual.get(item)}'
+                        )
                 actual.pop(item)
             else:
                 errors.append(
@@ -1271,9 +1280,11 @@ class ThreatConnect:
         expected = {}
         actual = {}
         for attribute in tc_entity.get('attribute', []):
-            expected[attribute.get('type')] = attribute.get('value')
+            attribute_type = attribute.get('type')
+            expected.setdefault(attribute_type, []).append(attribute.get('value'))
         for attribute in ti_response.get('attribute', []):
-            actual[attribute.get('type')] = attribute.get('value')
+            attribute_type = attribute.get('type')
+            actual.setdefault(attribute_type, []).append(attribute.get('value'))
         return self.compare_dicts(expected, actual, error_type='AttributeError: ')
 
     def _response_tags(self, ti_response, tc_entity):
@@ -1312,8 +1323,6 @@ class ThreatConnect:
 
         errors = []
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
-            print(type(ti_entity))
-            print(dir(ti_entity))
             actual_hash = ti_entity.get_file_hash()
             actual_hash = actual_hash.hexdigest()
             provided_hash = hashlib.sha256()
