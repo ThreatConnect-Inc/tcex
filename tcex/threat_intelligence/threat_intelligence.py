@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Module"""
 import inflect
+
 from .mappings.filters import Filters
+from .mappings.group.group import Group
 from .mappings.group.group_types.adversary import Adversary
 from .mappings.group.group_types.campaign import Campaign
 from .mappings.group.group_types.document import Document
@@ -12,19 +14,16 @@ from .mappings.group.group_types.intrusion_set import IntrusionSet
 from .mappings.group.group_types.report import Report
 from .mappings.group.group_types.signature import Signature
 from .mappings.group.group_types.threat import Threat
-from .mappings.group.group import Group
+from .mappings.indicator.indicator import (Indicator,
+                                           custom_indicator_class_factory)
 from .mappings.indicator.indicator_types.address import Address
 from .mappings.indicator.indicator_types.email_address import EmailAddress
 from .mappings.indicator.indicator_types.file import File
 from .mappings.indicator.indicator_types.host import Host
 from .mappings.indicator.indicator_types.url import URL
-from .mappings.indicator.indicator import (
-    Indicator,
-    custom_indicator_class_factory,
-)
+from .mappings.owner import Owner
 from .mappings.tag import Tag
 from .mappings.task import Task
-from .mappings.owner import Owner
 from .mappings.victim import Victim
 
 p = inflect.engine()
@@ -66,6 +65,7 @@ class ThreatIntelligence:
         Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             text (str, kwargs): [Required for Create] The URL value for this Indicator.
+
         Return:
             obj: An instance of URL.
         """
@@ -77,6 +77,7 @@ class ThreatIntelligence:
         Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             address (str, kwargs): [Required for Create] The Email Address value for this Indicator.
+
         Return:
             obj: An instance of EmailAddress.
         """
@@ -87,6 +88,7 @@ class ThreatIntelligence:
 
         Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
         Return:
             obj: An instance of File.
         """
@@ -98,6 +100,7 @@ class ThreatIntelligence:
         Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             hostname (str, kwargs): [Required for Create] The Host value for this Indicator.
+
         Return:
             obj: An instance of Host.
         """
@@ -159,13 +162,10 @@ class ThreatIntelligence:
 
         Args:
             owner (str): The ThreatConnect owner name.
-            group_type:
-
-        Return:
-
+            group_type: The type of group object.
         """
         if not group_type:
-            return Indicator(self.tcex, owner=owner, **kwargs)
+            return Group(self.tcex, owner=owner, **kwargs)
 
         group_type_map = {
             'adversary': Adversary,
@@ -299,9 +299,6 @@ class ThreatIntelligence:
             owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
-
-        Return:
-
         """
         return Report(self.tcex, **kwargs)
 
@@ -344,9 +341,6 @@ class ThreatIntelligence:
             owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
-
-        Return:
-
         """
         return Threat(self.tcex, **kwargs)
 
@@ -358,28 +352,15 @@ class ThreatIntelligence:
             name:
             **kwargs:
 
-        Return:
-
         """
         return Victim(self.tcex, **kwargs)
 
     def tag(self, name):
-        """Create the Tag TI object.
-
-        Args:
-            name:
-
-        Return:
-
-        """
+        """Create the Tag TI object."""
         return Tag(self.tcex, name)
 
     def owner(self):
-        """Create the Owner object.
-
-        Return:
-
-        """
+        """Create the Owner object."""
         return Owner(self.tcex)
 
     def create_entity(self, entity, owner):
@@ -458,11 +439,8 @@ class ThreatIntelligence:
         """Create a indicator/group in TC based on the given entity's
 
         Args:
-            entities:
-            owner:
-
-        Returns:
-
+            entities: The entity to create.
+            owner: The owner of the entity (
         """
         responses = []
         for entity in entities:
@@ -539,12 +517,10 @@ class ThreatIntelligence:
             }
 
         Args:
-            json_response:
-
-        Yields:
+            tc_data: TC data to convert to a entity.
+            resource_type: The type of TC data being provided.
 
         """
-        print('getting here')
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 

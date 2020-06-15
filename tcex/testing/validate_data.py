@@ -1298,7 +1298,7 @@ class ThreatConnect:
         expected = []
         actual = []
         for tag in tc_entity.get('securityLabel', []):
-            expected.append(tag)
+            expected.append(tag.get('name'))
         for tag in ti_response.get('securityLabel', []):
             actual.append(tag.get('name'))
 
