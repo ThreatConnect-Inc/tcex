@@ -11,7 +11,7 @@ import os
 import random
 import re
 from collections import OrderedDict
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 
 from ..utils import Utils
 
@@ -716,7 +716,7 @@ class Redis:
         self.log.data('validate', 'DB Data', variable_data)
         if not variable:
             self.log.data(
-                'validate', 'None Error', f'Redis variable not provided', 'error',
+                'validate', 'None Error', 'Redis variable not provided', 'error',
             )
             return False
 
@@ -783,7 +783,7 @@ class Redis:
         op = op or 'eq'
         if not variable:
             self.log.data(
-                'validate', 'None Error', f'Redis variable not provided', 'error',
+                'validate', 'None Error', 'Redis variable not provided', 'error',
             )
             return False
 
@@ -826,7 +826,7 @@ class Redis:
         # ADI-1118 - log warning if string value is wrapped in quotes
         if isinstance(app_data, (str)) and app_data.startswith('"') and app_data.endswith('"'):
             self.log.data(
-                'validate', 'Suspect Value', f'App data is wrapped in double quotes.', 'warning',
+                'validate', 'Suspect Value', 'App data is wrapped in double quotes.', 'warning',
             )
 
         # build assert error
@@ -1050,6 +1050,8 @@ class ThreatConnect:
         """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
+        print(tc_entity)
+        print(ti_entity)
         ti_response = ti_entity.single(params=parameters)
         entity_name = tc_entity.get('name')
         errors = []
@@ -1211,7 +1213,7 @@ class ThreatConnect:
                         unique_id=entity.get('id'),
                     )
         elif tc_entity.get('type') in self.provider.tcex.indicator_types:
-            tc_entity['summary'] = tc_entity.get('summary')
+            tc_entity['summary'] = quote(tc_entity.get('summary'), safe='')
             if tc_entity.get('type').lower() == 'file':
                 tc_entity['summary'] = tc_entity.get('summary').upper()
             ti_entity = self.provider.tcex.ti.indicator(
