@@ -29,7 +29,7 @@ class Rules:
         if self.matches_date_rule(data):
             return {'expected_output': data, 'op': 'is_date'}
         if self.matches_dd_rule(data):
-            return {'expected_output': data, 'op': 'dd', 'ignore_order': False, 'exclude': []}
+            return {'expected_output': data, 'op': 'dd', 'ignore_order': False, 'exclude_paths': []}
         return {'expected_output': data, 'op': 'eq'}
 
     @staticmethod
