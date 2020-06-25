@@ -96,6 +96,9 @@ class TestProfiles(${class_name}):
             if output_data is not None:
                 ValidateFeature(self.validator).validate(output_data)
 
+            # validate App outputs and Profile outputs are consistent
+            validation.validate_outputs(self.profile.tc_playbook_out_variables, output_data)
+
         # exit message can not be validated since it's written during teardown for Service Apps
 
     % else:
