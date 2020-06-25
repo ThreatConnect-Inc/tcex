@@ -5,8 +5,8 @@ import logging
 import os
 import re
 import sys
+from collections import OrderedDict
 from random import randint
-from collection import OrderedDict
 
 import colorama as c
 
@@ -523,6 +523,16 @@ class Profile:
             trigger_id (str): The current trigger_id (service Apps).
         """
         for variable in self.tc_playbook_out_variables:
+            # TODO: investigate moving to output rules validator
+            # APP-219 - check for "bad" output variable names
+            if 'raw.json' in variable:
+                self.log.data(
+                    'validate',
+                    'Suspect Output Variable',
+                    'Output variable matched a suspect value (raw.json).',
+                    'warning',
+                )
+
             # get data from redis for current context
             data = redis_data.get(variable.encode('utf-8'))
 
