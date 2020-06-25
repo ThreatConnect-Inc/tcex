@@ -8,7 +8,7 @@ import traceback
 
 import colorama as c
 from tcex.bin import Test
-from tcex.app_config_object import Profile
+from tcex.profile import Profile
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)

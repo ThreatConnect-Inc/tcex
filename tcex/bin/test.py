@@ -4,14 +4,14 @@
 import json
 import os
 
-from .bin import Bin
-from ..app_config_object import Profile, ProfileInteractive
 from ..app_config_object.templates import (
     CustomTemplates,
     DownloadTemplates,
     TestProfileTemplates,
     ValidationTemplates,
 )
+from ..profile import Interactive, Profile
+from .bin import Bin
 
 
 class Test(Bin):
@@ -31,7 +31,7 @@ class Test(Bin):
         )
         self.custom_templates = CustomTemplates(self.profile, self.args.branch)
         self.download_template = DownloadTemplates(self.profile, self.args.branch)
-        self.profile_interactive = ProfileInteractive(self.profile)
+        self.profile_interactive = Interactive(self.profile)
         self.test_profile_template = TestProfileTemplates(self.profile, self.args.branch)
         self.validation_templates = ValidationTemplates(self.profile, self.args.branch)
 

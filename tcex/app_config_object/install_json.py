@@ -412,6 +412,11 @@ class InstallJson:
         elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             features = ['appBuilderCompliant', 'fileParams', 'layoutEnabledApp', 'secureParams']
 
+        # re-add other non-standard (optional) features
+        for feature in self.features:
+            if feature in ['CALSettings']:
+                features.append(feature)
+
         json_data['features'] = features
         return json_data
 

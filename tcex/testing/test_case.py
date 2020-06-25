@@ -14,8 +14,8 @@ import urllib3
 from requests import Session
 from tcex import TcEx
 from tcex.app_config_object.install_json import InstallJson
-from tcex.app_config_object.profile import Profile
 from tcex.env_store import EnvStore
+from tcex.profile import Profile
 from tcex.sessions.tc_session import HmacAuth
 from tcex.utils import Utils
 
@@ -228,13 +228,13 @@ class TestCase:
         self.check_environment(self._profile.environments, os_environments)
 
         # migrate profile to latest schema
-        self._profile.data = self._profile.migrate()
+        self._profile.migrate()
 
-        # validate required fields
+        # populate profile (env vars, etc)
+        self._profile.data = self._profile.populate.replace_env_variables(self._profile.data)
+
+        # validate required fields, requires env vars to be populated
         valid, message = self._profile.validate_required_inputs()
-
-        # replace all variable references
-        profile_data = self._profile.replace_env_variables(self._profile.data)
 
         # stage ThreatConnect data based on current profile, also used in teardown method
         self._staged_tc_data = self.stager.threatconnect.entities(
@@ -245,8 +245,7 @@ class TestCase:
         self._profile.tc_staged_data = self._staged_tc_data
 
         # Replace staged_data
-        profile_data = self._profile.replace_tc_variables(profile_data)
-        self._profile.data = profile_data
+        self._profile.data = self._profile.populate.replace_tc_variables(self._profile.data)
 
         # replace all references and all staged variable
         self._profile.init()

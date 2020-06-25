@@ -402,6 +402,7 @@ class Services:
             name (str): The name of the thread.
             target (callable): The method to call for the thread.
             args (tuple): The args to pass to the target method.
+            kwargs (dict): Additional args.
         """
         # self.tcex.log.trace(f'message thread: {type(target)} - {args}')
         try:
@@ -432,7 +433,7 @@ class Services:
         if self._mqtt_client is None:
             try:
                 self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
-                self.mqtt_client.connect(
+                self._mqtt_client.connect(
                     self.tcex.args.tc_svc_broker_host,
                     int(self.tcex.args.tc_svc_broker_port),
                     int(self.tcex.args.tc_svc_broker_timeout),
@@ -443,7 +444,7 @@ class Services:
                     tls_version=ssl.PROTOCOL_TLSv1_2,
                 )
                 # add logger
-                self.mqtt_client.enable_logger(logger=self.tcex.log)
+                self._mqtt_client.enable_logger(logger=self.tcex.log)
                 # username must be a empty string
                 self._mqtt_client.username_pw_set('', password=self.tcex.args.tc_svc_broker_token)
                 self._mqtt_client.tls_insecure_set(False)

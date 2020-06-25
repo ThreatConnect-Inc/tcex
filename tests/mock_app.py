@@ -4,10 +4,9 @@ import json
 import os
 import sys
 import uuid
-from requests import Session
 
+from requests import Session
 from tcex import TcEx
-from tcex.inputs import FileParams
 from tcex.sessions.tc_session import HmacAuth
 from tcex.utils import Utils
 
@@ -44,9 +43,6 @@ class MockApp:
         self.tc_api_path = os.getenv('TC_API_PATH')
         self.tc_token_url = os.getenv('TC_TOKEN_URL')
         self.tc_token_svc_id = os.getenv('TC_TOKEN_SVC_ID')
-
-        # file encrypt/decrypt module for TcEx inputs
-        self.fp = FileParams()
 
         # get a requests session and set hmac auth to use in retrieving tokens.
         self.session = Session()
@@ -137,8 +133,7 @@ class MockApp:
         config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app_params.aes')
 
         # encrypt the serialized config data
-        self.fp.EVP_EncryptInit(self.fp.EVP_aes_128_cbc(), config_key.encode(), b'\0' * 16)
-        encrypted_contents = self.fp.EVP_EncryptUpdate(config_data) + self.fp.EVP_EncryptFinal()
+        encrypted_contents = self.utils.encrypt_aes_cbc(config_key, config_data)
 
         # write the config data to disk
         with open(config_file, 'wb') as fh:
@@ -165,7 +160,7 @@ class MockApp:
         ]
         params = self.ijd.get('params') or [
             {
-                'label': 'My Book',
+                'label': 'My Bool',
                 'name': 'my_bool',
                 'note': '',
                 'required': True,

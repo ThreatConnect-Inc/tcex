@@ -2,14 +2,14 @@
 """Base pytest configuration file."""
 import os
 import shutil
+
 from app_lib import AppLib
+from tcex.profile import Profile  # pylint: disable=wrong-import-position
 
 # can't import TCEX profile until the system path is fixed
 if os.getenv('TCEX_SITE_PACKAGE') is None:
     # update the path to ensure the App has access to required modules
     AppLib().update_path()
-
-from tcex.app_config_object.profile import Profile  # pylint: disable=wrong-import-position
 
 
 def profiles(profiles_dir):
