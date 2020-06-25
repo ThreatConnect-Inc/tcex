@@ -406,11 +406,14 @@ class InstallJson:
                 'aotExecutionEnabled',
                 'appBuilderCompliant',
                 'fileParams',
-                'layoutEnabledApp',
                 'secureParams',
             ]
         elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-            features = ['appBuilderCompliant', 'fileParams', 'layoutEnabledApp']
+            features = ['appBuilderCompliant', 'fileParams']
+
+        # add layoutEnabledApp if layout.json file exists in project
+        if os.path.isfile(os.path.join(self._path, 'layout.json')):
+            features.append('layoutEnabledApp')
 
         # re-add other non-standard (optional) features
         for feature in self.features:
