@@ -11,7 +11,7 @@ import os
 import random
 import re
 from collections import OrderedDict
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 
 from ..utils import Utils
 
@@ -158,18 +158,17 @@ class Validator:
         }
         return operators.get(op, None)
 
-    @staticmethod
-    def operator_date_format(app_data, test_data):
+    def operator_date_format(self, app_data, test_data):
         """Check if date or dates match the provide format.
 
         Args:
             app_data: (list,str): One or more date strings.
             test_data: (str): A strptime string for comparision.
         """
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         if not isinstance(app_data, list):
             app_data = [app_data]
@@ -252,11 +251,10 @@ class Validator:
         results = operator.eq(app_data, test_data)
         return results, self.details(app_data, test_data, 'eq')
 
-    @staticmethod
-    def operator_is_url(app_data, test_data):  # pylint: disable=unused-argument
+    def operator_is_url(self, app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         if not isinstance(app_data, list):
             app_data = [app_data]
@@ -292,10 +290,10 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
@@ -315,10 +313,10 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
@@ -330,10 +328,10 @@ class Validator:
 
     def operator_is_date(self, app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         if not isinstance(app_data, list):
             app_data = [app_data]
@@ -348,10 +346,19 @@ class Validator:
         return passed, ','.join(bad_data)
 
     @staticmethod
-    def operator_is_number(app_data, test_data):  # pylint: disable=unused-argument
+    def check_null(data_list):
+        """Check if data_list is None or if None exists in the data_list."""
+        if not isinstance(data_list, list):
+            data_list = [data_list]
+        for data in data_list:
+            if data is None:
+                return True
+        return False
+
+    def operator_is_number(self, app_data, test_data):  # pylint: disable=unused-argument
         """Check if the app_data is a known date."""
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         if not isinstance(app_data, list):
             app_data = [app_data]
@@ -482,10 +489,10 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
@@ -503,10 +510,10 @@ class Validator:
         If data passed in is 1 list and 1 int, validates length array and int value are the same.
         If data passed in is 1 str and 1 int, validates length str and int value are the same.
         """
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         if isinstance(test_data, (list, str)):
             results = operator.eq(len(app_data), len(test_data))
@@ -525,10 +532,10 @@ class Validator:
         Returns:
             bool, str: The results of the operator and any error message
         """
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         app_data = self._string_to_int_float(app_data)
         test_data = self._string_to_int_float(test_data)
@@ -551,8 +558,7 @@ class Validator:
         results = operator.ne(app_data, test_data)
         return results, self.details(app_data, test_data, 'eq')
 
-    @staticmethod
-    def operator_regex_match(app_data, test_data):
+    def operator_regex_match(self, app_data, test_data):
         """Compare app data matches test regex data.
 
         Args:
@@ -562,10 +568,10 @@ class Validator:
         Returns:
             bool: The results of the operator.
         """
-        if app_data is None:
-            return False, 'Invalid app_data: {app_data}'
-        if test_data is None:
-            return False, 'Invalid test_data: {test_data}'
+        if self.check_null(test_data):
+            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
         if isinstance(app_data, dict):
             return False, 'Invalid app_data, dict type is not supported.'
@@ -716,7 +722,7 @@ class Redis:
         self.log.data('validate', 'DB Data', variable_data)
         if not variable:
             self.log.data(
-                'validate', 'None Error', f'Redis variable not provided', 'error',
+                'validate', 'None Error', 'Redis variable not provided', 'error',
             )
             return False
 
@@ -783,7 +789,7 @@ class Redis:
         op = op or 'eq'
         if not variable:
             self.log.data(
-                'validate', 'None Error', f'Redis variable not provided', 'error',
+                'validate', 'None Error', 'Redis variable not provided', 'error',
             )
             return False
 
@@ -826,7 +832,7 @@ class Redis:
         # ADI-1118 - log warning if string value is wrapped in quotes
         if isinstance(app_data, (str)) and app_data.startswith('"') and app_data.endswith('"'):
             self.log.data(
-                'validate', 'Suspect Value', f'App data is wrapped in double quotes.', 'warning',
+                'validate', 'Suspect Value', 'App data is wrapped in double quotes.', 'warning',
             )
 
         # build assert error
@@ -1211,7 +1217,7 @@ class ThreatConnect:
                         unique_id=entity.get('id'),
                     )
         elif tc_entity.get('type') in self.provider.tcex.indicator_types:
-            tc_entity['summary'] = tc_entity.get('summary')
+            tc_entity['summary'] = quote(tc_entity.get('summary'), safe='')
             if tc_entity.get('type').lower() == 'file':
                 tc_entity['summary'] = tc_entity.get('summary').upper()
             ti_entity = self.provider.tcex.ti.indicator(
