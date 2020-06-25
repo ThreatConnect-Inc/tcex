@@ -9,8 +9,10 @@ class TestCasePlaybookCommon(TestCase):
     """Playbook TestCase Class"""
 
     redis_client = None
+    # APP-82 - added staging of empty_array
     redis_staging_data = {
         '#App:1234:empty!String': '',
+        '#App:1234:empty_array!StringArray': [],
         '#App:1234:null!String': None,
         '#App:1234:non-ascii!String': 'ドメイン.テスト',
     }
