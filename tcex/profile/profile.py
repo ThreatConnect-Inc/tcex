@@ -608,9 +608,12 @@ class Profile:
 
                 # get the value from the current profile, if non existing value will be None
                 value = profile_inputs_flattened.get(name)
-                if value is None and data.get('type').lower() == 'boolean':
-                    # boolean values are optional, and should be added as False by default
-                    value = data.get('default', False)
+
+                # APP-87 - see section below. we will not error on invalid values instead of
+                # assuming False
+                # if value is None and data.get('type').lower() == 'boolean':
+                #     # boolean values are optional, and should be added as False by default
+                #     value = data.get('default', False)
 
                 input_type = 'optional'
                 if data.get('required'):
@@ -618,6 +621,13 @@ class Profile:
                     if value in [None, '']:  # exclude 0 or False from check
                         # validation step
                         errors.append(f'- Missing/Invalid value for required arg ({name})')
+                        status = False
+
+                # APP-87 - ensure boolean inputs don't have null values
+                if data.get('type').lower() == 'boolean':
+                    if not isinstance(value, bool):
+                        # validation step
+                        errors.append(f'- Invalid value for boolean arg ({name})')
                         status = False
 
                 # update inputs
