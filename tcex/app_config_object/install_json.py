@@ -410,7 +410,7 @@ class InstallJson:
                 'secureParams',
             ]
         elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-            features = ['appBuilderCompliant', 'fileParams', 'layoutEnabledApp', 'secureParams']
+            features = ['appBuilderCompliant', 'fileParams', 'layoutEnabledApp']
 
         # re-add other non-standard (optional) features
         for feature in self.features:
