@@ -3,14 +3,14 @@
 import os
 
 
-class TestUtils:
+class TestMessageTc:
     """Test the TcEx Batch Module."""
 
     def setup_class(self):
         """Configure setup before all tests."""
 
     @staticmethod
-    def test_message_tc1(tcex):
+    def test_message_tc(tcex):
         """Test message tc method.
 
         Args:

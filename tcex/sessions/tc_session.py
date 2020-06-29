@@ -117,7 +117,12 @@ class TcSession(Session):
 
         if not url.startswith('https'):
             url = f'{self.args.tc_api_path}{url}'
-        return super().request(method, url, **kwargs)
+        response = super().request(method, url, **kwargs)
+
+        # APP-79 - adding logging of request as curl commands
+        self.tcex.log.trace(self.tcex.utils.requests_to_curl(response.request, verify=self.verify))
+
+        return response
 
     def retry(self, retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
         """Add retry to Requests Session

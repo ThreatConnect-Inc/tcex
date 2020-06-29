@@ -43,18 +43,35 @@ class LayoutJson:
 
     def create(self, inputs, outputs):
         """Create new layout.json file based on inputs and outputs."""
+        lj = OrderedDict()
 
-        lj = {
-            'inputs': [
-                {'parameters': [], 'sequence': 1, 'title': 'Action'},
-                {'parameters': [], 'sequence': 2, 'title': 'Connection'},
-                {'parameters': [], 'sequence': 3, 'title': 'Configure'},
-                {'parameters': [], 'sequence': 4, 'title': 'Advanced'},
-            ],
-            'outputs': [],
-        }
+        # add inputs
+        lj['inputs'] = []
+        step = OrderedDict()
+        step['parameters'] = []
+        step['sequence'] = 1
+        step['title'] = 'Action'
+        lj['inputs'].append(step)
+        step = OrderedDict()
+        step['parameters'] = []
+        step['sequence'] = 2
+        step['title'] = 'Connection'
+        lj['inputs'].append(step)
+        step = OrderedDict()
+        step['parameters'] = []
+        step['sequence'] = 3
+        step['title'] = 'Configure'
+        lj['inputs'].append(step)
+        step = OrderedDict()
+        step['parameters'] = []
+        step['sequence'] = 4
+        step['title'] = 'Advanced'
+        lj['inputs'].append(step)
 
-        for i in inputs:
+        # add outputs
+        lj['outputs'] = []
+
+        for i in sorted(inputs):
             if i.get('name') == 'tc_action':
                 lj['inputs'][0]['parameters'].append({'name': 'tc_action'})
             elif i.get('hidden') is True:
@@ -64,11 +81,11 @@ class LayoutJson:
             else:
                 lj['inputs'][2]['parameters'].append({'display': '', 'name': i.get('name')})
 
-        for o in outputs:
+        for o in sorted(outputs):
             lj['outputs'].append({'display': '', 'name': o.get('name')})
 
-        with open(self.filename, 'w') as fh:
-            fh.write(f'{json.dumps(lj, indent=2, sort_keys=False)}\n')
+        # write layout file to disk
+        self.write(lj)
 
     @property
     def filename(self):
@@ -103,6 +120,35 @@ class LayoutJson:
         for o in self.outputs:
             outputs.setdefault(o.get('name'), o)
         return outputs
+
+    def update(self):
+        """Update the layouts.json file."""
+        layout_data = self.contents
+
+        # APP-86 - sort output data by name
+        self.update_sort_outputs(layout_data)
+
+        # update contents
+        self._contents = layout_data
+
+        # write updated content
+        self.write(layout_data)
+
+    @staticmethod
+    def update_sort_outputs(layout_data):
+        """Sort output field by name."""
+        # APP-86 - sort output data by name
+        layout_data['outputs'] = sorted(layout_data.get('outputs', []), key=lambda i: i['name'])
+
+    def write(self, json_data):
+        """Write updated profile file.
+
+        Args:
+            json_data (dict): The profile data.
+        """
+        with open(self.filename, 'w') as fh:
+            json.dump(json_data, fh, indent=2, sort_keys=False)
+            fh.write('\n')
 
     #
     # properties

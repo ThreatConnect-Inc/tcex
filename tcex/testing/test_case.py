@@ -16,11 +16,11 @@ from tcex import TcEx
 from tcex.app_config_object.install_json import InstallJson
 from tcex.env_store import EnvStore
 from tcex.profile import Profile
-from tcex.sessions.tc_session import HmacAuth
 from tcex.utils import Utils
 
 from .stage_data import Stager
 from .test_logger import logger
+from .test_session import TestSession
 from .validate_data import Validator
 
 # disable ssl warning message
@@ -34,6 +34,8 @@ class TestCase:
     _current_test = None
     _default_args = None
     _profile = None
+    _session_admin = None
+    _session_exchange = None
     _stager = None
     _staged_tc_data = []
     _timer_class_start = None
@@ -289,6 +291,54 @@ class TestCase:
             return 1
         return 0
 
+    @property
+    def session_admin(self):
+        """Return requests Session object for TC admin account.
+
+        The credential this session uses require special activation in the ThreatConnect Platform
+        and is not intended for normal use.
+        """
+        # APP-102 - adding a session for TC API Admin role request
+        api_access_id = self.env_store.getenv('/ninja/tc/system/admin_api/api_access_id')
+        api_secret_key = self.env_store.getenv('/ninja/tc/system/admin_api/api_secret_key')
+        if (
+            self._session_admin is None
+            and api_access_id is not None
+            and api_secret_key is not None
+            and self.tc_api_path is not None
+        ):
+            # support for a proxy is not a typical use case, but can be added later if needed
+            self._session_admin = TestSession(
+                api_access_id=api_access_id,
+                api_secret_key=api_secret_key,
+                api_path=self.tc_api_path,
+                logger=self.log,
+            )
+        return self._session_admin
+
+    @property
+    def session_exchange(self):
+        """Return requests Session object for TC admin account.
+
+        The credential this session uses require special activation in the ThreatConnect Platform
+        and is not intended for normal use.
+        """
+        # APP-102 - adding a session for TC Exchange Admin role request
+        if (
+            self._session_exchange is None
+            and self.api_access_id is not None
+            and self.api_secret_key is not None
+            and self.tc_api_path is not None
+        ):
+            # support for a proxy is not a typical use case, but can be added later if needed
+            self._session_exchange = TestSession(
+                api_access_id=self.api_access_id,
+                api_secret_key=self.api_secret_key,
+                api_path=self.tc_api_path,
+                logger=self.log,
+            )
+        return self._session_exchange
+
     @classmethod
     def setup_class(cls):
         """Run once before all test cases."""
@@ -374,13 +424,8 @@ class TestCase:
             data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '407')}
             token_type = 'svc'
 
-        # add auth
-        self.session.auth = HmacAuth(self.api_access_id, self.api_secret_key)
-
         # retrieve token from API using HMAC auth
-        r = self.session.post(
-            f'{self.tc_api_path}{token_url_path}/{token_type}', json=data, verify=True
-        )
+        r = self.session_exchange.post(f'{token_url_path}/{token_type}', json=data, verify=True)
         if r.status_code == 200:
             token = r.json().get('data')
             self.log.data('setup', 'Using Token', token)
