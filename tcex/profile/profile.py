@@ -687,7 +687,9 @@ class Profile:
                         continue
 
                 # get the value from the current profile, if non existing value will be None
-                value = profile_inputs_flattened.get(name)
+                value = None
+                if name in profile_inputs_flattened:
+                    value = profile_inputs_flattened.get(name)
 
                 # APP-87 - see section below. we will not error on invalid values instead of
                 # assuming False
@@ -703,6 +705,8 @@ class Profile:
                         errors.append(f'- Missing/Invalid value for required arg ({name})')
                         status = False
 
+                if name not in profile_inputs_flattened:
+                    value = data.get('default', None)
                 # APP-87 - ensure boolean inputs don't have null values
                 if data.get('type').lower() == 'boolean':
                     if not isinstance(value, bool):

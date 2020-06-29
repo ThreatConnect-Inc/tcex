@@ -10,6 +10,7 @@ class File(Indicator):
         """Initialize Class Properties.
 
         Args:
+            tcex (Tcex): A instance of TCEX
             md5 (str, optional): The md5 value for this Indicator.
             sha1 (str, optional): The sha1 value for this Indicator.
             sha256 (str, optional): The sha256 value for this Indicator.
@@ -35,6 +36,12 @@ class File(Indicator):
         self.data['sha256'] = self.data.get('sha256') or self._hash_from_unique_id(
             hash_type='sha256'
         )
+        if self.unique_id:
+            for value in self.unique_id.split(':'):
+                value = value.strip()
+                if value:
+                    self.unique_id = value
+                    break
         self.data['size'] = kwargs.get('size', 0)
 
     def _hash_from_unique_id(self, hash_type='md5'):
@@ -42,6 +49,7 @@ class File(Indicator):
             return None
 
         for hash_value in self.unique_id.split(':'):
+            hash_value = hash_value.strip()
             if hash_type.lower() == 'md5' and len(hash_value) == 32:
                 return hash_value
             if hash_type.lower() == 'sha1' and len(hash_value) == 40:
@@ -69,7 +77,7 @@ class File(Indicator):
         """Set the unique_id provided a json response.
 
         Args:
-            json_response:
+            json_response: The json dict to retrieve the unique_id from.
         """
         self.unique_id = (
             json_response.get('md5') or json_response.get('sha1') or json_response.get('sha256')
@@ -83,9 +91,6 @@ class File(Indicator):
             val1: md5
             val2: sha1
             val3: sha256
-
-        Returns:
-
         """
         summary = []
         if val1 is not None:
@@ -109,14 +114,7 @@ class File(Indicator):
         )
 
     def occurrence(self, occurrence_id):
-        """Get a file occurrence given a occurrence id
-
-        Args:
-            occurrence_id:
-
-        Returns:
-
-        """
+        """Get a file occurrence given a occurrence id."""
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
@@ -125,16 +123,7 @@ class File(Indicator):
         )
 
     def add_occurrence(self, name, date, path):
-        """Add  a occurrence to the file
-
-        Args:
-            name:
-            date:
-            path:
-
-        Returns:
-
-        """
+        """Add  a occurrence to the file."""
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
@@ -143,14 +132,7 @@ class File(Indicator):
         )
 
     def delete_occurrence(self, occurrence_id):
-        """Delete a file occurrence given a occurrence id
-
-        Args:
-            occurrence_id:
-
-        Returns:
-
-        """
+        """Delete a file occurrence given a occurrence id."""
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
@@ -159,19 +141,20 @@ class File(Indicator):
         )
 
     def add_action(self, action, target):
-        """
-        Valid action types:
+        """Validate that the provided action matches the defined validation type
+
             + Drop
             + Traffic
             + Archive
             + registryKey
             + userAgent
             + dnsQuery
+
         Args:
             action (str, kwargs): The type of action to add.
             target (bool, kwargs): The Item to add.
 
-        Returns:
+        Return:
             Response: The response from the API call
         """
         if not self.can_update():
@@ -182,19 +165,20 @@ class File(Indicator):
         )
 
     def actions(self, action, target):
-        """
-        Valid action types:
+        """Validate that the provided action matches the defined validation type
+
             + Drop
             + Traffic
             + Archive
             + registryKey
             + userAgent
             + dnsQuery
+
         Args:
             action (str, kwargs): The type of action to retrieve.
             target (bool, kwargs): The Item to retrieve.
 
-        Returns:
+        Return:
             Yield: Yield a dict of data of the File Action
         """
         if not self.can_update():
@@ -205,19 +189,20 @@ class File(Indicator):
         )
 
     def delete_action(self, action, target):
-        """
-        Valid action types:
+        """Validate that the provided action matches the defined validation type
+
             + Drop
             + Traffic
             + Archive
             + registryKey
             + userAgent
             + dnsQuery
+
         Args:
             action (str, kwargs): The type of action to delete.
             target (bool, kwargs): The Item to delete.
 
-        Returns:
+        Return:
             Response: The response from the API call
         """
         if not self.can_update():
