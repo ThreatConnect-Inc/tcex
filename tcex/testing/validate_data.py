@@ -520,7 +520,7 @@ class Validator:
         else:
             results = operator.eq(len(app_data), test_data)
         # TODO: fix response as self.details should be correct for this use case.
-        return results, self.details(app_data, test_data, 'length_eq')
+        return results, f'App Data Length: {len(app_data)} | Test Data Length: {len(app_data)}'
 
     def operator_lt(self, app_data, test_data):
         """Compare app data is less than tests data.

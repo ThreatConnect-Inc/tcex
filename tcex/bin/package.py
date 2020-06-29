@@ -186,7 +186,9 @@ class Package(Bin):
             ij_template = InstallJson(path=tmp_app_path)
 
             # automatically update install.json in template directory
-            ij_template.update(commit_hash=True, sequence=False)
+            ij_template.update(
+                commit_hash=True, sequence=False, valid_values=False, playbook_data_types=False
+            )
 
             # zip file
             self.zip_file(self.app_path, app_name_version, tmp_path)

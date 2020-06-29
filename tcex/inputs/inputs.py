@@ -422,6 +422,8 @@ class Inputs:
             args (list): List of unknown arguments
         """
         for u in self._unknown_args:
+            if u == 'run':
+                continue
             self.tcex.log.warning(f'Unsupported arg found ({u}).')
 
     def update_logging(self):

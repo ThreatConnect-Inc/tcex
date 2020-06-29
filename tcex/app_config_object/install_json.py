@@ -323,7 +323,15 @@ class InstallJson:
                 params.setdefault(p.get('name'), p)
         return params
 
-    def update(self, commit_hash=False, features=True, migrate=False, sequence=True):
+    def update(
+        self,
+        commit_hash=False,
+        features=True,
+        migrate=False,
+        sequence=True,
+        valid_values=True,
+        playbook_data_types=True,
+    ):
         """Update the profile with all required changes.
 
         Args:
@@ -331,6 +339,8 @@ class InstallJson:
             features (bool, optional): If True the features array will be updated.
             migrate (bool, optional): If True the programMain will be set to "run".
             sequence (bool, optional): If True the sequence numbers will be updated.
+            valid_values (bool, optional): If True the valid values will be updated.
+            playbook_data_types (bool, optional):  If True the pbDataTypes will be updated.
         """
         with open(self.filename, 'r+') as fh:
             json_data = json.load(fh)
@@ -356,6 +366,14 @@ class InstallJson:
             # update sequence numbers
             if sequence is True:
                 json_data = self.update_sequence_numbers(json_data)
+
+            # update valid values
+            if valid_values is True:
+                json_data = self.update_valid_values(json_data)
+
+            # update playbook data types
+            if playbook_data_types is True:
+                json_data = self.update_playbook_data_types(json_data)
 
             # write updated profile
             fh.seek(0)
@@ -439,6 +457,36 @@ class InstallJson:
         for param in json_data.get('params', []):
             param['sequence'] = sequence_number
             sequence_number += 1
+        return json_data
+
+    @staticmethod
+    def update_valid_values(json_data):
+        """Update program main on App type."""
+        for param in json_data.get('params', []):
+            if param.get('type', None) not in ['String', 'KeyValueList']:
+                continue
+            if param.get('encrypt', False):
+                if '${KEYCHAIN}' not in param.get('validValues', []):
+                    param['validValues'] = param.get('validValues') or []
+                    param['validValues'].append('${KEYCHAIN}')
+            else:
+                if '${TEXT}' not in (param.get('validValues') or []):
+                    param['validValues'] = param.get('validValues') or []
+                    param['validValues'].append('${TEXT}')
+        return json_data
+
+    @staticmethod
+    def update_playbook_data_types(json_data):
+        """Update program main on App type."""
+        if json_data.get('runtimeLevel', None) != 'Playbook':
+            return json_data
+
+        for param in json_data.get('params', []):
+            if param.get('type', None) != 'String':
+                continue
+            if 'String' not in (param.get('playbookDataType') or []):
+                param['playbookDataType'] = param.get('playbookDataType') or []
+                param['playbookDataType'].append('String')
         return json_data
 
     def validate(self):

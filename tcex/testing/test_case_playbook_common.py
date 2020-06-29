@@ -3,6 +3,7 @@
 # import json
 import os
 import time
+import uuid
 from .test_case import TestCase
 
 
@@ -10,15 +11,22 @@ class TestCasePlaybookCommon(TestCase):
     """Playbook TestCase Class"""
 
     redis_client = None
-    # APP-78 - added staging of epoch time
-    # APP-82 - added staging of empty_array
     redis_staging_data = {
         '#App:1234:empty!String': '',
         '#App:1234:empty_array!StringArray': [],
-        '#App:1234:epoch!String': str(int(time.time())),
         '#App:1234:null!String': None,
         '#App:1234:non-ascii!String': 'ドメイン.テスト',
     }
+
+    def setup_method(self):
+        """Run before each test method runs."""
+        super().setup_method()
+        # APP-78 - The unique redis data that will be regenerated each test method.
+        redis_unique_staged_data = {
+            '#App:1234:epoch!String': str(int(time.time())),
+            '#App:1234:uuid!String': str(uuid.uuid4()),
+        }
+        self.redis_staging_data.update(redis_unique_staged_data)
 
     def clear_context(self, context):
         """Delete data in redis"""
