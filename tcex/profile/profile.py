@@ -62,6 +62,7 @@ class Profile:
 
         # properties
         self._app_path = os.getcwd()
+        self._contents = None
         self._data = None
         self._output_variables = None
         self._context_tracker = []
@@ -115,6 +116,11 @@ class Profile:
             'tc_user_id',
         ]
 
+    @staticmethod
+    def _sorted(data):
+        """Return a sorted dict as an OrderedDict."""
+        return json.loads(json.dumps(data, sort_keys=True), object_pairs_hook=OrderedDict)
+
     @property
     def _test_case_data(self):
         """Return partially parsed test case data."""
@@ -154,8 +160,21 @@ class Profile:
             sys.exit(1)
 
         profile = OrderedDict()
-        profile['outputs'] = profile_data.get('outputs')
+        profile['_comments_'] = []
+        profile['environments'] = ['build']
         profile['stage'] = profile_data.get('stage', {'kvstore': {}})
+        profile['configs'] = []  # add config here and remove later to ensure proper order
+        profile['inputs'] = {}  # add inputs here and remove later to ensure proper order
+        profile['trigger'] = {}
+        profile['webhook_event'] = {
+            'body': '',
+            'headers': [],
+            'method': 'GET',
+            'query_params': [],
+            'trigger_id': '',
+        }
+        profile['validation_criteria'] = {}
+        profile['outputs'] = profile_data.get('outputs')
         profile['options'] = profile_data.get(
             'options',
             {
@@ -165,55 +184,61 @@ class Profile:
         )
 
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-            profile['configs'] = [
-                {
-                    'trigger_id': str(randint(1000, 9999)),
-                    'config': profile_data.get(
-                        'inputs',
-                        {
-                            'optional': self.ij.params_to_args(
-                                input_permutations=input_permutations,
-                                required=False,
-                                service_config=False,
-                            ),
-                            'required': self.ij.params_to_args(
-                                input_permutations=input_permutations,
-                                required=True,
-                                service_config=False,
-                            ),
-                        },
-                    ),
-                }
-            ]
+            profile['configs'].extend(
+                [
+                    {
+                        'trigger_id': str(randint(1000, 9999)),
+                        'config': profile_data.get(
+                            'inputs',
+                            {
+                                'optional': self.ij.params_to_args(
+                                    input_permutations=input_permutations,
+                                    required=False,
+                                    service_config=False,
+                                ),
+                                'required': self.ij.params_to_args(
+                                    input_permutations=input_permutations,
+                                    required=True,
+                                    service_config=False,
+                                ),
+                            },
+                        ),
+                    }
+                ]
+            )
+            del profile['inputs']  # inputs are for non service Apps
+            del profile['validation_criteria']  # validation_criteria is for job Apps only
         elif self.ij.runtime_level.lower() in ['organization', 'playbook']:
             profile['exit_codes'] = profile_data.get('exit_codes', [0])
             profile['exit_message'] = None
-            profile['inputs'] = profile_data.get(
-                'inputs',
-                {
-                    'optional': self.ij.params_to_args(
-                        required=False, input_permutations=input_permutations
-                    ),
-                    'required': self.ij.params_to_args(
-                        required=True, input_permutations=input_permutations
-                    ),
-                },
+            profile['inputs'].update(
+                profile_data.get(
+                    'inputs',
+                    {
+                        'optional': self.ij.params_to_args(
+                            required=False, input_permutations=input_permutations
+                        ),
+                        'required': self.ij.params_to_args(
+                            required=True, input_permutations=input_permutations
+                        ),
+                    },
+                )
             )
+            del profile['configs']  # inputs are for non service Apps
+            del profile['trigger']  # trigger is for service Apps only
+            del profile['webhook_event']  # webhook_event is for service Apps only
 
         if self.ij.runtime_level.lower() == 'organization':
             profile['stage']['threatconnect'] = {}
             profile['validation_criteria'] = profile_data.get('validation_criteria', {'percent': 5})
-            del profile['outputs']
+
+            del profile['outputs']  # outputs are not used in job Apps
+        elif self.ij.runtime_level.lower() == 'playbook':
+            del profile['validation_criteria']  # validation_criteria is for job Apps only
         elif self.ij.runtime_level.lower() == 'triggerservice':
-            profile['trigger'] = {}
+            del profile['webhook_event']  # webhook_event is for webhooktriggerservice Apps only
         elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
-            profile['webhook_event'] = {
-                'body': '',
-                'headers': [],
-                'method': 'GET',
-                'query_params': [],
-                'trigger_id': '',
-            }
+            del profile['trigger']  # trigger is for triggerservice Apps only
 
         # write the new profile to disk
         self.write(profile)
@@ -238,6 +263,17 @@ class Profile:
         return 0
 
     @property
+    def contents(self):
+        """Return mutable copy of profile JSON contents."""
+        if self._contents is None:
+            try:
+                with open(self.filename, 'r') as fh:
+                    self._contents = json.load(fh, object_pairs_hook=OrderedDict)
+            except OSError:
+                print(f'{c.Fore.RED}Could not open profile {self.filename}.')
+        return dict(self._contents)
+
+    @property
     def context_tracker(self):
         """Return the current context trackers for Service Apps."""
         if not self._context_tracker:
@@ -249,23 +285,18 @@ class Profile:
 
     @property
     def data(self):
-        """Return the Data (dict) from the current profile."""
+        """Return single instance copy of current profile."""
         if self._data is None:
-            try:
-                with open(self.filename, 'r') as fh:
-                    self._data = json.load(fh)
-            except OSError:
-                print(f'{c.Fore.RED}Could not open profile {self.filename}.')
+            self._data = self.contents
+            self.remove_comments(self._data)
 
-        if self._data:
-            # TODO: where is this used ???
-            self._data['name'] = self.name
         return self._data
 
     @data.setter
     def data(self, profile_data):
         """Set profile_data dict."""
         self._data = profile_data
+        self.remove_comments(self._data)
 
     def delete(self):
         """Delete an existing profile."""
@@ -308,7 +339,7 @@ class Profile:
     def migrate(self):
         """Migration the profile to the latest schema"""
         migrate = Migrate(self)
-        self._data = migrate.data
+        self.data = migrate.data
 
     @property
     def name(self):
@@ -323,10 +354,55 @@ class Profile:
         """Set the profile name"""
         self._name = name
 
-    # def populate(self):
-    #     """Migration the profile to the latest schema"""
-    #     populate = Populate(self)
-    #     self._profile_data = populate.data
+    def order_profile(self, profile_data):
+        """Order the profile data properly."""
+        comments = profile_data.pop('_comments_', None)
+        environments = profile_data.pop('environments', None)
+        exit_codes = profile_data.pop('exit_codes', None)
+        exit_message = profile_data.pop('exit_message', None)
+        configs = profile_data.pop('configs', None)
+        inputs = profile_data.pop('inputs', None)
+        options = profile_data.pop('options', None)
+        outputs = profile_data.pop('outputs', None)
+        stage = profile_data.pop('stage', None)
+        trigger = profile_data.pop('trigger', None)
+        validation_criteria = profile_data.pop('validation_criteria', None)
+        webhook_event = profile_data.pop('webhook_event', None)
+        version = profile_data.pop('version', None)
+
+        profile = OrderedDict()
+        if comments is not None:
+            profile['_comments_'] = comments
+        if environments is not None:
+            profile['environments'] = environments
+        if stage is not None:
+            profile['stage'] = self._sorted(stage)
+        if configs is not None:
+            profile['configs'] = self._sorted(configs)
+        if inputs is not None:
+            profile['inputs'] = self._sorted(inputs)
+        if trigger is not None:
+            profile['trigger'] = self._sorted(trigger)
+        if webhook_event is not None:
+            profile['webhook_event'] = self._sorted(webhook_event)
+        if validation_criteria is not None:
+            profile['validation_criteria'] = validation_criteria
+        if exit_message is not None:
+            profile['exit_message'] = self._sorted(exit_message)
+        if outputs is not None:
+            profile['outputs'] = self._sorted(outputs)
+        if options is not None:
+            profile['options'] = self._sorted(options)
+        if exit_codes is not None:
+            profile['exit_codes'] = self._sorted(exit_codes)
+        if version is not None:
+            profile['version'] = version
+
+        # add any additional fields not covered above
+        for k, v in profile_data.items():
+            profile[k] = v
+
+        return profile
 
     def profile_inputs(self):
         """Return the appropriate inputs (config) for the current App type.
@@ -364,6 +440,22 @@ class Profile:
                 }
 
         return self._pytest_args
+
+    def remove_comments(self, data):
+        """Iterate through data and remove any dict field with a value of "comments"
+
+        Args:
+            data (dict): The profile dictionary.
+        """
+        data = data or {}
+        for _, v in list(data.items()):
+            try:
+                del data['_comments_']
+            except KeyError:
+                pass
+
+            if isinstance(v, dict):
+                self.remove_comments(v)
 
     @property
     def test_directory(self):
@@ -472,15 +564,10 @@ class Profile:
 
         if self.outputs is None or self.pytest_args.get('replace_outputs'):
             # update profile if current profile is not or user specifies --replace_outputs
-            with open(self.filename, 'r+') as fh:
-                profile_data = json.load(fh)
-                profile_data['outputs'] = outputs
+            profile_data = self.contents
+            profile_data['outputs'] = outputs
+            self.write(profile_data)
 
-                # write updated profile
-                fh.seek(0)
-                json.dump(profile_data, fh, indent=2, sort_keys=True)
-                fh.write('\n')  # add required newline
-                fh.truncate()
         elif self.pytest_args.get('merge_outputs'):
             if trigger_id is not None:
                 # service Apps have a different structure with id: data
@@ -503,16 +590,9 @@ class Profile:
                     else:
                         merged_outputs[key] = outputs[key]
 
-            # update profile outputs
-            with open(self.filename, 'r+') as fh:
-                profile_data = json.load(fh)
-                profile_data['outputs'] = merged_outputs
-
-                # write updated profile
-                fh.seek(0)
-                json.dump(profile_data, fh, indent=2, sort_keys=True)
-                fh.write('\n')  # add required newline
-                fh.truncate()
+            profile_data = self.contents
+            profile_data['outputs'] = merged_outputs
+            self.write(profile_data)
 
     def update_outputs_variables(self, outputs, redis_data, trigger_id):
         """Return the outputs section of a profile.
@@ -644,21 +724,15 @@ class Profile:
 
         if self.pytest_args.get('merge_inputs'):
             # update profile inputs
-            with open(self.filename, 'r+') as fh:
-                profile_data = json.load(fh)
 
-                # use updated params from the validation section above to merge inputs
-                if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-                    for index, config_item in enumerate(profile_data.get('configs', [])):
-                        config_item['config'] = updated_params[index]
-                else:
-                    profile_data['inputs'] = updated_params[0]
-
-                # write updated profile
-                fh.seek(0)
-                json.dump(profile_data, fh, indent=2, sort_keys=True)
-                fh.write('\n')  # add required newline
-                fh.truncate()
+            profile_data = self.contents
+            # use updated params from the validation section above to merge inputs
+            if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+                for index, config_item in enumerate(profile_data.get('configs', [])):
+                    config_item['config'] = updated_params[index]
+            else:
+                profile_data['inputs'] = updated_params[0]
+            self.write(profile_data)
 
         errors = '\n'.join(errors)  # convert error to string for assert message
         return status, f'\n{errors}'
@@ -673,8 +747,11 @@ class Profile:
         if self.test_options:
             return
 
+        # order the profile data appropriately
+        json_data = self.order_profile(json_data)
+
         with open(self.filename, 'w') as fh:
-            json.dump(json_data, fh, indent=2, sort_keys=True)
+            json.dump(json_data, fh, indent=2, sort_keys=False)
             fh.write('\n')
 
     #

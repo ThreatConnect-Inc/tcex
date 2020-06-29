@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 import json
-import os
+
+# import os
 import re
 import sys
 
 import colorama as c
 
-from ..__metadata__ import __version__ as tcex_version
+# from ..__metadata__ import __version__ as tcex_version
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -20,6 +21,26 @@ class Migrate:
         """Initialize Class properties."""
         self.profile = profile
 
+    @staticmethod
+    def comment_to_comments(profile_data):
+        """Migrate comment key to comments key.
+
+        Args:
+            profile_data (dict): The profile data dict.
+        """
+        # APP-80 - migrate comment/comments field
+        comment = profile_data.pop('comment', None)
+        if isinstance(comment, str):
+            profile_data['_comments_'] = [comment]
+        elif isinstance(comment, list):
+            profile_data['_comments_'] = comment
+
+        comments = profile_data.pop('comments', None)
+        if isinstance(comments, str):
+            profile_data['_comments_'] = [comments]
+        elif isinstance(comments, list):
+            profile_data['_comments_'] = comments
+
     @property
     def data(self):
         """Migrate profile to latest schema and rewrite data.
@@ -27,49 +48,44 @@ class Migrate:
         Called from test_case.py init_profile so that profile is update before
         the test case runs.
         """
-
         # Short circuit migrations if the profile is newer than this code
         # Ideally, we'd put a migration stamp in the profile instead
-        migration_mtime = os.stat(__file__).st_mtime
-        migration_target = f'{tcex_version}.{migration_mtime}'
+        # migration_mtime = os.stat(__file__).st_mtime
+        # migration_target = f'{tcex_version}.{migration_mtime}'
 
-        with open(os.path.join(self.profile.filename), 'r+') as fh:
-            profile_data = json.load(fh)
+        profile_data = self.profile.contents
 
-            profile_version = profile_data.get('version', None)
-            if not profile_version or profile_version < migration_target:
-                profile_data['version'] = migration_target
-            else:
-                return profile_data  # profile is already migrated
+        # profile_version = profile_data.get('version', None)
+        # if not profile_version or profile_version < migration_target:
+        #     profile_data['version'] = migration_target
+        # else:
+        #     return profile_data  # profile is already migrated
 
-            # update all env variables to match latest pattern
-            self.permutation_output_variables(profile_data)
+        # migrate comment to comments and make an array
+        self.comment_to_comments(profile_data)
 
-            # update config section of profile for service Apps
-            self.service_config_inputs(profile_data)
+        # update all env variables to match latest pattern
+        self.permutation_output_variables(profile_data)
 
-            # change for threatconnect staged data
-            self.stage_redis_name(profile_data)
+        # update config section of profile for service Apps
+        self.service_config_inputs(profile_data)
 
-            # change for threatconnect staged data
-            self.stage_threatconnect_data(profile_data)
+        # change for threatconnect staged data
+        self.stage_redis_name(profile_data)
 
-            # update all version 1 env variables to match latest pattern
-            profile_data = self.variable_pattern_env_v1(profile_data)
+        # change for threatconnect staged data
+        self.stage_threatconnect_data(profile_data)
 
-            # update all version 2 env variables to match latest pattern
-            profile_data = self.variable_pattern_env_v2(profile_data)
+        # update all version 1 env variables to match latest pattern
+        profile_data = self.variable_pattern_env_v1(profile_data)
 
-            # update all tcenv variables to match latest pattern
-            profile_data = self.variable_pattern_tcenv(profile_data)
+        # update all version 2 env variables to match latest pattern
+        profile_data = self.variable_pattern_env_v2(profile_data)
 
-            # write updated profile
-            fh.seek(0)
-            json.dump(profile_data, fh, indent=2, sort_keys=True)
-            fh.write('\n')  # add required newline
-            fh.truncate()
+        # update all tcenv variables to match latest pattern
+        profile_data = self.variable_pattern_tcenv(profile_data)
 
-        return profile_data
+        self.profile.write(profile_data)
 
     @staticmethod
     def permutation_output_variables(profile_data):
@@ -77,9 +93,6 @@ class Migrate:
 
         Args:
             profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
         """
         try:
             del profile_data['permutation_output_variables']
@@ -91,9 +104,6 @@ class Migrate:
 
         Args:
             profile_data (dict): The profile data dict.
-
-        Returns:
-            dict: The updated dict.
         """
         for configs in profile_data.get('configs', []):
             config = configs.get('config', {})

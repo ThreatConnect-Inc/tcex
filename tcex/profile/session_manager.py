@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 import base64
-import json
 import pickle
 import zlib
 
@@ -119,7 +118,8 @@ class SessionManager:
 
     def update_profile(self, force=False):
         """Write back the profile *if* we recorded session data"""
-        stage = self.profile.data.get('stage', {})
+        profile_data = self.profile.contents
+        stage = profile_data.get('stage', {})
         session = stage.get('session', {})
         _record = session.get('_record', False)
 
@@ -129,12 +129,9 @@ class SessionManager:
         if '_record' in session:
             del session['_record']  # don't record _record!
 
-        with open(self.profile.filename, 'r+') as fh:
-            json_data = json.load(fh)
+        profile_data['stage']['session'] = session
+        options = profile_data.get('options', {})
+        profile_data['options'] = options
+        options['session'] = profile_data.get('options').get('session')
 
-        json_data['stage']['session'] = session
-        options = json_data.get('options', {})
-        json_data['options'] = options
-        options['session'] = self.profile.data.get('options').get('session')
-
-        self.profile.write(json_data)
+        self.profile.write(profile_data)

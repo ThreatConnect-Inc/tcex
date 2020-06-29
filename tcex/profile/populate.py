@@ -18,23 +18,6 @@ class Populate:
         """Initialize Class properties."""
         self.profile = profile
 
-    # @property
-    # def data(self):
-    #     """Populate profile data with env vars.
-
-    #     Called from test_case.py init_profile so that profile is "populated" before
-    #     the test case runs.
-    #     """
-    #     profile_data = self.profile.data
-
-    #     # re-replace environment variables
-    #     profile_data = self.replace_env_variables(profile_data)
-
-    #     # replace all staged variable
-    #     profile_data = self.replace_tc_variables(profile_data)
-
-    #     return profile_data
-
     def replace_env_variables(self, profile_data):
         """Replace any env vars.
 
