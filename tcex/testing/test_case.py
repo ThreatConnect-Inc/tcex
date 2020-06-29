@@ -456,6 +456,16 @@ class TestCase:
         self.log.data('teardown method', 'finished', datetime.now().isoformat())
         self.log.data('teardown method', 'elapsed', time.time() - self._timer_class_start)
 
+        # close out loggers
+        self.tcex.logger.shutdown()
+        self.stager.tcex.logger.shutdown()
+        self.validator.tcex.logger.shutdown()
+
+        # disconnect redis
+        self.tcex.redis_client.connection_pool.disconnect()
+        self.stager.tcex.redis_client.connection_pool.disconnect()
+        self.validator.tcex.redis_client.connection_pool.disconnect()
+
     @property
     def test_case_data(self):
         """Return partially parsed test case data."""

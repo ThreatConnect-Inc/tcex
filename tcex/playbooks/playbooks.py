@@ -116,9 +116,9 @@ class Playbooks(PlaybooksBase):
             variable_type = parsed_key['type']
 
             # log/debug
-            self.tcex.log.debug(f'create variable {key}')
+            self.log.debug(f'create variable {key}')
             if variable_type not in ['Binary', 'BinaryArray']:
-                self.tcex.log.trace(f'variable value: {value}')
+                self.log.trace(f'variable value: {value}')
 
             if variable_type in self._variable_single_types:
                 data = self._create(key, value)
@@ -264,15 +264,15 @@ class Playbooks(PlaybooksBase):
         """
         #  This is if no downstream variables are requested then nothing should be returned.
         if not self.output_variables_by_type:  # pragma: no cover
-            self.tcex.log.debug(f'Variable {key} was NOT requested by downstream app.')
+            self.log.debug(f'Variable {key} was NOT requested by downstream app.')
             return None
 
         if key is None:
-            self.tcex.log.info(f'Key has a none value and will not be written.')
+            self.log.info(f'Key has a none value and will not be written.')
             return None
 
         if value is None:
-            self.tcex.log.info(f'Variable {key} has a none value and will not be written.')
+            self.log.info(f'Variable {key} has a none value and will not be written.')
             return None
 
         key = key.strip()
@@ -281,16 +281,16 @@ class Playbooks(PlaybooksBase):
         if self.output_variables_by_type.get(key_type) is not None:
             # variable key-type has been requested
             v = self.output_variables_by_type.get(key_type)
-            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
+            self.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
             results = self.create(v.get('variable'), value)
         elif self.output_variables_by_name.get(key) is not None and variable_type is None:
             # variable key has been requested
             v = self.output_variables_by_name.get(key)
-            self.tcex.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
+            self.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
             results = self.create(v.get('variable'), value)
         else:
-            self.tcex.log.trace(f'requested output variables: {self.output_variables_by_name}')
-            self.tcex.log.debug(f'Variable {key} was NOT requested by downstream app.')
+            self.log.trace(f'requested output variables: {self.output_variables_by_name}')
+            self.log.debug(f'Variable {key} was NOT requested by downstream app.')
 
         return results
 
@@ -307,7 +307,7 @@ class Playbooks(PlaybooksBase):
         if key is not None:
             data = self.key_value_store.delete(key.strip())
         else:  # pragma: no cover
-            self.tcex.log.warning('The key field was None.')
+            self.log.warning('The key field was None.')
         return data
 
     def exit(self, code=None, msg=None):
@@ -323,7 +323,7 @@ class Playbooks(PlaybooksBase):
         if code is None:
             code = self.tcex.exit_code
             if code == 3:
-                self.tcex.log.info('Changing exit code from 3 to 0.')
+                self.log.info('Changing exit code from 3 to 0.')
                 code = 0  # playbooks doesn't support partial failure
         elif code not in [0, 1]:
             code = 1
@@ -404,7 +404,7 @@ class Playbooks(PlaybooksBase):
             variable_type = self.variable_type(key)
             if re.match(self._variable_match, key):
                 # only log key if it's a variable
-                self.tcex.log.debug(f'read variable {key}')
+                self.log.debug(f'read variable {key}')
                 if variable_type in self._variable_single_types:
                     value = self._read(key=key, embedded=embedded)
                 elif variable_type in self._variable_array_types:

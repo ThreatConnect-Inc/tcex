@@ -78,7 +78,7 @@ class SessionManager:
         # Monkeypatch method for requests.sessions.Session.request
         def request(self, method, url, *args, **kwargs):
             """Intercept method for Session.request."""
-            params = kwargs.get('params', {})
+            params = kwargs.get('params') or {}
             parmlist = []
             params_keys = sorted(params.keys())
             for key in params_keys:
