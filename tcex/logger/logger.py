@@ -88,6 +88,15 @@ class Logger:
                     self._logger.handle(event)
                 break
 
+    def shutdown(self):
+        """Close all handlers.
+
+        Args:
+            handler_name (str): The handler name to remove.
+        """
+        for h in self._logger.handlers:
+            self._logger.removeHandler(h)
+
     def update_handler_level(self, level):
         """Update all handlers log level.
 

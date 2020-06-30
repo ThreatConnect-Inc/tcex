@@ -130,6 +130,7 @@ class Inputs:
             params = self.aot_blpop()
             updated_params = self.update_params(params)
             # log number of params returned from AOT
+            self.tcex.log.info(f'Loaded {len(updated_params)} inputs from AOT params.')
             self.config(updated_params)
 
     def _load_secure_params(self):
@@ -138,6 +139,7 @@ class Inputs:
             # update default_args with secure params from API
             params = self._get_secure_params()
             updated_params = self.update_params(params)
+            self.tcex.log.info(f'Loaded {len(updated_params)} inputs from secure params.')
             self.config(updated_params)
 
     def _results_tc_args(self):  # pragma: no cover
@@ -296,6 +298,7 @@ class Inputs:
                     self.tcex.log.error(
                         f'Could not read or decrypt configuration file "{filename}".'
                     )
+                self.tcex.log.info(f'Loaded {len(file_content)} inputs from config file.')
             else:
                 try:
                     with open(filename, 'r') as fh:
@@ -473,7 +476,7 @@ class Inputs:
 
             if param_type == 'multichoice' or param_allow_multiple:
                 # update delimited value to an array for params that have type of MultiChoice.
-                if not isinstance(value, dict):
+                if value is not None and not isinstance(value, dict):
                     value = value.split(self.tcex.ij.list_delimiter)
             elif param_type == 'boolean':
                 # convert boolean input that are passed in as a string ("true" -> True)

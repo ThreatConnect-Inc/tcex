@@ -25,6 +25,7 @@ class PlaybooksBase:
         self._key_value_store = None
         self._output_variables_by_name = None
         self._output_variables_by_type = None
+        self.log = tcex.log
 
         # match full variable
         self._variable_match = re.compile(fr'^{self._variable_pattern}$')
@@ -38,16 +39,12 @@ class PlaybooksBase:
         # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
             # coerce bool to str type
-            self.tcex.log.warning(
-                f'Coercing bool value ({value}) to a string ("{str(value).lower()}").'
-            )
+            self.log.warning(f'Coercing bool value ({value}) to a string ("{str(value).lower()}").')
             value = str(value).lower()
 
         # coerce int to str type
         if isinstance(value, (float, int)):
-            self.tcex.log.warning(
-                f'Coercing float/int value ({value}) to a string ("{str(value)}").'
-            )
+            self.log.warning(f'Coercing float/int value ({value}) to a string ("{str(value)}").')
             value = str(value)
 
         return value
@@ -55,7 +52,7 @@ class PlaybooksBase:
     def _create(self, key, value, validate=True):
         """Create the value in Redis if applicable."""
         if key is None or value is None:
-            self.tcex.log.warning('The key or value field is None.')
+            self.log.warning('The key or value field is None.')
             return None
 
         # get variable type from variable value
@@ -80,7 +77,7 @@ class PlaybooksBase:
             if validate and (not isinstance(value, dict) or not self._is_tc_entity(value)):
                 raise RuntimeError('Invalid data provided for TcEntity.')
 
-        # self.tcex.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
+        # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
         try:
             value = json.dumps(value)
         except ValueError as e:  # pragma: no cover
@@ -91,7 +88,7 @@ class PlaybooksBase:
     def _create_array(self, key, value, validate=True):
         """Create the value in Redis if applicable."""
         if key is None or value is None:
-            self.tcex.log.warning('The key or value field is None.')
+            self.log.warning('The key or value field is None.')
             return None
 
         # get variable type from variable value
@@ -131,7 +128,7 @@ class PlaybooksBase:
             if validate and (not isinstance(value, list) or not self._is_tc_entity_array(value)):
                 raise RuntimeError('Invalid data provided for TcEntityArray.')
 
-        # self.tcex.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
+        # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
         try:
             value = json.dumps(value)
         except ValueError as e:  # pragma: no cover
@@ -215,7 +212,7 @@ class PlaybooksBase:
     def _read(self, key, embedded=True, b64decode=True, decode=False):
         """Create the value in Redis if applicable."""
         if key is None:
-            self.tcex.log.warning('The key is None.')
+            self.log.warning('The key is None.')
             return None
 
         # get variable type from variable value
@@ -254,7 +251,7 @@ class PlaybooksBase:
     def _read_array(self, key, embedded=True, b64decode=True, decode=False):
         """Create the value in Redis if applicable."""
         if key is None:  # pragma: no cover
-            self.tcex.log.warning('The null value for key was provided.')
+            self.log.warning('The null value for key was provided.')
             return None
 
         # get variable type from variable value
@@ -299,7 +296,7 @@ class PlaybooksBase:
         elif variable_type in ['TCEntityArray', 'TCEnhancedEntity', 'TCEnhancedEntityArray']:
             value = self._load_value(value)
 
-        # self.tcex.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
+        # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
         return value
 
     def _read_embedded(self, value):
@@ -357,7 +354,7 @@ class PlaybooksBase:
 
         for variable in (v.group(0) for v in re.finditer(self._variable_parse, str(value))):
             v = self.read(variable)
-            self.tcex.log.trace(f'embedded variable: {variable}, value: {v}')
+            self.log.trace(f'embedded variable: {variable}, value: {v}')
             if isinstance(v, (dict, list)):
                 v = json.dumps(v)
                 # for KeyValueArray with nested dict/list type replace the
@@ -468,7 +465,7 @@ class PlaybooksBase:
         if key is not None and value is not None:
             data = self.key_value_store.create(key.strip(), value)
         else:
-            self.tcex.log.warning('The key or value field was None.')
+            self.log.warning('The key or value field was None.')
         return data
 
     def read_raw(self, key):
@@ -487,7 +484,7 @@ class PlaybooksBase:
         if key is not None:
             value = self.key_value_store.read(key.strip())
         else:
-            self.tcex.log.warning('The key field was None.')
+            self.log.warning('The key field was None.')
         return value
 
     def parse_variable(self, variable):  # pragma: no cover
