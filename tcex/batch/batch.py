@@ -675,6 +675,7 @@ class Batch:
             '0x1009': 'Association Error',
             '0x100A': 'Duplicate Item Error',
             '0x100B': 'File IO Error',
+            '0x2002': 'Attribute Error',
         }
 
     def errors(self, batch_id, halt_on_error=True):

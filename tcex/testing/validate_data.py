@@ -1001,7 +1001,7 @@ class ThreatConnect:
         log_message = ''
         for code, count in counts.items():
             log_message += (
-                self.provider.tcex.batch(owner).error_codes.get(code) + ': ' + str(count) + '\n'
+                self.provider.tcex.batch(owner).error_codes.get(code, 'General Error') + ': ' + str(count) + '\n'
             )
 
         self.log.data('validate', 'Batch Submission', log_message, 'error')
