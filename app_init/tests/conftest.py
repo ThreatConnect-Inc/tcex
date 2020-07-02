@@ -26,11 +26,8 @@ def pytest_addoption(parser):
     parser.addoption('--merge_outputs', action='store_true')
     parser.addoption('--replace_exit_message', action='store_true')
     parser.addoption('--replace_outputs', action='store_true')
-    parser.addoption('--update', action='store_true')
     parser.addoption('--record_session', action='store_true')
     parser.addoption('--ignore_session', action='store_true')
-    parser.addoption('--enable_autostage', action='store_true')
-    parser.addoption('--disable_autostage', action='store_true')
     parser.addoption(
         '--environment', action='append', help='Sets the TCEX_TEST_ENVS environment variable',
     )

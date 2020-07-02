@@ -551,7 +551,7 @@ class Profile:
             if 'raw.json' in variable:
                 self.log.data(
                     'validate',
-                    'Suspect Output Variable',
+                    'Suspect Value',
                     'Output variable matched a suspect value (raw.json).',
                     'warning',
                 )
@@ -565,7 +565,12 @@ class Profile:
                     # TODO: add feature in testing framework to allow writing null and
                     #       then check if variables exist instead of null value.
                     # log error for missing output data if not a fail test case (exit code of 1)
-                    self.log.debug(f'[{self.name}] Missing KV store output for variable {variable}')
+                    self.log.data(
+                        'validate',
+                        'Missing Data',
+                        f'possible missing KV Store data for variable {variable}',
+                        'info',
+                    )
             else:
                 data = json.loads(data.decode('utf-8'))
 
@@ -675,11 +680,12 @@ class Profile:
         errors = '\n'.join(errors)  # convert error to string for assert message
         return status, f'\n{errors}'
 
-    def write(self, json_data):
+    def write(self, json_data, reason=None):
         """Write updated profile file.
 
         Args:
             json_data (dict): The profile data.
+            reason (str, default:None): The reason for the update.
         """
         # Permuted test cases set options to a true value, so disable writeback
         if self.test_options:
@@ -687,6 +693,11 @@ class Profile:
 
         # order the profile data appropriately
         json_data = self.order_profile(json_data)
+
+        if reason is not None:
+            self.log.data(
+                'profile', 'Profile Update', f'writing updated profile for {reason}', 'info'
+            )
 
         with open(self.filename, 'w') as fh:
             json.dump(json_data, fh, indent=2, sort_keys=False)
