@@ -99,16 +99,16 @@ class TcexJson:
             json_data = json.load(fh)
 
             # update app_name
-            json_data = self.update_package_app_name(json_data)
+            self.update_package_app_name(json_data)
 
             # update deprecated fields
-            json_data = self.update_deprecated_fields(json_data)
+            self.update_deprecated_fields(json_data)
 
             # update package excludes
-            json_data = self.update_package_excludes(json_data)
+            self.update_package_excludes(json_data)
 
             # update package excludes
-            json_data = self.update_lib_versions(json_data)
+            self.update_lib_versions(json_data)
 
             # update variable pattern
             json_data = self.update_variable_pattern_env(json_data)
@@ -142,16 +142,16 @@ class TcexJson:
 
             # update App name
             json_data['package']['app_name'] = app_name
-        return json_data
 
     @staticmethod
     def update_deprecated_fields(json_data):
         """Update deprecated fields in the tcex.json file."""
         deprecated_fields = ['profile_include_dirs']
         for d in deprecated_fields:
-            if json_data.get(d) is not None:
+            try:
                 del json_data[d]
-        return json_data
+            except KeyError:
+                pass
 
     def update_package_excludes(self, json_data):
         """Update the excludes values in the tcex.json file."""
@@ -176,8 +176,6 @@ class TcexJson:
             pass
         json_data['package']['excludes'] = excludes
 
-        return json_data
-
     def update_lib_versions(self, json_data):
         """Update the lib_versions array in the tcex.json file."""
         if os.getenv('TCEX_LIB_VERSIONS') and not self.lib_versions:
@@ -190,7 +188,6 @@ class TcexJson:
                     }
                 )
             json_data['lib_versions'] = lib_versions
-        return json_data
 
     @staticmethod
     def update_variable_pattern_env(json_data):

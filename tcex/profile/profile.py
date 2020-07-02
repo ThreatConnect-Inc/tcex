@@ -176,11 +176,7 @@ class Profile:
         profile['validation_criteria'] = {}
         profile['outputs'] = profile_data.get('outputs')
         profile['options'] = profile_data.get(
-            'options',
-            {
-                'autostage': {'enabled': False, 'only_inputs': None},
-                'session': {'enabled': False, 'blur': []},
-            },
+            'options', {'session': {'enabled': False, 'blur': []}},
         )
 
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
@@ -325,15 +321,12 @@ class Profile:
         """Return profile fully qualified filename."""
         return os.path.join(self.directory, f'{self.name}.json')
 
-    # TODO: BCS - update this
     def init(self):
         """Return the Data (dict) from the current profile."""
-
         if self.data is None:
             self.log.error('Profile init failed; loaded profile data is None')
 
         # Now can initialize anything that needs initializing
-
         self.session_manager.init()  # initialize session recording/playback
 
     def migrate(self):
@@ -368,7 +361,6 @@ class Profile:
         trigger = profile_data.pop('trigger', None)
         validation_criteria = profile_data.pop('validation_criteria', None)
         webhook_event = profile_data.pop('webhook_event', None)
-        version = profile_data.pop('version', None)
 
         profile = OrderedDict()
         if comments is not None:
@@ -395,8 +387,6 @@ class Profile:
             profile['options'] = self._sorted(options)
         if exit_codes is not None:
             profile['exit_codes'] = self._sorted(exit_codes)
-        if version is not None:
-            profile['version'] = version
 
         # add any additional fields not covered above
         for k, v in profile_data.items():
@@ -416,9 +406,12 @@ class Profile:
         """
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             for config_data in self.configs:
-                yield config_data.get('config')
+                config = config_data.get('config')
+                inputs_flattened = config.get('optional', {})
+                inputs_flattened.update(config.get('required', {}))
+                yield inputs_flattened
         else:
-            yield self.inputs
+            yield self.inputs_flattened
 
     # TODO: BCS - move this
     @property
@@ -435,8 +428,6 @@ class Profile:
                     'replace_outputs': args.replace_outputs or False,
                     'record_session': args.record_session or False,
                     'ignore_session': args.ignore_session or False,
-                    'enable_autostage': args.enable_autostage or False,
-                    'disable_autostage': args.disable_autostage or False,
                 }
 
         return self._pytest_args
@@ -461,50 +452,6 @@ class Profile:
     def test_directory(self):
         """Return fully qualified test directory."""
         return os.path.join(self._app_path, 'tests')
-
-    def test_permutations(self):
-        """Return a list of (id, profile_name, test_options) for test permutations.
-
-        Warning: the profile at this point is being called by conftest during test
-        discovery. Most of the profile will NOT be set properly.
-        """
-        # Base response is an unadorned test
-        response = [(self.name, self.name, {})]
-
-        with open(self.filename, 'r') as fh:
-            profile_data = json.load(fh)
-
-        enable_autostage = self.pytest_args.get('enable_autostage')
-        disable_autostage = self.pytest_args.get('disable_autostage')
-
-        options = profile_data.get('options', {})
-        if 'options' not in profile_data:
-            profile_data['options'] = options
-        autostage_options = options.get('autostage', {})
-        if 'autostage' not in options:
-            options['autostage'] = autostage_options
-
-        # do a little dance to see if we should write back the profile
-        autostage_enabled = autostage_options.get('enabled')
-
-        if disable_autostage:
-            autostage_options['enabled'] = False
-        elif enable_autostage:
-            autostage_options['enabled'] = True
-
-        if autostage_enabled != autostage_options.get('enabled'):
-            self.write(profile_data)
-
-        # now just read the option, after possibly having
-        # rewritten it
-        autostage_enabled = autostage_options.get('enabled')
-
-        # N.B. autostage could potentially add more runs, with additional
-        # options, e.g. migrating '' to empty or Null or whatever
-        if autostage_enabled:
-            response.append([self.name + ':autostage', self.name, {'autostage': True}])
-
-        return response
 
     def update_exit_message(self):
         """Update validation rules from exit_message section of profile."""
@@ -557,10 +504,6 @@ class Profile:
 
             # cleanup redis
             self.clear_context(context)
-
-        # TODO: move to teardown
-        # Update any profile outputs
-        self.session_manager.update_profile()
 
         if self.outputs is None or self.pytest_args.get('replace_outputs'):
             # update profile if current profile is not or user specifies --replace_outputs
@@ -656,9 +599,6 @@ class Profile:
 
         # handle non-layout and layout based App appropriately
         for profile_inputs in self.profile_inputs():  # dict with optional, required nested dicts
-            profile_inputs_flattened = profile_inputs.get('optional', {})
-            profile_inputs_flattened.update(profile_inputs.get('required', {}))
-
             params = self.ij.params_dict  # params section of install.json build as dict
             if self.lj.has_layout:
                 # using inputs from layout.json since they are required to be in order
@@ -688,14 +628,8 @@ class Profile:
 
                 # get the value from the current profile, if non existing value will be None
                 value = None
-                if name in profile_inputs_flattened:
-                    value = profile_inputs_flattened.get(name)
-
-                # APP-87 - see section below. we will not error on invalid values instead of
-                # assuming False
-                # if value is None and data.get('type').lower() == 'boolean':
-                #     # boolean values are optional, and should be added as False by default
-                #     value = data.get('default', False)
+                if name in profile_inputs:
+                    value = profile_inputs.get(name)
 
                 input_type = 'optional'
                 if data.get('required'):
@@ -705,7 +639,7 @@ class Profile:
                         errors.append(f'- Missing/Invalid value for required arg ({name})')
                         status = False
 
-                if name not in profile_inputs_flattened:
+                if name not in profile_inputs:
                     value = data.get('default', None)
                 # APP-87 - ensure boolean inputs don't have null values
                 if data.get('type').lower() == 'boolean':
@@ -719,10 +653,10 @@ class Profile:
                 merged_inputs[input_type][name] = value
 
             # ADI-1376 - handle tcex default args (prevent removing)
-            for arg, val in profile_inputs_flattened.items():
+            for arg, val in profile_inputs.items():
                 if arg in self._reserved_args:
                     # preserve overwritten default arg
-                    merged_inputs['modified_defaults'][arg] = val
+                    merged_inputs['defaults'][arg] = val
 
             updated_params.append(merged_inputs)
 
@@ -765,10 +699,7 @@ class Profile:
     @property
     def args(self):
         """Return combined/flattened args."""
-        args = self.inputs_modified_defaults
-        args.update(self.inputs_optional)
-        args.update(self.inputs_required)
-        return dict(args)
+        return self.inputs_flattened
 
     @property
     def configs(self):
@@ -796,9 +727,17 @@ class Profile:
         return self.data.get('inputs', {})
 
     @property
-    def inputs_modified_defaults(self):
+    def inputs_defaults(self):
         """Return required inputs dict."""
-        return self.inputs.get('modified_defaults', {})
+        return self.inputs.get('defaults', {})
+
+    @property
+    def inputs_flattened(self):
+        """Return inputs dict."""
+        inputs = self.inputs_defaults
+        inputs.update(self.inputs_optional)
+        inputs.update(self.inputs_required)
+        return dict(inputs)
 
     @property
     def inputs_optional(self):
@@ -902,10 +841,10 @@ class Profile:
         if self.lj.has_layout:
             # if layout based App get valid outputs
             output_variables = self.ij.create_output_variables(
-                self.permutations.outputs_by_inputs(self.args)
+                self.permutations.outputs_by_inputs(self.inputs_flattened)
             )
 
-        for arg, value in self.args.items():
+        for arg, value in self.inputs_flattened.items():
             # get full input data from install.json
             input_data = self.ij.params_dict.get(arg, {})
 

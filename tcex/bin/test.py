@@ -89,10 +89,10 @@ class Test(Bin):
         }
         self.profile.add(profile_data=profile_data)
 
-        # write user defaults file
-        if self.profile_interactive.user_defaults:
-            with open(self.profile_interactive.user_defaults_filename, 'w') as fh:
-                json.dump(self.profile_interactive.user_defaults, fh)
+        # # write user defaults file
+        # if self.profile_interactive.user_defaults:
+        #     with open(self.profile_interactive.user_defaults_filename, 'w') as fh:
+        #         json.dump(self.profile_interactive.user_defaults, fh, indent=2)
 
     @staticmethod
     def load_legacy_profiles(staging_files):

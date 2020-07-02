@@ -17,6 +17,7 @@ class SessionManager:
     def __init__(self, profile):
         """Initialize Class properties."""
         self.profile = profile
+        self.profile_data = self.profile.contents
 
     def init(self):
         """Initialize session recording/playback.
@@ -34,33 +35,33 @@ class SessionManager:
         if ignore_session:
             return
 
-        session_options = self.profile.options.get('session', {})
+        session_options = self.profile_data['options'].get('session', {})
         session_enabled = session_options.get('enabled', False)
 
-        if 'session' in self.profile.stage and not session_enabled:
+        if 'session' in self.profile_data['stage'] and not session_enabled:
             session_enabled = True
             session_options['enabled'] = True
-            self.profile.options['session'] = session_options
+            self.profile_data['options']['session'] = session_options
             self.update_profile(force=True)  # add option to profile
 
         if record_session:
             session_enabled = True
             session_options['enabled'] = session_enabled
-            self.profile.options['session'] = session_options
+            self.profile_data['options']['session'] = session_options
 
             # save session data in stage.session
-            self.profile.stage['session'] = {'_record': True}
+            self.profile_data['stage']['session'] = {'_record': True}
 
         if not session_enabled:
             return
 
         # if stage.session doesn't exist, but session_enabled is true, implicitly turn
         # on session recording (someone zapped the data out of the profile)
-        if 'session' not in self.profile.stage:
+        if 'session' not in self.profile_data['stage']:
             session_data = {'_record': True}
-            self.profile.stage['session'] = session_data
+            self.profile_data['stage']['session'] = session_data
         else:
-            session_data = self.profile.stage.get('session')
+            session_data = self.profile_data['stage'].get('session')
 
         blur = ['password']
         blur_options = session_options.get('blur', [])
@@ -69,7 +70,7 @@ class SessionManager:
             blur_options = (blur_options,)
         blur.extend(blur_options)
 
-        self.profile.stage['session'] = session_data
+        self.profile_data['stage']['session'] = session_data
 
         _request = getattr(Session, 'request')
 
@@ -118,8 +119,7 @@ class SessionManager:
 
     def update_profile(self, force=False):
         """Write back the profile *if* we recorded session data"""
-        profile_data = self.profile.contents
-        stage = profile_data.get('stage', {})
+        stage = self.profile_data.get('stage', {})
         session = stage.get('session', {})
         _record = session.get('_record', False)
 
@@ -129,9 +129,9 @@ class SessionManager:
         if '_record' in session:
             del session['_record']  # don't record _record!
 
-        profile_data['stage']['session'] = session
-        options = profile_data.get('options', {})
-        profile_data['options'] = options
-        options['session'] = profile_data.get('options').get('session')
+        self.profile_data['stage']['session'] = session
+        options = self.profile_data.get('options', {})
+        self.profile_data['options'] = options
+        options['session'] = self.profile_data.get('options').get('session')
 
-        self.profile.write(profile_data)
+        self.profile.write(self.profile_data)
