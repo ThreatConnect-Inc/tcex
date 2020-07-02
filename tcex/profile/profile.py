@@ -321,15 +321,12 @@ class Profile:
         """Return profile fully qualified filename."""
         return os.path.join(self.directory, f'{self.name}.json')
 
-    # TODO: BCS - update this
     def init(self):
         """Return the Data (dict) from the current profile."""
-
         if self.data is None:
             self.log.error('Profile init failed; loaded profile data is None')
 
         # Now can initialize anything that needs initializing
-
         self.session_manager.init()  # initialize session recording/playback
 
     def migrate(self):
@@ -507,10 +504,6 @@ class Profile:
 
             # cleanup redis
             self.clear_context(context)
-
-        # TODO: move to teardown
-        # Update any profile outputs
-        self.session_manager.update_profile()
 
         if self.outputs is None or self.pytest_args.get('replace_outputs'):
             # update profile if current profile is not or user specifies --replace_outputs

@@ -290,7 +290,7 @@ class Interactive:
                 self.print_invalid_exit_code()
                 return self.collect_exit_code(**kwargs)
 
-            if input_value not in [0, 1]:
+            if input_value not in [0, 1, 3]:
                 self.print_invalid_exit_code()
                 return self.collect_exit_code(**kwargs)
 
@@ -514,9 +514,6 @@ class Interactive:
 
         self.present_exit_code()
 
-        print('inputs', self.inputs)
-        print('staging_data', self.staging_data)
-
     def present_boolean(self, name, data):
         """Build a question for boolean input."""
         # print header information
@@ -649,7 +646,7 @@ class Interactive:
     def present_exit_code(self):
         """Provide user input for exit code."""
         self.print_header({'label': 'Exit Codes'})
-        self.collect_exit_code(default=[0], option_text='[0]')
+        self.collect_exit_codes(default=[0], option_text='[0]')
 
     @staticmethod
     def present_help():

@@ -466,6 +466,9 @@ class TestCase:
         self.stager.tcex.redis_client.connection_pool.disconnect()
         self.validator.tcex.redis_client.connection_pool.disconnect()
 
+        # update profile for session data
+        self.profile.session_manager.update_profile()
+
     @property
     def test_case_data(self):
         """Return partially parsed test case data."""
