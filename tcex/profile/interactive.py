@@ -2,7 +2,8 @@
 """TcEx testing profile Class."""
 import json
 import math
-import os
+
+# import os
 import re
 import sys
 from base64 import b64encode
@@ -30,9 +31,8 @@ class Interactive:
             'required': {},
         }
         self._no_selection_text = 'No Selection'
-        # self._stop_collecting = '(Press enter to move to next input.)'
         self._staging_data = {'kvstore': {}}
-        self._user_defaults = None
+        # self._user_defaults = None
         self.collect_type_map = {
             'Any': self.collect_string,
             'Binary': self.collect_binary,
@@ -52,9 +52,9 @@ class Interactive:
             'multichoice': self.present_multichoice,
             'string': self.present_string,
         }
-        self.user_defaults_filename = os.path.join('tests', '.user_defaults')
+        # self.user_defaults_filename = os.path.join('tests', '.user_defaults')
 
-    def _default(self, data):
+    def _default(self, data, data_type=None):  # pylint: disable=unused-argument
         """Return the best option for default."""
         if data.get('type').lower() == 'boolean':
             default = str(data.get('default', 'false')).lower()
@@ -74,8 +74,9 @@ class Interactive:
                 default = default.split('|')
         else:
             default = data.get('default')
-            if default is None:
-                default = self.user_defaults.get(data.get('name'))
+            # if default is None:
+            #     # set default from user default file
+            #     default = self.user_defaults.get(data.get('name'))
         return default
 
     def _input_value(self, label, option_text=None):
@@ -116,6 +117,19 @@ class Interactive:
         else:
             self._inputs['optional'].setdefault(name, value)
 
+    # def add_user_default(self, key, value, data_type=None):
+    #     """Add data to user default."""
+    #     self.user_defaults.setdefault(self.profile.feature, {})
+    #     if data_type is None:
+    #         self.user_defaults[self.profile.feature][key] = value
+    #     else:
+    #         # store the value under the appropriate data type
+    #         self.user_defaults[self.profile.feature].setdefault(key, {})
+    #         self.user_defaults[self.profile.feature][key].setdefault(data_type, value)
+
+    #     if self.user_defaults.get('base') is None:
+    #         self.user_defaults['base'] = self.user_defaults[self.profile.feature]
+
     def add_staging_data(self, name, type_, value):
         """Create staging data and return variable value.
 
@@ -148,21 +162,23 @@ class Interactive:
         """
         input_value = self._input_value('Input', kwargs.get('option_text'))
         if not input_value:
+            # if no default value and required force user to input again
             if kwargs.get('default') is None and kwargs.get('required') is True:
                 self.print_required()
-                self.collect_binary()
-            input_value = kwargs.get('default')
+                return self.collect_binary(**kwargs)
 
-        feedback = input_value
-        if input_value is not None:
-            input_value = b64encode(input_value.encode()).decode()
-            feedback = f'{feedback} -> ({input_value})'
+        if input_value not in [None, '']:
+            input_data = b64encode(input_value.encode()).decode()
+            feedback = f'{input_value} -> ({input_data})'
+        else:
+            input_data = kwargs.get('default')
+            feedback = input_data
 
         # print user feedback
         if kwargs.get('feedback', True):
             self.print_feedback(feedback)
 
-        return input_value
+        return input_data
 
     def collect_binary_array(self, **kwargs):
         """Collect binary array data
@@ -301,7 +317,7 @@ class Interactive:
     def collect_key_value(self, **kwargs):
         """Collect key value data"""
         input_value = None
-        key = self._input_value('Key')
+        key = self._input_value('Key', option_text=kwargs.get('option_text'))
 
         # ensure input value is provided when input is required
         if key == '' and kwargs.get('required') is True:
@@ -311,6 +327,8 @@ class Interactive:
         if key != '':
             value = self._input_value('Value')
             input_value = {'key': key, 'value': value}
+        else:
+            input_value = kwargs.get('default')
 
         # print user feedback
         if kwargs.get('feedback', True):
@@ -323,7 +341,12 @@ class Interactive:
         input_values = []
         required = kwargs.get('required')
         while True:
-            input_value = self.collect_key_value(feedback=False, required=required)
+            input_value = self.collect_key_value(
+                default=kwargs.get('default'),
+                feedback=False,
+                option_test=kwargs.get('option_text'),
+                required=required,
+            )
             if not input_value:
                 break
             input_values.append(input_value)
@@ -355,7 +378,7 @@ class Interactive:
             required = False
 
         input_values = list(set(input_values))
-        if input_values is not None:
+        if input_values:
             # format multichoice value as pipe delimited string
             input_values = '|'.join(input_values)
         else:
@@ -496,6 +519,9 @@ class Interactive:
 
     def present_boolean(self, name, data):
         """Build a question for boolean input."""
+        # print header information
+        self.print_header(data)
+
         default = self._default(data)
         valid_values = ['true', 'false']
 
@@ -509,7 +535,6 @@ class Interactive:
             options.append(v)
         option_text = f'''({'/'.join(options)})'''
 
-        self.print_header(data)
         value = self.collect_boolean(default=option_default, option_text=option_text)
 
         # add input
@@ -519,6 +544,9 @@ class Interactive:
 
     def present_choice(self, name, data):
         """Build a question for choice input."""
+        # print header information
+        self.print_header(data)
+
         default = self._default(data)
         option_index = 0
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
@@ -547,9 +575,6 @@ class Interactive:
         options = []
         for i, v in enumerate(valid_values):
             options.append(f'{i}. {v}')
-
-        # print header information
-        self.print_header(data)
 
         # display options list into two columns
         left, right = self._split_list(options)
@@ -629,16 +654,22 @@ class Interactive:
     @staticmethod
     def present_help():
         """Provide user help information."""
-        print(f'{c.Fore.CYAN}Use "null" or \'null\' to insert a string of null.')
-        print(f'{c.Fore.CYAN}When done entering array data presss enter to continue.')
+        print(
+            f'{c.Fore.CYAN}A value of null will be treated as an actual null value. '
+            f'Use "null" or \'null\' to insert a string of null.'
+        )
+        print(f'{c.Fore.CYAN}When done entering array data press enter to continue.')
 
     def present_key_value_list(self, name, data):
         """Build a question for key value list input."""
         # print header information
         self.print_header(data)
 
+        # the default value from install.json or user_data
+        default = self._default(data)  # array of default values
+
         # collect input
-        input_data = self.collect_key_value_array(required=data.get('required'))
+        input_data = self.collect_key_value_array(default=default, required=data.get('required'))
 
         # create variable
         variable = self.add_staging_data(name, 'KeyValueArray', input_data)
@@ -651,10 +682,17 @@ class Interactive:
         if input_data is not None:
             feedback_data = json.dumps(feedback_data)
 
+        # # update default
+        # if default is None:
+        #     self.add_user_default(name, input_data)
+
         return variable
 
     def present_multichoice(self, name, data):
         """Build a question for choice input."""
+        # print header information
+        self.print_header(data)
+
         default = self._default(data)  # array of default values
         option_indexes = [0]
         valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
@@ -687,9 +725,6 @@ class Interactive:
         for i, v in enumerate(valid_values):
             options.append(f'{i}. {v}')
 
-        # print header information
-        self.print_header(data)
-
         # display options list into two columns
         left, right = self._split_list(options)
         for i, _ in enumerate(left):
@@ -715,12 +750,7 @@ class Interactive:
 
     def present_string(self, name, data):
         """Build a question for boolean input."""
-        default = self._default(data)  # the default value from install.json or other
-
-        option_text = ''
-        if default is not None:
-            option_text = f'[{default}]'
-
+        # display header information
         self.print_header(data)
 
         # use playbook data types to determine what input to provide (default to String)
@@ -734,6 +764,13 @@ class Interactive:
         if data_type == self._no_selection_text:
             return None
 
+        # the default value from install.json or user_data
+        default = self._default(data, data_type)
+
+        option_text = ''
+        if default is not None:
+            option_text = f'[{default}]'
+
         # use data_type to properly format collection input
         input_value = self.collect_type_map[data_type](
             default=default, option_text=option_text, required=data.get('required', False)
@@ -745,9 +782,13 @@ class Interactive:
         # add input
         self.add_input(name, data, variable)
 
-        # update default
-        if default is None:
-            self.user_defaults[name] = input_value
+        # # update default
+        # if default is None:
+        #     if len(data.get('playbookDataType', [])) > 1 or data_type.lower() == 'any':
+        #         # for inputs that take multiple types we need to store user default with the type
+        #         self.add_user_default(name, input_value, data_type)
+        #     else:
+        #         self.add_user_default(name, input_value)
 
         return variable
 
@@ -826,12 +867,19 @@ class Interactive:
         """Return staging data dict."""
         return self._staging_data
 
-    @property
-    def user_defaults(self):
-        """Return user defaults"""
-        if self._user_defaults is None:
-            self._user_defaults = {}
-            if os.path.isfile(self.user_defaults_filename):
-                with open(self.user_defaults_filename, 'r') as fh:
-                    self._user_defaults = json.load(fh)
-        return self._user_defaults
+    # @property
+    # def user_defaults(self):
+    #     """Return user defaults"""
+    #     if self._user_defaults is None:
+    #         user_defaults = {}
+    #         if os.path.isfile(self.user_defaults_filename):
+    #             with open(self.user_defaults_filename, 'r') as fh:
+    #                 user_defaults = json.load(fh)
+
+    #         # use feature defaults
+    #         self._user_defaults = user_defaults.get(self.profile.feature)
+    #         if self._user_defaults is None:
+    #             # use base defaults if not feature defaults found
+    #             self._user_defaults = user_defaults.get('base', {})
+
+    #     return self._user_defaults
