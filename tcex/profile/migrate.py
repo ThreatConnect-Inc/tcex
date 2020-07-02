@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 import json
-
-# import os
 import re
 import sys
 
 import colorama as c
-
-# from ..__metadata__ import __version__ as tcex_version
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)
@@ -20,6 +16,22 @@ class Migrate:
     def __init__(self, profile):
         """Initialize Class properties."""
         self.profile = profile
+
+    def add_staging_data(self, profile_data, name, type_, value):
+        """Create staging data and return variable value.
+
+        Args:
+            profile_data (dict): The profile to update with new staging data.
+            name (str): The name of the input.
+            type_ (str): The type of input (Binary, StringArray, etc.)
+            value (str): The value to write in the staging data.
+
+        Returns:
+            [type]: [description]
+        """
+        variable = self.profile.ij.create_variable(name, type_)
+        profile_data['stage']['kvstore'][variable] = value
+        return variable
 
     @staticmethod
     def comment_to_comments(profile_data):
@@ -48,27 +60,22 @@ class Migrate:
         Called from test_case.py init_profile so that profile is update before
         the test case runs.
         """
-        # Short circuit migrations if the profile is newer than this code
-        # Ideally, we'd put a migration stamp in the profile instead
-        # migration_mtime = os.stat(__file__).st_mtime
-        # migration_target = f'{tcex_version}.{migration_mtime}'
-
         profile_data = self.profile.contents
-
-        # profile_version = profile_data.get('version', None)
-        # if not profile_version or profile_version < migration_target:
-        #     profile_data['version'] = migration_target
-        # else:
-        #     return profile_data  # profile is already migrated
 
         # migrate comment to comments and make an array
         self.comment_to_comments(profile_data)
+
+        # remove any deprecated fields
+        self.deprecated_fields(profile_data)
 
         # update all env variables to match latest pattern
         self.permutation_output_variables(profile_data)
 
         # update config section of profile for service Apps
         self.service_config_inputs(profile_data)
+
+        # stage String inputs if they are not already staged
+        self.stage_inputs(profile_data)
 
         # change for threatconnect staged data
         self.stage_redis_name(profile_data)
@@ -86,6 +93,24 @@ class Migrate:
         profile_data = self.variable_pattern_tcenv(profile_data)
 
         self.profile.write(profile_data)
+
+    @staticmethod
+    def deprecated_fields(profile_data):
+        """Remove deprecated fields."""
+        deprecated_fields = ['version']
+        for d in deprecated_fields:
+            try:
+                del profile_data[d]
+            except KeyError:
+                pass
+
+        # remove autostage
+        deprecated_option_fields = ['autostage']
+        for d in deprecated_option_fields:
+            try:
+                del profile_data['options'][d]
+            except KeyError:
+                pass
 
     @staticmethod
     def permutation_output_variables(profile_data):
@@ -129,9 +154,45 @@ class Migrate:
             # overwrite flattened config
             configs['config'] = config_inputs
 
+    def stage_inputs(self, profile_data):
+        """Stage any non-staged profile data."""
+        if self.profile.ij.runtime_level.lower() != 'playbook':
+            # staging is only required for PB Apps
+            return
+
+        for input_type in ['optional', 'required']:
+            for k, v in dict(profile_data.get('inputs', {}).get(input_type, {})).items():
+                # check that value requires staging
+                if v is None:
+                    continue
+
+                # get ij data for k
+                ij_data = self.profile.ij.params_dict.get(k)
+
+                # check input type to see if it support staging data
+                if ij_data.get('type').lower() in ['boolean', 'choice', 'multichoice']:
+                    continue
+
+                # check value to see if it's already a variable
+                if re.match(self.profile.utils.variable_match, v):
+                    continue
+
+                # get PB data type
+                data_types = ij_data.get('playbookDataType')
+
+                # only stage String values
+                if 'String' not in data_types and not isinstance(v, str):
+                    continue
+
+                # convert input value to staged data
+                v = self.add_staging_data(profile_data, k, 'String', v)
+
+                # update input with new variable
+                profile_data['inputs'][input_type][k] = v
+
     @staticmethod
     def stage_redis_name(profile_data):
-        """Update staged redis to kvstore
+        """Update stage.redis to stage.kvstore
 
         This change updates the previous value of redis with a
         more generic value of kvstore for staged data.

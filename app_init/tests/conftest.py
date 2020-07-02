@@ -4,7 +4,6 @@ import os
 import shutil
 
 from app_lib import AppLib
-from tcex.profile import Profile  # pylint: disable=wrong-import-position
 
 # can't import TCEX profile until the system path is fixed
 if os.getenv('TCEX_SITE_PACKAGE') is None:
@@ -55,22 +54,11 @@ def pytest_generate_tests(metafunc):
     )
 
     permutations = []
-    ids = []
     for profile_name in profiles(profile_dir):
-        # At this point, we append one permutation record for *each* variation of the profile
-        feature = profile_dir.split(os.sep)[-2]
-
-        profile = Profile(name=profile_name, feature=feature, pytestconfig=metafunc.config)
-        # test_permutations will give us back a list of (id, base_name, options)
-        for test_permutation in profile.test_permutations():
-            # collect last two items of returned tuple to match 'profile_name,options' of
-            # parametrized inputs
-            permutations.append(test_permutation[1:])
-            # collect updated profile name (e.g., get_incident or get_incident:autostage)
-            ids.append(test_permutation[0])
+        permutations.append((profile_name, {}))
 
     # decorate "test_profiles()" method with parametrize profiles (standard and permuted)
-    metafunc.parametrize('profile_name,options', permutations, ids=ids)
+    metafunc.parametrize('profile_name,options', permutations)
 
 
 # clear log directory

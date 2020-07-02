@@ -113,9 +113,9 @@ class EnvStore:
         except hvac.exceptions.InvalidPath:
             if hasattr(self.log, 'data'):
                 self.log.data('setup', 'env store', f'Path not found: {path}')
-        except hvac.exceptions.VaultError:
+        except hvac.exceptions.VaultError as e:
             if hasattr(self.log, 'data'):
-                self.log.data('setup', 'env store', f'Error reading ({path})', 'error')
+                self.log.data('setup', 'env store', f'Error reading path: "{path}" ({e})', 'error')
         except Exception:
             self.log.data(
                 'setup',
