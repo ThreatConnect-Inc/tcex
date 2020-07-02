@@ -675,6 +675,9 @@ class Batch:
             '0x1009': 'Association Error',
             '0x100A': 'Duplicate Item Error',
             '0x100B': 'File IO Error',
+            '0x2001': 'Indicator Partial Loss Error',
+            '0x2002': 'Group Partial Loss Error',
+            '0x2003': 'File Hash Merge Error',
         }
 
     def errors(self, batch_id, halt_on_error=True):
