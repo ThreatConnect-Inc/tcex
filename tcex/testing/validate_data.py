@@ -432,6 +432,7 @@ class Validator:
             app_data = self.operator_json_eq_exclude(app_data, exclude)
             test_data = self.operator_json_eq_exclude(test_data, exclude)
 
+
         return self.operator_deep_diff(app_data, test_data, **kwargs)
 
     def operator_json_eq_exclude(self, data, exclude):

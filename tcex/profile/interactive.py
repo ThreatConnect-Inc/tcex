@@ -752,7 +752,7 @@ class Interactive:
 
         # use playbook data types to determine what input to provide (default to String)
         data_type = data.get('playbookDataType', ['String'])[0]
-        if len(data.get('playbookDataType')) > 1 or data_type.lower() == 'any':
+        if len(data.get('playbookDataType', [])) > 1 or data_type.lower() == 'any':
             data_type = self.present_data_types(
                 data.get('playbookDataType'), required=data.get('required', False)
             )
