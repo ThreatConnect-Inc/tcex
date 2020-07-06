@@ -17,6 +17,45 @@ class Migrate:
         """Initialize Class properties."""
         self.profile = profile
 
+    @property
+    def _reserved_args(self):
+        """Return a list of *all* ThreatConnect reserved arg values."""
+        return [
+            'api_access_id',
+            'api_default_org',
+            'api_secret_key',
+            'batch_action',
+            'batch_chunk',
+            'batch_halt_on_error',
+            'batch_interval_max',
+            'batch_poll_interval',
+            'batch_write_type',
+            'logging',
+            'tc_api_path',
+            'tc_in_path',
+            'tc_log_file',
+            'tc_log_level',
+            'tc_log_path',
+            'tc_log_to_api',
+            'tc_out_path',
+            'tc_playbook_db_context',
+            'tc_playbook_db_path',
+            'tc_playbook_db_port',
+            'tc_playbook_db_type',
+            'tc_playbook_out_variables',
+            'tc_proxy_host',
+            'tc_proxy_port',
+            'tc_proxy_username',
+            'tc_proxy_password',
+            'tc_proxy_external',
+            'tc_proxy_tc',
+            'tc_secure_params',
+            'tc_temp_path',
+            'tc_token',
+            'tc_token_expires',
+            'tc_user_id',
+        ]
+
     def add_staging_data(self, profile_data, name, type_, value):
         """Create staging data and return variable value.
 
@@ -68,6 +107,9 @@ class Migrate:
         # remove any deprecated fields
         self.deprecated_fields(profile_data)
 
+        # move default inputs
+        self.move_default_inputs(profile_data)
+
         # update all env variables to match latest pattern
         self.permutation_output_variables(profile_data)
 
@@ -111,6 +153,30 @@ class Migrate:
                 del profile_data['options'][d]
             except KeyError:
                 pass
+
+    def move_default_inputs(self, profile_data):
+        """Move any default values from optional or required inputs to defaults section."""
+
+        updated_params = []  # collect all PB configs for service Apps
+        for profile_inputs in self.profile.profile_inputs:
+            # ADI-1376 - handle tcex default args
+            for input_type, inputs in dict(profile_inputs).items():
+                for name in dict(inputs):
+                    if name in self._reserved_args:
+                        # preserve overwritten default arg
+                        profile_inputs.setdefault('defaults', {})
+                        profile_inputs['defaults'][name] = profile_inputs[input_type].pop(name)
+
+            # updated params are for service Apps
+            updated_params.append(profile_inputs)
+
+        # use updated params from the validation section above to merge inputs
+        if self.profile.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            for index, config_item in enumerate(profile_data.get('configs', [])):
+                config_item['config'] = updated_params[index]
+        else:
+            # non-service App (PB Apps) will only have one set of inputs
+            profile_data['inputs'] = updated_params[0]
 
     @staticmethod
     def permutation_output_variables(profile_data):
@@ -169,8 +235,16 @@ class Migrate:
                 # get ij data for k
                 ij_data = self.profile.ij.params_dict.get(k)
 
+                # input is not define in install.json, possibly default arg
+                if ij_data is None:
+                    continue
+
                 # check input type to see if it support staging data
-                if ij_data.get('type').lower() in ['boolean', 'choice', 'multichoice']:
+                if ij_data.get('type').lower() in [
+                    'boolean',
+                    'choice',
+                    'multichoice',
+                ]:
                     continue
 
                 # check value to see if it's already a variable
