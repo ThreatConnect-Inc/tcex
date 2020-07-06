@@ -100,13 +100,14 @@ class Permutations:
             self._input_permutations.append(args)
             outputs = []
 
-            for o_name in self.ij.output_variables_dict():
-                if self.lj.outputs_dict.get(o_name) is not None:
-                    display = self.lj.outputs_dict.get(o_name, {}).get('display')
+            for output_data in self.ij.output_variables:
+                name = output_data.get('name')
+                if self.lj.outputs_dict.get(name) is not None:
+                    display = self.lj.outputs_dict.get(name, {}).get('display')
                     valid = self.validate_layout_display(self.input_table, display)
                     if display is None or not valid:
                         continue
-                outputs.append(self.ij.output_variables_dict().get(o_name))
+                outputs.append(output_data)
             self._output_permutations.append(outputs)
 
     @property
@@ -283,16 +284,16 @@ class Permutations:
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 
-        # TODO: Can this be combined with gen_perm code
         outputs = []
         # loop through all output variables in install.json
-        for output_variable, output_data in self.ij.output_variables_dict().items():
-            if self.lj.outputs_dict.get(output_variable) is None:
+        for output_data in self.ij.output_variables:
+            name = output_data.get('name')
+            if self.lj.outputs_dict.get(name) is None:
                 # an output not listed in layout.json should always be shown
                 valid = True
             else:
                 # all other outputs must be validated
-                display = self.lj.outputs_dict.get(output_variable, {}).get('display')
+                display = self.lj.outputs_dict.get(name, {}).get('display')
                 valid = self.validate_layout_display(table, display)
 
             if valid:

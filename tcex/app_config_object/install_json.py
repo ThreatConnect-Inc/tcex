@@ -220,14 +220,6 @@ class InstallJson:
                 params.setdefault(p.get('name'), p)
         return params
 
-    # TODO: should this be a property
-    def output_variables_dict(self):
-        """Return output variables as name/data dict."""
-        output_variables = {}
-        for o in self.contents.get('playbook', {}).get('outputVariables') or []:
-            output_variables.setdefault(o.get('name'), o)
-        return output_variables
-
     @property
     def params_dict(self):
         """Return params as name/data dict."""
