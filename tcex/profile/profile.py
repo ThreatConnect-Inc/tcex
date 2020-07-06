@@ -73,9 +73,17 @@ class Profile:
         self.permutations = Permutations(logger=self.log)
         self.populate = Populate(self)
         self.rules = Rules(self)
-        self.session_manager = SessionManager(self)
+        self._session_manager = None
         self.tc_staged_data = {}
         self.utils = Utils()
+
+    @property
+    def session_manager(self):
+        """Return a instance of the session manager."""
+        if not self._session_manager:
+            self._session_manager = SessionManager(self)
+
+        return self._session_manager
 
     @property
     def _reserved_args(self):
@@ -320,6 +328,7 @@ class Profile:
     def filename(self):
         """Return profile fully qualified filename."""
         return os.path.join(self.directory, f'{self.name}.json')
+        # return os.path.join(self.directory, f'{self.name}.json')
 
     def init(self):
         """Return the Data (dict) from the current profile."""
