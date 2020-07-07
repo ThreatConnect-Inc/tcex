@@ -62,7 +62,6 @@ class Profile:
 
         # properties
         self._app_path = os.getcwd()
-        self._contents = None
         self._data = None
         self._output_variables = None
         self._context_tracker = []
@@ -230,13 +229,11 @@ class Profile:
     @property
     def contents(self):
         """Return mutable copy of profile JSON contents."""
-        if self._contents is None:
-            try:
-                with open(self.filename, 'r') as fh:
-                    self._contents = json.load(fh, object_pairs_hook=OrderedDict)
-            except OSError:
-                print(f'{c.Fore.RED}Could not open profile {self.filename}.')
-        return dict(self._contents)
+        try:
+            with open(self.filename, 'r') as fh:
+                return json.load(fh, object_pairs_hook=OrderedDict)
+        except (OSError, ValueError):
+            print(f'{c.Fore.RED}Could not open/read profile {self.filename}.')
 
     @property
     def context_tracker(self):
@@ -334,6 +331,11 @@ class Profile:
                 input_type = 'optional'
                 if data.get('required'):
                     input_type = 'required'
+
+                # APP-87 - ensure boolean inputs don't have null values
+                if data.get('type').lower() == 'boolean':
+                    if not isinstance(value, bool):
+                        value = False
 
                 # update inputs for next permutation check
                 inputs[name] = value
@@ -514,22 +516,16 @@ class Profile:
             with open(self.message_tc_filename, 'r') as mh:
                 message_tc = mh.read()
 
-        with open(self.filename, 'r+') as fh:
-            profile_data = json.load(fh)
+        profile_data = self.contents
+        if (
+            profile_data.get('exit_message') is None
+            or isinstance(profile_data.get('exit_message'), str)
+            or self.pytest_args.get('replace_exit_message')
+        ):
+            # update the profile
+            profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
 
-            if (
-                profile_data.get('exit_message') is None
-                or isinstance(profile_data.get('exit_message'), str)
-                or self.pytest_args.get('replace_exit_message')
-            ):
-                # update the profile
-                profile_data['exit_message'] = {'expected_output': message_tc, 'op': 'eq'}
-
-                # write updated profile
-                fh.seek(0)
-                json.dump(profile_data, fh, indent=2, sort_keys=True)
-                fh.write('\n')  # add required newline
-                fh.truncate()
+            self.write(profile_data, 'updating exit message')
 
     def update_outputs(self):
         """Update the validation rules for outputs section of a profile.

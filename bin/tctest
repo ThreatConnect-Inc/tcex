@@ -42,6 +42,11 @@ parser.add_argument(
     '--interactive', action='store_true', help='Enable interactive mode for profile generation.',
 )
 parser.add_argument(
+    '--negative',
+    action='store_true',
+    help='Works with interactive mode to autogenerate test profiles with negative testing values.',
+)
+parser.add_argument(
     '--permutation_id',
     help='The ID from the "--permutations" option to use for generating the profile.',
     type=int,
@@ -92,11 +97,21 @@ if __name__ == '__main__':
             # generates the validation.py, validation_custom.py, and validation_feature.py files
             tc_test.validation_templates.render_templates()
             # adds the profile to the json
-            tc_test.interactive_profile()
+            tc_test.interactive_profile(args.negative)
             # download conftest.py
             tc_test.download_template.test_conftest_py()
             # download profiles.py
             tc_test.download_template.test_profiles_py()
+        elif args.negative:
+            if not args.feature or not args.profile_name:
+                print(
+                    f'{c.Fore.RED}Both --feature and --name must be provided for interactive mode.'
+                )
+                sys.exit(1)
+
+            # generate negative profiles
+            tc_test.create_negative_profiles()
+
         elif args.permutations:
             # write permutations file
             tc_test.permutations.write_permutations_file()

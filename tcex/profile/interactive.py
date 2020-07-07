@@ -630,11 +630,11 @@ class Interactive:
                 rd = ''
             print(f'{ld:40} {rd:40}')
 
-        index = int(self._input_value('Type', '[0]') or 0)
+        index = self._input_value('Type', '[0]') or 0
 
         try:
-            data_type = data_types[index]
-        except (IndexError, TypeError):
+            data_type = data_types[int(index)]
+        except (IndexError, TypeError, ValueError):
             print(
                 f'{c.Fore.RED}Invalid index of {index} provided. '
                 f'Please provide a integer between 0-{len(data_types) - 1}'

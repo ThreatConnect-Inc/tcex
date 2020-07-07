@@ -54,9 +54,9 @@ class Redis:
 
             self.log.data('stage', 'variable', variable)
             self.log.data('stage', 'data', data)
-            if variable_type == 'Binary':
+            if data is not None and variable_type == 'Binary':
                 data = self._decode_binary(data, variable)
-            elif variable_type == 'BinaryArray':
+            elif data is not None and variable_type == 'BinaryArray':
                 data = [self._decode_binary(d, variable) for d in data]
             self.provider.tcex.playbook.create(variable, data)
 
@@ -91,6 +91,7 @@ class ThreatConnect:
     """Stages the ThreatConnect Data"""
 
     def __init__(self, provider):
+        """Initialize Class properties."""
         self.provider = provider
         self.batch = None
 
@@ -195,7 +196,7 @@ class ThreatConnect:
                 cm.delete()
 
     def clear(self, owner):
-        """delete and recreate the owner"""
+        """Delete and recreate the owner"""
 
     @staticmethod
     def _convert_to_entities(file):

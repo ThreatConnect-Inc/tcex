@@ -12,10 +12,26 @@ class TestCasePlaybookCommon(TestCase):
 
     redis_client = None
     redis_staging_data = {
+        '#App:1234:empty!Binary': '',
+        '#App:1234:empty!BinaryArray': [],
+        # tcex won't let these be staged
+        # '#App:1234:empty!KeyValue': {},
+        # '#App:1234:empty!KeyValueArray': [],
         '#App:1234:empty!String': '',
-        '#App:1234:empty_array!StringArray': [],
-        '#App:1234:null!String': None,
+        '#App:1234:empty!StringArray': [],
+        # tcex won't let these be staged
+        # '#App:1234:empty!TCEntity': {},
+        # '#App:1234:empty!TCEntityArray': [],
         '#App:1234:non-ascii!String': 'ドメイン.テスト',
+        # staging the data is not required
+        # '#App:1234:null!Binary': None,
+        # '#App:1234:null!BinaryArray': None,
+        # '#App:1234:null!KeyValue': None,
+        # '#App:1234:null!KeyValueArray': None,
+        # '#App:1234:null!String': None,
+        # '#App:1234:null!StringArray': None,
+        # '#App:1234:null!TCEntity': None,
+        # '#App:1234:null!TCEntityArray': None,
     }
 
     def setup_method(self):

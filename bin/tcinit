@@ -154,7 +154,8 @@ if __name__ == '__main__':
         if (args.update or args.migrate) and not template.startswith('external'):
             tci.ij.update(migrate=args.migrate)
             # APP-86 - sort output data by name
-            tci.lj.update()
+            if tci.lj.has_layout:
+                tci.lj.update()
 
         # print results
         tci.download_template.print_download_results()
