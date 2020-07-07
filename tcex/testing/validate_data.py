@@ -12,6 +12,7 @@ import random
 import re
 from collections import OrderedDict
 from urllib.parse import quote, unquote
+import traceback
 
 from ..utils import Utils
 
@@ -520,7 +521,12 @@ class Validator:
         else:
             results = operator.eq(len(app_data), test_data)
         # TODO: fix response as self.details should be correct for this use case.
-        return results, f'App Data Length: {len(app_data)} | Test Data Length: {len(test_data)}'
+        try:
+            len_test_data = len(test_data)
+            return results, f'App Data Length: {len(app_data)} | Test Data Length: {len_test_data}'
+        except TypeError:
+            len_test_data = len(str(test_data))
+            return results, f'App Data Length: {len(app_data)} | Test Data Length: {len_test_data}'
 
     def operator_lt(self, app_data, test_data):
         """Compare app data is less than tests data.
@@ -637,7 +643,10 @@ class Validator:
                 'status': 'Uploaded
             }
         """
-        if not isinstance(dict_1, dict):
+        if isinstance(dict_1, list):
+            for item in dict_1:
+                self.remove_excludes(item, paths)
+        elif not isinstance(dict_1, dict):
             raise RuntimeError(f'Provided value ({dict_1}) must be a dict.')
 
         path_0 = paths[0]
