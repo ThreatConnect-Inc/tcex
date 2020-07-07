@@ -514,7 +514,7 @@ class Profile:
             # cleanup redis
             self.clear_context(context)
 
-        if self.outputs is None or self.pytest_args.get('replace_outputs'):
+        if not self.outputs or self.pytest_args.get('replace_outputs'):
             # update profile if current profile is not or user specifies --replace_outputs
             profile_data = self.contents
             profile_data['outputs'] = outputs
