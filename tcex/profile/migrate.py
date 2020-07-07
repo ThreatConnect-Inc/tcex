@@ -155,8 +155,7 @@ class Migrate:
                 pass
 
     def move_default_inputs(self, profile_data):
-        """Move any default values from optional or required inputs to defaults section."""
-
+        """Move any default args from optional or required inputs to defaults section."""
         updated_params = []  # collect all PB configs for service Apps
         for profile_inputs in self.profile.profile_inputs:
             # ADI-1376 - handle tcex default args

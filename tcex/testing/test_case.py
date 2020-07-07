@@ -232,11 +232,14 @@ class TestCase:
         # migrate profile to latest schema
         self._profile.migrate()
 
+        # merge profile inputs (add new / remove non-defined)
+        self._profile.merge_inputs()
+
         # populate profile (env vars, etc)
         self._profile.data = self._profile.populate.replace_env_variables(self._profile.data)
 
-        # validate required fields, requires env vars to be populated
-        valid, message = self._profile.validate_required_inputs()
+        # validate input fields, this method requires env vars to be populated
+        valid, message = self._profile.validate_inputs()
 
         # stage ThreatConnect data based on current profile, also used in teardown method
         self._staged_tc_data = self.stager.threatconnect.entities(
