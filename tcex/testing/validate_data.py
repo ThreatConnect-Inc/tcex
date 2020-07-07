@@ -12,7 +12,6 @@ import random
 import re
 from collections import OrderedDict
 from urllib.parse import quote, unquote
-import traceback
 
 from ..utils import Utils
 
