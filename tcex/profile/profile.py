@@ -77,52 +77,13 @@ class Profile:
         self.tc_staged_data = {}
         self.utils = Utils()
 
-    @property
-    def session_manager(self):
-        """Return a instance of the session manager."""
-        if not self._session_manager:
-            self._session_manager = SessionManager(self)
-
-        return self._session_manager
-
-    @property
-    def _reserved_args(self):
-        """Return a list of *all* ThreatConnect reserved arg values."""
-        return [
-            'api_access_id',
-            'api_default_org',
-            'api_secret_key',
-            'batch_action',
-            'batch_chunk',
-            'batch_halt_on_error',
-            'batch_interval_max',
-            'batch_poll_interval',
-            'batch_write_type',
-            'logging',
-            'tc_api_path',
-            'tc_in_path',
-            'tc_log_file',
-            'tc_log_level',
-            'tc_log_path',
-            'tc_log_to_api',
-            'tc_out_path',
-            'tc_playbook_db_context',
-            'tc_playbook_db_path',
-            'tc_playbook_db_port',
-            'tc_playbook_db_type',
-            'tc_playbook_out_variables',
-            'tc_proxy_host',
-            'tc_proxy_port',
-            'tc_proxy_username',
-            'tc_proxy_password',
-            'tc_proxy_external',
-            'tc_proxy_tc',
-            'tc_secure_params',
-            'tc_temp_path',
-            'tc_token',
-            'tc_token_expires',
-            'tc_user_id',
-        ]
+    @staticmethod
+    def _flatten_inputs(inputs):
+        """Flatten the inputs dict."""
+        inputs_flattened = dict(inputs.get('defaults', {}))
+        inputs_flattened.update(inputs.get('optional', {}))
+        inputs_flattened.update(inputs.get('required', {}))
+        return inputs_flattened
 
     @staticmethod
     def _sorted(data):
@@ -338,6 +299,64 @@ class Profile:
         # Now can initialize anything that needs initializing
         self.session_manager.init()  # initialize session recording/playback
 
+    def merge_inputs(self):
+        """Merge new inputs and remove undefined inputs."""
+        if not self.pytest_args.get('merge_inputs'):
+            return
+
+        updated_params = []
+
+        # handle non-layout and layout based App appropriately
+        for profile_inputs, params in self.profile_inputs_params:
+            profile_inputs_flattened = self._flatten_inputs(profile_inputs)
+
+            inputs = {}
+            merged_inputs = {
+                'optional': {},
+                'required': {},
+            }
+            for name, data in params.items():
+                # inputs that are serviceConfig are not applicable for profiles
+                if data.get('serviceConfig'):
+                    continue
+
+                # each non hidden input will be checked for permutations if the App has layout
+                if not data.get('hidden'):
+                    if not self.permutations.validate_input_variable(name, inputs):
+                        continue
+
+                # get the value from the current profile or use default value from install.json
+                value = profile_inputs_flattened.get(name)
+                if name not in profile_inputs_flattened:
+                    value = data.get('default', None)
+
+                # get input type based on install.json required field
+                input_type = 'optional'
+                if data.get('required'):
+                    input_type = 'required'
+
+                # update inputs for next permutation check
+                inputs[name] = value
+
+                # store merged/updated inputs for writing back to profile
+                merged_inputs[input_type][name] = value
+
+            # ADI-1376 - handle tcex default args (prevent removing)
+            if profile_inputs.get('defaults'):
+                merged_inputs['defaults'] = profile_inputs.get('defaults')
+            updated_params.append(merged_inputs)
+
+        # update the profile with merged config/inputs
+        profile_data = self.contents
+        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            for index, config_item in enumerate(profile_data.get('configs', [])):
+                config_item['config'] = updated_params[index]
+        else:
+            profile_data['inputs'] = updated_params[0]
+
+        # write updated profile
+        self.write(profile_data)
+
     def migrate(self):
         """Migration the profile to the latest schema"""
         migrate = Migrate(self)
@@ -403,24 +422,42 @@ class Profile:
 
         return profile
 
+    @property
     def profile_inputs(self):
         """Return the appropriate inputs (config) for the current App type.
 
         Service App use config and others use inputs.
 
         "inputs": {
+            "default": {}
             "optional": {}
             "required": {}
         }
         """
         if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             for config_data in self.configs:
-                config = config_data.get('config')
-                inputs_flattened = config.get('optional', {})
-                inputs_flattened.update(config.get('required', {}))
-                yield inputs_flattened
+                yield config_data.get('config')
         else:
-            yield self.inputs_flattened
+            yield self.inputs
+
+    @property
+    def profile_inputs_params(self):
+        """Return params for inputs."""
+        # handle non-layout and layout based App appropriately
+        for profile_inputs in self.profile_inputs:
+            params = self.ij.params_dict  # params section of install.json build as dict
+            if self.lj.has_layout:
+                # using inputs from layout.json since they are required to be in order
+                # (display field can only use inputs previously defined)
+                params = {}
+                for name in self.lj.params_dict:
+                    # get data from install.json based on name
+                    params[name] = self.ij.params_dict.get(name)
+
+                # hidden fields will not be in layout.json so they need to be included manually
+                params.update(self.ij.filter_params_dict(hidden=True))
+
+            yield profile_inputs, params
 
     # TODO: BCS - move this
     @property
@@ -456,6 +493,14 @@ class Profile:
 
             if isinstance(v, dict):
                 self.remove_comments(v)
+
+    @property
+    def session_manager(self):
+        """Return a instance of the session manager."""
+        if not self._session_manager:
+            self._session_manager = SessionManager(self)
+
+        return self._session_manager
 
     @property
     def test_directory(self):
@@ -602,35 +647,20 @@ class Profile:
             else:
                 outputs[variable] = output_data
 
-    def validate_required_inputs(self):
+    def validate_inputs(self):
         """Validate required inputs.
 
         This method will also merge input if --merge_inputs is passed to pytest.
         """
         errors = []
         status = True
-        updated_params = []
 
         # handle non-layout and layout based App appropriately
-        for profile_inputs in self.profile_inputs():  # dict with optional, required nested dicts
-            params = self.ij.params_dict  # params section of install.json build as dict
-            if self.lj.has_layout:
-                # using inputs from layout.json since they are required to be in order
-                # (display field can only use inputs previously defined)
-                params = {}
-                for name in self.lj.params_dict:
-                    # get data from install.json based on name
-                    params[name] = self.ij.params_dict.get(name)
-
-                # hidden fields will not be in layout.json so they need to be included manually
-                params.update(self.ij.filter_params_dict(hidden=True))
+        for profile_inputs, params in self.profile_inputs_params:
+            profile_inputs_flattened = self._flatten_inputs(profile_inputs)
 
             inputs = {}
-            merged_inputs = {
-                'optional': {},
-                'required': {},
-            }
-            for name, data, in params.items():
+            for name, data in params.items():
                 if data.get('serviceConfig'):
                     # inputs that are serviceConfig are not applicable for profiles
                     continue
@@ -640,21 +670,17 @@ class Profile:
                     if not self.permutations.validate_input_variable(name, inputs):
                         continue
 
-                # get the value from the current profile, if non existing value will be None
-                value = None
-                if name in profile_inputs:
-                    value = profile_inputs.get(name)
+                # get the value from the current profile or use default value from install.json
+                value = profile_inputs_flattened.get(name)
+                if name not in profile_inputs_flattened:
+                    value = data.get('default', None)
 
-                input_type = 'optional'
                 if data.get('required'):
-                    input_type = 'required'
                     if value in [None, '']:  # exclude 0 or False from check
                         # validation step
                         errors.append(f'- Missing/Invalid value for required arg ({name})')
                         status = False
 
-                if name not in profile_inputs:
-                    value = data.get('default', None)
                 # APP-87 - ensure boolean inputs don't have null values
                 if data.get('type').lower() == 'boolean':
                     if not isinstance(value, bool):
@@ -664,27 +690,6 @@ class Profile:
 
                 # update inputs
                 inputs[name] = value
-                merged_inputs[input_type][name] = value
-
-            # ADI-1376 - handle tcex default args (prevent removing)
-            for arg, val in profile_inputs.items():
-                if arg in self._reserved_args:
-                    # preserve overwritten default arg
-                    merged_inputs['defaults'][arg] = val
-
-            updated_params.append(merged_inputs)
-
-        if self.pytest_args.get('merge_inputs'):
-            # update profile inputs
-
-            profile_data = self.contents
-            # use updated params from the validation section above to merge inputs
-            if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-                for index, config_item in enumerate(profile_data.get('configs', [])):
-                    config_item['config'] = updated_params[index]
-            else:
-                profile_data['inputs'] = updated_params[0]
-            self.write(profile_data)
 
         errors = '\n'.join(errors)  # convert error to string for assert message
         return status, f'\n{errors}'
