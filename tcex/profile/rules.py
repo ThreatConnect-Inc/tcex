@@ -25,7 +25,7 @@ class Rules:
         if self.matches_number_rule(data):
             return {'expected_output': data, 'op': 'is_number'}
         if self.matches_jeq_rule(data):
-            return {'expected_output': data, 'op': 'jeq', 'ignore_order': False, 'exclude': []}
+            return {'expected_output': data, 'op': 'jeq', 'ignore_order': False, 'exclude_paths': []}
         if self.matches_date_rule(data):
             return {'expected_output': data, 'op': 'is_date'}
         if self.matches_dd_rule(data):
@@ -47,6 +47,9 @@ class Rules:
     @staticmethod
     def matches_url_rule(outputs):
         """Return if output should use the is_url operator."""
+        if not outputs:
+            return False
+
         if not isinstance(outputs, list):
             outputs = [outputs]
 
