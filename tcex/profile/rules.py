@@ -47,6 +47,9 @@ class Rules:
     @staticmethod
     def matches_url_rule(outputs):
         """Return if output should use the is_url operator."""
+        if not outputs:
+            return False
+
         if not isinstance(outputs, list):
             outputs = [outputs]
 
