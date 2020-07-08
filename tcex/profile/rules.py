@@ -35,6 +35,9 @@ class Rules:
     @staticmethod
     def matches_number_rule(outputs):
         """Return if output should use the is_number operator."""
+        if not outputs:
+            return False
+
         if not isinstance(outputs, list):
             outputs = [outputs]
         try:
@@ -73,6 +76,8 @@ class Rules:
 
     def matches_date_rule(self, outputs):
         """Return if output should use the is_date operator."""
+        if not outputs:
+            return False
         if not isinstance(outputs, list):
             outputs = [outputs]
 
@@ -87,6 +92,8 @@ class Rules:
     @staticmethod
     def matches_jeq_rule(outputs):
         """Return if output should use the jeq operator."""
+        if not outputs:
+            return False
         if not isinstance(outputs, list):
             outputs = [outputs]
         try:
@@ -100,10 +107,4 @@ class Rules:
     @staticmethod
     def matches_dd_rule(outputs):
         """Return if output should use the dd operator."""
-        if not isinstance(outputs, list):
-            return False
-
-        for output in outputs:
-            if not isinstance(output, str):
-                return False
-        return True
+        return isinstance(outputs, list)

@@ -400,6 +400,9 @@ class Validator:
             try:
                 app_data_updated = []
                 for ad in app_data:
+                    # APP-599
+                    if ad is None:
+                        continue
                     if isinstance(ad, (OrderedDict, dict)):
                         ad = json.dumps(ad)
                     app_data_updated.append(json.loads(ad))
@@ -417,6 +420,9 @@ class Validator:
             try:
                 test_data_updated = []
                 for td in test_data:
+                    # APP-599
+                    if td is None:
+                        continue
                     if isinstance(td, (OrderedDict, dict)):
                         td = json.dumps(td)
                     test_data_updated.append(json.loads(td))
@@ -510,10 +516,10 @@ class Validator:
         If data passed in is 1 list and 1 int, validates length array and int value are the same.
         If data passed in is 1 str and 1 int, validates length str and int value are the same.
         """
-        if self.check_null(test_data):
-            return False, f'Invalid test_data: {test_data}. One or more values in test_data is null'
-        if self.check_null(app_data):
-            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
+        if app_data is None:
+            return False, f'Invalid test_data: {app_data}. Value in app_data is null'
+        if test_data is None:
+            return False, f'Invalid test_data: {test_data}. Value in test_data is null'
 
         if isinstance(test_data, (list, str)):
             results = operator.eq(len(app_data), len(test_data))
