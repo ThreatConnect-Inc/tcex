@@ -116,6 +116,9 @@ class Migrate:
         # update config section of profile for service Apps
         self.service_config_inputs(profile_data)
 
+        # create staged section if not already present
+        self.create_staged_section(profile_data)
+
         # stage String inputs if they are not already staged
         self.stage_inputs(profile_data)
 
@@ -219,6 +222,14 @@ class Migrate:
             # overwrite flattened config
             configs['config'] = config_inputs
 
+    @staticmethod
+    def create_staged_section(profile_data):
+        """Create the Stage and kvstore section in the profile if not currently present"""
+        if 'stage' not in profile_data.keys():
+            profile_data['stage'] = {'kvstore': {}}
+        if 'kvstore' not in profile_data.get('stage').keys():
+            profile_data['stage']['kvstore'] = []
+
     def stage_inputs(self, profile_data):
         """Stage any non-staged profile data."""
         if self.profile.ij.runtime_level.lower() != 'playbook':
@@ -250,8 +261,8 @@ class Migrate:
                 if re.match(self.profile.utils.variable_match, v):
                     continue
 
-                # get PB data type
-                data_types = ij_data.get('playbookDataType')
+                # get PB data type, APP-607
+                data_types = ij_data.get('playbookDataType', [])
 
                 # only stage String values
                 if 'String' not in data_types and not isinstance(v, str):
