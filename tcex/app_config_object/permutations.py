@@ -179,6 +179,9 @@ class Permutations:
         # escape any single quotes in value
         if isinstance(value, str):
             value = value.replace('\'', '\\')
+        elif isinstance(value, bool):
+            # core expects true/false so we convert bool value to string and lower
+            value = str(value).lower()
 
         # only column defined in install.json can be updated
         if column in self.ij.params_dict:
