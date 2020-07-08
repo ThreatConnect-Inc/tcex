@@ -340,6 +340,10 @@ class Permutations:
         self.db_create_table(table, self.ij.params_dict.keys())
         self.db_insert_record(table, self.ij.params_dict.keys())
 
+        # APP-98 Added to cover the use case of interdependent variables in the layout.json.
+        for name, item in self.ij.filter_params_dict(_type='Boolean').items():
+            self.db_update_record(table, name, item.get('default', False))
+
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 

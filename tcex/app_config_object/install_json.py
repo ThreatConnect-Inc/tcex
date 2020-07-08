@@ -201,7 +201,7 @@ class InstallJson:
                     continue
 
             if _type is not None:
-                if p.get('type') is not _type:
+                if p.get('type') != _type:
                     continue
 
             if input_permutations is not None:
