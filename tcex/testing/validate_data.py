@@ -521,17 +521,22 @@ class Validator:
         if test_data is None:
             return False, f'Invalid test_data: {test_data}. Value in test_data is null'
 
-        if isinstance(test_data, (list, str)):
-            results = operator.eq(len(app_data), len(test_data))
+        if not(
+                (isinstance(test_data, str) and isinstance(app_data, str)) or
+                (isinstance(test_data, list) and isinstance(app_data, list)) or
+                (isinstance(test_data, int) and isinstance(app_data, (list, str)))
+        ):
+            msg = f'Cannot compare App Data Type: {type(app_data)} ' \
+                  f'to Test Data Type {type(test_data)}'
+            return False, msg
+        app_len = len(app_data)
+        if isinstance(test_data, int):
+            test_len = test_data
         else:
-            results = operator.eq(len(app_data), test_data)
-        # TODO: fix response as self.details should be correct for this use case.
-        try:
-            len_test_data = len(test_data)
-            return results, f'App Data Length: {len(app_data)} | Test Data Length: {len_test_data}'
-        except TypeError:
-            len_test_data = len(str(test_data))
-            return results, f'App Data Length: {len(app_data)} | Test Data Length: {len_test_data}'
+            test_len = len(test_data)
+
+        results = operator.eq(app_len, test_len)
+        return results, f'App Data Length: {app_len} | Test Data Length: {test_len}'
 
     def operator_lt(self, app_data, test_data):
         """Compare app data is less than tests data.
