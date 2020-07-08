@@ -50,12 +50,14 @@ def pytest_generate_tests(metafunc):
         os.path.dirname(os.path.abspath(metafunc.module.__file__)), 'profiles.d'
     )
 
+    ids = []
     permutations = []
     for profile_name in profiles(profile_dir):
+        ids.append(profile_name)
         permutations.append((profile_name, {}))
 
     # decorate "test_profiles()" method with parametrize profiles (standard and permuted)
-    metafunc.parametrize('profile_name,options', permutations)
+    metafunc.parametrize('profile_name,options', permutations, ids=ids)
 
 
 # clear log directory
