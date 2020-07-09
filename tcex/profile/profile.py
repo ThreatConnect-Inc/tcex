@@ -252,6 +252,10 @@ class Profile:
             self._data = self.contents
             self.remove_comments(self._data)
 
+        # APP-618 - used in custom test cases
+        if self._data:
+            self._data['name'] = self.name
+
         return self._data
 
     @data.setter
