@@ -639,7 +639,7 @@ class Profile:
             # make business rules based on data type or content
             output_data = {'expected_output': data, 'op': 'eq'}
             if 1 not in self.exit_codes:
-                output_data = self.rules.data(data)
+                output_data = self.rules.data(data, variable)
 
             # get trigger id for service Apps
             if trigger_id is not None:

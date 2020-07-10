@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
-import json
+# import json
 import re
 
 import colorama as c
@@ -16,15 +16,23 @@ class Rules:
         """Initialize Class properties."""
         self.profile = profile
 
-    def data(self, data):
-        """Return the default output data for a given variable"""
+    def data(self, data, variable):
+        """Return the default output data for a given variable
+
+        Args:
+            data (any): The output data from the App for the current variable.
+            variable (str): The current output variable.
+
+        Returns:
+            [type]: [description]
+        """
 
         # NOTE: The order of these if statements matter.
         if self.matches_url_rule(data):
             return {'expected_output': data, 'op': 'is_url'}
         if self.matches_number_rule(data):
             return {'expected_output': data, 'op': 'is_number'}
-        if self.matches_jeq_rule(data):
+        if self.matches_jeq_rule(data, variable):
             return {
                 'expected_output': data,
                 'op': 'jeq',
@@ -95,19 +103,24 @@ class Rules:
         return True
 
     @staticmethod
-    def matches_jeq_rule(outputs):
+    def matches_jeq_rule(outputs, variable):  # pylint: disable=unused-argument
         """Return if output should use the jeq operator."""
-        if not outputs:
-            return False
-        if not isinstance(outputs, list):
-            outputs = [outputs]
-        try:
-            for output in outputs:
-                if not isinstance(output, dict):
-                    json.loads(output)
-        except Exception:
-            return False
-        return True
+        # TODO: APP-674 - revisit this with Ben
+        if 'json.raw' in variable:
+            return True
+        return False
+
+        # if not outputs:
+        #     return False
+        # if not isinstance(outputs, list):
+        #     outputs = [outputs]
+        # try:
+        #     for output in outputs:
+        #         if not isinstance(output, dict):
+        #             json.loads(output)
+        # except Exception:
+        #     return False
+        # return True
 
     @staticmethod
     def matches_dd_rule(outputs):
