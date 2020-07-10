@@ -96,12 +96,6 @@ class Interactive:
             self.present_help()
             return self._input_value(label, option_text)
 
-        # handle null/None values
-        if input_value == 'null':
-            input_value = None
-        elif input_value in ['"null"', "'null'"]:
-            input_value = 'null'
-
         return input_value
 
     @staticmethod
@@ -301,7 +295,7 @@ class Interactive:
         input_values = []
         while True:
             input_value = self.collect_exit_code(**kwargs)
-            if not input_value:
+            if input_value == '':
                 break
             input_values.append(input_value)
 
@@ -408,6 +402,12 @@ class Interactive:
         # print user feedback
         if kwargs.get('feedback', True):
             self.print_feedback(input_value)
+
+        # APP-622 - handle null/None values
+        if input_value == 'null':
+            input_value = None
+        elif input_value in ['"null"', "'null'"]:
+            input_value = 'null'
 
         return input_value
 
@@ -646,14 +646,15 @@ class Interactive:
     def present_exit_code(self):
         """Provide user input for exit code."""
         self.print_header({'label': 'Exit Codes'})
-        self.collect_exit_codes(default=[0], option_text='[0]')
+        self.exit_codes = self.collect_exit_codes(default=[0], option_text='[0]')
 
     @staticmethod
     def present_help():
         """Provide user help information."""
         print(
-            f'{c.Fore.CYAN}A value of null will be treated as an actual null value. '
-            f'Use "null" or \'null\' to insert a string of null.'
+            f'{c.Fore.CYAN}For String type inputs: \n'
+            ' * A value of null will be treated as an actual null value.\n'
+            ' * Using "null" or \'null\' to insert a string of null.\n'
         )
         print(f'{c.Fore.CYAN}When done entering array data press enter to continue.')
 
@@ -759,6 +760,8 @@ class Interactive:
 
         # no need to proceed if there is not valid data type selected.
         if data_type == self._no_selection_text:
+            self.add_input(name, data, None)
+            self.print_feedback('null')
             return None
 
         # the default value from install.json or user_data
