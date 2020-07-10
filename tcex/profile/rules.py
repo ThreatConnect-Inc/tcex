@@ -95,16 +95,26 @@ class Rules:
             outputs = [outputs]
 
             for output in outputs:
+                # date_to_datatime will take int/floats and convert to date.
+                # if the value can be converted to int/float then it will
+                # not be considered a date for this rule.
                 try:
-                    # date_to_datatime will take int/floats and
-                    # convert to date if value can be converted to
-                    # int/float then it's not a date that will be checked
+                    is_float = True
                     float(output)
+                except Exception:
+                    is_float = False
+                else:
+                    if is_float:
+                        return False
+
+                try:
+                    is_int = True
                     int(output)
                 except Exception:
-                    pass
+                    is_int = False
                 else:
-                    return False
+                    if is_int:
+                        return False
 
                 try:
                     if self.profile.utils.datetime.date_to_datetime(output) is None:
