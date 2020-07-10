@@ -397,18 +397,21 @@ class Validator:
                 return False, f'Invalid JSON data provide ({app_data}).'
         elif isinstance(app_data, (list)):
             # ADI-1076/ADI-1149
-            try:
-                app_data_updated = []
-                for ad in app_data:
-                    # APP-599
-                    if ad is None:
-                        continue
+            app_data_updated = []
+            for ad in app_data:
+                try:
                     if isinstance(ad, (OrderedDict, dict)):
                         ad = json.dumps(ad)
-                    app_data_updated.append(json.loads(ad))
-                app_data = app_data_updated
-            except ValueError:
-                return False, f'Invalid JSON data provide ({app_data}).'
+                except ValueError:
+                    return False, f'Invalid JSON data provide ({app_data}).'
+
+                try:
+                    # APP-599 - best effort try to stringify value in list
+                    ad = json.loads(ad)
+                except Exception:
+                    pass
+                app_data_updated.append(ad)
+            app_data = app_data_updated
 
         if isinstance(test_data, (str)):
             try:
@@ -417,18 +420,21 @@ class Validator:
                 return False, f'Invalid JSON data provide ({test_data}).'
         elif isinstance(test_data, (list)):
             # ADI-1076/ADI-1149
-            try:
-                test_data_updated = []
-                for td in test_data:
-                    # APP-599
-                    if td is None:
-                        continue
+            test_data_updated = []
+            for td in test_data:
+                try:
                     if isinstance(td, (OrderedDict, dict)):
                         td = json.dumps(td)
-                    test_data_updated.append(json.loads(td))
-                test_data = test_data_updated
-            except ValueError:
-                return False, f'Invalid JSON data provide ({test_data}).'
+                except ValueError:
+                    return False, f'Invalid JSON data provide ({test_data}).'
+
+                try:
+                    # APP-599 - best effort try to stringify value in list
+                    td = json.loads(td)
+                except Exception:
+                    pass
+                test_data_updated.append(td)
+            test_data = test_data_updated
 
         exclude = kwargs.pop('exclude', [])
         if isinstance(app_data, list) and isinstance(test_data, list):
@@ -508,7 +514,8 @@ class Validator:
             details = f'{app_data} {type(app_data)} !(<=) {test_data} {type(test_data)}'
         return results, details
 
-    def operator_length_eq(self, app_data, test_data):
+    @staticmethod
+    def operator_length_eq(app_data, test_data):
         """Check length of app_data.
 
         If data passed in is 2 lists, validates length lists are the same.
@@ -521,13 +528,15 @@ class Validator:
         if test_data is None:
             return False, f'Invalid test_data: {test_data}. Value in test_data is null'
 
-        if not(
-                (isinstance(test_data, str) and isinstance(app_data, str)) or
-                (isinstance(test_data, list) and isinstance(app_data, list)) or
-                (isinstance(test_data, int) and isinstance(app_data, (list, str)))
+        if not (
+            (isinstance(test_data, str) and isinstance(app_data, str))
+            or (isinstance(test_data, list) and isinstance(app_data, list))
+            or (isinstance(test_data, int) and isinstance(app_data, (list, str)))
         ):
-            msg = f'Cannot compare App Data Type: {type(app_data)} ' \
-                  f'to Test Data Type {type(test_data)}'
+            msg = (
+                f'Cannot compare App Data Type: {type(app_data)} '
+                f'to Test Data Type {type(test_data)}'
+            )
             return False, msg
         app_len = len(app_data)
         if isinstance(test_data, int):
@@ -1020,8 +1029,10 @@ class ThreatConnect:
         log_message = ''
         for code, count in counts.items():
             log_message += (
-                self.provider.tcex.batch(owner).error_codes.get(code, 'General Error') + ': ' +
-                str(count) + '\n'
+                self.provider.tcex.batch(owner).error_codes.get(code, 'General Error')
+                + ': '
+                + str(count)
+                + '\n'
             )
 
         self.log.data('validate', 'Batch Submission', log_message, 'error')
