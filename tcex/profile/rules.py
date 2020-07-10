@@ -96,7 +96,7 @@ class Rules:
 
         try:
             for output in outputs:
-                if self.profile.utils.datetime.any_to_datetime(output) is None:
+                if self.profile.utils.datetime.date_to_datetime(output) is None:
                     return False
         except RuntimeError:
             return False
