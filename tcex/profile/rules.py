@@ -94,12 +94,23 @@ class Rules:
         if not isinstance(outputs, list):
             outputs = [outputs]
 
-        try:
             for output in outputs:
-                if self.profile.utils.datetime.date_to_datetime(output) is None:
+                try:
+                    # date_to_datatime will take int/floats and
+                    # convert to date if value can be converted to
+                    # int/float then it's not a date that will be checked
+                    float(output)
+                    int(output)
+                except Exception:
+                    pass
+                else:
                     return False
-        except RuntimeError:
-            return False
+
+                try:
+                    if self.profile.utils.datetime.date_to_datetime(output) is None:
+                        return False
+                except RuntimeError:
+                    return False
         return True
 
     @staticmethod
