@@ -5,8 +5,15 @@ Release Notes
 
 2.0.6
 =====
-+ Added flush to API logging handler on error message.
-+ Added additional support for batch in testing framework.
++ APP-79 - Added curl command to the log file at debug level to assist in troubleshooting.
++ APP-80 - Added support for __comment__ in testing profile.
++ APP-87 - Added check for invalid values in profile for Boolean inputs.
++ APP-102	- Addded pytest fixture for testing sessions.
++ APP-557	- Added update logic for profiles to convert static String inputs to Staged KVStore variables.
++ APP-561 - Updated precommit template file to support large files on commit.
++ APP-676 - Updated --interactive mode to support all input types.
++ APP-677 - Added --negative flag to tctest command to auto-generate negative test profiles.
++ Multiple enhancements for testing framework (APP-78, APP-82, APP-83, APP-84, APP-85, APP-86, APP-87, APP-106, APP-219)
 
 2.0.5
 =====
