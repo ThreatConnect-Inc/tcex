@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -294,9 +294,9 @@
             <span class="n">variable_type</span> <span class="o">=</span> <span class="n">parsed_key</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
 
             <span class="c1"># log/debug</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;create variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;create variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Binary&#39;</span><span class="p">,</span> <span class="s1">&#39;BinaryArray&#39;</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;variable value: </span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;variable value: </span><span class="si">{value}</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_single_types</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -442,15 +442,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#  This is if no downstream variables are requested then nothing should be returned.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key has a none value and will not be written.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key has a none value and will not be written.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> has a none value and will not be written.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> has a none value and will not be written.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -459,16 +459,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_type</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># variable key-type has been requested</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_type</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream App.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream App.&quot;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">variable_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># variable key has been requested</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_variables_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream App.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable {v.get(&#39;variable&#39;)} was requested by downstream App.&quot;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;requested output variables: </span><span class="si">{self.output_variables_by_name}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;requested output variables: </span><span class="si">{self.output_variables_by_name}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variable </span><span class="si">{key}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">results</span></div>
 
@@ -485,7 +485,7 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key field was None.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="Playbooks.exit"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -501,7 +501,7 @@
         <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span>
             <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Changing exit code from 3 to 0.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Changing exit code from 3 to 0.&#39;</span><span class="p">)</span>
                 <span class="n">code</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># playbooks doesn&#39;t support partial failure</span>
         <span class="k">elif</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
             <span class="n">code</span> <span class="o">=</span> <span class="mi">1</span>
@@ -582,7 +582,7 @@
             <span class="n">variable_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="c1"># only log key if it&#39;s a variable</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;read variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;read variable </span><span class="si">{key}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_single_types</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="n">embedded</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_array_types</span><span class="p">:</span>

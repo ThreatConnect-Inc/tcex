@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.package &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.bin.package &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -364,7 +364,9 @@
             <span class="n">ij_template</span> <span class="o">=</span> <span class="n">InstallJson</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">tmp_app_path</span><span class="p">)</span>
 
             <span class="c1"># automatically update install.json in template directory</span>
-            <span class="n">ij_template</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">commit_hash</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">ij_template</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">commit_hash</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">valid_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">playbook_data_types</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
 
             <span class="c1"># zip file</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zip_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">app_name_version</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">)</span>

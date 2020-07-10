@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -179,7 +179,9 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">inflect</span>
+
 <span class="kn">from</span> <span class="nn">.mappings.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+<span class="kn">from</span> <span class="nn">.mappings.group.group</span> <span class="kn">import</span> <span class="n">Group</span>
 <span class="kn">from</span> <span class="nn">.mappings.group.group_types.adversary</span> <span class="kn">import</span> <span class="n">Adversary</span>
 <span class="kn">from</span> <span class="nn">.mappings.group.group_types.campaign</span> <span class="kn">import</span> <span class="n">Campaign</span>
 <span class="kn">from</span> <span class="nn">.mappings.group.group_types.document</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -190,19 +192,16 @@
 <span class="kn">from</span> <span class="nn">.mappings.group.group_types.report</span> <span class="kn">import</span> <span class="n">Report</span>
 <span class="kn">from</span> <span class="nn">.mappings.group.group_types.signature</span> <span class="kn">import</span> <span class="n">Signature</span>
 <span class="kn">from</span> <span class="nn">.mappings.group.group_types.threat</span> <span class="kn">import</span> <span class="n">Threat</span>
-<span class="kn">from</span> <span class="nn">.mappings.group.group</span> <span class="kn">import</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Indicator</span><span class="p">,</span>
+                                           <span class="n">custom_indicator_class_factory</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.address</span> <span class="kn">import</span> <span class="n">Address</span>
 <span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.email_address</span> <span class="kn">import</span> <span class="n">EmailAddress</span>
 <span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.file</span> <span class="kn">import</span> <span class="n">File</span>
 <span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.host</span> <span class="kn">import</span> <span class="n">Host</span>
 <span class="kn">from</span> <span class="nn">.mappings.indicator.indicator_types.url</span> <span class="kn">import</span> <span class="n">URL</span>
-<span class="kn">from</span> <span class="nn">.mappings.indicator.indicator</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Indicator</span><span class="p">,</span>
-    <span class="n">custom_indicator_class_factory</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mappings.owner</span> <span class="kn">import</span> <span class="n">Owner</span>
 <span class="kn">from</span> <span class="nn">.mappings.tag</span> <span class="kn">import</span> <span class="n">Tag</span>
 <span class="kn">from</span> <span class="nn">.mappings.task</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">.mappings.owner</span> <span class="kn">import</span> <span class="n">Owner</span>
 <span class="kn">from</span> <span class="nn">.mappings.victim</span> <span class="kn">import</span> <span class="n">Victim</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
@@ -244,6 +243,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            owner (str, kwargs): The name for this Group. Default to default Org when not provided</span>
 <span class="sd">            text (str, kwargs): [Required for Create] The URL value for this Indicator.</span>
+
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of URL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -255,6 +255,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            owner (str, kwargs): The name for this Group. Default to default Org when not provided</span>
 <span class="sd">            address (str, kwargs): [Required for Create] The Email Address value for this Indicator.</span>
+
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of EmailAddress.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -265,6 +266,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            owner (str, kwargs): The name for this Group. Default to default Org when not provided</span>
+
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of File.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -276,6 +278,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            owner (str, kwargs): The name for this Group. Default to default Org when not provided</span>
 <span class="sd">            hostname (str, kwargs): [Required for Create] The Host value for this Indicator.</span>
+
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of Host.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -304,7 +307,7 @@
 <span class="sd">            obj: An instance of Indicator or specific indicator type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">indicator_type</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Indicator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Indicator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">indicator_type_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="n">Address</span><span class="p">,</span>
@@ -337,13 +340,10 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            owner (str): The ThreatConnect owner name.</span>
-<span class="sd">            group_type:</span>
-
-<span class="sd">        Return:</span>
-
+<span class="sd">            group_type: The type of group object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">group_type</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">group_type_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;adversary&#39;</span><span class="p">:</span> <span class="n">Adversary</span><span class="p">,</span>
@@ -477,9 +477,6 @@
 <span class="sd">            owner (str): The ThreatConnect owner name.</span>
 <span class="sd">            name:</span>
 <span class="sd">            **kwargs:</span>
-
-<span class="sd">        Return:</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -522,9 +519,6 @@
 <span class="sd">            owner (str): The ThreatConnect owner name.</span>
 <span class="sd">            name:</span>
 <span class="sd">            **kwargs:</span>
-
-<span class="sd">        Return:</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Threat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -536,28 +530,15 @@
 <span class="sd">            name:</span>
 <span class="sd">            **kwargs:</span>
 
-<span class="sd">        Return:</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Victim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.tag"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tag">[docs]</a>    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create the Tag TI object.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            name:</span>
-
-<span class="sd">        Return:</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create the Tag TI object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.owner"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.owner">[docs]</a>    <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create the Owner object.</span>
-
-<span class="sd">        Return:</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create the Owner object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Owner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.create_entity"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.create_entity">[docs]</a>    <span class="k">def</span> <span class="nf">create_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
@@ -636,11 +617,8 @@
         <span class="sd">&quot;&quot;&quot;Create a indicator/group in TC based on the given entity&#39;s</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            entities:</span>
-<span class="sd">            owner:</span>
-
-<span class="sd">        Returns:</span>
-
+<span class="sd">            entities: The entity to create.</span>
+<span class="sd">            owner: The owner of the entity (</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
@@ -717,12 +695,10 @@
 <span class="sd">            }</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            json_response:</span>
-
-<span class="sd">        Yields:</span>
+<span class="sd">            tc_data: TC data to convert to a entity.</span>
+<span class="sd">            resource_type: The type of TC data being provided.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;getting here&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">tc_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">tc_data</span><span class="p">]</span>
 
@@ -886,7 +862,7 @@
             <span class="sd">&quot;&quot;&quot;Add Custom Indicator data to Batch object&quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">custom_class</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;method_1&#39;</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;method_1&#39;</span><span class="p">]</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div></div>
 </pre></div>
 

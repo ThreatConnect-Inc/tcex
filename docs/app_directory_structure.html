@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 2.0.5 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -389,11 +389,13 @@ py38.xml
 26
 27
 28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
     <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
     <span class="nt">hooks</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
+        <span class="nt">args</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;--maxkb=500&quot;</span><span class="p p-Indicator">]</span>
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>

@@ -36,9 +36,10 @@ Retrieve Indicators with Date Added filters
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-        filters = self.tcex.ti.filters()
-        filters.add_filter('dateAdded', '>', '2020-01-01')
-        filters.add_filter('dateAdded', '<', '2020-01-02')
-        indicators = self.tcex.ti.indicator(owner='example')
-        for indicator in indicators.many(filters=filters):
-            print(indicator)
+
+    filters = self.tcex.ti.filters()
+    filters.add_filter('dateAdded', '>', '2020-01-01')
+    filters.add_filter('dateAdded', '<', '2020-01-02')
+    indicators = self.tcex.ti.indicator(owner='example')
+    for indicator in indicators.many(filters=filters):
+        print(indicator)

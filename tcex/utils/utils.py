@@ -180,7 +180,7 @@ class Utils:
             cred (str): The cred to print.
             visible (str): The number of characters at the beginning and
                 ending of the cred to not mask.
-            mask_char (str, Default: *): The character to use in the mask.
+            mask_char (str, Default: "*"): The character to use in the mask.
 
         Returns:
             str: The reformatted token.

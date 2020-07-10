@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.logger.api_handler &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.logger.api_handler &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -216,7 +216,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">))</span>
 
         <span class="c1"># flush queue once limit is hit token module is currently renewing token</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush_limit</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_token_renewal</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush_limit</span> <span class="ow">or</span> <span class="n">record</span><span class="o">.</span><span class="n">levelname</span> <span class="o">==</span> <span class="s1">&#39;ERROR&#39;</span>
+        <span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_token_renewal</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_to_api</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>

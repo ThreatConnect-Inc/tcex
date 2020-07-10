@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.bin.test &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.bin.test &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -179,17 +179,18 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework Test Generation Module.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">.bin</span> <span class="kn">import</span> <span class="n">Bin</span>
-<span class="kn">from</span> <span class="nn">..app_config_object</span> <span class="kn">import</span> <span class="n">Profile</span><span class="p">,</span> <span class="n">ProfileInteractive</span>
 <span class="kn">from</span> <span class="nn">..app_config_object.templates</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CustomTemplates</span><span class="p">,</span>
     <span class="n">DownloadTemplates</span><span class="p">,</span>
     <span class="n">TestProfileTemplates</span><span class="p">,</span>
     <span class="n">ValidationTemplates</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..profile</span> <span class="kn">import</span> <span class="n">Interactive</span><span class="p">,</span> <span class="n">Profile</span>
+<span class="kn">from</span> <span class="nn">.bin</span> <span class="kn">import</span> <span class="n">Bin</span>
 
 
 <div class="viewcode-block" id="Test"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test">[docs]</a><span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">Bin</span><span class="p">):</span>
@@ -209,9 +210,97 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">custom_templates</span> <span class="o">=</span> <span class="n">CustomTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">download_template</span> <span class="o">=</span> <span class="n">DownloadTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span> <span class="o">=</span> <span class="n">ProfileInteractive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span> <span class="o">=</span> <span class="n">Interactive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_profile_template</span> <span class="o">=</span> <span class="n">TestProfileTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_templates</span> <span class="o">=</span> <span class="n">ValidationTemplates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Test.add_negative_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.add_negative_profile">[docs]</a>    <span class="k">def</span> <span class="nf">add_negative_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a negative profile.&quot;&quot;&quot;</span>
+        <span class="c1"># build profile name</span>
+        <span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># default exit code is 1</span>
+        <span class="k">if</span> <span class="n">fail_on_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fail_on_error</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">exit_code</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">profile_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{profile_name}</span><span class="s1">_foe_{str(fail_on_error).lower()}&#39;</span>
+
+        <span class="c1"># get profile data and update with new inputs</span>
+        <span class="n">profile_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">contents</span>
+        <span class="n">profile_data</span><span class="p">[</span><span class="s1">&#39;exit_codes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">exit_code</span><span class="p">]</span>
+        <span class="n">profile_data</span><span class="p">[</span><span class="s1">&#39;exit_message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">profile_data</span><span class="p">[</span><span class="s1">&#39;inputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="n">profile_data</span><span class="p">[</span><span class="s1">&#39;outputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># create a meaningful profile name</span>
+        <span class="n">new_profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="n">default_args</span><span class="o">=</span><span class="p">{},</span> <span class="n">feature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">profile_name</span><span class="p">)</span>
+        <span class="n">new_profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Test.create_dirs"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.create_dirs">[docs]</a>    <span class="k">def</span> <span class="nf">create_dirs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create tcex.d directory and sub directories.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">test_directory</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">feature_directory</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="c1"># create __init__ files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_dirs_init</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Test.create_dirs_init"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.create_dirs_init">[docs]</a>    <span class="k">def</span> <span class="nf">create_dirs_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create the __init__.py file under dir.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">test_directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">feature_directory</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">),</span> <span class="s1">&#39;a&#39;</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">utime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Test.create_negative_profiles"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.create_negative_profiles">[docs]</a>    <span class="k">def</span> <span class="nf">create_negative_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create negative profiles using interactive profile base.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">inputs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">profile_inputs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">ij_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="c1"># create a profile for each pb data type</span>
+                <span class="k">for</span> <span class="n">pb_data_type</span> <span class="ow">in</span> <span class="n">ij_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbookDataType&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                    <span class="k">for</span> <span class="n">negative_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">negative_inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pb_data_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">[]):</span>
+                        <span class="c1"># the value is pre-staged in test_case_playbook_common.py</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#App:1234:</span><span class="si">{negative_type}</span><span class="s1">!</span><span class="si">{pb_data_type}</span><span class="s1">&#39;</span>
+                        <span class="n">profile_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;negative_</span><span class="si">{name}</span><span class="s1">_{pb_data_type.lower()}_</span><span class="si">{negative_type}</span><span class="s1">&#39;</span>
+                        <span class="c1"># modify copy so original is preserved for next interation</span>
+                        <span class="n">new_inputs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                        <span class="n">new_inputs</span><span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+                        <span class="k">if</span> <span class="s1">&#39;fail_on_error&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optional&#39;</span><span class="p">,</span> <span class="p">{}):</span>
+                            <span class="c1"># handle fail on error</span>
+                            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
+                                <span class="n">new_inputs</span><span class="p">[</span><span class="s1">&#39;optional&#39;</span><span class="p">][</span><span class="s1">&#39;fail_on_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">add_negative_profile</span><span class="p">(</span><span class="n">profile_name</span><span class="p">,</span> <span class="n">new_inputs</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">add_negative_profile</span><span class="p">(</span><span class="n">profile_name</span><span class="p">,</span> <span class="n">new_inputs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Test.interactive_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.interactive_profile">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">negative</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Present interactive profile inputs.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">present</span><span class="p">()</span>
+        <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;exit_codes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">exit_codes</span><span class="p">,</span>
+            <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+            <span class="s1">&#39;stage&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">staging_data</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">negative</span><span class="p">:</span>
+            <span class="c1"># if user specified negative arg then create negative test profiles</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_negative_profiles</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Test.load_legacy_profiles"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.load_legacy_profiles">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_legacy_profiles</span><span class="p">(</span><span class="n">staging_files</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load staging data to migrate legacy templates.&quot;&quot;&quot;</span>
+        <span class="n">staging_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">staging_files</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">staging_data</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">staging_data</span></div>
 
 <div class="viewcode-block" id="Test.migrate_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.migrate_profile">[docs]</a>    <span class="k">def</span> <span class="nf">migrate_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Migrate legacy profile to new framework.&quot;&quot;&quot;</span>
@@ -237,51 +326,19 @@
             <span class="c1"># add profile</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">,</span> <span class="n">profile_name</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Test.create_dirs"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.create_dirs">[docs]</a>    <span class="k">def</span> <span class="nf">create_dirs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create tcex.d directory and sub directories.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">test_directory</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">feature_directory</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
-        <span class="p">]:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-
-        <span class="c1"># create __init__ files</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_dirs_init</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Test.create_dirs_init"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.create_dirs_init">[docs]</a>    <span class="k">def</span> <span class="nf">create_dirs_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create the __init__.py file under dir.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">test_directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">feature_directory</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">),</span> <span class="s1">&#39;a&#39;</span><span class="p">):</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">utime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Test.interactive_profile"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.interactive_profile">[docs]</a>    <span class="k">def</span> <span class="nf">interactive_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Present interactive profile inputs.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">present</span><span class="p">()</span>
-        <span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;exit_codes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">exit_codes</span><span class="p">,</span>
-            <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
-            <span class="s1">&#39;stage&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">staging_data</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile_data</span><span class="o">=</span><span class="n">profile_data</span><span class="p">)</span>
-
-        <span class="c1"># write user defaults file</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">user_defaults</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">user_defaults_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_interactive</span><span class="o">.</span><span class="n">user_defaults</span><span class="p">,</span> <span class="n">fh</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Test.load_legacy_profiles"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.test.Test.load_legacy_profiles">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load_legacy_profiles</span><span class="p">(</span><span class="n">staging_files</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load staging data to migrate legacy templates.&quot;&quot;&quot;</span>
-        <span class="n">staging_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">staging_files</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">staging_data</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">staging_data</span></div></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">negative_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return dict of negative inputs.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;binary&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;empty&#39;</span><span class="p">,</span> <span class="s1">&#39;null&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;binaryarray&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;empty&#39;</span><span class="p">,</span> <span class="s1">&#39;null&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;keyvalue&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;null&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;keyvaluearray&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;null&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;empty&#39;</span><span class="p">,</span> <span class="s1">&#39;null&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;stringarray&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;empty&#39;</span><span class="p">,</span> <span class="s1">&#39;null&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;tcentity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;null&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;tcentityarray&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;null&#39;</span><span class="p">],</span>
+        <span class="p">}</span></div>
 </pre></div>
 
            </div>

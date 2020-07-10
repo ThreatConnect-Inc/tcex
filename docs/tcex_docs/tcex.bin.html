@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Bin Module &mdash; TcEx 2.0.5 documentation</title>
+  <title>Bin Module &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -446,6 +446,12 @@ install.json file or files will be automatically run before packaging the app.</
 </dd>
 </dl>
 <dl class="method">
+<dt id="tcex.bin.test.Test.add_negative_profile">
+<code class="sig-name descname">add_negative_profile</code><span class="sig-paren">(</span><em class="sig-param">profile_name</em>, <em class="sig-param">inputs</em>, <em class="sig-param">fail_on_error=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.add_negative_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.add_negative_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a negative profile.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.bin.test.Test.create_dirs">
 <code class="sig-name descname">create_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.create_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.create_dirs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create tcex.d directory and sub directories.</p>
@@ -458,8 +464,14 @@ install.json file or files will be automatically run before packaging the app.</
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.bin.test.Test.create_negative_profiles">
+<code class="sig-name descname">create_negative_profiles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.create_negative_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.create_negative_profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create negative profiles using interactive profile base.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.bin.test.Test.interactive_profile">
-<code class="sig-name descname">interactive_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.interactive_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.interactive_profile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">interactive_profile</code><span class="sig-paren">(</span><em class="sig-param">negative=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.interactive_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.interactive_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Present interactive profile inputs.</p>
 </dd></dl>
 
@@ -473,6 +485,12 @@ install.json file or files will be automatically run before packaging the app.</
 <dt id="tcex.bin.test.Test.migrate_profile">
 <code class="sig-name descname">migrate_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.migrate_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.migrate_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Migrate legacy profile to new framework.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.bin.test.Test.negative_inputs">
+<em class="property">property </em><code class="sig-name descname">negative_inputs</code><a class="headerlink" href="#tcex.bin.test.Test.negative_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dict of negative inputs.</p>
 </dd></dl>
 
 </dd></dl>

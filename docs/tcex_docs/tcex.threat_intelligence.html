@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Threat Intelligence Module &mdash; TcEx 2.0.5 documentation</title>
+  <title>Threat Intelligence Module &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -319,12 +319,11 @@ modified.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>entities</strong> – </p></li>
-<li><p><strong>owner</strong> – </p></li>
+<li><p><strong>entities</strong> – The entity to create.</p></li>
+<li><p><strong>owner</strong> – The owner of the entity (</p></li>
 </ul>
 </dd>
 </dl>
-<p>Returns:</p>
 </dd></dl>
 
 <dl class="method">
@@ -468,10 +467,12 @@ modified.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>json_response</strong> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tc_data</strong> – TC data to convert to a entity.</p></li>
+<li><p><strong>resource_type</strong> – The type of TC data being provided.</p></li>
+</ul>
 </dd>
 </dl>
-<p>Yields:</p>
 </dd></dl>
 
 <dl class="method">
@@ -527,11 +528,10 @@ modified.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>owner</strong> (<em>str</em>) – The ThreatConnect owner name.</p></li>
-<li><p><strong>group_type</strong> – </p></li>
+<li><p><strong>group_type</strong> – The type of group object.</p></li>
 </ul>
 </dd>
 </dl>
-<p>Return:</p>
 </dd></dl>
 
 <dl class="method">
@@ -627,7 +627,6 @@ modified.</p></li>
 <dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.owner">
 <code class="sig-name descname">owner</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Owner object.</p>
-<p>Return:</p>
 </dd></dl>
 
 <dl class="method">
@@ -643,7 +642,6 @@ modified.</p></li>
 </ul>
 </dd>
 </dl>
-<p>Return:</p>
 </dd></dl>
 
 <dl class="method">
@@ -674,12 +672,6 @@ modified.</p></li>
 <dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tag">
 <code class="sig-name descname">tag</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Tag TI object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> – </p>
-</dd>
-</dl>
-<p>Return:</p>
 </dd></dl>
 
 <dl class="method">
@@ -719,7 +711,6 @@ modified.</p></li>
 </ul>
 </dd>
 </dl>
-<p>Return:</p>
 </dd></dl>
 
 <dl class="method">
@@ -755,7 +746,6 @@ modified.</p></li>
 </ul>
 </dd>
 </dl>
-<p>Return:</p>
 </dd></dl>
 
 </dd></dl>

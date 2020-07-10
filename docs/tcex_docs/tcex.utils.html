@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Utils Module &mdash; TcEx 2.0.5 documentation</title>
+  <title>Utils Module &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -342,6 +342,28 @@ and for lists with a mix of lists and single values</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.utils.utils.Utils.printable_cred">
+<em class="property">static </em><code class="sig-name descname">printable_cred</code><span class="sig-paren">(</span><em class="sig-param">cred</em>, <em class="sig-param">visible=1</em>, <em class="sig-param">mask_char=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.printable_cred"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.printable_cred" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a printable (masked) version of the provided credential.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cred</strong> (<em>str</em>) – The cred to print.</p></li>
+<li><p><strong>visible</strong> (<em>str</em>) – The number of characters at the beginning and
+ending of the cred to not mask.</p></li>
+<li><p><strong>(</strong><strong>str</strong><strong>, </strong><strong>Default</strong> (<em>mask_char</em>) – “*”): The character to use in the mask.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The reformatted token.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.utils.utils.Utils.random_string">
 <em class="property">static </em><code class="sig-name descname">random_string</code><span class="sig-paren">(</span><em class="sig-param">string_length=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.random_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.random_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a random string of fixed length</p>
@@ -351,6 +373,30 @@ and for lists with a mix of lists and single values</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A random string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.utils.utils.Utils.requests_to_curl">
+<code class="sig-name descname">requests_to_curl</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">mask_headers=True</em>, <em class="sig-param">mask_patterns=None</em>, <em class="sig-param">verify=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.requests_to_curl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.requests_to_curl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return converted PreparedRequest to a curl command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>requests.models.PreparedRequest</em>) – The response.request object.</p></li>
+<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>verify</em>) – True): If True then values for certain header
+key will be masked.</p></li>
+<li><p><strong>(</strong><strong>list</strong><strong>, </strong><strong>default</strong> (<em>mask_patterns</em>) – None): A list of patterns if found in headers the value
+will be masked.</p></li>
+<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): If False the curl command will include –insecure flag.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The curl command.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>

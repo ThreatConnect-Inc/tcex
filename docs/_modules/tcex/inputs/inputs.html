@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.inputs &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.inputs.inputs &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -308,6 +308,7 @@
             <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aot_blpop</span><span class="p">()</span>
             <span class="n">updated_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
             <span class="c1"># log number of params returned from AOT</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loaded {len(updated_params)} inputs from AOT params.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">updated_params</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Inputs._load_secure_params"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._load_secure_params">[docs]</a>    <span class="k">def</span> <span class="nf">_load_secure_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -316,6 +317,7 @@
             <span class="c1"># update default_args with secure params from API</span>
             <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_secure_params</span><span class="p">()</span>
             <span class="n">updated_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loaded {len(updated_params)} inputs from secure params.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">updated_params</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Inputs._results_tc_args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs._results_tc_args">[docs]</a>    <span class="k">def</span> <span class="nf">_results_tc_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
@@ -387,13 +389,23 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
             <span class="c1"># special case for service Apps</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_svc_client_topic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_svc_id</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_svc_client_topic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">):</span>  <span class="c1"># pragma: no cover</span>
                 <span class="c1"># get the service id as third part of the service</span>
                 <span class="c1"># --tc_svc_client_topic svc-client-cc66d36344787779ccaa8dbb5e09a7ab</span>
                 <span class="nb">setattr</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span>
-                    <span class="s1">&#39;service_id&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;tc_svc_id&#39;</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_svc_client_topic</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="p">)</span>
+
+            <span class="c1"># special case for service Apps</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_job_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># get the job id from the token</span>
+                <span class="nb">setattr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="s1">&#39;tc_job_id&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
                 <span class="p">)</span>
 
             <span class="c1"># set parsed bool to ensure args are only parsed once</span>
@@ -474,6 +486,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s1">&#39;Could not read or decrypt configuration file &quot;</span><span class="si">{filename}</span><span class="s1">&quot;.&#39;</span>
                     <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loaded {len(file_content)} inputs from config file.&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
@@ -556,39 +569,39 @@
     <span class="k">def</span> <span class="nf">tc_reserved_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a list of *all* ThreatConnect reserved arg values.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="s1">&#39;tc_token&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_token_expires&#39;</span><span class="p">,</span>
             <span class="s1">&#39;api_access_id&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;api_default_org&#39;</span><span class="p">,</span>
             <span class="s1">&#39;api_secret_key&#39;</span><span class="p">,</span>
             <span class="s1">&#39;batch_action&#39;</span><span class="p">,</span>
             <span class="s1">&#39;batch_chunk&#39;</span><span class="p">,</span>
             <span class="s1">&#39;batch_halt_on_error&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;batch_poll_interval&#39;</span><span class="p">,</span>
             <span class="s1">&#39;batch_interval_max&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;batch_poll_interval&#39;</span><span class="p">,</span>
             <span class="s1">&#39;batch_write_type&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_playbook_db_type&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_playbook_db_context&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_playbook_db_path&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_playbook_db_port&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_playbook_out_variables&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;api_default_org&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;logging&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_api_path&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_in_path&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_log_file&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_log_level&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_log_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_log_to_api&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_out_path&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_secure_params&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_temp_path&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_user_id&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_context&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_port&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_db_type&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_playbook_out_variables&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_proxy_host&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_proxy_port&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_proxy_username&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_proxy_password&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_proxy_external&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tc_proxy_tc&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_log_to_api&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;tc_log_level&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;logging&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_secure_params&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_temp_path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_token&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_token_expires&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tc_user_id&#39;</span><span class="p">,</span>
         <span class="p">]</span>
 
 <div class="viewcode-block" id="Inputs.unknown_args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.unknown_args">[docs]</a>    <span class="k">def</span> <span class="nf">unknown_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -600,6 +613,8 @@
 <span class="sd">            args (list): List of unknown arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">u</span> <span class="o">==</span> <span class="s1">&#39;run&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported arg found (</span><span class="si">{u}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Inputs.update_logging"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.update_logging">[docs]</a>    <span class="k">def</span> <span class="nf">update_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -649,7 +664,7 @@
 
             <span class="k">if</span> <span class="n">param_type</span> <span class="o">==</span> <span class="s1">&#39;multichoice&#39;</span> <span class="ow">or</span> <span class="n">param_allow_multiple</span><span class="p">:</span>
                 <span class="c1"># update delimited value to an array for params that have type of MultiChoice.</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">list_delimiter</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">param_type</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
                 <span class="c1"># convert boolean input that are passed in as a string (&quot;true&quot; -&gt; True)</span>

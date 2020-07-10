@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Examples &mdash; TcEx 2.0.5 documentation</title>
+  <title>Examples &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -112,6 +112,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#indicator-to-group-association">Indicator to Group Association</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-inactive-indicators">Retrieve Inactive Indicators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-active-and-inactive-indicators">Retrieve Active and Inactive Indicators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-indicators-with-date-added-filters">Retrieve Indicators with Date Added filters</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#snippets">Snippets</a><ul>
@@ -338,6 +339,22 @@
 <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;orParams&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span><span class="p">}</span>
 <span class="k">for</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="retrieve-indicators-with-date-added-filters">
+<h3>Retrieve Indicators with Date Added filters<a class="headerlink" href="#retrieve-indicators-with-date-added-filters" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
+<span class="n">filters</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;2020-01-01&#39;</span><span class="p">)</span>
+<span class="n">filters</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;2020-01-02&#39;</span><span class="p">)</span>
+<span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">indicator</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>

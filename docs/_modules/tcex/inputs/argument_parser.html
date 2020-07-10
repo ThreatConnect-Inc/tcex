@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -411,6 +411,7 @@
 <span class="sd">        --tc_svc_broker_token token                 The Broker auth token.</span>
 <span class="sd">        --tc_svc_client_topic topic                 The topic to send client message.</span>
 <span class="sd">        --tc_svc_hb_timeout_seconds seconds         The heartbeat interval in seconds.</span>
+<span class="sd">        --tc_svc_id id                              The unique service id.</span>
 <span class="sd">        --tc_svc_server_topic topic                 The topic to receive server message.</span>
 <span class="sd">        --tcex_testing_context context              A context for TcEx Framework testing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -440,6 +441,7 @@
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Broker heartbeat interval in seconds&#39;</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_svc_id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The unique service id&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_svc_server_topic&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Topic to send server messages&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tcex_testing_context&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;A context for TcEx Framework testing&#39;</span><span class="p">)</span></div>
 
@@ -449,6 +451,7 @@
 <span class="sd">        --api_default_org org        The TC API user default organization.</span>
 <span class="sd">        --tc_api_path path           The TC API path (e.g https://api.threatconnect.com).</span>
 <span class="sd">        --tc_in_path path            The app in path.</span>
+<span class="sd">        --tc_job_id id               The id of the running job.</span>
 <span class="sd">        --tc_out_path path           The app out path.</span>
 <span class="sd">        --tc_secure_params bool      Flag to indicator secure params is supported.</span>
 <span class="sd">        --tc_temp_path path          The app temp path.</span>
@@ -470,6 +473,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_api_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect api path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_exit_channel&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect AOT exit channel&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_in_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect in path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_job_id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The id of the running job&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_out_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect output path&#39;</span>
         <span class="p">)</span>

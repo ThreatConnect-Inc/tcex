@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.logger.logger &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.logger.logger &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -265,6 +265,15 @@
                 <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
                 <span class="k">break</span></div>
+
+<div class="viewcode-block" id="Logger.shutdown"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close all handlers.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            handler_name (str): The handler name to remove.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Logger.update_handler_level"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.update_handler_level">[docs]</a>    <span class="k">def</span> <span class="nf">update_handler_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update all handlers log level.</span>

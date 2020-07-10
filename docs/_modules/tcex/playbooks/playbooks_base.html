@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks_base &mdash; TcEx 2.0.5 documentation</title>
+  <title>tcex.playbooks.playbooks_base &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.5
+                2.0.6
               </div>
 
 
@@ -203,6 +203,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_key_value_store</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables_by_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables_by_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">log</span>
 
         <span class="c1"># match full variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;^</span><span class="si">{self._variable_pattern}</span><span class="s1">$&#39;</span><span class="p">)</span>
@@ -216,16 +217,12 @@
         <span class="c1"># coerce bool before int as python says a bool is an int</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="c1"># coerce bool to str type</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Coercing bool value (</span><span class="si">{value}</span><span class="s1">) to a string (&quot;{str(value).lower()}&quot;).&#39;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coercing bool value (</span><span class="si">{value}</span><span class="s1">) to a string (&quot;{str(value).lower()}&quot;).&#39;</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="c1"># coerce int to str type</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Coercing float/int value (</span><span class="si">{value}</span><span class="s1">) to a string (&quot;{str(value)}&quot;).&#39;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coercing float/int value (</span><span class="si">{value}</span><span class="s1">) to a string (&quot;{str(value)}&quot;).&#39;</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">value</span></div>
@@ -233,7 +230,7 @@
 <div class="viewcode-block" id="PlaybooksBase._create"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._create">[docs]</a>    <span class="k">def</span> <span class="nf">_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the value in Redis if applicable.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key or value field is None.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key or value field is None.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># get variable type from variable value</span>
@@ -258,7 +255,7 @@
             <span class="k">if</span> <span class="n">validate</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_tc_entity</span><span class="p">(</span><span class="n">value</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Invalid data provided for TcEntity.&#39;</span><span class="p">)</span>
 
-        <span class="c1"># self.tcex.log.trace(f&#39;pb create - context: {self._context}, key: {key}, value: {value}&#39;)</span>
+        <span class="c1"># self.log.trace(f&#39;pb create - context: {self._context}, key: {key}, value: {value}&#39;)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -269,7 +266,7 @@
 <div class="viewcode-block" id="PlaybooksBase._create_array"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._create_array">[docs]</a>    <span class="k">def</span> <span class="nf">_create_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the value in Redis if applicable.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key or value field is None.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key or value field is None.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># get variable type from variable value</span>
@@ -309,7 +306,7 @@
             <span class="k">if</span> <span class="n">validate</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_tc_entity_array</span><span class="p">(</span><span class="n">value</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Invalid data provided for TcEntityArray.&#39;</span><span class="p">)</span>
 
-        <span class="c1"># self.tcex.log.trace(f&#39;pb create - context: {self._context}, key: {key}, value: {value}&#39;)</span>
+        <span class="c1"># self.log.trace(f&#39;pb create - context: {self._context}, key: {key}, value: {value}&#39;)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -393,7 +390,7 @@
 <div class="viewcode-block" id="PlaybooksBase._read"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._read">[docs]</a>    <span class="k">def</span> <span class="nf">_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">b64decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the value in Redis if applicable.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key is None.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key is None.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># get variable type from variable value</span>
@@ -432,7 +429,7 @@
 <div class="viewcode-block" id="PlaybooksBase._read_array"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._read_array">[docs]</a>    <span class="k">def</span> <span class="nf">_read_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">b64decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the value in Redis if applicable.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The null value for key was provided.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The null value for key was provided.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># get variable type from variable value</span>
@@ -477,7 +474,7 @@
         <span class="k">elif</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;TCEntityArray&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntity&#39;</span><span class="p">,</span> <span class="s1">&#39;TCEnhancedEntityArray&#39;</span><span class="p">]:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-        <span class="c1"># self.tcex.log.trace(f&#39;pb create - context: {self._context}, key: {key}, value: {value}&#39;)</span>
+        <span class="c1"># self.log.trace(f&#39;pb create - context: {self._context}, key: {key}, value: {value}&#39;)</span>
         <span class="k">return</span> <span class="n">value</span></div>
 
 <div class="viewcode-block" id="PlaybooksBase._read_embedded"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._read_embedded">[docs]</a>    <span class="k">def</span> <span class="nf">_read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -535,7 +532,7 @@
 
         <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;embedded variable: </span><span class="si">{variable}</span><span class="s1">, value: </span><span class="si">{v}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;embedded variable: </span><span class="si">{variable}</span><span class="s1">, value: </span><span class="si">{v}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
                 <span class="c1"># for KeyValueArray with nested dict/list type replace the</span>
@@ -646,7 +643,7 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="PlaybooksBase.read_raw"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase.read_raw">[docs]</a>    <span class="k">def</span> <span class="nf">read_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -665,7 +662,7 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key field was None.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span></div>
 
 <div class="viewcode-block" id="PlaybooksBase.parse_variable"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase.parse_variable">[docs]</a>    <span class="k">def</span> <span class="nf">parse_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
