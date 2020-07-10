@@ -973,7 +973,7 @@ class TiTcRequest:
         if owner:
             params['owner'] = owner
         if deleted_since:
-            params['deleteSince'] = deleted_since
+            params['deletedSince'] = deleted_since
 
         if not sub_type:
             url = f'/v2/{main_type}/deleted'

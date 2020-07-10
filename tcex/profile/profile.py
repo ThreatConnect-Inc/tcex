@@ -328,7 +328,10 @@ class Profile:
 
                 # get the value from the current profile or use default value from install.json
                 value = profile_inputs_flattened.get(name)
-                if name not in profile_inputs_flattened:
+                if name not in profile_inputs_flattened and data.get('type').lower() != 'boolean':
+                    # set the value to the default in the install.json file unless the type
+                    # is boolean. changing a boolean value to True when not there will change
+                    # the logic of the test case.
                     value = data.get('default', None)
 
                 # get input type based on install.json required field
