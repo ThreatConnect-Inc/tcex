@@ -120,7 +120,9 @@ class TcSession(Session):
         response = super().request(method, url, **kwargs)
 
         # APP-79 - adding logging of request as curl commands
-        self.tcex.log.trace(self.tcex.utils.requests_to_curl(response.request, verify=self.verify))
+        self.tcex.log.debug(self.tcex.utils.requests_to_curl(response.request, verify=self.verify))
+        self.tcex.log.debug(f'request url: {response.request.url}')
+        self.tcex.log.debug(f'status_code: {response.status_code}')
 
         return response
 

@@ -202,13 +202,15 @@ class Utils:
         """
         return ''.join(random.choice(string.ascii_letters) for i in range(string_length))
 
-    def requests_to_curl(self, request, mask_headers=True, verify=True):
+    def requests_to_curl(self, request, mask_headers=True, mask_patterns=None, verify=True):
         """Return converted PreparedRequest to a curl command.
 
         Args:
             request (requests.models.PreparedRequest): The response.request object.
             mask_headers (bool, default: True): If True then values for certain header
                 key will be masked.
+            mask_patterns (list, default: None): A list of patterns if found in headers the value
+                will be masked.
             verify (bool, default: True): If False the curl command will include --insecure flag.
 
         Returns:
@@ -218,7 +220,6 @@ class Utils:
         cmd = ['curl', '-X', request.method]
 
         # add headers to curl command
-        # cmd.extend([f"-H '{k}: {v}'" for k, v in sorted(request.headers.items())])
         for k, v in sorted(list(dict(request.headers).items())):
             if mask_headers is True:
                 patterns = [
@@ -228,6 +229,10 @@ class Utils:
                     'username',
                     'token',
                 ]
+                if isinstance(mask_patterns, list):
+                    # add user defined mask patterns
+                    patterns.extend(mask_patterns)
+
                 for p in patterns:
                     if re.match(rf'.*{p}.*', k, re.IGNORECASE):
                         v = self.printable_cred(v)
@@ -246,9 +251,14 @@ class Utils:
         if request.body:
             # add body to the curl command
             body = request.body
-            if isinstance(body, bytes):
-                body = body.decode('utf-8')
-            cmd.append(f'-d {body}')
+            try:
+                if isinstance(body, bytes):
+                    body = body.decode('utf-8')
+                body_data = f'-d "{body}"'
+            except Exception:
+                temp_file = self.write_temp_binary_file(body)
+                body_data = f'--data-binary @{temp_file}'
+            cmd.append(body_data)
 
         if not verify:
             # add insecure flag to curl command
