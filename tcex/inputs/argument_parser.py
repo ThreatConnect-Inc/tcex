@@ -233,6 +233,7 @@ class TcArgumentParser(ArgumentParser):
         --tc_svc_broker_token token                 The Broker auth token.
         --tc_svc_client_topic topic                 The topic to send client message.
         --tc_svc_hb_timeout_seconds seconds         The heartbeat interval in seconds.
+        --tc_svc_id id                              The unique service id.
         --tc_svc_server_topic topic                 The topic to receive server message.
         --tcex_testing_context context              A context for TcEx Framework testing.
         """
@@ -262,6 +263,7 @@ class TcArgumentParser(ArgumentParser):
             help='Broker heartbeat interval in seconds',
             type=int,
         )
+        self.add_argument('--tc_svc_id', help='The unique service id')
         self.add_argument('--tc_svc_server_topic', help='Topic to send server messages')
         self.add_argument('--tcex_testing_context', help='A context for TcEx Framework testing')
 
@@ -271,6 +273,7 @@ class TcArgumentParser(ArgumentParser):
         --api_default_org org        The TC API user default organization.
         --tc_api_path path           The TC API path (e.g https://api.threatconnect.com).
         --tc_in_path path            The app in path.
+        --tc_job_id id               The id of the running job.
         --tc_out_path path           The app out path.
         --tc_secure_params bool      Flag to indicator secure params is supported.
         --tc_temp_path path          The app temp path.
@@ -292,6 +295,7 @@ class TcArgumentParser(ArgumentParser):
         self.add_argument('--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
         self.add_argument('--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel')
         self.add_argument('--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
+        self.add_argument('--tc_job_id', help='The id of the running job')
         self.add_argument(
             '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path'
         )

@@ -211,13 +211,23 @@ class Inputs:
             self.config(args.__dict__, False)
 
             # special case for service Apps
-            if self._default_args.tc_svc_client_topic is not None:  # pragma: no cover
+            if (
+                not self._default_args.tc_svc_id
+                and self._default_args.tc_svc_client_topic is not None
+            ):  # pragma: no cover
                 # get the service id as third part of the service
                 # --tc_svc_client_topic svc-client-cc66d36344787779ccaa8dbb5e09a7ab
                 setattr(
                     self._default_args,
-                    'service_id',
+                    'tc_svc_id',
                     self._default_args.tc_svc_client_topic.split('-')[2],
+                )
+
+            # special case for service Apps
+            if not self._default_args.tc_job_id and self._default_args.tc_token is not None:
+                # get the job id from the token
+                setattr(
+                    self._default_args, 'tc_job_id', self._default_args.tc_token.split(':')[-2],
                 )
 
             # set parsed bool to ensure args are only parsed once

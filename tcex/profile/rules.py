@@ -25,7 +25,12 @@ class Rules:
         if self.matches_number_rule(data):
             return {'expected_output': data, 'op': 'is_number'}
         if self.matches_jeq_rule(data):
-            return {'expected_output': data, 'op': 'jeq', 'ignore_order': False, 'exclude_paths': []}
+            return {
+                'expected_output': data,
+                'op': 'jeq',
+                'ignore_order': False,
+                'exclude_paths': [],
+            }
         if self.matches_date_rule(data):
             return {'expected_output': data, 'op': 'is_date'}
         if self.matches_dd_rule(data):
@@ -107,4 +112,4 @@ class Rules:
     @staticmethod
     def matches_dd_rule(outputs):
         """Return if output should use the dd operator."""
-        return isinstance(outputs, list)
+        return isinstance(outputs, (dict, list))
