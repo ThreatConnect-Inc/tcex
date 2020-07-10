@@ -646,7 +646,7 @@ class Interactive:
     def present_exit_code(self):
         """Provide user input for exit code."""
         self.print_header({'label': 'Exit Codes'})
-        self.exit_codes = self.collect_exit_codes(default=[0], option_text='[0]')
+        self.exit_codes = list(set(self.collect_exit_codes(default=[0], option_text='[0]')))
 
     @staticmethod
     def present_help():
