@@ -438,8 +438,9 @@ File:
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-
-    indicator_object = self.tcex.ti.indicator(indicator_type='File', owner='MyOrg', md5='a'*32)
+    
+    # creation args for file indicators - at least one hash type required
+    indicator_object = self.tcex.ti.indicator(indicator_type='File', owner='MyOrg', md5='a'*32, sha1="a"*40, sha256="a"*64, size=512)
     response = indicator_object.create()
 
 Host:
