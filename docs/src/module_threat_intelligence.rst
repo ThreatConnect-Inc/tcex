@@ -457,8 +457,9 @@ URL:
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-
-    indicator_object = self.tcex.ti.indicator(indicator_type='Host', owner='MyOrg', hostName='https://example.org/foo')
+    
+    # tcex 2.0.5 uses `text` for url keyword, previous versions used `url`
+    indicator_object = self.tcex.ti.indicator(indicator_type='URL', owner='MyOrg', text='https://example.org/foo')
     response = indicator_object.create()
 
 Updating an Indicator
