@@ -3,11 +3,10 @@
 import json
 
 
-class SecurityLabel(object):
+class SecurityLabel:
     """ThreatConnect Batch SecurityLabel Object."""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_label_data']
+    __slots__ = ['_label_data']
 
     def __init__(self, name, description=None, color=None):
         """Initialize Class Properties.

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Trace Logger Class"""
 import logging
-import sys
 from inspect import getframeinfo, stack
 
 # Create trace logging level
@@ -12,7 +11,10 @@ logging.addLevelName(logging.TRACE, 'TRACE')
 class TraceLogger(logging.Logger):
     """Add trace level to logging"""
 
-    def findCaller(self, stack_info=False):
+    # supports updated call for Python 3.8
+    def findCaller(
+        self, stack_info=False, stack_level=1
+    ):  # pylint: disable=arguments-differ,unused-argument
         """Find the caller for the current log event.
 
         Args:
@@ -30,11 +32,7 @@ class TraceLogger(logging.Logger):
                 break
             depth += 1
 
-        if sys.version_info < (3,):
-            # return value for py2
-            return (caller.filename, caller.lineno, caller.function)
-        # TODO: [py2] - remove py2 statement and remove coverage pragma
-        return (caller.filename, caller.lineno, caller.function, None)  # pragma: no cover
+        return (caller.filename, caller.lineno, caller.function, None)
 
     def trace(self, msg, *args, **kwargs):
         """Set trace logging level

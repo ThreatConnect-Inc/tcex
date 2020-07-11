@@ -13,24 +13,28 @@ module = __import__(__name__)
 
 
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
-    """Internal method for dynamically building Custom Indicator Class."""
+    """Return internal methods for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
-    def init_1(self, tcex, value1, xid, **kwargs):  # pylint: disable=W0641
+    def init_1(self, tcex, value1, xid, **kwargs):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with one value"""
         summary = self.build_summary(value1)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    def init_2(self, tcex, value1, value2, xid, **kwargs):  # pylint: disable=W0641
+    def init_2(
+        self, tcex, value1, value2, xid, **kwargs
+    ):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with two values."""
         summary = self.build_summary(value1, value2)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    def init_3(self, tcex, value1, value2, value3, xid, **kwargs):  # pylint: disable=W0641
+    def init_3(
+        self, tcex, value1, value2, value3, xid, **kwargs
+    ):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with three values."""
         summary = self.build_summary(value1, value2, value3)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
@@ -38,25 +42,25 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
             setattr(self, k, v)
 
     class_name = indicator_type.replace(' ', '')
-    init_method = locals()['init_{}'.format(value_count)]
+    init_method = locals()[f'init_{value_count}']
     newclass = type(str(class_name), (base_class,), {'__init__': init_method})
     return newclass
 
 
-class Indicator(object):
+class Indicator:
     """ThreatConnect Batch Indicator Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = [
-    #     '_attributes',
-    #     '_file_actions',
-    #     '_indicator_data',
-    #     '_labels',
-    #     '_occurrences',
-    #     '_summary',
-    #     '_tags',
-    #     '_type',
-    #     '_utils']
+    __slots__ = [
+        '_attributes',
+        '_file_actions',
+        '_indicator_data',
+        '_labels',
+        '_occurrences',
+        '_summary',
+        '_tags',
+        '_type',
+        '_utils',
+    ]
 
     def __init__(self, indicator_type, summary, **kwargs):
         """Initialize Class Properties.
@@ -118,7 +122,7 @@ class Indicator(object):
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'lastModified']:
-            self._indicator_data[key] = self._utils.format_datetime(
+            self._indicator_data[key] = self._utils.datetime.format_datetime(
                 value, date_format='%Y-%m-%dT%H:%M:%SZ'
             )
         elif key == 'confidence':
@@ -255,7 +259,7 @@ class Indicator(object):
     @date_added.setter
     def date_added(self, date_added):
         """Set Indicator dateAdded."""
-        self._indicator_data['dateAdded'] = self._utils.format_datetime(
+        self._indicator_data['dateAdded'] = self._utils.datetime.format_datetime(
             date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -267,7 +271,7 @@ class Indicator(object):
     @last_modified.setter
     def last_modified(self, last_modified):
         """Set Indicator lastModified."""
-        self._indicator_data['lastModified'] = self._utils.format_datetime(
+        self._indicator_data['lastModified'] = self._utils.datetime.format_datetime(
             last_modified, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -376,8 +380,7 @@ class Indicator(object):
 class Address(Indicator):
     """ThreatConnect Batch Address Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, ip, **kwargs):
         """Initialize Class Properties.
@@ -392,14 +395,13 @@ class Address(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Address, self).__init__('Address', ip, **kwargs)
+        super().__init__('Address', ip, **kwargs)
 
 
 class ASN(Indicator):
     """ThreatConnect Batch ASN Object."""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, as_number, **kwargs):
         """Initialize Class Properties.
@@ -414,14 +416,13 @@ class ASN(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(ASN, self).__init__('ASN', as_number, **kwargs)
+        super().__init__('ASN', as_number, **kwargs)
 
 
 class CIDR(Indicator):
     """ThreatConnect Batch CIDR Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, block, **kwargs):
         """Initialize Class Properties.
@@ -436,14 +437,13 @@ class CIDR(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(CIDR, self).__init__('CIDR', block, **kwargs)
+        super().__init__('CIDR', block, **kwargs)
 
 
 class EmailAddress(Indicator):
     """ThreatConnect Batch EmailAddress Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, address, **kwargs):
         """Initialize Class Properties.
@@ -458,14 +458,13 @@ class EmailAddress(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(EmailAddress, self).__init__('EmailAddress', address, **kwargs)
+        super().__init__('EmailAddress', address, **kwargs)
 
 
 class File(Indicator):
     """ThreatConnect Batch File Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, md5=None, sha1=None, sha256=None, **kwargs):
         """Initialize Class Properties.
@@ -484,7 +483,7 @@ class File(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         summary = self.build_summary(md5, sha1, sha256)  # build the indicator summary
-        super(File, self).__init__('File', summary, **kwargs)
+        super().__init__('File', summary, **kwargs)
         # self._file_action = []
 
     def action(self, relationship):
@@ -537,8 +536,7 @@ class File(Indicator):
 class Host(Indicator):
     """ThreatConnect Batch Host Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, hostname, **kwargs):
         """Initialize Class Properties.
@@ -555,7 +553,7 @@ class Host(Indicator):
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Host, self).__init__('Host', hostname, **kwargs)
+        super().__init__('Host', hostname, **kwargs)
 
     @property
     def dns_active(self):
@@ -581,8 +579,7 @@ class Host(Indicator):
 class Mutex(Indicator):
     """ThreatConnect Batch Mutex Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, mutex, **kwargs):
         """Initialize Class Properties.
@@ -597,14 +594,13 @@ class Mutex(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Mutex, self).__init__('Mutex', mutex, **kwargs)
+        super().__init__('Mutex', mutex, **kwargs)
 
 
 class RegistryKey(Indicator):
     """ThreatConnect Batch Registry Key Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, key_name, value_name, value_type, **kwargs):
         """Initialize Class Properties.
@@ -622,14 +618,13 @@ class RegistryKey(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         summary = self.build_summary(key_name, value_name, value_type)
-        super(RegistryKey, self).__init__('Registry Key', summary, **kwargs)
+        super().__init__('Registry Key', summary, **kwargs)
 
 
 class URL(Indicator):
     """ThreatConnect Batch URL Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, text, **kwargs):
         """Initialize Class Properties.
@@ -644,14 +639,13 @@ class URL(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(URL, self).__init__('URL', text, **kwargs)
+        super().__init__('URL', text, **kwargs)
 
 
 class UserAgent(Indicator):
     """ThreatConnect Batch User Agent Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, text, **kwargs):
         """Initialize Class Properties.
@@ -666,14 +660,13 @@ class UserAgent(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(UserAgent, self).__init__('User Agent', text, **kwargs)
+        super().__init__('User Agent', text, **kwargs)
 
 
-class FileAction(object):
+class FileAction:
     """ThreatConnect Batch FileAction Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_action_data', '_children', 'xid']
+    __slots__ = ['_action_data', '_children', 'xid']
 
     def __init__(self, parent_xid, relationship):
         """Initialize Class Properties.
@@ -710,11 +703,10 @@ class FileAction(object):
         return json.dumps(self.data, indent=4)
 
 
-class FileOccurrence(object):
+class FileOccurrence:
     """ThreatConnect Batch FileAction Object."""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_occurrence_data', '_utils']
+    __slots__ = ['_occurrence_data', '_utils']
 
     def __init__(self, file_name=None, path=None, date=None):
         """Initialize Class Properties
@@ -731,7 +723,7 @@ class FileOccurrence(object):
         if path is not None:
             self._occurrence_data['path'] = path
         if date is not None:
-            self._occurrence_data['date'] = self._utils.format_datetime(
+            self._occurrence_data['date'] = self._utils.datetime.format_datetime(
                 date, date_format='%Y-%m-%dT%H:%M:%SZ'
             )
 
@@ -748,7 +740,7 @@ class FileOccurrence(object):
     @date.setter
     def date(self, date):
         """Set File Occurrence date."""
-        self._occurrence_data['date'] = self._utils.format_datetime(
+        self._occurrence_data['date'] = self._utils.datetime.format_datetime(
             date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """MonkeyPatch Testing Module"""
-# pylint: disable=W0640,W0621
+# pylint: disable=cell-var-from-loop,redefined-outer-name
 
 
 def monkeypatch(target, call_target=True, tags=None):

@@ -2,7 +2,62 @@
 """Base pytest configuration file."""
 import os
 import shutil
-import sys
+
+from app_lib import AppLib
+
+# can't import TCEX profile until the system path is fixed
+if os.getenv('TCEX_SITE_PACKAGE') is None:
+    # update the path to ensure the App has access to required modules
+    AppLib().update_path()
+
+
+def profiles(profiles_dir):
+    """Get all testing profile names for current feature."""
+    profile_names = []
+    for filename in sorted(os.listdir(profiles_dir)):
+        if filename.endswith('.json'):
+            profile_names.append(filename.replace('.json', ''))
+    return profile_names
+
+
+def pytest_addoption(parser):
+    """Add arg flag to control replacement of outputs."""
+    parser.addoption('--merge_inputs', action='store_true')
+    parser.addoption('--merge_outputs', action='store_true')
+    parser.addoption('--replace_exit_message', action='store_true')
+    parser.addoption('--replace_outputs', action='store_true')
+    parser.addoption('--record_session', action='store_true')
+    parser.addoption('--ignore_session', action='store_true')
+    parser.addoption(
+        '--environment', action='append', help='Sets the TCEX_TEST_ENVS environment variable',
+    )
+
+
+def pytest_generate_tests(metafunc):
+    """Generate parametrize values for test_profiles.py::test_profiles tests case.
+
+    Replacing "@pytest.mark.parametrize('profile_name', profile_names)"
+
+    Skip functions that do not accept "profile_name" as an input, specifically this should
+    only be used for the test_profiles method in test_profiles.py.
+    """
+    # we don't add automatic parameterization to anything that doesn't request profile_name
+    if 'profile_name' not in metafunc.fixturenames:
+        return
+
+    # get the profile.d directory containing JSON profile files
+    profile_dir = os.path.join(
+        os.path.dirname(os.path.abspath(metafunc.module.__file__)), 'profiles.d'
+    )
+
+    ids = []
+    permutations = []
+    for profile_name in profiles(profile_dir):
+        ids.append(profile_name)
+        permutations.append((profile_name, {}))
+
+    # decorate "test_profiles()" method with parametrize profiles (standard and permuted)
+    metafunc.parametrize('profile_name,options', permutations, ids=ids)
 
 
 # clear log directory
@@ -19,67 +74,12 @@ def clear_log_directory():
                 os.remove(file_path)
 
 
-def get_lib_directories():
-    """Get all "lib" directories."""
-    lib_directories = []
-    contents = os.listdir(os.getcwd())
-    for c in contents:
-        # ensure content starts with lib, is directory, and is readable
-        if c.startswith('lib') and os.path.isdir(c) and (os.access(c, os.R_OK)):
-            lib_directories.append(c)
-
-    # return sorted lib directories with newest Python version first
-    return sorted(lib_directories, reverse=True)
-
-
-def update_system_path():
-    """Update the system path to ensure project modules and dependencies can be found."""
-    # set lib directory version based off current Python interpreter
-    lib_major_version = 'lib_{}'.format(sys.version_info.major)
-    lib_minor_version = '{}.{}'.format(lib_major_version, sys.version_info.minor)
-    lib_micro_version = '{}.{}'.format(lib_minor_version, sys.version_info.micro)
-
-    cwd = os.getcwd()  # the current working directory
-
-    # get existing lib directories for current App
-    lib_directories = get_lib_directories()
-
-    # set default lib directory to lib_latest in case no other matches can be found (best effort)
-    lib_directory = os.path.join(cwd, 'lib_latest')
-
-    # search for most appropriate lib directory for the current version of Python
-    if lib_micro_version in lib_directories:
-        lib_directory = lib_micro_version  # exact micro version match
-    elif lib_minor_version in lib_directories:
-        lib_directory = lib_minor_version  # exact minor version match
-    elif lib_major_version in lib_directories:
-        lib_directory = lib_major_version  # exact major version match
-    else:
-        # no exact matches found, find closest match
-        for lv in [lib_micro_version, lib_minor_version, lib_major_version]:
-            for d in lib_directories:  # lib_directores are sorted newest to oldest version
-                if lv in d:
-                    lib_directory = d
-                    break
-            else:
-                continue
-            break
-
-    sys.path.insert(0, lib_directory)
-
-    # insert the current working directory into the system Path for the App, ensuring that it is
-    # always the first entry in the list.
-    try:
-        sys.path.remove(cwd)
-    except ValueError:
-        pass
-    sys.path.insert(0, cwd)
-
-
 def pytest_unconfigure(config):  # pylint: disable=unused-argument
-    """Execute uncofigure logic before test process is exited."""
-    directory = os.path.join(os.getcwd(), 'log')
-    for root, dirs, files in os.walk(directory):  # pylint: disable=unused-variable
+    """Execute unconfigure logic before test process is exited."""
+    log_directory = os.path.join(os.getcwd(), 'log')
+
+    # remove any 0 byte files from log directory
+    for root, dirs, files in os.walk(log_directory):  # pylint: disable=unused-variable
         for f in files:
             f = os.path.join(root, f)
             try:
@@ -88,6 +88,25 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
             except OSError:
                 continue
 
+    # display any Errors or Warnings in tests.log
+    test_log_file = os.path.join(log_directory, 'tests.log')
+    if os.path.isfile(test_log_file):
+        with open(test_log_file, 'r') as fh:
+            issues = []
+            for line in fh:
+                if '- ERROR - ' in line or '- WARNING - ' in line:
+                    issues.append(line.strip())
+
+            if issues:
+                print('\nErrors and Warnings:')
+                for i in issues:
+                    print(f'- {i}')
+
+    # remove service started file
+    try:
+        os.remove('./SERVICE_STARTED')
+    except OSError:
+        pass
+
 
 clear_log_directory()
-update_system_path()

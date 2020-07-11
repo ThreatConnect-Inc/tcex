@@ -1,7 +1,6 @@
 {
   "package": {
-    "app_name": "TCPB_-_",
-    "app_version": "v1",
+    "app_name": "TCVC_-_",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
@@ -11,10 +10,6 @@
       "tcex.json",
       "*.install.json",
       "tcex.d"
-    ],
-    "outdir": "target"
-  },
-  "profile_include_dirs": [
-    "tcex.d/profiles"
-  ]
+    ]
+  }
 }

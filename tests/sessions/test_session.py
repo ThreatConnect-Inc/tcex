@@ -1,30 +1,39 @@
 # -*- coding: utf-8 -*-
-"""Test the TcEx Batch Module."""
-from tcex import TcEx
+"""Test the TcEx Session Module."""
 
 
-# pylint: disable=R0201,W0201
 class TestUtils:
-    """Test the TcEx Batch Module."""
-
-    def setup_class(self):
-        """Configure setup before all tests."""
+    """Test the TcEx Session Module."""
 
     @staticmethod
-    def test_token_auth(tcex):
-        """Test token renewal"""
+    def test_session_token_auth(tcex):
+        """Test tc.session property
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
         r = tcex.session.get('/v2/owners')
 
         assert r.status_code == 200
 
-    def test_no_valid_credentials(self, config_data):
-        """Testing initializing tcex with no credentials."""
-        hmac_config_data = dict(config_data)
-        del hmac_config_data['tc_token']
-        del hmac_config_data['tc_token_expires']
+    @staticmethod
+    def test_session_hmac_auth(tcex_hmac):
+        """Test tc.session property with hmac auth
 
-        hmac_tcex = TcEx(config=hmac_config_data)
-        hmac_tcex.args  # pylint: disable=pointless-statement
-        r = hmac_tcex.session.get('/v2/owners')
+        Args:
+            tcex_hmac (TcEx, fixture): An instantiated instance of TcEx object with no token.
+        """
+        r = tcex_hmac.session.get('/v2/owners')
+
+        assert r.status_code == 200
+
+    @staticmethod
+    def test_session_proxy(tcex_proxy):
+        """Test tc.session property
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        r = tcex_proxy.session.get('/v2/owners')
 
         assert r.status_code == 200

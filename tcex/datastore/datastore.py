@@ -2,7 +2,7 @@
 """TcEx Framework Module for working with DataStore in the ThreatConnect Platform."""
 
 
-class DataStore(object):
+class DataStore:
     """TcEx DataStore Class.
 
     **domain**
@@ -49,14 +49,14 @@ class DataStore(object):
             rid = 'temp-index-create'
             index_settings = {}
             headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
-            url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
+            url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
             r = self.tcex.session.post(url, json=index_settings, headers=headers)
 
             if not r.ok:
                 error = r.text or r.reason
                 self.tcex.handle_error(800, [r.status_code, error])
             self.tcex.log.debug(
-                'creating index. status_code: {}, response: "{}".'.format(r.status_code, r.text)
+                f'creating index. status_code: {r.status_code}, response: "{r.text}".'
             )
             # delete temporary record
             self.delete(rid, False)
@@ -76,20 +76,18 @@ class DataStore(object):
     def _update_mappings(self):
         """Update the mappings for the current index."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
-        url = '/v2/exchange/db/{}/{}/_mappings'.format(self.domain, self.data_type)
+        url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_mappings'
         r = self.tcex.session.post(url, json=self.mapping, headers=headers)
-        self.tcex.log.debug(
-            'update mapping. status_code: {}, response: "{}".'.format(r.status_code, r.text)
-        )
+        self.tcex.log.debug(f'update mapping. status_code: {r.status_code}, response: "{r.text}".')
 
     @property
     def index_exists(self):
         """Check to see if index exists."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
-        url = '/v2/exchange/db/{}/{}/_search'.format(self.domain, self.data_type)
+        url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_search'
         r = self.tcex.session.post(url, headers=headers)
         if not r.ok:
-            self.tcex.log.warning('The provided index was not found ({}).'.format(r.text))
+            self.tcex.log.warning(f'The provided index was not found ({r.text}).')
             return False
         return True
 
@@ -120,9 +118,9 @@ class DataStore(object):
 
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
-        url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
+        url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
         r = self.tcex.session.post(url, headers=headers)
-        self.tcex.log.debug('datastore delete status code: {}'.format(r.status_code))
+        self.tcex.log.debug(f'datastore delete status code: {r.status_code}')
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data = r.json()
         else:
@@ -146,14 +144,22 @@ class DataStore(object):
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
         if rid is None:
-            url = '/v2/exchange/db/{}/{}/'.format(self.domain, self.data_type)
+            url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
         else:
-            url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
+            url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
         r = self.tcex.session.post(url, json=data, headers=headers)
-        self.tcex.log.debug('datastore get status code: {}'.format(r.status_code))
+        self.tcex.log.debug(f'datastore get status code: {r.status_code}')
         if 'application/json' in r.headers.get('content-type', ''):
             # as long as the content is JSON set the value
-            response_data = r.json()
+            try:
+                response_data = r.json()
+            # TODO this issue should be addressed by core.  This is a temporary solution
+            except Exception as e:
+                self.tcex.log.warning(
+                    f'DataStore API returned a non-JSON response, even though content-type was \
+                        application/json: {r.content} \
+                        error: {e}'
+                )
         if not r.ok:
             error = r.text or r.reason
             self.tcex.handle_error(805, ['get', r.status_code, error], raise_on_error)
@@ -176,11 +182,11 @@ class DataStore(object):
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
         if rid is None:
-            url = '/v2/exchange/db/{}/{}/'.format(self.domain, self.data_type)
+            url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
         else:
-            url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
+            url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
         r = self.tcex.session.post(url, json=data, headers=headers)
-        self.tcex.log.debug('datastore post status code: {}'.format(r.status_code))
+        self.tcex.log.debug(f'datastore post status code: {r.status_code}')
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data = r.json()
         else:
@@ -203,9 +209,9 @@ class DataStore(object):
 
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
-        url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
+        url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
         r = self.tcex.session.post(url, json=data, headers=headers)
-        self.tcex.log.debug('datastore put status code: {}'.format(r.status_code))
+        self.tcex.log.debug(f'datastore put status code: {r.status_code}')
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data = r.json()
         else:

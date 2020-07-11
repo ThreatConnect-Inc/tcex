@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.logger.logger &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.logger.logger &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.6
               </div>
 
 
@@ -91,18 +91,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
@@ -181,23 +180,26 @@
 <span class="sd">&quot;&quot;&quot;TcEx Framework Logger module&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">.api_handler</span> <span class="k">import</span> <span class="n">ApiHandler</span><span class="p">,</span> <span class="n">ApiHandlerFormatter</span>
-<span class="kn">from</span> <span class="nn">.cache_handler</span> <span class="k">import</span> <span class="n">CacheHandler</span>
-<span class="kn">from</span> <span class="nn">.rotating_file_handler_custom</span> <span class="k">import</span> <span class="n">RotatingFileHandlerCustom</span>
-<span class="kn">from</span> <span class="nn">.thread_file_handler</span> <span class="k">import</span> <span class="n">ThreadFileHandler</span>
-<span class="kn">from</span> <span class="nn">.trace_logger</span> <span class="k">import</span> <span class="n">TraceLogger</span>
+
+<span class="kn">from</span> <span class="nn">.api_handler</span> <span class="kn">import</span> <span class="n">ApiHandler</span><span class="p">,</span> <span class="n">ApiHandlerFormatter</span>
+<span class="kn">from</span> <span class="nn">.cache_handler</span> <span class="kn">import</span> <span class="n">CacheHandler</span>
+<span class="kn">from</span> <span class="nn">.rotating_file_handler_custom</span> <span class="kn">import</span> <span class="n">RotatingFileHandlerCustom</span>
+<span class="kn">from</span> <span class="nn">.thread_file_handler</span> <span class="kn">import</span> <span class="n">ThreadFileHandler</span>
+<span class="kn">from</span> <span class="nn">.trace_logger</span> <span class="kn">import</span> <span class="n">TraceLogger</span>
 
 
-<div class="viewcode-block" id="Logger"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger">[docs]</a><span class="k">class</span> <span class="nc">Logger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Logger"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger">[docs]</a><span class="k">class</span> <span class="nc">Logger</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Framework logger module.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">logger_name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">logger_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            tcex (tcex.TcEx): Instance of TcEx class.</span>
+<span class="sd">            logger_name (str): The name of the logger.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger_name</span> <span class="o">=</span> <span class="n">logger_name</span>
@@ -240,8 +242,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            level (str): The logging level. Default to &#39;debug&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;debug&#39;</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">level</span> <span class="ow">or</span> <span class="s1">&#39;debug&#39;</span>
         <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Logger.remove_handler_by_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.remove_handler_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">remove_handler_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler_name</span><span class="p">):</span>
@@ -265,6 +266,15 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
                 <span class="k">break</span></div>
 
+<div class="viewcode-block" id="Logger.shutdown"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close all handlers.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            handler_name (str): The handler name to remove.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Logger.update_handler_level"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.update_handler_level">[docs]</a>    <span class="k">def</span> <span class="nf">update_handler_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update all handlers log level.</span>
 
@@ -286,6 +296,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            name (str, optional): The name of the handler. Defaults to &#39;api&#39;.</span>
+<span class="sd">            level (str, optional): The level value as a string. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_handler_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="n">api</span> <span class="o">=</span> <span class="n">ApiHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
@@ -382,47 +393,51 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_app_data</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_python_version</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_tcex_version</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_tcex_path</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_tc_proxy</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Logger._log_app_data"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger._log_app_data">[docs]</a>    <span class="k">def</span> <span class="nf">_log_app_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the App data information.&quot;&quot;&quot;</span>
         <span class="c1"># Best Effort</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;App Name: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">display_name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;App Name: </span><span class="si">{self.tcex.ij.display_name}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;App Features: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s1">&#39;App Minimum ThreatConnect Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">min_server_version</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;App Runtime Level: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;App Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">program_version</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;App Features: {&#39;,&#39;.join(self.tcex.ij.features)}&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;App Minimum ThreatConnect Version: </span><span class="si">{self.tcex.ij.min_server_version}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;App Runtime Level: </span><span class="si">{self.tcex.ij.runtime_level}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;App Version: </span><span class="si">{self.tcex.ij.program_version}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">commit_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;App Commit Hash: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">commit_hash</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;App Commit Hash: </span><span class="si">{self.tcex.ij.commit_hash}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Logger._log_platform"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger._log_platform">[docs]</a>    <span class="k">def</span> <span class="nf">_log_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current Platform.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Platform: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">platform</span><span class="p">()))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Platform: {platform.platform()}&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Logger._log_python_version"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger._log_python_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_python_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current Python version.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s1">&#39;Python Version: </span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span>
-            <span class="p">)</span>
+            <span class="sa">f</span><span class="s1">&#39;Python Version: </span><span class="si">{sys.version_info.major}</span><span class="s1">.&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{sys.version_info.minor}</span><span class="s1">.&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{sys.version_info.micro}</span><span class="s1">&#39;</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Logger._log_tc_proxy"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger._log_tc_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tc_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the proxy settings.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s1">&#39;Proxy Server (TC): </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
-            <span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Proxy Server (TC): </span><span class="si">{args.tc_proxy_host}</span><span class="s1">:</span><span class="si">{args.tc_proxy_port}</span><span class="s1">.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Logger._log_tcex_version"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger._log_tcex_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tcex_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current TcEx version number.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;TcEx Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TcEx Version: {__import__(__name__).__version__}&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Logger._log_tcex_path"><a class="viewcode-back" href="../../../tcex_docs/tcex.logger.html#tcex.logger.logger.Logger._log_tcex_path">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tcex_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log the current TcEx path.&quot;&quot;&quot;</span>
+        <span class="n">app_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+        <span class="n">tcex_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">full_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">app_path</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TcEx Path: </span><span class="si">{tcex_path}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

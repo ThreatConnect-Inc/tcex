@@ -9,40 +9,49 @@ import shelve
 import time
 import uuid
 
-from .indicator import (
-    custom_indicator_class_factory,
-    Indicator,
-    Address,
-    ASN,
-    CIDR,
-    EmailAddress,
-    File,
-    Host,
-    Mutex,
-    RegistryKey,
-    URL,
-    UserAgent,
-)
 from .group import (
-    Group,
     Adversary,
     Campaign,
     Document,
     Email,
     Event,
+    Group,
     Incident,
     IntrusionSet,
     Report,
     Signature,
     Threat,
 )
+from .indicator import (
+    ASN,
+    CIDR,
+    URL,
+    Address,
+    EmailAddress,
+    File,
+    Host,
+    Indicator,
+    Mutex,
+    RegistryKey,
+    UserAgent,
+    custom_indicator_class_factory,
+)
 
 # import local modules for dynamic reference
 module = __import__(__name__)
 
 
-class Batch(object):
-    """ThreatConnect Batch Import Module"""
+class Batch:
+    """ThreatConnect Batch Import Module
+
+    Args:
+        tcex (obj): An instance of TcEx object.
+        owner (str): The ThreatConnect owner for Batch action.
+        action (str, default:Create): Action for the batch job ['Create', 'Delete'].
+        attribute_write_type (str, default:Replace): Write type for Indicator attributes
+            ['Append', 'Replace'].
+        halt_on_error (bool, default:True): If True any batch error will halt the batch job.
+    """
 
     def __init__(
         self,
@@ -53,16 +62,7 @@ class Batch(object):
         halt_on_error=True,
         playbook_triggers_enabled=None,
     ):
-        """Initialize Class Properties.
-
-        Args:
-            tcex (obj): An instance of TcEx object.
-            owner (str): The ThreatConnect owner for Batch action.
-            action (str, default:Create): Action for the batch job ['Create', 'Delete'].
-            attribute_write_type (str, default:Replace): Write type for Indicator attributes
-                ['Append', 'Replace'].
-            halt_on_error (bool, default:True): If True any batch error will halt the batch job.
-        """
+        """Initialize Class properties."""
         self.tcex = tcex
         self._action = action or 'Create'
         self._attribute_write_type = attribute_write_type or 'Replace'
@@ -105,14 +105,14 @@ class Batch(object):
         self._gen_indicator_class()
 
     @property
-    def _critical_failures(self):
+    def _critical_failures(self):  # pragma: no cover
         """Return Batch critical failure messages."""
         return [
             'Encountered an unexpected Exception while processing batch job',
             'would exceed the number of allowed indicators',
         ]
 
-    def _gen_indicator_class(self):
+    def _gen_indicator_class(self):  # pragma: no cover
         """Generate Custom Indicator Classes."""
 
         for entry in self.tcex.indicator_types_data.values():
@@ -143,7 +143,7 @@ class Batch(object):
             # Add Custom Indicator Method
             self._gen_indicator_method(name, custom_class, value_count)
 
-    def _gen_indicator_method(self, name, custom_class, value_count):
+    def _gen_indicator_method(self, name, custom_class, value_count):  # pragma: no cover
         """Dynamically generate custom Indicator methods.
 
         Args:
@@ -154,22 +154,24 @@ class Batch(object):
         method_name = name.replace(' ', '_').lower()
 
         # Add Method for each Custom Indicator class
-        def method_1(value1, xid, **kwargs):  # pylint: disable=W0641
+        def method_1(value1, xid, **kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, xid, **kwargs)
             return self._indicator(indicator_obj)
 
-        def method_2(value1, value2, xid, **kwargs):  # pylint: disable=W0641
+        def method_2(value1, value2, xid, **kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, value2, xid, **kwargs)
             return self._indicator(indicator_obj)
 
-        def method_3(value1, value2, value3, xid, **kwargs):  # pylint: disable=W0641
+        def method_3(
+            value1, value2, value3, xid, **kwargs
+        ):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, value2, value3, xid, **kwargs)
             return self._indicator(indicator_obj)
 
-        method = locals()['method_{}'.format(value_count)]
+        method = locals()[f'method_{value_count}']
         setattr(self, method_name, method)
 
     def _group(self, group_data):
@@ -339,7 +341,7 @@ class Batch(object):
             # using the summary we can build the values
             index = 1
             for value in self._indicator_values(indicator_data.get('summary')):
-                indicator_data['value{}'.format(index)] = value
+                indicator_data[f'value{index}'] = value
                 index += 1
         if indicator_data.get('type') == 'File':
             # convert custom field name to the appropriate value for batch v2
@@ -456,7 +458,7 @@ class Batch(object):
                 os.remove(fqfn)  # remove previous file to prevent duplicates
             with open(fqfn, 'w') as fh:
                 for xid in self.saved_xids:
-                    fh.write('{}\n'.format(xid))
+                    fh.write(f'{xid}\n')
         else:
             # delete saved files
             if os.path.isfile(self.group_shelf_fqfn):
@@ -567,7 +569,10 @@ class Batch(object):
         """
         data = []
         # process group objects
-        for xid in groups.keys():
+        # we are converting groups.keys() to a list because the data_group_association function
+        # will be deleting items the groups dictionary which would raise a
+        # "dictionary changed size during iteration" error
+        for xid in list(groups.keys()):
             # get association from group data
             assoc_group_data = self.data_group_association(xid)
             data += assoc_group_data
@@ -581,7 +586,7 @@ class Batch(object):
         """Process Indicator data."""
         data = []
         # process indicator objects
-        for xid, indicator_data in indicators.items():
+        for xid, indicator_data in list(indicators.items()):
             entity_count += 1
             if isinstance(indicator_data, dict):
                 data.append(indicator_data)
@@ -657,21 +662,23 @@ class Batch(object):
 
     @property
     def error_codes(self):
-        """Static list of Batch error codes and short description"""
-        error_codes = {}
-        error_codes['0x1001'] = 'General Error'
-        error_codes['0x1002'] = 'Permission Error'
-        error_codes['0x1003'] = 'JsonSyntax Error'
-        error_codes['0x1004'] = 'Internal Error'
-        error_codes['0x1005'] = 'Invalid Indicator Error'
-        error_codes['0x1006'] = 'Invalid Group Error'
-        error_codes['0x1007'] = 'Item Not Found Error'
-        error_codes['0x1008'] = 'Indicator Limit Error'
-        error_codes['0x1009'] = 'Association Error'
-        error_codes['0x100A'] = 'Duplicate Item Error'
-        error_codes['0x100B'] = 'File IO Error'
-
-        return error_codes
+        """Return static list of Batch error codes and short description"""
+        return {
+            '0x1001': 'General Error',
+            '0x1002': 'Permission Error',
+            '0x1003': 'JsonSyntax Error',
+            '0x1004': 'Internal Error',
+            '0x1005': 'Invalid Indicator Error',
+            '0x1006': 'Invalid Group Error',
+            '0x1007': 'Item Not Found Error',
+            '0x1008': 'Indicator Limit Error',
+            '0x1009': 'Association Error',
+            '0x100A': 'Duplicate Item Error',
+            '0x100B': 'File IO Error',
+            '0x2001': 'Indicator Partial Loss Error',
+            '0x2002': 'Group Partial Loss Error',
+            '0x2003': 'File Hash Merge Error',
+        }
 
     def errors(self, batch_id, halt_on_error=True):
         """Retrieve Batch errors to ThreatConnect API.
@@ -692,16 +699,14 @@ class Batch(object):
         """
         errors = []
         try:
-            r = self.tcex.session.get('/v2/batch/{}/errors'.format(batch_id))
+            r = self.tcex.session.get(f'/v2/batch/{batch_id}/errors')
             # if r.status_code == 404:
             #     time.sleep(5)  # allow time for errors to be processed
-            #     r = self.tcex.session.get('/v2/batch/{}/errors'.format(batch_id))
+            #     r = self.tcex.session.get(f'/v2/batch/{batch_id}/errors')
             self.tcex.log.debug(
-                'Retrieve Errors for ID {}: status code {}, errors {}'.format(
-                    batch_id, r.status_code, r.text
-                )
+                f'Retrieve Errors for ID {batch_id}: status code {r.status_code}, errors {r.text}'
             )
-            # self.tcex.log.debug('Retrieve Errors URL {}'.format(r.url))
+            # self.tcex.log.debug(f'Retrieve Errors URL {r.url}')
             # API does not return correct content type
             if r.ok:
                 errors = json.loads(r.text)
@@ -813,7 +818,7 @@ class Batch(object):
         if self._group_shelf_fqfn is None:
             # new shelf file
             self._group_shelf_fqfn = os.path.join(
-                self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4()))
+                self.tcex.args.tc_temp_path, f'groups-{str(uuid.uuid4())}'
             )
 
             # saved shelf file
@@ -951,7 +956,7 @@ class Batch(object):
         if self._indicator_shelf_fqfn is None:
             # new shelf file
             self._indicator_shelf_fqfn = os.path.join(
-                self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4()))
+                self.tcex.args.tc_temp_path, f'indicators-{str(uuid.uuid4())}'
             )
 
             # saved shelf file
@@ -1076,10 +1081,10 @@ class Batch(object):
             poll_count += 1
             poll_time_total += self._poll_interval
             time.sleep(self._poll_interval)
-            self.tcex.log.info('Batch poll time: {} seconds'.format(poll_time_total))
+            self.tcex.log.info(f'Batch poll time: {poll_time_total} seconds')
             try:
                 # retrieve job status
-                r = self.tcex.session.get('/v2/batch/{}'.format(batch_id), params=params)
+                r = self.tcex.session.get(f'/v2/batch/{batch_id}', params=params)
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                     self.tcex.handle_error(545, [r.status_code, r.text], halt_on_error)
                     return data
@@ -1112,7 +1117,7 @@ class Batch(object):
                     # if completed on first poll, reduce poll interval.
                     self._poll_interval = self._poll_interval * 0.85
 
-                self.tcex.log.debug('Batch Status: {}'.format(data))
+                self.tcex.log.debug(f'Batch Status: {data}')
                 return data
 
             # update poll_interval for retry with max poll time of 20 seconds
@@ -1337,7 +1342,7 @@ class Batch(object):
         )
         batch_id = batch_data.get('id')
         if batch_id is not None:
-            self.tcex.log.info('Batch ID: {}'.format(batch_id))
+            self.tcex.log.info(f'Batch ID: {batch_id}')
             # job hit queue
             if poll:
                 # poll for status
@@ -1393,7 +1398,7 @@ class Batch(object):
             if self.action.lower() == 'delete':
                 # while waiting of FR for delete support in createAndUpload submit delete request
                 # the old way (submit job + submit data), still using V2.
-                if len(self) > 0:  # pylint: disable=C1801
+                if len(self) > 0:  # pylint: disable=len-as-condition
                     batch_id = self.submit_job(halt_on_error)
                     if batch_id is not None:
                         batch_data = self.submit_data(batch_id, halt_on_error)
@@ -1407,10 +1412,12 @@ class Batch(object):
                 )
                 batch_id = batch_data.get('id')
 
+            # break loop when end of data is reached
             if not batch_data:
                 break
-            elif batch_id is not None:
-                self.tcex.log.info('Batch ID: {}'.format(batch_id))
+
+            if batch_id is not None:
+                self.tcex.log.info(f'Batch ID: {batch_id}')
                 # job hit queue
                 if poll:
                     # poll for status
@@ -1443,10 +1450,10 @@ class Batch(object):
 
     def write_error_json(self, errors):
         """Writes the errors for debuging purposes"""
+        if not errors:
+            errors = []
         timestamp = str(time.time()).replace('.', '')
-        error_json_file = os.path.join(
-            self.tcex.args.tc_temp_path, 'errors-{}.json'.format(timestamp)
-        )
+        error_json_file = os.path.join(self.tcex.args.tc_temp_path, f'errors-{timestamp}.json')
         with open(error_json_file, 'w') as fh:
             json.dump(errors, fh, indent=2)
 
@@ -1467,14 +1474,14 @@ class Batch(object):
                 self.write_batch_json(content)
 
             # store the length of the batch data to use for poll interval calculations
-            self.tcex.log.info('Batch Group Size: {:,}.'.format(len(content.get('group'))))
-            self.tcex.log.info('Batch Indicator Size {:,}.'.format(len(content.get('indicator'))))
+            self.tcex.log.info(f"Batch Group Size: {len(content.get('group')):,}.")
+            self.tcex.log.info(f"Batch Indicator Size {len(content.get('indicator')):,}.")
 
             try:
                 files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
                 params = {'includeAdditional': 'true'}
                 r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
-                self.tcex.log.debug('Batch Status Code: {}'.format(r.status_code))
+                self.tcex.log.debug(f'Batch Status Code: {r.status_code}')
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                     self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
                 return r.json()
@@ -1494,13 +1501,11 @@ class Batch(object):
         content = self.data
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
-        self.tcex.log.info('Batch Size: {:,}'.format(self._batch_data_count))
+        self.tcex.log.info(f'Batch Size: {self._batch_data_count:,}')
         if content.get('group') or content.get('indicator'):
             headers = {'Content-Type': 'application/octet-stream'}
             try:
-                r = self.tcex.session.post(
-                    '/v2/batch/{}'.format(batch_id), headers=headers, json=content
-                )
+                r = self.tcex.session.post(f'/v2/batch/{batch_id}', headers=headers, json=content)
             except Exception as e:
                 self.tcex.handle_error(10520, [e], halt_on_error)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
@@ -1526,13 +1531,13 @@ class Batch(object):
             halt_on_error = self.halt_on_file_error
 
         upload_status = []
-        for xid, content_data in self._files.items():
+        for xid, content_data in list(self._files.items()):
             del self._files[xid]  # win or loose remove the entry
             status = True
 
             # used for debug/testing to prevent upload of previously uploaded file
             if self.debug and xid in self.saved_xids:
-                self.tcex.log.debug('skipping previously saved file {}.'.format(xid))
+                self.tcex.log.debug(f'skipping previously saved file {xid}.')
                 continue
 
             # process the file content
@@ -1541,7 +1546,7 @@ class Batch(object):
                 content = content_data.get('fileContent')(xid)
             if content is None:
                 upload_status.append({'uploaded': False, 'xid': xid})
-                self.tcex.log.warning('File content was null for xid {}.'.format(xid))
+                self.tcex.log.warning(f'File content was null for xid {xid}.')
                 continue
             if content_data.get('type') == 'Document':
                 api_branch = 'documents'
@@ -1552,15 +1557,13 @@ class Batch(object):
                 # special code for debugging App using batchV2.
                 fqfn = os.path.join(
                     self.tcex.args.tc_temp_path,
-                    '{}--{}--{}'.format(
-                        api_branch, xid, content_data.get('fileName').replace('/', ':')
-                    ),
+                    f"{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}",
                 )
                 with open(fqfn, 'wb') as fh:
                     fh.write(content)
 
             # Post File
-            url = '/v2/groups/{}/{}/upload'.format(api_branch, xid)
+            url = f'/v2/groups/{api_branch}/{xid}/upload'
             headers = {'Content-Type': 'application/octet-stream'}
             params = {'owner': self._owner, 'updateIfExists': 'true'}
             r = self.submit_file_content('POST', url, content, headers, params, halt_on_error)
@@ -1568,13 +1571,13 @@ class Batch(object):
                 # use PUT method if file already exists
                 self.tcex.log.info('Received 401 status code using POST. Trying PUT to update.')
                 r = self.submit_file_content('PUT', url, content, headers, params, halt_on_error)
-            self.tcex.log.debug('{} Upload URL: {}.'.format(content_data.get('type'), r.url))
+            self.tcex.log.debug(f"{content_data.get('type')} Upload URL: {r.url}.")
             if not r.ok:
                 status = False
                 self.tcex.handle_error(585, [r.status_code, r.text], halt_on_error)
             elif self.debug:
                 self.saved_xids.append(xid)
-            self.tcex.log.info('Status {} for file upload with xid {}.'.format(r.status_code, xid))
+            self.tcex.log.info(f'Status {r.status_code} for file upload with xid {xid}.')
             upload_status.append({'uploaded': status, 'xid': xid})
         return upload_status
 
@@ -1614,7 +1617,7 @@ class Batch(object):
         data = r.json()
         if data.get('status') != 'Success':
             self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
-        self.tcex.log.debug('Batch Submit Data: {}'.format(data))
+        self.tcex.log.debug(f'Batch Submit Data: {data}')
         return data.get('data', {}).get('batchId')
 
     def threat(self, name, **kwargs):
@@ -1667,13 +1670,11 @@ class Batch(object):
 
     def write_batch_json(self, content):
         """Write batch json data to a file."""
-        # TODO: don't write empty data
-        timestamp = str(time.time()).replace('.', '')
-        batch_json_file = os.path.join(
-            self.tcex.args.tc_temp_path, 'batch-{}.json'.format(timestamp)
-        )
-        with open(batch_json_file, 'w') as fh:
-            json.dump(content, fh, indent=2)
+        if content:
+            timestamp = str(time.time()).replace('.', '')
+            batch_json_file = os.path.join(self.tcex.args.tc_temp_path, f'batch-{timestamp}.json')
+            with open(batch_json_file, 'w') as fh:
+                json.dump(content, fh, indent=2)
 
     @property
     def file_len(self):
@@ -1694,7 +1695,7 @@ class Batch(object):
         """Return the number of groups and indicators."""
         return self.group_len + self.indicator_len
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         """Return string represtentation of object."""
         groups = []
         for group_data in self.groups.values():

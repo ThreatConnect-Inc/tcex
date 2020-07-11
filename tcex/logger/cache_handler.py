@@ -12,7 +12,7 @@ class CacheHandler(logging.Handler):
         Args:
             max_cache (int): The maximum numbers of records to cache.
         """
-        super(CacheHandler, self).__init__()
+        super().__init__()
         self.max_cache = max_cache
         self._events = []
 

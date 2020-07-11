@@ -2,8 +2,9 @@
 """Test the TcEx Inputs Config Module."""
 import json
 import sys
+from random import randint
+from requests import Session
 
-from tcex import TcEx
 from tcex.inputs import Inputs
 
 
@@ -40,101 +41,148 @@ class MockGet:
         return json.dumps(self.data)
 
 
-# pylint: disable=W0201
 class TestInputsConfig:
     """Test TcEx Inputs Config."""
 
     @staticmethod
-    def test_add_inputs(config_data, tc_log_file):
-        """Test args.
+    def test_add_inputs(playbook_app):
+        """Test argument_parser add_argument method with a required field and config_data.
 
-        Test argument_parser add_argument method with a required field and config_data.
+        Args:
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
         """
         # update config data
-        config_data['name'] = 'pytest'
-        # test apps that use logging over tc_log_level
-        config_data['logging'] = config_data.pop('tc_log_level')
-        config_data['tc_log_file'] = tc_log_file
-        config_data['tc_log_to_api'] = True
-
-        # clear sys.argv to avoid invalid arguments
-        sys_argv_orig = sys.argv
-        sys.argv = sys.argv[:1]
+        config_data = {
+            'name': 'pytest',
+            'logging': 'trace',
+            'tc_log_to_api': True,
+        }
 
         # initialize tcex and add required argument
-        tcex = TcEx(config=config_data)
+        tcex = playbook_app(config_data=config_data).tcex
         tcex.parser.add_argument('--name', required=True)
 
         # parse args
-        args = tcex.args
-        assert args.name == config_data.get('name')
-
-        # reset sys.argv
-        sys.argv = sys_argv_orig
+        assert tcex.args.name == config_data.get('name')
 
     @staticmethod
-    def test_aot_inputs(tcex, config_data, tc_log_file):
-        """Test inputs.config_file() method."""
-        tc_action_channel = 'pytest-action-channel'
+    def test_aot_inputs(playbook_app, redis_client):
+        """Test AOT input method of TcEx
 
-        # add custom config data
-        config_data['my_bool'] = 'true'
-        config_data['my_multi'] = 'one|two'
+        Args:
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
+            redis_client (Redis.client, fixture): An instantiated instance of Redis Client.
+        """
+        # add AOT setting to App
+        config_data = {
+            'tc_action_channel': f'pytest-action-channel-{randint(1000,9999)}',
+            'tc_aot_enabled': True,
+        }
+        app = playbook_app(config_data=config_data)
 
-        # send AOT message
-        aot_msg = {'type': 'execute', 'params': config_data}
-        tcex.playbook.db.rpush(tc_action_channel, json.dumps(aot_msg))
+        # send redis rpush AOT message
+        aot_config_data = {'my_bool': 'true', 'my_multi': 'one|two'}
+        aot_config_data.update(app.config_data)
+        aot_msg = {'type': 'execute', 'params': aot_config_data}
+        redis_client.rpush(config_data.get('tc_action_channel'), json.dumps(aot_msg))
 
-        # update sys.argv to enable aot
-        sys_argv_orig = sys.argv
-        sys.argv = sys.argv[:1] + [
-            '--tc_aot_enabled',
-            '--tc_action_channel',
-            tc_action_channel,
-            '--tc_log_file',
-            tc_log_file,
-        ]
-        my_tcex = TcEx()
+        # get a configured instance of tcex, missing AOT values
+        # tcex will block, check for the AOT method, parse new config, and then run
+        tcex = app.tcex
 
         # add custom args (install.json defined in conftest.py)
-        my_tcex.parser.add_argument('--my_bool', action='store_true')
-        my_tcex.parser.add_argument('--my_multi', action='append')
+        tcex.parser.add_argument('--my_bool', action='store_true')
+        tcex.parser.add_argument('--my_multi', action='append')
 
-        # parser args
-        args = my_tcex.args
-        rargs = my_tcex.rargs
+        # args and rargs must be called once before accessing args
+        tcex.args  # pylint: disable=pointless-statement
+        tcex.rargs  # pylint: disable=pointless-statement
 
-        assert my_tcex.inputs.params.my_bool is True
-        assert my_tcex.inputs.resolved_params.my_bool is True
-        assert args.my_bool is True
-        assert rargs.my_bool is True  # pylint: disable=no-member
-        assert args.my_multi == ['one', 'two']
-        assert rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
-
-        # reset sys.argv
-        sys.argv = sys_argv_orig
+        assert tcex.inputs.params.my_bool is True
+        assert tcex.inputs.resolved_params.my_bool is True
+        assert tcex.args.my_bool is True
+        assert tcex.rargs.my_bool is True  # pylint: disable=no-member
+        assert tcex.args.my_multi == ['one', 'two']
+        assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
 
     @staticmethod
     def test_args_token(tcex):
-        """Test args."""
+        """Test default values (e.g., token) are in args.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
         assert tcex.args.tc_token
         assert tcex.args.tc_token_expires
         assert tcex.args.api_default_org == 'TCI'
 
     @staticmethod
     def test_config_file(tcex):
-        """Test inputs.config_file() method."""
+        """Test inputs.config_file() method.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
         tcex.inputs.config_file('tests/inputs/config.json')
         tcex.inputs.config_file('tests/inputs/dummy-config.json')
 
     @staticmethod
-    def test_get_secure_params(config_data, tcex, monkeypatch):
-        """Test get_secure_params method."""
-        get_orig = tcex.session.get
+    def test_cli_args(playbook_app, request):
+        """Test args passed via cli.
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+            request (pytest.request, fixture): The built-in request object from pytest.
+        """
+        app = playbook_app(clear_argv=False)
+
+        # store config data
+        config_data = app.config_data
+        # clear the config data to test cli args
+        app._config_data = {}
+
+        # backup current sys.argv
+        sys_argv_orig = sys.argv
+
+        # build new sys.argv
+        sys.argv = sys.argv[:1] + [
+            '--tc_token',
+            config_data.get('tc_token'),
+            '--tc_token_expires',
+            config_data.get('tc_token_expires'),
+            '--tc_log_file',
+            config_data.get('tc_log_file'),
+            '--pytest_arg',
+            request.node.name,
+            '--unknown',
+        ]
+
+        tcex = app.tcex
+        tcex.parser.add_argument('--pytest_arg')
+
+        # parse tcex.args
+        tcex.args  # pylint: disable=pointless-statement
+
+        # assert
+        assert tcex.args.pytest_arg == request.node.name
+
+        # restore previous sys.argv
+        sys.argv = sys_argv_orig
+
+    @staticmethod
+    def test_get_secure_params(playbook_app, monkeypatch):
+        """Test secure params feature of TcEx inputs.
+
+        Args:
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
+        app = playbook_app()
+        tcex = app.tcex
 
         # monkeypatch method
         def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
-            return MockGet({'inputs': config_data})
+            return MockGet({'inputs': app.config_data})
 
         monkeypatch.setattr(tcex.session, 'get', mp_get)
 
@@ -142,14 +190,70 @@ class TestInputsConfig:
 
         assert data.get('tc_log_path') == 'log'
 
-        # reset monkeypatched tcex.session.get()
-        tcex.session.get = get_orig
+    @staticmethod
+    def test_get_secure_params_mock_env_server(playbook_app, monkeypatch):
+        """Test secure params feature of TcEx inputs as working on env server.
+
+        Args:
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+            request (_pytest.request, fixture): Pytest request
+        """
+        app = playbook_app(clear_argv=False)
+
+        # store config data
+        config_data = dict(app.config_data)
+
+        # clear the config data to test cli args
+        app._config_data = {}
+
+        # backup current sys.argv
+        sys_argv_orig = sys.argv
+
+        # build new sys.argv
+        sys.argv = sys.argv[:1] + [
+            '--tc_secure_params',
+            '--tc_token',
+            config_data.get('tc_token'),
+            '--tc_token_expires',
+            config_data.get('tc_token_expires'),
+            '--tc_log_path',
+            config_data.get('tc_log_path'),
+            '--tc_log_file',
+            config_data.get('tc_log_file'),
+        ]
+
+        # monkeypatch method
+        secure_params = dict(app.config_data)
+        secure_params['tc_log_path'] = 'bad-log.log'
+        secure_params['pytest_secure_params'] = 'pytest_secure_params'
+
+        def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
+            return MockGet({'inputs': secure_params})
+
+        # monkey patch Session.get() method to return mock secureParams data
+        monkeypatch.setattr(Session, 'get', mp_get)
+
+        # get instance of tcex
+        tcex = app.tcex
+        tcex.parser.add_argument('--pytest_secure_params')
+
+        # assert tc_log_path didn't change with incoming secure param value
+        assert tcex.args.tc_log_path == 'log'
+        # ensure secure params worked
+        assert tcex.args.pytest_secure_params == 'pytest_secure_params'
+
+        # restore previous sys.argv
+        sys.argv = sys_argv_orig
 
     @staticmethod
     def test_get_secure_params_bad_data(tcex, monkeypatch):
-        """Test get_secure_params method."""
-        get_orig = tcex.session.get
+        """Test secure params feature of TcEx inputs with bad data.
 
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
         # monkeypatch method
         def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
             return MockGet({})
@@ -158,17 +262,18 @@ class TestInputsConfig:
 
         try:
             tcex.inputs._get_secure_params()
+            assert False
         except RuntimeError:
             assert True
 
-        # reset monkeypatched tcex.session.get()
-        tcex.session.get = get_orig
-
     @staticmethod
     def test_get_secure_params_not_ok(tcex, monkeypatch):
-        """Test get_secure_params method."""
-        get_orig = tcex.session.get
+        """Test secure params failure.
 
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
         # monkeypatch method
         def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
             return MockGet(data={}, ok=False)
@@ -180,16 +285,67 @@ class TestInputsConfig:
         except RuntimeError:
             assert True
 
-        # reset monkeypatched tcex.session.get()
-        tcex.session.get = get_orig
+    @staticmethod
+    def test_secure_params(playbook_app, monkeypatch):
+        """Test secure params failure.
+
+        Args:
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
+        config_data = {'tc_secure_params': True}
+        app = playbook_app(config_data=config_data)
+
+        # create fields only send in secure params
+        secure_params_config_data = {'my_bool': 'true', 'my_multi': 'one|two'}
+        secure_params_config_data.update(app.config_data)
+
+        # monkeypatch session get method
+        def get_secure_params(self):  # pylint: disable=unused-argument
+            return secure_params_config_data
+
+        monkeypatch.setattr(Inputs, '_get_secure_params', get_secure_params)
+
+        # get instance of tcex
+        tcex = app.tcex
+
+        # add custom args (install.json defined in conftest.py)
+        tcex.parser.add_argument('--my_bool', action='store_true')
+        tcex.parser.add_argument('--my_multi', action='append')
+
+        # args and rargs must be called once before accessing args
+        tcex.args  # pylint: disable=pointless-statement
+        tcex.rargs  # pylint: disable=pointless-statement
+
+        assert tcex.args.my_bool is True
+        assert tcex.rargs.my_bool is True  # pylint: disable=no-member
+        assert tcex.args.my_multi == ['one', 'two']
+        assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
+
+    @staticmethod
+    def test_update_logging(playbook_app):
+        """Test update logging method of inputs module
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(config_data={'tc_log_level': None, 'logging': 'trace'}).tcex
+        tcex.log.info('update logging test')
 
     @staticmethod
     def test_update_params(tcex, config_data):
-        """Test inputs.config_file() method."""
+        """Test secure params failure.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
         # add custom config data
-        config_data['my_bool'] = 'true'
-        config_data['my_multi'] = 'one|two'
-        config_data['unknown_args'] = True  # test unknown args
+        config_data = {
+            'my_bool': 'true',
+            'my_multi': 'one|two',
+            'unknown_args': True,  # coverage: test unknown args
+        }
 
         # update params
         updated_params = tcex.inputs.update_params(config_data)
@@ -199,65 +355,11 @@ class TestInputsConfig:
         tcex.parser.add_argument('--my_bool', action='store_true')
         tcex.parser.add_argument('--my_multi', action='append')
 
-        # parser args
-        args = tcex.args
-        rargs = tcex.rargs
+        # args and rargs must be called once before accessing args
+        tcex.args  # pylint: disable=pointless-statement
+        tcex.rargs  # pylint: disable=pointless-statement
 
-        assert args.my_bool is True
-        assert rargs.my_bool is True  # pylint: disable=no-member
-        assert args.my_multi == ['one', 'two']
-        assert rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
-
-    @staticmethod
-    def test_secure_params(config_data, tc_log_file, monkeypatch):
-        """Test get_secure_params method."""
-        # add custom config data
-        config_data['my_bool'] = 'true'
-        config_data['my_multi'] = 'one|two'
-
-        # monkeypatch session get method
-        def get_secure_params(self):  # pylint: disable=unused-argument
-            return config_data
-
-        monkeypatch.setattr(Inputs, '_get_secure_params', get_secure_params)
-
-        # update sys.argv to enable secure_params
-        sys_argv_orig = sys.argv
-        sys.argv = sys.argv[:1] + [
-            '--tc_secure_params',
-            '--tc_token',
-            config_data.get('tc_token'),
-            '--tc_token_expires',
-            config_data.get('tc_token_expires'),
-            '--tc_log_file',
-            tc_log_file,
-        ]
-        tcex = TcEx()
-
-        # add custom args (install.json defined in conftest.py)
-        tcex.parser.add_argument('--my_bool', action='store_true')
-        tcex.parser.add_argument('--my_multi', action='append')
-
-        # parser args
-        args = tcex.args
-        rargs = tcex.rargs
-
-        assert args.my_bool is True
-        assert rargs.my_bool is True  # pylint: disable=no-member
-        assert args.my_multi == ['one', 'two']
-        assert rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
-
-        # reset sys.argv
-        sys.argv = sys_argv_orig
-
-    @staticmethod
-    def test_unknown_args(tcex):
-        """Test args."""
-        # update sys.argv to enable aot
-        sys_argv_orig = sys.argv
-        sys.argv = sys.argv[:1] + ['--unknown_arg']
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        assert tcex.inputs._unknown_args == ['--unknown_arg']
-
-        # reset sys.argv
-        sys.argv = sys_argv_orig
+        assert tcex.args.my_bool is True
+        assert tcex.rargs.my_bool is True  # pylint: disable=no-member
+        assert tcex.args.my_multi == ['one', 'two']
+        assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member

@@ -9,20 +9,24 @@ from .security_label import SecurityLabel
 from .tag import Tag
 
 
-class Group(object):
+class Group:
     """ThreatConnect Batch Group Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = [
-    #     '_attributes',
-    #     '_file_content',
-    #     '_group_data',
-    #     '_labels',
-    #     '_name',
-    #     '_processed',
-    #     '_type',
-    #     '_tags',
-    #     '_utils']
+    __slots__ = [
+        '_attributes',
+        '_file_content',
+        '_group_data',
+        '_labels',
+        '_name',
+        '_processed',
+        '_type',
+        '_tags',
+        '_utils',
+        'file_content',
+        'malware',
+        'password',
+        'status',
+    ]
 
     def __init__(self, group_type, name, **kwargs):
         """Initialize Class Properties.
@@ -95,7 +99,7 @@ class Group(object):
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
             if value is not None:
-                self._group_data[key] = self._utils.format_datetime(
+                self._group_data[key] = self._utils.datetime.format_datetime(
                     value, date_format='%Y-%m-%dT%H:%M:%SZ'
                 )
         elif key == 'file_content':
@@ -183,7 +187,7 @@ class Group(object):
     @date_added.setter
     def date_added(self, date_added):
         """Set Indicator dateAdded."""
-        self._group_data['dateAdded'] = self._utils.format_datetime(
+        self._group_data['dateAdded'] = self._utils.datetime.format_datetime(
             date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -275,8 +279,7 @@ class Group(object):
 class Adversary(Group):
     """ThreatConnect Batch Adversary Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -286,14 +289,13 @@ class Adversary(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Adversary, self).__init__('Adversary', name, **kwargs)
+        super().__init__('Adversary', name, **kwargs)
 
 
 class Campaign(Group):
     """ThreatConnect Batch Campaign Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -304,7 +306,7 @@ class Campaign(Group):
             first_seen (str, kwargs): The first seen datetime expression for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Campaign, self).__init__('Campaign', name, **kwargs)
+        super().__init__('Campaign', name, **kwargs)
 
     @property
     def first_seen(self):
@@ -314,7 +316,7 @@ class Campaign(Group):
     @first_seen.setter
     def first_seen(self, first_seen):
         """Set Document first seen."""
-        self._group_data['firstSeen'] = self._utils.format_datetime(
+        self._group_data['firstSeen'] = self._utils.datetime.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -322,8 +324,7 @@ class Campaign(Group):
 class Document(Group):
     """ThreatConnect Batch Document Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_file_data', '_group_data']
+    __slots__ = ['_file_data', '_group_data']
 
     def __init__(self, name, file_name, **kwargs):
         """Initialize Class Properties.
@@ -338,7 +339,7 @@ class Document(Group):
             password (bool, kwargs): If malware is true a password for the zip archive is required.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Document, self).__init__('Document', name, **kwargs)
+        super().__init__('Document', name, **kwargs)
         self._group_data['fileName'] = file_name
         # file data/content to upload
         self._file_content = kwargs.get('file_content')
@@ -346,6 +347,8 @@ class Document(Group):
     @property
     def file_content(self):
         """Return Group files."""
+        if callable(self._file_content):
+            return self._file_content(self.xid)
         return self._file_content
 
     @file_content.setter
@@ -386,8 +389,7 @@ class Document(Group):
 class Email(Group):
     """ThreatConnect Batch Email Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, subject, header, body, **kwargs):
         """Initialize Class Properties.
@@ -402,7 +404,7 @@ class Email(Group):
             to_addr (str, kwargs): The **to** address for this Email.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Email, self).__init__('Email', name, **kwargs)
+        super().__init__('Email', name, **kwargs)
         self._group_data['subject'] = subject
         self._group_data['header'] = header
         self._group_data['body'] = body
@@ -442,8 +444,7 @@ class Email(Group):
 class Event(Group):
     """ThreatConnect Batch Event Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -461,7 +462,7 @@ class Event(Group):
             status (str, kwargs): The status for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Event, self).__init__('Event', name, **kwargs)
+        super().__init__('Event', name, **kwargs)
 
     @property
     def event_date(self):
@@ -471,7 +472,7 @@ class Event(Group):
     @event_date.setter
     def event_date(self, event_date):
         """Set the Events "event date" value."""
-        self._group_data['eventDate'] = self._utils.format_datetime(
+        self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -489,8 +490,7 @@ class Event(Group):
 class Incident(Group):
     """ThreatConnect Batch Incident Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -513,7 +513,7 @@ class Incident(Group):
             status (str, kwargs): The status for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Incident, self).__init__('Incident', name, **kwargs)
+        super().__init__('Incident', name, **kwargs)
 
     @property
     def event_date(self):
@@ -523,7 +523,7 @@ class Incident(Group):
     @event_date.setter
     def event_date(self, event_date):
         """Set Incident event_date."""
-        self._group_data['eventDate'] = self._utils.format_datetime(
+        self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -553,8 +553,7 @@ class Incident(Group):
 class IntrusionSet(Group):
     """ThreatConnect Batch Adversary Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -564,14 +563,13 @@ class IntrusionSet(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(IntrusionSet, self).__init__('Intrusion Set', name, **kwargs)
+        super().__init__('Intrusion Set', name, **kwargs)
 
 
 class Report(Group):
     """ThreatConnect Batch Report Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -585,13 +583,15 @@ class Report(Group):
             publish_date (str, kwargs): The publish datetime expression for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Report, self).__init__('Report', name, **kwargs)
+        super().__init__('Report', name, **kwargs)
         # file data/content to upload
         self._file_content = kwargs.get('file_content')
 
     @property
     def file_content(self):
         """Return Group files."""
+        if callable(self._file_content):
+            return self._file_content(self.xid)
         return self._file_content
 
     @file_content.setter
@@ -616,7 +616,7 @@ class Report(Group):
     @publish_date.setter
     def publish_date(self, publish_date):
         """Set Report publish date"""
-        self._group_data['publishDate'] = self._utils.format_datetime(
+        self._group_data['publishDate'] = self._utils.datetime.format_datetime(
             publish_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -624,8 +624,7 @@ class Report(Group):
 class Signature(Group):
     """ThreatConnect Batch Signature Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, file_name, file_type, file_text, **kwargs):
         """Initialize Class Properties.
@@ -649,7 +648,7 @@ class Signature(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Signature, self).__init__('Signature', name, **kwargs)
+        super().__init__('Signature', name, **kwargs)
         self._group_data['fileName'] = file_name
         self._group_data['fileType'] = file_type
         self._group_data['fileText'] = file_text
@@ -658,8 +657,7 @@ class Signature(Group):
 class Threat(Group):
     """ThreatConnect Batch Threat Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    __slots__ = []
 
     def __init__(self, name, **kwargs):
         """Initialize Class Properties.
@@ -669,4 +667,4 @@ class Threat(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
-        super(Threat, self).__init__('Threat', name, **kwargs)
+        super().__init__('Threat', name, **kwargs)

@@ -2,25 +2,16 @@
 """Test case template for App testing."""
 # flake8: noqa: F401
 import os
-import sys
 
-import pytest
 from tcex.testing import ${class_name}
-from ..profiles import profiles
 
-from .custom_feature import CustomFeature  # pylint: disable=E0402
-from .validate_feature import ValidateFeature  # pylint: disable=E0402
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=no-member
-
-# get profile names
-profile_names = profiles(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d'))
+from .custom_feature import CustomFeature  # pylint: disable=relative-beyond-top-level
+% if runtime_level!='organization':
+from .validate_feature import ValidateFeature  # pylint: disable=relative-beyond-top-level
+% endif
 
 
-# pylint: disable=W0235,too-many-function-args
+# pylint: disable=useless-super-delegation,too-many-function-args
 class TestProfiles(${class_name}):
     """TcEx App Testing Template."""
 
@@ -53,70 +44,101 @@ class TestProfiles(${class_name}):
             self.custom.teardown_method(self)
         super(TestProfiles, self).teardown_method()
 
-    % if app_type in ['triggerservice', 'webhooktriggerservice']:
-    @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name, monkeypatch):
+    % if runtime_level in ['triggerservice', 'webhooktriggerservice']:
+    def test_profiles(
+        self, profile_name, pytestconfig, monkeypatch, options
+    ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
 
-        # profile data
-        profile_data = self.profile(profile_name)
+        # initialize profile
+        valid, message = self.init_profile(
+            profile_name, pytestconfig=pytestconfig, monkeypatch=monkeypatch,
+            options=options
+        )
+        assert valid, message
+
+        # call pre-configuration setup per test
+        self.custom.test_pre_create_config(self, self.profile.data, monkeypatch)
 
         # publish createConfig
-        for config in profile_data.get('configs'):
+        for config in self.profile.configs:
             self.publish_create_config(config)
 
-        # trigger custom event
-        self.custom.trigger_method(self, profile_data, monkeypatch)
+        % if runtime_level == 'webhooktriggerservice':
+        # call pre-configuration setup per test
+        self.custom.test_pre_webhook(self, self.profile.data, monkeypatch)
 
-        % if app_type == 'webhooktriggerservice':
         # send webhook event
-        self.publish_webhook_event(**profile_data.get('webhook_event'))
+        self.publish_webhook_event(**self.profile.webhook_event)
+        % else:
+        # trigger custom event
+        self.custom.trigger_method(self, self.profile.data, monkeypatch)
         % endif
 
+        # call pre-configuration setup or validation per test
+        self.custom.test_pre_delete_config(self, self.profile.data, monkeypatch)
+
         # publish deleteConfig
-        for config in profile_data.get('configs'):
+        for config in self.profile.configs:
             self.publish_delete_config(config)
 
+        # fail if there are no executions to validate
+        if not self.profile.context_tracker and self.profile.outputs:
+            assert False, 'No context found in context_tracker, did event fire?'
+
         # run output variable validation
-        for context in self.context_tracker:
-            self.validator.tcex.default_args.tc_playbook_db_context = context
+        for context in self.profile.context_tracker:
+            # get Validation instance
+            validation = ValidateFeature(self.validator)
+            # for service Apps the context on playbooks needs to be set manually
+            self.validator.tcex.playbook.key_value_store.context = context
+            # the trigger id is stored via the monkey patched session_id method
             trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
-            output_data = (profile_data.get('outputs') or {}).get(trigger_id)
+            output_data = (self.profile.outputs or {}).get(trigger_id)
             if output_data is not None:
-                ValidateFeature(self.validator).validate(output_data)
+                validation.validate(output_data)
 
-    def test_shutdown(self):
-        """Run shutdown command."""
-        self.enable_update_profile = False  # pylint: disable=attribute-defined-outside-init
-        self.publish_shutdown()
+            # validate App outputs and Profile outputs are consistent
+            validation.validate_outputs(self.profile.tc_playbook_out_variables, output_data)
+
+        # exit message can not be validated since it's written during teardown for Service Apps
+
     % else:
-    @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name, monkeypatch):  # pylint: disable=unused-argument
+    def test_profiles(
+        self, profile_name, pytestconfig, monkeypatch, options
+    ):  # pylint: disable=unused-argument
         """Run pre-created testing profiles."""
-        # get profile
-        profile_data = self.profile(profile_name)
 
-        # check profile env
-        self.check_environment(profile_data.get('environments', ['build']))
+        # initialize profile
+        valid, message = self.init_profile(
+            profile_name, pytestconfig=pytestconfig, monkeypatch=monkeypatch,
+            options=options
+        )
+        assert valid, message
 
         # run custom test method before run method
-        self.custom.test_pre_run(self, profile_data, monkeypatch)
+        self.custom.test_pre_run(self, self.profile.data, monkeypatch)
 
-        assert self.run_profile(profile_data) in profile_data.get('exit_codes', [0])
+        assert self.run_profile() in self.profile.exit_codes
 
-        % if app_type=='organization':
-        self.validator.threatconnect.batch(
-            self.context, self.owner(profile_data), profile_data.get('validation_criteria', {})
-        )
-        % else:
         # run custom test method before validation
-        self.custom.test_pre_validate(self, profile_data)
+        self.custom.test_pre_validate(self, self.profile.data)
 
-        ValidateFeature(self.validator).validate(profile_data.get('outputs'))
+        % if runtime_level=='organization':
+        self.validator.threatconnect.batch(self.profile)
+        % else:
+        # get Validation instance
+        validation = ValidateFeature(self.validator)
+
+        # validate App outputs and Profile outputs are consistent
+        validation.validate_outputs(self.profile.tc_playbook_out_variables, self.profile.outputs)
+
+        # validate App outputs with Profile outputs
+        validation.validate(self.profile.outputs)
         % endif
 
         # validate exit message
-        exit_message_data = profile_data.get('exit_message')
+        exit_message_data = self.profile.exit_message
         if exit_message_data:
             self.validate_exit_message(
                 exit_message_data.pop('expected_output'),

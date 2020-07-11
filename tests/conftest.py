@@ -1,99 +1,120 @@
 # -*- coding: utf-8 -*-
 """Base pytest configuration file."""
-import json
 import os
 import shutil
-import sys
 
 import pytest
-from tcex import TcEx
-from .tc_token import TcToken
+import redis
 
-
-# instance of tc token to retrieve testing token from API
-tc_token = TcToken()
-
-
-# install.json data for testing
-pytest_install_json = {
-    'allowOnDemand': True,
-    'commitHash': 'abc123',
-    'displayName': 'Pytest',
-    'features': ['aotExecutionEnabled', 'appBuilderCompliant', 'layoutEnabledApp', 'secureParams'],
-    'languageVersion': '3.6',
-    'listDelimiter': '|',
-    'note': '',
-    'params': [
-        {
-            'label': 'My Book',
-            'name': 'my_bool',
-            'note': '',
-            'required': True,
-            'sequence': 1,
-            'type': 'Boolean',
-        },
-        {
-            'label': 'My Multi',
-            'name': 'my_multi',
-            'note': '',
-            'required': False,
-            'sequence': 8,
-            'type': 'MultiChoice',
-            'validValues': ['one', 'two'],
-        },
-    ],
-    'playbook': {'outputVariables': [], 'type': 'Utility'},
-    'programLanguage': 'PYTHON',
-    'programMain': 'run',
-    'programVersion': '1.0.0',
-    'runtimeLevel': 'Playbook',
-}
+from .mock_app import MockApp
 
 
 #
-# Standard config for tcex instance
+# fixtures
 #
 
-_config_data = {
-    # connection
-    'api_default_org': os.getenv('API_DEFAULT_ORG'),
-    # 'tc_token': tc_token.service_token,
-    'tc_token': tc_token.api_token,
-    'tc_token_expires': '1700000000',
-    'tc_owner': os.getenv('TC_OWNER', 'TCI'),
-    # hmac auth (for session tests)
-    'api_access_id': os.getenv('API_ACCESS_ID'),
-    'api_secret_key': os.getenv('API_SECRET_KEY'),
-    # logging
-    'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
-    'tc_log_to_api': str(os.getenv('TC_LOG_TO_API', 'false')).lower() in ['true'],
-    # paths
-    'tc_api_path': os.getenv('TC_API_PATH'),
-    'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
-    'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
-    'tc_out_path': os.getenv('TC_OUT_API', 'log'),
-    'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
-    # playbooks
-    'tc_playbook_db_type': os.getenv('TC_PLAYBOOK_DB_TYPE', 'Redis'),
-    'tc_playbook_db_context': os.getenv(
-        'TC_PLAYBOOK_DB_CONTEXT', '0d5a675a-1d60-4679-bd01-3948d6a0a8bd'
-    ),
-    'tc_playbook_db_path': os.getenv('TC_PLAYBOOK_DB_PATH', 'localhost'),
-    'tc_playbook_db_port': os.getenv('TC_PLAYBOOK_DB_PORT', '6379'),
-    # proxy
-    'tc_proxy_tc': str(os.getenv('TC_PROXY_TC', 'false')).lower() in ['true'],
-    'tc_proxy_external': str(os.getenv('TC_PROXY_EXTERNAL', 'false')).lower() in ['true'],
-}
 
-# proxy
-if os.getenv('TC_PROXY_HOST'):
-    _config_data['tc_proxy_host'] = os.getenv('TC_PROXY_HOST')
-if os.getenv('TC_PROXY_PORT'):
-    _config_data['tc_proxy_port'] = os.getenv('TC_PROXY_PORT')
-if os.getenv('TC_PROXY_USERNAME'):
-    _config_data['tc_proxy_username'] = os.getenv('TC_PROXY_USERNAME')
-if os.getenv('TC_PROXY_PASSWORD'):
-    _config_data['tc_proxy_password'] = os.getenv('TC_PROXY_PASSWORD')
+@pytest.fixture()
+def config_data():
+    """Return tcex config data."""
+    app = MockApp(runtime_level='Playbook')
+    return app.config_data
+
+
+@pytest.fixture()
+def owner_id():
+    """Return an owner id."""
+    tcex_ = MockApp(runtime_level='Playbook').tcex
+
+    def get_owner_id(name):
+        """Return owner Id give the name."""
+        id_ = None
+        for o in tcex_.session.get('/v2/owners').json().get('data', []).get('owner', []):
+            if o.get('name') == name:
+                id_ = o.get('id')
+                break
+        return id_
+
+    return get_owner_id
+
+
+@pytest.fixture()
+def playbook_app():
+    """Mock a playbook App."""
+
+    def app(**kwargs):
+        if kwargs.get('runtime_level') is None:
+            kwargs['runtime_level'] = 'Playbook'
+        return MockApp(**kwargs)
+
+    return app
+
+
+@pytest.fixture()
+def redis_client():
+    """Return instance of redis_client."""
+    host = os.getenv('tc_playbook_db_path', 'localhost')
+    port = os.getenv('tc_playbook_db_port', '6379')
+    return redis.Redis(host=host, port=port)
+
+
+@pytest.fixture()
+def service_app():
+    """Mock a service App."""
+
+    def app(**kwargs):
+        if kwargs.get('runtime_level') is None:
+            kwargs['runtime_level'] = 'TriggerService'
+        return MockApp(**kwargs)
+
+    return app
+
+
+@pytest.fixture()
+def tc_log_file():
+    """Return tcex config data."""
+    app = MockApp(runtime_level='Playbook')
+    return app.tcex_log_file
+
+
+@pytest.fixture()
+def tcex():
+    """Return an instance of tcex."""
+    app = MockApp(runtime_level='Playbook')
+    return app.tcex
+
+
+@pytest.fixture()
+def tcex_hmac():
+    """Return an instance of tcex."""
+    # create log structure for feature/test (e.g., args/test_args.log)
+    config_data_ = {
+        'tc_token': None,
+        'tc_token_expires': None,
+    }
+    app = MockApp(runtime_level='Playbook', config_data=config_data_)
+    return app.tcex
+
+
+# @pytest.fixture(scope='module')
+@pytest.fixture()
+def tcex_proxy():
+    """Return an instance of tcex.
+
+    mitmproxy -p 4242 --ssl-insecure
+    """
+    # create log structure for feature/test (e.g., args/test_args.log)
+    config_data_ = {
+        'tc_proxy_tc': True,
+        'tc_proxy_external': True,
+    }
+    app = MockApp(runtime_level='Playbook', config_data=config_data_)
+    return app.tcex
+
+
+#
+# pytest startup/shutdown configuration
+#
 
 
 def pytest_configure(config):  # pylint: disable=unused-argument
@@ -106,12 +127,9 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     # remove log directory
     try:
         shutil.rmtree('log')
+        os.makedirs(f'log/DEBUG', exist_ok=True)
     except OSError:
         pass
-
-    # create testing install.json
-    with open('install.json', 'w') as fh:
-        json.dump(pytest_install_json, fh, indent=2)
 
 
 def pytest_sessionstart(session):  # pylint: disable=unused-argument
@@ -137,74 +155,18 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
     except OSError:
         pass
 
+    # cleanup environment variables
+    try:
+        del os.environ['TC_APP_PARAM_FILE']
+    except Exception:
+        pass
 
-#
-# fixtures
-#
+    try:
+        del os.environ['TC_APP_PARAM_KEY']
+    except Exception:
+        pass
 
-
-# @pytest.fixture(scope='module')
-@pytest.fixture()
-def config_data():
-    """Return tcex config data."""
-    return _config_data
-
-
-@pytest.fixture()
-def tc_api_token():
-    """Return a valid TC api token."""
-    return tc_token.api_token
-
-
-@pytest.fixture()
-def tc_log_file():
-    """Return tcex config data."""
-    return _tc_log_file()
-
-
-@pytest.fixture()
-def tc_service_token():
-    """Return a valid TC service token."""
-    return tc_token.service_token
-
-
-@pytest.fixture()
-def tcex():
-    """Return an instance of tcex."""
-    # create log structure for feature/test (e.g., args/test_args.log)
-    config_data_ = dict(_config_data)
-    config_data_['tc_log_file'] = _tc_log_file()
-
-    # clear sys.argv to avoid invalid arguments
-    sys.argv = sys.argv[:1]
-    return TcEx(config=config_data_)
-
-
-@pytest.fixture()
-def tcex_proxy_external():
-    """Return an instance of tcex.
-
-    mitmproxy -p 4242 --ssl-insecure
-    """
-    # create log structure for feature/test (e.g., args/test_args.log)
-    config_data_ = dict(_config_data)
-    config_data_['tc_proxy_external'] = True
-    config_data_['tc_proxy_host'] = 'localhost'
-    config_data_['tc_proxy_port'] = '4242'
-
-    # clear sys.argv to avoid invalid arguments
-    sys.argv = sys.argv[:1]
-    return TcEx(config=config_data_)
-
-
-#
-# misc functions
-#
-
-
-def _tc_log_file():
-    """Return config file name for current test case."""
-    test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
-    test_feature = test_data[0].split('/')[1].replace('/', '-')
-    test_name = test_data[-1].replace('/', '-').replace('[', '-')
-    return os.path.join(test_feature, '{}.log'.format(test_name))
+    try:
+        del os.environ['TC_APP_PARAM_LOCK']
+    except Exception:
+        pass

@@ -36,6 +36,7 @@ To get the latest usage and template choices for ``tcinit``, run ``tcinit -h``.
       --force               Enable this flag to forcibly overwrite existing files
                             in the current working directory.
 
+~~~~~~~~~~~~
 Common Usage
 ~~~~~~~~~~~~
 
@@ -56,6 +57,7 @@ Job App Templates
 
 The ``run()`` method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the **app.py** file, if required.
 
+~~~~~~~~~
 Job (job)
 ~~~~~~~~~
 
@@ -68,7 +70,8 @@ app.py
     :language: python
     :linenos:
 
-Job Ingress (job_ingress)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Job Batch (job_batch)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx :ref:`Batch Module <module_batch>`.  The URL is defined in the ``init()`` method for convenience. In the ``run()`` method, the Batch module is instantiated. Next, the data is retrieved from the remote URL and written to the Batch module. Finally, the Batch Job is submitted to ThreatConnect for processing.
@@ -83,6 +86,7 @@ app.py
 Playbook App Templates
 ----------------------
 
+~~~~~~~~~~~~~~~~~~~
 Playbook (playbook)
 ~~~~~~~~~~~~~~~~~~~
 
@@ -95,6 +99,7 @@ app.py
     :language: python
     :linenos:
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Playbook Actions (playbook_actions)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -102,7 +107,7 @@ This template provides a working example of **actions** in a Playbook App. Using
 
 .. seealso::
 
-    :py:mod:`~tcex.tcex_app_decorators`
+    :py:mod:`~tcex.decorators`
         Inline documentation of App decorators
 
 app.py
@@ -112,6 +117,7 @@ app.py
     :language: python
     :linenos:
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Playbook Utility (playbook_utility)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -156,6 +162,7 @@ Example Config data
 
 In the example above the proxy configuration is only required if using a proxy server in the environment.
 
+~~~~~~~~~~~~~~~~~~~
 External (external)
 ~~~~~~~~~~~~~~~~~~~
 
@@ -168,6 +175,7 @@ app.py
     :language: python
     :linenos:
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 External Ingress (external_ingress)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -3,14 +3,16 @@
 import base64
 import json
 import os
+import subprocess
+import sys
 import threading
 import time
 import uuid
 from multiprocessing import Process
 from random import randint
 
-from _pytest.monkeypatch import MonkeyPatch
 import paho.mqtt.client as mqtt
+
 from .test_case_playbook_common import TestCasePlaybookCommon
 
 
@@ -18,14 +20,26 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     """Service App TestCase Class"""
 
     _mqtt_client = None
-    client_topic = 'client-topic-{}'.format(randint(100, 999))
-    server_topic = 'server-topic-{}'.format(randint(100, 999))
-    service_run_method = 'thread'  # run service as thread or multiprocess
+    app_process = None
+    client_topic = f'client-topic-{randint(100, 999)}'
+    server_topic = f'server-topic-{randint(100, 999)}'
+    service_run_method = 'subprocess'  # run service as subprocess, multiprocess, or thread
+    shutdown = False
+    shutdown_complete = False
+    sleep_after_publish_config = 0.5
+    sleep_after_publish_webhook_event = 0.5
+    sleep_after_service_start = 5
+    sleep_before_delete_config = 2
+    sleep_before_shutdown = 0.5
+
+    def _app_callback(self, app):
+        """Set app object from run.py callback"""
+        self.app = app
 
     @property
     def default_args(self):
         """Return App default args."""
-        args = super(TestCaseServiceCommon, self).default_args
+        args = super().default_args.copy()
         args.update(
             {
                 'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
@@ -51,62 +65,18 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             )
         return self._mqtt_client
 
-    @property
-    def output_variables(self):
-        """Return playbook output variables"""
-        if self._output_variables is None:
-            self._output_variables = []
-            # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
-                # "#Trigger:9876:app.data.count!String"
-                self._output_variables.append(
-                    '#Trigger:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
-                )
-        return self._output_variables
-
-    def patch_service(self):
-        """Patch the micro-service."""
-        from tcex.services import Services  # pylint: disable=import-error,no-name-in-module
-
-        tc_svc_broker_host = self.default_args.get('tc_svc_broker_host', 'localhost')
-        tc_svc_broker_port = int(self.default_args.get('tc_svc_broker_port', 1883))
-        tc_svc_broker_timeout = int(self.default_args.get('tc_svc_hb_timeout_seconds', 60))
-
-        @property
-        def mqtt_client(self):
-            self.tcex.log.trace('using monkeypatch method')
-            if self._mqtt_client is None:
-                self._mqtt_client = mqtt.Client(client_id='', clean_session=True)
-                self.mqtt_client.connect(
-                    tc_svc_broker_host, tc_svc_broker_port, tc_svc_broker_timeout
-                )
-            return self._mqtt_client
-
-        redis_client = self.redis_client
-
-        @staticmethod
-        def session_id_(trigger_id=None):  # pylint: disable=unused-argument
-            """Patch session_id method to track trigger id -> session_id for validation."""
-            # write to redis
-            context = str(uuid.uuid4())  # create unique uuid for event trigger
-            self.context_tracker.append(context)  # add context/session_id to tracker
-
-            self.tcex.log.trace('using monkeypatch method')
-            if trigger_id is not None:
-                redis_client.hset(context, '_trigger_id', trigger_id)
-            return context
-
-        MonkeyPatch().setattr(Services, 'mqtt_client', mqtt_client)
-        MonkeyPatch().setattr(Services, 'session_id', session_id_)
-
     def publish(self, message, topic=None):
-        """Publish message on server channel."""
-        if topic is None:
-            topic = self.server_topic
+        """Publish message on server channel.
 
-        # self.log.debug('topic: ({})'.format(topic))
-        # self.log.debug('message: ({})'.format(message))
-        # self.log.debug('broker_service: ({})'.format(self.tcex.args.tc_svc_broker_service))
+        Args:
+            message (str): The message to send.
+            topic (str, optional): The message broker topic. Defaults to None.
+        """
+        topic = topic or self.server_topic
+
+        # self.log.debug(f'topic: ({topic})')
+        # self.log.debug(f'message: ({message})')
+        # self.log.debug(f'broker_service: ({self.tcex.args.tc_svc_broker_service})')
 
         if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
             self.mqtt_client.publish(topic, message)
@@ -120,22 +90,28 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             trigger_id (str): The trigger id for the config message.
             message (dict): The entire message with trigger_id and config.
         """
+        # merge the message config (e.g., optional, required)
+        message_config = message.pop('config')
+        config = message_config.get('optional', {})
+        config.update(message_config.get('required', {}))
+        message['config'] = config
+
         # build config message
-        message['apiToken'] = '000000000'
+        message['apiToken'] = self.tc_token
         message['expireSeconds'] = int(time.time() + 86400)
         message['command'] = 'CreateConfig'
-        message['config']['tc_playbook_out_variables'] = self.output_variables
+        message['config']['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
         message['triggerId'] = message.pop('trigger_id')
         self.publish(json.dumps(message))
-        time.sleep(0.5)
+        time.sleep(self.sleep_after_publish_config)
 
     def publish_delete_config(self, message):
         """Send delete config message.
 
         Args:
-            trigger_id (str): The trigger id for the config message.
+            message (str): The message coming in on Broker channel
         """
-        time.sleep(0.5)
+        time.sleep(self.sleep_before_delete_config)
         # using triggerId here instead of trigger_id do to pop in publish_create_config
         config_msg = {'command': 'DeleteConfig', 'triggerId': message.get('triggerId')}
         self.publish(json.dumps(config_msg))
@@ -144,19 +120,6 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """Publish shutdown message."""
         config_msg = {'command': 'Shutdown'}
         self.publish(json.dumps(config_msg))
-        time.sleep(0.5)
-
-    def publish_update_config(self, trigger_id, config):
-        """Send create config message.
-
-        Args:
-            trigger_id (str): The trigger id for the config message.
-            config (dict): The data for the config message.
-        """
-        config_msg = {'command': 'UpdateConfig', 'triggerId': trigger_id, 'config': config}
-        config_msg['config']['outputVariables'] = self.output_variables
-        self.publish(json.dumps(config_msg))
-        time.sleep(0.5)
 
     def publish_webhook_event(
         self,
@@ -171,9 +134,11 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
 
         Args:
             trigger_id (str): The trigger ID.
+            body (str): The Body of the request.
             headers (list, optional): A list of headers name/value pairs. Defaults to [].
             method (str, optional): The method. Defaults to 'GET'.
             query_params (list, optional): A list of query param name/value pairs. Defaults to [].
+            request_key (str, optional): The current request key.
         """
         body = body or ''
         if isinstance(body, dict):
@@ -192,75 +157,95 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             'triggerId': trigger_id,
         }
         self.publish(json.dumps(event))
-        time.sleep(0.5)
+        time.sleep(self.sleep_after_publish_webhook_event)
 
-    def run(self, args):
+    def run(self):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 
-    def run_profile(self, profile_name):
-        """Run an App using the profile name.
-
-        Args:
-            profile_name (str): The name of the profile to run.
-
-        Returns:
-            int: The exit code for the App execution.
-        """
-        profile = self.profile(profile_name)
-        if not profile:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
-
-        # stage any staging data
-        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
-
-        # build args from install.json
-        args = {}
-        args.update(profile.get('inputs', {}).get('required', {}))
-        args.update(profile.get('inputs', {}).get('optional', {}))
-        if not args:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
-
-        # run the App
-        self.run(args)
-
-        return self._exit(0)
-
     def run_service(self):
         """Run the micro-service."""
-        self.log_data('run', 'service method', self.service_run_method)
-        if self.service_run_method == 'thread':
-            t = threading.Thread(target=self.run, args=(self.args,))
-            t.daemon = True  # use setter for py2
+        self.log.data('run', 'service method', self.service_run_method)
+        # backup sys.argv
+        sys_argv_orig = sys.argv
+
+        # clear sys.argv
+        sys.argv = sys.argv[:1]
+
+        # create required .app_params encrypted file. args are set in custom.py
+        self.args['tcex_testing_context'] = self.tcex_testing_context
+        self.create_config(self.args)
+
+        # run the service App in 1 of 3 ways
+        if self.service_run_method == 'subprocess':
+            # run the Service App as a subprocess
+            self.app_process = subprocess.Popen(['python', 'run.py'])
+        elif self.service_run_method == 'thread':
+
+            # run App in a thread
+            t = threading.Thread(target=self.run, args=(), daemon=True)
             t.start()
-            time.sleep(1)
         elif self.service_run_method == 'multiprocess':
-            p = Process(target=self.run, args=(self.args,))
-            p.daemon = True
+            p = Process(target=self.run, args=(), daemon=True)
             p.start()
-            # p.join()
-        time.sleep(5)
+
+        # give app some time to initialize before continuing
+        time.sleep(self.sleep_after_service_start)
+
+        # restore sys.argv
+        sys.argv = sys_argv_orig
 
     @classmethod
     def setup_class(cls):
         """Run once before all test cases."""
-        super(TestCaseServiceCommon, cls).setup_class()
+        super().setup_class()
         cls.args = {}
-        cls.service_file = 'SERVICE_STARTED'
+        cls.service_file = 'SERVICE_STARTED'  # started file flag
+
+        # generate a context used in service.py to write context during fire event
+        cls.tcex_testing_context = str(uuid.uuid4())
 
     def setup_method(self):
         """Run before each test method runs."""
-        super(TestCaseServiceCommon, self).setup_method()
+        super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
-        self.redis_client = self.tcex.playbook.db.r
+        self.redis_client = self.tcex.redis_client
 
-        self.patch_service()
+        # only start service if it hasn't been started already base on file flag.
         if not os.path.isfile(self.service_file):
-            with open(self.service_file, 'w+') as f:  # noqa: F841; pylint: disable=unused-variable
-                pass
+            open(self.service_file, 'w+').close()  # create service started file flag
             self.run_service()
+
+            # start shutdown monitor thread
+            t = threading.Thread(target=self.shutdown_monitor, daemon=True)
+            t.start()
+
+    def shutdown_monitor(self):
+        """Monitor for shutdown flag."""
+        while not self.shutdown:
+            time.sleep(0.5)
+
+        # shutdown the App
+        self.publish_shutdown()
+
+        # give Service App x seconds to shutdown before terminating
+        if self.service_run_method == 'subprocess':
+            for _ in range(1, 10):
+                time.sleep(0.5)
+                if self.app_process.poll() is not None:
+                    break
+            else:
+                self.log.data('run', 'Terminating Process', f'PID: {self.app_process.pid}', 'debug')
+                self.app_process.terminate()  # terminate subprocess
+
+        # remove started file flag
+        try:
+            os.remove(self.service_file)
+        except OSError:
+            pass
+
+        # set shutdown_complete
+        self.shutdown_complete = True
 
     def stage_data(self, staged_data):
         """Stage the data in the profile."""
@@ -270,13 +255,19 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
-        super(TestCaseServiceCommon, cls).teardown_class()
-        try:
-            os.remove(cls.service_file)
-        except OSError:
-            pass
+        super().teardown_class()
+        # set shutdown flag for shutdown_monitor and wait until shutdown is done
+        cls.shutdown = True
+        for _ in range(1, 12):
+            if cls.shutdown_complete:
+                break
+            time.sleep(0.5)
 
     def teardown_method(self):
         """Run after each test method runs."""
-        time.sleep(0.5)
-        super(TestCaseServiceCommon, self).teardown_method()
+        time.sleep(self.sleep_before_shutdown)
+        # run test_case_playbook_common teardown_method
+        super().teardown_method()
+
+        # clean up tcex testing context after populate_output has run
+        self.clear_context(self.tcex_testing_context)

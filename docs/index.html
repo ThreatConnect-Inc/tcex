@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ThreatConnect App Framework (TcEx) &mdash; TcEx 1.1.8 documentation</title>
+  <title>ThreatConnect App Framework (TcEx) &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
 
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.6
               </div>
 
 
@@ -92,18 +92,17 @@
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
@@ -179,7 +178,7 @@
 
   <div class="section" id="threatconnect-app-framework-tcex">
 <h1>ThreatConnect App Framework (TcEx)<a class="headerlink" href="#threatconnect-app-framework-tcex" title="Permalink to this headline">¶</a></h1>
-<p>Release 1.1.8.</p>
+<p>Release 2.0.6.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
@@ -211,21 +210,6 @@
 <li class="toctree-l2"><a class="reference internal" href="building_apps_tcpackage.html#configuration-options">Configuration Options</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcprofile.html#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcprofile.html#profile-format">Profile Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcprofile.html#staging-redis-data">Staging Redis Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcprofile.html#id1">Data Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcprofile.html#data-validation">Data Validation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcrun.html#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcrun.html#results">Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcrun.html#troubleshooting">Troubleshooting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing_apps_tcrun.html#exit-codes">Exit Codes</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="app_deployment_configuration.html#app-deployment-configuration-file">App-Deployment Configuration File</a></li>
 </ul>
@@ -247,9 +231,6 @@
 <li class="toctree-l2"><a class="reference internal" href="app_directory_structure.html#requirements-txt-required">requirements.txt (required)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app_directory_structure.html#run-py-required">run.py (required)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app_directory_structure.html#setup-cfg-optional">setup.cfg (optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_directory_structure.html#tcex-d-optional">tcex.d (optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_directory_structure.html#tcex-d-data-optional">tcex.d/data (optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_directory_structure.html#tcex-d-profiles-optional">tcex.d/profiles (optional)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app_directory_structure.html#tcex-json-required">tcex.json (required)</a></li>
 </ul>
 </li>
@@ -261,12 +242,22 @@
 <li class="toctree-l2"><a class="reference internal" href="module_batch.html#submit">Submit</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="module_datastore.html#datastore-instance">DataStore Instance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module_datastore.html#add-record">Add Record</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module_datastore.html#delete-record">Delete Record</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module_datastore.html#get-record">Get Record</a></li>
 <li class="toctree-l2"><a class="reference internal" href="module_datastore.html#update-record">Update Record</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="module_decorators.html#fail-on-output">Fail on Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_decorators.html#iterate-on">Iterate On</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_decorators.html#on-exception">On Exception</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_decorators.html#on-success">On Success</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_decorators.html#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_decorators.html#read-arg">Read Arg</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a><ul>
@@ -290,23 +281,13 @@
 <li class="toctree-l2"><a class="reference internal" href="module_playbook.html#variable-types">Variable Types</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#custom-metric-resources">Custom Metric Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#data-store-resources">Data Store Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#group-resources">Group Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#indicator-resources">Indicator Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#owner-resources">Owner Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#security-label-resources">Security Label Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#tag-resources">Tag Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#task-resources">Task Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_resource.html#victim-resources">Victim Resources</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_ti.html">Module: Threat Intelligence</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_ti.html#groups">Groups</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_ti.html#indicators">Indicators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_ti.html#owners">Owners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="module_threat_intelligence.html#single-results">Single Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_threat_intelligence.html#multiple-results">Multiple Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_threat_intelligence.html#groups">Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_threat_intelligence.html#indicators">Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_threat_intelligence.html#owners">Owners</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a><ul>
@@ -329,11 +310,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#custom-metric-examples">Custom Metric Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#data-store-examples">Data Store Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#indicator-resource-examples">Indicator Resource Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#security-label-resource-examples">Security Label Resource Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#tag-resource-examples">Tag Resource Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#threat-intelligence">Threat Intelligence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#snippets">Snippets</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
@@ -352,26 +330,25 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id2">1.1.8</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id3">1.1.7</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id4">1.1.6</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id5">1.1.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id6">1.1.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id7">1.1.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id8">1.1.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id9">1.1.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id10">1.1.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#x">1.0.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id19">0.9.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id34">0.8.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id63">0.7.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id86">0.6.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id91">0.5.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id116">0.4.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id129">0.3.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id138">0.2.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id151">0.1.x</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id159">0.0.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id2">2.0.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id3">2.0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id4">2.0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id5">2.0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id6">2.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id7">2.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id8">2.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#x">1.1.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id18">1.0.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id27">0.9.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id42">0.8.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id71">0.7.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id94">0.6.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id99">0.5.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id124">0.4.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id137">0.3.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id146">0.2.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id159">0.1.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id167">0.0.x</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">TcEx Package</a><ul>

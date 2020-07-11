@@ -2,7 +2,7 @@
   "appType": "WebhookService",
   "description": "This template provides the structure for a WebhookService App without any App logic.",
   "files": [{
-      "path": "__main__.py",
+      "path": "app_lib.py",
       "editable": false
     },
     {

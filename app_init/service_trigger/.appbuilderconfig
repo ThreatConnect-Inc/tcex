@@ -1,8 +1,8 @@
 {
   "appType": "TriggerService",
-  "description": "This template provides the structure for a TriggerService App without any App logic.",
+  "description": "This template provides the structure for a TriggerService App.",
   "files": [{
-      "path": "__main__.py",
+      "path": "app_lib.py",
       "editable": false
     },
     {

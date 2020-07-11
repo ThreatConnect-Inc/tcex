@@ -3,12 +3,8 @@
 import pytest
 
 
-# pylint: disable=R0201,W0201
-class TestTags1:
+class TestAttributes:
     """Test the TcEx Batch Module."""
-
-    def setup_class(self):
-        """Configure setup before all tests."""
 
     @pytest.mark.parametrize(
         'name,description,attr_type,attr_value,displayed,source',
@@ -45,7 +41,7 @@ class TestTags1:
         attr.displayed = displayed
         attr.source = source
 
-        tcex.log.debug('attribute data: {}'.format(attr))  # cover __str__ method
+        tcex.log.debug(f'attribute data: {attr}')  # coverage: __str__ method
         assert attr.displayed == displayed
         assert attr.source == source
         assert attr.type == attr_type
@@ -57,6 +53,7 @@ class TestTags1:
         assert batch_status[0].get('status') == 'Completed'
         assert batch_status[0].get('successCount') == 1
 
-    def attribute_formatter(self, attr_value):
+    @staticmethod
+    def attribute_formatter(attr_value):
         """Return formatted tag."""
         return attr_value.lower()

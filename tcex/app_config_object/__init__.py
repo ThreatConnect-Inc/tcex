@@ -3,3 +3,5 @@
 # flake8: noqa
 from .install_json import InstallJson
 from .layout_json import LayoutJson
+from .permutations import Permutations
+from .tcex_json import TcexJson

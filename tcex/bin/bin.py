@@ -1,23 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Bin Command Base Module."""
-import json
 import os
 import sys
 
-try:
-    import sqlite3
-except ModuleNotFoundError:
-    # this module is only required for certain CLI commands
-    pass
-
 import colorama as c
-import redis
 
-from ..app_config_object import InstallJson, LayoutJson
+from ..app_config_object import InstallJson, LayoutJson, TcexJson
+from ..app_config_object.permutations import Permutations
 
 
-class Bin(object):
+class Bin:
     """Base Class for ThreatConnect command line tools.
 
     Args:
@@ -33,151 +26,15 @@ class Bin(object):
         self.args = _args
 
         # properties
-        self._db_conn = None
-        self._input_permutations = []
-        self._output_permutations = []
-        self._redis = None
-        self._tcex_json = None
         self.app_path = os.getcwd()
         self.exit_code = 0
-        self.ij = InstallJson('install.json', self.app_path)
-        self.lj = LayoutJson('layout.json', self.app_path)
-        self.input_table = 'inputs'
-        self.output = []
+        self.ij = InstallJson()
+        self.lj = LayoutJson()
+        self.permutations = Permutations()
+        self.tj = TcexJson()
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
-
-    @staticmethod
-    def _to_bool(value):
-        """Convert string value to bool."""
-        bool_value = False
-        if str(value).lower() in ['1', 'true']:
-            bool_value = True
-        return bool_value
-
-    @property
-    def db_conn(self):
-        """Create a temporary in memory DB and return the connection."""
-        if self._db_conn is None:
-            try:
-                self._db_conn = sqlite3.connect(':memory:')
-            except sqlite3.Error as e:
-                self.handle_error(e)
-        return self._db_conn
-
-    def db_create_table(self, table_name, columns):
-        """Create a temporary DB table.
-
-        Arguments:
-            table_name (str): The name of the table.
-            columns (list): List of columns to add to the DB.
-        """
-        formatted_columns = ''
-        for col in set(columns):
-            formatted_columns += '"{}" text, '.format(col.strip('"').strip('\''))
-        formatted_columns = formatted_columns.strip(', ')
-
-        create_table_sql = 'CREATE TABLE IF NOT EXISTS {} ({});'.format(
-            table_name, formatted_columns
-        )
-        try:
-            cr = self.db_conn.cursor()
-            cr.execute(create_table_sql)
-        except sqlite3.Error as e:
-            self.handle_error(e)
-
-    def db_insert_record(self, table_name, columns):
-        """Insert records into DB.
-
-        Args:
-            table_name (str): The name of the table.
-            columns (list): List of columns for insert statement.
-        """
-        bindings = ('?,' * len(columns)).strip(',')
-        values = [None] * len(columns)
-        sql = 'INSERT INTO {} ({}) VALUES ({})'.format(table_name, ', '.join(columns), bindings)
-        cur = self.db_conn.cursor()
-        cur.execute(sql, values)
-
-    def db_update_record(self, table_name, column, value):
-        """Insert records into DB.
-
-        Args:
-            table_name (str): The name of the table.
-            column (str): The column name in which the value is to be updated.
-            value (str): The value to update in the column.
-        """
-        sql = 'UPDATE {} SET {} = \'{}\''.format(table_name, column, value)
-        cur = self.db_conn.cursor()
-        cur.execute(sql)
-
-    def gen_permutations(self, index=0, args=None):
-        """Iterate recursively over layout.json parameter names to build permutations.
-
-        .. NOTE:: Permutations are for layout.json based playbook Apps.
-
-        Args:
-            index (int, optional): The current index position in the layout names list.
-            args (list, optional): Defaults to None. The current list of args.
-        """
-        if args is None:
-            args = []
-        try:
-            hidden = False
-            if self.ij.runtime_level.lower() == 'playbook':
-                name = self.lj.parameters_names[index]
-                display = self.lj.parameters_dict.get(name, {}).get('display')
-                hidden = self.lj.parameters_dict.get(name, {}).get('hidden', False)
-            else:
-                name = list(self.ij.params_dict.keys())[index]
-                display = False
-
-            input_type = self.ij.params_dict.get(name, {}).get('type')
-            if input_type is None:
-                self.handle_error('No value found in install.json for "{}".'.format(name))
-
-            if (
-                self.ij.runtime_level.lower() == 'organization'
-                or self.validate_layout_display(self.input_table, display)
-                or hidden
-            ):
-                if input_type.lower() == 'boolean':
-                    for val in [True, False]:
-                        args.append({'name': name, 'value': val})
-                        self.db_update_record(self.input_table, name, val)
-                        self.gen_permutations(index + 1, list(args))
-                        # remove the previous arg before next iteration
-                        args.pop()
-                elif input_type.lower() == 'choice':
-                    valid_values = self.ij.expand_valid_values(
-                        self.ij.params_dict.get(name, {}).get('validValues', [])
-                    )
-                    for val in valid_values:
-                        args.append({'name': name, 'value': val})
-                        self.db_update_record(self.input_table, name, val)
-                        self.gen_permutations(index + 1, list(args))
-                        # remove the previous arg before next iteration
-                        args.pop()
-                else:
-                    args.append({'name': name, 'value': None})
-                    self.gen_permutations(index + 1, list(args))
-            else:
-                self.gen_permutations(index + 1, list(args))
-
-        except IndexError:
-            # when IndexError is reached all data has been processed.
-            self._input_permutations.append(args)
-            outputs = []
-
-            for o_name in self.ij.output_variables_dict():
-                if self.lj.outputs_dict.get(o_name) is not None:
-                    display = self.lj.outputs_dict.get(o_name, {}).get('display')
-                    valid = self.validate_layout_display(self.input_table, display)
-                    if display is None or not valid:
-                        continue
-                outputs.append(self.ij.output_variables_dict().get(o_name))
-            self._output_permutations.append(outputs)
 
     @staticmethod
     def handle_error(err, halt=True):
@@ -187,105 +44,24 @@ class Bin(object):
             err (str): The error message to print.
             halt (bool, optional): Defaults to True. If True the script will exit.
         """
-        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}{err}')
         if halt:
             sys.exit(1)
 
-    def permutations(self):
-        """Process layout.json names/display to get all permutations of args."""
-        if 'sqlite3' not in sys.modules:
-            print('The sqlite3 module needs to be build-in to Python for this feature.')
-            sys.exit(1)
-
-        # create db for permutations testing
-        self.db_create_table(self.input_table, self.ij.params_dict.keys())
-        self.db_insert_record(self.input_table, self.ij.params_dict.keys())
-
-        # only gen permutations if none have been generated previously
-        if not self._input_permutations and not self._output_permutations:
-            self.gen_permutations()
-
-        # output permutations
-        self.print_permutations()
-
-    def print_permutations(self):
-        """Print all valid permutations."""
-        index = 0
-        permutations = []
-        for p in self._input_permutations:
-            permutations.append({'index': index, 'args': p})
-            index += 1
-        with open('permutations.json', 'w') as fh:
-            json.dump(permutations, fh, indent=2, sort_keys=True)
-        print('All permutations written to the "permutations.json" file.')
-
-    def profile_settings_args_layout_json(self, required):
-        """Return args based on layout.json and conditional rendering.
-
-        Args:
-            required (bool): If True only required args will be returned.
-
-        Returns:
-            dict: Dictionary of required or optional App args.
-        """
-        self.db_create_table(self.input_table, self.ij.params_dict.keys())
-        self.db_insert_record(self.input_table, self.ij.params_dict.keys())
-
-        # only gen permutations if none have been generated previously
-        if not self._input_permutations and not self._output_permutations:
-            self.gen_permutations()
-
-        profile_args = {}
-        try:
-            for pn in self._input_permutations[self.args.permutation_id]:
-                p = self.ij.filter_params_dict(required=required).get(pn.get('name'))
-                if p is None:
-                    continue
-
-                if p.get('type').lower() == 'boolean':
-                    # use the value generated in the permutation
-                    profile_args[p.get('name')] = pn.get('value')
-                elif p.get('type').lower() == 'choice':
-                    # use the value generated in the permutation
-                    profile_args[p.get('name')] = pn.get('value')
-                elif p.get('type').lower() == 'keyvaluelist':
-                    profile_args[p.get('name')] = '<KeyValueList>'
-                elif p.get('name') in ['api_access_id', 'api_secret_key']:
-                    # leave these parameters set to the value defined in defaults
-                    pass
-                else:
-                    # add type stub for values
-                    types = '|'.join(p.get('playbookDataType', []))
-                    if types:
-                        profile_args[p.get('name')] = p.get('default', '<{}>'.format(types))
-                    else:
-                        profile_args[p.get('name')] = p.get('default', '')
-        except IndexError:
-            self.handle_error('Invalid permutation index provided.')
-        return profile_args
-
-    @property
-    def redis(self):
-        """Return instance of Redis."""
-        if self._redis is None:
-            self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
-        return self._redis
-
-    @property
-    def tcex_json(self):
-        """Return tcex.json file contents."""
-        file_fqpn = os.path.join(self.app_path, 'tcex.json')
-        if self._tcex_json is None:
-            if os.path.isfile(file_fqpn):
-                try:
-                    with open(file_fqpn, 'r') as fh:
-                        self._tcex_json = json.load(fh)
-                except ValueError as e:
-                    self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
+    @staticmethod
+    def print_message(message, line_bright=False, line_color=None, line_limit=150):
+        """Print the message ensuring lines don't exceed line limit."""
+        bright = ''
+        if line_bright:
+            bright = c.Style.BRIGHT
+        message_line = ''
+        for word in message.split(' '):
+            if len(message_line) + len(word) < line_limit:
+                message_line += f'{word} '
             else:
-                # self.handle_error('File "{}" could not be found.'.format(file_fqpn))
-                self._tcex_json = {}
-        return self._tcex_json
+                print(f'{bright}{line_color}{message_line.rstrip()}')
+                message_line = f'{word} '
+        print(f'{bright}{line_color}{message_line.rstrip()}')
 
     @staticmethod
     def update_system_path():
@@ -306,29 +82,3 @@ class Bin(object):
         except ValueError:
             pass
         sys.path.insert(0, cwd)
-
-    def validate_layout_display(self, table, display_condition):
-        """Check to see if the display condition passes.
-
-        Args:
-            table (str): The name of the DB table which hold the App data.
-            display_condition (str): The "where" clause of the DB SQL statement.
-
-        Returns:
-            bool: True if the row count is greater than 0.
-        """
-        display = False
-        if display_condition is None:
-            display = True
-        else:
-            display_query = 'select count(*) from {} where {}'.format(table, display_condition)
-            try:
-                cur = self.db_conn.cursor()
-                cur.execute(display_query.replace('"', ''))
-                rows = cur.fetchall()
-                if rows[0][0] > 0:
-                    display = True
-            except sqlite3.Error as e:
-                print('"{}" query returned an error: ({}).'.format(display_query, e))
-                sys.exit(1)
-        return display

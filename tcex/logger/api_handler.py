@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """API Handler Class"""
 import logging
-import time
 import threading
+import time
 
 
 class ApiHandler(logging.Handler):
@@ -15,7 +15,7 @@ class ApiHandler(logging.Handler):
             session (Request.Session): The preconfigured instance of Session for ThreatConnect API.
             flush_limit (int): The limit to flush batch logs to the API.
         """
-        super(ApiHandler, self).__init__()
+        super().__init__()
         self.session = session
         self.flush_limit = flush_limit
         self._entries = []
@@ -38,7 +38,9 @@ class ApiHandler(logging.Handler):
         self._entries.append(self.format(record))
 
         # flush queue once limit is hit token module is currently renewing token
-        if len(self._entries) > self.flush_limit and not self.in_token_renewal:
+        if (
+            len(self._entries) > self.flush_limit or record.levelname == 'ERROR'
+        ) and not self.in_token_renewal:
             self.log_to_api(self.entries)
 
     @property
@@ -63,7 +65,7 @@ class ApiHandlerFormatter(logging.Formatter):
 
     def __init__(self):
         """Initialize Class properties."""
-        super(ApiHandlerFormatter, self).__init__()
+        super().__init__()
 
     def format(self, record):
         """Format log record for ThreatConnect API.

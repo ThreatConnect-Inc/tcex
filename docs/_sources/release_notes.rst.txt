@@ -3,19 +3,131 @@
 Release Notes
 #############
 
-1.1.8
+2.0.6
 =====
++ APP-79 - Added curl command to the log file at debug level to assist in troubleshooting.
++ APP-80 - Added support for __comment__ in testing profile.
++ APP-87 - Added check for invalid values in profile for Boolean inputs.
++ APP-102	- Addded pytest fixture for testing sessions.
++ APP-557	- Added update logic for profiles to convert static String inputs to Staged KVStore variables.
++ APP-561 - Updated precommit template file to support large files on commit.
++ APP-676 - Updated --interactive mode to support all input types.
++ APP-677 - Added --negative flag to tctest command to auto-generate negative test profiles.
++ Multiple enhancements for testing framework (APP-78, APP-82, APP-83, APP-84, APP-85, APP-86, APP-87, APP-106, APP-219)
+
+2.0.5
+=====
++ Updated testing framework to decouple App version of TcEx and testing version.
++ Updated deepdiff validation method to better handle OrderedDicts.
++ Added simple caching to env_store.
++ Added session recording & playback for testing framework.
++ Added automatic staging of inputs to kvstore for testing framework.
++ Added additional support for batch in testing framework.
+
+2.0.4
+=====
++ Updated decorator method logging.
++ Updated testing framework validation template to support dynamic output variable.
++ Updated testing framework validation template to validate output variable consistency.
++ Updated profile module to support variable from env store server.
++ Updated OnException decorator to log traceback.
++ Multiple enhancement and fixes to testing framework.
+
+2.0.3
+=====
++ Added ``is_variable()`` method to Playbook module.
++ Updated ReadArgs decorator to return None when arg doesn't exist.
++ Updated ReadArgs to not log input value.
++ Added new Permutations class to app_config_object module.
++ Added new Profile and ProfileInteractive Classes to app_config_object module.
++ Added new TcexJson Class to app_config_object module.
++ Moved all testing template generation/download logic to consolidated templates.py file.
++ Added schema management to InstallJson class.
++ Added schema management to LayoutJson class.
++ Multiple updates for App testing framework.
+  + Updated testing framework to support permutations for Service Apps
+  + Added **--replace_exit_message** CLI flag for pytest to replace outputs for test cases
+  + Added **--replace_outputs** CLI flag for pytest to replace outputs for test cases
+  + Added **--merge_outputs** CLI flag for pytest to merge new outputs with existing outputs for test cases
+  + Profile schema is now managed and old profiles will be automatically updated
+  + Changed default run method for Serice Apps to be subprocess instead of thread.
++ Updated **tcinit** CLI command.
+  + Removed **--action** CLI arg
+  + Added **--update** CLI arg to enable updates of non-customized template files
+  + Added **--migrate** CLI arg to enable migration of non-compliant PB Apps
+  + Added **--layouts** CLI arg to allow for dynamic creation of example layout.json based on install.json
+  * The **tcinit** command now store the template in the tcex.json file to allow easier updates
++ Updated **tcpackage** CLI command.
+  * Moved logic that updates the install.json to the InstallJson class
+  * Updated to use InstallJson and LayoutJson objects
++ Updated **tctest** CLI command.
+  + Added **--interactive** flag to allow for dynamic creation of testing profile.
+  + Updated to use new Profile Class and Template Classes
++ Updated **tcvalidate** CLI command.
+  * Updated to use InstallJson and LayoutJson objects
+  * Updated validation logic for layout.json
++ Multiple updates to App templates to remove subprocess.
+  + Added ``run()`` method to run.py template for job and playbook Apps
+  + Added app_lib.py dependencies for all App types
+  + Updated __main__.py to call run method of run.py
++ Added logging of TcEx path.
++ Updated Utils Class to no longer require tcex instance.
+
+2.0.2
+=====
++ Updated requirement for stdlib-list to >= 0.6.0 to support Python 3.8.
++ Updated test cases to call setup/teardown instead of start/done.
++ Added pydocstyle as a development dependency.
++ Removed isort from App template pre-commit file.
++ Multiple updates for templates and testing logic for Service Apps.
++ Issue-103 - added support for ThreatConnect ThreatIntelligence File Actions.
++ Issue-107 - added check for missing config file for external Apps.
++ Issue-110 - added example for associations using Threat Intelligence Module.
++ Issue-111 - updated trace logger method for Python 3.8.x changes.
+
+2.0.1
+=====
++ Updated bin module to delete reference to removed profile and run files.
++ Updated setup.py for long_description.
++ Updated README.md to include all dependencies.
+
+2.0.0
+=====
++ Added support for ThreatConnect Case Management.
++ Added support for ThreatConnect Service Apps.
++ Updated templates to support changes in tcex 2.0.
++ Updated code to support Python 3.6+, removing support for all older versions of Python.
++ Removed old tcrun and tcprofile commands.
++ Breaking Change: Multiple updates to ``playbook`` module logic.
++ Breaking Change: Moved datetime methods in tcex.utils.xxx to tcex.utils.datetime.xxx.
++ Breaking Change: Reworked App decorators to improve usability.
++ Breaking Change: Renamed ``start()`` and ``done()`` methods in templates to ``setup()`` and ``teardown()``.
++ Breaking Change: Removed ``tcex.s()`` method.
++ Breaking Change: Removed ``tcex.data_filter`` property and module.
++ Breaking Change: Removed ``tcex.request`` property and module.
++ Breaking Change: Removed ``tcex.resources`` property and module.
++ Breaking Change: Removed ``tcex.safetag()`` method.
++ Breaking Change: Removed ``tcex.safeurl()`` method.
++ Breaking Change: Updated ``tcex.safe_indicator()`` method input params.
++ Breaking Change: Updated ``tcex.safe_url()`` method input params.
++ Breaking Change: Updated ``tcex.safe_tag()`` method input params.
+
+1.1.x
+=====
+
+1.1.8
+-----
 + Improved support for TI module to support creating files given a unique_id.
 + Updates to playbook modules to remove logging affecting environment servers.
 
 1.1.7
-=====
+-----
 + Updates to testing framework for custom validation.
 + Updates to the docs for multiple modules.
 + Multiple updates to testing framework.
 
 1.1.6
-=====
+-----
 + Updated deleted() method of TI module to yield results instead of returning raw response.
 + Updates to testing framework for custom methods when testing profiles.
 + Updated inputs to ensure args provided via sys.argv take precedent over all other args.
@@ -24,11 +136,11 @@ Release Notes
 + Updated excludes for tcpackage command for pytest report folders.
 
 1.1.5
-=====
+-----
 + Updated validation module to handle local imports and shared modules.
 
 1.1.4
-=====
+-----
 + Added additional support for v2 API endpoints.
 + Added support for new appId field in the install.json.
 + Updated validation command to better handle packages with nested modules.
@@ -39,7 +151,7 @@ Release Notes
 + Multiple updates for testing framework.
 
 1.1.3
-=====
+-----
 + Added cache handler to logging module.
 + Updated args module to use dict input over sys.argv when possible.
 + Updated args module replaced required args with a default value when possible.
@@ -49,20 +161,20 @@ Release Notes
 + Removed reference to args in logging module.
 
 1.1.2
-=====
+-----
 + Updates to token and args modules to better support testing framework and external Apps.
 + Added kwargs on tcex init for external Apps.
 + Updates to testing templates.
 
 1.1.1
-=====
+-----
 + Moved registration of default token to default_args method to address issue with secure params.
 + Updated template files.
 + Updated build process for wheel files.
 + Updated permutations generation to include hidden inputs.
 
 1.1.0
-=====
+-----
 + Restructured tcex modules into individual directories.
 + Added services module for service Apps.
 + Added token module to manage tokens for all types of Apps.

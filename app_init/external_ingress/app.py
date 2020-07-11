@@ -11,7 +11,7 @@ class App(ExternalApp):
 
     def __init__(self, _tcex):
         """Initialize class properties."""
-        super(App, self).__init__(_tcex)
+        super().__init__(_tcex)
         self.batch = None
         self.url = 'https://feodotracker.abuse.ch/downloads/malware_hashes.csv'
 
@@ -20,9 +20,7 @@ class App(ExternalApp):
         self.batch = self.tcex.batch(self.args.tc_owner)
 
         # using tcex requests to get built-in features (e.g., proxy, logging, retries)
-        request = self.tcex.request()
-
-        with request.session as s:
+        with self.tcex.session_external as s:
             r = s.get(self.url)
 
             if r.ok:
@@ -50,6 +48,4 @@ class App(ExternalApp):
         batch_status = self.batch.submit_all()
         self.tcex.log.debug(batch_status)
 
-        # self.exit_message = 'Downloaded and created {} file hashes.'.format(
-        #     self.batch.indicator_len
-        # )
+        # self.exit_message = f'Downloaded and created {self.batch.indicator_len} file hashes.'

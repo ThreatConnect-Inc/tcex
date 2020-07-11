@@ -3,6 +3,7 @@
 from ..custom import Custom  # pylint: disable=relative-beyond-top-level
 
 
+# pylint: disable=no-self-use,unused-argument
 class CustomFeature(Custom):
     """Custom test method class Apps."""
 
@@ -26,10 +27,32 @@ class CustomFeature(Custom):
         """Run teardown method code."""
         super(CustomFeature, self).teardown_method(test_feature)
 
-    % if app_type in ['triggerservice', 'webhooktriggerservice']:
+    % if runtime_level in ['triggerservice']:
     def trigger_method(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Perform action to trigger the event."""
         super(CustomFeature, self).trigger_method(test_feature, profile_data, monkeypatch)
+
+    def test_pre_create_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
+        """Run test method code before create configs."""
+        super(CustomFeature, self).test_pre_create_config(test_feature, profile_data, monkeypatch)
+
+    def test_pre_delete_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
+        """Run test method code before delete configs."""
+        super(CustomFeature, self).test_pre_delete_config(test_feature, profile_data, monkeypatch)
+
+    % elif runtime_level in ['webhooktriggerservice']:
+    def test_pre_create_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
+        """Run test method code before create configs."""
+        super(CustomFeature, self).test_pre_create_config(test_feature, profile_data, monkeypatch)
+
+    def test_pre_delete_config(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
+        """Run test method code before delete configs."""
+        super(CustomFeature, self).test_pre_delete_config(test_feature, profile_data, monkeypatch)
+
+    def test_pre_webhook(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
+        """Run test method code before webhook."""
+        super(CustomFeature, self).test_pre_webhook(test_feature, profile_data, monkeypatch)
+
     % else:
     def test_pre_run(self, test_feature, profile_data, monkeypatch):  # pylint: disable=useless-super-delegation
         """Run test method code before App run method."""

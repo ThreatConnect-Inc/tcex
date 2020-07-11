@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Test the TcEx Batch Module."""
-from tcex import TcEx
+"""Test the TcEx Logging Module."""
 
 
 class TestApiHandler:
     """Test the TcEx API Handler Module."""
 
-    def setup_class(self):
-        """Configure setup before all tests."""
+    @staticmethod
+    def test_api_handler(playbook_app):
+        """Test TcEx API Handler logger
 
-    def test_api_handler(self, config_data):  # pylint: disable=no-self-use
-        """Test API logging handler"""
-        config_data['tc_log_to_api'] = True
-        tcex = TcEx(config=config_data)
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture for access to MockApp.
+        """
+        tcex = playbook_app(config_data={'tc_log_to_api': True}).tcex
 
         for _ in range(0, 20):
             tcex.log.trace('TRACE LOGGING')

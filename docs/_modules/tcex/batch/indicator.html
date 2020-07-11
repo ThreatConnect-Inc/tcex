@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.indicator &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.batch.indicator &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.6
               </div>
 
 
@@ -91,18 +91,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
@@ -182,34 +181,38 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">Utils</span>
-<span class="kn">from</span> <span class="nn">.attribute</span> <span class="k">import</span> <span class="n">Attribute</span>
-<span class="kn">from</span> <span class="nn">.security_label</span> <span class="k">import</span> <span class="n">SecurityLabel</span>
-<span class="kn">from</span> <span class="nn">.tag</span> <span class="k">import</span> <span class="n">Tag</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">Utils</span>
+<span class="kn">from</span> <span class="nn">.attribute</span> <span class="kn">import</span> <span class="n">Attribute</span>
+<span class="kn">from</span> <span class="nn">.security_label</span> <span class="kn">import</span> <span class="n">SecurityLabel</span>
+<span class="kn">from</span> <span class="nn">.tag</span> <span class="kn">import</span> <span class="n">Tag</span>
 
 <span class="c1"># import local modules for dynamic reference</span>
 <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="custom_indicator_class_factory"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.custom_indicator_class_factory">[docs]</a><span class="k">def</span> <span class="nf">custom_indicator_class_factory</span><span class="p">(</span><span class="n">indicator_type</span><span class="p">,</span> <span class="n">base_class</span><span class="p">,</span> <span class="n">class_dict</span><span class="p">,</span> <span class="n">value_fields</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Internal method for dynamically building Custom Indicator Class.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Return internal methods for dynamically building Custom Indicator Class.&quot;&quot;&quot;</span>
     <span class="n">value_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_fields</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">init_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=W0641</span>
+    <span class="k">def</span> <span class="nf">init_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=possibly-unused-variable</span>
         <span class="sd">&quot;&quot;&quot;Init method for Custom Indicator Types with one value&quot;&quot;&quot;</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_summary</span><span class="p">(</span><span class="n">value1</span><span class="p">)</span>  <span class="c1"># build the indicator summary</span>
         <span class="n">base_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">indicator_type</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">class_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">init_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=W0641</span>
+    <span class="k">def</span> <span class="nf">init_2</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>  <span class="c1"># pylint: disable=possibly-unused-variable</span>
         <span class="sd">&quot;&quot;&quot;Init method for Custom Indicator Types with two values.&quot;&quot;&quot;</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_summary</span><span class="p">(</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">)</span>  <span class="c1"># build the indicator summary</span>
         <span class="n">base_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">indicator_type</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">class_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">init_3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">value3</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=W0641</span>
+    <span class="k">def</span> <span class="nf">init_3</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">value3</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>  <span class="c1"># pylint: disable=possibly-unused-variable</span>
         <span class="sd">&quot;&quot;&quot;Init method for Custom Indicator Types with three values.&quot;&quot;&quot;</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_summary</span><span class="p">(</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">value3</span><span class="p">)</span>  <span class="c1"># build the indicator summary</span>
         <span class="n">base_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">indicator_type</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -217,27 +220,27 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="n">class_name</span> <span class="o">=</span> <span class="n">indicator_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">init_method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;init_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value_count</span><span class="p">)]</span>
+    <span class="n">init_method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">&#39;init_</span><span class="si">{value_count}</span><span class="s1">&#39;</span><span class="p">]</span>
     <span class="n">newclass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">class_name</span><span class="p">),</span> <span class="p">(</span><span class="n">base_class</span><span class="p">,),</span> <span class="p">{</span><span class="s1">&#39;__init__&#39;</span><span class="p">:</span> <span class="n">init_method</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">newclass</span></div>
 
 
-<div class="viewcode-block" id="Indicator"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.Indicator">[docs]</a><span class="k">class</span> <span class="nc">Indicator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Indicator"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.Indicator">[docs]</a><span class="k">class</span> <span class="nc">Indicator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Indicator Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = [</span>
-    <span class="c1">#     &#39;_attributes&#39;,</span>
-    <span class="c1">#     &#39;_file_actions&#39;,</span>
-    <span class="c1">#     &#39;_indicator_data&#39;,</span>
-    <span class="c1">#     &#39;_labels&#39;,</span>
-    <span class="c1">#     &#39;_occurrences&#39;,</span>
-    <span class="c1">#     &#39;_summary&#39;,</span>
-    <span class="c1">#     &#39;_tags&#39;,</span>
-    <span class="c1">#     &#39;_type&#39;,</span>
-    <span class="c1">#     &#39;_utils&#39;]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;_attributes&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_file_actions&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_indicator_data&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_labels&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_occurrences&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_summary&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_tags&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_type&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_utils&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_type</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_type</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -297,7 +300,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;lastModified&#39;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
                 <span class="n">value</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span>
@@ -434,7 +437,7 @@
     <span class="nd">@date_added</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date_added</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Indicator dateAdded.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">date_added</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span>
 
@@ -446,7 +449,7 @@
     <span class="nd">@last_modified</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">last_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_modified</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Indicator lastModified.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="s1">&#39;lastModified&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="s1">&#39;lastModified&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">last_modified</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span>
 
@@ -547,7 +550,7 @@
         <span class="sd">&quot;&quot;&quot;Return Group xid.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Indicator.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.Indicator.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Indicator.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.Indicator.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string represtentation of object&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div></div>
 
@@ -555,10 +558,9 @@
 <div class="viewcode-block" id="Address"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.Address">[docs]</a><span class="k">class</span> <span class="nc">Address</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Address Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -571,16 +573,15 @@
 <span class="sd">            rating (str, kwargs): The threat rating for this Indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Address</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ASN"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.ASN">[docs]</a><span class="k">class</span> <span class="nc">ASN</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch ASN Object.&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_number</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_number</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -593,16 +594,15 @@
 <span class="sd">            rating (str, kwargs): The threat rating for this Indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ASN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;ASN&#39;</span><span class="p">,</span> <span class="n">as_number</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;ASN&#39;</span><span class="p">,</span> <span class="n">as_number</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CIDR"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.CIDR">[docs]</a><span class="k">class</span> <span class="nc">CIDR</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch CIDR Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -615,16 +615,15 @@
 <span class="sd">            rating (str, kwargs): The threat rating for this Indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CIDR</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;CIDR&#39;</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;CIDR&#39;</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EmailAddress"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.EmailAddress">[docs]</a><span class="k">class</span> <span class="nc">EmailAddress</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch EmailAddress Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -637,16 +636,15 @@
 <span class="sd">            rating (str, kwargs): The threat rating for this Indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">EmailAddress</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;EmailAddress&#39;</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;EmailAddress&#39;</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="File"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.File">[docs]</a><span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch File Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sha1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sha256</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sha1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sha256</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -663,7 +661,7 @@
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_summary</span><span class="p">(</span><span class="n">md5</span><span class="p">,</span> <span class="n">sha1</span><span class="p">,</span> <span class="n">sha256</span><span class="p">)</span>  <span class="c1"># build the indicator summary</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># self._file_action = []</span>
 
 <div class="viewcode-block" id="File.action"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.File.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relationship</span><span class="p">):</span>
@@ -716,10 +714,9 @@
 <div class="viewcode-block" id="Host"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.Host">[docs]</a><span class="k">class</span> <span class="nc">Host</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Host Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -734,7 +731,7 @@
 <span class="sd">            whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Host</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dns_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -760,10 +757,9 @@
 <div class="viewcode-block" id="Mutex"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.Mutex">[docs]</a><span class="k">class</span> <span class="nc">Mutex</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Mutex Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -776,16 +772,15 @@
 <span class="sd">            rating (str, kwargs): The threat rating for this Indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Mutex</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Mutex&#39;</span><span class="p">,</span> <span class="n">mutex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Mutex&#39;</span><span class="p">,</span> <span class="n">mutex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RegistryKey"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.RegistryKey">[docs]</a><span class="k">class</span> <span class="nc">RegistryKey</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Registry Key Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_name</span><span class="p">,</span> <span class="n">value_name</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_name</span><span class="p">,</span> <span class="n">value_name</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -801,16 +796,15 @@
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_summary</span><span class="p">(</span><span class="n">key_name</span><span class="p">,</span> <span class="n">value_name</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">RegistryKey</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Registry Key&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Registry Key&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="URL"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.URL">[docs]</a><span class="k">class</span> <span class="nc">URL</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch URL Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -823,16 +817,15 @@
 <span class="sd">            rating (str, kwargs): The threat rating for this Indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;URL&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;URL&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UserAgent"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.UserAgent">[docs]</a><span class="k">class</span> <span class="nc">UserAgent</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch User Agent Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = []</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -845,16 +838,15 @@
 <span class="sd">            rating (str, kwargs): The threat rating for this Indicator.</span>
 <span class="sd">            xid (str, kwargs): The external id for this Indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">UserAgent</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;User Agent&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;User Agent&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="FileAction"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileAction">[docs]</a><span class="k">class</span> <span class="nc">FileAction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FileAction"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileAction">[docs]</a><span class="k">class</span> <span class="nc">FileAction</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch FileAction Object&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = [&#39;_action_data&#39;, &#39;_children&#39;, &#39;xid&#39;]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_action_data&#39;</span><span class="p">,</span> <span class="s1">&#39;_children&#39;</span><span class="p">,</span> <span class="s1">&#39;xid&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_xid</span><span class="p">,</span> <span class="n">relationship</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_xid</span><span class="p">,</span> <span class="n">relationship</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        .. warning:: This code is not complete and may require some update to the API.</span>
@@ -884,18 +876,17 @@
         <span class="n">action_obj</span> <span class="o">=</span> <span class="n">FileAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xid</span><span class="p">,</span> <span class="n">relationship</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action_obj</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FileAction.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileAction.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileAction.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileAction.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string represtentation of object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="FileOccurrence"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileOccurrence">[docs]</a><span class="k">class</span> <span class="nc">FileOccurrence</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FileOccurrence"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileOccurrence">[docs]</a><span class="k">class</span> <span class="nc">FileOccurrence</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch FileAction Object.&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
-    <span class="c1"># __slots__ = [&#39;_occurrence_data&#39;, &#39;_utils&#39;]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_occurrence_data&#39;</span><span class="p">,</span> <span class="s1">&#39;_utils&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
 
 <span class="sd">        Args:</span>
@@ -910,7 +901,7 @@
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_occurrence_data</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
         <span class="k">if</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_occurrence_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_occurrence_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
                 <span class="n">date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
             <span class="p">)</span>
 
@@ -927,7 +918,7 @@
     <span class="nd">@date</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set File Occurrence date.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_occurrence_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_occurrence_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span>
 
@@ -951,7 +942,7 @@
         <span class="sd">&quot;&quot;&quot;Set File Occurrence path.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_occurrence_data</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
 
-<div class="viewcode-block" id="FileOccurrence.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileOccurrence.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileOccurrence.__str__"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.indicator.FileOccurrence.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return string represtentation of object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div></div>
 </pre></div>

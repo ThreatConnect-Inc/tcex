@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Batch &mdash; TcEx 1.1.8 documentation</title>
+  <title>Module: Batch &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
 
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module: Datastore" href="module_datastore.html" />
+    <link rel="next" title="Module: Case Management" href="module_case_management.html" />
     <link rel="prev" title="App-Directory Structure" href="app_directory_structure.html" />
 </head>
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.6
               </div>
 
 
@@ -93,8 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Batch</a><ul>
@@ -124,13 +122,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
@@ -210,7 +209,7 @@
 <p class="admonition-title">Important</p>
 <p>The Batch module requires ThreatConnect version 5.6 or higher.</p>
 </div>
-<p>The ThreatConnect TcEx Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExBatch</span></code> module to create, delete, and update both Groups and Indicators in the ThreatConnect platform. The App developer can dynamically build data objects, and the Batch module will write the data to the ThreatConnect API.</p>
+<p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch" title="tcex.batch.batch.Batch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Batch</span></code></a> module to create, delete, and update both Groups and Indicators in the ThreatConnect platform. The App developer can dynamically build data objects, and the Batch module will write the data to the ThreatConnect API.</p>
 <div class="section" id="external-id-xid">
 <h2>External ID (xid)<a class="headerlink" href="#external-id-xid" title="Permalink to this headline">¶</a></h2>
 <p>The batch JSON data requires an <strong>xid</strong> value for all Groups and Indicators.  The xid is used internally in ThreatConnect for associations and for updating existing Groups.  The xid <strong>must</strong> be unique for the entire instance of ThreatConnect.</p>
@@ -240,7 +239,7 @@
 6
 7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
 </span><span class="c1"># optional save method</span>
@@ -265,12 +264,12 @@
 15
 16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="s1">&#39;example.txt&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">malware</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">malware</span> <span class="o">=</span> <span class="kc">True</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">file_content</span> <span class="o">=</span> <span class="s1">&#39;example file content&#39;</span>
 </span><span class="hll"><span class="c1"># Add Attribute</span>
 </span><span class="hll"><span class="n">attr</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
-</span><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="hll"><span class="c1"># Add Tag</span>
 </span><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 <span class="hll"><span class="c1"># Add Label</span>
@@ -302,7 +301,7 @@
 <span class="hll"><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;My event name&#39;</span><span class="p">,</span> <span class="n">date_added</span><span class="o">=</span><span class="s1">&#39;2008-12-12T12:12:12&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;yesterday&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;Needs Review&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span></pre></div>
 </td></tr></table></div>
@@ -317,7 +316,7 @@
 <span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s1">&#39;test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;Document content here...&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;test.txt&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;Attribute source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;Attribute source&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
 </span></pre></div>
@@ -357,7 +356,7 @@
 </span><span class="hll">        <span class="s2">&quot;my-xid-001&quot;</span>
 </span><span class="hll">    <span class="p">],</span>
 </span><span class="hll">    <span class="s1">&#39;attribute&#39;</span><span class="p">:</span> <span class="p">[{</span>
-</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 </span><span class="hll">        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
 </span><span class="hll">        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Example Description&quot;</span>
 </span><span class="hll">    <span class="p">}],</span>
@@ -382,7 +381,7 @@
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">address</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s1">&#39;123.124.125.126&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
 </span><span class="n">address</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span><span class="p">)</span>
@@ -414,7 +413,7 @@
 </span><span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="mi">100</span>
 </span><span class="c1"># Add Attribute</span>
 <span class="hll"><span class="n">attr</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class="hll"><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="kc">True</span>
 </span><span class="c1"># Tag</span>
 <span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="c1"># Add Label</span>
@@ -445,9 +444,9 @@
 8
 9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">host</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;www.badguys2.com&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
-</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
-</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="c1"># Add association</span>
 <span class="n">pre_existing_group_xid</span> <span class="o">=</span> <span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span>
@@ -499,7 +498,7 @@
 </span><span class="hll">    <span class="p">],</span>
 </span><span class="hll">    <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="p">[{</span>
 </span><span class="hll">        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
-</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 </span><span class="hll">        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Malware Analysis provided by external AMA.&quot;</span>
 </span><span class="hll">    <span class="p">}],</span>
 </span><span class="hll">    <span class="s2">&quot;fileOccurrence&quot;</span><span class="p">:</span> <span class="p">[{</span>
@@ -605,19 +604,19 @@
 16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
 </span><span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
 <span class="c1"># for errors when creating batch job and submitting the data.</span>
-<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_batch_error</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_batch_error</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
 <span class="c1"># for errors when submitting files. if set to True a single file upload error would cause the batch module</span>
 <span class="c1"># to raise and exception and potentially cause the job to fail.</span>
-<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_file_error</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_file_error</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
 <span class="c1"># for errors when polling batch status.</span>
-<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_poll_error</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_poll_error</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
-    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 <p>In some cases, handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_create_and_upload()</span></code> and then to retrieve data from a remote endpoint while ThreatConnect processes the batch job.  Next, poll by using <code class="xref py py-meth docutils literal notranslate"><span class="pre">poll()</span></code> for status, and when the job is completed, the next job request can be submitted. If batch errors are reported in the Batch status, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">errors()</span></code> method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_files()</span></code> method.</p>
@@ -634,9 +633,9 @@
 4
 5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
 </span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="p">[</span><span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="p">[]))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">batch_data</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="p">[]))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">batch_data</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
 <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
-    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -664,7 +663,7 @@
 </span>
 <span class="c1"># check if job requires polling</span>
 <span class="hll"><span class="n">batch_id</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class="hll"><span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span class="hll">    <span class="c1"># poll for batch status</span>
 </span><span class="hll">    <span class="n">batch_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
 </span><span class="hll">
@@ -672,7 +671,7 @@
 </span><span class="hll">    <span class="k">if</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 </span><span class="hll">        <span class="c1"># retrieve errors</span>
 </span><span class="hll">        <span class="n">errors</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
-</span><span class="hll">        <span class="k">print</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+</span><span class="hll">        <span class="nb">print</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
 </span>
 <span class="c1"># submit any documents or reports</span>
 <span class="hll"><span class="n">upload_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_files</span><span class="p">()</span>
@@ -690,7 +689,7 @@
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="module_datastore.html" class="btn btn-neutral float-right" title="Module: Datastore" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="module_case_management.html" class="btn btn-neutral float-right" title="Module: Case Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
         <a href="app_directory_structure.html" class="btn btn-neutral float-left" title="App-Directory Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

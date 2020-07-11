@@ -3,7 +3,7 @@
 import pytest
 
 
-# pylint: disable=R0201,W0201
+# pylint: disable=no-self-use
 class TestIndicator2:
     """Test the TcEx Batch Module."""
 
@@ -77,7 +77,7 @@ class TestIndicator2:
         xid = batch.generate_xid(['pytest', 'file', md5, sha1, sha256])
         ti = batch.indicator(
             indicator_type='File',
-            summary='{} : {} : {}'.format(md5 * 16, sha1 * 20, sha256 * 32),
+            summary=f'{md5 * 16} : {sha1 * 20} : {sha256 * 32}',
             rating='5.0',
             confidence='100',
             xid=xid,

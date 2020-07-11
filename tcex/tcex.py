@@ -1,27 +1,22 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework"""
-from builtins import str
 import inspect
 import logging
-import platform
 import os
+import platform
 import re
 import signal
 import sys
 import threading
+from urllib.parse import quote
 
-try:
-    from urllib import quote  # Python 2
-except ImportError:
-    from urllib.parse import quote  # Python 3
-
+from .app_config_object import InstallJson
 from .inputs import Inputs
 from .logger import Logger
-from .app_config_object import InstallJson
 from .tokens import Tokens
 
 
-class TcEx(object):
+class TcEx:
     """Provides basic functionality for all types of TxEx Apps.
 
     Args:
@@ -43,16 +38,17 @@ class TcEx(object):
             signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Property defaults
-        self._config = kwargs.get('config', {})
+        self._config = kwargs.get('config') or {}
         self._default_args = None
         self._error_codes = None
         self._exit_code = 0
         self._indicator_associations_types_data = {}
-        self._indicator_types = []
-        self._indicator_types_data = {}
+        self._indicator_types = None
+        self._indicator_types_data = None
         self._jobs = None
         self._logger = None
         self._playbook = None
+        self._redis_client = None
         self._service = None
         self._session = None
         self._session_external = None
@@ -66,9 +62,6 @@ class TcEx(object):
 
         # init args (needs logger)
         self.inputs = Inputs(self, self._config, kwargs.get('config_file'))
-
-        # include resources module
-        self._resources()
 
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
@@ -93,100 +86,24 @@ class TcEx(object):
         except Exception as e:
             self.handle_error(200, [e])
 
-    def _resources(self, custom_indicators=False):
-        """Initialize the resource module.
-
-        This method will make a request to the ThreatConnect API to dynamically
-        build classes to support custom Indicators.  All other resources are available
-        via this class.
-
-        .. Note:: Resource Classes can be accessed using ``tcex.resources.<Class>`` or using
-                  tcex.resource('<resource name>').
-        """
-        from importlib import import_module
-
-        # create resource object
-        self.resources = import_module('tcex.resources.resources')
-
-        if custom_indicators:
-            self.log.info('Loading custom indicator types.')
-            # Retrieve all indicator types from the API
-            r = self.session.get('/v2/types/indicatorTypes')
-
-            # check for bad status code and response that is not JSON
-            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.log.warning('Custom Indicators are not supported ({}).'.format(r.text))
-                return
-            response = r.json()
-            if response.get('status') != 'Success':
-                self.log.warning(
-                    'Bad Status: Custom Indicators are not supported ({}).'.format(r.text)
-                )
-                return
-
-            try:
-                # Dynamically create custom indicator class
-                data = response.get('data', {}).get('indicatorType', [])
-                for entry in data:
-                    name = self.safe_rt(entry.get('name'))
-                    # temp fix for API issue where boolean are returned as strings
-                    entry['custom'] = self.utils.to_bool(entry.get('custom'))
-                    entry['parsable'] = self.utils.to_bool(entry.get('parsable'))
-                    self._indicator_types.append(u'{}'.format(entry.get('name')))
-                    self._indicator_types_data[entry.get('name')] = entry
-                    if not entry['custom']:
-                        continue
-
-                    # Custom Indicator have 3 values. Only add the value if it is set.
-                    value_fields = []
-                    if entry.get('value1Label'):
-                        value_fields.append(entry.get('value1Label'))
-                    if entry.get('value2Label'):
-                        value_fields.append(entry.get('value2Label'))
-                    if entry.get('value3Label'):
-                        value_fields.append(entry.get('value3Label'))
-
-                    # get instance of Indicator Class
-                    i = self.resources.Indicator(self)
-                    custom = {
-                        '_api_branch': entry['apiBranch'],
-                        '_api_entity': entry['apiEntity'],
-                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                        '_case_preference': entry['casePreference'],
-                        '_custom': entry['custom'],
-                        '_name': name,
-                        '_parsable': entry['parsable'],
-                        '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                        '_status_codes': {
-                            'DELETE': [200],
-                            'GET': [200],
-                            'POST': [200, 201],
-                            'PUT': [200],
-                        },
-                        '_value_fields': value_fields,
-                    }
-                    # Call custom indicator class factory
-                    setattr(
-                        self.resources,
-                        name,
-                        self.resources.class_factory(name, self.resources.Indicator, custom),
-                    )
-            except Exception as e:
-                self.handle_error(220, [e])
-
-    def _signal_handler(self, signal_interupt, frame):  # pylint: disable=W0613
+    def _signal_handler(self, signal_interupt, frame):  # pylint: disable=unused-argument
         """Handle singal interrupt."""
         call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
         call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
         call_line = inspect.stack()[1][0].f_lineno
         self.log.error(
-            'App interrupted - file: {}, method: {}, line: {}.'.format(
-                call_file, call_module, call_line
-            )
+            f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
+
+    def aot_rpush(self, exit_code):
+        """Push message to AOT action channel."""
+        if self.default_args.tc_playbook_db_type == 'Redis':
+            try:
+                self.redis_client.rpush(self.default_args.tc_exit_channel, exit_code)
+            except Exception as e:  # pragma: no cover
+                self.exit(1, f'Exception during AOT exit push ({e}).')
 
     @property
     def args(self):
@@ -226,27 +143,20 @@ class TcEx(object):
 
         return Cache(self, domain, data_type, ttl_minutes, mapping)
 
-    # TODO: remove this method and use JMESPath instead.
-    def data_filter(self, data):
-        """Return an instance of the Data Filter Class.
+    @property
+    def case_management(self):
+        """Include the Threat Intel Module.
 
-        A simple helper module to filter results from ThreatConnect API or other data
-        source.  For example if results need to be filtered by an unsupported field the module
-        allows you to pass the data array/list in and specify one or more filters to get just the
-        results required.
-
-        Args:
-            data (list): The list of dictionary structure to filter.
-
-        Returns:
-            (object): An instance of DataFilter Class
+        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
         """
-        try:
-            from .tcex_data_filter import DataFilter
+        from .case_management import CaseManagement
 
-            return DataFilter(self, data)
-        except ImportError as e:
-            self.log.warning('Required Module is not installed ({}).'.format(e))
+        return CaseManagement(self)
+
+    @property
+    def cm(self):
+        """Include the Case Management Module."""
+        return self.case_management
 
     def datastore(self, domain, data_type, mapping=None):
         """Get instance of the DataStore module.
@@ -287,8 +197,8 @@ class TcEx(object):
         during the call of this method.
 
         Args:
-            code (Optional [integer]): The exit code value for the app.
-            msg (Optional [string]): A message to log and add to message tc output.
+            code (int): The exit code value for the app.
+            msg (str): A message to log and add to message tc output.
         """
         # add exit message to message.tc file and log
         if msg is not None:
@@ -303,17 +213,17 @@ class TcEx(object):
         elif code in [0, 1, 3]:
             pass
         else:
-            self.log.error(u'Invalid exit code')
+            self.log.error('Invalid exit code')
             code = 1
 
         if self.default_args.tc_aot_enabled:
             # push exit message
-            self.playbook.aot_rpush(code)
+            self.aot_rpush(code)
 
         # exit token renewal thread
         self.token.shutdown = True
 
-        self.log.info(u'Exit Code: {}'.format(code))
+        self.log.info(f'Exit Code: {code}')
         sys.exit(code)
 
     @property
@@ -331,7 +241,7 @@ class TcEx(object):
         * 3 indicates a partial failure
 
         Args:
-            code (integer): The exit code value for the app.
+            code (int): The exit code value for the app.
         """
         if code is not None and code in [0, 1, 3]:
             self._exit_code = code
@@ -343,7 +253,7 @@ class TcEx(object):
         """Process indicators expanding file hashes/custom indicators into multiple entries.
 
         Args:
-            indicator (string): " : " delimited string
+            indicator (str): " : " delimited string
         Returns:
             (list): a list of indicators split on " : ".
         """
@@ -371,6 +281,21 @@ class TcEx(object):
             indicator_list = [indicator]
 
         return indicator_list
+
+    @property
+    def victim_asset_types(self):
+        """Return all defined ThreatConnect Asset types.
+
+        Returns:
+            (list): A list of ThreatConnect Asset types.
+        """
+        return [
+            'EmailAddress',
+            'SocialNetwork',
+            'NetworkAccount',
+            'WebSite',
+            'Phone',
+        ]
 
     @property
     def group_types(self):
@@ -417,6 +342,7 @@ class TcEx(object):
             api_entity:
 
         Returns:
+            str|None: The type value or None.
 
         """
         merged = self.group_types_data.copy()
@@ -430,22 +356,24 @@ class TcEx(object):
         """Raise RuntimeError
 
         Args:
-            code (integer): The error code from API or SDK.
-            message (string): The error message from API or SDK.
+            code (int): The error code from API or SDK.
+            message (str): The error message from API or SDK.
+            raise_error (bool, optional): Raise a Runtime error. Defaults to True.
+
+        Raises:
+            RuntimeError: Raised a defined error.
         """
         try:
             if message_values is None:
                 message_values = []
             message = self.error_codes.message(code).format(*message_values)
-            self.log.error('Error code: {}, {}'.format(code, message))
+            self.log.error(f'Error code: {code}, {message}')
         except AttributeError:
-            self.log.error('Incorrect error code provided ({}).'.format(code))
+            self.log.error(f'Incorrect error code provided ({code}).')
             raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
         except IndexError:
             self.log.error(
-                'Incorrect message values provided for error code {} ({}).'.format(
-                    code, message_values
-                )
+                f'Incorrect message values provided for error code {code} ({message_values}).'
             )
             raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
         if raise_error:
@@ -474,7 +402,7 @@ class TcEx(object):
             (list): A list of ThreatConnect Indicator types.
         """
         if not self._indicator_types:
-            self._resources(True)  # load custom indicator associations
+            self._indicator_types = self.indicator_types_data.keys()
         return self._indicator_types
 
     @property
@@ -487,8 +415,16 @@ class TcEx(object):
             (dict): A dictionary of ThreatConnect Indicator data.
         """
         if not self._indicator_types_data:
-            # load custom indicator associations
-            self._resources(True)
+            self._indicator_types_data = {}
+
+            # retrieve data from API
+            r = self.session.get('/v2/types/indicatorTypes')
+            # TODO: use handle error instead
+            if not r.ok:
+                raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
+
+            for itd in r.json().get('data', {}).get('indicatorType'):
+                self._indicator_types_data[itd.get('name')] = itd
         return self._indicator_types_data
 
     @property
@@ -517,11 +453,11 @@ class TcEx(object):
         """Get instance of the Metrics module.
 
         Args:
-            name (string): The name for the metric.
-            description (string): The description of the metric.
-            data_type (string): The type of metric: Sum, Count, Min, Max, First, Last, and Average.
-            interval (string): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
-            keyed (boolean): Indicates whether the data will have a keyed value.
+            name (str): The name for the metric.
+            description (str): The description of the metric.
+            data_type (str): The type of metric: Sum, Count, Min, Max, First, Last, and Average.
+            interval (str): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
+            keyed (bool): Indicates whether the data will have a keyed value.
 
         Returns:
             (object): An instance of the Metrics Class.
@@ -538,7 +474,8 @@ class TcEx(object):
         this limit will be truncated. The last <max_length> characters will be preserved.
 
         Args:
-            message (string): The message to add to message_tc file
+            message (str): The message to add to message_tc file
+            max_length (int, optional): The maximum length of an exit message. Defaults to 255.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
             message_file = os.path.join(self.default_args.tc_out_path, 'message.tc')
@@ -570,15 +507,35 @@ class TcEx(object):
         """Instance tcex args parser."""
         return self.inputs.parser
 
-    @property
-    def playbook(self):
-        """Include the Playbook Module.
+    def pb(self, context, output_variables):
+        """Return a new instance of playbook module.
 
-        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
+        Args:
+            context (str): The Redis context for Playbook or Service Apps.
+            output_variables (list): A list of requested PB/Service output variables.
+
+        Returns:
+            tcex.playbook.Playbooks: An instance of Playbooks
         """
         from .playbooks import Playbooks
 
-        return Playbooks(self)
+        return Playbooks(self, context, output_variables)
+
+    @property
+    def playbook(self):
+        """Return an instance of Playbooks module.
+
+        This property defaults context and outputvariables to arg values.
+
+        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
+        """
+        if self._playbook is None:
+            # handle outputs coming in as a csv string and list
+            outputs = self.default_args.tc_playbook_out_variables or []
+            if isinstance(outputs, str):
+                outputs = outputs.split(',')
+            self._playbook = self.pb(self.default_args.tc_playbook_db_context, outputs)
+        return self._playbook
 
     @property
     def proxies(self):
@@ -609,21 +566,14 @@ class TcEx(object):
                 tc_proxy_password = quote(self.default_args.tc_proxy_password, safe='~')
 
                 # proxy url with auth
-                proxy_url = '{}:{}@{}:{}'.format(
-                    tc_proxy_username,
-                    tc_proxy_password,
-                    self.default_args.tc_proxy_host,
-                    self.default_args.tc_proxy_port,
+                proxy_url = (
+                    f'{tc_proxy_username}:{tc_proxy_password}'
+                    f'@{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}'
                 )
             else:
                 # proxy url without auth
-                proxy_url = '{}:{}'.format(
-                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                )
-            proxies = {
-                'http': 'http://{}'.format(proxy_url),
-                'https': 'https://{}'.format(proxy_url),
-            }
+                proxy_url = f'{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}'
+            proxies = {'http': f'http://{proxy_url}', 'https': f'https://{proxy_url}'}
         return proxies
 
     @property
@@ -631,46 +581,43 @@ class TcEx(object):
         """Return argparser args Namespace with Playbook args automatically resolved."""
         return self.inputs.resolved_args()
 
-    def request(self, session=None):
-        """Return an instance of the Request Class.
+    @staticmethod
+    def rc(host, port, db=0, blocking=False, **kwargs):
+        """Return a *new* instance of Redis client.
 
-        A wrapper on the Python Requests module that provides a different interface for creating
-        requests. The session property of this instance has built-in logging, session level
-        retries, and preconfigured proxy configuration.
-
-        Returns:
-            (object): An instance of Request Class
-        """
-        try:
-            from .tcex_request import TcExRequest
-
-            r = TcExRequest(self, session)
-            if session is None and self.default_args.tc_proxy_external:
-                self.log.info(
-                    'Using proxy server for external request {}:{}.'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                    )
-                )
-                r.proxies = self.proxies
-            return r
-        except ImportError as e:
-            self.handle_error(105, [e])
-
-    def resource(self, resource_type):
-        """Get instance of Resource Class with dynamic type.
+        For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
 
         Args:
-            resource_type: The resource type name (e.g Adversary, User Agent, etc).
+            host (str, optional): The REDIS host. Defaults to localhost.
+            port (int, optional): The REDIS port. Defaults to 6379.
+            db (int, optional): The REDIS db. Defaults to 0.
+            blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.
+            errors (str, kwargs): The REDIS errors policy (e.g. strict).
+            max_connections (int, kwargs): The maximum number of connections to REDIS.
+            password (str, kwargs): The REDIS password.
+            socket_timeout (int, kwargs): The REDIS socket timeout.
+            timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
 
         Returns:
-            (object): Instance of Resource Object child class.
+            Redis.client: An instance of redis client.
         """
-        try:
-            resource = getattr(self.resources, self.safe_rt(resource_type))(self)
-        except AttributeError:
-            self._resources(True)
-            resource = getattr(self.resources, self.safe_rt(resource_type))(self)
-        return resource
+        from .key_value_store import RedisClient
+
+        return RedisClient(host=host, port=port, db=db, blocking=blocking, **kwargs).client
+
+    @property
+    def redis_client(self):
+        """Return redis client instance configure for Playbook/Service Apps."""
+        if self._redis_client is None:
+            from .key_value_store import RedisClient
+
+            self._redis_client = RedisClient(
+                host=self.default_args.tc_playbook_db_path,
+                port=self.default_args.tc_playbook_db_port,
+                db=0,
+            ).client
+
+        return self._redis_client
 
     def results_tc(self, key, value):
         """Write data to results_tc file in TcEX specified directory.
@@ -679,11 +626,11 @@ class TcEx(object):
         method will store the values for TC to read and put into the Database.
 
         Args:
-            key (string): The data key to be stored.
-            value (string): The data value to be stored.
+            key (str): The data key to be stored.
+            value (str): The data value to be stored.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
-            results_file = '{}/results.tc'.format(self.default_args.tc_out_path)
+            results_file = f'{self.default_args.tc_out_path}/results.tc'
         else:
             results_file = 'results.tc'
 
@@ -703,59 +650,26 @@ class TcEx(object):
                     v = value
                     new = False
                 if v is not None:
-                    results += '{} = {}\n'.format(k, v)
+                    results += f'{k} = {v}\n'
             if new and value is not None:  # indicates the key/value pair didn't already exist
-                results += '{} = {}\n'.format(key, value)
+                results += f'{key} = {value}\n'
             fh.seek(0)
             fh.write(results)
             fh.truncate()
 
-    def s(self, data, errors='strict'):
-        """Decode value using correct Python 2/3 method.
-
-        This method is intended to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method with
-        better logic to handle poorly encoded unicode data in Python2 and still work in Python3.
-
-        Args:
-            data (any): Data to ve validated and (de)encoded
-            errors (string): What method to use when dealing with errors.
-
-        Returns:
-            (string): Return decoded data
-        """
-        try:
-            if data is None or isinstance(data, (int, list, dict)):
-                pass  # Do nothing with these types
-            elif isinstance(data, unicode):
-                try:
-                    data.decode('utf-8')
-                except UnicodeEncodeError:  # 2to3 converts unicode to str
-                    # 2to3 converts unicode to str
-                    data = str(data.encode('utf-8').strip(), errors=errors)
-                    self.log.warning('Encoding poorly encoded string ({})'.format(data))
-                except AttributeError:
-                    pass  # Python 3 can't decode a str
-            else:
-                data = str(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
-        except NameError:
-            pass  # Can't decode str in Python 3
-        return data
-
-    def safe_indicator(self, indicator, errors='strict'):
+    @staticmethod
+    def safe_indicator(indicator):
         """Format indicator value for safe HTTP request.
 
         Args:
-            indicator (string): Indicator to URL Encode
-            errors (string): The error handler type.
+            indicator (str): Indicator to URL Encode
+            errors (str): The error handler type.
 
         Returns:
-            (string): The urlencoded string
+            (str): The urlencoded string
         """
         if indicator is not None:
-            try:
-                indicator = quote(self.s(str(indicator), errors=errors), safe='~')
-            except KeyError:
-                indicator = quote(bytes(indicator), safe='~')
+            indicator = quote(indicator, safe='~')
         return indicator
 
     @staticmethod
@@ -767,11 +681,11 @@ class TcEx(object):
         (e.g. *User Agent* is converted to User_Agent or user_agent.)
 
         Args:
-           resource_type (string): The resource type to format.
-           lower (boolean): Return type in all lower case
+           resource_type (str): The resource type to format.
+           lower (bool): Return type in all lower case
 
         Returns:
-            (string): The formatted resource type.
+            (str): The formatted resource type.
         """
         if resource_type is not None:
             resource_type = resource_type.replace(' ', '_')
@@ -786,12 +700,12 @@ class TcEx(object):
         .. note:: Currently the ThreatConnect group name limit is 100 characters.
 
         Args:
-           group_name (string): The raw group name to be truncated.
+           group_name (str): The raw group name to be truncated.
            group_max_length (int): The max length of the group name.
-           ellipsis (boolean): If true the truncated name will have '...' appended.
+           ellipsis (bool): If true the truncated name will have '...' appended.
 
         Returns:
-            (string): The truncated group name with optional ellipsis.
+            (str): The truncated group name with optional ellipsis.
         """
         ellipsis_value = ''
         if ellipsis:
@@ -802,50 +716,40 @@ class TcEx(object):
             group_name_array = group_name.split(' ')
             group_name = ''
             for word in group_name_array:
-                word = u'{}'.format(word)
+                word = f'{word}'
                 if (len(group_name) + len(word) + len(ellipsis_value)) >= group_max_length:
-                    group_name = '{}{}'.format(group_name, ellipsis_value)
+                    group_name = f'{group_name}{ellipsis_value}'
                     group_name = group_name.lstrip(' ')
                     break
-                group_name += ' {}'.format(word)
+                group_name += f' {word}'
         return group_name
 
-    def safetag(self, tag, errors='strict'):
-        """Preserve safetag method name for older Apps."""
-        return self.safe_tag(tag, errors)
-
-    def safe_tag(self, tag, errors='strict'):
+    @staticmethod
+    def safe_tag(tag):
         """Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
-           tag (string): The tag to be truncated
+           tag (str): The tag to be truncated
 
         Returns:
-            (string): The truncated tag
+            (str): The truncated and quoted tag
         """
         if tag is not None:
-            try:
-                # handle unicode characters and url encode tag value
-                tag = quote(self.s(tag, errors=errors), safe='~')[:128]
-            except KeyError as e:
-                self.log.warning('Failed converting tag to safetag ({})'.format(e))
+            tag = quote(tag[:128], safe='~')
         return tag
 
-    def safeurl(self, url, errors='strict'):
-        """Preserve safeurl method name for older Apps."""
-        return self.safe_url(url, errors)
-
-    def safe_url(self, url, errors='strict'):
+    @staticmethod
+    def safe_url(url):
         """Encode value for safe HTTP request.
 
         Args:
-            url (string): The string to URL Encode.
+            url (str): The string to URL Encode.
 
         Returns:
-            (string): The urlencoded string.
+            (str): The urlencoded string.
         """
         if url is not None:
-            url = quote(self.s(url, errors=errors), safe='~')
+            url = quote(url, safe='~')
         return url
 
     @property
@@ -873,16 +777,9 @@ class TcEx(object):
     def session_external(self):
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session_external is None:
-            from requests import Session
+            from .sessions import ExternalSession
 
-            self._session_external = Session()
-            if self.default_args.tc_proxy_external:
-                self.log.info(
-                    'Using proxy server for external connectivity ({}:{}).'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                    )
-                )
-                self._session_external.proxies = self.proxies
+            self._session_external = ExternalSession(self)
         return self._session_external
 
     @property
@@ -892,9 +789,9 @@ class TcEx(object):
         .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
         """
         if self._ti is None:
-            from .tcex_ti import TcExTi
+            from .threat_intelligence import ThreatIntelligence
 
-            self._ti = TcExTi(self)
+            self._ti = ThreatIntelligence(self)
         return self._ti
 
     @property
@@ -916,5 +813,5 @@ class TcEx(object):
         if self._utils is None:
             from .utils import Utils
 
-            self._utils = Utils(self)
+            self._utils = Utils(temp_path=self.default_args.tc_temp_path)
         return self._utils

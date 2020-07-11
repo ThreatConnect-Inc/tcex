@@ -1,201 +1,142 @@
 # -*- coding: utf-8 -*-
 """TcEx Utilities Module"""
-from datetime import datetime
-import calendar
-import math
+import ipaddress
 import os
+import random
 import re
-import time
+import string
 import uuid
+from typing import Any, List
 
-from pytz import timezone
-import pytz
-from dateutil import parser
-from dateutil.relativedelta import relativedelta
-from tzlocal import get_localzone
-import parsedatetime as pdt
+import pyaes
+
+from .date_utils import DatetimeUtils
 
 
 class Utils:
-    """TcEx framework Utils module"""
+    """TcEx framework Utils Class
 
-    def __init__(self, tcex=None):
-        """Initialize the Class properties.
+    Args:
+        temp_path (str, optional): The path to write temp files.
+    """
 
-        Args:
-            tcex (object): Instance of TcEx.
-            rhash (string): The REDIS hash.
-        """
-        self.tcex = tcex
+    def __init__(self, temp_path=None):
+        """Initialize the Class properties."""
+        self.temp_path = temp_path or '/tmp'
+
+        # properties
+        self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
         self._inflect = None
+        self.variable_match = re.compile(fr'^{self.variable_pattern}$')
+        self.variable_parse = re.compile(self.variable_pattern)
 
-    def any_to_datetime(self, time_input, tz=None):
-        """Return datetime object from multiple formats.
-
-            Formats:
-
-            #. Human Input (e.g 30 days ago, last friday)
-            #. ISO 8601 (e.g. 2017-11-08T16:52:42Z)
-            #. Loose Date format (e.g. 2017 12 25)
-            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)
+    def camel_to_snake(self, camel_string):
+        """Return snake case string from a camel case string.
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
+            camel_string (str): The camel case input string.
 
         Returns:
-            (datetime.datetime): Python datetime.datetime object.
+            str: The snake case representation of input string.
         """
-        # handle timestamp (e.g. 1510686617 or 1510686617.298753)
-        dt_value = self.unix_time_to_datetime(time_input, tz)
+        return self._camel_pattern.sub('_', camel_string).lower()
 
-        # handle ISO or other formatted date (e.g. 2017-11-08T16:52:42Z,
-        # 2017-11-08T16:52:42.400306+00:00)
-        if dt_value is None:
-            dt_value = self.date_to_datetime(time_input, tz)
+    def camel_to_space(self, camel_string):
+        """Return space case string from a camel case string.
 
-        # handle human readable relative time (e.g. 30 days ago, last friday)
-        if dt_value is None:
-            dt_value = self.human_date_to_datetime(time_input, tz)
+        Args:
+            camel_string (str): The camel case input string.
 
-        # if all attempt to convert fail raise an error
-        if dt_value is None:
-            raise RuntimeError('Could not format input ({}) to datetime string.'.format(time_input))
+        Returns:
+            str: The space representation of input string.
+        """
+        return self._camel_pattern.sub(' ', camel_string).lower()
 
-        return dt_value
+    @property
+    def datetime(self):
+        """Return an instance of DatetimeUtils."""
+        return DatetimeUtils()
 
     @staticmethod
-    def _replace_timezone(dateutil_parser):
-        try:
-            # try to get the timezone from tzlocal
-            tzinfo = timezone(get_localzone().zone)
-        except pytz.exceptions.UnknownTimeZoneError:  # pragma: no cover
-            try:
-                # try to get the timezone from python's time package
-                tzinfo = timezone(time.tzname[0])
-            except pytz.exceptions.UnknownTimeZoneError:
-                # seeing as all else has failed: use UTC as the timezone
-                tzinfo = timezone('UTC')
-        return tzinfo.localize(dateutil_parser)
-
-    def date_to_datetime(self, time_input, tz=None):
-        """ Convert ISO 8601 and other date strings to datetime.datetime type.
+    def decrypt_aes_cbc(key, ciphertext, iv=None):
+        """Return AES CBC decrypted string.
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
+            key (bytes): The encryption key.
+            ciphertext (bytes): The ciphertext to decrypt.
+            iv (bytes, optional): The CBC initial vector.
 
         Returns:
-            (datetime.datetime): Python datetime.datetime object.
+            bytes: The encoded string.
         """
-        dt = None
-        try:
-            # dt = parser.parse(time_input, fuzzy_with_tokens=True)[0]
-            dt = parser.parse(time_input)
-            # don't convert timezone if dt timezone already in the correct timezone
-            if tz is not None and tz != dt.tzname():
-                if dt.tzinfo is None:
-                    dt = self._replace_timezone(dt)
-                dt = dt.astimezone(timezone(tz))
-        except IndexError:  # pragma: no cover
-            pass
-        except TypeError:
-            pass
-        except ValueError:
-            pass
-        return dt
+        iv = iv or b'\0' * 16
 
-    def format_datetime(self, time_input, tz=None, date_format=None):
-        """ Return timestamp from multiple input formats.
+        # ensure key is bytes
+        if isinstance(key, str):
+            key = key.encode()
 
-            Formats:
+        # ensure iv is bytes
+        if isinstance(iv, str):
+            iv = iv.encode()
 
-            #. Human Input (e.g 30 days ago, last friday)
-            #. ISO 8601 (e.g. 2017-11-08T16:52:42Z)
-            #. Loose Date format (e.g. 2017 12 25)
-            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)
+        aes_cbc_decrypt = pyaes.Decrypter(pyaes.AESModeOfOperationCBC(key, iv=iv))
+        decrypted = aes_cbc_decrypt.feed(ciphertext)
+        decrypted += aes_cbc_decrypt.feed()
+        return decrypted
 
-        .. note:: To get a unix timestamp format use the strftime format **%s**. Python
-                  does not natively support **%s**, however this method has support.
+    @staticmethod
+    def encrypt_aes_cbc(key, plaintext, iv=None):
+        """Return AES CBC encrypted string.
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
-            date_format (string): The strftime format to use, ISO by default.
+            key (bytes): The encryption key.
+            plaintext (str|bytes): The text to encrypt.
+            iv (bytes, optional): The CBC initial vector.
 
         Returns:
-            (string): Formatted datetime string.
+            bytes: The encoded string.
         """
+        iv = iv or b'\0' * 16
 
-        # handle timestamp (e.g. 1510686617 or 1510686617.298753)
-        dt_value = self.any_to_datetime(time_input, tz)
+        # ensure key is bytes
+        if isinstance(key, str):
+            key = key.encode()
 
-        # format date
-        if date_format == '%s':
-            dt_value = calendar.timegm(dt_value.timetuple())
-        elif date_format:
-            dt_value = dt_value.strftime(date_format)
-        else:
-            dt_value = dt_value.isoformat()
+        # ensure plaintext is bytes
+        if isinstance(plaintext, str):
+            plaintext = plaintext.encode()
 
-        return dt_value
+        # ensure iv is bytes
+        if isinstance(iv, str):
+            iv = iv.encode()
 
-    def human_date_to_datetime(self, time_input, tz=None, source_datetime=None):
-        """ Convert human readable date (e.g. 30 days ago) to datetime.datetime using
-            parsedatetime module.
+        aes_cbc_encrypt = pyaes.Encrypter(pyaes.AESModeOfOperationCBC(key, iv=iv))
+        encrypted = aes_cbc_encrypt.feed(plaintext)
+        encrypted += aes_cbc_encrypt.feed()
+        return encrypted
 
-        Examples:
+    @staticmethod
+    def flatten_list(lst: List[Any]) -> List[Any]:
+        """Flatten a list
 
-        * August 25th, 2008
-        * 25 Aug 2008
-        * Aug 25 5pm
-        * 5pm August 25
-        * next saturday
-        * tomorrow
-        * next thursday at 4pm
-        * at 4pm
-        * eod
-        * tomorrow eod
-        * eod tuesday
-        * eoy
-        * eom
-        * in 5 minutes
-        * 5 minutes from now
-        * 5 hours before now
-        * 2 hours before noon
-        * 2 days from tomorrow
+        Will work for lists of lists to arbitrary depth
+        and for lists with a mix of lists and single values
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned datetime.
-            source_datetime (datetime.datetime): The reference or source datetime.
+            lst (list): The list to flatten
 
         Returns:
-            (datetime.datetime): Python datetime.datetime object.
+            list: the flattened list
         """
+        flat_list = []
+        for sublist in lst:
+            if isinstance(sublist, list):
+                for item in Utils.flatten_list(sublist):
+                    flat_list.append(item)
+            else:
+                flat_list.append(sublist)
 
-        c = pdt.Constants('en')
-        cal = pdt.Calendar(c)
-        # cal = pdt.Calendar(c, version=pdt.VERSION_CONTEXT_STYLE)
-        tzinfo = None
-        src_tzname = None
-        if source_datetime is not None:
-            tzinfo = source_datetime.tzinfo
-            src_tzname = source_datetime.tzname()
-        try:
-            dt, status = cal.parseDT(time_input, sourceTime=source_datetime, tzinfo=tzinfo)
-            if tz is not None:  # don't add tz if no tz value is passed
-                if dt.tzinfo is None:
-                    dt = self._replace_timezone(dt)
-                # don't covert timezone if source timezone already in the correct timezone
-                if tz != src_tzname:
-                    dt = dt.astimezone(timezone(tz))
-            if status == 0:
-                dt = None
-        except TypeError:  # pragma: no cover
-            dt = None
-
-        return dt
+        return flat_list
 
     @property
     def inflect(self):
@@ -205,6 +146,194 @@ class Utils:
 
             self._inflect = inflect.engine()
         return self._inflect
+
+    @staticmethod
+    def is_cidr(possible_cidr_range: str) -> bool:
+        """Return whether the possible_cidr_range is a CIDR range."""
+        try:
+            ipaddress.ip_address(possible_cidr_range)
+        except ValueError:
+            try:
+                ipaddress.ip_interface(possible_cidr_range)
+            except Exception:
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    @staticmethod
+    def is_ip(possible_ip: str) -> bool:
+        """Return whether the possible_ip is an IP address range."""
+        try:
+            ipaddress.ip_address(possible_ip)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def printable_cred(cred, visible=1, mask_char=None):
+        """Return a printable (masked) version of the provided credential.
+
+        Args:
+            cred (str): The cred to print.
+            visible (str): The number of characters at the beginning and
+                ending of the cred to not mask.
+            mask_char (str, Default: "*"): The character to use in the mask.
+
+        Returns:
+            str: The reformatted token.
+        """
+        mask_char = mask_char or '*'
+        if cred is not None and len(cred) >= visible * 2:
+            cred = f'{cred[:visible]}{mask_char * 4}{cred[-visible:]}'
+        return cred
+
+    @staticmethod
+    def random_string(string_length=10):
+        """Generate a random string of fixed length
+
+        Args:
+            string_length (int, optional): The length of the string. Defaults to 10.
+
+        Returns:
+            str: A random string
+        """
+        return ''.join(random.choice(string.ascii_letters) for i in range(string_length))
+
+    def requests_to_curl(self, request, mask_headers=True, mask_patterns=None, verify=True):
+        """Return converted PreparedRequest to a curl command.
+
+        Args:
+            request (requests.models.PreparedRequest): The response.request object.
+            mask_headers (bool, default: True): If True then values for certain header
+                key will be masked.
+            mask_patterns (list, default: None): A list of patterns if found in headers the value
+                will be masked.
+            verify (bool, default: True): If False the curl command will include --insecure flag.
+
+        Returns:
+            str: The curl command.
+        """
+        # APP-79 - adding the ability to log request as curl commands
+        cmd = ['curl', '-X', request.method]
+
+        # add headers to curl command
+        for k, v in sorted(list(dict(request.headers).items())):
+            if mask_headers is True:
+                patterns = [
+                    'authorization',
+                    'password',
+                    'session',
+                    'username',
+                    'token',
+                ]
+                if isinstance(mask_patterns, list):
+                    # add user defined mask patterns
+                    patterns.extend(mask_patterns)
+
+                for p in patterns:
+                    if re.match(rf'.*{p}.*', k, re.IGNORECASE):
+                        v = self.printable_cred(v)
+
+                # using gzip in Accept-Encoding with CURL on the CLI produces
+                # the warning "Binary output can mess up your terminal."
+                if k.lower() == 'accept-encoding':
+                    encodings = [e.strip() for e in v.split(',')]
+                    for encoding in list(encodings):
+                        if encoding in ['gzip']:
+                            encodings.remove(encoding)
+                    v = ', '.join(encodings)
+
+            cmd.append(f"-H '{k}: {v}'")
+
+        if request.body:
+            # add body to the curl command
+            body = request.body
+            try:
+                if isinstance(body, bytes):
+                    body = body.decode('utf-8')
+                body_data = f'-d "{body}"'
+            except Exception:
+                temp_file = self.write_temp_binary_file(body)
+                body_data = f'--data-binary @{temp_file}'
+            cmd.append(body_data)
+
+        if not verify:
+            # add insecure flag to curl command
+            cmd.append('--insecure')
+
+        # add url to curl command
+        cmd.append(request.url)
+
+        return ' '.join(cmd)
+
+    @staticmethod
+    def snake_to_camel(snake_string):
+        """Convert snake_case to camelCase
+
+        Args:
+            snake_string (str): The snake case input string.
+        """
+        components = snake_string.split('_')
+        return components[0] + ''.join(x.title() for x in components[1:])
+
+    @staticmethod
+    def standardize_asn(asn: str) -> str:
+        """Return the ASN formatted for ThreatConnect."""
+        numbers = re.findall('[0-9]+', asn)
+        if len(numbers) == 1:
+            asn = f'ASN{numbers[0]}'
+        return asn
+
+    @staticmethod
+    def to_bool(value):
+        """Convert value to bool.
+
+        Args:
+            value (bool|str): The value to convert to boolean.
+
+        Returns:
+            bool: The boolean value
+        """
+        return str(value).lower() in ['1', 't', 'true', 'y', 'yes']
+
+    def variable_method_name(self, variable):
+        """Convert variable name to a valid method name.
+
+        #App:9876:string.operation!String -> string_operation_string
+
+        Args:
+            variable (string): The variable name to convert.
+
+        Returns:
+            (str): Method name
+        """
+        method_name = None
+        if variable is not None:
+            variable = variable.strip()
+            if re.match(self.variable_match, variable):
+                var = re.search(self.variable_parse, variable)
+                variable_name = var.group(3).replace('.', '_').lower()
+                variable_type = var.group(4).lower()
+                method_name = f'{variable_name}_{variable_type}'
+        return method_name
+
+    @property
+    def variable_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        return (
+            r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+            r':([\d]+)'  # app id (:7979)
+            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+            r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        )
 
     def write_temp_binary_file(self, content, filename=None):
         """Write content to a temporary file.
@@ -222,117 +351,20 @@ class Utils:
     def write_temp_file(self, content, filename=None, mode='w'):
         """Write content to a temporary file.
 
+        If passing binary data the mode needs to be set to 'wb'.
+
         Args:
-            content (bytes|str): The file content. If passing binary data the mode needs to be set
-                to 'wb'.
-            filename (str, optional): The filename to use when writing the file.
-            mode (str, optional): The file write mode which could be either 'w' or 'wb'.
+            content (bytes|str): The file content.
+            filename (str, optional): The filename to use when writing the file. Defaults to None.
+            mode (str, optional): The write mode ('w' or 'wb'). Defaults to w.
 
         Returns:
             str: Fully qualified path name for the file.
         """
         if filename is None:
             filename = str(uuid.uuid4())
-        fqpn = os.path.join(self.tcex.default_args.tc_temp_path, filename)
+        fqpn = os.path.join(self.temp_path, filename)
         os.makedirs(os.path.dirname(fqpn), exist_ok=True)
         with open(fqpn, mode) as fh:
             fh.write(content)
         return fqpn
-
-    def timedelta(self, time_input1, time_input2):
-        """ Calculates time delta between two time expressions.
-
-        Args:
-            time_input1 (string): The time input string (see formats above).
-            time_input2 (string): The time input string (see formats above).
-
-        Returns:
-            (dict): Dict with delta values.
-        """
-        time_input1 = self.any_to_datetime(time_input1)
-        time_input2 = self.any_to_datetime(time_input2)
-
-        diff = time_input1 - time_input2  # timedelta
-        delta = relativedelta(time_input1, time_input2)  # relativedelta
-
-        # totals
-        total_months = (delta.years * 12) + delta.months
-        total_weeks = (delta.years * 52) + (total_months * 4) + delta.weeks
-        total_days = diff.days  # handles leap days
-        total_hours = (total_days * 24) + delta.hours
-        total_minutes = (total_hours * 60) + delta.minutes
-        total_seconds = (total_minutes * 60) + delta.seconds
-        total_microseconds = (total_seconds * 1000) + delta.microseconds
-        return {
-            'datetime_1': time_input1.isoformat(),
-            'datetime_2': time_input2.isoformat(),
-            'years': delta.years,
-            'months': delta.months,
-            'weeks': delta.weeks,
-            'days': delta.days,
-            'hours': delta.hours,
-            'minutes': delta.minutes,
-            'seconds': delta.seconds,
-            'microseconds': delta.microseconds,
-            'total_months': total_months,
-            'total_weeks': total_weeks,
-            'total_days': total_days,
-            'total_hours': total_hours,
-            'total_minutes': total_minutes,
-            'total_seconds': total_seconds,
-            'total_microseconds': total_microseconds,
-        }
-
-    @staticmethod
-    def to_bool(value):
-        """Convert string value to bool."""
-        bool_value = False
-        if str(value).lower() in ['1', 'true']:
-            bool_value = True
-        return bool_value
-
-    @staticmethod
-    def unix_time_to_datetime(time_input, tz=None):
-        """ Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753
-            to datetime.datetime type.
-
-        .. note:: This method assumes UTC for all inputs.
-
-        .. note:: This method only accepts a 9-10 character time_input.
-
-        Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned datetime (e.g. UTC).
-
-        Returns:
-            (datetime.datetime): Python datetime.datetime object.
-        """
-        dt = None
-        if re.compile(r'^[0-9]{11,16}$').findall(str(time_input)):
-            # handle timestamp with milliseconds and no "."
-            time_input_length = len(str(time_input)) - 10
-            dec = math.pow(10, time_input_length)
-            time_input = float(time_input) / dec
-
-        if re.compile(r'^[0-9]{9,10}(?:\.[0-9]{0,6})?$').findall(str(time_input)):
-            dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
-            # don't covert timezone if dt timezone already in the correct timezone
-            if tz is not None and tz != dt.tzname():
-                dt = dt.astimezone(timezone(tz))
-
-        return dt
-
-
-# >>> from pytz import timezone
-# >>> from datetime import datetime
-# >>> time_input = 1229084481
-# >>> dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
-# >>> dt.isoformat()
-# '2008-12-12T12:21:21+00:00'
-# >>> tz.normalize(dt).isoformat()
-# '2008-12-12T06:21:21-06:00'
-# >>> dt.astimezone(timezone('US/Central'))
-# datetime.datetime(2008, 12, 12, 6, 21, 21,
-#   tzinfo=<DstTzInfo 'US/Central' CST-1 day, 18:00:00 STD>)
-# >>> dt.astimezone(timezone('US/Central')).isoformat()
-# '2008-12-12T06:21:21-06:00'

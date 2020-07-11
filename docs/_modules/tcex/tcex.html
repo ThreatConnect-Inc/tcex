@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.6
               </div>
 
 
@@ -91,18 +91,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
@@ -179,28 +178,23 @@
   <h1>Source code for tcex.tcex</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">str</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 2</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 3</span>
-
-<span class="kn">from</span> <span class="nn">.inputs</span> <span class="k">import</span> <span class="n">Inputs</span>
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">Logger</span>
-<span class="kn">from</span> <span class="nn">.app_config_object</span> <span class="k">import</span> <span class="n">InstallJson</span>
-<span class="kn">from</span> <span class="nn">.tokens</span> <span class="k">import</span> <span class="n">Tokens</span>
+<span class="kn">from</span> <span class="nn">.app_config_object</span> <span class="kn">import</span> <span class="n">InstallJson</span>
+<span class="kn">from</span> <span class="nn">.inputs</span> <span class="kn">import</span> <span class="n">Inputs</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">.tokens</span> <span class="kn">import</span> <span class="n">Tokens</span>
 
 
-<div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provides basic functionality for all types of TxEx Apps.</span>
 
 <span class="sd">    Args:</span>
@@ -212,7 +206,7 @@
 <span class="sd">            tcex logger.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.&quot;&quot;&quot;</span>
         <span class="c1"># catch interupt signals</span>
         <span class="k">if</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;MainThread&#39;</span><span class="p">:</span>
@@ -222,16 +216,17 @@
             <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
 
         <span class="c1"># Property defaults</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_associations_types_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="o">=</span> <span class="kc">None</span>
@@ -245,9 +240,6 @@
 
         <span class="c1"># init args (needs logger)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config_file&#39;</span><span class="p">))</span>
-
-        <span class="c1"># include resources module</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TcEx._association_types"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._association_types">[docs]</a>    <span class="k">def</span> <span class="nf">_association_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieve Custom Indicator Associations types from the ThreatConnect API.&quot;&quot;&quot;</span>
@@ -272,100 +264,24 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="TcEx._resources"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources">[docs]</a>    <span class="k">def</span> <span class="nf">_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_indicators</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize the resource module.</span>
-
-<span class="sd">        This method will make a request to the ThreatConnect API to dynamically</span>
-<span class="sd">        build classes to support custom Indicators.  All other resources are available</span>
-<span class="sd">        via this class.</span>
-
-<span class="sd">        .. Note:: Resource Classes can be accessed using ``tcex.resources.&lt;Class&gt;`` or using</span>
-<span class="sd">                  tcex.resource(&#39;&lt;resource name&gt;&#39;).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
-
-        <span class="c1"># create resource object</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;tcex.resources.resources&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">custom_indicators</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading custom indicator types.&#39;</span><span class="p">)</span>
-            <span class="c1"># Retrieve all indicator types from the API</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/v2/types/indicatorTypes&#39;</span><span class="p">)</span>
-
-            <span class="c1"># check for bad status code and response that is not JSON</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Custom Indicators are not supported (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
-                <span class="k">return</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s1">&#39;Bad Status: Custom Indicators are not supported (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="k">return</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># Dynamically create custom indicator class</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicatorType&#39;</span><span class="p">,</span> <span class="p">[])</span>
-                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-                    <span class="c1"># temp fix for API issue where boolean are returned as strings</span>
-                    <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;custom&#39;</span><span class="p">))</span>
-                    <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;parsable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parsable&#39;</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span><span class="p">[</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">entry</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]:</span>
-                        <span class="k">continue</span>
-
-                    <span class="c1"># Custom Indicator have 3 values. Only add the value if it is set.</span>
-                    <span class="n">value_fields</span> <span class="o">=</span> <span class="p">[]</span>
-                    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value1Label&#39;</span><span class="p">):</span>
-                        <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value1Label&#39;</span><span class="p">))</span>
-                    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value2Label&#39;</span><span class="p">):</span>
-                        <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value2Label&#39;</span><span class="p">))</span>
-                    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">):</span>
-                        <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">))</span>
-
-                    <span class="c1"># get instance of Indicator Class</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-                    <span class="n">custom</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s1">&#39;_api_branch&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">],</span>
-                        <span class="s1">&#39;_api_entity&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">],</span>
-                        <span class="s1">&#39;_api_uri&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">]),</span>
-                        <span class="s1">&#39;_case_preference&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;casePreference&#39;</span><span class="p">],</span>
-                        <span class="s1">&#39;_custom&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">],</span>
-                        <span class="s1">&#39;_name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                        <span class="s1">&#39;_parsable&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;parsable&#39;</span><span class="p">],</span>
-                        <span class="s1">&#39;_request_entity&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">],</span>
-                        <span class="s1">&#39;_request_uri&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">]),</span>
-                        <span class="s1">&#39;_status_codes&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
-                            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
-                            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
-                            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
-                        <span class="p">},</span>
-                        <span class="s1">&#39;_value_fields&#39;</span><span class="p">:</span> <span class="n">value_fields</span><span class="p">,</span>
-                    <span class="p">}</span>
-                    <span class="c1"># Call custom indicator class factory</span>
-                    <span class="nb">setattr</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span>
-                        <span class="n">name</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">class_factory</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Indicator</span><span class="p">,</span> <span class="n">custom</span><span class="p">),</span>
-                    <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">])</span></div>
-
-<div class="viewcode-block" id="TcEx._signal_handler"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._signal_handler">[docs]</a>    <span class="k">def</span> <span class="nf">_signal_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal_interupt</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>  <span class="c1"># pylint: disable=W0613</span>
+<div class="viewcode-block" id="TcEx._signal_handler"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._signal_handler">[docs]</a>    <span class="k">def</span> <span class="nf">_signal_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal_interupt</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
         <span class="sd">&quot;&quot;&quot;Handle singal interrupt.&quot;&quot;&quot;</span>
         <span class="n">call_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span><span class="p">)</span>
         <span class="n">call_module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">f_globals</span><span class="p">[</span><span class="s1">&#39;__name__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;Functions.&#39;</span><span class="p">)</span>
         <span class="n">call_line</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">f_lineno</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="s1">&#39;App interrupted - file: </span><span class="si">{}</span><span class="s1">, method: </span><span class="si">{}</span><span class="s1">, line: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">call_file</span><span class="p">,</span> <span class="n">call_module</span><span class="p">,</span> <span class="n">call_line</span>
-            <span class="p">)</span>
+            <span class="sa">f</span><span class="s1">&#39;App interrupted - file: </span><span class="si">{call_file}</span><span class="s1">, method: </span><span class="si">{call_module}</span><span class="s1">, line: </span><span class="si">{call_line}</span><span class="s1">.&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">signal_interupt</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;The App received an interrupt signal and will now exit.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcEx.aot_rpush"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.aot_rpush">[docs]</a>    <span class="k">def</span> <span class="nf">aot_rpush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Push message to AOT action channel.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;Redis&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">rpush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_exit_channel</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Exception during AOT exit push (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -381,7 +297,7 @@
         <span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return instance of Batch&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.batch</span> <span class="k">import</span> <span class="n">Batch</span>
+        <span class="kn">from</span> <span class="nn">.batch</span> <span class="kn">import</span> <span class="n">Batch</span>
 
         <span class="k">return</span> <span class="n">Batch</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,</span> <span class="n">playbook_triggers_enabled</span>
@@ -401,31 +317,24 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            object: An instance of the Cache Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.datastore</span> <span class="k">import</span> <span class="n">Cache</span>
+        <span class="kn">from</span> <span class="nn">.datastore</span> <span class="kn">import</span> <span class="n">Cache</span>
 
         <span class="k">return</span> <span class="n">Cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_minutes</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
-    <span class="c1"># TODO: remove this method and use JMESPath instead.</span>
-<div class="viewcode-block" id="TcEx.data_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.data_filter">[docs]</a>    <span class="k">def</span> <span class="nf">data_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return an instance of the Data Filter Class.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_management</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include the Threat Intel Module.</span>
 
-<span class="sd">        A simple helper module to filter results from ThreatConnect API or other data</span>
-<span class="sd">        source.  For example if results need to be filtered by an unsupported field the module</span>
-<span class="sd">        allows you to pass the data array/list in and specify one or more filters to get just the</span>
-<span class="sd">        results required.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (list): The list of dictionary structure to filter.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (object): An instance of DataFilter Class</span>
+<span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_data_filter</span> <span class="k">import</span> <span class="n">DataFilter</span>
+        <span class="kn">from</span> <span class="nn">.case_management</span> <span class="kn">import</span> <span class="n">CaseManagement</span>
 
-            <span class="k">return</span> <span class="n">DataFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Required Module is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">CaseManagement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include the Case Management Module.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_management</span>
 
 <div class="viewcode-block" id="TcEx.datastore"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.datastore">[docs]</a>    <span class="k">def</span> <span class="nf">datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the DataStore module.</span>
@@ -440,7 +349,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            object: An instance of the DataStore Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.datastore</span> <span class="k">import</span> <span class="n">DataStore</span>
+        <span class="kn">from</span> <span class="nn">.datastore</span> <span class="kn">import</span> <span class="n">DataStore</span>
 
         <span class="k">return</span> <span class="n">DataStore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
@@ -453,7 +362,7 @@
     <span class="k">def</span> <span class="nf">error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return TcEx error codes.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_error_codes</span> <span class="k">import</span> <span class="n">TcExErrorCodes</span>
+            <span class="kn">from</span> <span class="nn">.tcex_error_codes</span> <span class="kn">import</span> <span class="n">TcExErrorCodes</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="o">=</span> <span class="n">TcExErrorCodes</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span>
@@ -466,8 +375,8 @@
 <span class="sd">        during the call of this method.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            code (Optional [integer]): The exit code value for the app.</span>
-<span class="sd">            msg (Optional [string]): A message to log and add to message tc output.</span>
+<span class="sd">            code (int): The exit code value for the app.</span>
+<span class="sd">            msg (str): A message to log and add to message tc output.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># add exit message to message.tc file and log</span>
         <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -482,17 +391,17 @@
         <span class="k">elif</span> <span class="n">code</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Invalid exit code&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid exit code&#39;</span><span class="p">)</span>
             <span class="n">code</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_aot_enabled</span><span class="p">:</span>
             <span class="c1"># push exit message</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">aot_rpush</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">aot_rpush</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 
         <span class="c1"># exit token renewal thread</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">shutdown</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Exit Code: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exit Code: </span><span class="si">{code}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">code</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -510,7 +419,7 @@
 <span class="sd">        * 3 indicates a partial failure</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            code (integer): The exit code value for the app.</span>
+<span class="sd">            code (int): The exit code value for the app.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">code</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="n">code</span>
@@ -522,7 +431,7 @@
         <span class="sd">&quot;&quot;&quot;Process indicators expanding file hashes/custom indicators into multiple entries.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            indicator (string): &quot; : &quot; delimited string</span>
+<span class="sd">            indicator (str): &quot; : &quot; delimited string</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): a list of indicators split on &quot; : &quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -550,6 +459,21 @@
             <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">indicator</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">indicator_list</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">victim_asset_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return all defined ThreatConnect Asset types.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list of ThreatConnect Asset types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;EmailAddress&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;SocialNetwork&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;NetworkAccount&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;WebSite&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Phone&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">group_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -596,6 +520,7 @@
 <span class="sd">            api_entity:</span>
 
 <span class="sd">        Returns:</span>
+<span class="sd">            str|None: The type value or None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_types_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -609,22 +534,24 @@
         <span class="sd">&quot;&quot;&quot;Raise RuntimeError</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            code (integer): The error code from API or SDK.</span>
-<span class="sd">            message (string): The error message from API or SDK.</span>
+<span class="sd">            code (int): The error code from API or SDK.</span>
+<span class="sd">            message (str): The error message from API or SDK.</span>
+<span class="sd">            raise_error (bool, optional): Raise a Runtime error. Defaults to True.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Raised a defined error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">message_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">message_values</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_codes</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">message_values</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error code: </span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error code: </span><span class="si">{code}</span><span class="s1">, </span><span class="si">{message}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Incorrect error code provided (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect error code provided (</span><span class="si">{code}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s1">&#39;Incorrect message values provided for error code </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">code</span><span class="p">,</span> <span class="n">message_values</span>
-                <span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;Incorrect message values provided for error code </span><span class="si">{code}</span><span class="s1"> (</span><span class="si">{message_values}</span><span class="s1">).&#39;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raise_error</span><span class="p">:</span>
@@ -653,7 +580,7 @@
 <span class="sd">            (list): A list of ThreatConnect Indicator types.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># load custom indicator associations</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator_types_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types</span>
 
     <span class="nd">@property</span>
@@ -666,8 +593,16 @@
 <span class="sd">            (dict): A dictionary of ThreatConnect Indicator data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span><span class="p">:</span>
-            <span class="c1"># load custom indicator associations</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="c1"># retrieve data from API</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/v2/types/indicatorTypes&#39;</span><span class="p">)</span>
+            <span class="c1"># TODO: use handle error instead</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not retrieve indicator types from ThreatConnect API.&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">itd</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicatorType&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span><span class="p">[</span><span class="n">itd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">itd</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span>
 
     <span class="nd">@property</span>
@@ -696,16 +631,16 @@
         <span class="sd">&quot;&quot;&quot;Get instance of the Metrics module.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name (string): The name for the metric.</span>
-<span class="sd">            description (string): The description of the metric.</span>
-<span class="sd">            data_type (string): The type of metric: Sum, Count, Min, Max, First, Last, and Average.</span>
-<span class="sd">            interval (string): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.</span>
-<span class="sd">            keyed (boolean): Indicates whether the data will have a keyed value.</span>
+<span class="sd">            name (str): The name for the metric.</span>
+<span class="sd">            description (str): The description of the metric.</span>
+<span class="sd">            data_type (str): The type of metric: Sum, Count, Min, Max, First, Last, and Average.</span>
+<span class="sd">            interval (str): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.</span>
+<span class="sd">            keyed (bool): Indicates whether the data will have a keyed value.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (object): An instance of the Metrics Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.metrics</span> <span class="k">import</span> <span class="n">Metrics</span>
+        <span class="kn">from</span> <span class="nn">.metrics</span> <span class="kn">import</span> <span class="n">Metrics</span>
 
         <span class="k">return</span> <span class="n">Metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="p">)</span></div>
 
@@ -717,7 +652,8 @@
 <span class="sd">        this limit will be truncated. The last &lt;max_length&gt; characters will be preserved.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            message (string): The message to add to message_tc file</span>
+<span class="sd">            message (str): The message to add to message_tc file</span>
+<span class="sd">            max_length (int, optional): The maximum length of an exit message. Defaults to 255.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
             <span class="n">message_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="s1">&#39;message.tc&#39;</span><span class="p">)</span>
@@ -740,7 +676,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (object): An instance of the Notification Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.notifications</span> <span class="k">import</span> <span class="n">Notifications</span>
+        <span class="kn">from</span> <span class="nn">.notifications</span> <span class="kn">import</span> <span class="n">Notifications</span>
 
         <span class="k">return</span> <span class="n">Notifications</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
@@ -749,15 +685,35 @@
         <span class="sd">&quot;&quot;&quot;Instance tcex args parser.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parser</span>
 
+<div class="viewcode-block" id="TcEx.pb"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.pb">[docs]</a>    <span class="k">def</span> <span class="nf">pb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new instance of playbook module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context (str): The Redis context for Playbook or Service Apps.</span>
+<span class="sd">            output_variables (list): A list of requested PB/Service output variables.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tcex.playbook.Playbooks: An instance of Playbooks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.playbooks</span> <span class="kn">import</span> <span class="n">Playbooks</span>
+
+        <span class="k">return</span> <span class="n">Playbooks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">playbook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Include the Playbook Module.</span>
+        <span class="sd">&quot;&quot;&quot;Return an instance of Playbooks module.</span>
+
+<span class="sd">        This property defaults context and outputvariables to arg values.</span>
 
 <span class="sd">        .. Note:: Playbook methods can be accessed using ``tcex.playbook.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.playbooks</span> <span class="k">import</span> <span class="n">Playbooks</span>
-
-        <span class="k">return</span> <span class="n">Playbooks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># handle outputs coming in as a csv string and list</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_out_variables</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_context</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -788,21 +744,14 @@
                 <span class="n">tc_proxy_password</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
 
                 <span class="c1"># proxy url with auth</span>
-                <span class="n">proxy_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">tc_proxy_username</span><span class="p">,</span>
-                    <span class="n">tc_proxy_password</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">,</span>
+                <span class="n">proxy_url</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{tc_proxy_username}</span><span class="s1">:</span><span class="si">{tc_proxy_password}</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;@</span><span class="si">{self.default_args.tc_proxy_host}</span><span class="s1">:</span><span class="si">{self.default_args.tc_proxy_port}</span><span class="s1">&#39;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># proxy url without auth</span>
-                <span class="n">proxy_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
-                <span class="p">)</span>
-            <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proxy_url</span><span class="p">),</span>
-                <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proxy_url</span><span class="p">),</span>
-            <span class="p">}</span>
+                <span class="n">proxy_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.default_args.tc_proxy_host}</span><span class="s1">:</span><span class="si">{self.default_args.tc_proxy_port}</span><span class="s1">&#39;</span>
+            <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{proxy_url}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;https://</span><span class="si">{proxy_url}</span><span class="s1">&#39;</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">proxies</span>
 
     <span class="nd">@property</span>
@@ -810,46 +759,43 @@
         <span class="sd">&quot;&quot;&quot;Return argparser args Namespace with Playbook args automatically resolved.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">resolved_args</span><span class="p">()</span>
 
-<div class="viewcode-block" id="TcEx.request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.request">[docs]</a>    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return an instance of the Request Class.</span>
+<div class="viewcode-block" id="TcEx.rc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.rc">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">rc</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a *new* instance of Redis client.</span>
 
-<span class="sd">        A wrapper on the Python Requests module that provides a different interface for creating</span>
-<span class="sd">        requests. The session property of this instance has built-in logging, session level</span>
-<span class="sd">        retries, and preconfigured proxy configuration.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (object): An instance of Request Class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_request</span> <span class="k">import</span> <span class="n">TcExRequest</span>
-
-            <span class="n">r</span> <span class="o">=</span> <span class="n">TcExRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s1">&#39;Using proxy server for external request </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
-            <span class="k">return</span> <span class="n">r</span>
-        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">])</span></div>
-
-<div class="viewcode-block" id="TcEx.resource"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.resource">[docs]</a>    <span class="k">def</span> <span class="nf">resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get instance of Resource Class with dynamic type.</span>
+<span class="sd">        For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            resource_type: The resource type name (e.g Adversary, User Agent, etc).</span>
+<span class="sd">            host (str, optional): The REDIS host. Defaults to localhost.</span>
+<span class="sd">            port (int, optional): The REDIS port. Defaults to 6379.</span>
+<span class="sd">            db (int, optional): The REDIS db. Defaults to 0.</span>
+<span class="sd">            blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.</span>
+<span class="sd">            errors (str, kwargs): The REDIS errors policy (e.g. strict).</span>
+<span class="sd">            max_connections (int, kwargs): The maximum number of connections to REDIS.</span>
+<span class="sd">            password (str, kwargs): The REDIS password.</span>
+<span class="sd">            socket_timeout (int, kwargs): The REDIS socket timeout.</span>
+<span class="sd">            timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (object): Instance of Resource Object child class.</span>
+<span class="sd">            Redis.client: An instance of redis client.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">resource_type</span><span class="p">))(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">resource_type</span><span class="p">))(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">resource</span></div>
+        <span class="kn">from</span> <span class="nn">.key_value_store</span> <span class="kn">import</span> <span class="n">RedisClient</span>
+
+        <span class="k">return</span> <span class="n">RedisClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="n">blocking</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">client</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">redis_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return redis client instance configure for Playbook/Service Apps.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.key_value_store</span> <span class="kn">import</span> <span class="n">RedisClient</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span> <span class="o">=</span> <span class="n">RedisClient</span><span class="p">(</span>
+                <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_path</span><span class="p">,</span>
+                <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_port</span><span class="p">,</span>
+                <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">client</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span>
 
 <div class="viewcode-block" id="TcEx.results_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.results_tc">[docs]</a>    <span class="k">def</span> <span class="nf">results_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write data to results_tc file in TcEX specified directory.</span>
@@ -858,11 +804,11 @@
 <span class="sd">        method will store the values for TC to read and put into the Database.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (string): The data key to be stored.</span>
-<span class="sd">            value (string): The data value to be stored.</span>
+<span class="sd">            key (str): The data key to be stored.</span>
+<span class="sd">            value (str): The data value to be stored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-            <span class="n">results_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+            <span class="n">results_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.default_args.tc_out_path}</span><span class="s1">/results.tc&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">results_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
 
@@ -882,59 +828,26 @@
                     <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
                     <span class="n">new</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">results</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> = </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                    <span class="n">results</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1"> = </span><span class="si">{v}</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="k">if</span> <span class="n">new</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># indicates the key/value pair didn&#39;t already exist</span>
-                <span class="n">results</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> = </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">results</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1"> = </span><span class="si">{value}</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">truncate</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TcEx.s"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.s">[docs]</a>    <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Decode value using correct Python 2/3 method.</span>
-
-<span class="sd">        This method is intended to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method with</span>
-<span class="sd">        better logic to handle poorly encoded unicode data in Python2 and still work in Python3.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (any): Data to ve validated and (de)encoded</span>
-<span class="sd">            errors (string): What method to use when dealing with errors.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (string): Return decoded data</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-                <span class="k">pass</span>  <span class="c1"># Do nothing with these types</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>  <span class="c1"># 2to3 converts unicode to str</span>
-                    <span class="c1"># 2to3 converts unicode to str</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Encoding poorly encoded string (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">pass</span>  <span class="c1"># Python 3 can&#39;t decode a str</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>  <span class="c1"># 2to3 converts unicode to str</span>
-        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-            <span class="k">pass</span>  <span class="c1"># Can&#39;t decode str in Python 3</span>
-        <span class="k">return</span> <span class="n">data</span></div>
-
-<div class="viewcode-block" id="TcEx.safe_indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_indicator">[docs]</a>    <span class="k">def</span> <span class="nf">safe_indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.safe_indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_indicator">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">safe_indicator</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format indicator value for safe HTTP request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            indicator (string): Indicator to URL Encode</span>
-<span class="sd">            errors (string): The error handler type.</span>
+<span class="sd">            indicator (str): Indicator to URL Encode</span>
+<span class="sd">            errors (str): The error handler type.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): The urlencoded string</span>
+<span class="sd">            (str): The urlencoded string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">indicator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">indicator</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">indicator</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">indicator</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">indicator</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+            <span class="n">indicator</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">indicator</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">indicator</span></div>
 
 <div class="viewcode-block" id="TcEx.safe_rt"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_rt">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -946,11 +859,11 @@
 <span class="sd">        (e.g. *User Agent* is converted to User_Agent or user_agent.)</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">           resource_type (string): The resource type to format.</span>
-<span class="sd">           lower (boolean): Return type in all lower case</span>
+<span class="sd">           resource_type (str): The resource type to format.</span>
+<span class="sd">           lower (bool): Return type in all lower case</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): The formatted resource type.</span>
+<span class="sd">            (str): The formatted resource type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">resource_type</span> <span class="o">=</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
@@ -965,12 +878,12 @@
 <span class="sd">        .. note:: Currently the ThreatConnect group name limit is 100 characters.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">           group_name (string): The raw group name to be truncated.</span>
+<span class="sd">           group_name (str): The raw group name to be truncated.</span>
 <span class="sd">           group_max_length (int): The max length of the group name.</span>
-<span class="sd">           ellipsis (boolean): If true the truncated name will have &#39;...&#39; appended.</span>
+<span class="sd">           ellipsis (bool): If true the truncated name will have &#39;...&#39; appended.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): The truncated group name with optional ellipsis.</span>
+<span class="sd">            (str): The truncated group name with optional ellipsis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ellipsis_value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">ellipsis</span><span class="p">:</span>
@@ -981,50 +894,40 @@
             <span class="n">group_name_array</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
             <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">group_name_array</span><span class="p">:</span>
-                <span class="n">word</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{word}</span><span class="s1">&#39;</span>
                 <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">ellipsis_value</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="n">group_max_length</span><span class="p">:</span>
-                    <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">ellipsis_value</span><span class="p">)</span>
+                    <span class="n">group_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{group_name}{ellipsis_value}</span><span class="s1">&#39;</span>
                     <span class="n">group_name</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
                     <span class="k">break</span>
-                <span class="n">group_name</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                <span class="n">group_name</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{word}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">group_name</span></div>
 
-<div class="viewcode-block" id="TcEx.safetag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag">[docs]</a>    <span class="k">def</span> <span class="nf">safetag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Preserve safetag method name for older Apps.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcEx.safe_tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_tag">[docs]</a>    <span class="k">def</span> <span class="nf">safe_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.safe_tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_tag">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">safe_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">           tag (string): The tag to be truncated</span>
+<span class="sd">           tag (str): The tag to be truncated</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): The truncated tag</span>
+<span class="sd">            (str): The truncated and quoted tag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># handle unicode characters and url encode tag value</span>
-                <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)[:</span><span class="mi">128</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed converting tag to safetag (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">tag</span><span class="p">[:</span><span class="mi">128</span><span class="p">],</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tag</span></div>
 
-<div class="viewcode-block" id="TcEx.safeurl"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl">[docs]</a>    <span class="k">def</span> <span class="nf">safeurl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Preserve safeurl method name for older Apps.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcEx.safe_url"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_url">[docs]</a>    <span class="k">def</span> <span class="nf">safe_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.safe_url"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_url">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">safe_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Encode value for safe HTTP request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            url (string): The string to URL Encode.</span>
+<span class="sd">            url (str): The string to URL Encode.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): The urlencoded string.</span>
+<span class="sd">            (str): The urlencoded string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">url</span></div>
 
     <span class="nd">@property</span>
@@ -1034,7 +937,7 @@
 <span class="sd">        .. Note:: Service methods can be accessed using ``tcex.service.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.services</span> <span class="k">import</span> <span class="n">Services</span>
+            <span class="kn">from</span> <span class="nn">.services</span> <span class="kn">import</span> <span class="n">Services</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="n">Services</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span>
@@ -1043,7 +946,7 @@
     <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of Requests Session configured for the ThreatConnect API.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.sessions</span> <span class="k">import</span> <span class="n">TcSession</span>
+            <span class="kn">from</span> <span class="nn">.sessions</span> <span class="kn">import</span> <span class="n">TcSession</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">TcSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
@@ -1052,16 +955,9 @@
     <span class="k">def</span> <span class="nf">session_external</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of Requests Session configured for the ThreatConnect API.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="n">Session</span>
+            <span class="kn">from</span> <span class="nn">.sessions</span> <span class="kn">import</span> <span class="n">ExternalSession</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s1">&#39;Using proxy server for external connectivity (</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="o">=</span> <span class="n">ExternalSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span>
 
     <span class="nd">@property</span>
@@ -1071,9 +967,9 @@
 <span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_ti</span> <span class="k">import</span> <span class="n">TcExTi</span>
+            <span class="kn">from</span> <span class="nn">.threat_intelligence</span> <span class="kn">import</span> <span class="n">ThreatIntelligence</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="n">TcExTi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="n">ThreatIntelligence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span>
 
     <span class="nd">@property</span>
@@ -1093,9 +989,9 @@
 <span class="sd">        .. Note:: Utils methods can be accessed using ``tcex.utils.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">Utils</span>
+            <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">Utils</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">(</span><span class="n">temp_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span></div>
 </pre></div>
 

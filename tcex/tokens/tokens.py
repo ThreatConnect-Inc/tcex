@@ -4,13 +4,13 @@ import threading
 import time
 
 # from requests import exceptions, get
-from requests import exceptions, Session
+from requests import Session, exceptions
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
 def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504)):
-    """Add retry to Requests Session
+    """Add retry to Requests Session.
 
     https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry
     """
@@ -27,7 +27,7 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
     return session
 
 
-class Tokens(object):
+class Tokens:
     """Service methods for customer Service (e.g., Triggers).
 
     Args:
@@ -63,19 +63,19 @@ class Tokens(object):
     def key(self):
         """Return the current key"""
         key = 'MainThread'  # default Python parent thread name
-        # self.log.trace('in key - thread_name: {}'.format(self.thread_name))
+        # self.log.trace(f'in key - thread_name: {self.thread_name}')
         if self.thread_name in self.token_map:
             # for Job, Playbook, and ApiService Apps the key is the thread name.
             key = self.thread_name
         else:
-            # for Trigger and Webhook Apps the key is ConfigId. find ConfigId using array of
-            # registered thread names.
+            # for Trigger and Webhook Apps the key is ConfigId.
+            # find ConfigId using array of registered thread names.
             for k, d in self.token_map.items():
                 if self.thread_name in d.get('thread_names', []):
                     key = k
                     break
             else:  # pragma: no cover
-                self.log.trace('Thread name not found, defaulting to {}'.format(key))
+                self.log.trace(f'Thread name not found, defaulting to {key}')
         return key
 
     @staticmethod
@@ -89,7 +89,7 @@ class Tokens(object):
             str: The reformatted token.
         """
         if token is not None:
-            token = '{}...{}'.format(token[:10], token[-10:])
+            token = f'{token[:10]}...{token[-10:]}'
         return token
 
     def register_thread(self, key, thread_name):
@@ -102,7 +102,7 @@ class Tokens(object):
             thread_name (str): The thread to register to a key.
         """
         self.token_map.setdefault(key, {}).setdefault('thread_names', []).append(thread_name)
-        self.log.info('Token thread registered -  key: {}, thread: {}'.format(key, thread_name))
+        self.log.info(f'Token thread registered -  key: {key}, thread: {thread_name}')
 
     def register_token(self, key, token, expires):
         """Register a token.
@@ -114,17 +114,16 @@ class Tokens(object):
         """
         if token is None or expires is None:  # pragma: no cover
             self.log.error(
-                'Invalid token data provided - token: {}, expires: {}.'.format(
-                    self.printable_token(token), expires
-                )
+                f'Invalid token data provided - token: {self.printable_token(token)}, '
+                f'expires: {expires}.'
             )
             return
 
         self.token_map[key] = {'thread_names': [], 'token': token, 'token_expires': int(expires)}
         self.log.info(
-            'Token registered - key: {}, token: {}, expiration {}'.format(
-                key, self.printable_token(token), expires
-            )
+            f'Token registered - key: {key}, '
+            f'token: {self.printable_token(token)}, '
+            f'expiration {expires}'
         )
 
     def renew_token(self, token):
@@ -142,14 +141,15 @@ class Tokens(object):
         # log token information
         try:
             params = {'expiredToken': token}
-            url = '{}/appAuth'.format(self.token_url)
+            url = f'{self.token_url}/appAuth'
             r = self.session.get(url, params=params, verify=self.verify)
 
             if not r.ok:
                 err_reason = r.text or r.reason
                 err_msg = (
-                    'Token Retry Error. API status code: {}, API message: {}, '
-                    'Token: {}.'.format(r.status_code, err_reason, self.printable_token(token))
+                    f'Token Retry Error. API status code: {r.status_code}, '
+                    f'API message: {err_reason}, '
+                    f'Token: {self.printable_token(token)}.'
                 )
                 self.log.error(err_msg)
                 raise RuntimeError(1042, err_msg)
@@ -160,7 +160,7 @@ class Tokens(object):
         try:
             api_token_data = r.json()
         except (AttributeError, ValueError) as e:  # pragma: no cover
-            raise RuntimeError('Token renewal failed ({}).'.format(e))
+            raise RuntimeError(f'Token renewal failed ({e}).')
         finally:
             self.log.in_token_renewal = False
 
@@ -179,13 +179,11 @@ class Tokens(object):
     @token.setter
     def token(self, token):
         """Set token for current thread."""
-        # TODO: add lock.acquire / lock.release
         self.token_map.setdefault(self.key, {})['token'] = token
 
     @property
     def token_expires(self):
         """Return token_expires for current thread."""
-        # TODO: add lock.acquire / lock.release
         return self.token_map.get(self.key, {}).get('token_expires')
 
     @token_expires.setter
@@ -209,12 +207,10 @@ class Tokens(object):
                     token_data.get('token_expires') - int(time.time()) - self.token_window
                 )
                 self.log.debug(
-                    'token status - key: {}, token: {}, expires: {}, sleep-seconds: {}'.format(
-                        key,
-                        self.printable_token(token_data.get('token')),
-                        token_data.get('token_expires'),
-                        sleep_seconds,
-                    )
+                    f'token status - key: {key}, '
+                    f"token: {self.printable_token(token_data.get('token'))}, "
+                    f"expires: {token_data.get('token_expires')}, "
+                    f'sleep-seconds: {sleep_seconds}'
                 )
 
                 if sleep_seconds < 0:
@@ -227,17 +223,15 @@ class Tokens(object):
                                 api_token_data['apiTokenExpires']
                             )
                             self.log.info(
-                                'Token renewed - key: {}, token: {}, expires: {}'.format(
-                                    key,
-                                    self.printable_token(api_token_data['apiToken']),
-                                    api_token_data['apiTokenExpires'],
-                                )
+                                f'Token renewed - key: {key}, '
+                                f"token: {self.printable_token(api_token_data['apiToken'])}, "
+                                f"expires: {api_token_data['apiTokenExpires']}"
                             )
                         except RuntimeError as e:
                             self.log.error(e)
                             try:
                                 del self.token_map[key]
-                                self.log.error('Failed token removed - key: {}'.format(key))
+                                self.log.error(f'Failed token removed - key: {key}')
                             except KeyError:  # pragma: no cover
                                 pass
             time.sleep(self.sleep_interval)
@@ -253,9 +247,7 @@ class Tokens(object):
         """
         try:
             self.token_map[key]['thread_names'].remove(thread_name)
-            self.log.info(
-                'Token thread unregistered -  key: {}, thread: {}'.format(key, thread_name)
-            )
+            self.log.info(f'Token thread unregistered -  key: {key}, thread: {thread_name}')
         except (KeyError, ValueError):  # pragma: no cover
             pass
 
@@ -267,6 +259,6 @@ class Tokens(object):
         """
         try:
             del self.token_map[key]
-            self.log.info('Token unregistered - key: {}'.format(key))
+            self.log.info(f'Token unregistered - key: {key}')
         except KeyError:
             pass

@@ -2,8 +2,10 @@
 """TcEx Framework Logger module"""
 import logging
 import os
+import pathlib
 import platform
 import sys
+
 from .api_handler import ApiHandler, ApiHandlerFormatter
 from .cache_handler import CacheHandler
 from .rotating_file_handler_custom import RotatingFileHandlerCustom
@@ -11,7 +13,7 @@ from .thread_file_handler import ThreadFileHandler
 from .trace_logger import TraceLogger
 
 
-class Logger(object):
+class Logger:
     """Framework logger module."""
 
     def __init__(self, tcex, logger_name):
@@ -19,6 +21,7 @@ class Logger(object):
 
         Args:
             tcex (tcex.TcEx): Instance of TcEx class.
+            logger_name (str): The name of the logger.
         """
         self.tcex = tcex
         self.logger_name = logger_name
@@ -61,8 +64,7 @@ class Logger(object):
         Args:
             level (str): The logging level. Default to 'debug'.
         """
-        if level is None:
-            level = 'debug'
+        level = level or 'debug'
         return logging.getLevelName(level.upper())
 
     def remove_handler_by_name(self, handler_name):
@@ -86,6 +88,15 @@ class Logger(object):
                     self._logger.handle(event)
                 break
 
+    def shutdown(self):
+        """Close all handlers.
+
+        Args:
+            handler_name (str): The handler name to remove.
+        """
+        for h in self._logger.handlers:
+            self._logger.removeHandler(h)
+
     def update_handler_level(self, level):
         """Update all handlers log level.
 
@@ -107,6 +118,7 @@ class Logger(object):
 
         Args:
             name (str, optional): The name of the handler. Defaults to 'api'.
+            level (str, optional): The level value as a string. Defaults to None.
         """
         self.remove_handler_by_name(name)
         api = ApiHandler(self.tcex.session)
@@ -203,44 +215,48 @@ class Logger(object):
         self._log_app_data()
         self._log_python_version()
         self._log_tcex_version()
+        self._log_tcex_path()
         self._log_tc_proxy(args)
 
     def _log_app_data(self):
         """Log the App data information."""
         # Best Effort
         try:
-            self.log.info('App Name: {}'.format(self.tcex.ij.display_name))
+            self.log.info(f'App Name: {self.tcex.ij.display_name}')
             if self.tcex.ij.features:
-                self.log.info('App Features: {}'.format(','.join(self.tcex.ij.features)))
-            self.log.info(
-                'App Minimum ThreatConnect Version: {}'.format(self.tcex.ij.min_server_version)
-            )
-            self.log.info('App Runtime Level: {}'.format(self.tcex.ij.runtime_level))
-            self.log.info('App Version: {}'.format(self.tcex.ij.program_version))
+                self.log.info(f"App Features: {','.join(self.tcex.ij.features)}")
+            self.log.info(f'App Minimum ThreatConnect Version: {self.tcex.ij.min_server_version}')
+            self.log.info(f'App Runtime Level: {self.tcex.ij.runtime_level}')
+            self.log.info(f'App Version: {self.tcex.ij.program_version}')
             if self.tcex.ij.commit_hash is not None:
-                self.log.info('App Commit Hash: {}'.format(self.tcex.ij.commit_hash))
+                self.log.info(f'App Commit Hash: {self.tcex.ij.commit_hash}')
         except Exception:  # pragma: no cover
             pass
 
     def _log_platform(self):
         """Log the current Platform."""
-        self.log.info('Platform: {}'.format(platform.platform()))
+        self.log.info(f'Platform: {platform.platform()}')
 
     def _log_python_version(self):
         """Log the current Python version."""
         self.log.info(
-            'Python Version: {}.{}.{}'.format(
-                sys.version_info.major, sys.version_info.minor, sys.version_info.micro
-            )
+            f'Python Version: {sys.version_info.major}.'
+            f'{sys.version_info.minor}.'
+            f'{sys.version_info.micro}'
         )
 
     def _log_tc_proxy(self, args):
         """Log the proxy settings."""
         if args.tc_proxy_tc:
-            self.log.info(
-                'Proxy Server (TC): {}:{}.'.format(args.tc_proxy_host, args.tc_proxy_port)
-            )
+            self.log.info(f'Proxy Server (TC): {args.tc_proxy_host}:{args.tc_proxy_port}.')
 
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
-        self.log.info('TcEx Version: {}'.format(__import__(__name__).__version__))
+        self.log.info(f'TcEx Version: {__import__(__name__).__version__}')
+
+    def _log_tcex_path(self):
+        """Log the current TcEx path."""
+        app_path = str(pathlib.Path().parent.absolute())
+        full_path = str(pathlib.Path(__file__).parent.absolute())
+        tcex_path = os.path.dirname(full_path.replace(app_path, ''))
+        self.log.info(f'TcEx Path: {tcex_path}')

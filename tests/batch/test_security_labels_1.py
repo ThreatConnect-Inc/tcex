@@ -3,7 +3,7 @@
 import pytest
 
 
-# pylint: disable=R0201,W0201
+# pylint: disable=no-self-use
 class TestTags1:
     """Test the TcEx Batch Module."""
 
@@ -25,9 +25,9 @@ class TestTags1:
         sl.description = 'Pytest Label Description'
         sl.color = 'ffc0cb'
 
-        tcex.log.debug('sl color: {}'.format(sl.color))  # cover color property
-        tcex.log.debug('sl description: {}'.format(sl.description))  # cover color description
-        tcex.log.debug('sl data: {}'.format(sl))  # cover __str__ method
+        tcex.log.debug(f'sl color: {sl.color}')  # cover color property
+        tcex.log.debug(f'sl description: {sl.description}')  # cover color description
+        tcex.log.debug(f'sl data: {sl}')  # cover __str__ method
         assert sl.description == 'Pytest Label Description'
         assert sl.color == 'ffc0cb'
         assert sl.name == label

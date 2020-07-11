@@ -6,7 +6,7 @@ import falcon
 from api_service_app import ApiServiceApp
 
 
-class TcExMiddleware(object):
+class TcExMiddleware:
     """TcEx middleware module.
 
     Adds access to self.args, self.tcex and self.log in resource Class.
@@ -66,7 +66,7 @@ class App(ApiServiceApp):
 
     def __init__(self, _tcex):
         """Initialize class properties."""
-        super(App, self).__init__(_tcex)
+        super().__init__(_tcex)
 
         # create Falcon API with tcex middleware
         self.api = falcon.API(middleware=[TcExMiddleware(args=self.args, tcex=self.tcex)])
@@ -74,7 +74,7 @@ class App(ApiServiceApp):
         # Add routes
         self.api.add_route('/one', OneResource())
         self.api.add_route('/two', TwoResource())
-        self.tcex.log.trace('args: {}'.format(self.tcex.args))
+        self.tcex.log.trace(f'args: {self.tcex.args}')
 
     def api_event_callback(self, environ, response_handler):
         """Run the trigger logic."""

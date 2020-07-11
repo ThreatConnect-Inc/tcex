@@ -3,11 +3,10 @@
 import json
 
 
-class Attribute(object):
+class Attribute:
     """ThreatConnect Batch Attribute Object"""
 
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = ['_attribute_data', '_valid']
+    __slots__ = ['_attribute_data', '_valid']
 
     def __init__(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
         """Initialize Class Properties.

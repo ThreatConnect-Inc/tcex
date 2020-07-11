@@ -3,7 +3,7 @@
 import pytest
 
 
-# pylint: disable=R0201,W0201
+# pylint: disable=no-self-use
 class TestTags1:
     """Test the TcEx Batch Module."""
 
@@ -22,7 +22,7 @@ class TestTags1:
 
         # tag testing
         tag_data = ti.tag(name=tag, formatter=self.tag_formatter)
-        tcex.log.debug('tag_data: {}'.format(tag_data))  # cover __str__ method
+        tcex.log.debug(f'tag_data: {tag_data}')  # cover __str__ method
         ti.tag(name=None)  # cover "not name"
 
         # submit batch

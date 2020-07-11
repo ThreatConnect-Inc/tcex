@@ -12,6 +12,9 @@
                 "display": {
                   "type": "string"
                 },
+                "hidden": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 }

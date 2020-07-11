@@ -94,7 +94,7 @@ This is the main configuration file for the App and controls what inputs and out
 log (temporary)
 ~~~~~~~~~~~~~~~
 
-This directory is created when running a testing profile locally. All App output is written to this directory, as well as the output of the ``tcrun`` command.
+This directory is created when running a testing profile locally. All App output is written to this directory, as well as the output from the test cases.
 
 log/app.log (temporary)
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,12 +109,12 @@ This file contains the App exit message. The contents of this file will be displ
 log/run.log (temporary)
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-This log file contains the output from the ``tcrun`` command and will contain information about validations rules.
+This log file contains the output from the ``tcrun`` command and will contain information about validation rules.
 
 playbook_app.py (required)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This template file contains base logic for a Playbook App. This file should not be edited and will get updated when using the ``tcprofile --action update --template <template name>`` command.
+This template file contains base logic for a Playbook App. This file should not be edited and will get updated when using the ``tcinit --action update --template <template name>`` command.
 
 .. literalinclude:: ../../app_init/playbook/playbook_app.py
     :language: python
@@ -141,7 +141,7 @@ This file contains all the required Python dependencies for the App. The **requi
 run.py (required)
 ~~~~~~~~~~~~~~~~~
 
-This template file is called by ThreatConnect and ``tcrun`` to launch the App. This file should not be edited and will get updated when using the ``tcprofile --action update --template <template name>`` command.
+This template file is called by ThreatConnect to launch the App. This file should not be edited and will get updated when using the ``tcinit --action update --template <template name>`` command.
 
 .. literalinclude:: ../../app_init/playbook/run.py
     :language: python
@@ -155,21 +155,6 @@ This file contains Python configurations data, specifically for linting ignores 
 .. literalinclude:: ../../app_init/setup.cfg
     :language: python
     :linenos:
-
-tcex.d (optional)
-~~~~~~~~~~~~~~~~~
-
-This directory is generated when creating a testing profile using the ``tcprofile`` command.  This directory holds both the staging data and JSON profile files.
-
-tcex.d/data (optional)
-~~~~~~~~~~~~~~~~~~~~~~
-
-This directory contains the JSON staging files.
-
-tcex.d/profiles (optional)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This directory contains the JSON profile files.
 
 tcex.json (required)
 ~~~~~~~~~~~~~~~~~~~~

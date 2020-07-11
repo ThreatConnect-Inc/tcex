@@ -1,0 +1,1195 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.threat_intelligence.mappings.mappings &mdash; TcEx 2.0.6 documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.6
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_case_management.html">Module: Case Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.threat_intelligence.mappings.mappings</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.threat_intelligence.mappings.mappings</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect TI Generic Mappings Object&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">unquote</span>
+<span class="kn">from</span> <span class="nn">tcex.utils</span> <span class="kn">import</span> <span class="n">Utils</span>
+<span class="kn">from</span> <span class="nn">..tcex_ti_tc_request</span> <span class="kn">import</span> <span class="n">TiTcRequest</span>
+
+
+<div class="viewcode-block" id="Mappings"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings">[docs]</a><span class="k">class</span> <span class="nc">Mappings</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Common API calls for for Indicators/SecurityLabels/Groups and Victims&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">api_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">,</span> <span class="n">api_branch</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcex:</span>
+<span class="sd">            main_type:</span>
+<span class="sd">            api_type:</span>
+<span class="sd">            sub_type:</span>
+<span class="sd">            api_entity:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">main_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_sub_type</span> <span class="o">=</span> <span class="n">sub_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_type</span> <span class="o">=</span> <span class="n">api_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="n">api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="n">api_branch</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">TiTcRequest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_excluded_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of properties to exclude when creating a dict of the children Classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;tcex&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">,</span> <span class="s1">&#39;api_endpoint&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="sd">&quot;&quot;&quot;Return the object as an entity.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Child class must implement this method.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the dict representation of the case management object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">as_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excluded_properties</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">as_dict</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">as_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">as_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">as_dict</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return main type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_sub_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return sub type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_sub_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return unique id.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tc_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return tc request object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return api type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return api entity.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return api entity.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return unique id.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span>
+
+    <span class="nd">@owner</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
+
+    <span class="nd">@api_branch</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">api_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_branch</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the Api Entity</span>
+<span class="sd">        Args:</span>
+<span class="sd">            api_branch:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="n">api_branch</span>
+
+    <span class="nd">@api_entity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">api_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the Api Entity</span>
+<span class="sd">        Args:</span>
+<span class="sd">            api_entity:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="n">api_entity</span>
+
+    <span class="nd">@api_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">api_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the Api Type</span>
+<span class="sd">        Args:</span>
+<span class="sd">            api_type:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_type</span> <span class="o">=</span> <span class="n">api_type</span>
+
+    <span class="nd">@tc_requests</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tc_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tc_requests</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the Tc Request Object</span>
+<span class="sd">        Args:</span>
+<span class="sd">            tc_requests:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">tc_requests</span>
+
+    <span class="nd">@api_sub_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">api_sub_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the Api Sub Type</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sub_type:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_sub_type</span> <span class="o">=</span> <span class="n">sub_type</span>
+
+    <span class="nd">@unique_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the Unique Id</span>
+<span class="sd">        Args:</span>
+<span class="sd">            unique_id:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="n">unique_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the data</span>
+<span class="sd">        Args:</span>
+<span class="sd">            data:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_unique_id</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Mappings.set"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A generic way to update the attributes of a TC data object.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;add_key_value&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Mappings.create"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the Indicator/Group/Victim or Security Label given Owner</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_create</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">920</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_unique_id</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_entity</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Mappings.delete"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the Indicator/Group/Victim or Security Label</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_delete</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">915</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.update"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the Indicator/Group/Victim or Security Label</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">905</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.single"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.single">[docs]</a>    <span class="k">def</span> <span class="nf">single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the Indicator/Group/Victim or Security Label</span>
+<span class="sd">        Args:</span>
+<span class="sd">            filters:</span>
+<span class="sd">            params: parameters to pass in to get the object</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">single</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.many"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.many">[docs]</a>    <span class="k">def</span> <span class="nf">many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the Indicator/Group/Victim or Security Labels</span>
+<span class="sd">        Args:</span>
+<span class="sd">            filters:</span>
+<span class="sd">            owner:</span>
+<span class="sd">            params: parameters to pass in to get the objects</span>
+
+<span class="sd">        Yields: A Indicator/Group/Victim json</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">many</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_entity</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.request"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.request">[docs]</a>    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_limit</span><span class="p">,</span> <span class="n">result_start</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the Indicator/Group/Victim or Security Labels</span>
+<span class="sd">        Args:</span>
+<span class="sd">            filters:</span>
+<span class="sd">            owner:</span>
+<span class="sd">            result_limit:</span>
+<span class="sd">            result_start:</span>
+<span class="sd">            params: parameters to pass in to get the objects</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="n">result_limit</span><span class="p">,</span>
+            <span class="n">result_start</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.tags"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.tags">[docs]</a>    <span class="k">def</span> <span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Gets the tags from a Indicator/Group/Victim/Security Labels</span>
+<span class="sd">         Args:</span>
+<span class="sd">             filters:</span>
+<span class="sd">             owner:</span>
+<span class="sd">             params: parameters to pass in to get the objects</span>
+
+<span class="sd">         Yields: A tag json</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.tag">[docs]</a>    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Adds a tag to a Indicator/Group/Victim/Security Label</span>
+<span class="sd">         Args:</span>
+<span class="sd">             params:</span>
+<span class="sd">             action:</span>
+<span class="sd">             name: The name of the tag</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;ADD&#39;</span><span class="p">,</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+                <span class="n">name</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Mappings.add_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_tag">[docs]</a>    <span class="k">def</span> <span class="nf">add_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Adds a tag to a Indicator/Group/Victim/Security Label</span>
+<span class="sd">         Args:</span>
+<span class="sd">             name: The name of the tag</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.get_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.get_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Gets a tag from a Indicator/Group/Victim/Security Label</span>
+<span class="sd">         Args:</span>
+<span class="sd">             name: The name of the tag</span>
+<span class="sd">             params:</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.delete_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.delete_tag">[docs]</a>    <span class="k">def</span> <span class="nf">delete_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Deletes a tag from a Indicator/Group/Victim/Security Label</span>
+<span class="sd">         Args:</span>
+<span class="sd">             name: The name of the tag</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.labels"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.labels">[docs]</a>    <span class="k">def</span> <span class="nf">labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Gets the security labels from a Indicator/Group/Victim</span>
+
+<span class="sd">         Yields: A Security label</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">labels</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.label">[docs]</a>    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Adds a Security Label to a Indicator/Group or Victim</span>
+<span class="sd">         Args:</span>
+<span class="sd">             params:</span>
+<span class="sd">             label: The name of the Security Label</span>
+<span class="sd">             action:</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;Security Label&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+                <span class="n">label</span><span class="p">,</span>
+                <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;ADD&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete_label</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Mappings.add_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_label">[docs]</a>    <span class="k">def</span> <span class="nf">add_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Adds a label to a Indicator/Group/Victim</span>
+<span class="sd">         Args:</span>
+<span class="sd">             label: The name of the Security Label</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.get_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.get_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Gets a security label from a Indicator/Group/Victim</span>
+<span class="sd">         Args:</span>
+<span class="sd">             label: The name of the Security Label</span>
+<span class="sd">             params:</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.delete_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.delete_label">[docs]</a>    <span class="k">def</span> <span class="nf">delete_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Deletes a security label from a Indicator/Group/Victim</span>
+<span class="sd">         Args:</span>
+<span class="sd">             label: The name of the Security Label</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.indicator_associations"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.indicator_associations">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Gets the indicator association from a Indicator/Group/Victim</span>
+
+<span class="sd">         Yields: Indicator Association</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.group_associations"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.group_associations">[docs]</a>    <span class="k">def</span> <span class="nf">group_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Gets the group association from a Indicator/Group/Victim</span>
+
+<span class="sd">         Yields: Group Association</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">group_associations</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.victim_asset_associations"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.victim_asset_associations">[docs]</a>    <span class="k">def</span> <span class="nf">victim_asset_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Gets the victim asset association from a Indicator/Group/Victim</span>
+
+<span class="sd">         Yields: Victim Association json</span>
+
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">victim_asset_associations</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.indicator_associations_types"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.indicator_associations_types">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_associations_types</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">indicator_type</span><span class="p">,</span> <span class="n">api_entity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_branch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the indicator association from a Indicator/Group/Victim</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicator_type:</span>
+<span class="sd">            api_entity:</span>
+<span class="sd">            api_branch:</span>
+<span class="sd">            params:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="p">)</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">indicator_associations_types</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">api_entity</span><span class="o">=</span><span class="n">api_entity</span><span class="p">,</span>
+            <span class="n">api_branch</span><span class="o">=</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.group_associations_types"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.group_associations_types">[docs]</a>    <span class="k">def</span> <span class="nf">group_associations_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">api_entity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_branch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the group association from a Indicator/Group/Victim</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group_type:</span>
+<span class="sd">            api_entity:</span>
+<span class="sd">            api_branch:</span>
+<span class="sd">            params:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="p">)</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">group_associations_types</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">api_entity</span><span class="o">=</span><span class="n">api_entity</span><span class="p">,</span>
+            <span class="n">api_branch</span><span class="o">=</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.victim_asset_associations_type"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.victim_asset_associations_type">[docs]</a>    <span class="k">def</span> <span class="nf">victim_asset_associations_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">victim_asset_type</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the victim association from a Indicator/Group/Victim</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            victim_asset_type:</span>
+<span class="sd">            params:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">victim_asset_associations</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">victim_asset_type</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.add_association"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_association">[docs]</a>    <span class="k">def</span> <span class="nf">add_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">api_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_branch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a association to a Indicator/Group/Victim</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target:</span>
+<span class="sd">            api_type:</span>
+<span class="sd">            api_branch:</span>
+<span class="sd">            unique_id:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">api_type</span> <span class="o">=</span> <span class="n">api_type</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">api_type</span>
+        <span class="n">api_branch</span> <span class="o">=</span> <span class="n">api_branch</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">api_branch</span>
+        <span class="n">unique_id</span> <span class="o">=</span> <span class="n">unique_id</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">unique_id</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">api_type</span><span class="p">,</span>
+            <span class="n">api_branch</span><span class="p">,</span>
+            <span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.delete_association"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.delete_association">[docs]</a>    <span class="k">def</span> <span class="nf">delete_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">api_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_branch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a association from a Indicator/Group/Victim</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target:</span>
+<span class="sd">            api_type:</span>
+<span class="sd">            api_branch:</span>
+<span class="sd">            unique_id:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">api_type</span> <span class="o">=</span> <span class="n">api_type</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">api_type</span>
+        <span class="n">api_branch</span> <span class="o">=</span> <span class="n">api_branch</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">api_branch</span>
+        <span class="n">unique_id</span> <span class="o">=</span> <span class="n">unique_id</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">unique_id</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete_association</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">api_type</span><span class="p">,</span>
+            <span class="n">api_branch</span><span class="p">,</span>
+            <span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.attributes"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.attributes">[docs]</a>    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the attributes from a Group/Indicator or Victim</span>
+
+<span class="sd">        Yields: attribute json</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.attribute"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.attribute">[docs]</a>    <span class="k">def</span> <span class="nf">attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the attribute from a Group/Indicator or Victim</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            action:</span>
+<span class="sd">            params:</span>
+<span class="sd">            attribute_id:</span>
+
+<span class="sd">        Returns: attribute json</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+                <span class="n">attribute_id</span><span class="p">,</span>
+                <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete_attribute</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Mappings.add_attribute"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">add_attribute</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">attribute_type</span><span class="p">,</span> <span class="n">attribute_value</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">displayed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a attribute to a Group/Indicator or Victim</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            source:</span>
+<span class="sd">            displayed:</span>
+<span class="sd">            params:</span>
+<span class="sd">            attribute_type:</span>
+<span class="sd">            attribute_value:</span>
+
+<span class="sd">        Returns: attribute json</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">add_attribute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">attribute_type</span><span class="p">,</span>
+            <span class="n">attribute_value</span><span class="p">,</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+            <span class="n">displayed</span><span class="o">=</span><span class="n">displayed</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.update_attribute"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.update_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">update_attribute</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">attribute_value</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">displayed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a attribute to a Group/Indicator or Victim</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            source:</span>
+<span class="sd">            displayed:</span>
+<span class="sd">            params:</span>
+<span class="sd">            attribute_type:</span>
+<span class="sd">            attribute_value:</span>
+
+<span class="sd">        Returns: attribute json</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">attribute_value</span><span class="p">,</span>
+            <span class="n">attribute_id</span><span class="p">,</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+            <span class="n">displayed</span><span class="o">=</span><span class="n">displayed</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.delete_attribute"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.delete_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">delete_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a attribute from a Group/Indicator or Victim</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            attribute_id:</span>
+
+<span class="sd">        Returns: attribute json</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete_attribute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.attribute_labels"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.attribute_labels">[docs]</a>    <span class="k">def</span> <span class="nf">attribute_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the security labels from a attribute</span>
+
+<span class="sd">        Yields: Security label json</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">attribute_labels</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+            <span class="n">attribute_id</span><span class="p">,</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.attribute_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.attribute_label">[docs]</a>    <span class="k">def</span> <span class="nf">attribute_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a security labels from a attribute</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attribute_id:</span>
+<span class="sd">            label:</span>
+<span class="sd">            action:</span>
+<span class="sd">            params:</span>
+
+<span class="sd">        Returns: Security label json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">get_attribute_label</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+                <span class="n">attribute_id</span><span class="p">,</span>
+                <span class="n">label</span><span class="p">,</span>
+                <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete_attribute_label</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
+                <span class="n">attribute_id</span><span class="p">,</span>
+                <span class="n">label</span><span class="p">,</span>
+                <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;attribute_label&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Mappings.add_attribute_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_attribute_label">[docs]</a>    <span class="k">def</span> <span class="nf">add_attribute_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a security labels to a attribute</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attribute_id:</span>
+<span class="sd">            label:</span>
+
+<span class="sd">        Returns: A response json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">add_attribute_label</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.can_create"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_create">[docs]</a>    <span class="k">def</span> <span class="nf">can_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object can be created. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Mappings.can_delete"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_delete">[docs]</a>    <span class="k">def</span> <span class="nf">can_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object can be deleted. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Mappings.can_update"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_update">[docs]</a>    <span class="k">def</span> <span class="nf">can_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object can be updated. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Mappings.is_indicator"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_indicator">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_indicator</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object is a Indicator. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Mappings.is_group"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_group">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_group</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object is a Group. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Mappings.is_victim"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_victim">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_victim</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object is a Victim. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Mappings.is_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_tag">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_tag</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object is a Tag. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Mappings.is_security_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_security_label">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_security_label</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object is a Security Label. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Mappings.is_task"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_task">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_task</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Determines if the object is a Task. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Mappings.is_encoded"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_encoded">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_encoded</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determines if a uri is currently encoded&quot;&quot;&quot;</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="n">uri</span> <span class="o">!=</span> <span class="n">unquote</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.fully_decode_uri"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.fully_decode_uri">[docs]</a>    <span class="k">def</span> <span class="nf">fully_decode_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Decodes a url till it is no longer encoded.&quot;&quot;&quot;</span>
+        <span class="n">saftey_valve</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_encoded</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="n">unquote</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+            <span class="n">saftey_valve</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">saftey_valve</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">uri</span></div>
+
+<div class="viewcode-block" id="Mappings._set_unique_id"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings._set_unique_id">[docs]</a>    <span class="k">def</span> <span class="nf">_set_unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_response</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the Unique Id given a json &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="n">json_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mappings.__str__"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation of object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

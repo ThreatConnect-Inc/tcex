@@ -3,7 +3,7 @@
 from args import Args
 
 
-class PlaybookApp(object):
+class PlaybookApp:
     """Playbook App Class."""
 
     def __init__(self, _tcex):
@@ -15,10 +15,6 @@ class PlaybookApp(object):
         # automatically parse args on init
         self.parse_args()
 
-    def done(self):
-        """Perform cleanup operations and gracefully exit the App."""
-        self.tcex.log.debug('Running done.')
-
     def parse_args(self):
         """Parse CLI args."""
         Args(self.tcex.parser)
@@ -28,9 +24,21 @@ class PlaybookApp(object):
         """Run the App main logic."""
         self.tcex.log.info('No run logic provided.')
 
-    def start(self):
-        """Perform prep/startup operations."""
-        self.tcex.log.debug('Running start.')
+    def setup(self):
+        """Perform prep/setup logic."""
+        # run legacy method
+        if hasattr(self, 'start'):
+            self.tcex.log.warning('calling legacy start method')
+            self.start()  # pylint: disable=no-member
+        self.tcex.log.trace('setup')
+
+    def teardown(self):
+        """Perform cleanup/teardown logic."""
+        # run legacy method
+        if hasattr(self, 'done'):
+            self.tcex.log.warning('calling legacy done method')
+            self.done()  # pylint: disable=no-member
+        self.tcex.log.trace('teardown')
 
     def write_output(self):
         """Write the Playbook output variables."""

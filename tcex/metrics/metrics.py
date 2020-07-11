@@ -2,13 +2,14 @@
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
 
 
-class Metrics(object):
+class Metrics:
     """TcEx Metrics Class"""
 
     def __init__(self, tcex, name, description, data_type, interval, keyed=False):
         """Initialize the Class properties.
 
         Args:
+            tcex (TcEx): An instance of TcEx class.
             name (str): The name for the metric.
             description (str): The description of the metric.
             data_type (str): The type of metric: Sum, Count, Min, Max, First, Last, and Average.
@@ -52,7 +53,7 @@ class Metrics(object):
             'name': self._metric_name,
             'keyedValues': self._metric_keyed,
         }
-        self.tcex.log.debug('metric body: {}'.format(body))
+        self.tcex.log.debug(f'metric body: {body}')
         r = self.tcex.session.post('/v2/customMetrics', json=body)
 
         if not r.ok:  # pragma: no cover
@@ -60,7 +61,7 @@ class Metrics(object):
 
         data = r.json()
         self._metric_id = data.get('data', {}).get('customMetricConfig', {}).get('id')
-        self.tcex.log.debug('metric data: {}'.format(data))
+        self.tcex.log.debug(f'metric data: {data}')
 
     def metric_find(self):
         """Find the Metric by name.
@@ -95,13 +96,15 @@ class Metrics(object):
             for metric in data.get('data', {}).get('customMetricConfig'):
                 if metric.get('name') == self._metric_name:
                     self._metric_id = metric.get('id')
-                    info = 'found metric with name "{}" and Id {}.'
-                    self.tcex.log.info(info.format(self._metric_name, self._metric_id))
+                    self.tcex.log.info(
+                        f'found metric with name "{self._metric_name}" '
+                        f'and Id {self._metric_id}.'
+                    )
                     return True
             params['resultStart'] += params.get('resultLimit')
         return False
 
-    def add(self, value, date=None, return_value=False, key=None):
+    def add(self, value, date=None, return_value=False, key=None, weight=None):
         """Add metrics data to collection.
 
         Args:
@@ -109,7 +112,7 @@ class Metrics(object):
             date (str, optional): The optional date of the metric.
             return_value (bool, default:False): Tell the API to return the updates metric value.
             key (str, optional): The key value for keyed metrics.
-
+            weight (str, optional): The weight value (only needed for averages)
         Return:
             dict: If return_value is True a dict with the current value for the time period
                 is returned.
@@ -120,14 +123,20 @@ class Metrics(object):
 
         body = {'value': value}
         if date is not None:
-            body['date'] = self.tcex.utils.format_datetime(date, date_format='%Y-%m-%dT%H:%M:%SZ')
+            body['date'] = self.tcex.utils.datetime.format_datetime(
+                date, date_format='%Y-%m-%dT%H:%M:%SZ'
+            )
         if key is not None:
             body['name'] = key
-        self.tcex.log.debug('metric data: {}'.format(body))
+        if weight:
+            body['weight'] = weight
+        self.tcex.log.debug(f'metric data: {body}')
+
         params = {}
         if return_value:
             params = {'returnValue': 'true'}
-        url = '/v2/customMetrics/{}/data'.format(self._metric_id)
+
+        url = f'/v2/customMetrics/{self._metric_id}/data'
         r = self.tcex.session.post(url, json=body, params=params)
         if r.status_code == 200 and 'application/json' in r.headers.get('content-type', ''):
             data = r.json()
@@ -138,7 +147,7 @@ class Metrics(object):
 
         return data
 
-    def add_keyed(self, value, key, date=None, return_value=False):
+    def add_keyed(self, value, key, date=None, return_value=False, weight=None):
         """Add keyed metrics data to collection.
 
         Args:
@@ -146,9 +155,10 @@ class Metrics(object):
             key (str): The key value for keyed metrics.
             date (str, optional): The optional date of the metric.
             return_value (bool, default:False): Tell the API to return the updates metric value.
+            weight (str, optional): The weight value (only needed for averages)
 
         Return:
             dict: If return_value is True a dict with the current value for the time period
                 is returned.
         """
-        return self.add(value, date, return_value, key)
+        return self.add(value, date, return_value, key, weight)

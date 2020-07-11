@@ -34,22 +34,6 @@ bin.package
     :undoc-members:
     :show-inheritance:
 
-bin.profile
------------
-
-.. automodule:: tcex.bin.profile
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-bin.run
--------
-
-.. automodule:: tcex.bin.run
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 bin.test
 --------
 

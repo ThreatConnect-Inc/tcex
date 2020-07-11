@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Inputs Module &mdash; TcEx 1.1.8 documentation</title>
+  <title>Inputs Module &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Logger Module" href="tcex.logger.html" />
+    <link rel="next" title="Key Value Store Module" href="tcex.key_value_store.html" />
     <link rel="prev" title="Decorators" href="tcex.decorators.html" />
 </head>
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.6
               </div>
 
 
@@ -93,18 +93,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
@@ -118,27 +117,25 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tcex.batch.html">Batch Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.bin.html">Bin Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.case_management.html">Case Management Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.datastore.html">Datastore Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.decorators.html">Decorators</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Inputs Module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#module-tcex.inputs.inputs">inputs.inputs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-tcex.inputs.argument_parser">inputs.argument_parser</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.key_value_store.html">Key Value Store Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.logger.html">Logger Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex.html">TcEx</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.bin.html">Bin Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.metrics.html">Metrics module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.notifications.html">Notifications Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.playbooks.html">Playbooks Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.resources.html">Resources Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.services.html">Services Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.sessions.html">Session Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_data_filter.html">Data Filter Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.tcex.html">TcEx</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.tcex_error_codes.html">Error Codes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_key_value.html">Key Value Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_redis.html">Redis Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_request.html">Request Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_ti.html">TI (threat intel) module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.vault.html">Vault Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.threat_intelligence.html">Threat Intelligence Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.utils.html">Utils Module</a></li>
 </ul>
 </li>
@@ -284,6 +281,12 @@ intended for testing apps locally.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.inputs.inputs.Inputs.aot_blpop">
+<code class="sig-name descname">aot_blpop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.aot_blpop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.aot_blpop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subscribe to AOT action channel.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.inputs.inputs.Inputs.args">
 <code class="sig-name descname">args</code><span class="sig-paren">(</span><em class="sig-param">parse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse args if they have not already been parsed and return the Namespace for args.</p>
@@ -326,7 +329,7 @@ should be included in the provided data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>config</strong> (<em>dict</em>) – A dictionary of configuration values.</p></li>
+<li><p><strong>config_data</strong> (<em>dict</em>) – A dictionary of configuration values.</p></li>
 <li><p><strong>preserve</strong> (<em>bool</em>) – Don’t overwrite arg values define in sys.argv</p></li>
 </ul>
 </dd>
@@ -411,6 +414,7 @@ should be included in the provided data.</p>
 <dt id="tcex.inputs.inputs.Inputs.unknown_args">
 <code class="sig-name descname">unknown_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.unknown_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.unknown_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log argparser unknown arguments.</p>
+<p>This method is only applicable for args passed on the CLI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – List of unknown arguments</p>
@@ -589,8 +593,14 @@ completion.</p>
 <dt><kbd><span class="option">--tc_svc_hb_timeout_seconds <var>seconds</var></span></kbd></dt>
 <dd><p>The heartbeat interval in seconds.</p>
 </dd>
+<dt><kbd><span class="option">--tc_svc_id <var>id</var></span></kbd></dt>
+<dd><p>The unique service id.</p>
+</dd>
 <dt><kbd><span class="option">--tc_svc_server_topic <var>topic</var></span></kbd></dt>
 <dd><p>The topic to receive server message.</p>
+</dd>
+<dt><kbd><span class="option">--tcex_testing_context <var>context</var></span></kbd></dt>
+<dd><p>A context for TcEx Framework testing.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -608,6 +618,9 @@ completion.</p>
 </dd>
 <dt><kbd><span class="option">--tc_in_path <var>path</var></span></kbd></dt>
 <dd><p>The app in path.</p>
+</dd>
+<dt><kbd><span class="option">--tc_job_id <var>id</var></span></kbd></dt>
+<dd><p>The id of the running job.</p>
 </dd>
 <dt><kbd><span class="option">--tc_out_path <var>path</var></span></kbd></dt>
 <dd><p>The app out path.</p>
@@ -665,7 +678,7 @@ in favor on adding args in as a config (dict) in all cases.</p>
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="tcex.logger.html" class="btn btn-neutral float-right" title="Logger Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.key_value_store.html" class="btn btn-neutral float-right" title="Key Value Store Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
         <a href="tcex.decorators.html" class="btn btn-neutral float-left" title="Decorators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -2,7 +2,7 @@
 """Auto-generated Playbook Args"""
 
 
-class Args(object):
+class Args:
     """Playbook Args"""
 
     def __init__(self, parser):

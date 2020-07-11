@@ -4,9 +4,10 @@ import base64
 import hashlib
 import hmac
 import time
+
 import urllib3
+from requests import Session, adapters, auth
 from urllib3.util.retry import Retry
-from requests import adapters, auth, Session
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -17,20 +18,18 @@ class HmacAuth(auth.AuthBase):
 
     def __init__(self, access_id, secret_key):
         """Initialize the Class properties."""
-        super(HmacAuth, self).__init__()
+        super().__init__()
         self._access_id = access_id
         self._secret_key = secret_key
 
     def __call__(self, r):
         """Override of parent __call__ method."""
         timestamp = int(time.time())
-        signature = '{}:{}:{}'.format(r.path_url, r.method, timestamp)
+        signature = f'{r.path_url}:{r.method}:{timestamp}'
         hmac_signature = hmac.new(
             self._secret_key.encode(), signature.encode(), digestmod=hashlib.sha256
         ).digest()
-        authorization = 'TC {}:{}'.format(
-            self._access_id, base64.b64encode(hmac_signature).decode()
-        )
+        authorization = f'TC {self._access_id}:{base64.b64encode(hmac_signature).decode()}'
         r.headers['Authorization'] = authorization
         r.headers['Timestamp'] = timestamp
         return r
@@ -41,12 +40,12 @@ class TokenAuth(auth.AuthBase):
 
     def __init__(self, token):
         """Initialize Class Properties."""
-        super(TokenAuth, self).__init__()
+        super().__init__()
         self.token = token
 
     def __call__(self, r):
         """Override of parent __call__ method."""
-        r.headers['Authorization'] = 'TC-Token {}'.format(self.token.token)
+        r.headers['Authorization'] = f'TC-Token {self.token.token}'
         return r
 
 
@@ -55,7 +54,7 @@ class TcSession(Session):
 
     def __init__(self, tcex):
         """Initialize the Class properties."""
-        super(TcSession, self).__init__()
+        super().__init__()
         self.tcex = tcex
 
         # properties
@@ -70,9 +69,8 @@ class TcSession(Session):
         if self.args.tc_proxy_tc:
             self.proxies = self.tcex.proxies
             self.tcex.log.trace(
-                'Using proxy host {}:{} for ThreatConnect API.'.format(
-                    self.args.tc_proxy_host, self.args.tc_proxy_port
-                )
+                f'Using proxy host {self.args.tc_proxy_host}:'
+                f'{self.args.tc_proxy_port} for ThreatConnect API.'
             )
 
         # Add Retry
@@ -88,13 +86,15 @@ class TcSession(Session):
             # service Apps only use tokens and playbook/runtime Apps will use token if available
             self.auth = TokenAuth(self.token)
             self.tcex.log.trace('Using token authorization.')
-        else:
+        elif self.args.api_access_id and self.args.api_secret_key:
             try:
                 # for external Apps or testing Apps locally
                 self.auth = HmacAuth(self.args.api_access_id, self.args.api_secret_key)
                 self.tcex.log.trace('Using HMAC authorization.')
             except AttributeError:  # pragma: no cover
                 raise RuntimeError('No valid ThreatConnect API credentials provided.')
+        else:  # pragma: no cover
+            raise RuntimeError('No valid ThreatConnect API credentials provided.')
 
     @property
     def _service_app(self):
@@ -116,8 +116,15 @@ class TcSession(Session):
             self._configure_auth()
 
         if not url.startswith('https'):
-            url = '{}{}'.format(self.args.tc_api_path, url)
-        return super(TcSession, self).request(method, url, **kwargs)
+            url = f'{self.args.tc_api_path}{url}'
+        response = super().request(method, url, **kwargs)
+
+        # APP-79 - adding logging of request as curl commands
+        self.tcex.log.debug(self.tcex.utils.requests_to_curl(response.request, verify=self.verify))
+        self.tcex.log.debug(f'request url: {response.request.url}')
+        self.tcex.log.debug(f'status_code: {response.status_code}')
+
+        return response
 
     def retry(self, retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
         """Add retry to Requests Session

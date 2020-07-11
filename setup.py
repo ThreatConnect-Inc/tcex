@@ -1,70 +1,107 @@
 # -*- coding: utf-8 -*-
-"""Setup for TCEX Module."""
-import re
-import sys
-from setuptools import setup, find_packages
+"""Setup for TcEx Module."""
+import os
 
-with open('tcex/__init__.py', 'r') as fd:
-    version = re.search(
-        r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]',
-        fd.read(),
-        re.MULTILINE,
-    ).group(1)
+from setuptools import find_packages, setup
 
-if not version:
-    raise RuntimeError('Cannot find version information')
+metadata = {}
+metadata_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tcex', '__metadata__.py')
+with open(metadata_file, mode='r', encoding='utf-8',) as f:
+    exec(f.read(), metadata)  # pylint: disable=exec-used
 
-install_requires = [
-    'colorama>=0.3.9',
-    'future',
-    'hvac>=0.3.0',
-    'inflect>=0.2.5',
-    'jsonschema>=2.6.0',
-    'paho-mqtt',
-    'parsedatetime',
-    'python-dateutil>=2.6.1',
-    'pytz',
-    'redis>=2.10.6',
-    'requests>=2.18.4',
-    'six>=1.11.0',
-    'stdlib-list',
-    'tzlocal',
+if not metadata:
+    raise RuntimeError(f'Could not load metadata file ({metadata_file}).')
+
+with open('README.md', 'r') as f:
+    readme = f.read()
+
+dev_packages = [
+    'bandit',
+    'black',
+    'CommonMark==0.5.5',
+    'deepdiff',
+    'flake8',
+    'jmespath',
+    'mako',
+    'pre-commit',
+    'pydocstyle',
+    'pylint',
+    'pytest',
+    'pytest-cov',
+    'pytest-html',
+    'pytest-xdist',
+    'pyupgrade',
+    'recommonmark',
+    'reno',
+    'sphinx',
+    'sphinx-rtd-theme',
 ]
-if sys.version_info < (3,):
-    install_requires.extend(['ipaddress'])
 
-scripts = [
-    'bin/tcinit',
-    'bin/tcinit.cmd',
-    'bin/tclib',
-    'bin/tclib.cmd',
-    'bin/tcpackage',
-    'bin/tcpackage.cmd',
-    'bin/tcprofile',
-    'bin/tcprofile.cmd',
-    'bin/tcrun',
-    'bin/tcrun.cmd',
-    'bin/tctest',
-    'bin/tctest.cmd',
-    'bin/tcvalidate',
-    'bin/tcvalidate.cmd',
-]
 
 setup(
-    author='ThreatConnect (support@threatconnect.com)',
-    author_email='support@threatconnect.com',
-    description='ThreatConnect Exchange App Framework',
-    download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
-    extras_require={'development': ['deepdiff', 'jmespath', 'mako', 'pytest', 'pytest-cov']},
+    author=metadata['__author__'],
+    author_email=metadata['__author_email__'],
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
+        'Topic :: Security',
+    ],
+    description=metadata['__description__'],
+    download_url=metadata['__download_url__'],
+    extras_require={'dev': dev_packages, 'develop': dev_packages, 'development': dev_packages},
     include_package_data=True,
-    install_requires=install_requires,
-    license='Apache License, Version 2',
-    name='tcex',
-    packages=find_packages(),
+    install_requires=[
+        'colorama>=0.3.9',
+        'future',
+        'hvac>=0.3.0',
+        'inflect>=0.2.5',
+        'jsonschema>=2.6.0',
+        'paho-mqtt',
+        'parsedatetime',
+        'pyaes',
+        'python-dateutil>=2.6.1',
+        'pytz',
+        'redis>=2.10.6',
+        'requests>=2.18.4',
+        'six>=1.11.0',
+        'stdlib-list>=0.6.0',
+        'tzlocal',
+        'wrapt',
+    ],
+    license=metadata['__license__'],
+    long_description=readme,
+    long_description_content_type='text/markdown',
+    name=metadata['__package_name__'],
+    packages=find_packages(exclude=['tests', 'tests.*']),
     package_data={'': ['*.json']},
-    scripts=scripts,
-    url='https://github.com/ThreatConnect-Inc/tcex',
-    use_2to3=True,
-    version=version,
+    package_dir={'tcex': 'tcex'},
+    project_urls={
+        'Documentation': 'https://threatconnect-inc.github.io/tcex/',
+        'Source': 'https://github.com/ThreatConnect-Inc/tcex',
+    },
+    python_requires='>=3.6',
+    scripts=[
+        'bin/tcinit',
+        'bin/tcinit.cmd',
+        'bin/tclib',
+        'bin/tclib.cmd',
+        'bin/tcpackage',
+        'bin/tcpackage.cmd',
+        'bin/tctest',
+        'bin/tctest.cmd',
+        'bin/tcvalidate',
+        'bin/tcvalidate.cmd',
+    ],
+    url=metadata['__url__'],
+    version=metadata['__version__'],
     zip_safe=True,
 )

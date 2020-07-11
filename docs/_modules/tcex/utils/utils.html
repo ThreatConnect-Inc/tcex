@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.utils &mdash; TcEx 1.1.8 documentation</title>
+  <title>tcex.utils.utils &mdash; TcEx 2.0.6 documentation</title>
 
 
 
@@ -21,10 +21,10 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.1.8
+                2.0.6
               </div>
 
 
@@ -91,18 +91,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_request.html">Module: Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_resource.html">Module: Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../module_ti.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
@@ -179,202 +178,143 @@
   <h1>Source code for tcex.utils.utils</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Utilities Module&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
-<span class="kn">import</span> <span class="nn">calendar</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">ipaddress</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">timezone</span>
-<span class="kn">import</span> <span class="nn">pytz</span>
-<span class="kn">from</span> <span class="nn">dateutil</span> <span class="k">import</span> <span class="n">parser</span>
-<span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
-<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="k">import</span> <span class="n">get_localzone</span>
-<span class="kn">import</span> <span class="nn">parsedatetime</span> <span class="k">as</span> <span class="nn">pdt</span>
+<span class="kn">import</span> <span class="nn">pyaes</span>
+
+<span class="kn">from</span> <span class="nn">.date_utils</span> <span class="kn">import</span> <span class="n">DatetimeUtils</span>
 
 
 <div class="viewcode-block" id="Utils"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils">[docs]</a><span class="k">class</span> <span class="nc">Utils</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;TcEx framework Utils module&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;TcEx framework Utils Class</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        temp_path (str, optional): The path to write temp files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            tcex (object): Instance of TcEx.</span>
-<span class="sd">            rhash (string): The REDIS hash.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_path</span> <span class="o">=</span> <span class="n">temp_path</span> <span class="ow">or</span> <span class="s1">&#39;/tmp&#39;</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_camel_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?&lt;!^)(?=[A-Z])&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;^</span><span class="si">{self.variable_pattern}</span><span class="s1">$&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_pattern</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Utils.any_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return datetime object from multiple formats.</span>
-
-<span class="sd">            Formats:</span>
-
-<span class="sd">            #. Human Input (e.g 30 days ago, last friday)</span>
-<span class="sd">            #. ISO 8601 (e.g. 2017-11-08T16:52:42Z)</span>
-<span class="sd">            #. Loose Date format (e.g. 2017 12 25)</span>
-<span class="sd">            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</span>
+<div class="viewcode-block" id="Utils.camel_to_snake"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.camel_to_snake">[docs]</a>    <span class="k">def</span> <span class="nf">camel_to_snake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camel_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return snake case string from a camel case string.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
+<span class="sd">            camel_string (str): The camel case input string.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
+<span class="sd">            str: The snake case representation of input string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># handle timestamp (e.g. 1510686617 or 1510686617.298753)</span>
-        <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camel_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">camel_string</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
 
-        <span class="c1"># handle ISO or other formatted date (e.g. 2017-11-08T16:52:42Z,</span>
-        <span class="c1"># 2017-11-08T16:52:42.400306+00:00)</span>
-        <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
-
-        <span class="c1"># handle human readable relative time (e.g. 30 days ago, last friday)</span>
-        <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">human_date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
-
-        <span class="c1"># if all attempt to convert fail raise an error</span>
-        <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not format input (</span><span class="si">{}</span><span class="s1">) to datetime string.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time_input</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">dt_value</span></div>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_replace_timezone</span><span class="p">(</span><span class="n">dateutil_parser</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># try to get the timezone from tzlocal</span>
-            <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># try to get the timezone from python&#39;s time package</span>
-                <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">tzname</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">:</span>
-                <span class="c1"># seeing as all else has failed: use UTC as the timezone</span>
-                <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">tzinfo</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">dateutil_parser</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Utils.date_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">date_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert ISO 8601 and other date strings to datetime.datetime type.</span>
+<div class="viewcode-block" id="Utils.camel_to_space"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.camel_to_space">[docs]</a>    <span class="k">def</span> <span class="nf">camel_to_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camel_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return space case string from a camel case string.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
+<span class="sd">            camel_string (str): The camel case input string.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
+<span class="sd">            str: The space representation of input string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># dt = parser.parse(time_input, fuzzy_with_tokens=True)[0]</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">time_input</span><span class="p">)</span>
-            <span class="c1"># don&#39;t convert timezone if dt timezone already in the correct timezone</span>
-            <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_timezone</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">pass</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">return</span> <span class="n">dt</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camel_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">camel_string</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Utils.format_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return timestamp from multiple input formats.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an instance of DatetimeUtils.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">DatetimeUtils</span><span class="p">()</span>
 
-<span class="sd">            Formats:</span>
-
-<span class="sd">            #. Human Input (e.g 30 days ago, last friday)</span>
-<span class="sd">            #. ISO 8601 (e.g. 2017-11-08T16:52:42Z)</span>
-<span class="sd">            #. Loose Date format (e.g. 2017 12 25)</span>
-<span class="sd">            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</span>
-
-<span class="sd">        .. note:: To get a unix timestamp format use the strftime format **%s**. Python</span>
-<span class="sd">                  does not natively support **%s**, however this method has support.</span>
+<div class="viewcode-block" id="Utils.decrypt_aes_cbc"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.decrypt_aes_cbc">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">decrypt_aes_cbc</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ciphertext</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return AES CBC decrypted string.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
-<span class="sd">            date_format (string): The strftime format to use, ISO by default.</span>
+<span class="sd">            key (bytes): The encryption key.</span>
+<span class="sd">            ciphertext (bytes): The ciphertext to decrypt.</span>
+<span class="sd">            iv (bytes, optional): The CBC initial vector.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Formatted datetime string.</span>
+<span class="sd">            bytes: The encoded string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span> <span class="ow">or</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">16</span>
 
-        <span class="c1"># handle timestamp (e.g. 1510686617 or 1510686617.298753)</span>
-        <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
+        <span class="c1"># ensure key is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
-        <span class="c1"># format date</span>
-        <span class="k">if</span> <span class="n">date_format</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">dt_value</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span>
-        <span class="k">elif</span> <span class="n">date_format</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">dt_value</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">dt_value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="c1"># ensure iv is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">dt_value</span></div>
+        <span class="n">aes_cbc_decrypt</span> <span class="o">=</span> <span class="n">pyaes</span><span class="o">.</span><span class="n">Decrypter</span><span class="p">(</span><span class="n">pyaes</span><span class="o">.</span><span class="n">AESModeOfOperationCBC</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="n">iv</span><span class="p">))</span>
+        <span class="n">decrypted</span> <span class="o">=</span> <span class="n">aes_cbc_decrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">)</span>
+        <span class="n">decrypted</span> <span class="o">+=</span> <span class="n">aes_cbc_decrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">decrypted</span></div>
 
-<div class="viewcode-block" id="Utils.human_date_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.human_date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">human_date_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert human readable date (e.g. 30 days ago) to datetime.datetime using</span>
-<span class="sd">            parsedatetime module.</span>
-
-<span class="sd">        Examples:</span>
-
-<span class="sd">        * August 25th, 2008</span>
-<span class="sd">        * 25 Aug 2008</span>
-<span class="sd">        * Aug 25 5pm</span>
-<span class="sd">        * 5pm August 25</span>
-<span class="sd">        * next saturday</span>
-<span class="sd">        * tomorrow</span>
-<span class="sd">        * next thursday at 4pm</span>
-<span class="sd">        * at 4pm</span>
-<span class="sd">        * eod</span>
-<span class="sd">        * tomorrow eod</span>
-<span class="sd">        * eod tuesday</span>
-<span class="sd">        * eoy</span>
-<span class="sd">        * eom</span>
-<span class="sd">        * in 5 minutes</span>
-<span class="sd">        * 5 minutes from now</span>
-<span class="sd">        * 5 hours before now</span>
-<span class="sd">        * 2 hours before noon</span>
-<span class="sd">        * 2 days from tomorrow</span>
+<div class="viewcode-block" id="Utils.encrypt_aes_cbc"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.encrypt_aes_cbc">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">encrypt_aes_cbc</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">plaintext</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return AES CBC encrypted string.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned datetime.</span>
-<span class="sd">            source_datetime (datetime.datetime): The reference or source datetime.</span>
+<span class="sd">            key (bytes): The encryption key.</span>
+<span class="sd">            plaintext (str|bytes): The text to encrypt.</span>
+<span class="sd">            iv (bytes, optional): The CBC initial vector.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
+<span class="sd">            bytes: The encoded string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span> <span class="ow">or</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">16</span>
 
-        <span class="n">c</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Constants</span><span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">)</span>
-        <span class="n">cal</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Calendar</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-        <span class="c1"># cal = pdt.Calendar(c, version=pdt.VERSION_CONTEXT_STYLE)</span>
-        <span class="n">tzinfo</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">src_tzname</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">source_datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">source_datetime</span><span class="o">.</span><span class="n">tzinfo</span>
-            <span class="n">src_tzname</span> <span class="o">=</span> <span class="n">source_datetime</span><span class="o">.</span><span class="n">tzname</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">dt</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">parseDT</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">sourceTime</span><span class="o">=</span><span class="n">source_datetime</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzinfo</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># don&#39;t add tz if no tz value is passed</span>
-                <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_timezone</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-                <span class="c1"># don&#39;t covert timezone if source timezone already in the correct timezone</span>
-                <span class="k">if</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">src_tzname</span><span class="p">:</span>
-                    <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># ensure key is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">dt</span></div>
+        <span class="c1"># ensure plaintext is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">plaintext</span> <span class="o">=</span> <span class="n">plaintext</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="c1"># ensure iv is bytes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="n">aes_cbc_encrypt</span> <span class="o">=</span> <span class="n">pyaes</span><span class="o">.</span><span class="n">Encrypter</span><span class="p">(</span><span class="n">pyaes</span><span class="o">.</span><span class="n">AESModeOfOperationCBC</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="n">iv</span><span class="p">))</span>
+        <span class="n">encrypted</span> <span class="o">=</span> <span class="n">aes_cbc_encrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">plaintext</span><span class="p">)</span>
+        <span class="n">encrypted</span> <span class="o">+=</span> <span class="n">aes_cbc_encrypt</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">encrypted</span></div>
+
+<div class="viewcode-block" id="Utils.flatten_list"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.flatten_list">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">flatten_list</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Flatten a list</span>
+
+<span class="sd">        Will work for lists of lists to arbitrary depth</span>
+<span class="sd">        and for lists with a mix of lists and single values</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lst (list): The list to flatten</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: the flattened list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flat_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sublist</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">Utils</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">sublist</span><span class="p">):</span>
+                    <span class="n">flat_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flat_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sublist</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flat_list</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">inflect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -384,6 +324,194 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span>
+
+<div class="viewcode-block" id="Utils.is_cidr"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.is_cidr">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_cidr</span><span class="p">(</span><span class="n">possible_cidr_range</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return whether the possible_cidr_range is a CIDR range.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="n">possible_cidr_range</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_interface</span><span class="p">(</span><span class="n">possible_cidr_range</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Utils.is_ip"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.is_ip">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_ip</span><span class="p">(</span><span class="n">possible_ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return whether the possible_ip is an IP address range.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="n">possible_ip</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Utils.printable_cred"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.printable_cred">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">printable_cred</span><span class="p">(</span><span class="n">cred</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mask_char</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a printable (masked) version of the provided credential.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cred (str): The cred to print.</span>
+<span class="sd">            visible (str): The number of characters at the beginning and</span>
+<span class="sd">                ending of the cred to not mask.</span>
+<span class="sd">            mask_char (str, Default: &quot;*&quot;): The character to use in the mask.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The reformatted token.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask_char</span> <span class="o">=</span> <span class="n">mask_char</span> <span class="ow">or</span> <span class="s1">&#39;*&#39;</span>
+        <span class="k">if</span> <span class="n">cred</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cred</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">visible</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">cred</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{cred[:visible]}</span><span class="s1">{mask_char * 4}</span><span class="si">{cred[-visible:]}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">cred</span></div>
+
+<div class="viewcode-block" id="Utils.random_string"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.random_string">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">random_string</span><span class="p">(</span><span class="n">string_length</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a random string of fixed length</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            string_length (int, optional): The length of the string. Defaults to 10.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A random string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">string_length</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Utils.requests_to_curl"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.requests_to_curl">[docs]</a>    <span class="k">def</span> <span class="nf">requests_to_curl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">mask_headers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mask_patterns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return converted PreparedRequest to a curl command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (requests.models.PreparedRequest): The response.request object.</span>
+<span class="sd">            mask_headers (bool, default: True): If True then values for certain header</span>
+<span class="sd">                key will be masked.</span>
+<span class="sd">            mask_patterns (list, default: None): A list of patterns if found in headers the value</span>
+<span class="sd">                will be masked.</span>
+<span class="sd">            verify (bool, default: True): If False the curl command will include --insecure flag.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The curl command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># APP-79 - adding the ability to log request as curl commands</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;curl&#39;</span><span class="p">,</span> <span class="s1">&#39;-X&#39;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">]</span>
+
+        <span class="c1"># add headers to curl command</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="n">mask_headers</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;authorization&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;password&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;session&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;username&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;token&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask_patterns</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="c1"># add user defined mask patterns</span>
+                    <span class="n">patterns</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mask_patterns</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">rf</span><span class="s1">&#39;.*</span><span class="si">{p}</span><span class="s1">.*&#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">printable_cred</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+                <span class="c1"># using gzip in Accept-Encoding with CURL on the CLI produces</span>
+                <span class="c1"># the warning &quot;Binary output can mess up your terminal.&quot;</span>
+                <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;accept-encoding&#39;</span><span class="p">:</span>
+                    <span class="n">encodings</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+                    <span class="k">for</span> <span class="n">encoding</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">encodings</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">encoding</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;gzip&#39;</span><span class="p">]:</span>
+                            <span class="n">encodings</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">encodings</span><span class="p">)</span>
+
+            <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-H &#39;</span><span class="si">{k}</span><span class="s2">: </span><span class="si">{v}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">:</span>
+            <span class="c1"># add body to the curl command</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">body</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="n">body</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="n">body_data</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;-d &quot;</span><span class="si">{body}</span><span class="s1">&quot;&#39;</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">temp_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_temp_binary_file</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+                <span class="n">body_data</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;--data-binary @</span><span class="si">{temp_file}</span><span class="s1">&#39;</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">body_data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">verify</span><span class="p">:</span>
+            <span class="c1"># add insecure flag to curl command</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--insecure&#39;</span><span class="p">)</span>
+
+        <span class="c1"># add url to curl command</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Utils.snake_to_camel"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.snake_to_camel">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">snake_to_camel</span><span class="p">(</span><span class="n">snake_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert snake_case to camelCase</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            snake_string (str): The snake case input string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">snake_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
+
+<div class="viewcode-block" id="Utils.standardize_asn"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.standardize_asn">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">standardize_asn</span><span class="p">(</span><span class="n">asn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the ASN formatted for ThreatConnect.&quot;&quot;&quot;</span>
+        <span class="n">numbers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;[0-9]+&#39;</span><span class="p">,</span> <span class="n">asn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">asn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;ASN</span><span class="si">{numbers[0]}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">asn</span></div>
+
+<div class="viewcode-block" id="Utils.to_bool"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert value to bool.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (bool|str): The value to convert to boolean.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: The boolean value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Utils.variable_method_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.variable_method_name">[docs]</a>    <span class="k">def</span> <span class="nf">variable_method_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert variable name to a valid method name.</span>
+
+<span class="sd">        #App:9876:string.operation!String -&gt; string_operation_string</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable (string): The variable name to convert.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (str): Method name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_match</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
+                <span class="n">variable_name</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">variable_type</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">method_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{variable_name}</span><span class="s1">_</span><span class="si">{variable_type}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">method_name</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">variable_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Regex pattern to match and parse a playbook variable.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">r</span><span class="s1">&#39;#([A-Za-z]+)&#39;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
+            <span class="sa">r</span><span class="s1">&#39;:([\d]+)&#39;</span>  <span class="c1"># app id (:7979)</span>
+            <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_\.\-\[\]]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
+            <span class="sa">r</span><span class="s1">&#39;!(StringArray|BinaryArray|KeyValueArray&#39;</span>  <span class="c1"># variable type (array)</span>
+            <span class="sa">r</span><span class="s1">&#39;|TCEntityArray|TCEnhancedEntityArray&#39;</span>  <span class="c1"># variable type (array)</span>
+            <span class="sa">r</span><span class="s1">&#39;|String|Binary|KeyValue|TCEntity|TCEnhancedEntity&#39;</span>  <span class="c1"># variable type</span>
+            <span class="sa">r</span><span class="s1">&#39;|(?:(?!String)(?!Binary)(?!KeyValue)&#39;</span>  <span class="c1"># non matching for custom</span>
+            <span class="sa">r</span><span class="s1">&#39;(?!TCEntity)(?!TCEnhancedEntity)&#39;</span>  <span class="c1"># non matching for custom</span>
+            <span class="sa">r</span><span class="s1">&#39;[A-Za-z0-9_-]+))&#39;</span>  <span class="c1"># variable type (custom)</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Utils.write_temp_binary_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.write_temp_binary_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_temp_binary_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write content to a temporary file.</span>
@@ -401,120 +529,23 @@
 <div class="viewcode-block" id="Utils.write_temp_file"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.write_temp_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_temp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write content to a temporary file.</span>
 
+<span class="sd">        If passing binary data the mode needs to be set to &#39;wb&#39;.</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            content (bytes|str): The file content. If passing binary data the mode needs to be set</span>
-<span class="sd">                to &#39;wb&#39;.</span>
-<span class="sd">            filename (str, optional): The filename to use when writing the file.</span>
-<span class="sd">            mode (str, optional): The file write mode which could be either &#39;w&#39; or &#39;wb&#39;.</span>
+<span class="sd">            content (bytes|str): The file content.</span>
+<span class="sd">            filename (str, optional): The filename to use when writing the file. Defaults to None.</span>
+<span class="sd">            mode (str, optional): The write mode (&#39;w&#39; or &#39;wb&#39;). Defaults to w.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Fully qualified path name for the file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
-        <span class="n">fqpn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">fqpn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fqpn</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqpn</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fqpn</span></div>
-
-<div class="viewcode-block" id="Utils.timedelta"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculates time delta between two time expressions.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            time_input1 (string): The time input string (see formats above).</span>
-<span class="sd">            time_input2 (string): The time input string (see formats above).</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (dict): Dict with delta values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">time_input1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input1</span><span class="p">)</span>
-        <span class="n">time_input2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input2</span><span class="p">)</span>
-
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">time_input1</span> <span class="o">-</span> <span class="n">time_input2</span>  <span class="c1"># timedelta</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">)</span>  <span class="c1"># relativedelta</span>
-
-        <span class="c1"># totals</span>
-        <span class="n">total_months</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">years</span> <span class="o">*</span> <span class="mi">12</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">months</span>
-        <span class="n">total_weeks</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">years</span> <span class="o">*</span> <span class="mi">52</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">total_months</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">weeks</span>
-        <span class="n">total_days</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">days</span>  <span class="c1"># handles leap days</span>
-        <span class="n">total_hours</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_days</span> <span class="o">*</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">hours</span>
-        <span class="n">total_minutes</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_hours</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">minutes</span>
-        <span class="n">total_seconds</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_minutes</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">seconds</span>
-        <span class="n">total_microseconds</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_seconds</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">microseconds</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;datetime_1&#39;</span><span class="p">:</span> <span class="n">time_input1</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-            <span class="s1">&#39;datetime_2&#39;</span><span class="p">:</span> <span class="n">time_input2</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-            <span class="s1">&#39;years&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">years</span><span class="p">,</span>
-            <span class="s1">&#39;months&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">months</span><span class="p">,</span>
-            <span class="s1">&#39;weeks&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">weeks</span><span class="p">,</span>
-            <span class="s1">&#39;days&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">days</span><span class="p">,</span>
-            <span class="s1">&#39;hours&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">hours</span><span class="p">,</span>
-            <span class="s1">&#39;minutes&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">minutes</span><span class="p">,</span>
-            <span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span>
-            <span class="s1">&#39;microseconds&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">microseconds</span><span class="p">,</span>
-            <span class="s1">&#39;total_months&#39;</span><span class="p">:</span> <span class="n">total_months</span><span class="p">,</span>
-            <span class="s1">&#39;total_weeks&#39;</span><span class="p">:</span> <span class="n">total_weeks</span><span class="p">,</span>
-            <span class="s1">&#39;total_days&#39;</span><span class="p">:</span> <span class="n">total_days</span><span class="p">,</span>
-            <span class="s1">&#39;total_hours&#39;</span><span class="p">:</span> <span class="n">total_hours</span><span class="p">,</span>
-            <span class="s1">&#39;total_minutes&#39;</span><span class="p">:</span> <span class="n">total_minutes</span><span class="p">,</span>
-            <span class="s1">&#39;total_seconds&#39;</span><span class="p">:</span> <span class="n">total_seconds</span><span class="p">,</span>
-            <span class="s1">&#39;total_microseconds&#39;</span><span class="p">:</span> <span class="n">total_microseconds</span><span class="p">,</span>
-        <span class="p">}</span></div>
-
-<div class="viewcode-block" id="Utils.to_bool"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert string value to bool.&quot;&quot;&quot;</span>
-        <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]:</span>
-            <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">bool_value</span></div>
-
-<div class="viewcode-block" id="Utils.unix_time_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.unix_time_to_datetime">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753</span>
-<span class="sd">            to datetime.datetime type.</span>
-
-<span class="sd">        .. note:: This method assumes UTC for all inputs.</span>
-
-<span class="sd">        .. note:: This method only accepts a 9-10 character time_input.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned datetime (e.g. UTC).</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[0-9]{11,16}$&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_input</span><span class="p">)):</span>
-            <span class="c1"># handle timestamp with milliseconds and no &quot;.&quot;</span>
-            <span class="n">time_input_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_input</span><span class="p">))</span> <span class="o">-</span> <span class="mi">10</span>
-            <span class="n">dec</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">time_input_length</span><span class="p">)</span>
-            <span class="n">time_input</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_input</span><span class="p">)</span> <span class="o">/</span> <span class="n">dec</span>
-
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[0-9]{9,10}(?:\.[0-9]{0,6})?$&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_input</span><span class="p">)):</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_input</span><span class="p">),</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">))</span>
-            <span class="c1"># don&#39;t covert timezone if dt timezone already in the correct timezone</span>
-            <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
-                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">dt</span></div></div>
-
-
-<span class="c1"># &gt;&gt;&gt; from pytz import timezone</span>
-<span class="c1"># &gt;&gt;&gt; from datetime import datetime</span>
-<span class="c1"># &gt;&gt;&gt; time_input = 1229084481</span>
-<span class="c1"># &gt;&gt;&gt; dt = datetime.fromtimestamp(float(time_input), tz=timezone(&#39;UTC&#39;))</span>
-<span class="c1"># &gt;&gt;&gt; dt.isoformat()</span>
-<span class="c1"># &#39;2008-12-12T12:21:21+00:00&#39;</span>
-<span class="c1"># &gt;&gt;&gt; tz.normalize(dt).isoformat()</span>
-<span class="c1"># &#39;2008-12-12T06:21:21-06:00&#39;</span>
-<span class="c1"># &gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;))</span>
-<span class="c1"># datetime.datetime(2008, 12, 12, 6, 21, 21,</span>
-<span class="c1">#   tzinfo=&lt;DstTzInfo &#39;US/Central&#39; CST-1 day, 18:00:00 STD&gt;)</span>
-<span class="c1"># &gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;)).isoformat()</span>
-<span class="c1"># &#39;2008-12-12T06:21:21-06:00&#39;</span>
+        <span class="k">return</span> <span class="n">fqpn</span></div></div>
 </pre></div>
 
            </div>

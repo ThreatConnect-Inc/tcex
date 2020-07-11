@@ -3,7 +3,7 @@
 import pytest
 
 
-# pylint: disable=R0201,W0201
+# pylint: disable=no-self-use
 class TestIndicator3:
     """Test the TcEx Batch Module."""
 
@@ -92,7 +92,7 @@ class TestIndicator3:
                 'type': 'File',
                 'rating': 5.00,
                 'confidence': 100,
-                'summary': '{} : {} : {}'.format(md5 * 16, sha1 * 20, sha256 * 32),
+                'summary': f'{md5 * 16} : {sha1 * 20} : {sha256 * 32}',
                 'xid': xid,
                 'attribute': [{'displayed': True, 'type': 'Description', 'value': description}],
                 'securityLabel': [

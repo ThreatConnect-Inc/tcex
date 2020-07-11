@@ -10,7 +10,7 @@ class MockPost:
     def __init__(self, data, ok=True):
         """Initialize class properties."""
         self.data = data
-        self.ok = ok
+        self._ok = ok
 
     @property
     def headers(self):
@@ -24,7 +24,7 @@ class MockPost:
     @property
     def ok(self):
         """Mock ok property"""
-        return self.ok
+        return self._ok
 
     @property
     def reason(self):
@@ -42,20 +42,23 @@ class MockPost:
         return json.dumps(self.data)
 
 
-# pylint: disable=W0201
 class TestDataStore:
     """Test the TcEx DataStore Module."""
+
+    data_type = None
 
     def setup_class(self):
         """Configure setup before all tests."""
         self.data_type = 'pytest'
 
     @staticmethod
-    def test_create_index_fail_test(monkeypatch, tcex):
-        """Test load_secure_params method."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        post_orig = tcex.session.post
+    def test_create_index_fail_test(tcex, monkeypatch):
+        """Test failure to create an index.
 
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)
@@ -70,50 +73,69 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-        # reset monkeypatched tcex.session.get()
-        tcex.session.post = post_orig
-
     def test_data_store_local_index(self, tcex):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        """Test creating a local datastore index
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
         tcex.datastore('local', self.data_type)
 
     @staticmethod
-    def test_data_store_local_new_index(tcex, rid='one', data=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+    def test_data_store_local_new_index(tcex):
+        """Test creating a local datastore index
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        data = {'one': 1}
         key = str(uuid.uuid4())
-        if data is None:
-            data = {'one': 1}
+        rid = 'one'
+
         ds = tcex.datastore('local', key)
+
         results = ds.add(rid=rid, data=data)
         assert results.get('_type') == key
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_local_add(self, tcex, rid='one', data=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        if data is None:
-            data = {'one': 1}
+    def test_data_store_local_add(self, tcex):
+        """Test local datastore add
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        data = {'one': 1}
+        rid = 'one'
+
         ds = tcex.datastore('local', self.data_type)
+
         results = ds.add(rid=rid, data=data)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_local_add_no_rid(self, tcex, rid=None, data=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        if data is None:
-            data = {'one': 1}
+    def test_data_store_local_add_no_rid(self, tcex):
+        """Test local datastore add with no rid
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        data = {'one': 1}
+        rid = None
+
         ds = tcex.datastore('local', self.data_type)
+
         results = ds.add(rid=rid, data=data)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_local_add_fail(self, monkeypatch, tcex, rid=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        post_orig = tcex.session.post
+    def test_data_store_local_add_fail(self, tcex, monkeypatch):
+        """Test failure of data store add
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
+        rid = None
 
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
@@ -130,12 +152,14 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-        # reset monkeypatched tcex.session.get()
-        tcex.session.post = post_orig
+    def test_data_store_local_delete(self, tcex):
+        """Test local datastore delete
 
-    def test_data_store_local_delete(self, tcex, rid='three'):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        rid = 'three'
+
         ds = tcex.datastore('local', self.data_type)
 
         # add entry to be deleted
@@ -147,10 +171,14 @@ class TestDataStore:
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
-    def test_data_store_local_delete_fail(self, monkeypatch, tcex, rid='fail-test'):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        post_orig = tcex.session.post
+    def test_data_store_local_delete_fail(self, tcex, monkeypatch):
+        """Test failure of data store local delete
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
+        rid = 'fail-test'
 
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
@@ -167,14 +195,15 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-        # reset monkeypatched tcex.session.get()
-        tcex.session.post = post_orig
+    def test_data_store_local_get(self, tcex):
+        """Test local datastore get
 
-    def test_data_store_local_get(self, tcex, rid='two', data=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        if data is None:
-            data = {'two': 2}
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        data = {'two': 2}
+        rid = 'two'
+
         ds = tcex.datastore('local', self.data_type)
 
         # add entry to be deleted
@@ -189,17 +218,23 @@ class TestDataStore:
         ds.delete(rid)
 
     def test_data_store_local_get_no_rid(self, tcex):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+        """Test local datastore get no reid
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
         ds = tcex.datastore('local', self.data_type)
+
         results = ds.get()
         assert results.get('hits') is not None
 
-    def test_data_store_local_get_fail(self, monkeypatch, tcex):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        post_orig = tcex.session.post
+    def test_data_store_local_get_fail(self, tcex, monkeypatch):
+        """Test failure of data store local get
 
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)
@@ -215,23 +250,29 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-        # reset monkeypatched tcex.session.get()
-        tcex.session.post = post_orig
+    def test_data_store_organization_add(self, tcex):
+        """Test organization datastore add
 
-    def test_data_store_organization_add(self, tcex, rid='one', data=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        if data is None:
-            data = {'one': 1}
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        data = {'one': 1}
+        rid = 'one'
+
         ds = tcex.datastore('organization', self.data_type)
 
         results = ds.add(rid=rid, data=data)
         assert results.get('_type') == self.data_type
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_organization_delete(self, tcex, rid='three'):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
+    def test_data_store_organization_delete(self, tcex):
+        """Test organization datastore delete
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        rid = 'three'
+
         ds = tcex.datastore('organization', self.data_type)
 
         # add entry to be deleted
@@ -243,11 +284,15 @@ class TestDataStore:
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
-    def test_data_store_organization_get(self, tcex, rid='two', data=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        if data is None:
-            data = {'two': 2}
+    def test_data_store_organization_get(self, tcex):
+        """Test organization datastore get
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        data = {'two': 2}
+        rid = 'two'
+
         ds = tcex.datastore('organization', self.data_type)
 
         # add entry to get
@@ -261,11 +306,15 @@ class TestDataStore:
         # delete
         ds.delete(rid)
 
-    def test_data_store_local_put(self, tcex, rid='one', data=None):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        if data is None:
-            data = {'one': 1}
+    def test_data_store_local_put(self, tcex):
+        """Test local datastore put
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+        """
+        data = {'one': 1}
+        rid = 'one'
+
         ds = tcex.datastore('local', self.data_type)
 
         # add entry to update
@@ -276,10 +325,12 @@ class TestDataStore:
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_local_put_fail(self, monkeypatch, tcex):
-        """Test data store add."""
-        args = tcex.args  # noqa: F841; pylint: disable=unused-variable
-        post_orig = tcex.session.post
+        """Test failure of data store local put
 
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
+        """
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)
@@ -294,6 +345,3 @@ class TestDataStore:
             assert False
         except RuntimeError:
             assert True
-
-        # reset monkeypatched tcex.session.get()
-        tcex.session.post = post_orig

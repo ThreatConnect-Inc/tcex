@@ -1,10 +1,6 @@
 [run]
 omit =
     tcex/bin/*
-    tcex/resources/*
-    tcex/tcex_data_filter.py
-    tcex/tcex_request/*
-    tcex/tcex_ti/*
     tcex/testing/*
     tcex/vault/*
     tests/*

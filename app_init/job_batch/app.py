@@ -11,7 +11,7 @@ class App(JobApp):
 
     def __init__(self, _tcex):
         """Initialize class properties."""
-        super(App, self).__init__(_tcex)
+        super().__init__(_tcex)
         self.batch = None
         self.url = 'https://feodotracker.abuse.ch/downloads/malware_hashes.csv'
 
@@ -50,4 +50,6 @@ class App(JobApp):
         batch_status = self.batch.submit_all()
         print(batch_status)
 
-        self.exit_message = 'Downloaded data and create batch job.'
+        self.exit_message = (  # pylint: disable=attribute-defined-outside-init
+            'Downloaded data and create batch job.'
+        )

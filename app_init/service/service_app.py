@@ -4,7 +4,7 @@ from args import Args
 
 
 # pylint: disable=unused-argument
-class ServiceApp(object):
+class ServiceApp:
     """Service App Class.
 
     Args:

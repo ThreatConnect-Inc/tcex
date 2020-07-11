@@ -1,57 +1,32 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Module for working with Datastore in the ThreatConnect Platform."""
 # import base64
-import time
 from datetime import datetime, timedelta
+from tcex import TcEx
 
 
-class Cache(object):
+class Cache:
     """TcEx Cache Class."""
 
-    def __init__(self, tcex, domain, data_type, ttl_seconds=None, mapping=None):
+    def __init__(self, tcex: TcEx, domain, data_type, ttl_seconds=None, mapping=None):
         """Initialize class properties.
 
         Args:
             tcex (object): An instance of TcEx.
             domain (str): A value of “system”, “organization”, or “local”.
             data_type (str): A free form type name for the data.
-            seconds (int, optional): Defaults to None. Number of seconds the cache is valid.
-            mapping (dict, optional): Defaults to None. Elasticsearch mappings data.
+            ttl_seconds (int, optional): Defaults to None. Number of seconds the cache is valid.
+            mapping (dict, optional): Defaults to None. ElasticSearch mappings data.
         """
-        self.tcex = tcex
+        self.tcex: TcEx = tcex
 
         # properties
         self.ttl_seconds = ttl_seconds
-        self.ds = self.tcex.datastore(domain, data_type, mapping)
+        self.ds: TcEx.datastore = self.tcex.datastore(domain, data_type, mapping)
 
-    def _cache_date(self, ttl_seconds):
-        """Return the cache date."""
-        cache_date = None
-        ttl_seconds = ttl_seconds or self.ttl_seconds
-        if ttl_seconds:
-            cache_date = self._dt_to_epoch(datetime.utcnow() + timedelta(seconds=int(ttl_seconds)))
-        return cache_date
-
-    # def _decode_data(self, data):
-    #     """Return the cache data encoded."""
-    #     if data is not None:
-    #         data = base64.b64decode(data)
-    #         try:
-    #             data = data.decode('utf-8')
-    #         except UnicodeDecodeError:
-    #             data = data.decode('latin-1')
-    #     return data
-
-    # def _encode_data(self, data):
-    #     """Return the cache data encoded."""
-    #     if data is not None:
-    #         try:
-    #             # py2
-    #             data = base64.b64encode(bytes(data)).decode('utf-8')
-    #         except TypeError:
-    #             # py3
-    #             data = base64.b64encode(bytes(data, 'utf-8')).decode('utf-8')
-    #     return data
+        # Warranty void if any of these are changed.  Don't touch.
+        self._cache_data_key = 'cache-data'
+        self._cache_date_key = 'cache-date'
 
     @staticmethod
     def _dt_to_epoch(dt):
@@ -62,21 +37,17 @@ class Cache(object):
             epoch = (dt - datetime(1970, 1, 1)).total_seconds()
         return epoch
 
-    def add(self, rid, data, ttl_seconds=None, raise_on_error=True):
+    def add(self, rid, data, raise_on_error=True):
         """Write cache data to the data store.
 
         Args:
             rid (str): The record identifier.
             data (dict): The record data.
-            ttl_seconds (int, optional): Defaults to None. Number of seconds the cache is valid.
             raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.
-
         Returns:
             object : Python request response.
         """
-        cache_date = self._cache_date(ttl_seconds)
-        # cache_data = self._encode_data(data)
-        data = {'cache-date': cache_date, 'cache-data': data}
+        data = {self._cache_date_key: datetime.utcnow().isoformat(), self._cache_data_key: data}
         return self.ds.post(rid, data, raise_on_error)
 
     def delete(self, rid, raise_on_error=True):
@@ -98,47 +69,56 @@ class Cache(object):
             rid (str): The record identifier.
             data_callback (callable): A method that will return the data.
             raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.
-
         Returns:
             object : Python request response.
         """
         cache_data = None
         ds_data = self.ds.get(rid, raise_on_error=False)
+        if ds_data is None:
+            ds_data = {'found': False}
         if ds_data is not None:
             expired = False
             if ds_data.get('found') is True:
-                cache_date = ds_data.get('_source', {}).get('cache-date')
-                cache_data = ds_data.get('_source', {}).get('cache-data')
-                if cache_date is not None and int(time.time()) > int(cache_date):
+                cache_data = ds_data.get('_source', {})
+                cache_date = cache_data.get(self._cache_date_key)
+                if self._is_cache_expired(cache_date):
                     cache_data = None
                     expired = True
-                    self.tcex.log.debug('Cached data is expired for ({}).'.format(rid))
+                    self.tcex.log.debug(f'Cached data is expired for ({rid}).')
 
             if expired or ds_data.get('found') is False:
                 # when cache is expired or does not exist use callback to get data if possible
                 if callable(data_callback):
                     # cache_data = self._encode_data(data_callback(rid))
                     cache_data = data_callback(rid)
-                    self.tcex.log.debug('Using callback data for ({}).'.format(rid))
+                    self.tcex.log.debug(f'Using callback data for ({rid}).')
                     if cache_data:
-                        self.update(rid, cache_data, raise_on_error)  # update the cache data
+                        cache_data = self.update(
+                            rid, cache_data, raise_on_error
+                        )  # update the cache data
             else:
-                self.tcex.log.debug('Using cached data for ({}).'.format(rid))
+                self.tcex.log.debug(f'Using cached data for ({rid}).')
+
         return cache_data
 
-    def update(self, rid, data, ttl_seconds=None, raise_on_error=True):
+    def update(self, rid, data, raise_on_error=True):
         """Write updated cache data to the DataStore.
 
         Args:
             rid (str): The record identifier.
             data (dict): The record data.
-            ttl_seconds (int, optional): Defaults to None. Number of seconds the cache is valid.
             raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             object : Python request response.
         """
-        cache_date = self._cache_date(ttl_seconds)
+        cache_date = datetime.utcnow().isoformat()
         # cache_data = self._encode_data(data)
-        data = {'cache-date': cache_date, 'cache-data': data}
-        return self.ds.put(rid, data, raise_on_error)
+        data = {self._cache_date_key: cache_date, self._cache_data_key: data}
+        self.ds.put(rid, data, raise_on_error)
+        return data
+
+    def _is_cache_expired(self, cached_date):
+        cached_datetime = self.tcex.utils.datetime.any_to_datetime(cached_date)
+        cache_expires = (cached_datetime + timedelta(seconds=self.ttl_seconds)).timestamp()
+        return cache_expires < datetime.utcnow().timestamp()
