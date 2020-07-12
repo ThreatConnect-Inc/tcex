@@ -458,8 +458,11 @@ URL:
     :linenos:
     :lineno-start: 1
     
-    # tcex 2.0.5 uses `text` for url keyword, previous versions used `url`
-    indicator_object = self.tcex.ti.indicator(indicator_type='URL', owner='MyOrg', text='https://example.org/foo')
+    # tcex 2.0.x uses `text` for url keyword, previous versions used `url`
+    if tcex.__version__ < "2.0":
+        indicator_object = self.tcex.ti.indicator(indicator_type='URL', owner='MyOrg', url='https://example.org/foo')
+    else:
+        indicator_object = self.tcex.ti.indicator(indicator_type='URL', owner='MyOrg', text='https://example.org/foo')
     response = indicator_object.create()
 
 Updating an Indicator
