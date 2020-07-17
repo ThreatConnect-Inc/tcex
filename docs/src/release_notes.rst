@@ -3,6 +3,14 @@
 Release Notes
 #############
 
+2.0.7
+=====
++ Added App Feature - Advanced Request
++ Updated session external
++ Updated services module to support sending failed message on ack.
++ Updated session module to not create curl logs when sending API logs.
++ Minor cleanup/updates for exernal session module.
+
 2.0.6
 =====
 + APP-79 - Added curl command to the log file at debug level to assist in troubleshooting.

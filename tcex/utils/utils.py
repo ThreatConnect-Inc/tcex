@@ -224,6 +224,7 @@ class Utils:
             if mask_headers is True:
                 patterns = [
                     'authorization',
+                    'cookie',
                     'password',
                     'session',
                     'username',

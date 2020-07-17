@@ -155,7 +155,7 @@ if __name__ == '__main__':
             tci.ij.update(migrate=args.migrate)
             # APP-86 - sort output data by name
             if tci.lj.has_layout:
-                tci.lj.update()
+                tci.lj.update(features=tci.ij.features)
 
         # print results
         tci.download_template.print_download_results()

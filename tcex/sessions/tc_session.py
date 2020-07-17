@@ -119,8 +119,12 @@ class TcSession(Session):
             url = f'{self.args.tc_api_path}{url}'
         response = super().request(method, url, **kwargs)
 
-        # APP-79 - adding logging of request as curl commands
-        self.tcex.log.debug(self.tcex.utils.requests_to_curl(response.request, verify=self.verify))
+        # don't show curl message for logging commands
+        if '/v2/logs/app' not in url:
+            # APP-79 - adding logging of request as curl commands
+            self.tcex.log.debug(
+                self.tcex.utils.requests_to_curl(response.request, verify=self.verify)
+            )
         self.tcex.log.debug(f'request url: {response.request.url}')
         self.tcex.log.debug(f'status_code: {response.status_code}')
 

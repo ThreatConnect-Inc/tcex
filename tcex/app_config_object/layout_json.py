@@ -7,6 +7,133 @@ import os
 from collections import OrderedDict
 
 
+class AppFeatureAdvanceRequest:
+    """AdvancedRequest Module"""
+
+    def __init__(self, lj, json_data):
+        """Initialize Class properties."""
+        self.lj = lj
+        self.json_data = json_data
+
+        # properties
+        self._prefix = None
+
+    @staticmethod
+    def get_index(params, key, value):
+        """Return the index of a dict from a list of dicts."""
+        for index, data in enumerate(params):
+            if data.get(key) == value:
+                return index
+        return None
+
+    @property
+    def inputs(self):
+        """Return Advanced Request Inputs."""
+        return [
+            {'display': 'tc_action in (\'Advanced Request\')', 'name': 'tc_adv_req_path'},
+            {'display': 'tc_action in (\'Advanced Request\')', 'name': 'tc_adv_req_http_method'},
+            {'display': 'tc_action in (\'Advanced Request\')', 'name': 'tc_adv_req_params'},
+            {
+                'display': 'tc_action in (\'Advanced Request\')',
+                'name': 'tc_adv_req_exclude_null_params',
+            },
+            {'display': 'tc_action in (\'Advanced Request\')', 'name': 'tc_adv_req_headers'},
+            {
+                'display': (
+                    'tc_action in (\'Advanced Request\') AND tc_adv_req_http_method in '
+                    '(\'POST\', \'PUT\', \'DELETE\', \'PATCH\')'
+                ),
+                'name': 'tc_adv_req_body',
+            },
+            {
+                'display': (
+                    'tc_action in (\'Advanced Request\') AND tc_adv_req_http_method in '
+                    '(\'POST\', \'PUT\', \'DELETE\', \'PATCH\')'
+                ),
+                'name': 'tc_adv_req_urlencode_body',
+            },
+            {'display': 'tc_action in (\'Advanced Request\')', 'name': 'tc_adv_req_fail_on_error'},
+        ]
+
+    @property
+    def outputs(self):
+        """Return Advanced Request Outputs."""
+        return [
+            {
+                'display': 'tc_action in (\'Advanced Request\')',
+                'name': f'{self.prefix}.request.content',
+            },
+            {
+                'display': 'tc_action in (\'Advanced Request\')',
+                'name': f'{self.prefix}.request.content.binary',
+            },
+            {
+                'display': 'tc_action in (\'Advanced Request\')',
+                'name': f'{self.prefix}.request.headers',
+            },
+            # {
+            #     'display': 'tc_action in (\'Advanced Request\')',
+            #     'name': f'okta.request.headers.keyvaluearray',
+            # },
+            {'display': 'tc_action in (\'Advanced Request\')', 'name': f'{self.prefix}.request.ok'},
+            {
+                'display': 'tc_action in (\'Advanced Request\')',
+                'name': f'{self.prefix}.request.reason',
+            },
+            {
+                'display': 'tc_action in (\'Advanced Request\')',
+                'name': f'{self.prefix}.request.status_code',
+            },
+            {
+                'display': 'tc_action in (\'Advanced Request\')',
+                'name': f'{self.prefix}.request.url',
+            },
+        ]
+
+    @property
+    def prefix(self):
+        """Return prefix for output variables."""
+        if self._prefix is None:
+            self._prefix = 'unknown'
+            for o in self.lj.outputs:
+                self._prefix = o.get('name').split('.')[0]
+        return self._prefix
+
+    def update(self):
+        """Update the install.json inputs and outputs."""
+        self.update_inputs()
+        self.update_outputs()
+
+    def update_inputs(self):
+        """Update install.json param inputs."""
+        for i in self.inputs:
+            configure_index = self.get_index(self.json_data.get('inputs'), 'title', 'Configure')
+
+            if i.get('name') in [
+                p.get('name') for p in self.json_data['inputs'][configure_index]['parameters']
+            ]:
+                # replace existing data
+                index = self.get_index(
+                    self.json_data['inputs'][configure_index]['parameters'], 'name', i.get('name')
+                )
+                self.json_data['inputs'][configure_index]['parameters'][index] = i
+            else:
+                # append input
+                self.json_data['inputs'][configure_index]['parameters'].append(i)
+
+    def update_outputs(self):
+        """Update install.json param inputs."""
+        for o in self.outputs:
+            # check to see if output was previously added
+            if o.get('name') in [o.get('name') for o in self.json_data.get('outputs', [])]:
+                # replace existing data
+                index = self.get_index(self.json_data['outputs'], 'name', o.get('name'))
+                self.json_data['outputs'][index] = o
+            else:
+                # append input
+                self.json_data['outputs'].append(o)
+
+
 class LayoutJson:
     """Object for layout.json file.
 
@@ -121,8 +248,12 @@ class LayoutJson:
             outputs.setdefault(o.get('name'), o)
         return outputs
 
-    def update(self):
+    def update(self, features=None):
         """Update the layouts.json file."""
+        # features from the instal.json
+        features = features or []
+
+        # get fresh copy of layout.json contents
         layout_data = self.contents
 
         # APP-86 - sort output data by name
@@ -130,6 +261,11 @@ class LayoutJson:
 
         # update contents
         self._contents = layout_data
+
+        # app feature - update layout_json.json for Advanced Request
+        if 'advancedRequest' in features:
+            afar = AppFeatureAdvanceRequest(self, layout_data)
+            afar.update()
 
         # write updated content
         self.write(layout_data)

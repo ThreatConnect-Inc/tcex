@@ -92,17 +92,19 @@ class Services:
             trigger_id (int): The trigger ID for the current config.
             config (dict): The config for the current trigger.
             message (str): A simple message for the action.
-            status (str): The passed/fail status for the App handling of config.
+            status (boolean): The passed/fail status for the App handling of config.
         """
         try:
-            # add config to configs
-            self.configs[trigger_id] = config
+            status_msg = 'Success' if status is True else 'Failed'
+            if status is True:
+                # add config to configs
+                self.configs[trigger_id] = config
 
             # send ack response
             response = {
                 'command': 'Acknowledged',
                 'message': message,
-                'status': status,
+                'status': status_msg,
                 'type': 'CreateConfig',
                 'triggerId': trigger_id,
             }
@@ -120,14 +122,15 @@ class Services:
             status (str): The passed/fail status for the App handling of config.
         """
         try:
-            # delete config from configs dict
+            status_msg = 'Success' if status is True else 'Failed'
+            # always delete config from configs dict, even when status is False
             del self.configs[trigger_id]
 
             # send ack response
             response = {
                 'command': 'Acknowledged',
                 'message': message,
-                'status': status,
+                'status': status_msg,
                 'type': 'DeleteConfig',
                 'triggerId': trigger_id,
             }
@@ -513,12 +516,11 @@ class Services:
         """
         command = message.get('command')
         config = message.get('config')
-        status = 'Success'
+        status = True
         trigger_id = message.get('triggerId')
 
         if command.lower() == 'createconfig':
             self.tcex.log.info(f'CreateConfig - trigger_id: {trigger_id} config : {config}')
-            valid_config = True
 
             # register config apiToken
             self.tcex.token.register_token(
@@ -529,23 +531,27 @@ class Services:
                 msg = 'Config created'
                 kwargs = {}
                 if self.tcex.ij.runtime_level.lower() == 'webhooktriggerservice':
+                    # only webhook triggers get and require the PB url
                     kwargs['url'] = message.get('url')
+
                 try:
                     # call callback for create config and handle exceptions to protect thread
-                    valid_config = self.create_config_callback(  # pylint: disable=not-callable
+                    status = self.create_config_callback(  # pylint: disable=not-callable
                         trigger_id, config, **kwargs
                     )
+
+                    # if callback does not return a boolean value assume it worked
+                    if not isinstance(status, bool):
+                        status = True
                 except Exception as e:
                     self.tcex.log.error(
                         f'The create config callback method encountered an error ({e}).'
                     )
                     self.tcex.log.trace(traceback.format_exc())
-                    status = 'Failed'
-                    valid_config = False
+                    status = False
 
             # create config after callback to report status and message
-            if valid_config is not False:
-                self.create_config(trigger_id, config, msg, status)
+            self.create_config(trigger_id, config, msg, status)
         elif command.lower() == 'deleteconfig':
             self.tcex.log.info(f'DeleteConfig - trigger_id: {trigger_id}')
 
@@ -556,12 +562,16 @@ class Services:
                 message = 'Delete created'
                 try:
                     # call callback for delete config and handle exceptions to protect thread
-                    self.delete_config_callback(trigger_id)  # pylint: disable=not-callable
+                    status = self.delete_config_callback(trigger_id)  # pylint: disable=not-callable
+
+                    # if callback does not return a boolean value assume it worked
+                    if not isinstance(status, bool):
+                        status = True
                 except Exception as e:
                     message = f'The delete config callback method encountered an error ({e}).'
                     self.tcex.log.error(message)
                     self.tcex.log.trace(traceback.format_exc())
-                    status = 'Failed'
+                    status = False
 
             # delete config
             self.delete_config(trigger_id, message, status)
@@ -850,7 +860,7 @@ class Services:
             # remove temporary logging file handler
             self.tcex.logger.remove_handler_by_name(self.thread_name)
 
-            # unregister thread from token
+            # unregister thread from token module
             self.tcex.token.unregister_thread(message.get('triggerId'), self.thread_name)
 
     def publish(self, message, topic=None):

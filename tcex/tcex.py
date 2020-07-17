@@ -97,6 +97,12 @@ class TcEx:
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
+    def advanced_request(self, output_prefix, session, timeout):
+        """Return instance of AdvancedRequest."""
+        from .app_feature import AdvancedRequest
+
+        return AdvancedRequest(self.args, output_prefix, session, self, timeout)
+
     def aot_rpush(self, exit_code):
         """Push message to AOT action channel."""
         if self.default_args.tc_playbook_db_type == 'Redis':
@@ -779,7 +785,12 @@ class TcEx:
         if self._session_external is None:
             from .sessions import ExternalSession
 
-            self._session_external = ExternalSession(self)
+            self._session_external = ExternalSession(logger=self.log)
+            self._session_external.headers.update(
+                {'User-Agent': f'TcEx App: {self.ij.display_name} - {self.ij.program_version}'}
+            )
+            if self.default_args.tc_proxy_external:
+                self._session_external.proxies = self.proxies
         return self._session_external
 
     @property
