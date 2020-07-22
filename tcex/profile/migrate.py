@@ -257,8 +257,8 @@ class Migrate:
                 ]:
                     continue
 
-                # check value to see if it's already a variable
-                if re.match(self.profile.utils.variable_match, v):
+                # check value to see if there are any variables in the data
+                if re.search(self.profile.utils.variable_parse, v):
                     continue
 
                 # get PB data type, APP-607
