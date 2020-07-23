@@ -762,10 +762,7 @@ class Profile:
     @property
     def inputs_flattened(self):
         """Return inputs dict."""
-        inputs = self.inputs_defaults
-        inputs.update(self.inputs_optional)
-        inputs.update(self.inputs_required)
-        return dict(inputs)
+        return self._flatten_inputs(self.inputs)
 
     @property
     def inputs_optional(self):
@@ -794,11 +791,7 @@ class Profile:
     @property
     def owner(self):
         """Return the owner value."""
-        return (
-            self.data.get('required', {}).get('owner')
-            or self.data.get('optional', {}).get('owner')
-            or self.data.get('owner')
-        )
+        return self.inputs_flattened.get('owner')
 
     @property
     def outputs(self):
