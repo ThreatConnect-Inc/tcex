@@ -200,9 +200,9 @@ class Utils:
         Returns:
             str: A random string
         """
-        return ''.join(random.choice(string.ascii_letters) for i in range(string_length))
+        return ''.join(random.choice(string.ascii_letters) for _ in range(string_length))
 
-    def requests_to_curl(self, request, mask_headers=True, mask_patterns=None, verify=True):
+    def requests_to_curl(self, request, mask_headers=True, mask_patterns=None, **kwargs):
         """Return converted PreparedRequest to a curl command.
 
         Args:
@@ -211,11 +211,15 @@ class Utils:
                 key will be masked.
             mask_patterns (list, default: None): A list of patterns if found in headers the value
                 will be masked.
-            verify (bool, default: True): If False the curl command will include --insecure flag.
+            proxies (dict, kwargs): A dict containing the proxy configuration.
+            verify (bool, kwargs): If False the curl command will include --insecure flag.
 
         Returns:
             str: The curl command.
         """
+        proxies = kwargs.get('proxies', {})
+        verify = kwargs.get('verify', True)
+
         # APP-79 - adding the ability to log request as curl commands
         cmd = ['curl', '-X', request.method]
 
@@ -260,6 +264,26 @@ class Utils:
                 temp_file = self.write_temp_binary_file(body)
                 body_data = f'--data-binary @{temp_file}'
             cmd.append(body_data)
+
+        if proxies:
+            proxy = None
+            proxy_user = None
+
+            # parse formatted string {'https': 'bob:pass@https://localhost:4242'}
+            proxy_settings = proxies.get('https', '').split('@')
+            if len(proxy_settings) > 1:
+                proxy_user, _ = proxy_settings[0].split(':')
+                proxy = proxy_settings[1]
+            else:
+                proxy = proxy_settings[0]
+
+            # add user:pass
+            if proxy_user:
+                cmd.extend(['--proxy-user', f'{proxy_user}:xxxxx'])
+
+            # add host:port
+            if proxy:
+                cmd.extend(['--proxy', proxy.replace('https://', '')])
 
         if not verify:
             # add insecure flag to curl command

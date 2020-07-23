@@ -776,7 +776,31 @@ class TcEx:
         if self._session is None:
             from .sessions import TcSession
 
-            self._session = TcSession(self)
+            self._session = TcSession(
+                logger=self.log,
+                api_access_id=self.default_args.api_access_id,
+                api_secret_key=self.default_args.api_secret_key,
+                base_url=self.default_args.tc_api_path,
+            )
+
+            # set verify
+            self._session.verify = self.default_args.tc_verify
+
+            # set token
+            self._session.token = self.token
+
+            # update User-Agent
+            self._session.headers.update(
+                {'User-Agent': f'TcEx: {__import__(__name__).__version__}'}
+            )
+
+            # add proxy support if requested
+            if self.default_args.tc_proxy_tc:
+                self._session.proxies = self.proxies
+                self.log.info(
+                    f'Using proxy host {self.args.tc_proxy_host}:'
+                    f'{self.args.tc_proxy_port} for ThreatConnect session.'
+                )
         return self._session
 
     @property
@@ -786,11 +810,19 @@ class TcEx:
             from .sessions import ExternalSession
 
             self._session_external = ExternalSession(logger=self.log)
+
+            # add User-Agent to headers
             self._session_external.headers.update(
                 {'User-Agent': f'TcEx App: {self.ij.display_name} - {self.ij.program_version}'}
             )
+
+            # add proxy support if requested
             if self.default_args.tc_proxy_external:
                 self._session_external.proxies = self.proxies
+                self.log.info(
+                    f'Using proxy host {self.args.tc_proxy_host}:'
+                    f'{self.args.tc_proxy_port} for external session.'
+                )
         return self._session_external
 
     @property

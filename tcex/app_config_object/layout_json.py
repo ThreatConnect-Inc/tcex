@@ -10,13 +10,11 @@ from collections import OrderedDict
 class AppFeatureAdvanceRequest:
     """AdvancedRequest Module"""
 
-    def __init__(self, lj, json_data):
+    def __init__(self, lj, json_data, prefix):
         """Initialize Class properties."""
         self.lj = lj
         self.json_data = json_data
-
-        # properties
-        self._prefix = None
+        self._prefix = prefix
 
     @staticmethod
     def get_index(params, key, value):
@@ -71,10 +69,6 @@ class AppFeatureAdvanceRequest:
                 'display': 'tc_action in (\'Advanced Request\')',
                 'name': f'{self.prefix}.request.headers',
             },
-            # {
-            #     'display': 'tc_action in (\'Advanced Request\')',
-            #     'name': f'okta.request.headers.keyvaluearray',
-            # },
             {'display': 'tc_action in (\'Advanced Request\')', 'name': f'{self.prefix}.request.ok'},
             {
                 'display': 'tc_action in (\'Advanced Request\')',
@@ -248,7 +242,7 @@ class LayoutJson:
             outputs.setdefault(o.get('name'), o)
         return outputs
 
-    def update(self, features=None):
+    def update(self, features=None, prefix=None):
         """Update the layouts.json file."""
         # features from the instal.json
         features = features or []
@@ -264,7 +258,7 @@ class LayoutJson:
 
         # app feature - update layout_json.json for Advanced Request
         if 'advancedRequest' in features:
-            afar = AppFeatureAdvanceRequest(self, layout_data)
+            afar = AppFeatureAdvanceRequest(self, layout_data, prefix)
             afar.update()
 
         # write updated content

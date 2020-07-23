@@ -806,6 +806,18 @@ class Profile:
         return self.data.get('outputs')
 
     @property
+    def rargs(self):
+        """Return combined/flattened args with value from staging data if required."""
+        rargs = {}
+        for arg, value in self.args.items():
+            if re.match(self.utils.variable_match, value):
+                # look for value in staging data
+                if self.stage_kvstore.get(value) is not None:
+                    value = self.stage_kvstore.get(value)
+            rargs[arg] = value
+        return rargs
+
+    @property
     def stage(self):
         """Return stage dict."""
         if self.data.get('stage') is None:
