@@ -105,6 +105,7 @@ class TestStringModifiers:
         """Test **camel_to_snake** method of TcEx Utils module.
 
         Args:
+            tcex (object, fixture): An instance of TcEx.
             string_length (int): The length of the random string.
         """
         result = tcex.utils.random_string(string_length=string_length)
@@ -130,4 +131,54 @@ class TestStringModifiers:
             expected (str): The expected result value.
         """
         result = tcex.utils.snake_to_camel(input_)
+        assert result == expected, f'Input {input_} result of {result} != {expected}'
+
+    @pytest.mark.parametrize(
+        'input_,length,append_chars,spaces,expected',
+        [
+            # no truncate, no append, no spaces
+            ('short_no_truncate', 20, '', False, 'short_no_truncate'),
+            # no truncate, append, no spaces
+            ('short_no_truncate', 20, ' ...', False, 'short_no_truncate'),
+            # no truncate, append, spaces
+            ('short_no_truncate', 20, '', True, 'short_no_truncate'),
+            # truncate, no append, no spaces
+            ('truncate_string', 5, '', False, 'trunc'),
+            # truncate, append, no spaces
+            ('truncate_append', 5, ' .', False, 'tru .'),
+            # truncate, append, spaces
+            ('truncate append spaces', 20, ' .', True, 'truncate append .'),
+            # truncate, append, spaces
+            ('truncate  double spaces', 20, ' .', True, 'truncate  double .'),
+            # return input
+            (None, 20, None, False, None),
+            # return input
+            ('', 20, None, False, ''),
+            # return input
+            ('input', None, None, False, 'input'),
+            # return input
+            ('input', 100, None, False, 'input'),
+            # return empty string
+            ('input', 0, None, False, ''),
+            # return empty string, spaces
+            ('input', 2, None, True, ''),
+        ],
+    )
+    def test_utils_truncate_string(self, tcex, input_, length, append_chars, spaces, expected):
+        """Test **truncate_string** method of TcEx Utils module.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            input_ (str): The input string to convert to snake case.
+            length (int): The length of the truncated string.
+            append_chars (str): Any character that should be appended to the
+                string. Typically used for ellipsis (e.g. ...).
+            spaces (bool): If True truncation will be done at the
+                nearest space before the truncation length to avoid chopping words.
+            expected (str): The expected result value.
+        """
+        result = tcex.utils.truncate_string(input_, length, append_chars, spaces)
+        print('\nstring', input_)
+        print('result', result)
+        print('expect', expected)
         assert result == expected, f'Input {input_} result of {result} != {expected}'
