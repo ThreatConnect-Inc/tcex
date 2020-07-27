@@ -3,11 +3,14 @@
 import base64
 import hashlib
 import hmac
+import logging
 import time
 
 import urllib3
 from requests import Session, adapters, auth
 from urllib3.util.retry import Retry
+
+from ..utils import Utils
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -52,81 +55,79 @@ class TokenAuth(auth.AuthBase):
 class TcSession(Session):
     """ThreatConnect REST API Requests Session"""
 
-    def __init__(self, tcex):
+    def __init__(self, api_access_id, api_secret_key, base_url, logger=None):
         """Initialize the Class properties."""
         super().__init__()
-        self.tcex = tcex
+        self.api_access_id = api_access_id
+        self.api_secret_key = api_secret_key
+        self.base_url = base_url.strip('/')
+        self.log = logger or logging.getLogger('session').addHandler(logging.NullHandler())
 
         # properties
-        self.args = self.tcex.default_args
+        self._token = None
         self.auth = None
-        self.token = self.tcex.token
-
-        # Update User-Agent
-        self.headers.update({'User-Agent': 'TcEx'})
-
-        # Set Proxy
-        if self.args.tc_proxy_tc:
-            self.proxies = self.tcex.proxies
-            self.tcex.log.trace(
-                f'Using proxy host {self.args.tc_proxy_host}:'
-                f'{self.args.tc_proxy_port} for ThreatConnect API.'
-            )
+        self.utils = Utils()
 
         # Add Retry
         self.retry()
 
-        # Set Verify
-        self.verify = self.args.tc_verify
-
     def _configure_auth(self):
         """Return Auth property for session."""
         # Add ThreatConnect Authorization
-        if self._service_app or self._token_available:
+        if self.token_available:
             # service Apps only use tokens and playbook/runtime Apps will use token if available
             self.auth = TokenAuth(self.token)
-            self.tcex.log.trace('Using token authorization.')
-        elif self.args.api_access_id and self.args.api_secret_key:
+            self.log.trace('Using token authorization.')
+        elif self.api_access_id and self.api_secret_key:
             try:
                 # for external Apps or testing Apps locally
-                self.auth = HmacAuth(self.args.api_access_id, self.args.api_secret_key)
-                self.tcex.log.trace('Using HMAC authorization.')
+                self.auth = HmacAuth(self.api_access_id, self.api_secret_key)
+                self.log.trace('Using HMAC authorization.')
             except AttributeError:  # pragma: no cover
                 raise RuntimeError('No valid ThreatConnect API credentials provided.')
         else:  # pragma: no cover
             raise RuntimeError('No valid ThreatConnect API credentials provided.')
 
     @property
-    def _service_app(self):
-        """Return true if the current App is a service App."""
-        return self.tcex.ij.runtime_level.lower() in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]
+    def token(self):
+        """Return token."""
+        return self._token
+
+    @token.setter
+    def token(self, token):
+        """Set token."""
+        self._token = token
 
     @property
-    def _token_available(self):
+    def token_available(self):
         """Return true if the current App is a service App."""
-        return self.token.token is not None and self.token.token_expires is not None
+        return (
+            self.token is not None
+            and self.token.token is not None
+            and self.token.token_expires is not None
+        )
 
     def request(self, method, url, **kwargs):  # pylint: disable=arguments-differ
         """Override request method disabling verify on token renewal if disabled on session."""
         if self.auth is None:
             self._configure_auth()
 
+        # accept path for API calls instead of full URL
         if not url.startswith('https'):
-            url = f'{self.args.tc_api_path}{url}'
+            url = f'{self.base_url}{url}'
         response = super().request(method, url, **kwargs)
 
         # don't show curl message for logging commands
         if '/v2/logs/app' not in url:
             # APP-79 - adding logging of request as curl commands
-            self.tcex.log.debug(
-                self.tcex.utils.requests_to_curl(response.request, verify=self.verify)
+            self.log.debug(
+                self.utils.requests_to_curl(
+                    response.request, proxies=self.proxies, verify=self.verify
+                )
             )
-        self.tcex.log.debug(f'request url: {response.request.url}')
-        self.tcex.log.debug(f'status_code: {response.status_code}')
+
+        self.log.debug(f'request url: {response.request.url}')
+        self.log.debug(f'status_code: {response.status_code}')
 
         return response
 

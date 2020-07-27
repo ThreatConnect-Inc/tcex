@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
+import logging
 import urllib3
 from requests import Session, adapters
 from urllib3.util.retry import Retry
@@ -38,13 +39,13 @@ class ExternalSession(Session):
         'utils',
     ]
 
-    def __init__(self, logger):
+    def __init__(self, base_url=None, logger=None):
         """Initialize the Class properties."""
         super().__init__()
-        self.log = logger
+        self._base_url = base_url
+        self.log = logger or logging.getLogger('session').addHandler(logging.NullHandler())
 
         # properties
-        self._base_url = None
         self._mask_headers = True
         self._mask_patterns = None
         self.utils = Utils()
@@ -65,7 +66,7 @@ class ExternalSession(Session):
     @property
     def mask_headers(self):
         """Return mask patterns."""
-        return self._mask_patterns
+        return self._mask_headers
 
     @mask_headers.setter
     def mask_headers(self, mask_bool):
@@ -94,6 +95,7 @@ class ExternalSession(Session):
                 response.request,
                 mask_headers=self.mask_headers,
                 mask_patterns=self.mask_patterns,
+                proxies=self.proxies,
                 verify=self.verify,
             )
         )

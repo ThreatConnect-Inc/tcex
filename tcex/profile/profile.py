@@ -567,7 +567,6 @@ class Profile:
             profile_data = self.contents
             profile_data['outputs'] = outputs
             self.write(profile_data)
-
         elif self.pytest_args.get('merge_outputs'):
             if trigger_id is not None:
                 # service Apps have a different structure with id: data
@@ -799,6 +798,18 @@ class Profile:
         return self.data.get('outputs')
 
     @property
+    def rargs(self):
+        """Return combined/flattened args with value from staging data if required."""
+        rargs = {}
+        for arg, value in self.args.items():
+            if re.match(self.utils.variable_match, value):
+                # look for value in staging data
+                if self.stage_kvstore.get(value) is not None:
+                    value = self.stage_kvstore.get(value)
+            rargs[arg] = value
+        return rargs
+
+    @property
     def stage(self):
         """Return stage dict."""
         if self.data.get('stage') is None:
@@ -881,6 +892,10 @@ class Profile:
                 # create a variable using key value
                 variable = self.ij.create_variable(data.get('key'), variable_type, job_id=9876)
                 output_variables.append(variable)
+
+        # APP-77 - add _fired for service Apps
+        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            output_variables.append('#Trigger:9876:_fired!String')
 
         return output_variables
 

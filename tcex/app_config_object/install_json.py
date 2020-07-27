@@ -10,13 +10,11 @@ from collections import OrderedDict
 class AppFeatureAdvanceRequest:
     """AdvancedRequest Module"""
 
-    def __init__(self, ij, json_data):
+    def __init__(self, ij, json_data, prefix):
         """Initialize Class properties."""
         self.ij = ij
         self.json_data = json_data
-
-        # properties
-        self._prefix = None
+        self._prefix = prefix
 
     @staticmethod
     def get_index(params, key, value):
@@ -556,7 +554,7 @@ class InstallJson:
 
             # app feature - update install.json for Advanced Request
             if 'advancedRequest' in self.features:
-                afar = AppFeatureAdvanceRequest(self, json_data)
+                afar = AppFeatureAdvanceRequest(self, json_data, self.output_prefix)
                 afar.update()
 
             # write updated profile
@@ -770,6 +768,11 @@ class InstallJson:
     def note(self):
         """Return property."""
         return self.contents.get('note')
+
+    @property
+    def output_prefix(self):
+        """Return output prefix."""
+        return self.playbook.get('outputPrefix')
 
     @property
     def output_variables(self):

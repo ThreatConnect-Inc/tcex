@@ -7,6 +7,7 @@ import os
 import re
 import shelve
 import time
+from typing import Optional
 import uuid
 
 from .group import (
@@ -1448,8 +1449,12 @@ class Batch:
 
         return batch_data_array
 
-    def write_error_json(self, errors):
-        """Writes the errors for debuging purposes"""
+    def write_error_json(self, errors: list):
+        """Write the errors to a JSON file for debuging purposes.
+
+        Args:
+            errors (list): A list of errors to write out.
+        """
         if not errors:
             errors = []
         timestamp = str(time.time()).replace('.', '')
@@ -1489,11 +1494,18 @@ class Batch:
                 self.tcex.handle_error(10505, [e], halt_on_error)
         return {}
 
-    def submit_data(self, batch_id, halt_on_error=True):
+    def submit_data(self, batch_id: int, halt_on_error: Optional[bool] = True) -> dict:
         """Submit Batch request to ThreatConnect API.
+
         Args:
-            batch_id (string): The batch id of the current job.
+            batch_id (int): The batch id of the current job.
+            halt_on_error (Optional[bool] = True): If True the process should halt if any errors
+                are encountered.
+
+        Returns:
+            dict: The response data
         """
+
         # check global setting for override
         if self.halt_on_batch_error is not None:
             halt_on_error = self.halt_on_batch_error
@@ -1506,11 +1518,11 @@ class Batch:
             headers = {'Content-Type': 'application/octet-stream'}
             try:
                 r = self.tcex.session.post(f'/v2/batch/{batch_id}', headers=headers, json=content)
+                if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                    self.tcex.handle_error(10525, [r.status_code, r.text], halt_on_error)
+                return r.json()
             except Exception as e:
                 self.tcex.handle_error(10520, [e], halt_on_error)
-            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.tcex.handle_error(10525, [r.status_code, r.text], halt_on_error)
-            return r.json()
         return {}
 
     def submit_files(self, halt_on_error=True):
@@ -1557,7 +1569,7 @@ class Batch:
                 # special code for debugging App using batchV2.
                 fqfn = os.path.join(
                     self.tcex.args.tc_temp_path,
-                    f"{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}",
+                    f'''{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}''',
                 )
                 with open(fqfn, 'wb') as fh:
                     fh.write(content)
