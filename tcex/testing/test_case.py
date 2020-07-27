@@ -245,7 +245,6 @@ class TestCase:
         self._staged_tc_data = self.stager.threatconnect.entities(
             self._profile.stage_threatconnect, self._profile.owner
         )
-
         # insert staged data for replacement
         self._profile.tc_staged_data = self._staged_tc_data
 

@@ -529,10 +529,10 @@ class ThreatIntelligence:
             values = []
             value = None
             keys = d.keys()
-            if resource_type in self.tcex.group_types:
+            if resource_type.lower() in map(str.lower, self.tcex.group_types):
                 r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
-            elif resource_type in self.tcex.indicator_types:
+            elif resource_type.lower() in map(str.lower, self.tcex.indicator_types):
                 r = self.tcex.ti.indicator(indicator_type=resource_type)
                 r._set_unique_id(d)
                 value = r.unique_id
