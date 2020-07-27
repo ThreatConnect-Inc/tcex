@@ -990,10 +990,7 @@ class ThreatConnect:
                         files.append(filename)
                     else:
                         files.append(None)
-                print('getting here')
                 results = self.tc_entities(sample_validation_data, profile.owner, files=files)
-                print('getting here2')
-                print(results)
                 for result in results:
                     if result.get('valid'):
                         continue

@@ -2,7 +2,6 @@
 """Test the TcEx Threat Intel Module."""
 import os
 import random
-import time
 
 from .ti_helpers import TIHelper, TestThreatIntelligence
 
