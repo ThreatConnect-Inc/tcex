@@ -1164,6 +1164,7 @@ class ThreatConnect:
     def compare_dicts(expected, actual, error_type=''):
         """Compare two dicts and returns a list of errors if they don't match"""
         errors = []
+
         for item in expected:
             if item in actual:
                 if isinstance(expected.get(item), list):
@@ -1188,7 +1189,7 @@ class ThreatConnect:
                 )
         for item in list(actual.items()):
             errors.append(
-                f'{error_type}{item} : {actual.get(item)} was in '
+                f'{error_type}{item} : {item} was in '
                 f'actual results but not in expected results.'
             )
 
