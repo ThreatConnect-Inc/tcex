@@ -197,7 +197,7 @@ class InstallJson:
         """Initialize class properties."""
         self._filename = filename or 'install.json'
         self._path = path or os.getcwd()
-        self.log = logger or logging.getLogger('install_json').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('install_json')
 
         # properties
         self._contents = None

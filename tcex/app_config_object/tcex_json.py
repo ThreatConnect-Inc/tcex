@@ -25,7 +25,7 @@ class TcexJson:
         """Initialize class properties."""
         self._filename = filename or 'tcex.json'
         self._path = path or os.getcwd()
-        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('layout_json')
 
         # properties
         self._contents = None

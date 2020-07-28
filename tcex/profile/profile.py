@@ -12,6 +12,7 @@ import colorama as c
 
 from ..app_config_object import InstallJson, LayoutJson, Permutations
 from ..env_store import EnvStore
+from ..sessions import TcSession
 from ..utils import Utils
 from .migrate import Migrate
 from .populate import Populate
@@ -53,7 +54,7 @@ class Profile:
         self._default_args = default_args or {}
         self._feature = feature
         self._name = name
-        self.log = logger or logging.getLogger('profile').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('profile')
         self.redis_client = redis_client
         self.pytestconfig = pytestconfig
         self.monkeypatch = monkeypatch
@@ -62,17 +63,18 @@ class Profile:
 
         # properties
         self._app_path = os.getcwd()
+        self._context_tracker = []
         self._data = None
         self._output_variables = None
-        self._context_tracker = []
         self._pytest_args = None
+        self._session_manager = None
+        self._session = None
         self.env_store = EnvStore(logger=self.log)
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
         self.permutations = Permutations(logger=self.log)
         self.populate = Populate(self)
         self.rules = Rules(self)
-        self._session_manager = None
         self.tc_staged_data = {}
         self.utils = Utils()
 
@@ -502,6 +504,17 @@ class Profile:
 
             if isinstance(v, dict):
                 self.remove_comments(v)
+
+    @property
+    def session(self):
+        """Return a instance of the session manager."""
+        if self._session is None:
+            self._session = TcSession(
+                self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_access_id'),
+                self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_secret_key'),
+                os.getenv('TC_API_PATH'),
+            )
+        return self._session
 
     @property
     def session_manager(self):

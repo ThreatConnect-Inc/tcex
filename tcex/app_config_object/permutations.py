@@ -26,7 +26,7 @@ class Permutations:
 
     def __init__(self, logger=None):
         """Initialize Class properties"""
-        self.log = logger or logging.getLogger('permutations').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('permutations')
 
         # properties
         self._db_conn = None
