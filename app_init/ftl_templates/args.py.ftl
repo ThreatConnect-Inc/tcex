@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Auto-generated App Args"""
 
-class Args(object):
+class Args:
     """App Args"""
 
     def __init__(self, parser):

@@ -5,7 +5,7 @@
 import inspect
 
 
-class Validate(object):
+class Validate:
     """Validate base class for App output validation."""
 
     def __init__(self, validator):

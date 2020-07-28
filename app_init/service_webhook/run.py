@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Playbook App"""
+# standard library
 import traceback
 
+# first-party
 from app_lib import AppLib
 
 
@@ -14,8 +16,9 @@ def run(**kwargs):
     app_lib.update_path()
 
     # import modules after path has been updated
-    from tcex import TcEx  # pylint: disable=import-outside-toplevel
+    # third-party
     from app import App  # pylint: disable=import-outside-toplevel
+    from tcex import TcEx  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()
 
@@ -34,7 +37,7 @@ def run(**kwargs):
         tcex.service.webhook_event_callback = app.webhook_event_callback
 
         # perform prep/setup operations
-        app.setup()
+        app.setup(**{})
 
         # listen on channel/topic
         tcex.service.listen()
@@ -54,7 +57,7 @@ def run(**kwargs):
                 pass
 
         # perform cleanup/teardown operations
-        app.teardown()
+        app.teardown(**{})
 
         # explicitly call the exit method
         tcex.playbook.exit(msg=app.exit_message)

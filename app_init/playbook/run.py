@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Playbook App"""
+# standard library
 import traceback
 
+# first-party
 from app_lib import AppLib
 
 
@@ -14,8 +16,9 @@ def run():
     app_lib.update_path()
 
     # import modules after path has been updated
-    from tcex import TcEx  # pylint: disable=import-outside-toplevel
+    # third-party
     from app import App  # pylint: disable=import-outside-toplevel
+    from tcex import TcEx  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()
 
@@ -24,7 +27,7 @@ def run():
         app = App(tcex)
 
         # perform prep/setup operations
-        app.setup()
+        app.setup(**{})
 
         # run the App logic
         if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
@@ -46,14 +49,14 @@ def run():
                 tcex.exit(1, f'Action method ({app.args.tc_action}) was not found.')
         else:
             # default to run method
-            app.run()
+            app.run(**{})
 
         # write requested value for downstream Apps
         tcex.playbook.write_output()
         app.write_output()  # pylint: disable=no-member
 
         # perform cleanup/teardown operations
-        app.teardown()
+        app.teardown(**{})
 
         # explicitly call the exit method
         tcex.playbook.exit(msg=app.exit_message)
