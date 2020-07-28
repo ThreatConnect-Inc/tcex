@@ -356,7 +356,7 @@ class Validator:
         return False
 
     def operator_is_number(self, app_data, test_data):  # pylint: disable=unused-argument
-        """Check if the app_data is a known date."""
+        """Check if the app_data is a number."""
         if self.check_null(app_data):
             return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
@@ -365,7 +365,7 @@ class Validator:
         bad_data = []
         passed = True
         for data in app_data:
-            if isinstance(data, str) and data.isdigit():
+            if isinstance(data, str) and isinstance(self._string_to_int_float(data), (int, float)):
                 continue
             if isinstance(data, numbers.Number):
                 continue
