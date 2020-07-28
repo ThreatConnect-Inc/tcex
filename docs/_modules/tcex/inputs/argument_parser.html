@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.6 documentation</title>
+  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -224,6 +224,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_user_id</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># include arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_advanced_request</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger_arguments</span><span class="p">()</span>
@@ -233,6 +234,43 @@
 
         <span class="c1"># default namespace</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TcArgumentParser._advanced_request"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.argument_parser.TcArgumentParser._advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">_advanced_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Define App Feature - Advanced Request args.</span>
+
+<span class="sd">        --tc_adv_req_body params               The HTTP body.</span>
+<span class="sd">        --tc_adv_req_exclude_null_params bool  If True, exclude null params.</span>
+<span class="sd">        --tc_adv_req_fail_on_error bool        If True, fail on any encountered error.</span>
+<span class="sd">        --tc_adv_req_headers params            The HTTP headers.</span>
+<span class="sd">        --tc_adv_req_http_method method        The HTTP method (e.g., GET, POST).</span>
+<span class="sd">        --tc_adv_req_params params             The HTTP query params.</span>
+<span class="sd">        --tc_adv_req_path path                 The API path.</span>
+<span class="sd">        --tc_adv_req_urlencode_body bool       If True, urlencode body.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_body&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP body.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_exclude_null_params&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If True, exclude null params.&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_fail_on_error&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If True, fail on any encountered error.&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_headers&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP headers.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_http_method&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP method (e.g., GET, POST).&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_params&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP query params.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The API path.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_urlencode_body&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If True, urlencode body.&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcArgumentParser._api_arguments"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.argument_parser.TcArgumentParser._api_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_api_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Define TC API args.</span>

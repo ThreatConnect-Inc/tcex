@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.services.services &mdash; TcEx 2.0.6 documentation</title>
+  <title>tcex.services.services &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -185,6 +185,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
@@ -232,8 +233,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">shutdown_callback</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">webhook_event_callback</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Services._tcex_testing"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services._tcex_testing">[docs]</a>    <span class="k">def</span> <span class="nf">_tcex_testing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write data required for testing framework to Redis.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Services._tcex_testing"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services._tcex_testing">[docs]</a>    <span class="k">def</span> <span class="nf">_tcex_testing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write data required for testing framework to Redis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session_id (str): The context/session id value for the current operation.</span>
+<span class="sd">            trigger_id (int): The trigger ID for the current playbook.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_context_tracker</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span><span class="p">,</span> <span class="s1">&#39;_context_tracker&#39;</span><span class="p">)</span>
@@ -252,35 +258,49 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Wrote context </span><span class="si">{session_id}</span><span class="s1"> to _context_tracker&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Wrote trigger id </span><span class="si">{trigger_id}</span><span class="s1"> to _trigger_id&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.add_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.add_metric">[docs]</a>    <span class="k">def</span> <span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="Services._tcex_testing_fired_events"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services._tcex_testing_fired_events">[docs]</a>    <span class="k">def</span> <span class="nf">_tcex_testing_fired_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fired</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write fired event data to KV Store to be used in test validation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session_id (str): The context/session id value for the current operation.</span>
+<span class="sd">            fired (bool): The value to increment the count by.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tcex_testing_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span>
+                <span class="n">session_id</span><span class="p">,</span> <span class="s1">&#39;#Trigger:9876:_fired!String&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fired</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Services.add_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.add_metric">[docs]</a>    <span class="k">def</span> <span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Add a metric.</span>
 
 <span class="sd">        Metrics are reported in heartbeat message.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            label (str): The metric label (e.g., hits) to add.</span>
-<span class="sd">            value (int|str): The value for the metric.</span>
+<span class="sd">            value (Union[int, str]): The value for the metric.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="Services.create_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.create_config">[docs]</a>    <span class="k">def</span> <span class="nf">create_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.create_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.create_config">[docs]</a>    <span class="k">def</span> <span class="nf">create_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add config item to service config object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            trigger_id (int): The trigger ID for the current config.</span>
 <span class="sd">            config (dict): The config for the current trigger.</span>
 <span class="sd">            message (str): A simple message for the action.</span>
-<span class="sd">            status (str): The passed/fail status for the App handling of config.</span>
+<span class="sd">            status (boolean): The passed/fail status for the App handling of config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># add config to configs</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">trigger_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+            <span class="n">status_msg</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span> <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="s1">&#39;Failed&#39;</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="c1"># add config to configs</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">trigger_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
 
             <span class="c1"># send ack response</span>
             <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="s1">&#39;Acknowledged&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span>
-                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status_msg</span><span class="p">,</span>
                 <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;CreateConfig&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;triggerId&#39;</span><span class="p">:</span> <span class="n">trigger_id</span><span class="p">,</span>
             <span class="p">}</span>
@@ -289,7 +309,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not create config for Id </span><span class="si">{trigger_id}</span><span class="s1"> (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Services.delete_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.delete_config">[docs]</a>    <span class="k">def</span> <span class="nf">delete_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.delete_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.delete_config">[docs]</a>    <span class="k">def</span> <span class="nf">delete_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete config item from config object.</span>
 
 <span class="sd">        Args:</span>
@@ -298,14 +318,15 @@
 <span class="sd">            status (str): The passed/fail status for the App handling of config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># delete config from configs dict</span>
+            <span class="n">status_msg</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span> <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="s1">&#39;Failed&#39;</span>
+            <span class="c1"># always delete config from configs dict, even when status is False</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">trigger_id</span><span class="p">]</span>
 
             <span class="c1"># send ack response</span>
             <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="s1">&#39;Acknowledged&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span>
-                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status_msg</span><span class="p">,</span>
                 <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;DeleteConfig&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;triggerId&#39;</span><span class="p">:</span> <span class="n">trigger_id</span><span class="p">,</span>
             <span class="p">}</span>
@@ -313,11 +334,11 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not delete config for Id </span><span class="si">{trigger_id}</span><span class="s1"> (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.fire_event"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.fire_event">[docs]</a>    <span class="k">def</span> <span class="nf">fire_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.fire_event"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.fire_event">[docs]</a>    <span class="k">def</span> <span class="nf">fire_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trigger a FireEvent command.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            callback (callable): The trigger method in the App to call.</span>
+<span class="sd">            callback (Callable[[], bool]): The trigger method in the App to call.</span>
 <span class="sd">            trigger_ids (list, kwargs): A list of trigger ids to trigger.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
@@ -354,11 +375,18 @@
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Services.fire_event_trigger"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.fire_event_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">fire_event_trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">playbook</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.fire_event_trigger"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.fire_event_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">fire_event_trigger</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span>
+        <span class="n">playbook</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+        <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fire event for trigger.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            callback (callable): The App callback method for firing an event.</span>
+<span class="sd">            callback (Callable[[], bool]): The App callback method for firing an event.</span>
 <span class="sd">            playbook (tcex.Playbook): A configure playbook instance for using to interact with</span>
 <span class="sd">                KvStore.</span>
 <span class="sd">            trigger_id (int): The current trigger Id.</span>
@@ -379,12 +407,17 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">callback</span><span class="p">(</span><span class="n">playbook</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-                <span class="c1"># self.tcex.log.info(f&#39;Trigger ID {trigger_id} hit.&#39;)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Hits&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">fire_event_publish</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">)</span>
+
+                <span class="c1"># capture fired status for testing framework</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_testing_fired_events</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Misses&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trigger ID </span><span class="si">{trigger_id}</span><span class="s1"> missed.&#39;</span><span class="p">)</span>
+
+                <span class="c1"># capture fired status for testing framework</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_testing_fired_events</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Errors&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The callback method encountered and error (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
@@ -396,7 +429,9 @@
             <span class="c1"># unregister thread from token</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">unregister_thread</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.fire_event_publish"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.fire_event_publish">[docs]</a>    <span class="k">def</span> <span class="nf">fire_event_publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">request_key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.fire_event_publish"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.fire_event_publish">[docs]</a>    <span class="k">def</span> <span class="nf">fire_event_publish</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">request_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Send FireEvent command.</span>
 
 <span class="sd">        Args:</span>
@@ -416,7 +451,7 @@
         <span class="c1"># publish FireEvent command to client topic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Services.format_query_string"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.format_query_string">[docs]</a>    <span class="k">def</span> <span class="nf">format_query_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.format_query_string"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.format_query_string">[docs]</a>    <span class="k">def</span> <span class="nf">format_query_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert name/value array to a query string.</span>
 
 <span class="sd">        Args:</span>
@@ -434,7 +469,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
         <span class="k">return</span> <span class="s1">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.format_request_headers"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.format_request_headers">[docs]</a>    <span class="k">def</span> <span class="nf">format_request_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.format_request_headers"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.format_request_headers">[docs]</a>    <span class="k">def</span> <span class="nf">format_request_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert name/value array to a headers dict.</span>
 
 <span class="sd">        Args:</span>
@@ -455,7 +490,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">headers_</span></div>
 
-<div class="viewcode-block" id="Services.format_response_headers"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.format_response_headers">[docs]</a>    <span class="k">def</span> <span class="nf">format_response_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.format_response_headers"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.format_response_headers">[docs]</a>    <span class="k">def</span> <span class="nf">format_response_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert name/value array to a query string.</span>
 
 <span class="sd">        Args:</span>
@@ -494,7 +529,7 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_sleep_time</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_watchdog</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="Services.increment_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.increment_metric">[docs]</a>    <span class="k">def</span> <span class="nf">increment_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.increment_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.increment_metric">[docs]</a>    <span class="k">def</span> <span class="nf">increment_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Increment a metric if already exists.</span>
 
 <span class="sd">        Args:</span>
@@ -511,6 +546,8 @@
             <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listen_mqtt</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_svc_broker_service</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;redis&#39;</span><span class="p">:</span>
             <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listen_redis</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Invalid message broker type.&#39;</span><span class="p">)</span>
 
         <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;broker-listener&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">())</span>
         <span class="n">t</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># use setter for py2</span>
@@ -556,7 +593,7 @@
         <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">listen</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_message_redis</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.loop_forever"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.loop_forever">[docs]</a>    <span class="k">def</span> <span class="nf">loop_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sleep</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.loop_forever"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.loop_forever">[docs]</a>    <span class="k">def</span> <span class="nf">loop_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sleep</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Block and wait for shutdown.</span>
 
 <span class="sd">        Args:</span>
@@ -573,7 +610,9 @@
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="Services.message_thread"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.message_thread">[docs]</a>    <span class="k">def</span> <span class="nf">message_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.message_thread"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.message_thread">[docs]</a>    <span class="k">def</span> <span class="nf">message_thread</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Start a message thread.</span>
 
 <span class="sd">        Args:</span>
@@ -591,14 +630,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return current metrics.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Active Playbooks&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_metric</span><span class="p">(</span><span class="s1">&#39;Active Playbooks&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span>
 
     <span class="nd">@metrics</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return current metrics.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span> <span class="o">=</span> <span class="n">metrics</span>
@@ -654,13 +693,13 @@
             <span class="c1"># messages on server topic must be json objects</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot parse message (</span><span class="si">{m}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot parse message (</span><span class="si">{message.payload}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_svc_server_topic</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">server_topic</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.on_message_redis"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.on_message_redis">[docs]</a>    <span class="k">def</span> <span class="nf">on_message_redis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+<div class="viewcode-block" id="Services.on_message_redis"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.on_message_redis">[docs]</a>    <span class="k">def</span> <span class="nf">on_message_redis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Subscribe and listen to &quot;message&quot; on Redis topic.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;on_message - message </span><span class="si">{message}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="c1"># only process &quot;message&quot; on topic (exclude subscriptions, etc)</span>
@@ -683,7 +722,7 @@
         <span class="sd">&quot;&quot;&quot;Handle MQTT on_log events.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;on_subscribe - mid: </span><span class="si">{mid}</span><span class="s1">, granted_qos: </span><span class="si">{granted_qos}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.process_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_config">[docs]</a>    <span class="k">def</span> <span class="nf">process_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.process_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_config">[docs]</a>    <span class="k">def</span> <span class="nf">process_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process config message.</span>
 
 <span class="sd">        Args:</span>
@@ -691,60 +730,66 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">command</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">)</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">trigger_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;triggerId&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;createconfig&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CreateConfig - trigger_id: </span><span class="si">{trigger_id}</span><span class="s1"> config : </span><span class="si">{config}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">valid_config</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="c1"># register config apiToken</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">register_token</span><span class="p">(</span>
                 <span class="n">trigger_id</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiToken&#39;</span><span class="p">),</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;expireSeconds&#39;</span><span class="p">)</span>
             <span class="p">)</span>
 
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Create Config&#39;</span>
             <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_config_callback</span><span class="p">):</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Config created&#39;</span>
                 <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;webhooktriggerservice&#39;</span><span class="p">:</span>
+                    <span class="c1"># only webhook triggers get and require the PB url</span>
                     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># call callback for create config and handle exceptions to protect thread</span>
-                    <span class="n">valid_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_config_callback</span><span class="p">(</span>  <span class="c1"># pylint: disable=not-callable</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_config_callback</span><span class="p">(</span>  <span class="c1"># pylint: disable=not-callable</span>
                         <span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                     <span class="p">)</span>
+
+                    <span class="c1"># if callback does not return a boolean value assume it worked</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;The create config callback method encountered an error (</span><span class="si">{e}</span><span class="s1">).&#39;</span>
-                    <span class="p">)</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;The create config callback method encountered an error (</span><span class="si">{e}</span><span class="s1">).&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-                    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
-                    <span class="n">valid_config</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="c1"># create config after callback to report status and message</span>
-            <span class="k">if</span> <span class="n">valid_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">command</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deleteconfig&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DeleteConfig - trigger_id: </span><span class="si">{trigger_id}</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="c1"># unregister config apiToken</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">unregister_token</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">)</span>
 
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Delete Config&#39;</span>
             <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_config_callback</span><span class="p">):</span>
-                <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Delete created&#39;</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># call callback for delete config and handle exceptions to protect thread</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">delete_config_callback</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">)</span>  <span class="c1"># pylint: disable=not-callable</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_config_callback</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">)</span>  <span class="c1"># pylint: disable=not-callable</span>
+
+                    <span class="c1"># if callback does not return a boolean value assume it worked</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;The delete config callback method encountered an error (</span><span class="si">{e}</span><span class="s1">).&#39;</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;The delete config callback method encountered an error (</span><span class="si">{e}</span><span class="s1">).&#39;</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-                    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failed&#39;</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="c1"># delete config</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">delete_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.process_run_service"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_run_service">[docs]</a>    <span class="k">def</span> <span class="nf">process_run_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.process_run_service"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_run_service">[docs]</a>    <span class="k">def</span> <span class="nf">process_run_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process Webhook event messages.</span>
 
 <span class="sd">        .. code-block:: python</span>
@@ -772,7 +817,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;message: </span><span class="si">{message}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># thread event used to block response until body is written</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
 
         <span class="c1"># process message</span>
         <span class="n">request_key</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requestKey&#39;</span><span class="p">)</span>
@@ -840,7 +885,7 @@
 
         <span class="k">def</span> <span class="nf">response_handler</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
             <span class="sd">&quot;&quot;&quot;Handle WSGI Response&quot;&quot;&quot;</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>  <span class="c1"># add event to kwargs for blocking</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span>  <span class="c1"># add event to kwargs for blocking</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;request_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request_key</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="s1">&#39;response-handler&#39;</span><span class="p">,</span>
@@ -865,7 +910,7 @@
 
                 <span class="c1"># set thread event to True to trigger response</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API response body written&#39;</span><span class="p">)</span>
-                <span class="n">e</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The api event callback method encountered and error (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
@@ -880,7 +925,7 @@
 <span class="sd">        (&#39;200 OK&#39;, [(&#39;content-type&#39;, &#39;application/json&#39;), (&#39;content-length&#39;, &#39;103&#39;)])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API response received, waiting on body to be written&#39;</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># wait for thread event - (set on body write)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># wait for thread event - (set on body write)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response args: </span><span class="si">{args}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">status_code</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -901,7 +946,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Errors&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.process_shutdown"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">process_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.process_shutdown"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">process_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handle a shutdown message.</span>
 
 <span class="sd">        Args:</span>
@@ -936,7 +981,7 @@
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># final shutdown in case App did not</span></div>
 
-<div class="viewcode-block" id="Services.process_webhook"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_webhook">[docs]</a>    <span class="k">def</span> <span class="nf">process_webhook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.process_webhook"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.process_webhook">[docs]</a>    <span class="k">def</span> <span class="nf">process_webhook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process Webhook event messages.</span>
 
 <span class="sd">        Args:</span>
@@ -970,6 +1015,7 @@
         <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;triggerId&#39;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find config for triggerId {message.get(&#39;triggerId&#39;)}&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
 
         <span class="c1"># get an instance of playbooks for App</span>
         <span class="n">outputs</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_playbook_out_variables&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
@@ -1018,8 +1064,14 @@
 
                 <span class="c1"># only required for testing in tcex framework</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_testing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">)</span>
+
+                <span class="c1"># capture fired status for testing framework</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_testing_fired_events</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Misses&#39;</span><span class="p">)</span>
+
+                <span class="c1"># capture fired status for testing framework</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex_testing_fired_events</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The callback method encountered and error (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
@@ -1028,10 +1080,10 @@
             <span class="c1"># remove temporary logging file handler</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">remove_handler_by_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">)</span>
 
-            <span class="c1"># unregister thread from token</span>
+            <span class="c1"># unregister thread from token module</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">unregister_thread</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;triggerId&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Services.publish"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.publish"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Publish a message on client topic.</span>
 
 <span class="sd">        Args:</span>
@@ -1055,7 +1107,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ready</span>
 
     <span class="nd">@ready</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bool_val</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bool_val</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set ready boolean.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bool_val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bool_val</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># wait until connected to send ready command</span>
@@ -1075,7 +1127,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">redis_client</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span>
 
-<div class="viewcode-block" id="Services.server_topic"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.server_topic">[docs]</a>    <span class="k">def</span> <span class="nf">server_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.server_topic"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.server_topic">[docs]</a>    <span class="k">def</span> <span class="nf">server_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handle any event coming in on server_topic.</span>
 
 <span class="sd">        Args:</span>
@@ -1117,8 +1169,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">message_thread</span><span class="p">(</span><span class="s1">&#39;process-config&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_config</span><span class="p">,</span> <span class="p">(</span><span class="n">message</span><span class="p">,))</span></div>
 
 <div class="viewcode-block" id="Services.session_id"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.session_id">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">session_id</span><span class="p">(</span><span class="n">trigger_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+    <span class="k">def</span> <span class="nf">session_id</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
         <span class="sd">&quot;&quot;&quot;Return a uuid4 session id.</span>
+
+<span class="sd">        Takes optional trigger_id for monkeypatch in testing framework.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            trigger_id (str): Optional trigger_id value used in testing framework.</span>
@@ -1128,19 +1182,19 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">session_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a uuid4 session id.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;{datetime.today().strftime(&#39;%Y%m</span><span class="si">%d</span><span class="s2">&#39;)}/</span><span class="si">{self.thread_name}</span><span class="s2">.log&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;{datetime.today().strftime(&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;)}/</span><span class="si">{self.thread_name}</span><span class="s1">.log&#39;&#39;&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">thread_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a uuid4 session id.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
 
-<div class="viewcode-block" id="Services.update_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.update_metric">[docs]</a>    <span class="k">def</span> <span class="nf">update_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="Services.update_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.services.Services.update_metric">[docs]</a>    <span class="k">def</span> <span class="nf">update_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Update a metric if already exists.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            label (str): The metric label (e.g., hits) to update.</span>
-<span class="sd">            value (int|str): The updated value for the metric.</span>
+<span class="sd">            value (Union[int, str]): The updated value for the metric.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div></div>

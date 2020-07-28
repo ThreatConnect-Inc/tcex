@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Session Module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Session Module &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -227,7 +227,7 @@
 
 <dl class="class">
 <dt id="tcex.sessions.tc_session.TcSession">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">TcSession</code><span class="sig-paren">(</span><em class="sig-param">tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">TcSession</code><span class="sig-paren">(</span><em class="sig-param">api_access_id</em>, <em class="sig-param">api_secret_key</em>, <em class="sig-param">base_url</em>, <em class="sig-param">logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.sessions.Session</span></code></p>
 <p>ThreatConnect REST API Requests Session</p>
 <dl class="method">
@@ -247,6 +247,18 @@
 <code class="sig-name descname">retry</code><span class="sig-paren">(</span><em class="sig-param">retries=3</em>, <em class="sig-param">backoff_factor=0.3</em>, <em class="sig-param">status_forcelist=(500</em>, <em class="sig-param">502</em>, <em class="sig-param">504)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession.retry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.retry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add retry to Requests Session</p>
 <p><a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.sessions.tc_session.TcSession.token">
+<em class="property">property </em><code class="sig-name descname">token</code><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.sessions.tc_session.TcSession.token_available">
+<em class="property">property </em><code class="sig-name descname">token_available</code><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.token_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true if the current App is a service App.</p>
 </dd></dl>
 
 </dd></dl>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.6 documentation</title>
+  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -707,10 +707,10 @@
             <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">group_types</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">group_types</span><span class="p">):</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">indicator_types</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">indicator_types</span><span class="p">):</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="n">resource_type</span><span class="p">)</span>
                 <span class="n">r</span><span class="o">.</span><span class="n">_set_unique_id</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">unique_id</span>

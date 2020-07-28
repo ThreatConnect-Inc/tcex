@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Services Module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Services Module &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -224,20 +224,42 @@
 </dl>
 <dl class="method">
 <dt id="tcex.services.services.Services._tcex_testing">
-<code class="sig-name descname">_tcex_testing</code><span class="sig-paren">(</span><em class="sig-param">session_id</em>, <em class="sig-param">trigger_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services._tcex_testing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services._tcex_testing" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_tcex_testing</code><span class="sig-paren">(</span><em class="sig-param">session_id: str</em>, <em class="sig-param">trigger_id: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services._tcex_testing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services._tcex_testing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data required for testing framework to Redis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session_id</strong> (<em>str</em>) – The context/session id value for the current operation.</p></li>
+<li><p><strong>trigger_id</strong> (<em>int</em>) – The trigger ID for the current playbook.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.services.services.Services._tcex_testing_fired_events">
+<code class="sig-name descname">_tcex_testing_fired_events</code><span class="sig-paren">(</span><em class="sig-param">session_id: str</em>, <em class="sig-param">fired: bool</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services._tcex_testing_fired_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services._tcex_testing_fired_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write fired event data to KV Store to be used in test validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session_id</strong> (<em>str</em>) – The context/session id value for the current operation.</p></li>
+<li><p><strong>fired</strong> (<em>bool</em>) – The value to increment the count by.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.add_metric">
-<code class="sig-name descname">add_metric</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.add_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.add_metric" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_metric</code><span class="sig-paren">(</span><em class="sig-param">label: str, value: Union[int, str]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.add_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.add_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a metric.</p>
 <p>Metrics are reported in heartbeat message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>label</strong> (<em>str</em>) – The metric label (e.g., hits) to add.</p></li>
-<li><p><strong>value</strong> (<em>int|str</em>) – The value for the metric.</p></li>
+<li><p><strong>value</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>str</em><em>]</em>) – The value for the metric.</p></li>
 </ul>
 </dd>
 </dl>
@@ -245,7 +267,7 @@
 
 <dl class="method">
 <dt id="tcex.services.services.Services.create_config">
-<code class="sig-name descname">create_config</code><span class="sig-paren">(</span><em class="sig-param">trigger_id</em>, <em class="sig-param">config</em>, <em class="sig-param">message</em>, <em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.create_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.create_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_config</code><span class="sig-paren">(</span><em class="sig-param">trigger_id: int</em>, <em class="sig-param">config: dict</em>, <em class="sig-param">message: str</em>, <em class="sig-param">status: bool</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.create_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.create_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add config item to service config object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -253,7 +275,7 @@
 <li><p><strong>trigger_id</strong> (<em>int</em>) – The trigger ID for the current config.</p></li>
 <li><p><strong>config</strong> (<em>dict</em>) – The config for the current trigger.</p></li>
 <li><p><strong>message</strong> (<em>str</em>) – A simple message for the action.</p></li>
-<li><p><strong>status</strong> (<em>str</em>) – The passed/fail status for the App handling of config.</p></li>
+<li><p><strong>status</strong> (<em>boolean</em>) – The passed/fail status for the App handling of config.</p></li>
 </ul>
 </dd>
 </dl>
@@ -261,7 +283,7 @@
 
 <dl class="method">
 <dt id="tcex.services.services.Services.delete_config">
-<code class="sig-name descname">delete_config</code><span class="sig-paren">(</span><em class="sig-param">trigger_id</em>, <em class="sig-param">message</em>, <em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.delete_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.delete_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete_config</code><span class="sig-paren">(</span><em class="sig-param">trigger_id: int</em>, <em class="sig-param">message: str</em>, <em class="sig-param">status: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.delete_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.delete_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete config item from config object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -276,12 +298,12 @@
 
 <dl class="method">
 <dt id="tcex.services.services.Services.fire_event">
-<code class="sig-name descname">fire_event</code><span class="sig-paren">(</span><em class="sig-param">callback</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.fire_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.fire_event" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fire_event</code><span class="sig-paren">(</span><em class="sig-param">callback: Callable[[], bool], **kwargs: list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.fire_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.fire_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger a FireEvent command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>callback</strong> (<em>callable</em>) – The trigger method in the App to call.</p></li>
+<li><p><strong>callback</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>bool</em><em>]</em>) – The trigger method in the App to call.</p></li>
 <li><p><strong>trigger_ids</strong> (<em>list</em><em>, </em><em>kwargs</em>) – A list of trigger ids to trigger.</p></li>
 </ul>
 </dd>
@@ -290,7 +312,7 @@
 
 <dl class="method">
 <dt id="tcex.services.services.Services.fire_event_publish">
-<code class="sig-name descname">fire_event_publish</code><span class="sig-paren">(</span><em class="sig-param">trigger_id</em>, <em class="sig-param">session_id</em>, <em class="sig-param">request_key=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.fire_event_publish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.fire_event_publish" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fire_event_publish</code><span class="sig-paren">(</span><em class="sig-param">trigger_id: int</em>, <em class="sig-param">session_id: str</em>, <em class="sig-param">request_key: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.fire_event_publish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.fire_event_publish" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send FireEvent command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -305,12 +327,12 @@
 
 <dl class="method">
 <dt id="tcex.services.services.Services.fire_event_trigger">
-<code class="sig-name descname">fire_event_trigger</code><span class="sig-paren">(</span><em class="sig-param">callback</em>, <em class="sig-param">playbook</em>, <em class="sig-param">trigger_id</em>, <em class="sig-param">config</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.fire_event_trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.fire_event_trigger" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fire_event_trigger</code><span class="sig-paren">(</span><em class="sig-param">callback: Callable[[], bool], playbook: object, trigger_id: int, config: dict, **kwargs: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.fire_event_trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.fire_event_trigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fire event for trigger.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>callback</strong> (<em>callable</em>) – The App callback method for firing an event.</p></li>
+<li><p><strong>callback</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>bool</em><em>]</em>) – The App callback method for firing an event.</p></li>
 <li><p><strong>playbook</strong> (<em>tcex.Playbook</em>) – A configure playbook instance for using to interact with
 KvStore.</p></li>
 <li><p><strong>trigger_id</strong> (<em>int</em>) – The current trigger Id.</p></li>
@@ -322,7 +344,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.format_query_string">
-<code class="sig-name descname">format_query_string</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.format_query_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.format_query_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format_query_string</code><span class="sig-paren">(</span><em class="sig-param">params: dict</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/services/services.html#Services.format_query_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.format_query_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert name/value array to a query string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -339,7 +361,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.format_request_headers">
-<code class="sig-name descname">format_request_headers</code><span class="sig-paren">(</span><em class="sig-param">headers</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.format_request_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.format_request_headers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format_request_headers</code><span class="sig-paren">(</span><em class="sig-param">headers: dict</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/services/services.html#Services.format_request_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.format_request_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert name/value array to a headers dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -356,7 +378,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.format_response_headers">
-<code class="sig-name descname">format_response_headers</code><span class="sig-paren">(</span><em class="sig-param">headers</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.format_response_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.format_response_headers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format_response_headers</code><span class="sig-paren">(</span><em class="sig-param">headers: dict</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/services/services.html#Services.format_response_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.format_response_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert name/value array to a query string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -385,7 +407,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.increment_metric">
-<code class="sig-name descname">increment_metric</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">value=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.increment_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.increment_metric" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">increment_metric</code><span class="sig-paren">(</span><em class="sig-param">label: str</em>, <em class="sig-param">value: Optional[int] = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.increment_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.increment_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increment a metric if already exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -417,7 +439,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.loop_forever">
-<code class="sig-name descname">loop_forever</code><span class="sig-paren">(</span><em class="sig-param">sleep=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.loop_forever"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.loop_forever" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">loop_forever</code><span class="sig-paren">(</span><em class="sig-param">sleep: Optional[int] = 1</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/services/services.html#Services.loop_forever"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.loop_forever" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block and wait for shutdown.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -434,7 +456,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.message_thread">
-<code class="sig-name descname">message_thread</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">target</em>, <em class="sig-param">args</em>, <em class="sig-param">kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.message_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.message_thread" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">message_thread</code><span class="sig-paren">(</span><em class="sig-param">name: str, target: Callable[[], bool], args: tuple, kwargs: Optional[dict] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.message_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.message_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start a message thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -480,7 +502,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.on_message_redis">
-<code class="sig-name descname">on_message_redis</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.on_message_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.on_message_redis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">on_message_redis</code><span class="sig-paren">(</span><em class="sig-param">message: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.on_message_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.on_message_redis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe and listen to “message” on Redis topic.</p>
 </dd></dl>
 
@@ -498,7 +520,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.process_config">
-<code class="sig-name descname">process_config</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">process_config</code><span class="sig-paren">(</span><em class="sig-param">message: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process config message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -509,7 +531,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.process_run_service">
-<code class="sig-name descname">process_run_service</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_run_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_run_service" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">process_run_service</code><span class="sig-paren">(</span><em class="sig-param">message: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_run_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_run_service" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process Webhook event messages.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -546,7 +568,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.process_shutdown">
-<code class="sig-name descname">process_shutdown</code><span class="sig-paren">(</span><em class="sig-param">reason</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_shutdown" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">process_shutdown</code><span class="sig-paren">(</span><em class="sig-param">reason: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle a shutdown message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -557,7 +579,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.process_webhook">
-<code class="sig-name descname">process_webhook</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_webhook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_webhook" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">process_webhook</code><span class="sig-paren">(</span><em class="sig-param">message: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.process_webhook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.process_webhook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process Webhook event messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -568,7 +590,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.publish">
-<code class="sig-name descname">publish</code><span class="sig-paren">(</span><em class="sig-param">message</em>, <em class="sig-param">topic=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.publish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.publish" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">publish</code><span class="sig-paren">(</span><em class="sig-param">message: str</em>, <em class="sig-param">topic: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.publish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.publish" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publish a message on client topic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -594,7 +616,7 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.server_topic">
-<code class="sig-name descname">server_topic</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.server_topic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.server_topic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">server_topic</code><span class="sig-paren">(</span><em class="sig-param">message: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.server_topic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.server_topic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle any event coming in on server_topic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -605,8 +627,9 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.session_id">
-<em class="property">static </em><code class="sig-name descname">session_id</code><span class="sig-paren">(</span><em class="sig-param">trigger_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.session_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.session_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">session_id</code><span class="sig-paren">(</span><em class="sig-param">trigger_id: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.session_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.session_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a uuid4 session id.</p>
+<p>Takes optional trigger_id for monkeypatch in testing framework.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>trigger_id</strong> (<em>str</em>) – Optional trigger_id value used in testing framework.</p>
@@ -628,13 +651,13 @@ KvStore.</p></li>
 
 <dl class="method">
 <dt id="tcex.services.services.Services.update_metric">
-<code class="sig-name descname">update_metric</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.update_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.update_metric" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_metric</code><span class="sig-paren">(</span><em class="sig-param">label: str, value: Union[int, str]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/services.html#Services.update_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.services.services.Services.update_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a metric if already exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>label</strong> (<em>str</em>) – The metric label (e.g., hits) to update.</p></li>
-<li><p><strong>value</strong> (<em>int|str</em>) – The updated value for the metric.</p></li>
+<li><p><strong>value</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>str</em><em>]</em>) – The updated value for the metric.</p></li>
 </ul>
 </dd>
 </dl>

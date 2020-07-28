@@ -84,4 +84,3 @@ Retrieve Group to Indicator Associations
 
     for association in group.indicator_associations():
         print(association)
-

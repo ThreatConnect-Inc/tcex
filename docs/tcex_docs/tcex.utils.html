@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Utils Module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Utils Module &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -214,17 +214,17 @@
 <p>TcEx Utilities Module</p>
 <dl class="class">
 <dt id="tcex.utils.utils.Utils">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.utils.utils.</code><code class="sig-name descname">Utils</code><span class="sig-paren">(</span><em class="sig-param">temp_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.utils.utils.</code><code class="sig-name descname">Utils</code><span class="sig-paren">(</span><em class="sig-param">temp_path: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx framework Utils Class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>temp_path</strong> (<em>str</em><em>, </em><em>optional</em>) – The path to write temp files.</p>
+<dd class="field-odd"><p><strong>temp_path</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= None</em>) – The path to write temp files.</p>
 </dd>
 </dl>
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.camel_to_snake">
-<code class="sig-name descname">camel_to_snake</code><span class="sig-paren">(</span><em class="sig-param">camel_string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.camel_to_snake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.camel_to_snake" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">camel_to_snake</code><span class="sig-paren">(</span><em class="sig-param">camel_string: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.camel_to_snake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.camel_to_snake" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return snake case string from a camel case string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -241,7 +241,7 @@
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.camel_to_space">
-<code class="sig-name descname">camel_to_space</code><span class="sig-paren">(</span><em class="sig-param">camel_string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.camel_to_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.camel_to_space" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">camel_to_space</code><span class="sig-paren">(</span><em class="sig-param">camel_string: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.camel_to_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.camel_to_space" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return space case string from a camel case string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -264,13 +264,13 @@
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.decrypt_aes_cbc">
-<em class="property">static </em><code class="sig-name descname">decrypt_aes_cbc</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ciphertext</em>, <em class="sig-param">iv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.decrypt_aes_cbc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.decrypt_aes_cbc" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">decrypt_aes_cbc</code><span class="sig-paren">(</span><em class="sig-param">key: bytes, ciphertext: Union[bytes, str], iv: Optional[bytes] = None</em><span class="sig-paren">)</span> &#x2192; bytes<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.decrypt_aes_cbc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.decrypt_aes_cbc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return AES CBC decrypted string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>bytes</em>) – The encryption key.</p></li>
-<li><p><strong>ciphertext</strong> (<em>bytes</em>) – The ciphertext to decrypt.</p></li>
+<li><p><strong>ciphertext</strong> (<em>Optional</em><em>[</em><em>bytes</em><em>] </em><em>= None</em>) – The ciphertext to decrypt.</p></li>
 <li><p><strong>iv</strong> (<em>bytes</em><em>, </em><em>optional</em>) – The CBC initial vector.</p></li>
 </ul>
 </dd>
@@ -285,14 +285,14 @@
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.encrypt_aes_cbc">
-<em class="property">static </em><code class="sig-name descname">encrypt_aes_cbc</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">plaintext</em>, <em class="sig-param">iv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.encrypt_aes_cbc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.encrypt_aes_cbc" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">encrypt_aes_cbc</code><span class="sig-paren">(</span><em class="sig-param">key: bytes, plaintext: Union[bytes, str], iv: Optional[bytes] = None</em><span class="sig-paren">)</span> &#x2192; bytes<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.encrypt_aes_cbc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.encrypt_aes_cbc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return AES CBC encrypted string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>bytes</em>) – The encryption key.</p></li>
-<li><p><strong>plaintext</strong> (<em>str|bytes</em>) – The text to encrypt.</p></li>
-<li><p><strong>iv</strong> (<em>bytes</em><em>, </em><em>optional</em>) – The CBC initial vector.</p></li>
+<li><p><strong>plaintext</strong> (<em>Union</em><em>[</em><em>bytes</em><em>, </em><em>str</em><em>]</em>) – The text to encrypt.</p></li>
+<li><p><strong>iv</strong> (<em>Optional</em><em>[</em><em>bytes</em><em>] </em><em>= None</em>) – The CBC initial vector.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -332,26 +332,48 @@ and for lists with a mix of lists and single values</p>
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.is_cidr">
 <em class="property">static </em><code class="sig-name descname">is_cidr</code><span class="sig-paren">(</span><em class="sig-param">possible_cidr_range: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.is_cidr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.is_cidr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return whether the possible_cidr_range is a CIDR range.</p>
+<dd><p>Return True if the provided value is a valid CIDR block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>possible_cidr_range</strong> (<em>str</em>) – The cidr value to validate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if input is a valid CIDR.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.is_ip">
 <em class="property">static </em><code class="sig-name descname">is_ip</code><span class="sig-paren">(</span><em class="sig-param">possible_ip: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.is_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.is_ip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return whether the possible_ip is an IP address range.</p>
+<dd><p>Return True if the provided value is a valid IP address.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>possible_ip</strong> (<em>str</em>) – The IP value to validate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if input is a valid IP.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.printable_cred">
-<em class="property">static </em><code class="sig-name descname">printable_cred</code><span class="sig-paren">(</span><em class="sig-param">cred</em>, <em class="sig-param">visible=1</em>, <em class="sig-param">mask_char=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.printable_cred"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.printable_cred" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">printable_cred</code><span class="sig-paren">(</span><em class="sig-param">cred: str</em>, <em class="sig-param">visible: Optional[int] = 1</em>, <em class="sig-param">mask_char: Optional[str] = '*'</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.printable_cred"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.printable_cred" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a printable (masked) version of the provided credential.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cred</strong> (<em>str</em>) – The cred to print.</p></li>
-<li><p><strong>visible</strong> (<em>str</em>) – The number of characters at the beginning and
+<li><p><strong>visible</strong> (<em>Optional</em><em>[</em><em>int</em><em>] </em><em>= 1</em>) – The number of characters at the beginning and
 ending of the cred to not mask.</p></li>
-<li><p><strong>(</strong><strong>str</strong><strong>, </strong><strong>Default</strong> (<em>mask_char</em>) – “*”): The character to use in the mask.</p></li>
+<li><p><strong>mask_char</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= '*'</em>) – The character to use in the mask.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -365,11 +387,11 @@ ending of the cred to not mask.</p></li>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.random_string">
-<em class="property">static </em><code class="sig-name descname">random_string</code><span class="sig-paren">(</span><em class="sig-param">string_length=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.random_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.random_string" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">random_string</code><span class="sig-paren">(</span><em class="sig-param">string_length: Optional[int] = 10</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.random_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.random_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a random string of fixed length</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string_length</strong> (<em>int</em><em>, </em><em>optional</em>) – The length of the string. Defaults to 10.</p>
+<dd class="field-odd"><p><strong>string_length</strong> (<em>Optional</em><em>[</em><em>int</em><em>] </em><em>= 10</em>) – The length of the string.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A random string</p>
@@ -382,17 +404,18 @@ ending of the cred to not mask.</p></li>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.requests_to_curl">
-<code class="sig-name descname">requests_to_curl</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">mask_headers=True</em>, <em class="sig-param">mask_patterns=None</em>, <em class="sig-param">verify=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.requests_to_curl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.requests_to_curl" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">requests_to_curl</code><span class="sig-paren">(</span><em class="sig-param">request: object, mask_headers: Optional[bool] = True, mask_patterns: List[str] = None, **kwargs: Union[bool, dict]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.requests_to_curl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.requests_to_curl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return converted PreparedRequest to a curl command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>request</strong> (<em>requests.models.PreparedRequest</em>) – The response.request object.</p></li>
-<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>verify</em>) – True): If True then values for certain header
+<li><p><strong>request</strong> (<em>object</em>) – The response.request object.</p></li>
+<li><p><strong>mask_headers</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True then values for certain header
 key will be masked.</p></li>
-<li><p><strong>(</strong><strong>list</strong><strong>, </strong><strong>default</strong> (<em>mask_patterns</em>) – None): A list of patterns if found in headers the value
+<li><p><strong>mask_patterns</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>= None</em>) – A list of patterns if found in headers the value
 will be masked.</p></li>
-<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): If False the curl command will include –insecure flag.</p></li>
+<li><p><strong>proxies</strong> (<em>dict</em><em>, </em><em>kwargs</em>) – A dict containing the proxy configuration.</p></li>
+<li><p><strong>verify</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If False the curl command will include –insecure flag.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -406,11 +429,17 @@ will be masked.</p></li>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.snake_to_camel">
-<em class="property">static </em><code class="sig-name descname">snake_to_camel</code><span class="sig-paren">(</span><em class="sig-param">snake_string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.snake_to_camel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.snake_to_camel" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">snake_to_camel</code><span class="sig-paren">(</span><em class="sig-param">snake_string: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.snake_to_camel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.snake_to_camel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert snake_case to camelCase</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>snake_string</strong> (<em>str</em>) – The snake case input string.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The camel case string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -419,15 +448,26 @@ will be masked.</p></li>
 <dt id="tcex.utils.utils.Utils.standardize_asn">
 <em class="property">static </em><code class="sig-name descname">standardize_asn</code><span class="sig-paren">(</span><em class="sig-param">asn: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.standardize_asn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.standardize_asn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the ASN formatted for ThreatConnect.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>asn</strong> (<em>str</em>) – The asn value to standardize.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The standardized asn value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.to_bool">
-<em class="property">static </em><code class="sig-name descname">to_bool</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.to_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.to_bool" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">to_bool</code><span class="sig-paren">(</span><em class="sig-param">value: Union[bool, int, str]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.to_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.to_bool" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert value to bool.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<em>bool|str</em>) – The value to convert to boolean.</p>
+<dd class="field-odd"><p><strong>value</strong> (<em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>str</em><em>]</em>) – The value to convert to boolean.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The boolean value</p>
@@ -439,8 +479,32 @@ will be masked.</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.utils.utils.Utils.truncate_string">
+<em class="property">static </em><code class="sig-name descname">truncate_string</code><span class="sig-paren">(</span><em class="sig-param">t_string: str</em>, <em class="sig-param">length: int</em>, <em class="sig-param">append_chars: Optional[str] = ''</em>, <em class="sig-param">spaces: Optional[bool] = False</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.truncate_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.truncate_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncate a string to a given length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_string</strong> (<em>str</em>) – The input string to truncate.</p></li>
+<li><p><strong>length</strong> (<em>int</em>) – The length of the truncated string.</p></li>
+<li><p><strong>append_chars</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= ''</em>) – Any character that should be appended to the
+string. Typically used for ellipsis (e.g. …).</p></li>
+<li><p><strong>spaces</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= False</em>) – If True truncation will be done at the
+nearest space before the truncation length to avoid chopping words.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The truncated string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.utils.utils.Utils.variable_method_name">
-<code class="sig-name descname">variable_method_name</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.variable_method_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.variable_method_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">variable_method_name</code><span class="sig-paren">(</span><em class="sig-param">variable: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.variable_method_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.variable_method_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert variable name to a valid method name.</p>
 <p>#App:9876:string.operation!String -&gt; string_operation_string</p>
 <dl class="field-list simple">
@@ -464,13 +528,13 @@ will be masked.</p></li>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.write_temp_binary_file">
-<code class="sig-name descname">write_temp_binary_file</code><span class="sig-paren">(</span><em class="sig-param">content</em>, <em class="sig-param">filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.write_temp_binary_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.write_temp_binary_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_temp_binary_file</code><span class="sig-paren">(</span><em class="sig-param">content: bytes</em>, <em class="sig-param">filename: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.write_temp_binary_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.write_temp_binary_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write content to a temporary file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>content</strong> (<em>bytes</em>) – The file content.</p></li>
-<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to use when writing the file.</p></li>
+<li><p><strong>filename</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= None</em>) – The filename to use when writing the file.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -484,15 +548,15 @@ will be masked.</p></li>
 
 <dl class="method">
 <dt id="tcex.utils.utils.Utils.write_temp_file">
-<code class="sig-name descname">write_temp_file</code><span class="sig-paren">(</span><em class="sig-param">content</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">mode='w'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.write_temp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.write_temp_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_temp_file</code><span class="sig-paren">(</span><em class="sig-param">content: Union[bytes, str], filename: Optional[str] = None, mode: Optional[str] = 'w'</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.write_temp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.write_temp_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write content to a temporary file.</p>
 <p>If passing binary data the mode needs to be set to ‘wb’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>content</strong> (<em>bytes|str</em>) – The file content.</p></li>
-<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to use when writing the file. Defaults to None.</p></li>
-<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – The write mode (‘w’ or ‘wb’). Defaults to w.</p></li>
+<li><p><strong>content</strong> (<em>Union</em><em>[</em><em>bytes</em><em>, </em><em>str</em><em>]</em>) – The file content.</p></li>
+<li><p><strong>filename</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= None</em>) – The filename to use when writing the file.</p></li>
+<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= 'w'</em>) – The write mode (‘w’ or ‘wb’).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 2.0.6 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -274,6 +274,12 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">signal_interupt</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;The App received an interrupt signal and will now exit.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcEx.advanced_request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">advanced_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of AdvancedRequest.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app_feature</span> <span class="kn">import</span> <span class="n">AdvancedRequest</span>
+
+        <span class="k">return</span> <span class="n">AdvancedRequest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.aot_rpush"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.aot_rpush">[docs]</a>    <span class="k">def</span> <span class="nf">aot_rpush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Push message to AOT action channel.&quot;&quot;&quot;</span>
@@ -948,7 +954,31 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.sessions</span> <span class="kn">import</span> <span class="n">TcSession</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">TcSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">TcSession</span><span class="p">(</span>
+                <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span>
+                <span class="n">api_access_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">api_access_id</span><span class="p">,</span>
+                <span class="n">api_secret_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">api_secret_key</span><span class="p">,</span>
+                <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># set verify</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">verify</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_verify</span>
+
+            <span class="c1"># set token</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
+
+            <span class="c1"># update User-Agent</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx: {__import__(__name__).__version__}&#39;</span><span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="c1"># add proxy support if requested</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{self.args.tc_proxy_host}</span><span class="s1">:&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.args.tc_proxy_port}</span><span class="s1"> for ThreatConnect session.&#39;</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
 
     <span class="nd">@property</span>
@@ -957,7 +987,20 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.sessions</span> <span class="kn">import</span> <span class="n">ExternalSession</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="o">=</span> <span class="n">ExternalSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="o">=</span> <span class="n">ExternalSession</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
+
+            <span class="c1"># add User-Agent to headers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx App: </span><span class="si">{self.ij.display_name}</span><span class="s1"> - </span><span class="si">{self.ij.program_version}</span><span class="s1">&#39;</span><span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="c1"># add proxy support if requested</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{self.args.tc_proxy_host}</span><span class="s1">:&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.args.tc_proxy_port}</span><span class="s1"> for external session.&#39;</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span>
 
     <span class="nd">@property</span>

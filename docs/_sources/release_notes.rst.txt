@@ -3,6 +3,25 @@
 Release Notes
 #############
 
+2.0.7
+=====
++ APP-780 - Added truncate method to Utils module.
++ APP-786 - Updated logger to addres TypeError exception.
++ APP-789 - Updated pre-commit configuration for App templates.
++ APP-790 - Added new Advance Request feature for App that utilize a remote API.
++ APP-791 - Updated session and session_external to not require an instance of tcex.
++ APP-792 - Updated services module to support sending failed message on ack.
++ APP-793 - Updated session to not create curl logs when sending API logs.
+
+Testing framework
+-----------------
+
++ APP-77 - Added mechanism to tell if Webhook service Apps fired in testing framework.
++ APP-88 - Added "magic" variable expansion for tctest interactive mode.
++ APP-715 - Update validation for tags to be case insensitive in testing framework.
++ APP-746 - Update to address issue with email validation in testing framework.
++ APP-769 - Added rargs property to profile for custom methods in testing framework.
+
 2.0.6
 =====
 + APP-79 - Added curl command to the log file at debug level to assist in troubleshooting.

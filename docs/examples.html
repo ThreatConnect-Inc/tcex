@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Examples &mdash; TcEx 2.0.6 documentation</title>
+  <title>Examples &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -109,10 +109,14 @@
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#threat-intelligence">Threat Intelligence</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#indicator-to-group-association">Indicator to Group Association</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-indicator-to-group-association-1">Create Indicator to Group Association 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-indicator-to-group-association-2">Create Indicator to Group Association 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-indicator-to-group-associations">Retrieve Indicator to Group Associations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-group-to-indicator-associations">Retrieve Group to Indicator Associations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-inactive-indicators">Retrieve Inactive Indicators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-active-and-inactive-indicators">Retrieve Active and Inactive Indicators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-indicators-with-date-added-filters">Retrieve Indicators with Date Added filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-indicators-owners">Retrieve Indicators Owners</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#snippets">Snippets</a><ul>
@@ -282,8 +286,8 @@
 <span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="threat-intelligence">
 <h2>Threat Intelligence<a class="headerlink" href="#threat-intelligence" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="indicator-to-group-association">
-<span id="examples-ti-associations"></span><h3>Indicator to Group Association<a class="headerlink" href="#indicator-to-group-association" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="create-indicator-to-group-association-1">
+<span id="examples-ti-associations"></span><h3>Create Indicator to Group Association 1<a class="headerlink" href="#create-indicator-to-group-association-1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -295,18 +299,94 @@
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">ti</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Creating a Indicator and Group to insure that a association can be made.</span>
+<span class="n">indicator_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ip&#39;</span><span class="p">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="n">group_kwargs</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="s1">&#39;rand_filename&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rand_name&#39;</span> <span class="p">}</span>
+<span class="n">indicator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">indicator_kwargs</span><span class="p">)</span>
+<span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">group_kwargs</span><span class="p">)</span>
+<span class="c1"># Can be done this way as well:</span>
+<span class="c1"># indicator = self.ti.address(self.owner, **indicator_kwargs)</span>
+<span class="c1"># group = self.ti.document(self.owner, **group_kwargs)</span>
+<span class="n">indicator</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+<span class="n">group</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 
-<span class="c1"># group to associate</span>
-<span class="n">association_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">association_kwargs</span><span class="p">)</span>
+<span class="c1"># indicator to associate</span>
+<span class="n">indicator</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="create-indicator-to-group-association-2">
+<h3>Create Indicator to Group Association 2<a class="headerlink" href="#create-indicator-to-group-association-2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Creating a Indicator and Group to insure that a association can be made.</span>
+<span class="n">indicator_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ip&#39;</span><span class="p">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="n">group_kwargs</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="s1">&#39;rand_filename&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rand_name&#39;</span> <span class="p">}</span>
+<span class="n">indicator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">indicator_kwargs</span><span class="p">)</span>
+<span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">group_kwargs</span><span class="p">)</span>
+<span class="n">indicator</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+<span class="n">group</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 
-<span class="n">ti</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span>
-  <span class="kc">None</span><span class="p">,</span>
-  <span class="n">api_type</span><span class="o">=</span><span class="n">association_target</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
-  <span class="n">api_branch</span><span class="o">=</span><span class="n">association_target</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
-  <span class="n">unique_id</span><span class="o">=</span><span class="n">association_target</span><span class="o">.</span><span class="n">unique_id</span>
-<span class="p">)</span>
+<span class="c1"># Create indicators/groups representing the indicators/groups in TC</span>
+<span class="n">indicator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;1.1.1.1&#39;</span><span class="p">)</span>
+<span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
+<span class="c1"># Can be done this way as well:</span>
+<span class="c1"># indicator = self.ti.address(self.owner, &#39;1.1.1.1&#39;)</span>
+<span class="c1"># group = self.ti.document(self.owner, id=group.unique_id)</span>
+
+<span class="c1"># indicator to associate</span>
+<span class="n">indicator</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="retrieve-indicator-to-group-associations">
+<h3>Retrieve Indicator to Group Associations<a class="headerlink" href="#retrieve-indicator-to-group-associations" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Creating a Indicator to make sure group associations can be retrieved.</span>
+<span class="n">indicator_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ip&#39;</span><span class="p">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="n">indicator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">indicator</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">indicator</span><span class="o">.</span><span class="n">group_associations</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">association</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="retrieve-group-to-indicator-associations">
+<h3>Retrieve Group to Indicator Associations<a class="headerlink" href="#retrieve-group-to-indicator-associations" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Creating a Indicator to make sure group associations can be retrieved.</span>
+<span class="n">group_kwargs</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="s1">&#39;rand_filename&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rand_name&#39;</span> <span class="p">}</span>
+<span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">group_kwargs</span><span class="p">)</span>
+<span class="n">group</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">association</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -319,7 +399,7 @@
 5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">address</span><span class="p">()</span>
 <span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
 <span class="n">filters</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
@@ -355,6 +435,26 @@
 <span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">indicator</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="retrieve-indicators-owners">
+<h3>Retrieve Indicators Owners<a class="headerlink" href="#retrieve-indicators-owners" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Create a example indicator</span>
+<span class="n">indicator_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ip&#39;</span><span class="p">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)}</span>
+<span class="n">indicator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">indicator_kwargs</span><span class="p">)</span>
+<span class="n">indicator</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+<span class="c1"># Get the owners that indicator is in.</span>
+<span class="n">owner</span> <span class="o">=</span> <span class="n">indicator</span><span class="o">.</span><span class="n">owners</span><span class="p">()</span>
+<span class="c1"># indicator.owners() return the response, time to get the owner data.</span>
+<span class="n">owner_data</span> <span class="o">=</span> <span class="n">owner</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="p">[])</span>
 </pre></div>
 </td></tr></table></div>
 </div>

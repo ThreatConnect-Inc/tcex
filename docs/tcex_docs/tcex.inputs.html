@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Inputs Module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Inputs Module &mdash; TcEx 2.0.7 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.7
               </div>
 
 
@@ -451,6 +451,38 @@ should be included in the provided data.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></p>
 <p>Overload of the ArgumentParser class.</p>
 <p>Adding common arguments for TcEx apps.</p>
+<dl class="method">
+<dt id="tcex.inputs.argument_parser.TcArgumentParser._advanced_request">
+<code class="sig-name descname">_advanced_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._advanced_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._advanced_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define App Feature - Advanced Request args.</p>
+<dl class="option-list">
+<dt><kbd><span class="option">--tc_adv_req_body <var>params</var></span></kbd></dt>
+<dd><p>The HTTP body.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_exclude_null_params <var>bool</var></span></kbd></dt>
+<dd><p>If True, exclude null params.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_fail_on_error <var>bool</var></span></kbd></dt>
+<dd><p>If True, fail on any encountered error.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_headers <var>params</var></span></kbd></dt>
+<dd><p>The HTTP headers.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_http_method <var>method</var></span></kbd></dt>
+<dd><p>The HTTP method (e.g., GET, POST).</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_params <var>params</var></span></kbd></dt>
+<dd><p>The HTTP query params.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_path <var>path</var></span></kbd></dt>
+<dd><p>The API path.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_urlencode_body <var>bool</var></span></kbd></dt>
+<dd><p>If True, urlencode body.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser._api_arguments">
 <code class="sig-name descname">_api_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._api_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._api_arguments" title="Permalink to this definition">¶</a></dt>
