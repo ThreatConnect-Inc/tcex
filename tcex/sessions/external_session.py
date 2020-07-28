@@ -43,7 +43,7 @@ class ExternalSession(Session):
         """Initialize the Class properties."""
         super().__init__()
         self._base_url = base_url
-        self.log = logger or logging.getLogger('session').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('session')
 
         # properties
         self._mask_headers = True

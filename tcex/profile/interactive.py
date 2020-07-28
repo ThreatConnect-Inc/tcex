@@ -60,7 +60,7 @@ class Interactive:
             default = str(data.get('default', 'false')).lower()
         elif data.get('type').lower() == 'choice':
             default = 0
-            valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
+            valid_values = self._expand_valid_values(data.get('validValues', []))
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
                     if self.profile.feature.lower() == vv.replace(' ', '_').lower():
@@ -78,6 +78,100 @@ class Interactive:
             #     # set default from user default file
             #     default = self.user_defaults.get(data.get('name'))
         return default
+
+    def _expand_valid_values(self, valid_values):
+        """Expand supported playbook variables to their full list.
+
+        Args:
+            valid_values (list): The list of valid values for Choice or MultiChoice inputs.
+
+        Returns:
+            list: An expanded list of valid values for Choice or MultiChoice inputs.
+        """
+        valid_values = list(valid_values)
+        if '${ARTIFACT_TYPES}' in valid_values:
+            valid_values.remove('${ARTIFACT_TYPES}')
+            valid_values.extend(
+                [
+                    'ASN',
+                    'Asset Group ID',
+                    'Certificate File',
+                    'CIDR',
+                    'Credential ID',
+                    'Document Metadata',
+                    'Email Address',
+                    'Email Attachment File',
+                    'Email Attachment File Name',
+                    'Email Body',
+                    'Email Message File',
+                    'Email Subject',
+                    'Event File',
+                    'Exploit ID',
+                    'File Hash',
+                    'Filter ID',
+                    'Hashtag',
+                    'Host',
+                    'Image File',
+                    'IP Address',
+                    'Log File',
+                    'MutEx',
+                    'PCAP File',
+                    'Policy ID',
+                    'Registry Key',
+                    'Results ID',
+                    'Screenshot File',
+                    'Tactic ID',
+                    'Technique ID',
+                    'Ticket ID',
+                    'Timestamp',
+                    'URL',
+                    'User Agent',
+                    'Vulnerability Detection ID',
+                    'Vulnerability ID',
+                ]
+            )
+        elif '${GROUP_TYPES}' in valid_values:
+            valid_values.remove('${GROUP_TYPES}')
+            valid_values.extend(
+                [
+                    'Adversary',
+                    'Campaign',
+                    'Document',
+                    'Email',
+                    'Event',
+                    'Incident',
+                    'Intrusion Set',
+                    'Signature',
+                    'Task',
+                    'Threat',
+                ]
+            )
+        elif '${INDICATOR_TYPES}' in valid_values:
+            valid_values.remove('${INDICATOR_TYPES}')
+            r = self.profile.session.get('/v2/types/indicatorTypes')
+            if r.ok:
+                valid_values.extend(
+                    [t.get('name') for t in r.json().get('data', {}).get('indicatorType', {})]
+                )
+        elif '${OWNERS}' in valid_values:
+            valid_values.remove('${OWNERS}')
+            r = self.profile.session.get('/v2/owners')
+            if r.ok:
+                valid_values.extend(
+                    [o.get('name') for o in r.json().get('data', {}).get('owner', {})]
+                )
+        elif '${USERS}' in valid_values:
+            valid_values.remove('${USERS}')
+            r = self.profile.session.get('/v2/owners/mine/members')
+            if r.ok:
+                valid_values.extend(
+                    [o.get('userName') for o in r.json().get('data', {}).get('user', {})]
+                )
+        elif '${USER_GROUPS}' in valid_values:
+            valid_values.remove('${USER_GROUPS}')
+            valid_values.extend(['User Group 1', 'User Group 1'])
+
+        return valid_values
 
     def _input_value(self, label, option_text=None):
         """Return user input."""
@@ -546,7 +640,7 @@ class Interactive:
 
         default = self._default(data)
         option_index = 0
-        valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
+        valid_values = self._expand_valid_values(data.get('validValues', []))
         if data.get('required', False) is False:
             # add option to invalidate defaults
             valid_values.insert(0, self._no_selection_text)
@@ -693,7 +787,7 @@ class Interactive:
 
         default = self._default(data)  # array of default values
         option_indexes = [0]
-        valid_values = self.profile.ij.expand_valid_values(data.get('validValues', []))
+        valid_values = self._expand_valid_values(data.get('validValues', []))
         if data.get('required', False) is False:
             # add option to invalidate defaults
             valid_values.insert(0, self._no_selection_text)

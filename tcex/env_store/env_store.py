@@ -20,7 +20,7 @@ class EnvStore:
 
     def __init__(self, logger=None):
         """Initialize the Class properties."""
-        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('layout_json')
 
         # properties
         self._vault_client = None
