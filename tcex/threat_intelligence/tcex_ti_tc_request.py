@@ -70,7 +70,6 @@ class TiTcRequest:
             if not self.success(r):
                 err = r.text or r.reason
                 self.tcex.handle_error(950, [r.status_code, err, r.url])
-
             data = r.json().get('data', {})
             if api_entity:
                 data = data.get(api_entity, [])

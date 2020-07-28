@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 import os
+import random
 
 from .ti_helpers import TIHelper, TestThreatIntelligence
 
@@ -24,6 +25,22 @@ class TestAdversaryAssets(TestThreatIntelligence):
         """Configure teardown before all tests."""
         if os.getenv('TEARDOWN_METHOD') is None:
             self.ti_helper.cleanup()
+
+    def tests_ti_groups_to_indicators(self):
+        helper_ti = self.ti_helper.create_group()
+        rand_ip = self.ti_helper.rand_ip()
+        indicator_kwargs = {
+            'ip': rand_ip, 'rating': random.randint(0, 5),
+            'confidence': random.randint(0, 100)
+        }
+        indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
+        indicator.create()
+        helper_ti.add_association(indicator)
+        found = False
+        for indicator in helper_ti.indicator_associations():
+            if indicator.get('summary') == rand_ip:
+                found = True
+        assert found, 'Failed to retrieve indicator associations from group.'
 
     def tests_ti_adversary_add_asset_handle(self):
         """Add an asset to and Adversary."""
