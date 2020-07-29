@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Playbook module"""
+# standard library
 import re
 
 from .playbooks_base import PlaybooksBase
@@ -268,7 +269,7 @@ class Playbooks(PlaybooksBase):
             return None
 
         if key is None:
-            self.log.info(f'Key has a none value and will not be written.')
+            self.log.info('Key has a none value and will not be written.')
             return None
 
         if value is None:
@@ -327,6 +328,9 @@ class Playbooks(PlaybooksBase):
                 code = 0  # playbooks doesn't support partial failure
         elif code not in [0, 1]:
             code = 1
+
+        # write outputs before exiting
+        self.write_output()
 
         # required only for tcex testing framework
         if self.tcex.args.tcex_testing_context is not None:  # pragma: no cover

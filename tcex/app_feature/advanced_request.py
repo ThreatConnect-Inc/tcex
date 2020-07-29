@@ -1,67 +1,101 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Exchange App Feature Advanced Request Module"""
+# standard library
 import json
+from argparse import Namespace
 from mimetypes import MimeTypes
+from typing import Dict, List, Optional, Union
+
+# third-party
 import requests
 
 from ..decorators import ReadArg
 
 
 class AdvancedRequest:
-    """App Feature Advanced Request Module"""
+    """App Feature Advanced Request Module
 
-    def __init__(self, args, output_prefix, session, tcex, timeout=600):
+    Args:
+        args (object): The argparser.Namespace for the App.
+        session (object): An instance of Requests Session object.
+        tcex (object): An instance of Tcex object.
+        timeout (Optional[int] = 600): The timeout value for the request.
+    """
+
+    def __init__(self, args: object, session: object, tcex: object, timeout: Optional[int] = 600):
         """Initialize class properties."""
-        self.args = args
-        self.output_prefix = output_prefix
-        self.session = session
-        self.tcex = tcex
+        self.args: Namespace = args
+        self.session: object = session
+        self.tcex: object = tcex
 
         # properties
-        self.allow_redirects = True
-        self.data = None
-        self.headers = {}
-        self.max_mb = 500
-        self.mt = MimeTypes()
-        self.params = {}
-        self.timeout = timeout or 600
+        self.allow_redirects: bool = True
+        self.data: Optional[Union[dict, str]] = None
+        self.headers: dict = {}
+        self.max_mb: int = 500
+        self.mt: callable = MimeTypes()
+        self.output_prefix: str = self.tcex.ij.output_prefix
+        self.params: dict = {}
+        self.timeout: int = timeout or 600
 
     @ReadArg('tc_adv_req_body')
-    def configure_body(self, tc_adv_req_body):
-        """Configure Body"""
-        self.data = tc_adv_req_body
+    def configure_body(self, tc_adv_req_body: Union[bytes, str]):
+        """Configure Body
+
+        Args:
+            tc_adv_req_body (Union[bytes, str]): The request body.
+        """
+        self.data: Union[bytes, str] = tc_adv_req_body
         if self.data is not None:
             # INT-1386
             try:
-                self.data = self.data.encode('utf-8')
+                self.data: str = self.data.encode('utf-8')
             except AttributeError:
                 pass  # Binary Data
 
         if self.args.tc_adv_req_urlencode_body:
             try:
-                self.data = json.loads(self.data)
+                self.data: dict = json.loads(self.data)
             except ValueError:
                 self.tcex.log.error('Failed loading body as JSON data.')
 
     @ReadArg('tc_adv_req_headers', array=True)
-    def configure_headers(self, tc_adv_req_headers):
-        """Configure Headers"""
+    def configure_headers(self, tc_adv_req_headers: List[Dict[str]]):
+        """Configure Headers
+
+        [{
+            "key": "User-Agent",
+            "value": "TcEx MyApp: 1.0.0",
+        }]
+
+        Args:
+            tc_adv_req_headers (List[Dict[str]]): A dict of headers.
+        """
         for header_data in tc_adv_req_headers:
             self.headers[str(header_data.get('key'))] = header_data.get('value')
 
     @ReadArg('tc_adv_req_params', array=True)
-    def configure_params(self, tc_adv_req_params):
-        """Configure Params"""
+    def configure_params(self, tc_adv_req_params: List[Dict[str]]):
+        """Configure Params
+
+        [{
+            "count": "500",
+            "page": "1",
+        }]
+
+        Args:
+            tc_adv_req_params (List[Dict[str]]): A dict of Params.
+        """
         for param_data in tc_adv_req_params:
-            param = str(param_data.get('key'))
-            values = param_data.get('value')
+            param: str = str(param_data.get('key'))
+            values: str = param_data.get('value')
             if not isinstance(values, list):
-                values = [values]
+                values: list = [values]
             for value in values:
                 if not value and self.args.tc_adv_req_exclude_null_params:
                     self.tcex.log.warning(
-                        'Query parameter {} has a null/empty value and will not be added to the '
-                        'request.'.format(param)
+                        f'Query parameter {param} has a null/empty value '
+                        'and will not be added to the request.'
                     )
                 else:
                     self.params.setdefault(param, []).append(str(value))
@@ -80,8 +114,13 @@ class AdvancedRequest:
         fail_msg='Invalid path provide for request',
         strip_values=True,
     )
-    def request(self, tc_adv_req_http_method, tc_adv_req_path):
-        """Make HTTP request."""
+    def request(self, tc_adv_req_http_method: str, tc_adv_req_path: str):
+        """Make the HTTP request.
+
+        Args:
+            tc_adv_req_http_method (str): The HTTP method to use.
+            tc_adv_req_path (str): The REST API endpoint/path.
+        """
         # configure body
         self.configure_body(**{})
 
@@ -93,7 +132,7 @@ class AdvancedRequest:
 
         # make http request
         try:
-            response = self.session.request(
+            response: object = self.session.request(
                 allow_redirects=self.allow_redirects,
                 data=self.data,
                 headers=self.headers,
@@ -103,39 +142,39 @@ class AdvancedRequest:
                 url=tc_adv_req_path,
             )
         except requests.exceptions.RequestException as e:
-            err = 'Exception during request ({}).'.format(e)
-            self.tcex.exit(1, err)
+            response = None
+            raise RuntimeError(f'Exception during request ({e}).')
+
+        # write outputs as soon as they are available
+        self.tcex.playbook.add_output(
+            f'{self.output_prefix}.request.headers', json.dumps(dict(response.headers)), 'String'
+        )
+        self.tcex.playbook.add_output(f'{self.output_prefix}.request.ok', str(response.ok).lower())
+        self.tcex.playbook.add_output(
+            f'{self.output_prefix}.request.reason', response.reason, 'String'
+        )
+        self.tcex.playbook.add_output(
+            f'{self.output_prefix}.request.status_code', response.status_code, 'String'
+        )
+        self.tcex.playbook.add_output(
+            f'{self.output_prefix}.request.url', response.request.url, 'String'
+        )
 
         # get response size
-        response_bytes = len(response.content)
-        response_mb = response_bytes / 1000000
-        self.tcex.log.info('Response MB: {}'.format(response_mb))
+        response_bytes: int = len(response.content)
+        response_mb: float = response_bytes / 1000000
+        self.tcex.log.info(f'Response MB: {response_mb}')
         if response_mb > self.max_mb:
-            self.tcex.exit(1, 'Download was larger than maximum supported 500 MB.')
+            raise RuntimeError('Download was larger than maximum supported 500 MB.')
+
+        # write content after size validation
+        self.tcex.playbook.add_output(
+            f'{self.output_prefix}.request.content', response.text, 'String'
+        )
+        self.tcex.playbook.add_output(
+            f'{self.output_prefix}.request.content.binary', response.content, 'Binary'
+        )
 
         # fail if fail_on_error is selected and not ok
         if self.args.tc_adv_req_fail_on_error and not response.ok:
-            self.tcex.exit(1, 'Failed for status ({})'.format(response.status_code))
-
-        # write outputs
-        self.write_output(response)
-
-    def write_output(self, response):
-        """Write the Playbook output variables."""
-        self.tcex.playbook.create_output(
-            f'{self.output_prefix}.request.content', response.text, 'String'
-        )
-        self.tcex.playbook.create_output(
-            f'{self.output_prefix}.request.content.binary', response.content, 'Binary'
-        )
-        self.tcex.playbook.create_output(
-            f'{self.output_prefix}.request.headers', json.dumps(dict(response.headers)), 'String'
-        )
-        self.tcex.playbook.create_output(
-            f'{self.output_prefix}.request.ok', str(response.ok).lower()
-        )
-        self.tcex.playbook.create_output(f'{self.output_prefix}.request.reason', response.reason)
-        self.tcex.playbook.create_output(
-            f'{self.output_prefix}.request.status_code', response.status_code
-        )
-        self.tcex.playbook.create_output(f'{self.output_prefix}.request.url', response.request.url)
+            raise RuntimeError(f'Failed for status ({response.status_code})')

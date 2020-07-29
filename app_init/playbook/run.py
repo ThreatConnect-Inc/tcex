@@ -53,7 +53,6 @@ def run():
 
         # write requested value for downstream Apps
         tcex.playbook.write_output()
-        app.write_output()  # pylint: disable=no-member
 
         # perform cleanup/teardown operations
         app.teardown(**{})

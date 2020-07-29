@@ -57,7 +57,7 @@ repos:
     rev: v0.1
     hooks:
       - id: xenon
-        args: ["--max-average=A", "--max-modules=B", "--max-absolute=B"]
+        args: ["--max-average=A"]
   - repo: local
     hooks:
       - id: pylint

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework InstallJson Object."""
+# standard library
 import json
 import logging
 import os
@@ -128,10 +129,9 @@ class AppFeatureAdvanceRequest:
     def outputs(self):
         """Return Advanced Request Outputs."""
         return [
-            {'name': f'{self.prefix}.request.content.binary', 'type': 'Binary'},
             {'name': f'{self.prefix}.request.content', 'type': 'String'},
+            {'name': f'{self.prefix}.request.content.binary', 'type': 'Binary'},
             {'name': f'{self.prefix}.request.headers', 'type': 'String'},
-            # {'name': f'{self.prefix}.request.headers.keyvaluearray', 'type': 'KeyValueArray'},
             {'name': f'{self.prefix}.request.ok', 'type': 'String'},
             {'name': f'{self.prefix}.request.reason', 'type': 'String'},
             {'name': f'{self.prefix}.request.status_code', 'type': 'String'},
@@ -553,7 +553,7 @@ class InstallJson:
                 json_data = self.update_playbook_data_types(json_data)
 
             # app feature - update install.json for Advanced Request
-            if 'advancedRequest' in self.features:
+            if 'advancedRequest' in self.features and self.output_prefix is not None:
                 afar = AppFeatureAdvanceRequest(self, json_data, self.output_prefix)
                 afar.update()
 

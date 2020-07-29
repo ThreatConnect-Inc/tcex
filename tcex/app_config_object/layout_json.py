@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework LayoutJson."""
+# standard library
 import json
 import logging
 import os
@@ -257,7 +258,7 @@ class LayoutJson:
         self._contents = layout_data
 
         # app feature - update layout_json.json for Advanced Request
-        if 'advancedRequest' in features:
+        if 'advancedRequest' in features and prefix is not None:
             afar = AppFeatureAdvanceRequest(self, layout_data, prefix)
             afar.update()
 

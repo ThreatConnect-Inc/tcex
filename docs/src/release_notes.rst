@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.8
+=====
++ APP-796 - Updates to Advanced Request Method to always write output variable.
+
 2.0.7
 =====
 + APP-780 - Added truncate method to Utils module.
