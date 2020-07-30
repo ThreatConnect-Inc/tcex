@@ -328,7 +328,7 @@ class TestTag(TestCaseManagement):
         # retrieve tags using TQL
         tags = self.cm.tags()
         tags.filter.id(TQL.Operator.EQ, tag.id)
-        tags.filter.owner(TQL.Operator.EQ, 2)
+        tags.filter.owner(TQL.Operator.NE, 99)
 
         for tag in tags:
             assert tag.name == tag_data.get('name')

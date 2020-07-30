@@ -32,6 +32,7 @@ class CaseManagement:
             analytics_priority_level (int, kwargs): [Read-Only] The **Analytics Priority Level** for
                 the Artifact.
             analytics_score (int, kwargs): [Read-Only] The **Analytics Score** for the Artifact.
+            analytics_status (int, kwargs): [Read-Only] The **Analytics Status** for the Artifact.
             analytics_type (str, kwargs): [Read-Only] The **Analytics Type** for the Artifact.
             artifact_type (ArtifactType, kwargs): [Read-Only] The **Artifact Type**
                 for the Artifact.
