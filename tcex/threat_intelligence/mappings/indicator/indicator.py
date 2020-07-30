@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Indicator"""
+# standard library
 import json
 from urllib.parse import quote, unquote
 
@@ -76,9 +77,9 @@ def custom_indicator_class_factory(
         return valid_create
 
     class_name = indicator_type.replace(' ', '')
-    init_method = locals()[f'init']
-    set_unique_id_method = locals()[f'_set_unique_id']
-    can_create_method = locals()[f'can_create']
+    init_method = locals()['init']
+    set_unique_id_method = locals()['_set_unique_id']
+    can_create_method = locals()['can_create']
     _metadata_map = locals()['_metadata_map_1']
     new_class = type(
         str(class_name),

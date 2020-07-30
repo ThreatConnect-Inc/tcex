@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
+# standard library
 import json
 import math
 
@@ -8,6 +9,7 @@ import re
 import sys
 from base64 import b64encode
 
+# third-party
 import colorama as c
 
 # autoreset colorama
@@ -183,7 +185,7 @@ class Interactive:
 
         print(f'{c.Fore.WHITE}[? for help]')
         prompt = f'{c.Fore.MAGENTA}{label}{c.Fore.RESET}{c.Style.BRIGHT}{option_text}: '
-        input_value = input(prompt).strip()
+        input_value = input(prompt).strip()  # nosec
 
         # handle special user inputs
         if input_value == '?':

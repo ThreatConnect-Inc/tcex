@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+# standard library
 import os
-from random import randint
 from datetime import datetime, timedelta
+from random import randint
 
-from .ti_helpers import TIHelper, TestThreatIntelligence
+from .ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestAddressIndicators(TestThreatIntelligence):
@@ -34,13 +35,12 @@ class TestAddressIndicators(TestThreatIntelligence):
             self.ti_helper.cleanup()
 
     def tests_ti_association_example_1(self):
+        """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()
-        indicator_kwargs = {
-            'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)
-        }
+        indicator_kwargs = {'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)}
         group_kwargs = {
             'fileName': self.ti_helper.rand_filename(),
-            'name': self.ti_helper.rand_name()
+            'name': self.ti_helper.rand_name(),
         }
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
@@ -64,13 +64,12 @@ class TestAddressIndicators(TestThreatIntelligence):
             assert False, 'No indicator association was created'
 
     def tests_ti_association_example_2(self):
+        """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()
-        indicator_kwargs = {
-            'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)
-        }
+        indicator_kwargs = {'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)}
         group_kwargs = {
             'fileName': self.ti_helper.rand_filename(),
-            'name': self.ti_helper.rand_name()
+            'name': self.ti_helper.rand_name(),
         }
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
@@ -97,20 +96,18 @@ class TestAddressIndicators(TestThreatIntelligence):
             assert False, 'No indicator association was created'
 
     def tests_ti_indicators_owners(self):
+        """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()
-        indicator_kwargs = {
-            'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)
-        }
+        indicator_kwargs = {'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)}
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
         owner = indicator.owners()
         assert len(owner.json().get('data', {}).get('owner', [])) == 1, 'Owners were not retrieved.'
 
     def tests_ti_indicators_date_filter(self):
+        """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()
-        indicator_kwargs = {
-            'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)
-        }
+        indicator_kwargs = {'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)}
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
         today = datetime.strftime(datetime.now(), '%Y-%m-%d')
@@ -127,10 +124,14 @@ class TestAddressIndicators(TestThreatIntelligence):
         assert found, 'Expected Indicator not returned on dateAdded filter.'
 
     def tests_ti_indicators_active_and_inactive_filter(self):
+        """Testing TI module"""
         rand_ip_1 = self.ti_helper.rand_ip()
         rand_ip_2 = self.ti_helper.rand_ip()
         indicator_kwargs = {
-            'ip': rand_ip_1, 'rating': randint(0, 5), 'confidence': randint(0, 100), 'active': True
+            'ip': rand_ip_1,
+            'rating': randint(0, 5),
+            'confidence': randint(0, 100),
+            'active': True,
         }
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
@@ -157,9 +158,13 @@ class TestAddressIndicators(TestThreatIntelligence):
         assert inactive_found, 'Expected Indicator not returned on inactive filter.'
 
     def tests_ti_indicators_inactive_filter(self):
+        """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()
         indicator_kwargs = {
-            'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100), 'active': False
+            'ip': rand_ip,
+            'rating': randint(0, 5),
+            'confidence': randint(0, 100),
+            'active': False,
         }
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
@@ -176,10 +181,9 @@ class TestAddressIndicators(TestThreatIntelligence):
         assert active_found, 'Expected Indicator not returned on active filter.'
 
     def tests_ti_indicators_to_groups(self):
+        """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()
-        indicator_kwargs = {
-            'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)
-        }
+        indicator_kwargs = {'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)}
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
         group_name = self.ti_helper.rand_name()

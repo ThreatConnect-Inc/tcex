@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Job App Template."""
+# first-party
 from args import Args
 
 # Typically no changes are required to this file.

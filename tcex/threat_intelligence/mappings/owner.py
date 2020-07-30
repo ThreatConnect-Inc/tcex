@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Generic Mappings Object"""
+# first-party
 from tcex.utils import Utils
+
 from ..tcex_ti_tc_request import TiTcRequest
 
 

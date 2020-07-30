@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect API Service App"""
+# third-party
 import falcon
 
-# Import default API Service Class (Required)
-from api_service_app import ApiServiceApp
+# first-party
+from api_service_app import ApiServiceApp  # Import default API Service Class (Required)
 
 
 class TcExMiddleware:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Service module"""
+# standard library
 import base64
 import json
 import ssl
@@ -7,10 +8,11 @@ import threading
 import time
 import traceback
 import uuid
-from typing import Callable, Optional, Union
 from datetime import datetime
 from io import StringIO
+from typing import Callable, Optional, Union
 
+# third-party
 import paho.mqtt.client as mqtt
 
 

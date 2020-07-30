@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Validate Data Testing Module"""
+# standard library
 import datetime
 import difflib
 import hashlib
@@ -196,6 +197,7 @@ class Validator:
             bool: The results of the operator.
         """
         try:
+            # third-party
             from deepdiff import DeepDiff
         except ImportError:
             return False, 'Could not import DeepDiff module (try "pip install deepdiff").'

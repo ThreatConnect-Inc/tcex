@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Utils Module."""
+# standard library
 import re
 from base64 import b64decode
 
+# third-party
 import requests
 
 

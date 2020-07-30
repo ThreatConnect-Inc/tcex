@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Template Download/Generation Module."""
+# standard library
 import os
 import sys
 
+# third-party
 import colorama as c
 import requests
 
 try:
+    # third-party
     from mako.template import Template
 except ImportError:
     # mako is only required for local development
@@ -116,7 +119,7 @@ class TemplateBase:
         status = 'Failed'
         if not os.path.isfile(destination) or overwrite:
             template_data = self.download_template(template_url)
-            template = Template(template_data)
+            template = Template(template_data)  # nosec
             rendered_template = template.render(**variables)
             with open(destination, 'w') as f:
                 f.write(rendered_template)
@@ -224,7 +227,7 @@ class DownloadTemplates(TemplateBase):
             f'{c.Fore.MAGENTA}Replace '
             f'{c.Style.BRIGHT}{c.Fore.WHITE}({option_text}):{c.Fore.RESET} '
         )
-        response = input(message).strip()
+        response = input(message).strip()  # nosec
         if not response:
             response = default_choice
         return self.utils.to_bool(response)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Job App"""
 
-# Import default Job Class (Required)
-from job_app import JobApp
+# first-party
+from job_app import JobApp  # Import default Job App Class (Required)
 
 
 class App(JobApp):

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+# standard library
 import os
 import random
 
-from .ti_helpers import TIHelper, TestThreatIntelligence
+from .ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestAdversaryAssets(TestThreatIntelligence):
@@ -27,11 +28,13 @@ class TestAdversaryAssets(TestThreatIntelligence):
             self.ti_helper.cleanup()
 
     def tests_ti_groups_to_indicators(self):
+        """Test the TI module."""
         helper_ti = self.ti_helper.create_group()
         rand_ip = self.ti_helper.rand_ip()
         indicator_kwargs = {
-            'ip': rand_ip, 'rating': random.randint(0, 5),
-            'confidence': random.randint(0, 100)
+            'ip': rand_ip,
+            'rating': random.randint(0, 5),
+            'confidence': random.randint(0, 100),
         }
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()

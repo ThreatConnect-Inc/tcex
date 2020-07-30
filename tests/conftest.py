@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """Base pytest configuration file."""
+# standard library
 import os
 import shutil
 
+# third-party
 import pytest
 import redis
 
 from .mock_app import MockApp
-
 
 #
 # fixtures
@@ -127,7 +128,7 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     # remove log directory
     try:
         shutil.rmtree('log')
-        os.makedirs(f'log/DEBUG', exist_ok=True)
+        os.makedirs('log/DEBUG', exist_ok=True)
     except OSError:
         pass
 

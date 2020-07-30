@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Case Management PyTest Helper Method"""
+# standard library
 import os
-from random import randint
 import uuid
+from random import randint
 
 from ..mock_app import MockApp
 

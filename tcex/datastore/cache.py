@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Module for working with Datastore in the ThreatConnect Platform."""
-# import base64
+# standard library
 from datetime import datetime, timedelta
+
+# first-party
 from tcex import TcEx
 
 
@@ -44,6 +46,7 @@ class Cache:
             rid (str): The record identifier.
             data (dict): The record data.
             raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.
+
         Returns:
             object : Python request response.
         """
@@ -69,6 +72,7 @@ class Cache:
             rid (str): The record identifier.
             data_callback (callable): A method that will return the data.
             raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.
+
         Returns:
             object : Python request response.
         """

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Case Management PyTest Helper Method"""
+# standard library
 import inspect
 import os
 
@@ -117,6 +118,7 @@ class CMHelper:
 
         # delete by tag
         if os.getenv('TCEX_CLEAN_CM'):
+            # first-party
             from tcex.case_management.tql import TQL
 
             cases = self.cm.cases()

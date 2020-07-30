@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx App Init."""
+# standard library
 import argparse
 import os
 import sys
 import traceback
 
+# third-party
 import colorama as c
+
+# first-party
 from tcex.bin import Init
 
 # autoreset colorama
@@ -87,43 +91,43 @@ if __name__ == '__main__':
 
         if not args.template and not os.listdir(os.getcwd()) and not args.update:
             tci.print_message(
-                f'The --template <template type> CLI arg is required when creating a new App. If '
-                f'trying to update an existing App please provide the --update CLI flag.',
+                'The --template <template type> CLI arg is required when creating a new App. If '
+                'trying to update an existing App please provide the --update CLI flag.',
                 line_color=c.Fore.YELLOW,
             )
             sys.exit(1)
         elif not os.listdir(os.getcwd()) and args.update:
             tci.print_message(
-                f'The are no files to update. Try removing --update CLI flag.',
+                'The are no files to update. Try removing --update CLI flag.',
                 line_color=c.Fore.YELLOW,
             )
             sys.exit(1)
 
         if os.listdir(os.getcwd()) and not args.update:
             tci.print_message(
-                f'The current directory does not appear to be empty. Please initialize the App in '
-                f'an empty directory. If migrating an older App try the --migrate CLI flag or if '
-                f'updating an App try the --update CLI flag.',
+                'The current directory does not appear to be empty. Please initialize the App in '
+                'an empty directory. If migrating an older App try the --migrate CLI flag or if '
+                'updating an App try the --update CLI flag.',
                 line_color=c.Fore.YELLOW,
             )
             sys.exit(1)
         elif args.update and args.template is None and tci.tj.template is None:
             tci.print_message(
-                f'The template could not be determined. Please provide the template arg using '
-                f'--template <template name> to update template files.',
+                'The template could not be determined. Please provide the template arg using '
+                '--template <template name> to update template files.',
                 line_color=c.Fore.YELLOW,
             )
             sys.exit(1)
         elif os.listdir(os.getcwd()) and not os.getenv('TCEX_DEVELOPER'):
             tci.print_message(
-                f'The current directory does not appear to be empty. Updating files can cause loss '
-                f'of data. It is STRONGLY recommend you commit/backup all your changes before '
-                f'proceeding. To disable this message set the TCEX_DEVELOPER environment variable '
-                f'(e.g. export TCEX_DEVELOPER=1).',
+                'The current directory does not appear to be empty. Updating files can cause loss '
+                'of data. It is STRONGLY recommend you commit/backup all your changes before '
+                'proceeding. To disable this message set the TCEX_DEVELOPER environment variable '
+                '(e.g. export TCEX_DEVELOPER=1).',
                 line_color=c.Fore.YELLOW,
             )
-            message = f'Continue (yes/[no]): '
-            response = input(message).strip()
+            message = 'Continue (yes/[no]): '
+            response = input(message).strip()  # nosec
             if response not in ['y', 'yes']:
                 sys.exit()
 
@@ -169,8 +173,8 @@ if __name__ == '__main__':
         # provide helpful user info
         if not args.update:
             tci.print_message(
-                f'Please update displayName in install.json and package.app_name in tcex.json '
-                f'before packaging the App.',
+                'Please update displayName in install.json and package.app_name in tcex.json '
+                'before packaging the App.',
                 line_bright=True,
                 line_color=c.Fore.GREEN,
             )

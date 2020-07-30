@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
+# standard library
 import sys
 
 from .test_case_service_common import TestCaseServiceCommon
@@ -15,6 +16,7 @@ class TestCaseTriggerService(TestCaseServiceCommon):
         Returns:
             int: The App exit code
         """
+        # first-party
         from run import run  # pylint: disable=no-name-in-module
 
         # backup sys.argv
@@ -26,7 +28,8 @@ class TestCaseTriggerService(TestCaseServiceCommon):
         # run the app
         exit_code = 0
         try:
-            run(set_app=self._app_callback)
+            # provide callback to to run.py method on Trigger Service Apps
+            run(set_app=self._app_callback)  # pylint: disable=unexpected-keyword-arg
         except SystemExit as e:
             exit_code = e.code
 

@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """Setup for TcEx Module."""
+# standard library
 import os
 
+# third-party
 from setuptools import find_packages, setup
 
 metadata = {}
 metadata_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tcex', '__metadata__.py')
 with open(metadata_file, mode='r', encoding='utf-8',) as f:
-    exec(f.read(), metadata)  # pylint: disable=exec-used
+    exec(f.read(), metadata)  # nosec; pylint: disable=exec-used
 
 if not metadata:
     raise RuntimeError(f'Could not load metadata file ({metadata_file}).')
@@ -26,7 +28,8 @@ dev_packages = [
     'pre-commit',
     'pydocstyle',
     'pylint',
-    'pytest',
+    # restrict pytest version due to changes that break pytest-html
+    'pytest<6.0.0',
     'pytest-cov',
     'pytest-html',
     'pytest-xdist',

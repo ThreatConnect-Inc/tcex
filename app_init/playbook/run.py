@@ -16,7 +16,7 @@ def run():
     app_lib.update_path()
 
     # import modules after path has been updated
-    # third-party
+    # first-party
     from app import App  # pylint: disable=import-outside-toplevel
     from tcex import TcEx  # pylint: disable=import-outside-toplevel
 

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Playbook App"""
 
-# Import default Playbook Class (Required)
-from playbook_app import PlaybookApp
+# third-party
 from tcex import IterateOnArg, OnException, OnSuccess, Output
+
+# first-party
+from playbook_app import PlaybookApp  # Import default Playbook App Class (Required)
 
 
 # pylint: disable=no-self-use

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 # import json
+# standard library
 import json
 import re
 
+# third-party
 import colorama as c
 
 # autoreset colorama
@@ -17,7 +19,7 @@ class Rules:
         """Initialize Class properties."""
         self.profile = profile
 
-    def data(self, data: str) -> dict:
+    def data(self, data: str) -> dict:  # pylint: disable=too-many-return-statements
         """Return the default output data for a given variable
 
         Args:

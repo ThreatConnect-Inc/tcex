@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Playbook App"""
+# standard library
 import json
 
-# Import default Playbook Class (Required)
-from playbook_app import PlaybookApp
+# first-party
+from playbook_app import PlaybookApp  # Import default Playbook App Class (Required)
 
 
 # pylint: disable=attribute-defined-outside-init

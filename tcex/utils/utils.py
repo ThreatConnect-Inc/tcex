@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Utilities Module"""
+# standard library
 import ipaddress
 import os
 import random
@@ -8,6 +9,7 @@ import string
 import uuid
 from typing import Any, List, Optional, Union
 
+# third-party
 import pyaes
 
 from .date_utils import DatetimeUtils
@@ -22,7 +24,7 @@ class Utils:
 
     def __init__(self, temp_path: Optional[str] = None):
         """Initialize the Class properties."""
-        self.temp_path = temp_path or '/tmp'
+        self.temp_path = temp_path or '/tmp'  # nosec
 
         # properties
         self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
@@ -146,6 +148,7 @@ class Utils:
     def inflect(self):
         """Return instance of inflect."""
         if self._inflect is None:
+            # third-party
             import inflect
 
             self._inflect = inflect.engine()
@@ -220,7 +223,7 @@ class Utils:
         Returns:
             str: A random string
         """
-        return ''.join(random.choice(string.ascii_letters) for _ in range(string_length))
+        return ''.join(random.choice(string.ascii_letters) for _ in range(string_length))  # nosec
 
     def requests_to_curl(
         self,

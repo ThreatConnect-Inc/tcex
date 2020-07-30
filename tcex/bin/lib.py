@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Library Builder."""
+# standard library
 import os
 import platform
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from urllib.parse import quote
 
+# third-party
 import colorama as c
 
 from .bin import Bin
@@ -185,7 +187,7 @@ class Lib(Bin):
             print(f"Running: {c.Style.BRIGHT}{c.Fore.GREEN}{' '.join(exe_command)}")
             p = subprocess.Popen(
                 exe_command,
-                shell=False,
+                shell=False,  # nosec
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

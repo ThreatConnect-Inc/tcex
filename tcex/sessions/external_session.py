@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
+# standard library
 import logging
+
+# third-party
 import urllib3
 from requests import Session, adapters
 from urllib3.util.retry import Retry

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Parse tab separated value snippet file."""
+# standard library
 import csv
 
 # print header

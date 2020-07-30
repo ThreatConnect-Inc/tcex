@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
+# standard library
 import base64
 import hashlib
 import hmac
 import logging
 import time
 
+# third-party
 import urllib3
 from requests import Session, adapters, auth
 from urllib3.util.retry import Retry

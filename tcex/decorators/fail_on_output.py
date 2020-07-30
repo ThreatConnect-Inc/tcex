@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """App Decorators Module."""
+# third-party
 import wrapt
 
 
@@ -35,7 +36,7 @@ class FailOnOutput:
     def __init__(self, **kwargs):
         """Initialize Class properties."""
         self.fail_enabled = kwargs.get('fail_enabled', True)
-        self.fail_msg = kwargs.get('fail_msg', f'Method returned invalid output.')
+        self.fail_msg = kwargs.get('fail_msg', 'Method returned invalid output.')
         self.fail_on = kwargs.get('fail_on', [])
         self.fail_msg_property = kwargs.get('fail_msg_property')
         self.write_output = kwargs.get('write_output', True)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework"""
+# standard library
 import inspect
 import logging
 import os
@@ -8,6 +9,7 @@ import re
 import signal
 import sys
 import threading
+from typing import Optional
 from urllib.parse import quote
 
 from .app_config_object import InstallJson
@@ -97,11 +99,19 @@ class TcEx:
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
-    def advanced_request(self, output_prefix, session, timeout):
-        """Return instance of AdvancedRequest."""
+    def advanced_request(self, session: object, timeout: Optional[int] = 600):
+        """Return instance of AdvancedRequest.
+
+        Args:
+            session (object): An instance of requests.Session.
+            timeout (int): The number of second before timing out the request.
+
+        Returns:
+            object: An instance of AdvancedRequest
+        """
         from .app_feature import AdvancedRequest
 
-        return AdvancedRequest(self.args, output_prefix, session, self, timeout)
+        return AdvancedRequest(self.args, session, self, timeout)
 
     def aot_rpush(self, exit_code):
         """Push message to AOT action channel."""

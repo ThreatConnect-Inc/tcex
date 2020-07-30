@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+# standard library
 import os
 import time
 from random import randint
 
-from .ti_helpers import TIHelper, TestThreatIntelligence
+from .ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestDocumentGroups(TestThreatIntelligence):

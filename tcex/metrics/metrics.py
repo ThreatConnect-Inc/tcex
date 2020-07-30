@@ -113,6 +113,7 @@ class Metrics:
             return_value (bool, default:False): Tell the API to return the updates metric value.
             key (str, optional): The key value for keyed metrics.
             weight (str, optional): The weight value (only needed for averages)
+
         Return:
             dict: If return_value is True a dict with the current value for the time period
                 is returned.

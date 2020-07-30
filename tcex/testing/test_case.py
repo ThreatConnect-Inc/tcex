@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing Framework."""
+# standard library
 import json
 import os
 import random
@@ -9,9 +10,12 @@ import traceback
 import uuid
 from datetime import datetime
 
+# third-party
 import pytest
 import urllib3
 from requests import Session
+
+# first-party
 from tcex import TcEx
 from tcex.app_config_object.install_json import InstallJson
 from tcex.env_store import EnvStore

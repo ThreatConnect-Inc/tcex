@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+# standard library
 import os
 import time
 from datetime import datetime, timedelta
 from random import randint
+
+# first-party
 from tcex.case_management.tql import TQL
 
 from .cm_helpers import CMHelper, TestCaseManagement

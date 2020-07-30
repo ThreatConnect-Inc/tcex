@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """Pytest MockApp class for testing TcEx Framework."""
+# standard library
 import json
 import os
 import sys
 import uuid
 
+# third-party
 from requests import Session
+
+# first-party
 from tcex import TcEx
 from tcex.sessions.tc_session import HmacAuth
 from tcex.utils import Utils

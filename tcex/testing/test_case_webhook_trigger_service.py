@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Webhook Trigger Server Test Case"""
+# standard library
 import sys
 
 from .test_case_service_common import TestCaseServiceCommon
@@ -15,6 +16,7 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
         Returns:
             int: The App exit code
         """
+        # first-party
         from run import run  # pylint: disable=no-name-in-module
 
         # backup sys.argv

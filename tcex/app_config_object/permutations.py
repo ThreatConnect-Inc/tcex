@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework LayoutJson."""
+# standard library
 import json
 import logging
 import os
@@ -8,6 +9,7 @@ import random
 import sys
 
 try:
+    # standard library
     import sqlite3
 except ImportError:
     # only required for local development
@@ -280,7 +282,7 @@ class Permutations:
         Args:
             inputs (dict): The args/inputs dict.
         """
-        table = f'temp_{random.randint(100,999)}'
+        table = f'temp_{random.randint(100,999)}'  # nosec
         self.db_create_table(table, self.ij.params_dict.keys())
         self.db_insert_record(table, self.ij.params_dict.keys())
 
@@ -339,7 +341,7 @@ class Permutations:
             # always return try if current App doesn't have a layouts file
             return True
 
-        table = f'temp_{random.randint(100,999)}'
+        table = f'temp_{random.randint(100,999)}'  # nosec
         self.db_create_table(table, self.ij.params_dict.keys())
         self.db_insert_record(table, self.ij.params_dict.keys())
 
@@ -378,7 +380,7 @@ class Permutations:
         if display_condition is None:
             display = True
         else:
-            display_query = f'select count(*) from {table} where {display_condition}'
+            display_query = f'select count(*) from {table} where {display_condition}'  # nosec
             try:
                 cur = self.db_conn.cursor()
                 cur.execute(display_query.replace('"', ''))

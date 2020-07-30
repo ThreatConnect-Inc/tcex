@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
+# standard library
 import json
 import re
 import sys
 
+# third-party
 import colorama as c
 
 # autoreset colorama

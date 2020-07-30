@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """TcEx Runtime App Test Case"""
+# standard library
 import os
 import subprocess
 import sys
+
 from .test_case import TestCase
 
 
@@ -25,7 +27,8 @@ class TestCaseJob(TestCase):
         Returns:
             int: The exit code fo the App.
         """
-        from run import run
+        # first-party
+        from run import run  # pylint: disable=no-name-in-module
 
         # run the app
         exit_code = 0

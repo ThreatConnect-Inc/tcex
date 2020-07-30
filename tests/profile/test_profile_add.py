@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Utils Module."""
+# standard library
 import json
 import os
 from random import randint
 from uuid import uuid4
 
+# first-party
 from tcex.profile import Profile
 
 

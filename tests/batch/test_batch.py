@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
-from datetime import datetime, timedelta
+# standard library
 import os
+from datetime import datetime, timedelta
 
 
 class TestAttributes:

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Playbook App"""
+# standard library
 import traceback
 
+# first-party
 from app_lib import AppLib
 
 
@@ -14,7 +16,11 @@ def run(**kwargs):
     app_lib.update_path()
 
     # import modules after path has been updated
+
+    # third-party
     from tcex import TcEx  # pylint: disable=import-outside-toplevel
+
+    # first-party
     from app import App  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()

@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Inputs Config Module."""
+# standard library
 import json
 import sys
 from random import randint
+
+# third-party
 from requests import Session
 
+# first-party
 from tcex.inputs import Inputs
 
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case Management"""
-from .assignee import Assignee, User, Users
 from .artifact import Artifact, Artifacts
 from .artifact_type import ArtifactType, ArtifactTypes
+from .assignee import Assignee, User, Users
 from .case import Case, Cases
 from .note import Note, Notes
 from .tag import Tag, Tags

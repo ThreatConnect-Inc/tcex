@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Playbook App"""
 
-# Import default Service Class (Required)
-from service_app import ServiceApp
+# first-party
+from service_app import ServiceApp  # Import default Service Class (Required)
 
 
 # pylint: disable=unused-argument

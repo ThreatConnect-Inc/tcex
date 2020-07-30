@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
+# standard library
 import json
 import logging
 import os
@@ -8,6 +9,7 @@ import sys
 from collections import OrderedDict
 from random import randint
 
+# third-party
 import colorama as c
 
 from ..app_config_object import InstallJson, LayoutJson, Permutations
@@ -153,7 +155,7 @@ class Profile:
             profile['configs'].extend(
                 [
                     {
-                        'trigger_id': str(randint(1000, 9999)),
+                        'trigger_id': str(randint(1000, 9999)),  # nosec
                         'config': profile_data.get(
                             'inputs',
                             {

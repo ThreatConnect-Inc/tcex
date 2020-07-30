@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Batch Import Module."""
+# standard library
 import hashlib
 import json
 import math
@@ -7,8 +8,8 @@ import os
 import re
 import shelve
 import time
-from typing import Optional
 import uuid
+from typing import Optional
 
 from .group import (
     Adversary,
