@@ -32,7 +32,7 @@ class TestUtils:
         """Test tc.session property
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex_proxy (TcEx, fixture): An instantiated instance of TcEx object.
         """
         r = tcex_proxy.session.get('/v2/owners')
 
