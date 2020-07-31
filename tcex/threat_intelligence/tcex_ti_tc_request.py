@@ -952,7 +952,7 @@ class TiTcRequest:
         value = str(value)
         return value.lower() in ['true', '1', 't', 'y', 'yes']
 
-    def deleted(self, main_type, sub_type, deleted_since, owner=None, filters=None, params=None):
+    def deleted(self, main_type, sub_type, deleted_since=None, owner=None, filters=None, params=None):
         """
 
         Args:
