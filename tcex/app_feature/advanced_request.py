@@ -149,7 +149,9 @@ class AdvancedRequest:
         self.tcex.playbook.add_output(
             f'{self.output_prefix}.request.headers', json.dumps(dict(response.headers)), 'String'
         )
-        self.tcex.playbook.add_output(f'{self.output_prefix}.request.ok', str(response.ok).lower())
+        self.tcex.playbook.add_output(
+            f'{self.output_prefix}.request.ok', str(response.ok).lower(), 'String'
+        )
         self.tcex.playbook.add_output(
             f'{self.output_prefix}.request.reason', response.reason, 'String'
         )
