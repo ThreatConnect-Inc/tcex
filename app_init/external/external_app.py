@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """External App Template."""
 
-# Typically no changes are required to this file.
-
 
 class ExternalApp:
     """Get the owners and indicators in the given owner."""

@@ -154,7 +154,7 @@ class DataStore:
             try:
                 response_data = r.json()
             # TODO this issue should be addressed by core.  This is a temporary solution
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 self.tcex.log.warning(
                     f'DataStore API returned a non-JSON response, even though content-type was \
                         application/json: {r.content} \

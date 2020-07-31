@@ -30,15 +30,6 @@ class Cache:
         self._cache_data_key = 'cache-data'
         self._cache_date_key = 'cache-date'
 
-    @staticmethod
-    def _dt_to_epoch(dt):
-        """Convert datetime to epoch seconds."""
-        try:
-            epoch = dt.timestamp()
-        except AttributeError:  # py2
-            epoch = (dt - datetime(1970, 1, 1)).total_seconds()
-        return epoch
-
     def add(self, rid, data, raise_on_error=True):
         """Write cache data to the data store.
 

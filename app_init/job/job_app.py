@@ -3,8 +3,6 @@
 # first-party
 from args import Args
 
-# Typically no changes are required to this file.
-
 
 class JobApp:
     """Get the owners and indicators in the given owner."""

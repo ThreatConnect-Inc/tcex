@@ -27,7 +27,9 @@ pytest -n 12 --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
 pytest -n 12 --cov=tcex/inputs/ --cov-report=term-missing tests/inputs/
 pytest -n 12 --cov=tcex/logger/ --cov-report=term-missing tests/logger/
 pytest -n 12 --cov=tcex/metrics/ --cov-report=term-missing tests/metrics/
+pytest -n 12 --cov=tcex/notifications/ --cov-report=term-missing tests/notifications/
 pytest -n 12 --cov=tcex/playbooks/ --cov-report=term-missing tests/playbooks/
+pytest --cov=tcex/profile/ --cov-report=term-missing tests/profile/
 pytest -n 12 --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
 pytest -n 12 --cov=tcex/ --cov-report=term-missing tests/tcex_methods/
 pytest -n 12 --cov=tcex/threat_intelligence/ --cov-report=term-missing tests/threat_intelligence/

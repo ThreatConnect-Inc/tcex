@@ -16,9 +16,12 @@ def run():
     app_lib.update_path()
 
     # import modules after path has been updated
+
+    # third-party
+    from tcex import TcEx  # pylint: disable=import-outside-toplevel
+
     # first-party
     from app import App  # pylint: disable=import-outside-toplevel
-    from tcex import TcEx  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()
 
@@ -52,7 +55,7 @@ def run():
             app.run(**{})
 
         # write requested value for downstream Apps
-        tcex.playbook.write_output()
+        app.write_output()  # pylint: disable=no-member
 
         # perform cleanup/teardown operations
         app.teardown(**{})
