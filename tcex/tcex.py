@@ -181,7 +181,7 @@ class TcEx:
         """Include the Case Management Module."""
         return self.case_management
 
-    def datastore(self, domain, data_type, mapping=None):
+    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None):
         """Get instance of the DataStore module.
 
         Args:
@@ -190,6 +190,7 @@ class TcEx:
                 while "local" access is restricted to the App writing the data. The "system" option
                 should not be used in almost all cases.
             data_type (str): The data type descriptor (e.g., tc:whois:cache).
+            mapping (Optional[dict] = None): ElasticSearch mappings data.
 
         Returns:
             object: An instance of the DataStore Class.

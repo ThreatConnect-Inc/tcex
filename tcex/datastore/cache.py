@@ -31,7 +31,7 @@ class Cache:
         self.tcex: TcEx = tcex
 
         # properties
-        self.ttl_seconds: int = int(ttl_seconds)
+        self.ttl_seconds: Optional[int] = ttl_seconds
         self.ds: TcEx.datastore = self.tcex.datastore(domain, data_type, mapping)
 
         # Warranty void if any of these are changed.  Don't touch.
@@ -205,6 +205,10 @@ class Cache:
         Returns:
             bool: True if cache data is expired.
         """
+
+        if self.ttl_seconds is None or self.ttl_seconds == 0:
+            return True  # if ttl_is 0 or None, all cached data is always invalid.
+
         cached_datetime = self.tcex.utils.datetime.any_to_datetime(cached_date)
         cache_expires = (cached_datetime + timedelta(seconds=self.ttl_seconds)).timestamp()
         return cache_expires < datetime.utcnow().timestamp()
