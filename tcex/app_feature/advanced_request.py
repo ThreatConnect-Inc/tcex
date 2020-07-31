@@ -60,7 +60,7 @@ class AdvancedRequest:
                 self.tcex.log.error('Failed loading body as JSON data.')
 
     @ReadArg('tc_adv_req_headers', array=True)
-    def configure_headers(self, tc_adv_req_headers: List[Dict[str]]):
+    def configure_headers(self, tc_adv_req_headers: List[Dict[str, str]]):
         """Configure Headers
 
         [{
@@ -69,13 +69,13 @@ class AdvancedRequest:
         }]
 
         Args:
-            tc_adv_req_headers (List[Dict[str]]): A dict of headers.
+            tc_adv_req_headers (List[Dict[str, str]]): A dict of headers.
         """
         for header_data in tc_adv_req_headers:
             self.headers[str(header_data.get('key'))] = header_data.get('value')
 
     @ReadArg('tc_adv_req_params', array=True)
-    def configure_params(self, tc_adv_req_params: List[Dict[str]]):
+    def configure_params(self, tc_adv_req_params: List[Dict[str, str]]):
         """Configure Params
 
         [{
@@ -84,7 +84,7 @@ class AdvancedRequest:
         }]
 
         Args:
-            tc_adv_req_params (List[Dict[str]]): A dict of Params.
+            tc_adv_req_params (List[Dict[str, str]]): A dict of Params.
         """
         for param_data in tc_adv_req_params:
             param: str = str(param_data.get('key'))

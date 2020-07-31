@@ -6,9 +6,6 @@ from typing import Optional
 # third-party
 from requests.models import Response
 
-# first-party
-from tcex import TcEx
-
 
 class DataStore:
     """TcEx DataStore Class.
@@ -29,15 +26,15 @@ class DataStore:
     passed directly to ElasticSearch.
 
     Args:
-        tcex (TcEx): [description]
+        tcex (TcEx): An instance of TcEx.
         domain (str): A value of “system”, “organization”, or “local”.
         data_type (str): A free form type name for the data.
         mapping (Optional[dict] = None): Defaults to None. Elasticsearch mappings data.
     """
 
-    def __init__(self, tcex: TcEx, domain: str, data_type: str, mapping: Optional[dict] = None):
+    def __init__(self, tcex: object, domain: str, data_type: str, mapping: Optional[dict] = None):
         """Initialize class properties."""
-        self.tcex: TcEx = tcex
+        self.tcex: object = tcex
         self.domain: str = domain
         self.data_type: str = data_type
         self.mapping: Optional[dict] = mapping or {'dynamic': False}

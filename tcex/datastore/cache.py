@@ -4,9 +4,6 @@
 from datetime import datetime, timedelta
 from typing import Callable, Optional
 
-# first-party
-from tcex import TcEx
-
 
 class Cache:
     """TcEx Cache Class.
@@ -21,18 +18,18 @@ class Cache:
 
     def __init__(
         self,
-        tcex: TcEx,
+        tcex: object,
         domain: str,
         data_type: str,
         ttl_seconds: Optional[int] = None,
         mapping: Optional[dict] = None,
     ):
         """Initialize class properties."""
-        self.tcex: TcEx = tcex
+        self.tcex: object = tcex
 
         # properties
         self.ttl_seconds: Optional[int] = ttl_seconds
-        self.ds: TcEx.datastore = self.tcex.datastore(domain, data_type, mapping)
+        self.ds: 'tcex.datastore' = self.tcex.datastore(domain, data_type, mapping)
 
         # Warranty void if any of these are changed.  Don't touch.
         self._cache_data_key: str = 'cache-data'

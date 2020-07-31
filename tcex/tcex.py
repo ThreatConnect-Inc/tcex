@@ -147,7 +147,7 @@ class TcEx:
         data_type: str,
         ttl_seconds: Optional[int] = None,
         mapping: Optional[dict] = None,
-    ):
+    ) -> object:
         """Get instance of the Cache module.
 
         Args:
@@ -181,7 +181,7 @@ class TcEx:
         """Include the Case Management Module."""
         return self.case_management
 
-    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None):
+    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> object:
         """Get instance of the DataStore module.
 
         Args:
