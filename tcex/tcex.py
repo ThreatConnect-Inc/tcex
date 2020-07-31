@@ -141,7 +141,13 @@ class TcEx:
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
-    def cache(self, domain, data_type, ttl_minutes=None, mapping=None):
+    def cache(
+        self,
+        domain: str,
+        data_type: str,
+        ttl_seconds: Optional[int] = None,
+        mapping: Optional[dict] = None,
+    ):
         """Get instance of the Cache module.
 
         Args:
@@ -150,14 +156,15 @@ class TcEx:
                 while "local" access is restricted to the App writing the data. The "system" option
                 should not be used in almost all cases.
             data_type (str): The data type descriptor (e.g., tc:whois:cache).
-            ttl_minutes (int): The number of minutes the cache is valid.
+            ttl_seconds (int): The number of seconds the cache is valid.
+            mapping (dict): Advanced - The datastore mapping if required.
 
         Returns:
             object: An instance of the Cache Class.
         """
         from .datastore import Cache
 
-        return Cache(self, domain, data_type, ttl_minutes, mapping)
+        return Cache(self, domain, data_type, ttl_seconds, mapping)
 
     @property
     def case_management(self):
