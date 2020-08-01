@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TcEx &mdash; TcEx 2.0.7 documentation</title>
+  <title>TcEx &mdash; TcEx 2.0.8 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Error Codes" href="tcex.tcex_error_codes.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="../index.html" class="icon icon-home"> TcEx
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.7
+                2.0.8
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
@@ -146,6 +149,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -184,7 +188,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
@@ -212,9 +216,9 @@
 <div class="section" id="module-tcex.tcex">
 <span id="tcex-tcex"></span><h2>tcex.tcex<a class="headerlink" href="#module-tcex.tcex" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.tcex.TcEx">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex.</code><code class="sig-name descname">TcEx</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.tcex.</code><code class="sig-name descname">TcEx</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Provides basic functionality for all types of TxEx Apps.</p>
 <dl class="field-list simple">
@@ -229,45 +233,59 @@ tcex logger.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx._association_types">
 <code class="sig-name descname">_association_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._association_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._association_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve Custom Indicator Associations types from the ThreatConnect API.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx._signal_handler">
-<code class="sig-name descname">_signal_handler</code><span class="sig-paren">(</span><em class="sig-param">signal_interupt</em>, <em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._signal_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_signal_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">signal_interupt</span></em>, <em class="sig-param"><span class="n">frame</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._signal_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle singal interrupt.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.advanced_request">
-<code class="sig-name descname">advanced_request</code><span class="sig-paren">(</span><em class="sig-param">output_prefix</em>, <em class="sig-param">session</em>, <em class="sig-param">timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.advanced_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.advanced_request" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">advanced_request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">session</span><span class="p">:</span> <span class="n">object</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">600</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.advanced_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.advanced_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of AdvancedRequest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session</strong> (<em>object</em>) – An instance of requests.Session.</p></li>
+<li><p><strong>timeout</strong> (<em>int</em>) – The number of second before timing out the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of AdvancedRequest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.aot_rpush">
-<code class="sig-name descname">aot_rpush</code><span class="sig-paren">(</span><em class="sig-param">exit_code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.aot_rpush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.aot_rpush" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">aot_rpush</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exit_code</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.aot_rpush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.aot_rpush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Push message to AOT action channel.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.args">
 <em class="property">property </em><code class="sig-name descname">args</code><a class="headerlink" href="#tcex.tcex.TcEx.args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argparser args Namespace.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.batch">
-<code class="sig-name descname">batch</code><span class="sig-paren">(</span><em class="sig-param">owner</em>, <em class="sig-param">action=None</em>, <em class="sig-param">attribute_write_type=None</em>, <em class="sig-param">halt_on_error=False</em>, <em class="sig-param">playbook_triggers_enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">owner</span></em>, <em class="sig-param"><span class="n">action</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attribute_write_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">halt_on_error</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Batch</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.cache">
-<code class="sig-name descname">cache</code><span class="sig-paren">(</span><em class="sig-param">domain</em>, <em class="sig-param">data_type</em>, <em class="sig-param">ttl_minutes=None</em>, <em class="sig-param">mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.cache" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cache</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data_type</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">ttl_seconds</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mapping</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; object<a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the Cache module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -277,7 +295,8 @@ tcex logger.</p></li>
 while “local” access is restricted to the App writing the data. The “system” option
 should not be used in almost all cases.</p></li>
 <li><p><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</p></li>
-<li><p><strong>ttl_minutes</strong> (<em>int</em>) – The number of minutes the cache is valid.</p></li>
+<li><p><strong>ttl_seconds</strong> (<em>int</em>) – The number of seconds the cache is valid.</p></li>
+<li><p><strong>mapping</strong> (<em>dict</em>) – Advanced - The datastore mapping if required.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -289,7 +308,7 @@ should not be used in almost all cases.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.case_management">
 <em class="property">property </em><code class="sig-name descname">case_management</code><a class="headerlink" href="#tcex.tcex.TcEx.case_management" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Threat Intel Module.</p>
@@ -299,15 +318,15 @@ should not be used in almost all cases.</p></li>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.cm">
 <em class="property">property </em><code class="sig-name descname">cm</code><a class="headerlink" href="#tcex.tcex.TcEx.cm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Case Management Module.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.datastore">
-<code class="sig-name descname">datastore</code><span class="sig-paren">(</span><em class="sig-param">domain</em>, <em class="sig-param">data_type</em>, <em class="sig-param">mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.datastore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.datastore" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">datastore</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data_type</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">mapping</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; object<a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.datastore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.datastore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the DataStore module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -317,6 +336,7 @@ should not be used in almost all cases.</p></li>
 while “local” access is restricted to the App writing the data. The “system” option
 should not be used in almost all cases.</p></li>
 <li><p><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</p></li>
+<li><p><strong>mapping</strong> (<em>Optional</em><em>[</em><em>dict</em><em>] </em><em>= None</em>) – ElasticSearch mappings data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -328,21 +348,21 @@ should not be used in almost all cases.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.default_args">
 <em class="property">property </em><code class="sig-name descname">default_args</code><a class="headerlink" href="#tcex.tcex.TcEx.default_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argparser args Namespace.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.error_codes">
 <em class="property">property </em><code class="sig-name descname">error_codes</code><a class="headerlink" href="#tcex.tcex.TcEx.error_codes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return TcEx error codes.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.exit">
-<code class="sig-name descname">exit</code><span class="sig-paren">(</span><em class="sig-param">code=None</em>, <em class="sig-param">msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.exit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">exit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">msg</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Application exit method with proper exit code</p>
 <p>The method will run the Python standard sys.exit() with the exit code
 previously defined via <a class="reference internal" href="#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit_code()</span></code></a> or provided
@@ -357,15 +377,15 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.exit_code">
 <em class="property">property </em><code class="sig-name descname">exit_code</code><a class="headerlink" href="#tcex.tcex.TcEx.exit_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current exit code.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.expand_indicators">
-<em class="property">static </em><code class="sig-name descname">expand_indicators</code><span class="sig-paren">(</span><em class="sig-param">indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.expand_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">expand_indicators</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indicator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.expand_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process indicators expanding file hashes/custom indicators into multiple entries.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -380,9 +400,9 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.get_type_from_api_entity">
-<code class="sig-name descname">get_type_from_api_entity</code><span class="sig-paren">(</span><em class="sig-param">api_entity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.get_type_from_api_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.get_type_from_api_entity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_type_from_api_entity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_entity</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.get_type_from_api_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.get_type_from_api_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the object type as a string given a api entity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -397,7 +417,7 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.group_types">
 <em class="property">property </em><code class="sig-name descname">group_types</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all defined ThreatConnect Group types.</p>
@@ -411,15 +431,15 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.group_types_data">
 <em class="property">property </em><code class="sig-name descname">group_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return supported ThreatConnect Group types.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.handle_error">
-<code class="sig-name descname">handle_error</code><span class="sig-paren">(</span><em class="sig-param">code</em>, <em class="sig-param">message_values=None</em>, <em class="sig-param">raise_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.handle_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.handle_error" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">handle_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="n">message_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">raise_error</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.handle_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.handle_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise RuntimeError</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -435,7 +455,7 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.indicator_associations_types_data">
 <em class="property">property </em><code class="sig-name descname">indicator_associations_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_associations_types_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ThreatConnect associations type data.</p>
@@ -450,7 +470,7 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.indicator_types">
 <em class="property">property </em><code class="sig-name descname">indicator_types</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ThreatConnect Indicator types.</p>
@@ -465,7 +485,7 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.indicator_types_data">
 <em class="property">property </em><code class="sig-name descname">indicator_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ThreatConnect indicator types data.</p>
@@ -480,21 +500,21 @@ during the call of this method.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.log">
 <em class="property">property </em><code class="sig-name descname">log</code><a class="headerlink" href="#tcex.tcex.TcEx.log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a valid logger.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.logger">
 <em class="property">property </em><code class="sig-name descname">logger</code><a class="headerlink" href="#tcex.tcex.TcEx.logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return logger.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.message_tc">
-<code class="sig-name descname">message_tc</code><span class="sig-paren">(</span><em class="sig-param">message</em>, <em class="sig-param">max_length=255</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.message_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">message_tc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">max_length</span><span class="o">=</span><span class="default_value">255</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.message_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to message_tc file in TcEX specified directory.</p>
 <p>This method is used to set and exit message in the ThreatConnect Platform.
 ThreatConnect only supports files of max_message_length.  Any data exceeding
@@ -509,9 +529,9 @@ this limit will be truncated. The last &lt;max_length&gt; characters will be pre
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.metric">
-<code class="sig-name descname">metric</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">description</em>, <em class="sig-param">data_type</em>, <em class="sig-param">interval</em>, <em class="sig-param">keyed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.metric" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">metric</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">description</span></em>, <em class="sig-param"><span class="n">data_type</span></em>, <em class="sig-param"><span class="n">interval</span></em>, <em class="sig-param"><span class="n">keyed</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the Metrics module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -532,7 +552,7 @@ this limit will be truncated. The last &lt;max_length&gt; characters will be pre
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.notification">
 <code class="sig-name descname">notification</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.notification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.notification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the Notification module.</p>
@@ -546,15 +566,15 @@ this limit will be truncated. The last &lt;max_length&gt; characters will be pre
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.parser">
 <em class="property">property </em><code class="sig-name descname">parser</code><a class="headerlink" href="#tcex.tcex.TcEx.parser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instance tcex args parser.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.pb">
-<code class="sig-name descname">pb</code><span class="sig-paren">(</span><em class="sig-param">context</em>, <em class="sig-param">output_variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.pb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.pb" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">pb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">output_variables</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.pb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.pb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of playbook module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -572,7 +592,7 @@ this limit will be truncated. The last &lt;max_length&gt; characters will be pre
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.playbook">
 <em class="property">property </em><code class="sig-name descname">playbook</code><a class="headerlink" href="#tcex.tcex.TcEx.playbook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Playbooks module.</p>
@@ -583,7 +603,7 @@ this limit will be truncated. The last &lt;max_length&gt; characters will be pre
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.proxies">
 <em class="property">property </em><code class="sig-name descname">proxies</code><a class="headerlink" href="#tcex.tcex.TcEx.proxies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format the proxy configuration for Python Requests module.</p>
@@ -603,15 +623,15 @@ when proxy is required for remote connections.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.rargs">
 <em class="property">property </em><code class="sig-name descname">rargs</code><a class="headerlink" href="#tcex.tcex.TcEx.rargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return argparser args Namespace with Playbook args automatically resolved.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.rc">
-<em class="property">static </em><code class="sig-name descname">rc</code><span class="sig-paren">(</span><em class="sig-param">host</em>, <em class="sig-param">port</em>, <em class="sig-param">db=0</em>, <em class="sig-param">blocking=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.rc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.rc" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">rc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">host</span></em>, <em class="sig-param"><span class="n">port</span></em>, <em class="sig-param"><span class="n">db</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">blocking</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.rc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.rc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <em>new</em> instance of Redis client.</p>
 <p>For a full list of kwargs see <a class="reference external" href="https://redis-py.readthedocs.io/en/latest/#redis.Connection">https://redis-py.readthedocs.io/en/latest/#redis.Connection</a>.</p>
 <dl class="field-list simple">
@@ -637,15 +657,15 @@ when proxy is required for remote connections.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.redis_client">
 <em class="property">property </em><code class="sig-name descname">redis_client</code><a class="headerlink" href="#tcex.tcex.TcEx.redis_client" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return redis client instance configure for Playbook/Service Apps.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.results_tc">
-<code class="sig-name descname">results_tc</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.results_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.results_tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">results_tc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.results_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.results_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to results_tc file in TcEX specified directory.</p>
 <p>The TcEx platform support persistent values between executions of the App.  This
 method will store the values for TC to read and put into the Database.</p>
@@ -659,9 +679,9 @@ method will store the values for TC to read and put into the Database.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.safe_group_name">
-<em class="property">static </em><code class="sig-name descname">safe_group_name</code><span class="sig-paren">(</span><em class="sig-param">group_name</em>, <em class="sig-param">group_max_length=100</em>, <em class="sig-param">ellipsis=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_group_name" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">safe_group_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_name</span></em>, <em class="sig-param"><span class="n">group_max_length</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">ellipsis</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_group_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_group_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Truncate group name to match limit breaking on space and optionally add an ellipsis.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -684,9 +704,9 @@ method will store the values for TC to read and put into the Database.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.safe_indicator">
-<em class="property">static </em><code class="sig-name descname">safe_indicator</code><span class="sig-paren">(</span><em class="sig-param">indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_indicator" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">safe_indicator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indicator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format indicator value for safe HTTP request.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -704,9 +724,9 @@ method will store the values for TC to read and put into the Database.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.safe_rt">
-<em class="property">static </em><code class="sig-name descname">safe_rt</code><span class="sig-paren">(</span><em class="sig-param">resource_type</em>, <em class="sig-param">lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_rt" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">safe_rt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resource_type</span></em>, <em class="sig-param"><span class="n">lower</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_rt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format the Resource Type.</p>
 <p>Takes Custom Indicator types with a space character and return a <em>safe</em> string.</p>
 <p>(e.g. <em>User Agent</em> is converted to User_Agent or user_agent.)</p>
@@ -726,9 +746,9 @@ method will store the values for TC to read and put into the Database.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.safe_tag">
-<em class="property">static </em><code class="sig-name descname">safe_tag</code><span class="sig-paren">(</span><em class="sig-param">tag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_tag" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">safe_tag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -743,9 +763,9 @@ method will store the values for TC to read and put into the Database.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.safe_url">
-<em class="property">static </em><code class="sig-name descname">safe_url</code><span class="sig-paren">(</span><em class="sig-param">url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_url" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">safe_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encode value for safe HTTP request.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -760,7 +780,7 @@ method will store the values for TC to read and put into the Database.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.service">
 <em class="property">property </em><code class="sig-name descname">service</code><a class="headerlink" href="#tcex.tcex.TcEx.service" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Service Module.</p>
@@ -770,19 +790,19 @@ method will store the values for TC to read and put into the Database.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.session">
 <em class="property">property </em><code class="sig-name descname">session</code><a class="headerlink" href="#tcex.tcex.TcEx.session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.session_external">
 <em class="property">property </em><code class="sig-name descname">session_external</code><a class="headerlink" href="#tcex.tcex.TcEx.session_external" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.ti">
 <em class="property">property </em><code class="sig-name descname">ti</code><a class="headerlink" href="#tcex.tcex.TcEx.ti" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Threat Intel Module.</p>
@@ -792,13 +812,13 @@ method will store the values for TC to read and put into the Database.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.token">
 <em class="property">property </em><code class="sig-name descname">token</code><a class="headerlink" href="#tcex.tcex.TcEx.token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return token object.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.utils">
 <em class="property">property </em><code class="sig-name descname">utils</code><a class="headerlink" href="#tcex.tcex.TcEx.utils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Utils module.</p>
@@ -808,7 +828,7 @@ method will store the values for TC to read and put into the Database.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.victim_asset_types">
 <em class="property">property </em><code class="sig-name descname">victim_asset_types</code><a class="headerlink" href="#tcex.tcex.TcEx.victim_asset_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all defined ThreatConnect Asset types.</p>
@@ -847,6 +867,7 @@ method will store the values for TC to read and put into the Database.</p>
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -860,7 +881,6 @@ method will store the values for TC to read and put into the Database.</p>
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

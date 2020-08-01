@@ -14,7 +14,7 @@ Usage
 
 To get the latest usage and template choices for ``tcinit``, run ``tcinit -h``.
 
-.. code:: bash
+.. code-block:: bash
 
     usage: tcinit [-h] [--branch BRANCH] [--layout] [--migrate] [--update]
                   [--template {external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility,service_api,service_trigger,service_webhook}]
@@ -66,13 +66,13 @@ Common Usage
 
 To initialize a new App, run this command from the project directory:
 
-.. code:: bash
+.. code-block:: bash
 
     tcinit --template playbook_utility
 
 To update an existing App, run the command below from the project directory. The **update** action will download all Frameworks files to ensure that these files are the latest with any bug fixes or updates.  It is best practice to run the **update** action whenever an App is being updated for new features or bug fixes.
 
-.. code:: bash
+.. code-block:: bash
 
     tcinit --update
 
@@ -167,7 +167,7 @@ The ``run()`` method is the default method that is called when an App is execute
 Example Config data
 ~~~~~~~~~~~~~~~~~~~
 
-.. code:: javascript
+.. code-block:: javascript
 
     {
       "api_access_id": "API_ACCESS_ID",

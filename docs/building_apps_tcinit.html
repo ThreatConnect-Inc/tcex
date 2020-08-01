@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.7 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.8 documentation</title>
+
+
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Building Apps: Dependencies (tclib)" href="building_apps_tclib.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="index.html" class="icon icon-home"> TcEx
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.7
+                2.0.8
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -141,6 +143,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
@@ -165,6 +168,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -203,7 +207,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
 
       <li>Building Apps: Templates (tcinit)</li>
 
@@ -313,8 +317,8 @@ Service App Templates:
 15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default Job Class (Required)</span>
-<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
@@ -398,12 +402,14 @@ Service App Templates:
 62
 63
 64
-65</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+65
+66</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
-<span class="c1"># Import default Job Class (Required)</span>
-<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
@@ -499,8 +505,8 @@ Service App Templates:
 22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default Playbook Class (Required)</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
@@ -616,12 +622,16 @@ Service App Templates:
 80
 81
 82
-83</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+83
+84
+85</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default Playbook Class (Required)</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
+<span class="c1"># third-party</span>
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">IterateOnArg</span><span class="p">,</span> <span class="n">OnException</span><span class="p">,</span> <span class="n">OnSuccess</span><span class="p">,</span> <span class="n">Output</span>
+
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
 
 
 <span class="c1"># pylint: disable=no-self-use</span>
@@ -692,7 +702,7 @@ Service App Templates:
     <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
         <span class="c1"># output</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output_strings: </span><span class="si">{self.output_strings}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output_strings: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.operation&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">)</span>
@@ -775,12 +785,14 @@ Service App Templates:
 65
 66
 67
-68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+68
+69</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="c1"># Import default Playbook Class (Required)</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
 
 
 <span class="c1"># pylint: disable=attribute-defined-outside-init</span>
@@ -805,7 +817,7 @@ Service App Templates:
             <span class="n">indent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">indent</span><span class="p">)</span>
             <span class="n">indent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid value (&quot;</span><span class="si">{indent}</span><span class="s1">&quot;) passed for indent.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid value (&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&quot;) passed for indent.&#39;</span><span class="p">)</span>
         <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
 
         <span class="c1"># get the playbook variable type</span>
@@ -894,8 +906,8 @@ Service App Templates:
 15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect External App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default External App Class (Required)</span>
-<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
@@ -965,12 +977,14 @@ Service App Templates:
 48
 49
 50
-51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+51
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
-<span class="c1"># Import default Job Class (Required)</span>
-<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
@@ -1043,6 +1057,7 @@ Service App Templates:
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -1056,7 +1071,6 @@ Service App Templates:
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

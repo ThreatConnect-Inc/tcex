@@ -108,9 +108,9 @@ class DataStore:
     def delete(self, rid: str, raise_on_error: Optional[bool] = True) -> dict:
         """Delete a record from the index using provide Id.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "_index": "$local.usr5_pytest",
@@ -157,9 +157,9 @@ class DataStore:
     ) -> dict:
         """Get data from the DataStore.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "_index": "$local.usr5_pytest",
@@ -209,9 +209,9 @@ class DataStore:
     def post(self, rid: str, data: str, raise_on_error: Optional[bool] = True) -> dict:
         """Write data to the DataStore.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "_index": "$local.usr5_pytest",
@@ -259,9 +259,9 @@ class DataStore:
     def put(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
         """Update the data for the provided Id.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "_index": "$local.usr5_pytest",

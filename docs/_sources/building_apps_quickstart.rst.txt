@@ -13,7 +13,7 @@ This quick-start guide walks through the steps necessary to create and initializ
 Initializing an App
 -------------------
 
-.. code:: bash
+.. code-block:: bash
 
     pip install tcex
     mkdir TCPB_-_JsonPretty
@@ -39,7 +39,7 @@ Building the "lib" Directory
 
 At a minimum, all Apps require the ``tcex`` Python package.  If other Python packages are required, the package name should be added to the **requirements.txt** file in the project directory. For this quick-start guide, no additional packages are required.
 
-.. code:: bash
+.. code-block:: bash
 
     tclib
 
@@ -55,7 +55,7 @@ After running the ``tclib`` command, a "lib_<Python version>" (e.g., lib_3.6.7) 
 Packaging an App
 ----------------
 
-.. code:: bash
+.. code-block:: bash
 
     tcpackage
 

@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Bin Module &mdash; TcEx 2.0.7 documentation</title>
+  <title>Bin Module &mdash; TcEx 2.0.8 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Case Management Module" href="tcex.case_management.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="../index.html" class="icon icon-home"> TcEx
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.7
+                2.0.8
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
@@ -151,6 +154,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -189,7 +193,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
@@ -217,9 +221,9 @@
 <div class="section" id="module-tcex.bin.bin">
 <span id="bin-bin"></span><h2>bin.bin<a class="headerlink" href="#module-tcex.bin.bin" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Bin Command Base Module.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.bin.bin.Bin">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.bin.</code><code class="sig-name descname">Bin</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.bin.</code><code class="sig-name descname">Bin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base Class for ThreatConnect command line tools.</p>
 <dl class="field-list simple">
@@ -227,9 +231,9 @@
 <dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.bin.Bin.handle_error">
-<em class="property">static </em><code class="sig-name descname">handle_error</code><span class="sig-paren">(</span><em class="sig-param">err</em>, <em class="sig-param">halt=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.handle_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.handle_error" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">handle_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">err</span></em>, <em class="sig-param"><span class="n">halt</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.handle_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.handle_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print errors message and optionally exit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -241,13 +245,13 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.bin.Bin.print_message">
-<em class="property">static </em><code class="sig-name descname">print_message</code><span class="sig-paren">(</span><em class="sig-param">message</em>, <em class="sig-param">line_bright=False</em>, <em class="sig-param">line_color=None</em>, <em class="sig-param">line_limit=150</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.print_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.print_message" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">print_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">line_bright</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">line_color</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">line_limit</span><span class="o">=</span><span class="default_value">150</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.print_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.print_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the message ensuring lines don’t exceed line limit.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.bin.Bin.update_system_path">
 <em class="property">static </em><code class="sig-name descname">update_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/bin.html#Bin.update_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.bin.Bin.update_system_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the system path to ensure project modules and dependencies can be found.</p>
@@ -259,9 +263,9 @@
 <div class="section" id="module-tcex.bin.init">
 <span id="bin-init"></span><h2>bin.init<a class="headerlink" href="#module-tcex.bin.init" title="Permalink to this headline">¶</a></h2>
 <p>TcEx App Init.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.bin.init.Init">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.init.</code><code class="sig-name descname">Init</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.init.</code><code class="sig-name descname">Init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/init.html#Init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.init.Init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.bin.bin.Bin" title="tcex.bin.bin.Bin"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.bin.bin.Bin</span></code></a></p>
 <p>Install required modules for ThreatConnect Job or Playbook App.</p>
 <dl class="field-list simple">
@@ -275,9 +279,9 @@
 <div class="section" id="module-tcex.bin.lib">
 <span id="bin-lib"></span><h2>bin.lib<a class="headerlink" href="#module-tcex.bin.lib" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Library Builder.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.bin.lib.Lib">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.lib.</code><code class="sig-name descname">Lib</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.lib.</code><code class="sig-name descname">Lib</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.bin.bin.Bin" title="tcex.bin.bin.Bin"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.bin.bin.Bin</span></code></a></p>
 <p>Install Required Modules for App.</p>
 <dl class="field-list simple">
@@ -285,9 +289,9 @@
 <dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.lib.Lib._build_command">
-<code class="sig-name descname">_build_command</code><span class="sig-paren">(</span><em class="sig-param">python_executable</em>, <em class="sig-param">lib_dir_fq</em>, <em class="sig-param">proxy_enabled</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib._build_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib._build_command" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_build_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">python_executable</span></em>, <em class="sig-param"><span class="n">lib_dir_fq</span></em>, <em class="sig-param"><span class="n">proxy_enabled</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib._build_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib._build_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the pip command for installing dependencies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -305,26 +309,26 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.lib.Lib._configure_proxy">
 <code class="sig-name descname">_configure_proxy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib._configure_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib._configure_proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configure proxy settings using environment variables.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.lib.Lib._create_lib_latest">
 <code class="sig-name descname">_create_lib_latest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib._create_lib_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib._create_lib_latest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the lib_latest symlink for App Builder.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.lib.Lib._create_temp_requirements">
 <code class="sig-name descname">_create_temp_requirements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib._create_temp_requirements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib._create_temp_requirements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a temporary requirements.txt.</p>
 <p>This allows testing again a git branch instead of pulling from pypi.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.lib.Lib.install_libs">
 <code class="sig-name descname">install_libs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/lib.html#Lib.install_libs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.lib.Lib.install_libs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Install Required Libraries using pip.</p>
@@ -336,9 +340,9 @@
 <div class="section" id="module-tcex.bin.package">
 <span id="bin-package"></span><h2>bin.package<a class="headerlink" href="#module-tcex.bin.package" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Package Module.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.bin.package.Package">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.package.</code><code class="sig-name descname">Package</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.package.</code><code class="sig-name descname">Package</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.bin.bin.Bin" title="tcex.bin.bin.Bin"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.bin.bin.Bin</span></code></a></p>
 <p>Package ThreatConnect Job or Playbook App for deployment.</p>
 <p>This method will package the app for deployment to ThreatConnect. Validation of the
@@ -348,9 +352,9 @@ install.json file or files will be automatically run before packaging the app.</
 <dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.app_name">
-<code class="sig-name descname">app_name</code><span class="sig-paren">(</span><em class="sig-param">install_json_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.app_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.app_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">app_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">install_json_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.app_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.app_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the app package name without version.</p>
 <ol class="arabic simple">
 <li><p>Use the prefix on the install.json file (bundled Apps).</p></li>
@@ -359,9 +363,9 @@ install.json file or files will be automatically run before packaging the app.</
 </ol>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.app_version">
-<code class="sig-name descname">app_version</code><span class="sig-paren">(</span><em class="sig-param">ij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.app_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.app_version" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">app_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ij</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.app_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.app_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the app version “v1”.</p>
 <ol class="arabic simple">
 <li><p>Use app_version value from tcex.json if available. Typicall version is major only
@@ -371,9 +375,9 @@ install.json file or files will be automatically run before packaging the app.</
 </ol>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.bundle">
-<code class="sig-name descname">bundle</code><span class="sig-paren">(</span><em class="sig-param">bundle_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.bundle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.bundle" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">bundle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bundle_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.bundle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.bundle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bundle multiple Job or Playbook Apps into a single zip file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -382,9 +386,9 @@ install.json file or files will be automatically run before packaging the app.</
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.bundle_apps">
-<code class="sig-name descname">bundle_apps</code><span class="sig-paren">(</span><em class="sig-param">bundle_name</em>, <em class="sig-param">bundle_apps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.bundle_apps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.bundle_apps" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">bundle_apps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bundle_name</span></em>, <em class="sig-param"><span class="n">bundle_apps</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.bundle_apps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.bundle_apps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bundle multiple Job or Playbook Apps (.tcx files) into a single zip file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -396,27 +400,27 @@ install.json file or files will be automatically run before packaging the app.</
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.package">
 <code class="sig-name descname">package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.package" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the App package for deployment to ThreatConnect Exchange.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.print_json">
 <code class="sig-name descname">print_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.print_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.print_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print JSON output containing results of the package command.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.print_results">
 <code class="sig-name descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.print_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print results of the package command.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.package.Package.zip_file">
-<code class="sig-name descname">zip_file</code><span class="sig-paren">(</span><em class="sig-param">app_path</em>, <em class="sig-param">app_name</em>, <em class="sig-param">tmp_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.zip_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.zip_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">zip_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">app_path</span></em>, <em class="sig-param"><span class="n">app_name</span></em>, <em class="sig-param"><span class="n">tmp_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/package.html#Package.zip_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.package.Package.zip_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Zip the App with tcex extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -435,9 +439,9 @@ install.json file or files will be automatically run before packaging the app.</
 <div class="section" id="module-tcex.bin.test">
 <span id="bin-test"></span><h2>bin.test<a class="headerlink" href="#module-tcex.bin.test" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Test Generation Module.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.bin.test.Test">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">Test</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.test.</code><code class="sig-name descname">Test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.bin.bin.Bin" title="tcex.bin.bin.Bin"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.bin.bin.Bin</span></code></a></p>
 <p>Create testing files for ThreatConnect Exchange App.</p>
 <dl class="field-list simple">
@@ -445,49 +449,49 @@ install.json file or files will be automatically run before packaging the app.</
 <dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.add_negative_profile">
-<code class="sig-name descname">add_negative_profile</code><span class="sig-paren">(</span><em class="sig-param">profile_name</em>, <em class="sig-param">inputs</em>, <em class="sig-param">fail_on_error=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.add_negative_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.add_negative_profile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_negative_profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">profile_name</span></em>, <em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">fail_on_error</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.add_negative_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.add_negative_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a negative profile.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.create_dirs">
 <code class="sig-name descname">create_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.create_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.create_dirs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create tcex.d directory and sub directories.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.create_dirs_init">
 <code class="sig-name descname">create_dirs_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.create_dirs_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.create_dirs_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the __init__.py file under dir.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.create_negative_profiles">
 <code class="sig-name descname">create_negative_profiles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.create_negative_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.create_negative_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create negative profiles using interactive profile base.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.interactive_profile">
-<code class="sig-name descname">interactive_profile</code><span class="sig-paren">(</span><em class="sig-param">negative=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.interactive_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.interactive_profile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">interactive_profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">negative</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.interactive_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.interactive_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Present interactive profile inputs.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.load_legacy_profiles">
-<em class="property">static </em><code class="sig-name descname">load_legacy_profiles</code><span class="sig-paren">(</span><em class="sig-param">staging_files</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.load_legacy_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.load_legacy_profiles" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">load_legacy_profiles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">staging_files</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.load_legacy_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.load_legacy_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load staging data to migrate legacy templates.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.migrate_profile">
 <code class="sig-name descname">migrate_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/test.html#Test.migrate_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.test.Test.migrate_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Migrate legacy profile to new framework.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.test.Test.negative_inputs">
 <em class="property">property </em><code class="sig-name descname">negative_inputs</code><a class="headerlink" href="#tcex.bin.test.Test.negative_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return dict of negative inputs.</p>
@@ -499,9 +503,9 @@ install.json file or files will be automatically run before packaging the app.</
 <div class="section" id="module-tcex.bin.validate">
 <span id="bin-validate"></span><h2>bin.validate<a class="headerlink" href="#module-tcex.bin.validate" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Validate Module.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.bin.validate.Validate">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.validate.</code><code class="sig-name descname">Validate</code><span class="sig-paren">(</span><em class="sig-param">_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.bin.validate.</code><code class="sig-name descname">Validate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.bin.bin.Bin" title="tcex.bin.bin.Bin"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.bin.bin.Bin</span></code></a></p>
 <p>Validate syntax, imports, and schemas.</p>
 <ul class="simple">
@@ -515,9 +519,9 @@ install.json file or files will be automatically run before packaging the app.</
 <dd class="field-odd"><p><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.check_import_stdlib">
-<em class="property">static </em><code class="sig-name descname">check_import_stdlib</code><span class="sig-paren">(</span><em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">check_import_stdlib</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if module is in Python stdlib.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -532,9 +536,9 @@ install.json file or files will be automatically run before packaging the app.</
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.check_imported">
-<em class="property">static </em><code class="sig-name descname">check_imported</code><span class="sig-paren">(</span><em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_imported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_imported" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">check_imported</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_imported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_imported" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the provide module can be imported (package installed).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -549,7 +553,7 @@ install.json file or files will be automatically run before packaging the app.</
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.check_imports">
 <code class="sig-name descname">check_imports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_imports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the projects top level directory for missing imports.</p>
@@ -557,19 +561,19 @@ install.json file or files will be automatically run before packaging the app.</
 for sub-directories.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.check_install_json">
 <code class="sig-name descname">check_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_install_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check all install.json files for valid schema.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.check_layout_json">
 <code class="sig-name descname">check_layout_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_layout_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_layout_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check all layout.json files for valid schema.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.check_layout_params">
 <code class="sig-name descname">check_layout_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_layout_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_layout_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that the layout.json is consistent with install.json.</p>
@@ -577,9 +581,9 @@ for sub-directories.</p>
 will validate that no reference appear for inputs in install.json that don’t exist.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.check_syntax">
-<code class="sig-name descname">check_syntax</code><span class="sig-paren">(</span><em class="sig-param">app_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_syntax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_syntax" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_syntax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">app_path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.check_syntax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.check_syntax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run syntax on each “.py” and “.json” file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -588,45 +592,45 @@ will validate that no reference appear for inputs in install.json that don’t e
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.install_json_schema">
 <em class="property">property </em><code class="sig-name descname">install_json_schema</code><a class="headerlink" href="#tcex.bin.validate.Validate.install_json_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load install.json schema file.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.interactive">
 <code class="sig-name descname">interactive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.interactive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.interactive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run in interactive mode.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.layout_json_schema">
 <em class="property">property </em><code class="sig-name descname">layout_json_schema</code><a class="headerlink" href="#tcex.bin.validate.Validate.layout_json_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load layout.json schema file.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.print_json">
 <code class="sig-name descname">print_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.print_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.print_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print JSON output.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.print_results">
 <code class="sig-name descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.print_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print results.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.status_color">
-<em class="property">static </em><code class="sig-name descname">status_color</code><span class="sig-paren">(</span><em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.status_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.status_color" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">status_color</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.status_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.status_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate status color.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.bin.validate.Validate.status_value">
-<em class="property">static </em><code class="sig-name descname">status_value</code><span class="sig-paren">(</span><em class="sig-param">status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.status_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.status_value" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">status_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/bin/validate.html#Validate.status_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.bin.validate.Validate.status_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate status color.</p>
 </dd></dl>
 
@@ -655,6 +659,7 @@ will validate that no reference appear for inputs in install.json that don’t e
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -668,7 +673,6 @@ will validate that no reference appear for inputs in install.json that don’t e
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

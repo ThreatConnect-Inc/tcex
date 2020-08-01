@@ -4,7 +4,7 @@
 App-Directory Structure
 -------------------------
 
-.. code:: bash
+.. code-block:: bash
 
     ├── .gitignore
     ├── .pre-commit-config.yaml

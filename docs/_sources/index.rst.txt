@@ -19,6 +19,7 @@ Release |version|.
    app_deployment_configuration
    app_directory_structure
    module_batch
+   module_cache
    module_case_management
    module_datastore
    module_decorators

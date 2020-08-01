@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 2.0.7 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 2.0.8 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
 </head>
@@ -49,7 +50,7 @@
 
 
 
-            <a href="../../index.html" class="icon icon-home"> TcEx
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -59,7 +60,7 @@
 
 
               <div class="version">
-                2.0.7
+                2.0.8
               </div>
 
 
@@ -75,6 +76,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -94,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_decorators.html">Module: Decorators</a></li>
@@ -118,6 +121,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -156,7 +160,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="../index.html">Module code</a> &raquo;</li>
 
@@ -178,6 +182,7 @@
   <h1>Source code for tcex.tcex</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -186,6 +191,7 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>
 
 <span class="kn">from</span> <span class="nn">.app_config_object</span> <span class="kn">import</span> <span class="n">InstallJson</span>
@@ -270,16 +276,24 @@
         <span class="n">call_module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">f_globals</span><span class="p">[</span><span class="s1">&#39;__name__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;Functions.&#39;</span><span class="p">)</span>
         <span class="n">call_line</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">f_lineno</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;App interrupted - file: </span><span class="si">{call_file}</span><span class="s1">, method: </span><span class="si">{call_module}</span><span class="s1">, line: </span><span class="si">{call_line}</span><span class="s1">.&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;App interrupted - file: </span><span class="si">{</span><span class="n">call_file</span><span class="si">}</span><span class="s1">, method: </span><span class="si">{</span><span class="n">call_module</span><span class="si">}</span><span class="s1">, line: </span><span class="si">{</span><span class="n">call_line</span><span class="si">}</span><span class="s1">.&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">signal_interupt</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;The App received an interrupt signal and will now exit.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcEx.advanced_request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">advanced_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return instance of AdvancedRequest.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TcEx.advanced_request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">advanced_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">600</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of AdvancedRequest.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session (object): An instance of requests.Session.</span>
+<span class="sd">            timeout (int): The number of second before timing out the request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            object: An instance of AdvancedRequest</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.app_feature</span> <span class="kn">import</span> <span class="n">AdvancedRequest</span>
 
-        <span class="k">return</span> <span class="n">AdvancedRequest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">AdvancedRequest</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.aot_rpush"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.aot_rpush">[docs]</a>    <span class="k">def</span> <span class="nf">aot_rpush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Push message to AOT action channel.&quot;&quot;&quot;</span>
@@ -287,7 +301,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">rpush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_exit_channel</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Exception during AOT exit push (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Exception during AOT exit push (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -309,7 +323,13 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,</span> <span class="n">playbook_triggers_enabled</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcEx.cache"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.cache">[docs]</a>    <span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_minutes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.cache"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.cache">[docs]</a>    <span class="k">def</span> <span class="nf">cache</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ttl_seconds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the Cache module.</span>
 
 <span class="sd">        Args:</span>
@@ -318,14 +338,15 @@
 <span class="sd">                while &quot;local&quot; access is restricted to the App writing the data. The &quot;system&quot; option</span>
 <span class="sd">                should not be used in almost all cases.</span>
 <span class="sd">            data_type (str): The data type descriptor (e.g., tc:whois:cache).</span>
-<span class="sd">            ttl_minutes (int): The number of minutes the cache is valid.</span>
+<span class="sd">            ttl_seconds (int): The number of seconds the cache is valid.</span>
+<span class="sd">            mapping (dict): Advanced - The datastore mapping if required.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            object: An instance of the Cache Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.datastore</span> <span class="kn">import</span> <span class="n">Cache</span>
 
-        <span class="k">return</span> <span class="n">Cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_minutes</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">case_management</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -342,7 +363,7 @@
         <span class="sd">&quot;&quot;&quot;Include the Case Management Module.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_management</span>
 
-<div class="viewcode-block" id="TcEx.datastore"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.datastore">[docs]</a>    <span class="k">def</span> <span class="nf">datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.datastore"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.datastore">[docs]</a>    <span class="k">def</span> <span class="nf">datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the DataStore module.</span>
 
 <span class="sd">        Args:</span>
@@ -351,6 +372,7 @@
 <span class="sd">                while &quot;local&quot; access is restricted to the App writing the data. The &quot;system&quot; option</span>
 <span class="sd">                should not be used in almost all cases.</span>
 <span class="sd">            data_type (str): The data type descriptor (e.g., tc:whois:cache).</span>
+<span class="sd">            mapping (Optional[dict] = None): ElasticSearch mappings data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            object: An instance of the DataStore Class.</span>
@@ -407,7 +429,7 @@
         <span class="c1"># exit token renewal thread</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">shutdown</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exit Code: </span><span class="si">{code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exit Code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">code</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -551,13 +573,13 @@
             <span class="k">if</span> <span class="n">message_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">message_values</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_codes</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">message_values</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error code: </span><span class="si">{code}</span><span class="s1">, </span><span class="si">{message}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect error code provided (</span><span class="si">{code}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect error code provided (</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Incorrect message values provided for error code </span><span class="si">{code}</span><span class="s1"> (</span><span class="si">{message_values}</span><span class="s1">).&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Incorrect message values provided for error code </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">message_values</span><span class="si">}</span><span class="s1">).&#39;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raise_error</span><span class="p">:</span>
@@ -751,13 +773,13 @@
 
                 <span class="c1"># proxy url with auth</span>
                 <span class="n">proxy_url</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{tc_proxy_username}</span><span class="s1">:</span><span class="si">{tc_proxy_password}</span><span class="s1">&#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;@</span><span class="si">{self.default_args.tc_proxy_host}</span><span class="s1">:</span><span class="si">{self.default_args.tc_proxy_port}</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tc_proxy_username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">tc_proxy_password</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># proxy url without auth</span>
-                <span class="n">proxy_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.default_args.tc_proxy_host}</span><span class="s1">:</span><span class="si">{self.default_args.tc_proxy_port}</span><span class="s1">&#39;</span>
-            <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{proxy_url}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;https://</span><span class="si">{proxy_url}</span><span class="s1">&#39;</span><span class="p">}</span>
+                <span class="n">proxy_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{</span><span class="n">proxy_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;https://</span><span class="si">{</span><span class="n">proxy_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">proxies</span>
 
     <span class="nd">@property</span>
@@ -814,7 +836,7 @@
 <span class="sd">            value (str): The data value to be stored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-            <span class="n">results_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.default_args.tc_out_path}</span><span class="s1">/results.tc&#39;</span>
+            <span class="n">results_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="si">}</span><span class="s1">/results.tc&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">results_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
 
@@ -834,9 +856,9 @@
                     <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
                     <span class="n">new</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">results</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1"> = </span><span class="si">{v}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="n">results</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="k">if</span> <span class="n">new</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># indicates the key/value pair didn&#39;t already exist</span>
-                <span class="n">results</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1"> = </span><span class="si">{value}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">results</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">truncate</span><span class="p">()</span></div>
@@ -900,12 +922,12 @@
             <span class="n">group_name_array</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
             <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">group_name_array</span><span class="p">:</span>
-                <span class="n">word</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{word}</span><span class="s1">&#39;</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">ellipsis_value</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="n">group_max_length</span><span class="p">:</span>
-                    <span class="n">group_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{group_name}{ellipsis_value}</span><span class="s1">&#39;</span>
+                    <span class="n">group_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group_name</span><span class="si">}{</span><span class="n">ellipsis_value</span><span class="si">}</span><span class="s1">&#39;</span>
                     <span class="n">group_name</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
                     <span class="k">break</span>
-                <span class="n">group_name</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{word}</span><span class="s1">&#39;</span>
+                <span class="n">group_name</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">group_name</span></div>
 
 <div class="viewcode-block" id="TcEx.safe_tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_tag">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -969,15 +991,15 @@
 
             <span class="c1"># update User-Agent</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx: {__import__(__name__).__version__}&#39;</span><span class="p">}</span>
+                <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx: </span><span class="si">{</span><span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
             <span class="p">)</span>
 
             <span class="c1"># add proxy support if requested</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{self.args.tc_proxy_host}</span><span class="s1">:&#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.args.tc_proxy_port}</span><span class="s1"> for ThreatConnect session.&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="si">}</span><span class="s1">:&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="si">}</span><span class="s1"> for ThreatConnect session.&#39;</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
 
@@ -991,15 +1013,15 @@
 
             <span class="c1"># add User-Agent to headers</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx App: </span><span class="si">{self.ij.display_name}</span><span class="s1"> - </span><span class="si">{self.ij.program_version}</span><span class="s1">&#39;</span><span class="p">}</span>
+                <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx App: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">program_version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
             <span class="p">)</span>
 
             <span class="c1"># add proxy support if requested</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{self.args.tc_proxy_host}</span><span class="s1">:&#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.args.tc_proxy_port}</span><span class="s1"> for external session.&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="si">}</span><span class="s1">:&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="si">}</span><span class="s1"> for external session.&#39;</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span>
 
@@ -1048,6 +1070,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -1061,7 +1084,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">
