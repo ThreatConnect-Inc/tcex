@@ -16,19 +16,18 @@ class AdvancedRequest:
     """App Feature Advanced Request Module
 
     Args:
-        args (object): The argparser.Namespace for the App.
         session (object): An instance of Requests Session object.
         tcex (object): An instance of Tcex object.
         timeout (Optional[int] = 600): The timeout value for the request.
     """
 
-    def __init__(self, args: object, session: object, tcex: object, timeout: Optional[int] = 600):
+    def __init__(self, session: object, tcex: object, timeout: Optional[int] = 600):
         """Initialize class properties."""
-        self.args: Namespace = args
         self.session: object = session
         self.tcex: object = tcex
 
         # properties
+        self.args: Namespace = tcex.args  # required for ReadArgs
         self.allow_redirects: bool = True
         self.data: Optional[Union[dict, str]] = None
         self.headers: dict = {}
@@ -56,7 +55,7 @@ class AdvancedRequest:
         if self.args.tc_adv_req_urlencode_body:
             try:
                 self.data: dict = json.loads(self.data)
-            except ValueError:
+            except ValueError:  # pragma: no cover
                 self.tcex.log.error('Failed loading body as JSON data.')
 
     @ReadArg('tc_adv_req_headers', array=True)
@@ -141,7 +140,7 @@ class AdvancedRequest:
                 timeout=self.timeout,
                 url=tc_adv_req_path,
             )
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException as e:  # pragma: no cover
             response = None
             raise RuntimeError(f'Exception during request ({e}).')
 
@@ -166,7 +165,7 @@ class AdvancedRequest:
         response_bytes: int = len(response.content)
         response_mb: float = response_bytes / 1000000
         self.tcex.log.info(f'Response MB: {response_mb}')
-        if response_mb > self.max_mb:
+        if response_mb > self.max_mb:  # pragma: no cover
             raise RuntimeError('Download was larger than maximum supported 500 MB.')
 
         # write content after size validation
@@ -180,3 +179,5 @@ class AdvancedRequest:
         # fail if fail_on_error is selected and not ok
         if self.args.tc_adv_req_fail_on_error and not response.ok:
             raise RuntimeError(f'Failed for status ({response.status_code})')
+
+        return response

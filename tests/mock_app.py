@@ -181,7 +181,11 @@ class MockApp:
                 'validValues': ['one', 'two'],
             },
         ]
-        playbook = self.ijd.get('playbook') or {'outputVariables': [], 'type': 'Utility'}
+        playbook = self.ijd.get('playbook') or {
+            'outputPrefix': 'pytest',
+            'outputVariables': [],
+            'type': 'Utility',
+        }
 
         ij = {
             'allowOnDemand': True,

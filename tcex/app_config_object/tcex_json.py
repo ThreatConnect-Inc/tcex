@@ -97,6 +97,9 @@ class TcexJson:
 
     def update(self, template=None):
         """Update the contents of the tcex.json file."""
+        if not os.path.isfile(self.filename):
+            return
+
         with open(self.filename, 'r+') as fh:
             json_data = json.load(fh)
 

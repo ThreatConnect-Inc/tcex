@@ -111,7 +111,7 @@ class TcEx:
         """
         from .app_feature import AdvancedRequest
 
-        return AdvancedRequest(self.args, session, self, timeout)
+        return AdvancedRequest(session, self, timeout)
 
     def aot_rpush(self, exit_code):
         """Push message to AOT action channel."""
