@@ -10,7 +10,7 @@ class Cache:
 
     Args:
         tcex (TcEx): An instance of TcEx.
-        domain (str): A value of “system”, “organization”, or “local”.
+        domain (str): A value of "organization" or "local".
         data_type (str): A free form type name for the data.
         ttl_seconds (Optional[int] = None): Number of seconds the cache is valid.
         mapping (Optional[dict] = None): ElasticSearch mappings data.
