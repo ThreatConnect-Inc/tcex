@@ -23,11 +23,12 @@ dev_packages = [
     'CommonMark==0.5.5',
     'deepdiff',
     'flake8',
-    'jmespath',
+    # isort 5 currently causes issues with pylint
+    'isort>=4,<5',
     'mako',
     'pre-commit',
     'pydocstyle',
-    'pylint',
+    'pylint>2.5.0',
     # restrict pytest version due to changes that break pytest-html
     'pytest<6.0.0',
     'pytest-cov',
@@ -67,6 +68,7 @@ setup(
         'future',
         'hvac>=0.3.0',
         'inflect>=0.2.5',
+        'jmespath',
         'jsonschema>=2.6.0',
         'paho-mqtt',
         'parsedatetime',

@@ -608,7 +608,11 @@ class InstallJson:
                 'fileParams',
                 'secureParams',
             ]
-        elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        elif self.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             features = ['appBuilderCompliant', 'fileParams']
 
         # add layoutEnabledApp if layout.json file exists in project

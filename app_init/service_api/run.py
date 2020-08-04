@@ -49,7 +49,9 @@ def run(**kwargs):
         tcex.service.ready = True
 
         # loop until exit
-        tcex.service.loop_forever()
+        tcex.log.info('Looping until shutdown')
+        while tcex.service.loop_forever(sleep=1):
+            pass
 
         # start the webhook trigger (blocking)
         # tcex.service.api_service(callback=app.api_callback)

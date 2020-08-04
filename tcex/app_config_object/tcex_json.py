@@ -58,9 +58,9 @@ class TcexJson:
             if self._contents.get('package', {}).get('app_version'):
                 print(
                     f'{c.Fore.YELLOW}'
-                    f'The tcex.json file defines "app_version" which should only be defined\n'
-                    f'in legacy Apps. Removing the value can cause the App to be treated\n'
-                    f'as a new App by TcExchange. Please remove "app_version" when appropriate.'
+                    'WARNING: The tcex.json file defines "app_version" which should only be '
+                    'defined in legacy Apps. Removing the value can cause the App to be treated '
+                    'as a new App by TcExchange. Please remove "app_version" when appropriate.'
                     f'{c.Fore.RESET}'
                 )
 
