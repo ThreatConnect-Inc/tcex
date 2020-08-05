@@ -129,15 +129,18 @@ class ExternalSession(Session):
         response: object = super().request(method, url, **kwargs)
 
         # APP-79 - adding logging of request as curl commands
-        self.log.debug(
-            self.utils.requests_to_curl(
-                response.request,
-                mask_headers=self.mask_headers,
-                mask_patterns=self.mask_patterns,
-                proxies=self.proxies,
-                verify=self.verify,
+        try:
+            self.log.debug(
+                self.utils.requests_to_curl(
+                    response.request,
+                    mask_headers=self.mask_headers,
+                    mask_patterns=self.mask_patterns,
+                    proxies=self.proxies,
+                    verify=self.verify,
+                )
             )
-        )
+        except Exception:  # nosec
+            pass  # logging curl command is best effort
         self.log.debug(f'request url: {response.request.url}')
         self.log.debug(f'status_code: {response.status_code}')
 

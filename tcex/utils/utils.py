@@ -8,6 +8,7 @@ import re
 import string
 import uuid
 from typing import Any, List, Optional, Union
+from urllib.parse import urlsplit
 
 # third-party
 import pyaes
@@ -294,25 +295,20 @@ class Utils:
                 body_data = f'--data-binary @{temp_file}'
             cmd.append(body_data)
 
-        if proxies:
-            proxy = None
-            proxy_user = None
-
+        if proxies is not None and proxies.get('https'):
             # parse formatted string {'https': 'bob:pass@https://localhost:4242'}
-            proxy_settings = proxies.get('https', '').split('@')
-            if len(proxy_settings) > 1:
-                proxy_user, _ = proxy_settings[0].split(':')
-                proxy = proxy_settings[1]
-            else:
-                proxy = proxy_settings[0]
+            proxy_url: Optional[str] = proxies.get('https')
+            proxy_data = urlsplit(proxy_url)
 
-            # add user:pass
-            if proxy_user:
-                cmd.extend(['--proxy-user', f'{proxy_user}:xxxxx'])
+            # auth
+            if proxy_data.username:
+                cmd.extend(['--proxy-user', f'{proxy_data.username}:xxxxx'])
 
-            # add host:port
-            if proxy:
-                cmd.extend(['--proxy', proxy.replace('https://', '')])
+            # server
+            proxy_server = proxy_data.hostname
+            if proxy_data.port:
+                proxy_server = f'{proxy_data.hostname}:{proxy_data.port}'
+            cmd.extend(['--proxy', proxy_server])
 
         if not verify:
             # add insecure flag to curl command

@@ -93,7 +93,7 @@ class TestRequestToCurl:
         headers = {'authorization': 'sensitive information that should not be readable'}
         r = requests.get('https://www.google.com', headers=headers)
         r_curl = tcex.utils.requests_to_curl(
-            r.request, proxies={'https': 'user:pass@https://www.google.com'}, verify=False
+            r.request, proxies={'https': 'https://user:pass@www.google.com'}, verify=False
         )
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''

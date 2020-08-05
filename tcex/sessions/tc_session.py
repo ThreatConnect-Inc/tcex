@@ -122,11 +122,14 @@ class TcSession(Session):
         # don't show curl message for logging commands
         if '/v2/logs/app' not in url:
             # APP-79 - adding logging of request as curl commands
-            self.log.debug(
-                self.utils.requests_to_curl(
-                    response.request, proxies=self.proxies, verify=self.verify
+            try:
+                self.log.debug(
+                    self.utils.requests_to_curl(
+                        response.request, proxies=self.proxies, verify=self.verify
+                    )
                 )
-            )
+            except Exception:  # nosec
+                pass  # logging curl command is best effort
 
         self.log.debug(f'request url: {response.request.url}')
         self.log.debug(f'status_code: {response.status_code}')
