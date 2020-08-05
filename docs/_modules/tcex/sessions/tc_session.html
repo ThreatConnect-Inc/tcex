@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.sessions.tc_session &mdash; TcEx 2.0.8 documentation</title>
+  <title>tcex.sessions.tc_session &mdash; TcEx 2.0.9 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.8
+                2.0.9
               </div>
 
 
@@ -304,11 +304,14 @@
         <span class="c1"># don&#39;t show curl message for logging commands</span>
         <span class="k">if</span> <span class="s1">&#39;/v2/logs/app&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
             <span class="c1"># APP-79 - adding logging of request as curl commands</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">requests_to_curl</span><span class="p">(</span>
-                    <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proxies</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">requests_to_curl</span><span class="p">(</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proxies</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># nosec</span>
+                <span class="k">pass</span>  <span class="c1"># logging curl command is best effort</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;request url: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status_code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>

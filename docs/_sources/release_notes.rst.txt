@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+2.0.9
+=====
++ APP-849 - Updated request_to_curl method to handle proxy values properly.
++ APP-852 - Moved jmespath package from dev dependencies to standard dependencies.
+
 2.0.8
 =====
 + APP-796 - Updated Advanced Request Method to always write output variable.
