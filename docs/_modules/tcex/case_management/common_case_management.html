@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.case_management.common_case_management &mdash; TcEx 2.0.7 documentation</title>
+  <title>tcex.case_management.common_case_management &mdash; TcEx 2.0.8 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
 </head>
@@ -49,7 +50,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home"> TcEx
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -59,7 +60,7 @@
 
 
               <div class="version">
-                2.0.7
+                2.0.8
               </div>
 
 
@@ -75,6 +76,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -94,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
@@ -118,6 +121,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -156,7 +160,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="../../index.html">Module code</a> &raquo;</li>
 
@@ -178,8 +182,10 @@
   <h1>Source code for tcex.case_management.common_case_management</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Common Case Management&quot;&quot;&quot;</span>
+<span class="c1"># third-party</span>
 <span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="n">ProxyError</span>
 
+<span class="c1"># first-party</span>
 <span class="kn">from</span> <span class="nn">tcex.case_management.common_case_management_collection</span> <span class="kn">import</span> <span class="n">CommonCaseManagementCollection</span>
 
 
@@ -214,12 +220,12 @@
                 <span class="k">continue</span>
 
             <span class="c1"># format key with trailing whitespace</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1"> &#39;</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> &#39;</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">printable_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{key:.&lt;40}</span><span class="s1"> {str(value):&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">printable_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">:</span><span class="s1">.&lt;40</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">:</span><span class="s1">&lt;50</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">printable_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{key:.&lt;40}</span><span class="s1"> {&quot;&lt;object&gt;&quot;:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">printable_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">:</span><span class="s1">.&lt;40</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="s2">&quot;&lt;object&gt;&quot;</span><span class="si">:</span><span class="s1">&lt;50</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">printable_string</span></div>
 
 <div class="viewcode-block" id="CommonCaseManagement._camel_case_key"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.common_case_management.CommonCaseManagement._camel_case_key">[docs]</a>    <span class="k">def</span> <span class="nf">_camel_case_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -233,9 +239,9 @@
     <span class="k">def</span> <span class="nf">_doc_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a doc string current object.&quot;&quot;&quot;</span>
         <span class="n">docstring</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">{&quot; &quot; * 4}&quot;&quot;&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s1"> object for Case Management.</span><span class="se">\n\n</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;{&quot; &quot; * 4}Args:</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;{&quot; &quot; * 8}tcex (TcEx): An instantiated instance of TcEx object.</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">4</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> object for Case Management.</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">4</span><span class="si">}</span><span class="s1">Args:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">8</span><span class="si">}</span><span class="s1">tcex (TcEx): An instantiated instance of TcEx object.</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">pd</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="c1"># get data array if exists</span>
@@ -275,8 +281,8 @@
 
             <span class="c1"># set description</span>
             <span class="n">description</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;The **{self.tcex.utils.camel_to_space(p).title()}**</span><span class="si">{type_flag}</span><span class="s1"> for the &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;{self.tcex.utils.camel_to_space(self.__class__.__name__).title()}.&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;The **</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">camel_to_space</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s1">**</span><span class="si">{</span><span class="n">type_flag</span><span class="si">}</span><span class="s1"> for the &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">camel_to_space</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s1">.&#39;</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">):</span>
                 <span class="n">description</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span>
@@ -289,22 +295,22 @@
             <span class="k">if</span> <span class="n">required</span><span class="p">:</span>
                 <span class="n">required_text</span> <span class="o">=</span> <span class="s1">&#39;Required&#39;</span>
                 <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required-alt-field&#39;</span><span class="p">):</span>
-                    <span class="n">required_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (alt: {pd.get(&#39;required-alt-field&#39;)})&quot;</span>
+                    <span class="n">required_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (alt: </span><span class="si">{</span><span class="n">pd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required-alt-field&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
                 <span class="n">meta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">required_text</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">read_only</span><span class="p">:</span>
                 <span class="n">meta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Read-Only&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">meta</span><span class="p">:</span>
-                <span class="n">meta</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; [{&#39;,&#39;.join(meta)}]&quot;</span>
+                <span class="n">meta</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; [</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">meta</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
             <span class="c1"># build docstring</span>
             <span class="n">docstring</span> <span class="o">+=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;{&quot; &quot; * 8}{self.tcex.utils.camel_to_snake(p)} (</span><span class="si">{type_}</span><span class="s1">, kwargs):&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{meta}</span><span class="s1"> </span><span class="si">{description}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">8</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">type_</span><span class="si">}</span><span class="s1">, kwargs):&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">meta</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
-        <span class="n">docstring</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;{&quot; &quot; * 4}&quot;&quot;&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">docstring</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">4</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">docstring</span>
 
     <span class="nd">@property</span>
@@ -437,7 +443,7 @@
     <span class="k">def</span> <span class="nf">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the field data for this object.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.api_endpoint}</span><span class="s1">/fields&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{})</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="si">}</span><span class="s1">/fields&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{})</span>
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span>
@@ -451,14 +457,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;A case without an ID cannot be deleted.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.api_endpoint}</span><span class="s1">/</span><span class="si">{self.id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;URl: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;URl: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ConnectionError</span><span class="p">,</span> <span class="n">ProxyError</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span>
@@ -513,7 +519,7 @@
             <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="n">cm_id</span> <span class="o">=</span> <span class="n">case_management_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.api_endpoint}</span><span class="s1">/</span><span class="si">{cm_id}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">cm_id</span><span class="si">}</span><span class="s1">&#39;</span>
 
         <span class="c1"># add fields parameter if provided</span>
         <span class="k">if</span> <span class="n">all_available_fields</span><span class="p">:</span>
@@ -533,9 +539,9 @@
                 <span class="mi">951</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;OPTIONS&#39;</span><span class="p">,</span> <span class="mi">407</span><span class="p">,</span> <span class="s1">&#39;{</span><span class="se">\&quot;</span><span class="s1">message</span><span class="se">\&quot;</span><span class="s1">: </span><span class="se">\&quot;</span><span class="s1">Connection Error</span><span class="se">\&quot;</span><span class="s1">}&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">]</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;URl: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;URl: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;response text: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
@@ -632,17 +638,17 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="c1"># if the ID is included, its an update</span>
             <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PUT&#39;</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{self.api_endpoint}</span><span class="s1">/</span><span class="si">{self.id}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span>
 
         <span class="c1"># make the request</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Method: ({r.request.method.upper()}), &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{r.status_code}</span><span class="s1">, &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;URl: (</span><span class="si">{r.url}</span><span class="s1">)&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;URl: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{body}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;response text: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -694,6 +700,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -707,7 +714,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks_base &mdash; TcEx 2.0.7 documentation</title>
+  <title>tcex.playbooks.playbooks_base &mdash; TcEx 2.0.8 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
 </head>
@@ -49,7 +50,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home"> TcEx
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -59,7 +60,7 @@
 
 
               <div class="version">
-                2.0.7
+                2.0.8
               </div>
 
 
@@ -75,6 +76,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -94,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
@@ -118,6 +121,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -156,7 +160,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="../../index.html">Module code</a> &raquo;</li>
 
@@ -178,6 +182,7 @@
   <h1>Source code for tcex.playbooks.playbooks_base</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework Playbook module&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -206,23 +211,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">log</span>
 
         <span class="c1"># match full variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;^</span><span class="si">{self._variable_pattern}</span><span class="s1">$&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;^</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_pattern</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">)</span>
         <span class="c1"># capture variable parts (exactly a variable)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_pattern</span><span class="p">)</span>
         <span class="c1"># match embedded variables without quotes (#App:7979:variable_name!StringArray)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vars_keyvalue_embedded</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;(?:\&quot;\:\s?)[^\&quot;]?</span><span class="si">{self._variable_pattern}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vars_keyvalue_embedded</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;(?:\&quot;\:\s?)[^\&quot;]?</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_pattern</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PlaybooksBase._coerce_string_value"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._coerce_string_value">[docs]</a>    <span class="k">def</span> <span class="nf">_coerce_string_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a string value from an bool or int.&quot;&quot;&quot;</span>
         <span class="c1"># coerce bool before int as python says a bool is an int</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="c1"># coerce bool to str type</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coercing bool value (</span><span class="si">{value}</span><span class="s1">) to a string (&quot;{str(value).lower()}&quot;).&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coercing bool value (</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">) to a string (&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;).&#39;</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="c1"># coerce int to str type</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coercing float/int value (</span><span class="si">{value}</span><span class="s1">) to a string (&quot;{str(value)}&quot;).&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coercing float/int value (</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">) to a string (&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;).&#39;</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">value</span></div>
@@ -259,7 +264,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to serialize value (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to serialize value (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="p">)</span></div>
 
@@ -310,7 +315,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to serialize value (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to serialize value (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="p">)</span></div>
 
@@ -364,7 +369,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to JSON load data &quot;</span><span class="si">{value}</span><span class="s1">&quot; (</span><span class="si">{e}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to JSON load data &quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot; (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PlaybooksBase._parse_output_variables"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._parse_output_variables">[docs]</a>    <span class="k">def</span> <span class="nf">_parse_output_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse the output variables provided to Playbook Class.</span>
@@ -385,7 +390,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables_by_name</span><span class="p">[</span><span class="n">variable_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="n">ov</span><span class="p">}</span>
 
             <span class="c1"># store the variables in dict by name-type (e.g. &quot;status_code-String&quot;)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables_by_type</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{variable_name}</span><span class="s1">-</span><span class="si">{variable_type}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="n">ov</span><span class="p">}</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_variables_by_type</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">variable_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">variable_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="n">ov</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="PlaybooksBase._read"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks_base.PlaybooksBase._read">[docs]</a>    <span class="k">def</span> <span class="nf">_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">b64decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the value in Redis if applicable.&quot;&quot;&quot;</span>
@@ -460,7 +465,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{value}</span><span class="s1">). Error: (</span><span class="si">{e}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">). Error: (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">variable_type</span> <span class="o">==</span> <span class="s1">&#39;StringArray&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_embedded</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -532,12 +537,12 @@
 
         <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;embedded variable: </span><span class="si">{variable}</span><span class="s1">, value: </span><span class="si">{v}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;embedded variable: </span><span class="si">{</span><span class="n">variable</span><span class="si">}</span><span class="s1">, value: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
                 <span class="c1"># for KeyValueArray with nested dict/list type replace the</span>
                 <span class="c1"># quoted value to ensure the resulting data is loadable JSON</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{variable}</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">variable</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># only replace variable if a non-null value is returned from kv store</span>
@@ -605,7 +610,7 @@
                 <span class="n">variable_string</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="c1"># reformat to replace the correct instance only, handling the case where a variable</span>
                 <span class="c1"># is embedded multiple times in the same key value array.</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&quot;: &quot;</span><span class="si">{variable_string}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&quot;: &quot;</span><span class="si">{</span><span class="n">variable_string</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
     <span class="nd">@property</span>
@@ -622,7 +627,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_key_value_store</span> <span class="o">=</span> <span class="n">KeyValueApi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;Invalid DB Type: (</span><span class="si">{self.tcex.default_args.tc_playbook_db_type}</span><span class="s1">)&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Invalid DB Type: (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span><span class="si">}</span><span class="s1">)&#39;</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_value_store</span>
 
@@ -688,6 +693,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -701,7 +707,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

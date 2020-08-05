@@ -10,7 +10,7 @@ class Cache:
 
     Args:
         tcex (TcEx): An instance of TcEx.
-        domain (str): A value of “system”, “organization”, or “local”.
+        domain (str): A value of "organization" or "local".
         data_type (str): A free form type name for the data.
         ttl_seconds (Optional[int] = None): Number of seconds the cache is valid.
         mapping (Optional[dict] = None): ElasticSearch mappings data.
@@ -38,9 +38,9 @@ class Cache:
     def add(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
         """Write cache data to the data store.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "_index": "$local.usr5_pytest",
@@ -49,9 +49,9 @@ class Cache:
               "_version": 10,
               "result": "updated",
               "_shards": {
-                "total": 2,
-                "successful": 1,
-                "failed": 0
+                  "total": 2,
+                  "successful": 1,
+                  "failed": 0
               },
               "_seq_no": 10,
               "_primary_term": 1
@@ -75,9 +75,9 @@ class Cache:
     def delete(self, rid: str, raise_on_error: Optional[bool] = True) -> dict:
         """Write cache data to the data store.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "_index": "$local.usr5_pytest",
@@ -112,9 +112,9 @@ class Cache:
     ) -> dict:
         """Get cached data from the data store.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "cache-date": "2020-07-31T11:44:53.851116",
@@ -167,9 +167,9 @@ class Cache:
     def update(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
         """Write updated cache data to the DataStore.
 
-        Example Response::
+        **Example Response**
 
-        .. code:: json
+        .. code-block:: json
 
             {
               "cache-date": "2020-07-31T11:44:53.851116",

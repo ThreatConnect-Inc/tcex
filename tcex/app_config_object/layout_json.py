@@ -97,7 +97,9 @@ class AppFeatureAdvanceRequest:
     def update(self):
         """Update the install.json inputs and outputs."""
         self.update_inputs()
+        self.update_inputs_display()
         self.update_outputs()
+        self.update_outputs_display()
 
     def update_inputs(self):
         """Update install.json param inputs."""
@@ -116,6 +118,16 @@ class AppFeatureAdvanceRequest:
                 # append input
                 self.json_data['inputs'][configure_index]['parameters'].append(i)
 
+    def update_inputs_display(self):
+        """Update any inputs that do not have a display value."""
+        for i in self.json_data.get('inputs'):
+            if i.get('title') in ['Action', 'Connection']:
+                # only update display for inputs in Configure and Advanced sections
+                continue
+            for p in i.get('parameters'):
+                if p.get('display') is None:
+                    p['display'] = '''tc_action not in ('Advanced Request')'''
+
     def update_outputs(self):
         """Update install.json param inputs."""
         for o in self.outputs:
@@ -127,6 +139,12 @@ class AppFeatureAdvanceRequest:
             else:
                 # append input
                 self.json_data['outputs'].append(o)
+
+    def update_outputs_display(self):
+        """Update any outputs that do not have a display value."""
+        for o in self.json_data.get('outputs'):
+            if o.get('display') is None:
+                o['display'] = '''tc_action not in ('Advanced Request')'''
 
 
 class LayoutJson:

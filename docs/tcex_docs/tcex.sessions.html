@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Session Module &mdash; TcEx 2.0.7 documentation</title>
+  <title>Session Module &mdash; TcEx 2.0.8 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="TcEx" href="tcex.tcex.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="../index.html" class="icon icon-home"> TcEx
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.7
+                2.0.8
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
@@ -146,6 +149,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -184,7 +188,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
@@ -212,50 +216,50 @@
 <div class="section" id="module-tcex.sessions.tc_session">
 <span id="sessions-tc-session"></span><h2>sessions.tc_session<a class="headerlink" href="#module-tcex.sessions.tc_session" title="Permalink to this headline">¶</a></h2>
 <p>ThreatConnect Requests Session</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.sessions.tc_session.HmacAuth">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">HmacAuth</code><span class="sig-paren">(</span><em class="sig-param">access_id</em>, <em class="sig-param">secret_key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#HmacAuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.HmacAuth" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">HmacAuth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">access_id</span></em>, <em class="sig-param"><span class="n">secret_key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#HmacAuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.HmacAuth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.auth.AuthBase</span></code></p>
 <p>ThreatConnect HMAC Authorization</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.sessions.tc_session.HmacAuth.__call__">
-<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#HmacAuth.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.HmacAuth.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#HmacAuth.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.HmacAuth.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override of parent __call__ method.</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.sessions.tc_session.TcSession">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">TcSession</code><span class="sig-paren">(</span><em class="sig-param">api_access_id</em>, <em class="sig-param">api_secret_key</em>, <em class="sig-param">base_url</em>, <em class="sig-param">logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">TcSession</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_access_id</span></em>, <em class="sig-param"><span class="n">api_secret_key</span></em>, <em class="sig-param"><span class="n">base_url</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.sessions.Session</span></code></p>
 <p>ThreatConnect REST API Requests Session</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.sessions.tc_session.TcSession._configure_auth">
 <code class="sig-name descname">_configure_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession._configure_auth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession._configure_auth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Auth property for session.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.sessions.tc_session.TcSession.request">
-<code class="sig-name descname">request</code><span class="sig-paren">(</span><em class="sig-param">method</em>, <em class="sig-param">url</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession.request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.request" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession.request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override request method disabling verify on token renewal if disabled on session.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.sessions.tc_session.TcSession.retry">
-<code class="sig-name descname">retry</code><span class="sig-paren">(</span><em class="sig-param">retries=3</em>, <em class="sig-param">backoff_factor=0.3</em>, <em class="sig-param">status_forcelist=(500</em>, <em class="sig-param">502</em>, <em class="sig-param">504)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession.retry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.retry" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">retry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">retries</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">backoff_factor</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">status_forcelist</span><span class="o">=</span><span class="default_value">500, 502, 504</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TcSession.retry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.retry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add retry to Requests Session</p>
 <p><a class="reference external" href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry">https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry</a></p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.sessions.tc_session.TcSession.token">
 <em class="property">property </em><code class="sig-name descname">token</code><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return token.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.sessions.tc_session.TcSession.token_available">
 <em class="property">property </em><code class="sig-name descname">token_available</code><a class="headerlink" href="#tcex.sessions.tc_session.TcSession.token_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return true if the current App is a service App.</p>
@@ -263,14 +267,14 @@
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.sessions.tc_session.TokenAuth">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">TokenAuth</code><span class="sig-paren">(</span><em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TokenAuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TokenAuth" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.sessions.tc_session.</code><code class="sig-name descname">TokenAuth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TokenAuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TokenAuth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.auth.AuthBase</span></code></p>
 <p>ThreatConnect Token Authorization</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.sessions.tc_session.TokenAuth.__call__">
-<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TokenAuth.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TokenAuth.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/sessions/tc_session.html#TokenAuth.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.sessions.tc_session.TokenAuth.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override of parent __call__ method.</p>
 </dd></dl>
 
@@ -299,6 +303,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -312,7 +317,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

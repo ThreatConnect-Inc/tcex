@@ -3,9 +3,16 @@
 Release Notes
 #############
 
+2.0.9
+=====
++ APP-852 - Moved jmespath package from dev dependencies to standard dependencies.
+
 2.0.8
 =====
-+ APP-796 - Updates to Advanced Request Method to always write output variable.
++ APP-796 - Updated Advanced Request Method to always write output variable.
++ APP-813 - Updated datastore and cache modules; renamed ttl_minute to ttl_seconds, added handling of 0 or null ttl_second value.
++ APP-815 - Updated session_external to not raise RetryError.
++ APP-816 - Updated tcinit to not fail when no tcex.json file is present.
 
 2.0.7
 =====

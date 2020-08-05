@@ -115,6 +115,8 @@ class Lib(Bin):
         else:
             if os.path.islink(self.static_lib_dir):
                 os.unlink(self.static_lib_dir)
+            elif os.path.isfile(self.static_lib_dir):
+                os.rmdir(self.static_lib_dir)
             os.symlink(f'lib_{self.latest_version}', self.static_lib_dir)
 
     def _create_temp_requirements(self):
@@ -203,6 +205,7 @@ class Lib(Bin):
             try:
                 python_version = lib_dir.split('_', 1)[1]
             except IndexError:
+                python_version = None
                 self.handle_error('Could not determine version from lib string.')
 
             # track the latest Python version
