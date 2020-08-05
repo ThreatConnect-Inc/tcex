@@ -1089,6 +1089,13 @@ class ThreatConnect:
         """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
+        if ti_entity is None:
+            error = (
+                f"NotFoundError: Provided {tc_entity.get('type')}: "
+                f"{tc_entity.get('summary', tc_entity.get('name', 'Unknown'))} could not "
+                f'be fetched from ThreatConnect owner {owner} (Null Means default API Owner).'
+            )
+            return False, [error]
         ti_response = ti_entity.single(params=parameters)
         entity_name = tc_entity.get('name')
         errors = []
