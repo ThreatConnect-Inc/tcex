@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Framework LayoutJson."""
 # standard library
 import json

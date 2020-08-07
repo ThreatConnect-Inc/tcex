@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Bin module for TcEx Framework"""
 # flake8: noqa
 from .init import Init

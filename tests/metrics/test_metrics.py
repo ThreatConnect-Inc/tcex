@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Metrics Module."""
 # standard library
 import uuid

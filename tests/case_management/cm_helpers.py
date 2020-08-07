@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Case Management PyTest Helper Method"""
 # standard library
 import inspect

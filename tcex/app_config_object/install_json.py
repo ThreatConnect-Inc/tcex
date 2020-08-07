@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework InstallJson Object."""
 # standard library
 import json
@@ -215,7 +214,7 @@ class InstallJson:
 
         # get current branch
         if os.path.isfile(branch_file):
-            with open(branch_file, 'r') as f:
+            with open(branch_file) as f:
                 try:
                     branch = f.read().strip().split('/')[2]
                 except IndexError:
@@ -225,7 +224,7 @@ class InstallJson:
             if branch:
                 hash_file = f'.git/refs/heads/{branch}'
                 if os.path.isfile(hash_file):
-                    with open(hash_file, 'r') as f:
+                    with open(hash_file) as f:
                         commit_hash = f.read().strip()
         return commit_hash
 
@@ -262,7 +261,7 @@ class InstallJson:
         """Return install.json contents."""
         if self._contents is None:
             try:
-                with open(self.filename, 'r') as fh:
+                with open(self.filename) as fh:
                     self._contents = json.load(fh, object_pairs_hook=OrderedDict)
             except OSError:
                 self._contents = {'runtimeLevel': 'external'}
@@ -842,3 +841,13 @@ class InstallJson:
     def runtime_level(self):
         """Return property."""
         return self.contents.get('runtimeLevel')
+
+    @property
+    def service(self):
+        """Return service."""
+        return self.contents.get('service', {})
+
+    @property
+    def service_discovery_types(self):
+        """Return service."""
+        return self.service.get('discoveryTypes', [])

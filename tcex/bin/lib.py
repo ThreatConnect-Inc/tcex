@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Library Builder."""
 # standard library
 import os
@@ -126,7 +125,7 @@ class Lib(Bin):
         """
         self.use_temp_requirements_file = True
         # Replace tcex version with develop branch of tcex
-        with open(self.requirements_file, 'r') as fh:
+        with open(self.requirements_file) as fh:
             current_requirements = fh.read().strip().split('\n')
 
         self.requirements_file = f'temp-{self.requirements_file}'

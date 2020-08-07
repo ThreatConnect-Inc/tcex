@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing Framework."""
 # standard library
 import logging

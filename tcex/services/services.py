@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Service module"""
 # standard library
 import base64
@@ -940,7 +939,10 @@ class Services:
                 time.sleep(1)
             else:  # pylint: disable=useless-else-on-loop
                 self.tcex.log.info('Service is Ready')
-                self.publish(json.dumps({'command': 'Ready'}))
+                ready_command = {'command': 'Ready'}
+                if self.tcex.ij.runtime_level.lower() in ['apiservice']:
+                    ready_command['discoveryTypes'] = self.tcex.ij.service_discovery_types
+                self.publish(json.dumps(ready_command))
                 self._ready = True
 
     @property

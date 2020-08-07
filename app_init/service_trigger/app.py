@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Trigger Service App"""
 
 # first-party

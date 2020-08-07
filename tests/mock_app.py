@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Pytest MockApp class for testing TcEx Framework."""
 # standard library
 import json

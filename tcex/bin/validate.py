@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Framework Validate Module."""
 # standard library
 import ast
@@ -396,7 +395,7 @@ class Validate(Bin):
 
             elif filename.endswith('.json'):
                 try:
-                    with open(filename, 'r') as fh:
+                    with open(filename) as fh:
                         json.load(fh)
                 except ValueError as e:
                     status = False

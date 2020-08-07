@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Env Store Module"""
 # standard library
 import logging

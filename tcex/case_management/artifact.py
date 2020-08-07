@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Artifact"""
 
 from .api_endpoints import ApiEndpoints

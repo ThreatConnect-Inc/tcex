@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Utilities Module"""
 # standard library
 import ipaddress

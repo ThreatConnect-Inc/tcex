@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Victim"""
 
 from .mappings import Mappings

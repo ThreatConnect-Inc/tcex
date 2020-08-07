@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Generic Mappings Object"""
 # standard library
 import json

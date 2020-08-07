@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 # standard library
 import json

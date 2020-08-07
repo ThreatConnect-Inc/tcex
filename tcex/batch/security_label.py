@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect SecurityLabel Object"""
 # standard library
 import json

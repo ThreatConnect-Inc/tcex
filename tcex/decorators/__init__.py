@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Decorators module for TcEx Framework"""
 # flake8: noqa
 from .benchmark import Benchmark

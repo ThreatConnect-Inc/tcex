@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx WriteOutput Decorator."""
 # third-party
 import pytest

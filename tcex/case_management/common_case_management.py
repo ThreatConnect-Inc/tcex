@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Common Case Management"""
 # third-party
 from requests.exceptions import ProxyError
@@ -289,9 +288,9 @@ class CommonCaseManagement:
                 951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
             )
         if len(r.content) < 5000:
-            self.tcex.log.debug(u'response text: {}'.format(r.text))
+            self.tcex.log.debug(f'response text: {r.text}')
         else:  # pragma: no cover
-            self.tcex.log.debug(u'response text: (text to large to log)')
+            self.tcex.log.debug('response text: (text to large to log)')
         if not self.success(r):
             err = r.text or r.reason
             if r.status_code == 404:
@@ -362,9 +361,9 @@ class CommonCaseManagement:
             f'URl: ({r.url})'
         )
         if len(r.content) < 5000:
-            self.tcex.log.debug(u'response text: {}'.format(r.text))
+            self.tcex.log.debug(f'response text: {r.text}')
         else:  # pragma: no cover
-            self.tcex.log.debug(u'response text: (text to large to log)')
+            self.tcex.log.debug('response text: (text to large to log)')
         if not self.success(r):
             err = r.text or r.reason
             if r.status_code == 404:
@@ -468,9 +467,9 @@ class CommonCaseManagement:
         )
         self.tcex.log.debug(f'body: {body}')
         if len(r.content) < 5000:
-            self.tcex.log.debug(u'response text: {}'.format(r.text))
+            self.tcex.log.debug(f'response text: {r.text}')
         else:  # pragma: no cover
-            self.tcex.log.debug(u'response text: (text to large to log)')
+            self.tcex.log.debug('response text: (text to large to log)')
 
         if not self.success(r):  # pragma: no cover
             err = r.text or r.reason

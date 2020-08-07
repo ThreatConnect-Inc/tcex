@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Exchange App Feature Advanced Request Module"""
 # standard library
 import json

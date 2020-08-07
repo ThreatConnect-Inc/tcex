@@ -16,7 +16,6 @@ repos:
       - id: debug-statements
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
-      - id: fix-encoding-pragma
       - id: mixed-line-ending
       - id: pretty-format-json
         args:
@@ -66,6 +65,9 @@ repos:
     rev: v2.7.1
     hooks:
       - id: pyupgrade
+        args:
+          - --py3-plus
+          - --py36-plus
   - repo: https://github.com/yunojuno/pre-commit-xenon
     rev: v0.1
     hooks:

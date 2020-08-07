@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Common Arg Handler"""
 # standard library
 from argparse import ArgumentParser, Namespace

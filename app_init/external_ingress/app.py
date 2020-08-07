@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Job App"""
 # standard library
 import csv

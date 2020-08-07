@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework module init file."""
 # flake8: noqa
 from .__metadata__ import (

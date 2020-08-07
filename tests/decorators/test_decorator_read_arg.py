@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx ReadArg Decorator."""
 # third-party
 import pytest

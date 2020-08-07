@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Module for working with Cache in the ThreatConnect Platform."""
 # standard library
 from datetime import datetime, timedelta

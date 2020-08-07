@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Intrusion Set"""
 from ..group import Group
 

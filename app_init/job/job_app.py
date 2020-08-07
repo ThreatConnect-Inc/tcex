@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Job App Template."""
 # first-party
 from args import Args

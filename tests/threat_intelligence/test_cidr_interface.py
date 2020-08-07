@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 # standard library
 import os
