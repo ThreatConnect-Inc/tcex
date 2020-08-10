@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Trace Logger Class"""
 # standard library
 import logging

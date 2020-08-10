@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Security Label"""
 # first-party
 from tcex.utils import Utils

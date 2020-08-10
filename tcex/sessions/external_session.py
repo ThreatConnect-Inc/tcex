@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
 # standard library
 import logging
@@ -71,7 +70,7 @@ class CustomAdapter(adapters.HTTPAdapter):
             # store current retries configuration
             max_retries = self.max_retries
 
-            # temporarily disable retries and max one last request
+            # temporarily disable retries and make one last request
             self.max_retries = Retry(0, read=False)
 
             # make request with max_retries turned off

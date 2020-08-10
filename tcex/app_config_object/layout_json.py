@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Framework LayoutJson."""
 # standard library
 import json
@@ -177,7 +176,7 @@ class LayoutJson:
     def contents(self):
         """Return layout.json contents."""
         if self._contents is None and self.has_layout:
-            with open(self.filename, 'r') as fh:
+            with open(self.filename) as fh:
                 self._contents = json.load(fh, object_pairs_hook=OrderedDict)
         return self._contents
 

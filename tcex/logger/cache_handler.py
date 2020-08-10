@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Cache Handler Class"""
 # standard library
 import logging

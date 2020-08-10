@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Playbook Common module"""
 # import json
 # standard library

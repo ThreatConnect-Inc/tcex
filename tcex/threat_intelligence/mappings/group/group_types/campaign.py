@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Campaign"""
 from ..group import Group
 

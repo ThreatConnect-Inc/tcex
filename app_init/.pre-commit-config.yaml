@@ -56,6 +56,9 @@ repos:
     hooks:
       - id: pyupgrade
         exclude: ^lib
+        args:
+          - --py3-plus
+          - --py36-plus
   - repo: https://github.com/yunojuno/pre-commit-xenon
     rev: v0.1
     hooks:

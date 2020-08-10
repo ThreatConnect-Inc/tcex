@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Auto-generated Playbook Args"""
 
 

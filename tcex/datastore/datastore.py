@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Module for working with DataStore in the ThreatConnect Platform."""
 # standard library
 from typing import Optional

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect API Service App"""
 # third-party
 import falcon

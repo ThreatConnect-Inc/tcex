@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ReadArg App Decorators."""
 # third-party
 import wrapt

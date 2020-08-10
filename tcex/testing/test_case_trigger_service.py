@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
 # standard library
 import sys

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Validate Data Testing Module"""
 # standard library
 import datetime
@@ -950,7 +949,7 @@ class ThreatConnect:
         batch_errors = []
         dir_path = os.path.join('.', 'log', profile.feature, f'test_profiles-{profile.name}')
         for filename in os.listdir(dir_path):
-            with open(os.path.join(dir_path, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename)) as fh:
                 if not filename.startswith('errors-') or not filename.endswith('.json'):
                     continue
                 batch_errors += json.load(fh)
@@ -959,7 +958,7 @@ class ThreatConnect:
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
 
-            with open(os.path.join(dir_path, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename)) as fh:
                 data = json.load(fh)
                 validation_data = self._partition_batch_data(data)
                 sample_validation_data = []
@@ -1223,7 +1222,7 @@ class ThreatConnect:
     @staticmethod
     def _convert_to_entities(file):
         """Convert file to tc_entity array"""
-        with open(file, 'r') as read_file:
+        with open(file) as read_file:
             data = json.load(read_file)
         return data
 
@@ -1282,7 +1281,7 @@ class ThreatConnect:
         for filename in os.listdir(dir_path):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
-            with open(os.path.join(dir_path, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename)) as fh:
                 data = json.load(fh)
                 partitioned_data = self._partition_batch_data(data)
                 for key in partitioned_data:

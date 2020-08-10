@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Case Management"""
 from .artifact import Artifact, Artifacts
 from .artifact_type import ArtifactType, ArtifactTypes

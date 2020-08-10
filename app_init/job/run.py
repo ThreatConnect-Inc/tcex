@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Job App"""
 # standard library
 import traceback

@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.10
+======
++ APP-890 - Added discoverTypes to Ready command for API Services.
+
 2.0.9
 =====
 + APP-849 - Updated request_to_curl method to handle proxy values properly.

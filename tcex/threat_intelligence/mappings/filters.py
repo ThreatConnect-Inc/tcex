@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Filter Module"""
 
 

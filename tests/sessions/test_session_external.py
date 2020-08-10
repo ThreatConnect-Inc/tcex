@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Session Module."""
 # standard library
 from unittest.mock import MagicMock, PropertyMock

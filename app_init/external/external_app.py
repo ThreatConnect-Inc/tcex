@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """External App Template."""
 
 

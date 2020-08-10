@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Playbook Test Case module"""
 # standard library
 import os

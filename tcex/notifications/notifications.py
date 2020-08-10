@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Notification Module"""
 # standard library
 import json

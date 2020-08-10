@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Case Management Filter Module"""
 
 

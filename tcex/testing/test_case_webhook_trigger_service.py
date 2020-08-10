@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Webhook Trigger Server Test Case"""
 # standard library
 import sys
@@ -28,7 +27,7 @@ class TestCaseWebhookTriggerService(TestCaseServiceCommon):
         # run the app
         exit_code = 0
         try:
-            run(set_app=self._app_callback)
+            run(set_app=self._app_callback)  # pylint: disable=unexpected-keyword-arg
         except SystemExit as e:
             exit_code = e.code
 

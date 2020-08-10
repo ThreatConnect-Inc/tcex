@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Datetime Utilities Module"""
 # standard library
 import calendar

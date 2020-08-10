@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Stage Data Testing Module"""
 # standard library
 import base64
@@ -202,7 +201,7 @@ class ThreatConnect:
     @staticmethod
     def _convert_to_entities(file):
         """Convert A file to TC Entity's"""
-        with open(file, 'r') as read_file:
+        with open(file) as read_file:
             data = json.load(read_file)
         return data
 

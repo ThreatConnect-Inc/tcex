@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Email Address"""
 from ..indicator import Indicator
 

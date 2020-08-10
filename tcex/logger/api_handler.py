@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """API Handler Class"""
 # standard library
 import logging

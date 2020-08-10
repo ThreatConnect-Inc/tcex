@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing Framework."""
 # standard library
 import json
@@ -516,7 +515,7 @@ class TestCase:
             )
             app_exit_message = None
             if os.path.isfile(message_tc_file):
-                with open(message_tc_file, 'r') as mh:
+                with open(message_tc_file) as mh:
                     app_exit_message = mh.read()
 
                 if app_exit_message:

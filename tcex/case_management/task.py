@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Task"""
 from .api_endpoints import ApiEndpoints
 from .assignee import Assignee

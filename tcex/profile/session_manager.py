@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 # standard library
 import base64
@@ -109,7 +108,7 @@ class SessionManager:
             if not session_manager.record:
                 result_data = session_data.get(request_key, None)
                 if result_data is None:
-                    raise KeyError('No stage.session value found for key {}'.format(request_key))
+                    raise KeyError(f'No stage.session value found for key {request_key}')
                 return session_manager.unpickle_result(result_data)
 
             result = _request(self, method, url, *args, **kwargs)

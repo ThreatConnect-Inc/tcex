@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Playbook App"""
 # standard library
 import traceback
