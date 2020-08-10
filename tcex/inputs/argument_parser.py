@@ -49,6 +49,7 @@ class TcArgumentParser(ArgumentParser):
         self._advanced_request()
         self._api_arguments()
         self._batch_arguments()
+        self._cal_settings_arguments()
         self._logger_arguments()
         self._playbook_arguments()
         self._service_arguments()
@@ -170,6 +171,23 @@ class TcArgumentParser(ArgumentParser):
             choices=['Append', 'Replace'],
             default=self._batch_write_type,
             help='Append or Replace attributes.',
+        )
+
+    def _cal_settings_arguments(self):
+        """Define arguments TC sends for the CALSettings feature
+
+        --tc_cal_host                  CAL host (just the hostname, without "https://").
+        --tc_cal_token                 Authentication token for CAL.
+        --tc_cal_timestamp             Timestamp to use with tc_cal_token to authenticate to CAL.
+        """
+        self.add_argument(
+            '--tc_cal_host', help='CAL API host',
+        )
+        self.add_argument(
+            '--tc_cal_token', help='CAL authentication token', type=int,
+        )
+        self.add_argument(
+            '--tc_cal_timestamp', help='Timestamp to use with tc_cal_token to authenticate to CAL.',
         )
 
     def _logger_arguments(self):
