@@ -1,10 +1,10 @@
+exclude: ^lib
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.4.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=500"]
-      - id: check-builtin-literals
       - id: check-ast
       - id: check-builtin-literals
       - id: check-case-conflict
@@ -12,12 +12,10 @@ repos:
       - id: check-json
       - id: check-merge-conflict
       - id: check-symlinks
-      - id: debug-statements
       - id: check-toml
       - id: debug-statements
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
-      - id: fix-encoding-pragma
       - id: mixed-line-ending
       - id: pretty-format-json
         args:
@@ -30,32 +28,29 @@ repos:
     hooks:
       - id: bandit
         args: [--exclude, tests]
-        exclude: ^lib
   - repo: https://github.com/psf/black
     rev: 19.10b0
     hooks:
       - id: black
-        exclude: ^lib
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.8.3
     hooks:
       - id: flake8
-        exclude: ^lib
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.1.3
     hooks:
       - id: isort
-        exclude: ^lib
   - repo: https://github.com/pycqa/pydocstyle
     rev: 5.0.2
     hooks:
       - id: pydocstyle
-        exclude: ^lib
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.7.1
     hooks:
       - id: pyupgrade
-        exclude: ^lib
+        args:
+          - --py3-plus
+          - --py36-plus
   - repo: https://github.com/yunojuno/pre-commit-xenon
     rev: v0.1
     hooks:
