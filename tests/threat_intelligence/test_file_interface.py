@@ -31,6 +31,29 @@ class TestFileIndicators(TestThreatIntelligence):
         if os.getenv('TEARDOWN_METHOD') is None:
             self.ti_helper.cleanup()
 
+    def tests_ti_file_create_2(self):
+        """Create an indicator using specific interface."""
+        metadata = {'size': 84504,
+                    'sha256': '33af46377c0e52ca19aea233b3afb64505b32fac2231ec7a8a6795812fae0d10',
+                    'md5': 'a9ba66af82897dadb82e3e89c70ae7ac',
+                    'sha1': '19d08af69fe15af22ba81f045e31230150d4bdad'}
+        file_indicator = self.ti.file(**metadata)
+        file_indicator.delete()
+
+        assert(file_indicator.data['sha1'] == metadata['sha1'])
+        response = file_indicator.create()
+        assert response.ok
+        unique_id = ':'.join([metadata[x] for x in ['sha256', 'sha1', 'md5']])
+        file_indicator = self.ti.file(unique_id=unique_id, **metadata)
+
+        assert (file_indicator.data['sha256'] == metadata['sha256'])
+        assert (file_indicator.data['sha1'] == metadata['sha1'])
+
+        response = file_indicator.update()
+        assert response.ok
+        file_indicator.delete()
+
+
     def tests_ti_file_create(self):
         """Create an indicator using specific interface."""
         indicator_data = {
