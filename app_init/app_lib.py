@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Class to set App lib directory for current version of Python"""
+# standard library
 import os
 import sys
 

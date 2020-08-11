@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.6 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Building Apps: Dependencies (tclib)" href="building_apps_tclib.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="index.html" class="icon icon-home"> TcEx
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.9
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -141,6 +143,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
@@ -165,6 +168,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -203,7 +207,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
 
       <li>Building Apps: Templates (tcinit)</li>
 
@@ -231,25 +235,49 @@
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To get the latest usage and template choices for <code class="docutils literal notranslate"><span class="pre">tcinit</span></code>, run <code class="docutils literal notranslate"><span class="pre">tcinit</span> <span class="pre">-h</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: tcinit <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--branch <span class="o">{</span>master,develop<span class="o">}]</span>
-              <span class="o">[</span>--action <span class="o">{</span>create,update,migrate<span class="o">}]</span>
-              <span class="o">[</span>--template <span class="o">{</span>external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility<span class="o">}]</span>
-              <span class="o">[</span>--force<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: tcinit <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--branch BRANCH<span class="o">]</span> <span class="o">[</span>--layout<span class="o">]</span> <span class="o">[</span>--migrate<span class="o">]</span> <span class="o">[</span>--update<span class="o">]</span>
+              <span class="o">[</span>--template <span class="o">{</span>external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility,service_api,service_trigger,service_webhook<span class="o">}]</span>
 
 optional arguments:
-  -h, --help            Show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --branch <span class="o">{</span>master,develop<span class="o">}</span>
-                        git branch.
-  --action <span class="o">{</span>create,update,migrate<span class="o">}</span>
-                        <span class="o">(</span>default: create<span class="o">)</span> Choose <span class="s2">&quot;create&quot;</span> to initialize a new
-                        App, <span class="s2">&quot;update&quot;</span> to download updates to App framework
-                        files, and <span class="s2">&quot;migrate&quot;</span> to update a non App Builder
-                        compliant App to use a standard template.
-  --template <span class="o">{</span>external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility<span class="o">}</span>
-                        <span class="o">(</span>default: playbook<span class="o">)</span> Choose an appropriate App template <span class="k">for</span> the current
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  --branch BRANCH       Git branch.
+  --layout              Create a layout.json file.
+  --migrate             Enable this flag to migrate an existing App.
+  --update              Enable this flag to update an existing App.
+  --template <span class="o">{</span>external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility,service_api,service_trigger,service_webhook<span class="o">}</span>
+                        Choose an appropriate App template <span class="k">for</span> the current
                         project.
-  --force               Enable this flag to forcibly overwrite existing files
-                        in the current working directory.
+
+The <span class="s2">&quot;tcinit&quot;</span> <span class="nb">command</span> it intended to <span class="nb">enable</span> quick development of ThreatConnect Exchange Apps.
+
+Job App Templates:
+  job              - This template provides the structure <span class="k">for</span> a Job App without any App
+                     logic.
+  job_batch        - This template provides a working example of downloading remote threat
+                     intel <span class="o">(</span>md5 <span class="nb">hash</span> indicators<span class="o">)</span> and writing the data in the ThreatConnect
+                     Platform using the tcex batch module.
+
+Playbook App Templates:
+  playbook         - This template provides the structure <span class="k">for</span> a Playbook App without any
+                     App logic.
+  playbook_actions - This template provides an example of <span class="s2">&quot;actions&quot;</span> in a Playbook
+                     App. Using the <span class="s2">&quot;actions&quot;</span> feature a single Playbook App can have
+                     multiple actions to perform different operations on the provided data.
+  playbook_utility - This template provides a basic example of a utility App that takes
+                     an input, analyzes or modifies the data, and writes the results as
+                     output.
+
+External App Templates:
+  external         - This template provides the structure <span class="k">for</span> a External App without any
+                     App logic.
+  external_ingress - This template provides a working example of downloading remote threat
+                     intel <span class="o">(</span>md5 <span class="nb">hash</span> indicators<span class="o">)</span> and writing the data in the ThreatConnect
+                     Platform using the tcex batch module.
+
+Service App Templates:
+  service_api      - This template provides the structure <span class="k">for</span> a API Service App.
+  service_trigger  - This template provides the structure <span class="k">for</span> a Trigger Service App.
+  service_webhook  - This template provides the structure <span class="k">for</span> a Webhook Trigger Service App.
 </pre></div>
 </div>
 <div class="section" id="common-usage">
@@ -259,7 +287,7 @@ optional arguments:
 </pre></div>
 </div>
 <p>To update an existing App, run the command below from the project directory. The <strong>update</strong> action will download all Frameworks files to ensure that these files are the latest with any bug fixes or updates.  It is best practice to run the <strong>update</strong> action whenever an App is being updated for new features or bug fixes.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tcinit --action update --template playbook
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tcinit --update
 </pre></div>
 </div>
 </div>
@@ -289,8 +317,8 @@ optional arguments:
 15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default Job Class (Required)</span>
-<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
@@ -364,12 +392,24 @@ optional arguments:
 52
 53
 54
-55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
-<span class="c1"># Import default Job Class (Required)</span>
-<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
@@ -378,18 +418,25 @@ optional arguments:
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch/downloads/malware_hashes.csv&#39;</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_owner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform prep/setup logic.&quot;&quot;&quot;</span>
+        <span class="c1"># using tcex session_external to get built-in features (e.g., proxy, logging, retries)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session_external</span>
+
+        <span class="c1"># setting the base url allow for subsequent API call to be made by only</span>
+        <span class="c1"># providing the API endpoint/path.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch&#39;</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run main App logic.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_owner</span><span class="p">)</span>
 
-        <span class="c1"># using tcex requests to get built-in features (e.g., proxy, logging, retries)</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-
-        <span class="k">with</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;downloads/malware_hashes.csv&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
                 <span class="n">decoded_content</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
@@ -404,8 +451,11 @@ optional arguments:
                         <span class="k">continue</span>
 
                     <span class="c1"># create batch entry</span>
-                    <span class="n">file_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;4.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
+                    <span class="n">indicator_value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">file_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">indicator_value</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;4.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
                     <span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+                    <span class="c1"># add occurrence to batch entry</span>
                     <span class="n">occurrence</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
                     <span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_hash</span><span class="p">)</span>  <span class="c1"># optionally save object to disk</span>
@@ -455,8 +505,8 @@ optional arguments:
 22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default Playbook Class (Required)</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
@@ -572,12 +622,16 @@ optional arguments:
 80
 81
 82
-83</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+83
+84
+85</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default Playbook Class (Required)</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
+<span class="c1"># third-party</span>
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">IterateOnArg</span><span class="p">,</span> <span class="n">OnException</span><span class="p">,</span> <span class="n">OnSuccess</span><span class="p">,</span> <span class="n">Output</span>
+
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
 
 
 <span class="c1"># pylint: disable=no-self-use</span>
@@ -648,7 +702,7 @@ optional arguments:
     <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
         <span class="c1"># output</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output_strings: </span><span class="si">{self.output_strings}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output_strings: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.operation&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">)</span>
@@ -731,12 +785,14 @@ optional arguments:
 65
 66
 67
-68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+68
+69</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="c1"># Import default Playbook Class (Required)</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
 
 
 <span class="c1"># pylint: disable=attribute-defined-outside-init</span>
@@ -761,7 +817,7 @@ optional arguments:
             <span class="n">indent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">indent</span><span class="p">)</span>
             <span class="n">indent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid value (&quot;</span><span class="si">{indent}</span><span class="s1">&quot;) passed for indent.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid value (&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&quot;) passed for indent.&#39;</span><span class="p">)</span>
         <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
 
         <span class="c1"># get the playbook variable type</span>
@@ -850,8 +906,8 @@ optional arguments:
 15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect External App&quot;&quot;&quot;</span>
 
-<span class="c1"># Import default External App Class (Required)</span>
-<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
@@ -921,12 +977,14 @@ optional arguments:
 48
 49
 50
-51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+51
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
-<span class="c1"># Import default Job Class (Required)</span>
-<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
@@ -999,6 +1057,7 @@ optional arguments:
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -1012,7 +1071,6 @@ optional arguments:
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Inputs Module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Inputs Module &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Key Value Store Module" href="tcex.key_value_store.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="../index.html" class="icon icon-home"> TcEx
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.9
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
@@ -147,6 +150,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -185,7 +189,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
@@ -213,9 +217,9 @@
 <div class="section" id="module-tcex.inputs.inputs">
 <span id="inputs-inputs"></span><h2>inputs.inputs<a class="headerlink" href="#module-tcex.inputs.inputs" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Inputs module</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.inputs.inputs.Inputs">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.inputs.inputs.</code><code class="sig-name descname">Inputs</code><span class="sig-paren">(</span><em class="sig-param">tcex</em>, <em class="sig-param">config</em>, <em class="sig-param">config_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.inputs.inputs.</code><code class="sig-name descname">Inputs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tcex</span></em>, <em class="sig-param"><span class="n">config</span></em>, <em class="sig-param"><span class="n">config_file</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Module for handling inputs passed to App from CLI, Config, SecureParams, and AOT</p>
 <dl class="field-list simple">
@@ -228,7 +232,7 @@ None.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs._get_secure_params">
 <code class="sig-name descname">_get_secure_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs._get_secure_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs._get_secure_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load secure params from the API.</p>
@@ -260,19 +264,19 @@ None.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs._load_aot_params">
 <code class="sig-name descname">_load_aot_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs._load_aot_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs._load_aot_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block and retrieve params from Redis.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs._load_secure_params">
 <code class="sig-name descname">_load_secure_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs._load_secure_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs._load_secure_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse args and return default args.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs._results_tc_args">
 <code class="sig-name descname">_results_tc_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs._results_tc_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs._results_tc_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from results_tc file from previous run of app.</p>
@@ -280,15 +284,15 @@ None.</p></li>
 intended for testing apps locally.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.aot_blpop">
 <code class="sig-name descname">aot_blpop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.aot_blpop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.aot_blpop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe to AOT action channel.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.args">
-<code class="sig-name descname">args</code><span class="sig-paren">(</span><em class="sig-param">parse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.args" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parse</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse args if they have not already been parsed and return the Namespace for args.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -304,9 +308,9 @@ intended for testing apps locally.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.config">
-<code class="sig-name descname">config</code><span class="sig-paren">(</span><em class="sig-param">config_data</em>, <em class="sig-param">preserve=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_data</span></em>, <em class="sig-param"><span class="n">preserve</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add configuration data to update default_args.</p>
 <p>Below are the default args that the TcEx frameworks supports. Any App specific args
 should be included in the provided data.</p>
@@ -336,9 +340,9 @@ should be included in the provided data.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.config_file">
-<code class="sig-name descname">config_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">config_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">key</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.config_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load configuration data from provided file and update default_args.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -356,27 +360,27 @@ should be included in the provided data.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.default_args">
 <em class="property">property </em><code class="sig-name descname">default_args</code><a class="headerlink" href="#tcex.inputs.inputs.Inputs.default_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse args and return default args.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.params">
 <em class="property">property </em><code class="sig-name descname">params</code><a class="headerlink" href="#tcex.inputs.inputs.Inputs.params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return input params.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.register_token">
 <code class="sig-name descname">register_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.register_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.register_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register token if provided in args (non-service Apps)</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.resolved_args">
-<code class="sig-name descname">resolved_args</code><span class="sig-paren">(</span><em class="sig-param">parse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.resolved_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.resolved_args" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">resolved_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parse</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.resolved_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.resolved_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return namespace of args that have all playbook variables automatically resolved.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -392,25 +396,25 @@ should be included in the provided data.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.resolved_params">
 <em class="property">property </em><code class="sig-name descname">resolved_params</code><a class="headerlink" href="#tcex.inputs.inputs.Inputs.resolved_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return input params.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.tc_bool_args">
 <em class="property">property </em><code class="sig-name descname">tc_bool_args</code><a class="headerlink" href="#tcex.inputs.inputs.Inputs.tc_bool_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of default ThreatConnect Args that are booleans.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.tc_reserved_args">
 <em class="property">property </em><code class="sig-name descname">tc_reserved_args</code><a class="headerlink" href="#tcex.inputs.inputs.Inputs.tc_reserved_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of <em>all</em> ThreatConnect reserved arg values.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.unknown_args">
 <code class="sig-name descname">unknown_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.unknown_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.unknown_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log argparser unknown arguments.</p>
@@ -422,15 +426,15 @@ should be included in the provided data.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.update_logging">
 <code class="sig-name descname">update_logging</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.update_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.update_logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the TcEx logger with appropriate handlers.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.inputs.Inputs.update_params">
-<code class="sig-name descname">update_params</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.update_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.update_params" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/inputs.html#Inputs.update_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.inputs.Inputs.update_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update params provided by AOT and Secure Params to be of the proper value and type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -445,13 +449,45 @@ should be included in the provided data.</p>
 <div class="section" id="module-tcex.inputs.argument_parser">
 <span id="inputs-argument-parser"></span><h2>inputs.argument_parser<a class="headerlink" href="#module-tcex.inputs.argument_parser" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Common Arg Handler</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.inputs.argument_parser.</code><code class="sig-name descname">TcArgumentParser</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.inputs.argument_parser.</code><code class="sig-name descname">TcArgumentParser</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></p>
 <p>Overload of the ArgumentParser class.</p>
 <p>Adding common arguments for TcEx apps.</p>
-<dl class="method">
+<dl class="py method">
+<dt id="tcex.inputs.argument_parser.TcArgumentParser._advanced_request">
+<code class="sig-name descname">_advanced_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._advanced_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._advanced_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define App Feature - Advanced Request args.</p>
+<dl class="option-list">
+<dt><kbd><span class="option">--tc_adv_req_body <var>params</var></span></kbd></dt>
+<dd><p>The HTTP body.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_exclude_null_params <var>bool</var></span></kbd></dt>
+<dd><p>If True, exclude null params.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_fail_on_error <var>bool</var></span></kbd></dt>
+<dd><p>If True, fail on any encountered error.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_headers <var>params</var></span></kbd></dt>
+<dd><p>The HTTP headers.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_http_method <var>method</var></span></kbd></dt>
+<dd><p>The HTTP method (e.g., GET, POST).</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_params <var>params</var></span></kbd></dt>
+<dd><p>The HTTP query params.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_path <var>path</var></span></kbd></dt>
+<dd><p>The API path.</p>
+</dd>
+<dt><kbd><span class="option">--tc_adv_req_urlencode_body <var>bool</var></span></kbd></dt>
+<dd><p>If True, urlencode body.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser._api_arguments">
 <code class="sig-name descname">_api_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._api_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._api_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define TC API args.</p>
@@ -471,7 +507,7 @@ should be included in the provided data.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser._batch_arguments">
 <code class="sig-name descname">_batch_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._batch_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._batch_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define Batch API args.</p>
@@ -498,7 +534,7 @@ completion.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser._logger_arguments">
 <code class="sig-name descname">_logger_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._logger_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._logger_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define logger args supported by every TcEx App.</p>
@@ -527,7 +563,7 @@ completion.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser._playbook_arguments">
 <code class="sig-name descname">_playbook_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._playbook_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._playbook_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define playbook specific args.</p>
@@ -551,7 +587,7 @@ completion.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser._service_arguments">
 <code class="sig-name descname">_service_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._service_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._service_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define service specific args.</p>
@@ -605,7 +641,7 @@ completion.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser._standard_arguments">
 <code class="sig-name descname">_standard_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._standard_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._standard_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define standard args passed to every TcEx App.</p>
@@ -656,9 +692,9 @@ proxy.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.inputs.argument_parser.TcArgumentParser.add_argument">
-<code class="sig-name descname">add_argument</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser.add_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser.add_argument" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_argument</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser.add_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser.add_argument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Customize add_argument method for parser.</p>
 <p>Remove required flag from App args and instead insert a default value from default_args
 namespace. This is an attempt to move away from manipulating sys.argv and using args
@@ -690,6 +726,7 @@ in favor on adding args in as a config (dict) in all cases.</p>
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -703,7 +740,6 @@ in favor on adding args in as a config (dict) in all cases.</p>
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

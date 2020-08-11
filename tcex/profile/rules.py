@@ -1,8 +1,10 @@
-# -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 # import json
+# standard library
+import json
 import re
 
+# third-party
 import colorama as c
 
 # autoreset colorama
@@ -16,23 +18,24 @@ class Rules:
         """Initialize Class properties."""
         self.profile = profile
 
-    def data(self, data, variable):
+    def data(self, data: str) -> dict:  # pylint: disable=too-many-return-statements
         """Return the default output data for a given variable
 
         Args:
             data (any): The output data from the App for the current variable.
-            variable (str): The current output variable.
 
         Returns:
-            [type]: [description]
+            []: [description]
         """
 
         # NOTE: The order of these if statements matter.
+        if data is None:
+            return {'expected_output': data, 'op': 'eq'}
         if self.matches_url_rule(data):
             return {'expected_output': data, 'op': 'is_url'}
         if self.matches_number_rule(data):
             return {'expected_output': data, 'op': 'is_number'}
-        if self.matches_jeq_rule(data, variable):
+        if self.matches_jeq_rule(data):
             return {
                 'expected_output': data,
                 'op': 'jeq',
@@ -48,9 +51,6 @@ class Rules:
     @staticmethod
     def matches_number_rule(outputs):
         """Return if output should use the is_number operator."""
-        if not outputs:
-            return False
-
         if not isinstance(outputs, list):
             outputs = [outputs]
         try:
@@ -63,9 +63,6 @@ class Rules:
     @staticmethod
     def matches_url_rule(outputs):
         """Return if output should use the is_url operator."""
-        if not outputs:
-            return False
-
         if not isinstance(outputs, list):
             outputs = [outputs]
 
@@ -89,8 +86,6 @@ class Rules:
 
     def matches_date_rule(self, outputs):
         """Return if output should use the is_date operator."""
-        if not outputs:
-            return False
         if not isinstance(outputs, list):
             outputs = [outputs]
 
@@ -125,24 +120,20 @@ class Rules:
         return True
 
     @staticmethod
-    def matches_jeq_rule(outputs, variable):  # pylint: disable=unused-argument
+    def matches_jeq_rule(outputs):
         """Return if output should use the jeq operator."""
         # TODO: APP-674 - revisit this with Ben
-        if 'json.raw' in variable:
-            return True
-        return False
-
-        # if not outputs:
-        #     return False
-        # if not isinstance(outputs, list):
-        #     outputs = [outputs]
-        # try:
-        #     for output in outputs:
-        #         if not isinstance(output, dict):
-        #             json.loads(output)
-        # except Exception:
-        #     return False
-        # return True
+        if not isinstance(outputs, list):
+            outputs = [outputs]
+        try:
+            for output in outputs:
+                if not isinstance(output, str):
+                    return False
+                if not isinstance(json.loads(output), (dict, list)):
+                    return False
+        except Exception:
+            return False
+        return True
 
     @staticmethod
     def matches_dd_rule(outputs):

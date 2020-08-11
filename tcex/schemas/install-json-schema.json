@@ -198,6 +198,9 @@
     },
     "playbook": {
       "properties": {
+        "outputPrefix": {
+          "type": "string"
+        },
         "outputVariables": {
           "items": {
             "additionalProperties": false,
@@ -268,6 +271,14 @@
         "array",
         "string"
       ]
+    },
+    "service": {
+      "properties": {
+        "discoveryTypes": {
+          "type": "array"
+        }
+      },
+      "type": "object"
     }
   },
   "required": [

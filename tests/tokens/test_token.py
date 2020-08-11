@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
+# standard library
 import threading
 import time
 

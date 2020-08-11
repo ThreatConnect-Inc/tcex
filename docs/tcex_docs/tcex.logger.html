@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Logger Module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Logger Module &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Metrics module" href="tcex.metrics.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="../index.html" class="icon icon-home"> TcEx
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.9
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
@@ -151,6 +154,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -189,7 +193,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
@@ -217,50 +221,50 @@
 <div class="section" id="module-tcex.logger.logger">
 <span id="logger-logger"></span><h2>logger.logger<a class="headerlink" href="#module-tcex.logger.logger" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Logger module</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.logger.logger.Logger">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.logger.</code><code class="sig-name descname">Logger</code><span class="sig-paren">(</span><em class="sig-param">tcex</em>, <em class="sig-param">logger_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.logger.</code><code class="sig-name descname">Logger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tcex</span></em>, <em class="sig-param"><span class="n">logger_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Framework logger module.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger._log_app_data">
 <code class="sig-name descname">_log_app_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_app_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_app_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the App data information.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger._log_platform">
 <code class="sig-name descname">_log_platform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_platform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_platform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the current Platform.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger._log_python_version">
 <code class="sig-name descname">_log_python_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_python_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_python_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the current Python version.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger._log_tc_proxy">
-<code class="sig-name descname">_log_tc_proxy</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_tc_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_tc_proxy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_log_tc_proxy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_tc_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_tc_proxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the proxy settings.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger._log_tcex_path">
 <code class="sig-name descname">_log_tcex_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_tcex_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_tcex_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the current TcEx path.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger._log_tcex_version">
 <code class="sig-name descname">_log_tcex_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger._log_tcex_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger._log_tcex_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the current TcEx version number.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.add_api_handler">
-<code class="sig-name descname">add_api_handler</code><span class="sig-paren">(</span><em class="sig-param">name='api'</em>, <em class="sig-param">level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_api_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_api_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_api_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'api'</span></em>, <em class="sig-param"><span class="n">level</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_api_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_api_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add API logging handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -272,9 +276,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.add_cache_handler">
-<code class="sig-name descname">add_cache_handler</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_cache_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_cache_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_cache_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_cache_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_cache_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add cache logging handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -283,9 +287,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.add_rotating_file_handler">
-<code class="sig-name descname">add_rotating_file_handler</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">filename</em>, <em class="sig-param">path</em>, <em class="sig-param">backup_count</em>, <em class="sig-param">max_bytes</em>, <em class="sig-param">level</em>, <em class="sig-param">formatter=None</em>, <em class="sig-param">mode='a'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_rotating_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_rotating_file_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_rotating_file_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">backup_count</span></em>, <em class="sig-param"><span class="n">max_bytes</span></em>, <em class="sig-param"><span class="n">level</span></em>, <em class="sig-param"><span class="n">formatter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'a'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_rotating_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_rotating_file_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a rotating file handler</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -303,9 +307,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.add_stream_handler">
-<code class="sig-name descname">add_stream_handler</code><span class="sig-paren">(</span><em class="sig-param">name='sh'</em>, <em class="sig-param">formatter=None</em>, <em class="sig-param">level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_stream_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_stream_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_stream_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'sh'</span></em>, <em class="sig-param"><span class="n">formatter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">level</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_stream_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_stream_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return stream logging handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -318,9 +322,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.add_thread_file_handler">
-<code class="sig-name descname">add_thread_file_handler</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">filename</em>, <em class="sig-param">level</em>, <em class="sig-param">path</em>, <em class="sig-param">formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_thread_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_thread_file_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_thread_file_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">level</span></em>, <em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">formatter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.add_thread_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.add_thread_file_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add File logging handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -335,21 +339,21 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.log">
 <em class="property">property </em><code class="sig-name descname">log</code><a class="headerlink" href="#tcex.logger.logger.Logger.log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return logger.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.log_info">
-<code class="sig-name descname">log_info</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.log_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.log_info" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.log_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.log_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send System and App data to logs.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.log_level">
-<em class="property">static </em><code class="sig-name descname">log_level</code><span class="sig-paren">(</span><em class="sig-param">level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.log_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.log_level" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">log_level</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">level</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.log_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.log_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return proper level from string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -358,9 +362,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.remove_handler_by_name">
-<code class="sig-name descname">remove_handler_by_name</code><span class="sig-paren">(</span><em class="sig-param">handler_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.remove_handler_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.remove_handler_by_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">remove_handler_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.remove_handler_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.remove_handler_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a file handler by name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -369,13 +373,13 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.replay_cached_events">
-<code class="sig-name descname">replay_cached_events</code><span class="sig-paren">(</span><em class="sig-param">handler_name='cache'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.replay_cached_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.replay_cached_events" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">replay_cached_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler_name</span><span class="o">=</span><span class="default_value">'cache'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.replay_cached_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.replay_cached_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replay cached log events and remove handler.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.shutdown">
 <code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close all handlers.</p>
@@ -386,9 +390,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.logger.Logger.update_handler_level">
-<code class="sig-name descname">update_handler_level</code><span class="sig-paren">(</span><em class="sig-param">level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.update_handler_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.update_handler_level" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_handler_level</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">level</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/logger.html#Logger.update_handler_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.logger.Logger.update_handler_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update all handlers log level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -403,14 +407,14 @@
 <div class="section" id="module-tcex.logger.api_handler">
 <span id="logger-api-handler"></span><h2>logger.api_handler<a class="headerlink" href="#module-tcex.logger.api_handler" title="Permalink to this headline">¶</a></h2>
 <p>API Handler Class</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.logger.api_handler.ApiHandler">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.api_handler.</code><code class="sig-name descname">ApiHandler</code><span class="sig-paren">(</span><em class="sig-param">session</em>, <em class="sig-param">flush_limit=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.api_handler.</code><code class="sig-name descname">ApiHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">session</span></em>, <em class="sig-param"><span class="n">flush_limit</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Handler</span></code></p>
 <p>Logger handler for ThreatConnect Exchange API logging.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.api_handler.ApiHandler.emit">
-<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param">record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler.emit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">record</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler.emit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Emit a record.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -419,34 +423,34 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.api_handler.ApiHandler.entries">
 <em class="property">property </em><code class="sig-name descname">entries</code><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler.entries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy and clear self._entries.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.api_handler.ApiHandler.flush">
 <code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the logger and flush entries.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.api_handler.ApiHandler.log_to_api">
-<code class="sig-name descname">log_to_api</code><span class="sig-paren">(</span><em class="sig-param">entries</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler.log_to_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler.log_to_api" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log_to_api</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entries</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandler.log_to_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandler.log_to_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send log events to the ThreatConnect API</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.logger.api_handler.ApiHandlerFormatter">
 <em class="property">class </em><code class="sig-prename descclassname">tcex.logger.api_handler.</code><code class="sig-name descname">ApiHandlerFormatter</code><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandlerFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandlerFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></p>
 <p>Logger formatter for ThreatConnect Exchange API logging.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.api_handler.ApiHandlerFormatter.format">
-<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param">record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandlerFormatter.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandlerFormatter.format" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">record</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/api_handler.html#ApiHandlerFormatter.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.api_handler.ApiHandlerFormatter.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format log record for ThreatConnect API.</p>
 <p>Example log event:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
@@ -469,14 +473,14 @@
 <div class="section" id="module-tcex.logger.cache_handler">
 <span id="logger-cache-handler"></span><h2>logger.cache_handler<a class="headerlink" href="#module-tcex.logger.cache_handler" title="Permalink to this headline">¶</a></h2>
 <p>Cache Handler Class</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.logger.cache_handler.CacheHandler">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.cache_handler.</code><code class="sig-name descname">CacheHandler</code><span class="sig-paren">(</span><em class="sig-param">max_cache=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/cache_handler.html#CacheHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.cache_handler.CacheHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.cache_handler.</code><code class="sig-name descname">CacheHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_cache</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/cache_handler.html#CacheHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.cache_handler.CacheHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Handler</span></code></p>
 <p>Logger handler for caching event until all handlers are availabe.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.cache_handler.CacheHandler.emit">
-<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param">record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/cache_handler.html#CacheHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.cache_handler.CacheHandler.emit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">record</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/cache_handler.html#CacheHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.cache_handler.CacheHandler.emit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Emit a record.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -485,7 +489,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.cache_handler.CacheHandler.events">
 <em class="property">property </em><code class="sig-name descname">events</code><a class="headerlink" href="#tcex.logger.cache_handler.CacheHandler.events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy and clear self._events.</p>
@@ -497,9 +501,9 @@
 <div class="section" id="module-tcex.logger.rotating_file_handler_custom">
 <span id="logger-rotating-file-handler-custom"></span><h2>logger.rotating_file_handler_custom<a class="headerlink" href="#module-tcex.logger.rotating_file_handler_custom" title="Permalink to this headline">¶</a></h2>
 <p>API Handler Class</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.rotating_file_handler_custom.</code><code class="sig-name descname">RotatingFileHandlerCustom</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='a'</em>, <em class="sig-param">maxBytes=0</em>, <em class="sig-param">backupCount=0</em>, <em class="sig-param">encoding=None</em>, <em class="sig-param">delay=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/rotating_file_handler_custom.html#RotatingFileHandlerCustom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.rotating_file_handler_custom.</code><code class="sig-name descname">RotatingFileHandlerCustom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'a'</span></em>, <em class="sig-param"><span class="n">maxBytes</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">backupCount</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">delay</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/rotating_file_handler_custom.html#RotatingFileHandlerCustom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.handlers.RotatingFileHandler</span></code></p>
 <p>Logger handler for ThreatConnect Exchange File logging.</p>
 </dd></dl>
@@ -508,14 +512,14 @@
 <div class="section" id="module-tcex.logger.thread_file_handler">
 <span id="logger-thread-file-handler"></span><h2>logger.thread_file_handler<a class="headerlink" href="#module-tcex.logger.thread_file_handler" title="Permalink to this headline">¶</a></h2>
 <p>API Handler Class</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.logger.thread_file_handler.ThreadFileHandler">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.thread_file_handler.</code><code class="sig-name descname">ThreadFileHandler</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='a'</em>, <em class="sig-param">encoding=None</em>, <em class="sig-param">delay=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/thread_file_handler.html#ThreadFileHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.thread_file_handler.ThreadFileHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.thread_file_handler.</code><code class="sig-name descname">ThreadFileHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'a'</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">delay</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/thread_file_handler.html#ThreadFileHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.thread_file_handler.ThreadFileHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.FileHandler</span></code></p>
 <p>Logger handler for ThreatConnect Exchange File logging.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.thread_file_handler.ThreadFileHandler.emit">
-<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param">record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/thread_file_handler.html#ThreadFileHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.thread_file_handler.ThreadFileHandler.emit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">record</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/thread_file_handler.html#ThreadFileHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.thread_file_handler.ThreadFileHandler.emit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Emit a record.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -530,14 +534,14 @@
 <div class="section" id="module-tcex.logger.trace_logger">
 <span id="logger-trace-logger"></span><h2>logger.trace_logger<a class="headerlink" href="#module-tcex.logger.trace_logger" title="Permalink to this headline">¶</a></h2>
 <p>Trace Logger Class</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.logger.trace_logger.TraceLogger">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.trace_logger.</code><code class="sig-name descname">TraceLogger</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">level=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/trace_logger.html#TraceLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.trace_logger.TraceLogger" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.logger.trace_logger.</code><code class="sig-name descname">TraceLogger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">level</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/trace_logger.html#TraceLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.trace_logger.TraceLogger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Logger</span></code></p>
 <p>Add trace level to logging</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.trace_logger.TraceLogger.findCaller">
-<code class="sig-name descname">findCaller</code><span class="sig-paren">(</span><em class="sig-param">stack_info=False</em>, <em class="sig-param">stack_level=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/trace_logger.html#TraceLogger.findCaller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.trace_logger.TraceLogger.findCaller" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">findCaller</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stack_info</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stack_level</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/trace_logger.html#TraceLogger.findCaller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.trace_logger.TraceLogger.findCaller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the caller for the current log event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -552,9 +556,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.logger.trace_logger.TraceLogger.trace">
-<code class="sig-name descname">trace</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/trace_logger.html#TraceLogger.trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.trace_logger.TraceLogger.trace" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/logger/trace_logger.html#TraceLogger.trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.logger.trace_logger.TraceLogger.trace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set trace logging level</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -588,6 +592,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -601,7 +606,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

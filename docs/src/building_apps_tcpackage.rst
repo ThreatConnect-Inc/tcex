@@ -16,7 +16,7 @@ Running ``tcpackage`` will build a zip package of an App that can be installed d
 Usage
 -----
 
-.. code:: bash
+.. code-block:: bash
 
     usage: tcpackage [-h] [--bundle] [--exclude EXCLUDE] [--config CONFIG]
                      [--install_json INSTALL_JSON] [--outdir OUTDIR]
@@ -36,7 +36,7 @@ Common Usage
 
 The following command will build the app in the **target** directory of the project with and extension of **.tcx**.
 
-.. code:: bash
+.. code-block:: bash
 
     tcpackage
 
@@ -47,7 +47,7 @@ By default, the ``tcex.json`` file will be loaded by ``tcpackage``.  The followi
 Single App
 ~~~~~~~~~~
 
-.. code:: javascript
+.. code-block:: javascript
 
   <..snipped>
   "package": {
@@ -66,7 +66,7 @@ Single App
 Multiple Bundles
 ~~~~~~~~~~~~~~~~
 
-.. code:: javascript
+.. code-block:: javascript
 
   <..snipped>
   "package": {

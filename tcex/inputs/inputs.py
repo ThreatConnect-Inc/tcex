@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Inputs module"""
+# standard library
 import json
 import os
 import sys
@@ -154,7 +154,7 @@ class Inputs:
         else:
             result_file = 'results.tc'
         if os.path.isfile(result_file):
-            with open(result_file, 'r') as rh:
+            with open(result_file) as rh:
                 results = rh.read().strip().split('\n')
             os.remove(result_file)
         for line in results:
@@ -311,7 +311,7 @@ class Inputs:
                 self.tcex.log.info(f'Loaded {len(file_content)} inputs from config file.')
             else:
                 try:
-                    with open(filename, 'r') as fh:
+                    with open(filename) as fh:
                         file_content = json.load(fh)
                 except ValueError:  # pragma: no cover
                     self.tcex.log.error(f'Could not parse configuration file "{filename}".')

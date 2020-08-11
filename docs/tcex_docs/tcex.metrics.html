@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Metrics module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Metrics module &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Notifications Module" href="tcex.notifications.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="../index.html" class="icon icon-home"> TcEx
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.9
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
@@ -146,6 +149,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -184,7 +188,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
@@ -212,14 +216,14 @@
 <div class="section" id="module-tcex.metrics.metrics">
 <span id="metrics-metrics"></span><h2>metrics.metrics<a class="headerlink" href="#module-tcex.metrics.metrics" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Module for working with Metrics in the ThreatConnect Platform.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.metrics.metrics.Metrics">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.metrics.metrics.</code><code class="sig-name descname">Metrics</code><span class="sig-paren">(</span><em class="sig-param">tcex</em>, <em class="sig-param">name</em>, <em class="sig-param">description</em>, <em class="sig-param">data_type</em>, <em class="sig-param">interval</em>, <em class="sig-param">keyed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.metrics.metrics.</code><code class="sig-name descname">Metrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tcex</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">description</span></em>, <em class="sig-param"><span class="n">data_type</span></em>, <em class="sig-param"><span class="n">interval</span></em>, <em class="sig-param"><span class="n">keyed</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Metrics Class</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.metrics.metrics.Metrics.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">date=None</em>, <em class="sig-param">return_value=False</em>, <em class="sig-param">key=None</em>, <em class="sig-param">weight=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">return_value</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add metrics data to collection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -244,9 +248,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.metrics.metrics.Metrics.add_keyed">
-<code class="sig-name descname">add_keyed</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">key</em>, <em class="sig-param">date=None</em>, <em class="sig-param">return_value=False</em>, <em class="sig-param">weight=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.add_keyed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.add_keyed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_keyed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">return_value</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.add_keyed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.add_keyed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add keyed metrics data to collection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -271,7 +275,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.metrics.metrics.Metrics.metric_create">
 <code class="sig-name descname">metric_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.metric_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.metric_create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the defined metric.</p>
@@ -292,7 +296,7 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.metrics.metrics.Metrics.metric_find">
 <code class="sig-name descname">metric_find</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/metrics/metrics.html#Metrics.metric_find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.metrics.metrics.Metrics.metric_find" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the Metric by name.</p>
@@ -341,6 +345,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -354,7 +359,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

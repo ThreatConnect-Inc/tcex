@@ -11,7 +11,7 @@ Retrieve Inactive Indicators
     ti = self.ti.address()
     filters = self.ti.filters()
     filters.add_filter('active', '=', 'false')
-    for address in ti.many(filters=filters, params=parameters):
+    for address in ti.many(filters=filters):
         print(address)
 
 ---------------------------------------
@@ -43,3 +43,19 @@ Retrieve Indicators with Date Added filters
     indicators = self.tcex.ti.indicator(owner='example')
     for indicator in indicators.many(filters=filters):
         print(indicator)
+
+---------------------------------------
+Retrieve Indicators Owners
+---------------------------------------
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    # Create a example indicator
+    indicator_kwargs = {'ip': '1.1.1.1', 'rating': randint(0, 5), 'confidence': randint(0, 100)}
+    indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
+    indicator.create()
+    # Get the owners that indicator is in.
+    owner = indicator.owners()
+    # indicator.owners() return the response, time to get the owner data.
+    owner_data = owner.get('data', {}).get('owner', [])

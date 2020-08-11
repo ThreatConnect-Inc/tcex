@@ -1,9 +1,10 @@
-# -*- coding: utf-8 -*-
 """TcEx Playbook Common module"""
 # import json
+# standard library
 import os
 import time
 import uuid
+
 from .test_case import TestCase
 
 

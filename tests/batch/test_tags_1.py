@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
+# third-party
 import pytest
 
 
@@ -13,6 +13,7 @@ class TestTags1:
     @pytest.mark.parametrize('name,tag', [('pytest-adversary-i1-001', 'PyTest1')])
     def test_tag(self, name, tag, tcex):
         """Test adversary creation"""
+        # standard library
         import os
 
         print(os.environ)

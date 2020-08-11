@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Notification Module."""
 
 
@@ -28,7 +27,7 @@ class TestNotification:
         notification = tcex.notification()
         notification.recipients(
             notification_type='PyTest recipients notification',
-            recipients='pytest@tci.ninja',
+            recipients='rsparkles',
             priority='High',
         )
         status = notification.send(message='High alert send to recipients.')

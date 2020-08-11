@@ -3,7 +3,7 @@
 
 
 # pylint: disable=no-self-use,unused-argument
-class Custom(object):
+class Custom:
     """Custom test method class Apps."""
 
     def __init__(self):

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """API Handler Class"""
+# standard library
 import os
 from logging.handlers import RotatingFileHandler
 

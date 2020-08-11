@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Validate Data Testing Module"""
+# standard library
 import datetime
 import difflib
 import hashlib
@@ -196,6 +196,7 @@ class Validator:
             bool: The results of the operator.
         """
         try:
+            # third-party
             from deepdiff import DeepDiff
         except ImportError:
             return False, 'Could not import DeepDiff module (try "pip install deepdiff").'
@@ -356,7 +357,7 @@ class Validator:
         return False
 
     def operator_is_number(self, app_data, test_data):  # pylint: disable=unused-argument
-        """Check if the app_data is a known date."""
+        """Check if the app_data is a number."""
         if self.check_null(app_data):
             return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
@@ -365,7 +366,7 @@ class Validator:
         bad_data = []
         passed = True
         for data in app_data:
-            if isinstance(data, str) and data.isdigit():
+            if isinstance(data, str) and isinstance(self._string_to_int_float(data), (int, float)):
                 continue
             if isinstance(data, numbers.Number):
                 continue
@@ -948,7 +949,7 @@ class ThreatConnect:
         batch_errors = []
         dir_path = os.path.join('.', 'log', profile.feature, f'test_profiles-{profile.name}')
         for filename in os.listdir(dir_path):
-            with open(os.path.join(dir_path, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename)) as fh:
                 if not filename.startswith('errors-') or not filename.endswith('.json'):
                     continue
                 batch_errors += json.load(fh)
@@ -957,7 +958,7 @@ class ThreatConnect:
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
 
-            with open(os.path.join(dir_path, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename)) as fh:
                 data = json.load(fh)
                 validation_data = self._partition_batch_data(data)
                 sample_validation_data = []
@@ -1087,6 +1088,13 @@ class ThreatConnect:
         """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
+        if ti_entity is None:
+            error = (
+                f"NotFoundError: Provided {tc_entity.get('type')}: "
+                f"{tc_entity.get('summary', tc_entity.get('name', 'Unknown'))} could not "
+                f'be fetched from ThreatConnect owner {owner} (Null Means default API Owner).'
+            )
+            return False, [error]
         ti_response = ti_entity.single(params=parameters)
         entity_name = tc_entity.get('name')
         errors = []
@@ -1164,6 +1172,7 @@ class ThreatConnect:
     def compare_dicts(expected, actual, error_type=''):
         """Compare two dicts and returns a list of errors if they don't match"""
         errors = []
+
         for item in expected:
             if item in actual:
                 if isinstance(expected.get(item), list):
@@ -1188,7 +1197,7 @@ class ThreatConnect:
                 )
         for item in list(actual.items()):
             errors.append(
-                f'{error_type}{item} : {actual.get(item)} was in '
+                f'{error_type}{item} : {item} was in '
                 f'actual results but not in expected results.'
             )
 
@@ -1213,7 +1222,7 @@ class ThreatConnect:
     @staticmethod
     def _convert_to_entities(file):
         """Convert file to tc_entity array"""
-        with open(file, 'r') as read_file:
+        with open(file) as read_file:
             data = json.load(read_file)
         return data
 
@@ -1230,7 +1239,7 @@ class ThreatConnect:
         """Convert a tc_entity to a ti_entity"""
         ti_entity = None
 
-        if tc_entity.get('type') in self.provider.tcex.group_types:
+        if tc_entity.get('type').lower() in map(str.lower, self.provider.tcex.group_types):
             # We can't search by xid sadly so have to search by name and validate xid to
             # get the id of the group.
             filters = self.provider.tcex.ti.filters()
@@ -1247,7 +1256,7 @@ class ThreatConnect:
                         name=entity.get('name'),
                         unique_id=entity.get('id'),
                     )
-        elif tc_entity.get('type') in self.provider.tcex.indicator_types:
+        elif tc_entity.get('type').lower() in map(str.lower, self.provider.tcex.indicator_types):
             tc_entity['summary'] = quote(tc_entity.get('summary'), safe='')
             if tc_entity.get('type').lower() == 'file':
                 tc_entity['summary'] = tc_entity.get('summary').upper()
@@ -1256,7 +1265,7 @@ class ThreatConnect:
                 owner=owner,
                 unique_id=tc_entity.get('summary'),
             )
-        elif tc_entity.get('type') == 'Victim':
+        elif tc_entity.get('type').lower() == 'victim':
             # TODO: Will need to do something similar to what was done to get the groups entity.
             pass
 
@@ -1272,7 +1281,7 @@ class ThreatConnect:
         for filename in os.listdir(dir_path):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
-            with open(os.path.join(dir_path, filename), 'r') as fh:
+            with open(os.path.join(dir_path, filename)) as fh:
                 data = json.load(fh)
                 partitioned_data = self._partition_batch_data(data)
                 for key in partitioned_data:
@@ -1332,9 +1341,9 @@ class ThreatConnect:
         expected = []
         actual = []
         for tag in tc_entity.get('tag', []):
-            expected.append(tag.get('name'))
+            expected.append(tag.get('name').lower())
         for tag in ti_response.get('tag', []):
-            actual.append(tag.get('name'))
+            actual.append(tag.get('name').lower())
 
         return self.compare_lists(expected, actual, error_type='TagError: ')
 

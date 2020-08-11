@@ -95,7 +95,7 @@ The example below retrieves a single Adversary with ID 416, if it exists.
 
 Get Group Metadata
 ------------------
-There are six methods that retrieve metadata for a Group: ``group_associations()``, ``indicator_associations()``, ``attributes()``, ``attributes()``, ``tags()``, and ``labels()``.  This data can also be retrieved in the initial API call by using the ``include`` query parameters.
+There are six methods that retrieve metadata for a Group: ``group_associations()``, ``indicator_associations()``, ``attributes()``, ``tags()``, and ``labels()``.  Attributes, Labels, and Tags can also be retrieved in the initial API call by using the ``include`` query parameters.
 
 .. code-block:: python
     :linenos:

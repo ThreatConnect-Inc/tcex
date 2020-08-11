@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Playbook module"""
+# standard library
 import base64
 import json
 import re

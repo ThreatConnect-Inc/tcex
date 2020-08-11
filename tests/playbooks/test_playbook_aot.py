@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Inputs Config Module."""
+# standard library
 import json
 from random import randint
 

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Module"""
+# third-party
 import inflect
 
 from .mappings.filters import Filters
@@ -14,8 +14,7 @@ from .mappings.group.group_types.intrusion_set import IntrusionSet
 from .mappings.group.group_types.report import Report
 from .mappings.group.group_types.signature import Signature
 from .mappings.group.group_types.threat import Threat
-from .mappings.indicator.indicator import (Indicator,
-                                           custom_indicator_class_factory)
+from .mappings.indicator.indicator import Indicator, custom_indicator_class_factory
 from .mappings.indicator.indicator_types.address import Address
 from .mappings.indicator.indicator_types.email_address import EmailAddress
 from .mappings.indicator.indicator_types.file import File
@@ -529,10 +528,10 @@ class ThreatIntelligence:
             values = []
             value = None
             keys = d.keys()
-            if resource_type in self.tcex.group_types:
+            if resource_type.lower() in map(str.lower, self.tcex.group_types):
                 r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
-            elif resource_type in self.tcex.indicator_types:
+            elif resource_type.lower() in map(str.lower, self.tcex.indicator_types):
                 r = self.tcex.ti.indicator(indicator_type=resource_type)
                 r._set_unique_id(d)
                 value = r.unique_id

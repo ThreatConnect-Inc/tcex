@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Debug Decorator."""
+# first-party
 from tcex import OnSuccess
 
 

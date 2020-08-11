@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Trace Logger Class"""
+# standard library
 import logging
 from inspect import getframeinfo, stack
 

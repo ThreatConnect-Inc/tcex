@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
+# standard library
 import os
 import threading
 
@@ -36,6 +36,7 @@ class TestApiHandler:
         """
         logfile = tcex.default_args.tc_log_file.replace('.log', '-thread.log')
         t = threading.Thread(name='pytest', target=self.logging_thread, args=(logfile, tcex))
+        # standard library
         import time
 
         time.sleep(5)

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Case Management Collection"""
+# third-party
 from requests.exceptions import ProxyError
 
 from .tql import TQL

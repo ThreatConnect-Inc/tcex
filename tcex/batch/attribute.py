@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Batch Import Module"""
+# standard library
 import json
 
 

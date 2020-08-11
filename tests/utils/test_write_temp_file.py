@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Utils Module."""
+# standard library
 import os
 
 

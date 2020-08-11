@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect External App"""
 
-# Import default External App Class (Required)
-from external_app import ExternalApp
+# first-party
+from external_app import ExternalApp  # Import default External App Class (Required)
 
 
 class App(ExternalApp):

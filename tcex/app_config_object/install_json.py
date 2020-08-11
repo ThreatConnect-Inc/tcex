@@ -1,10 +1,186 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework InstallJson Object."""
+# standard library
 import json
 import logging
 import os
 import uuid
 from collections import OrderedDict
+
+
+class AppFeatureAdvanceRequest:
+    """AdvancedRequest Module"""
+
+    def __init__(self, ij, json_data, prefix):
+        """Initialize Class properties."""
+        self.ij = ij
+        self.json_data = json_data
+        self._prefix = prefix
+
+    @staticmethod
+    def get_index(params, key, value):
+        """Return the index of a dict from a list of dicts."""
+        for index, data in enumerate(params):
+            if data.get(key) == value:
+                return index
+        return None
+
+    @property
+    def inputs(self):
+        """Return Advanced Request Inputs."""
+        return [
+            {
+                'label': 'API Endpoint/Path',
+                'name': 'tc_adv_req_path',
+                'note': 'The API Path request.',
+                'playbookDataType': ['String'],
+                'required': True,
+                'sequence': 100,
+                'type': 'String',
+                'validValues': ['${TEXT}'],
+            },
+            {
+                'default': 'GET',
+                'encrypt': False,
+                'label': 'HTTP Method',
+                'name': 'tc_adv_req_http_method',
+                'note': 'HTTP method to use.',
+                'required': True,
+                'sequence': 101,
+                'type': 'Choice',
+                'validValues': ['GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'PATCH', 'OPTIONS'],
+            },
+            {
+                'label': 'Query Parameters',
+                'name': 'tc_adv_req_params',
+                'note': (
+                    'Query parameters to append to the URL. For sensitive information like API '
+                    'keys, using variables is recommended to ensure that the Playbook will not '
+                    'export sensitive data.'
+                ),
+                'playbookDataType': ['String', 'StringArray'],
+                'required': False,
+                'sequence': 102,
+                'type': 'KeyValueList',
+                'validValues': ['${KEYCHAIN}', '${TEXT}'],
+            },
+            {
+                'default': False,
+                'label': 'Exclude Empty/Null Parameters',
+                'name': 'tc_adv_req_exclude_null_params',
+                'note': (
+                    'Some API endpoint don\'t handle null/empty query parameters properly '
+                    '(e.g., ?name=&type=String). If selected this options will exclude any '
+                    'query parameters that has a null/empty value.'
+                ),
+                'required': False,
+                'sequence': 103,
+                'type': 'Boolean',
+            },
+            {
+                'label': 'Headers',
+                'name': 'tc_adv_req_headers',
+                'note': (
+                    'Headers to include in the request. When using Multi-part Form/File data, do '
+                    '**not** add a **Content-Type** header. For sensitive information like API '
+                    'keys, using variables is recommended to ensure that the Playbook will not '
+                    'export sensitive data.'
+                ),
+                'playbookDataType': ['String'],
+                'required': False,
+                'sequence': 104,
+                'type': 'KeyValueList',
+                'validValues': ['${KEYCHAIN}', '${TEXT}'],
+            },
+            {
+                'label': 'Body',
+                'name': 'tc_adv_req_body',
+                'note': 'Content of the HTTP request.',
+                'playbookDataType': ['String', 'Binary'],
+                'required': False,
+                'sequence': 105,
+                'type': 'String',
+                'validValues': ['${KEYCHAIN}', '${TEXT}'],
+                'viewRows': 4,
+            },
+            {
+                'label': 'URL Encode JSON Body',
+                'name': 'tc_adv_req_urlencode_body',
+                'note': (
+                    'URL encode a JSON-formatted body. Typically used for '
+                    '\'x-www-form-urlencoded\' data, where the data can be configured '
+                    'in the body as a JSON string.'
+                ),
+                'required': False,
+                'sequence': 106,
+                'type': 'Boolean',
+            },
+            {
+                'default': True,
+                'label': 'Fail for Status',
+                'name': 'tc_adv_req_fail_on_error',
+                'note': 'Fail if the response status code is 4XX - 5XX.',
+                'sequence': 107,
+                'type': 'Boolean',
+            },
+        ]
+
+    @property
+    def outputs(self):
+        """Return Advanced Request Outputs."""
+        return [
+            {'name': f'{self.prefix}.request.content', 'type': 'String'},
+            {'name': f'{self.prefix}.request.content.binary', 'type': 'Binary'},
+            {'name': f'{self.prefix}.request.headers', 'type': 'String'},
+            {'name': f'{self.prefix}.request.ok', 'type': 'String'},
+            {'name': f'{self.prefix}.request.reason', 'type': 'String'},
+            {'name': f'{self.prefix}.request.status_code', 'type': 'String'},
+            {'name': f'{self.prefix}.request.url', 'type': 'String'},
+        ]
+
+    @property
+    def prefix(self):
+        """Return prefix for output variables."""
+        if self._prefix is None:
+            self._prefix = 'unknown'
+            for o in self.ij.output_variables:
+                self._prefix = o.get('name').split('.')[0]
+        return self._prefix
+
+    def update(self):
+        """Update the install.json inputs and outputs."""
+        self.update_inputs()
+        self.update_outputs()
+
+        for p in self.json_data['params']:
+            if p.get('name') == 'tc_action':
+                if 'Advanced Request' not in p['validValues']:
+                    p['validValues'].append('Advanced Request')
+
+    def update_inputs(self):
+        """Update install.json param inputs."""
+        for i in self.inputs:
+            # check to see if input was previously added
+            if i.get('name') in self.ij.params_dict:
+                # replace existing data
+                index = self.get_index(self.json_data['params'], 'name', i.get('name'))
+                self.json_data['params'][index] = i
+            else:
+                # append input
+                self.json_data['params'].append(i)
+
+    def update_outputs(self):
+        """Update install.json param inputs."""
+        for o in self.outputs:
+            # check to see if output was previously added
+            if o.get('name') in self.ij.output_dict:
+                # replace existing data
+                index = self.get_index(
+                    self.json_data['playbook']['outputVariables'], 'name', o.get('name')
+                )
+                self.json_data['playbook']['outputVariables'][index] = o
+            else:
+                # append input
+                self.json_data['playbook']['outputVariables'].append(o)
 
 
 class InstallJson:
@@ -20,7 +196,7 @@ class InstallJson:
         """Initialize class properties."""
         self._filename = filename or 'install.json'
         self._path = path or os.getcwd()
-        self.log = logger or logging.getLogger('install_json').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('install_json')
 
         # properties
         self._contents = None
@@ -38,7 +214,7 @@ class InstallJson:
 
         # get current branch
         if os.path.isfile(branch_file):
-            with open(branch_file, 'r') as f:
+            with open(branch_file) as f:
                 try:
                     branch = f.read().strip().split('/')[2]
                 except IndexError:
@@ -48,7 +224,7 @@ class InstallJson:
             if branch:
                 hash_file = f'.git/refs/heads/{branch}'
                 if os.path.isfile(hash_file):
-                    with open(hash_file, 'r') as f:
+                    with open(hash_file) as f:
                         commit_hash = f.read().strip()
         return commit_hash
 
@@ -85,7 +261,7 @@ class InstallJson:
         """Return install.json contents."""
         if self._contents is None:
             try:
-                with open(self.filename, 'r') as fh:
+                with open(self.filename) as fh:
                     self._contents = json.load(fh, object_pairs_hook=OrderedDict)
             except OSError:
                 self._contents = {'runtimeLevel': 'external'}
@@ -219,6 +395,14 @@ class InstallJson:
             if p.get('required', False) is False:
                 params.setdefault(p.get('name'), p)
         return params
+
+    @property
+    def output_dict(self):
+        """Return outputs as name/data dict."""
+        outputs = {}
+        for o in self.output_variables:
+            outputs.setdefault(o.get('name'), o)
+        return outputs
 
     @property
     def params_dict(self):
@@ -367,6 +551,11 @@ class InstallJson:
             if playbook_data_types is True:
                 json_data = self.update_playbook_data_types(json_data)
 
+            # app feature - update install.json for Advanced Request
+            if 'advancedRequest' in self.features and self.output_prefix is not None:
+                afar = AppFeatureAdvanceRequest(self, json_data, self.output_prefix)
+                afar.update()
+
             # write updated profile
             fh.seek(0)
             fh.write(f'{json.dumps(json_data, indent=2, sort_keys=True)}\n')
@@ -418,7 +607,11 @@ class InstallJson:
                 'fileParams',
                 'secureParams',
             ]
-        elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        elif self.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             features = ['appBuilderCompliant', 'fileParams']
 
         # add layoutEnabledApp if layout.json file exists in project
@@ -427,10 +620,10 @@ class InstallJson:
 
         # re-add other non-standard (optional) features
         for feature in self.features:
-            if feature in ['CALSettings']:
+            if feature in ['advancedRequest', 'CALSettings']:
                 features.append(feature)
 
-        json_data['features'] = features
+        json_data['features'] = sorted(features)
         return json_data
 
     def update_program_main(self, json_data):
@@ -580,6 +773,11 @@ class InstallJson:
         return self.contents.get('note')
 
     @property
+    def output_prefix(self):
+        """Return output prefix."""
+        return self.playbook.get('outputPrefix')
+
+    @property
     def output_variables(self):
         """Return output variables dict."""
         return self.playbook.get('outputVariables', [])
@@ -643,3 +841,13 @@ class InstallJson:
     def runtime_level(self):
         """Return property."""
         return self.contents.get('runtimeLevel')
+
+    @property
+    def service(self):
+        """Return service."""
+        return self.contents.get('service', {})
+
+    @property
+    def service_discovery_types(self):
+        """Return service."""
+        return self.service.get('discoveryTypes', [])

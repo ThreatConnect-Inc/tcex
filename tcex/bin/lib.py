@@ -1,14 +1,15 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Library Builder."""
+# standard library
 import os
 import platform
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from urllib.parse import quote
 
+# third-party
 import colorama as c
 
 from .bin import Bin
@@ -113,6 +114,8 @@ class Lib(Bin):
         else:
             if os.path.islink(self.static_lib_dir):
                 os.unlink(self.static_lib_dir)
+            elif os.path.isfile(self.static_lib_dir):
+                os.rmdir(self.static_lib_dir)
             os.symlink(f'lib_{self.latest_version}', self.static_lib_dir)
 
     def _create_temp_requirements(self):
@@ -122,7 +125,7 @@ class Lib(Bin):
         """
         self.use_temp_requirements_file = True
         # Replace tcex version with develop branch of tcex
-        with open(self.requirements_file, 'r') as fh:
+        with open(self.requirements_file) as fh:
             current_requirements = fh.read().strip().split('\n')
 
         self.requirements_file = f'temp-{self.requirements_file}'
@@ -185,7 +188,7 @@ class Lib(Bin):
             print(f"Running: {c.Style.BRIGHT}{c.Fore.GREEN}{' '.join(exe_command)}")
             p = subprocess.Popen(
                 exe_command,
-                shell=False,
+                shell=False,  # nosec
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -201,6 +204,7 @@ class Lib(Bin):
             try:
                 python_version = lib_dir.split('_', 1)[1]
             except IndexError:
+                python_version = None
                 self.handle_error('Could not determine version from lib string.')
 
             # track the latest Python version

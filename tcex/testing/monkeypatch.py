@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """MonkeyPatch Testing Module"""
 # pylint: disable=cell-var-from-loop,redefined-outer-name
 
 
 def monkeypatch(target, call_target=True, tags=None):
-    """Registers method with the monkeypatch annotation"""
+    """Register method with the monkeypatch annotation"""
 
     if tags is None:
         tags = []
@@ -24,7 +23,7 @@ __monkeypatches = {}
 
 
 def register_monkeypatch(target, patch, call_target=True, tags=None):
-    """Registers all methods with the monkeypatch annotation"""
+    """Register all methods with the monkeypatch annotation"""
     if tags is None:
         tags = []
     __monkeypatches[target.__module__ + target.__name__] = (target, patch, call_target, tags)
@@ -32,7 +31,7 @@ def register_monkeypatch(target, patch, call_target=True, tags=None):
 
 
 def register_monkeypatches(monkeypatch, profile_data):
-    """Registers all methods with the monkeypatch annotation"""
+    """Register all methods with the monkeypatch annotation"""
     if not profile_data.get('monkeypatch'):
         return
 

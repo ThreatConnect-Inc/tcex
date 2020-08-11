@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
 """Base pytest configuration file."""
+# standard library
 import os
 import shutil
 
+# first-party
 from app_lib import AppLib
 
 # can't import TCEX profile until the system path is fixed
@@ -91,7 +92,7 @@ def pytest_unconfigure(config):  # pylint: disable=unused-argument
     # display any Errors or Warnings in tests.log
     test_log_file = os.path.join(log_directory, 'tests.log')
     if os.path.isfile(test_log_file):
-        with open(test_log_file, 'r') as fh:
+        with open(test_log_file) as fh:
             issues = []
             for line in fh:
                 if '- ERROR - ' in line or '- WARNING - ' in line:

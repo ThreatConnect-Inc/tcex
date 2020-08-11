@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Module: Cache &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+
+
+
+
+
+
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module: Case Management" href="module_case_management.html" />
+    <link rel="prev" title="Module: Batch" href="module_batch.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.9
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Cache</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#datastore-instance">DataStore Instance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#domains">Domains</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#add-record">Add Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#delete-record">Delete Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-record">Get Record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-record">Update Record</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_case_management.html">Module: Case Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_threat_intelligence.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+
+      <li>Module: Cache</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-cache">
+<span id="id1"></span><h1>Module: Cache<a class="headerlink" href="#module-cache" title="Permalink to this headline">¶</a></h1>
+<p>The ThreatConnect TcEx App Framework provides a simple interface for caching data in Apps utilizing the ThreatConnect DataStore feature.  The <code class="xref py py-mod docutils literal notranslate"><span class="pre">Cache</span></code> module provides an interface to get, add, update, and delete cache data.</p>
+<div class="section" id="datastore-instance">
+<h2>DataStore Instance<a class="headerlink" href="#datastore-instance" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcex.cache()</span></code> module provides persistent storage for Apps. The domain value specifies access level for the data as described in the following section.</p>
+<div class="section" id="domains">
+<h3>Domains<a class="headerlink" href="#domains" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>local - limited to the specific App.</p></li>
+<li><p>organization - limited to the current Org.</p></li>
+</ul>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;myDnsData&#39;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="s1">&#39;180&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="add-record">
+<h2>Add Record<a class="headerlink" href="#add-record" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">add()</span></code> method allows record data to be added. The <strong>rid</strong> (resource id) is an identifier for the provided data.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;myDnsData&#39;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="s1">&#39;180&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rid</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="delete-record">
+<h2>Delete Record<a class="headerlink" href="#delete-record" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">delete()</span></code> method allows record data to be deleted using the <strong>rid</strong> (resource id) value.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;myDnsData&#39;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="s1">&#39;180&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">rid</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="get-record">
+<h2>Get Record<a class="headerlink" href="#get-record" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">get()</span></code> method allows record data to be retrieved using the <strong>rid</strong> (resource id) value.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;myDnsData&#39;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="s1">&#39;180&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">get()</span></code> method also allows a callback to be provided, which will be called if the cached data is expired to automatically update the cache. In the following example if the cached data is expired the callback method will be called passing the <strong>rid</strong> (resource id).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The callback method should return a dict value to be cached.</p>
+</div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">expired_data_callback</span><span class="p">(</span><span class="n">rid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return dummy data for cache callback.&quot;&quot;&quot;</span>
+    <span class="n">sample_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;my_data&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="s1">&#39;updated data to cache&#39;</span><span class="p">}}</span>
+    <span class="k">return</span> <span class="n">sample_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="p">)</span>
+
+<span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;myDnsData&#39;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="s1">&#39;180&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="n">data_callback</span><span class="o">=</span><span class="n">expired_data_callback</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="update-record">
+<h2>Update Record<a class="headerlink" href="#update-record" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">update()</span></code> method allows record data to be updated/overwritten with new data.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;myDnsData&#39;</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="o">=</span><span class="s1">&#39;180&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rid</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+           </div>
+
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="module_case_management.html" class="btn btn-neutral float-right" title="Module: Case Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="module_batch.html" class="btn btn-neutral float-left" title="Module: Batch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

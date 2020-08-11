@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TQL"""
+# standard library
 from enum import Enum
+
 from .filter import Filter
 
 

@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
 """App Decorators Module."""
+# standard library
 import inspect
+
+# third-party
 import wrapt
 
 
