@@ -229,7 +229,7 @@ class Migrate:
         if 'stage' not in profile_data.keys():
             profile_data['stage'] = {'kvstore': {}}
         if 'kvstore' not in profile_data.get('stage').keys():
-            profile_data['stage']['kvstore'] = []
+            profile_data['stage']['kvstore'] = {}
 
     def stage_inputs(self, profile_data):
         """Stage any non-staged profile data."""
