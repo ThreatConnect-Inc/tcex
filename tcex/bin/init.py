@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx App Init."""
-from .bin import Bin
 from ..app_config_object.templates import DownloadTemplates
+from .bin import Bin
 
 
 class Init(Bin):

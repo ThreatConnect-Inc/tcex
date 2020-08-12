@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """Setup for TcEx Module."""
+# standard library
 import os
 
+# third-party
 from setuptools import find_packages, setup
 
 metadata = {}
 metadata_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tcex', '__metadata__.py')
 with open(metadata_file, mode='r', encoding='utf-8',) as f:
-    exec(f.read(), metadata)  # pylint: disable=exec-used
+    exec(f.read(), metadata)  # nosec; pylint: disable=exec-used
 
 if not metadata:
     raise RuntimeError(f'Could not load metadata file ({metadata_file}).')
@@ -21,12 +23,14 @@ dev_packages = [
     'CommonMark==0.5.5',
     'deepdiff',
     'flake8',
-    'jmespath',
+    # isort 5 currently causes issues with pylint
+    'isort>=4,<5',
     'mako',
     'pre-commit',
     'pydocstyle',
-    'pylint',
-    'pytest',
+    'pylint>2.5.0',
+    # restrict pytest version due to changes that break pytest-html
+    'pytest<6.0.0',
     'pytest-cov',
     'pytest-html',
     'pytest-xdist',
@@ -64,6 +68,7 @@ setup(
         'future',
         'hvac>=0.3.0',
         'inflect>=0.2.5',
+        'jmespath',
         'jsonschema>=2.6.0',
         'paho-mqtt',
         'parsedatetime',

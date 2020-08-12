@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
+# standard library
 import base64
-import pickle
+import pickle  # nosec
 import zlib
 
+# third-party
 import colorama as c
 from requests.sessions import Session
 
@@ -126,7 +128,7 @@ class SessionManager:
     @staticmethod
     def unpickle_result(result):
         """Reverse the pickle operation"""
-        return pickle.loads(zlib.decompress(base64.b64decode(result.encode('utf-8'))))
+        return pickle.loads(zlib.decompress(base64.b64decode(result.encode('utf-8'))))  # nosec
 
     def update_profile(self):
         """Write back the profile *if* we recorded session data"""

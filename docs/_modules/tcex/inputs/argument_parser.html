@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.6 documentation</title>
+  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
 </head>
@@ -49,7 +50,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home"> TcEx
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -59,7 +60,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.9
               </div>
 
 
@@ -75,6 +76,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -94,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
@@ -118,6 +121,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -156,7 +160,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="../../index.html">Module code</a> &raquo;</li>
 
@@ -178,6 +182,7 @@
   <h1>Source code for tcex.inputs.argument_parser</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Common Arg Handler&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">Namespace</span>
 
 
@@ -202,7 +207,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_backup_count</span> <span class="o">=</span> <span class="mi">5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span> <span class="o">=</span> <span class="s1">&#39;app.log&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_level</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_max_bytes</span> <span class="o">=</span> <span class="mi">10485760</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -217,13 +222,14 @@
 
         <span class="c1"># standard defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span> <span class="o">=</span> <span class="s1">&#39;https://api.threatconnect.com&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_secure_params</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_user_id</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># include arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_advanced_request</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger_arguments</span><span class="p">()</span>
@@ -233,6 +239,43 @@
 
         <span class="c1"># default namespace</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TcArgumentParser._advanced_request"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.argument_parser.TcArgumentParser._advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">_advanced_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Define App Feature - Advanced Request args.</span>
+
+<span class="sd">        --tc_adv_req_body params               The HTTP body.</span>
+<span class="sd">        --tc_adv_req_exclude_null_params bool  If True, exclude null params.</span>
+<span class="sd">        --tc_adv_req_fail_on_error bool        If True, fail on any encountered error.</span>
+<span class="sd">        --tc_adv_req_headers params            The HTTP headers.</span>
+<span class="sd">        --tc_adv_req_http_method method        The HTTP method (e.g., GET, POST).</span>
+<span class="sd">        --tc_adv_req_params params             The HTTP query params.</span>
+<span class="sd">        --tc_adv_req_path path                 The API path.</span>
+<span class="sd">        --tc_adv_req_urlencode_body bool       If True, urlencode body.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_body&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP body.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_exclude_null_params&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If True, exclude null params.&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_fail_on_error&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If True, fail on any encountered error.&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_headers&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP headers.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_http_method&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP method (e.g., GET, POST).&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_params&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The HTTP query params.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tc_adv_req_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The API path.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_adv_req_urlencode_body&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If True, urlencode body.&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcArgumentParser._api_arguments"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.argument_parser.TcArgumentParser._api_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_api_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Define TC API args.</span>
@@ -546,6 +589,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -559,7 +603,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

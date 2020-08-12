@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
+# standard library
 import base64
 import json
 import os
@@ -11,6 +12,7 @@ import uuid
 from multiprocessing import Process
 from random import randint
 
+# third-party
 import paho.mqtt.client as mqtt
 
 from .test_case_playbook_common import TestCasePlaybookCommon

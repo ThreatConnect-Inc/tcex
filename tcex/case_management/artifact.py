@@ -83,6 +83,7 @@ class Artifact(CommonCaseManagement):
         analytics_priority_level (int, kwargs): [Read-Only] The **Analytics Priority Level** for
             the Artifact.
         analytics_score (int, kwargs): [Read-Only] The **Analytics Score** for the Artifact.
+        analytics_status (int, kwargs): [Read-Only] The **Analytics Status** for the Artifact.
         analytics_type (str, kwargs): [Read-Only] The **Analytics Type** for the Artifact.
         artifact_type (ArtifactType, kwargs): [Read-Only] The **Artifact Type** for the Artifact.
         case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Artifact.
@@ -117,6 +118,7 @@ class Artifact(CommonCaseManagement):
         self._analytics_priority = kwargs.get('analytics_priority', None)
         self._analytics_priority_level = kwargs.get('analytics_priority_level', None)
         self._analytics_score = kwargs.get('analytics_score', None)
+        self._analytics_status = kwargs.get('analytics_status', None)
         self._analytics_type = kwargs.get('analytics_type', None)
         self._artifact_type = kwargs.get('artifact_type', None)
         self._case_id = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get('id', None)
@@ -153,6 +155,11 @@ class Artifact(CommonCaseManagement):
     def analytics_score(self):
         """Return the **Analytics Score** for the Artifact."""
         return self._analytics_score
+
+    @property
+    def analytics_status(self):
+        """Return the **Analytics Status** for the Artifact."""
+        return self._analytics_status
 
     @property
     def analytics_type(self):

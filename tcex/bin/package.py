@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Package Module."""
+# standard library
 import json
 import os
 import re
 import shutil
 import zipfile
 
+# third-party
 import colorama as c
 
 from ..app_config_object import InstallJson

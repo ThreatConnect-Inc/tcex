@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Indicator"""
+# standard library
 import json
 from urllib.parse import quote, unquote
 
@@ -76,9 +77,9 @@ def custom_indicator_class_factory(
         return valid_create
 
     class_name = indicator_type.replace(' ', '')
-    init_method = locals()[f'init']
-    set_unique_id_method = locals()[f'_set_unique_id']
-    can_create_method = locals()[f'can_create']
+    init_method = locals()['init']
+    set_unique_id_method = locals()['_set_unique_id']
+    can_create_method = locals()['can_create']
     _metadata_map = locals()['_metadata_map_1']
     new_class = type(
         str(class_name),
@@ -294,7 +295,7 @@ class Indicator(Mappings):
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
-    def deleted(self, deleted_since, filters=None, params=None):
+    def deleted(self, deleted_since=None, filters=None, params=None):
         """Return deleted indicators from TC REST API.
 
         Args:
@@ -308,7 +309,7 @@ class Indicator(Mappings):
         return self.tc_requests.deleted(
             self.api_type,
             self.api_branch,
-            deleted_since,
+            deleted_since=deleted_since,
             owner=self.owner,
             filters=filters,
             params=params,

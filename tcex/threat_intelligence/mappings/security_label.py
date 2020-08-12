@@ -18,7 +18,15 @@ class SecurityLabel(Mappings):
             name:
             **kwargs:
         """
-        super().__init__(tcex, 'SecurityLabel', 'securitylabels')
+        super().__init__(
+            tcex,
+            main_type='SecurityLabel',
+            api_type='securitylabels',
+            sub_type=None,
+            api_entity='securityLabel',
+            api_branch=None,
+            owner=kwargs.pop('owner', None),
+        )
         self._data['type'] = 'securityLabels'
         self._data['sub_type'] = None
         self._data['name'] = name

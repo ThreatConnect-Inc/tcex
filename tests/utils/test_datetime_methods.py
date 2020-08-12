@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Utils Module."""
+# standard library
 import operator
 import re
 from datetime import datetime, timedelta
 
-import pytz
+# third-party
 import pytest
+import pytz
 
 
 # pylint: disable=no-self-use

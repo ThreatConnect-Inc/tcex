@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect TI Generic Mappings Object"""
+# standard library
 import json
 from urllib.parse import unquote
+
+# first-party
 from tcex.utils import Utils
+
 from ..tcex_ti_tc_request import TiTcRequest
 
 

@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework TcexJson Object."""
+# standard library
 import json
 import logging
 import os
 import re
 from collections import OrderedDict
 
+# third-party
 import colorama as c
 
-from .install_json import InstallJson
 from ..env_store import EnvStore
+from .install_json import InstallJson
 
 
 class TcexJson:
@@ -25,7 +27,7 @@ class TcexJson:
         """Initialize class properties."""
         self._filename = filename or 'tcex.json'
         self._path = path or os.getcwd()
-        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('layout_json')
 
         # properties
         self._contents = None
@@ -50,15 +52,15 @@ class TcexJson:
 
             # raise error if tcex.json is missing app_name field
             if self._contents and not self._contents.get('package', {}).get('app_name'):
-                raise RuntimeError(f'The tcex.json file is missing the package.app_name field.')
+                raise RuntimeError('The tcex.json file is missing the package.app_name field.')
 
             # log warning for old Apps
             if self._contents.get('package', {}).get('app_version'):
                 print(
                     f'{c.Fore.YELLOW}'
-                    f'The tcex.json file defines "app_version" which should only be defined\n'
-                    f'in legacy Apps. Removing the value can cause the App to be treated\n'
-                    f'as a new App by TcExchange. Please remove "app_version" when appropriate.'
+                    'WARNING: The tcex.json file defines "app_version" which should only be '
+                    'defined in legacy Apps. Removing the value can cause the App to be treated '
+                    'as a new App by TcExchange. Please remove "app_version" when appropriate.'
                     f'{c.Fore.RESET}'
                 )
 
@@ -95,6 +97,9 @@ class TcexJson:
 
     def update(self, template=None):
         """Update the contents of the tcex.json file."""
+        if not os.path.isfile(self.filename):
+            return
+
         with open(self.filename, 'r+') as fh:
             json_data = json.load(fh)
 

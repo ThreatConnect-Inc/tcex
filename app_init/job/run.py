@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Job App"""
+# standard library
 import traceback
 
+# first-party
 from app_lib import AppLib
 
 
@@ -14,8 +16,9 @@ def run():
     app_lib.update_path()
 
     # import modules after path has been updated
-    from tcex import TcEx  # pylint: disable=import-outside-toplevel
+    # third-party
     from app import App  # pylint: disable=import-outside-toplevel
+    from tcex import TcEx  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()
 
@@ -24,13 +27,13 @@ def run():
         app = App(tcex)
 
         # perform prep/setup operations
-        app.setup()
+        app.setup(**{})
 
         # run the App logic
-        app.run()
+        app.run(**{})
 
         # perform cleanup/teardown operations
-        app.teardown()
+        app.teardown(**{})
 
         # explicitly call the exit method
         tcex.exit(msg=app.exit_message)

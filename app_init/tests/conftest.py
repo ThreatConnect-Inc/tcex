@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Base pytest configuration file."""
+# standard library
 import os
 import shutil
 
+# first-party
 from app_lib import AppLib
 
 # can't import TCEX profile until the system path is fixed

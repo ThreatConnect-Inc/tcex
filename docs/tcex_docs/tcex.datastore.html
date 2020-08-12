@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Datastore Module &mdash; TcEx 2.0.6 documentation</title>
+  <title>Datastore Module &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Decorators" href="tcex.decorators.html" />
@@ -51,7 +52,7 @@
 
 
 
-            <a href="../index.html" class="icon icon-home"> TcEx
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -61,7 +62,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.9
               </div>
 
 
@@ -77,6 +78,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_decorators.html">Module: Decorators</a></li>
@@ -147,6 +150,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -185,7 +189,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
@@ -212,97 +216,175 @@
 <h1>Datastore Module<a class="headerlink" href="#datastore-module" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-tcex.datastore.cache">
 <span id="datastore-cache"></span><h2>datastore.cache<a class="headerlink" href="#module-tcex.datastore.cache" title="Permalink to this headline">¶</a></h2>
-<p>TcEx Framework Module for working with Datastore in the ThreatConnect Platform.</p>
-<dl class="class">
+<p>TcEx Framework Module for working with Cache in the ThreatConnect Platform.</p>
+<dl class="py class">
 <dt id="tcex.datastore.cache.Cache">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.datastore.cache.</code><code class="sig-name descname">Cache</code><span class="sig-paren">(</span><em class="sig-param">tcex: tcex.tcex.TcEx</em>, <em class="sig-param">domain</em>, <em class="sig-param">data_type</em>, <em class="sig-param">ttl_seconds=None</em>, <em class="sig-param">mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.datastore.cache.</code><code class="sig-name descname">Cache</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tcex</span><span class="p">:</span> <span class="n">object</span></em>, <em class="sig-param"><span class="n">domain</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data_type</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">ttl_seconds</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mapping</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Cache Class.</p>
-<dl class="method">
-<dt id="tcex.datastore.cache.Cache._dt_to_epoch">
-<em class="property">static </em><code class="sig-name descname">_dt_to_epoch</code><span class="sig-paren">(</span><em class="sig-param">dt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache._dt_to_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache._dt_to_epoch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert datetime to epoch seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instance of TcEx.</p></li>
+<li><p><strong>domain</strong> (<em>str</em>) – A value of “organization” or “local”.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) – A free form type name for the data.</p></li>
+<li><p><strong>ttl_seconds</strong> (<em>Optional</em><em>[</em><em>int</em><em>] </em><em>= None</em>) – Number of seconds the cache is valid.</p></li>
+<li><p><strong>mapping</strong> (<em>Optional</em><em>[</em><em>dict</em><em>] </em><em>= None</em>) – ElasticSearch mappings data.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="tcex.datastore.cache.Cache._is_cache_expired">
+<code class="sig-name descname">_is_cache_expired</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cached_date</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache._is_cache_expired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache._is_cache_expired" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the provided cache data is expired.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cached_date</strong> (<em>str</em>) – The cache date value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if cache data is expired.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.cache.Cache.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">data</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write cache data to the data store.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;_index&quot;</span><span class="p">:</span> <span class="s2">&quot;$local.usr5_pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;cache-one&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+  <span class="nt">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;updated&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_shards&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;total&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="nt">&quot;successful&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="nt">&quot;failed&quot;</span><span class="p">:</span> <span class="mi">0</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;_seq_no&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+  <span class="nt">&quot;_primary_term&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
 <li><p><strong>data</strong> (<em>dict</em>) – The record data.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The response dict</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.cache.Cache.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write cache data to the data store.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;_index&quot;</span><span class="p">:</span> <span class="s2">&quot;$local.usr5_pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;cache-delete&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="nt">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;deleted&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_shards&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;total&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nt">&quot;successful&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;failed&quot;</span><span class="p">:</span> <span class="mi">0</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;_seq_no&quot;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
+  <span class="nt">&quot;_primary_term&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The response dict.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.cache.Cache.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">data_callback=None</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data_callback</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>str<span class="p">]</span><span class="p">, </span>dict<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get cached data from the data store.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;cache-date&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-07-31T11:44:53.851116&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;cache-data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;results&quot;</span><span class="p">:</span> <span class="s2">&quot;cached&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
-<li><p><strong>data_callback</strong> (<em>callable</em>) – A method that will return the data.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>data_callback</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>] </em><em>= None</em>) – A method that will return the data.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The cached data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.cache.Cache.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">data</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/cache.html#Cache.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.cache.Cache.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write updated cache data to the DataStore.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;cache-date&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-07-31T11:44:53.851116&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;cache-data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;one&quot;</span><span class="p">:</span> <span class="mi">1</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
 <li><p><strong>data</strong> (<em>dict</em>) – The record data.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The cached data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -313,9 +395,9 @@
 <div class="section" id="module-tcex.datastore.datastore">
 <span id="datastore-datastore"></span><h2>datastore.datastore<a class="headerlink" href="#module-tcex.datastore.datastore" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Module for working with DataStore in the ThreatConnect Platform.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.datastore.datastore.DataStore">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.datastore.datastore.</code><code class="sig-name descname">DataStore</code><span class="sig-paren">(</span><em class="sig-param">tcex</em>, <em class="sig-param">domain</em>, <em class="sig-param">data_type</em>, <em class="sig-param">mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.datastore.datastore.</code><code class="sig-name descname">DataStore</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tcex</span><span class="p">:</span> <span class="n">object</span></em>, <em class="sig-param"><span class="n">domain</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data_type</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">mapping</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx DataStore Class.</p>
 <p><strong>domain</strong></p>
@@ -327,153 +409,233 @@ use this resource verbatim for ElasticSearch calls.</p>
 <p><strong>searchCommand</strong></p>
 <p>The URI string after the typeName is assumed to be ElasticSearch relevant information and is
 passed directly to ElasticSearch.</p>
-<dl class="method">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> (<a class="reference internal" href="tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><em>TcEx</em></a>) – An instance of TcEx.</p></li>
+<li><p><strong>domain</strong> (<em>str</em>) – A value of “system”, “organization”, or “local”.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) – A free form type name for the data.</p></li>
+<li><p><strong>mapping</strong> (<em>Optional</em><em>[</em><em>dict</em><em>] </em><em>= None</em>) – Defaults to None. Elasticsearch mappings data.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore._create_index">
 <code class="sig-name descname">_create_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore._create_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore._create_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create index if it doesn’t exist.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore._token_available">
 <code class="sig-name descname">_token_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore._token_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore._token_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise an error if token is not available.</p>
 <p>This check needs to be made after args are parsed to ensure token module has initialized.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore._update_mappings">
 <code class="sig-name descname">_update_mappings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore._update_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore._update_mappings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the mappings for the current index.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">data</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to the DataStore. Alias for post() method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
 <li><p><strong>data</strong> (<em>dict</em>) – The record data.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The response data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a record from the index using provide Id.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;_index&quot;</span><span class="p">:</span> <span class="s2">&quot;$local.usr5_pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;three&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+  <span class="nt">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;deleted&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_shards&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;total&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nt">&quot;successful&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;failed&quot;</span><span class="p">:</span> <span class="mi">0</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;_seq_no&quot;</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span>
+  <span class="nt">&quot;_primary_term&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The response data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">rid=None</em>, <em class="sig-param">data=None</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get data from the DataStore.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;_index&quot;</span><span class="p">:</span> <span class="s2">&quot;$local.usr5_pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;two&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nt">&quot;found&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;_source&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;two&quot;</span><span class="p">:</span> <span class="mi">2</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rid</strong> (<em>str</em><em>, </em><em>Optional</em>) – Defaults to None. The record identifier.</p></li>
-<li><p><strong>data</strong> (<em>dict</em><em>, </em><em>Optional</em>) – Defaults to None. A search query</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>rid</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= None</em>) – The record identifier.</p></li>
+<li><p><strong>data</strong> (<em>Optional</em><em>[</em><em>dict</em><em>] </em><em>= None</em>) – A search query</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Python request response.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore.index_exists">
 <em class="property">property </em><code class="sig-name descname">index_exists</code><a class="headerlink" href="#tcex.datastore.datastore.DataStore.index_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check to see if index exists.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore.post">
-<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">data</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.post" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to the DataStore.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;_index&quot;</span><span class="p">:</span> <span class="s2">&quot;$local.usr5_pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;one&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
+  <span class="nt">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;updated&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_shards&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;total&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nt">&quot;successful&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;failed&quot;</span><span class="p">:</span> <span class="mi">0</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;_seq_no&quot;</span><span class="p">:</span> <span class="mi">53</span><span class="p">,</span>
+  <span class="nt">&quot;_primary_term&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier. If a value of None is passed an identifier elastic
 search will automatically generate a id.</p></li>
 <li><p><strong>data</strong> (<em>dict</em>) – The record data.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The response data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore.put">
-<code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">data</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.put" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the data for the provided Id.</p>
+<p><strong>Example Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;_index&quot;</span><span class="p">:</span> <span class="s2">&quot;$local.usr5_pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;one&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_version&quot;</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+  <span class="nt">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;updated&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;_shards&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;total&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nt">&quot;successful&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;failed&quot;</span><span class="p">:</span> <span class="mi">0</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;_seq_no&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
+  <span class="nt">&quot;_primary_term&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
 <li><p><strong>data</strong> (<em>dict</em>) – A search query</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The response dict.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.datastore.datastore.DataStore.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">rid</em>, <em class="sig-param">data</em>, <em class="sig-param">raise_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/datastore/datastore.html#DataStore.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.datastore.datastore.DataStore.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the for the provided Id. Alias for put() method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rid</strong> (<em>str</em>) – The record identifier.</p></li>
 <li><p><strong>data</strong> (<em>dict</em>) – The record data.</p></li>
-<li><p><strong>raise_on_error</strong> (<em>bool</em>) – If True and not r.ok this method will raise a RunTimeError.</p></li>
+<li><p><strong>raise_on_error</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True and not r.ok this
+method will raise a RunTimeError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Python request response.</p>
+<dd class="field-even"><p>The response data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -503,6 +665,7 @@ search will automatically generate a id.</p></li>
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -516,7 +679,6 @@ search will automatically generate a id.</p></li>
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

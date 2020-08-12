@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
+# standard library
 import os
 from datetime import datetime, timedelta
 
-from .ti_helpers import TIHelper, TestThreatIntelligence
+from .ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestEventGroups(TestThreatIntelligence):

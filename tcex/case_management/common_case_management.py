@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Common Case Management"""
+# third-party
 from requests.exceptions import ProxyError
 
+# first-party
 from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
 
 

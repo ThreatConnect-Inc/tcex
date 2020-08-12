@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """TcEx Datetime Utilities Module"""
+# standard library
 import calendar
 import math
 import re
 import time
 from datetime import datetime
 
+# third-party
 import parsedatetime as pdt
 import pytz
 from dateutil import parser
@@ -129,11 +131,9 @@ class DatetimeUtils:
         return dt_value
 
     def human_date_to_datetime(self, time_input, tz=None, source_datetime=None):
-        """ Convert human readable date (e.g. 30 days ago) to datetime.datetime using
-            parsedatetime module.
+        """Convert human readable date (e.g. 30 days ago) to datetime.datetime.
 
         Examples:
-
         * August 25th, 2008
         * 25 Aug 2008
         * Aug 25 5pm
@@ -185,7 +185,7 @@ class DatetimeUtils:
         return dt
 
     def timedelta(self, time_input1, time_input2):
-        """ Calculates time delta between two time expressions.
+        """Calculate the time delta between two time expressions.
 
         Args:
             time_input1 (string): The time input string (see formats above).
@@ -230,8 +230,10 @@ class DatetimeUtils:
 
     @staticmethod
     def unix_time_to_datetime(time_input, tz=None):
-        """ Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753
-            to datetime.datetime type.
+        """Convert timestamp into datetime.
+
+        Convert (unix time|epoch time|posix time) in format of 1510686617
+        or 1510686617.298753 to datetime.datetime type.
 
         .. note:: This method assumes UTC for all inputs.
 

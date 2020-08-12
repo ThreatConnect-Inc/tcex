@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Common Arg Handler"""
+# standard library
 from argparse import ArgumentParser, Namespace
 
 
@@ -24,7 +25,7 @@ class TcArgumentParser(ArgumentParser):
         self._tc_log_backup_count = 5
         self._tc_log_file = 'app.log'
         self._tc_log_level = 'info'
-        self._tc_log_path = '/tmp'
+        self._tc_log_path = '/tmp'  # nosec
         self._tc_log_max_bytes = 10485760
         self._tc_log_to_api = False
 
@@ -39,13 +40,14 @@ class TcArgumentParser(ArgumentParser):
 
         # standard defaults
         self._tc_api_path = 'https://api.threatconnect.com'
-        self._tc_in_path = '/tmp'
-        self._tc_out_path = '/tmp'
+        self._tc_in_path = '/tmp'  # nosec
+        self._tc_out_path = '/tmp'  # nosec
         self._tc_secure_params = False
-        self._tc_temp_path = '/tmp'
+        self._tc_temp_path = '/tmp'  # nosec
         self._tc_user_id = None
 
         # include arguments
+        self._advanced_request()
         self._api_arguments()
         self._batch_arguments()
         self._logger_arguments()
@@ -55,6 +57,43 @@ class TcArgumentParser(ArgumentParser):
 
         # default namespace
         self.namespace = Namespace()
+
+    def _advanced_request(self):
+        """Define App Feature - Advanced Request args.
+
+        --tc_adv_req_body params               The HTTP body.
+        --tc_adv_req_exclude_null_params bool  If True, exclude null params.
+        --tc_adv_req_fail_on_error bool        If True, fail on any encountered error.
+        --tc_adv_req_headers params            The HTTP headers.
+        --tc_adv_req_http_method method        The HTTP method (e.g., GET, POST).
+        --tc_adv_req_params params             The HTTP query params.
+        --tc_adv_req_path path                 The API path.
+        --tc_adv_req_urlencode_body bool       If True, urlencode body.
+        """
+        self.add_argument('--tc_adv_req_body', default=None, help='The HTTP body.')
+        self.add_argument(
+            '--tc_adv_req_exclude_null_params',
+            action='store_true',
+            help='If True, exclude null params.',
+        )
+        self.add_argument(
+            '--tc_adv_req_fail_on_error',
+            action='store_true',
+            default=None,
+            help='If True, fail on any encountered error.',
+        )
+        self.add_argument('--tc_adv_req_headers', default=None, help='The HTTP headers.')
+        self.add_argument(
+            '--tc_adv_req_http_method', default=None, help='The HTTP method (e.g., GET, POST).'
+        )
+        self.add_argument('--tc_adv_req_params', default=None, help='The HTTP query params.')
+        self.add_argument('--tc_adv_req_path', default=None, help='The API path.')
+        self.add_argument(
+            '--tc_adv_req_urlencode_body',
+            action='store_true',
+            default=None,
+            help='If True, urlencode body.',
+        )
 
     def _api_arguments(self):
         """Define TC API args.

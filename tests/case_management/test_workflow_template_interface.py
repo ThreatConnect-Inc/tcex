@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Case Management Module."""
+# standard library
 import os
+
+# first-party
 from tcex.case_management.tql import TQL
 
 from .cm_helpers import CMHelper, TestCaseManagement

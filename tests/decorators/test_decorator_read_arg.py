@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx ReadArg Decorator."""
-from tcex import ReadArg
-
+# third-party
 import pytest
+
+# first-party
+from tcex import ReadArg
 
 
 # pylint: disable=no-self-use

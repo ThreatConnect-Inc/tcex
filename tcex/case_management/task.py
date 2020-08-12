@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Task"""
-from .assignee import Assignee
 from .api_endpoints import ApiEndpoints
+from .assignee import Assignee
 from .common_case_management import CommonCaseManagement
 from .common_case_management_collection import CommonCaseManagementCollection
 from .filter import Filter

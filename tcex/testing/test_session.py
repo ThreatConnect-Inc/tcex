@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
+# standard library
 import base64
 import hashlib
 import hmac
 import time
 from urllib.parse import quote
 
+# third-party
 import urllib3
 from requests import Session, adapters, auth
 from urllib3.util.retry import Retry
 
+# first-party
 from tcex.utils import Utils
 
 # disable ssl warning message
@@ -111,14 +114,12 @@ class TestSession(Session):
         proxies = {}
         if self.proxy_host is not None and self.proxy_port is not None:
 
-            if self.proxy_username is not None and self.proxy_password is not None:
-                proxy_username = quote(self.proxy_username, safe='~')
-                proxy_password = quote(self.proxy_password, safe='~')
+            if self.proxy_user is not None and self.proxy_pass is not None:
+                proxy_user = quote(self.proxy_user, safe='~')
+                proxy_pass = quote(self.proxy_pass, safe='~')
 
                 # proxy url with auth
-                proxy_url = (
-                    f'{proxy_username}:{proxy_password}' f'@{self.proxy_host}:{self.proxy_port}'
-                )
+                proxy_url = f'{proxy_user}:{proxy_pass}' f'@{self.proxy_host}:{self.proxy_port}'
             else:
                 # proxy url without auth
                 proxy_url = f'{self.proxy_host}:{self.proxy_port}'

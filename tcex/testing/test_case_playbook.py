@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """TcEx Playbook Test Case module"""
+# standard library
 import os
 import subprocess
 import sys
+
 from .test_case_playbook_common import TestCasePlaybookCommon
 
 
@@ -20,6 +22,7 @@ class TestCasePlaybook(TestCasePlaybookCommon):
         Returns:
             int: The exit code fo the App.
         """
+        # first-party
         from run import run  # pylint: disable=no-name-in-module
 
         # run the app

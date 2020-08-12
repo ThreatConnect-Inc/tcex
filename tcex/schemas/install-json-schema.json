@@ -198,6 +198,9 @@
     },
     "playbook": {
       "properties": {
+        "outputPrefix": {
+          "type": "string"
+        },
         "outputVariables": {
           "items": {
             "additionalProperties": false,

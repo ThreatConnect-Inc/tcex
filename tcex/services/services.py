@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Service module"""
+# standard library
 import base64
 import json
 import ssl
@@ -9,7 +10,9 @@ import traceback
 import uuid
 from datetime import datetime
 from io import StringIO
+from typing import Callable, Optional, Union
 
+# third-party
 import paho.mqtt.client as mqtt
 
 
@@ -35,7 +38,6 @@ class Services:
         self.configs = {}
         self.config_thread = None
         self.heartbeat_max_misses = 3
-        self.heartbeat_miss_count = 0
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
         self.ready = False
@@ -54,8 +56,13 @@ class Services:
         self.shutdown_callback = None
         self.webhook_event_callback = None
 
-    def _tcex_testing(self, session_id, trigger_id):
-        """Write data required for testing framework to Redis."""
+    def _tcex_testing(self, session_id: str, trigger_id: int):
+        """Write data required for testing framework to Redis.
+
+        Args:
+            session_id (str): The context/session id value for the current operation.
+            trigger_id (int): The trigger ID for the current playbook.
+        """
         if self.tcex.args.tcex_testing_context is not None:
             _context_tracker = (
                 self.redis_client.hget(self.tcex.args.tcex_testing_context, '_context_tracker')
@@ -74,35 +81,49 @@ class Services:
             self.tcex.log.info(f'Wrote context {session_id} to _context_tracker')
             self.tcex.log.info(f'Wrote trigger id {trigger_id} to _trigger_id')
 
-    def add_metric(self, label, value):
+    def _tcex_testing_fired_events(self, session_id: str, fired: bool):
+        """Write fired event data to KV Store to be used in test validation.
+
+        Args:
+            session_id (str): The context/session id value for the current operation.
+            fired (bool): The value to increment the count by.
+        """
+        if self.tcex.args.tcex_testing_context is not None:
+            self.redis_client.hset(
+                session_id, '#Trigger:9876:_fired!String', json.dumps(str(fired).lower())
+            )
+
+    def add_metric(self, label: str, value: Union[int, str]):
         """Add a metric.
 
         Metrics are reported in heartbeat message.
 
         Args:
             label (str): The metric label (e.g., hits) to add.
-            value (int|str): The value for the metric.
+            value (Union[int, str]): The value for the metric.
         """
         self._metrics[label] = value
 
-    def create_config(self, trigger_id, config, message, status):
+    def create_config(self, trigger_id: int, config: dict, message: str, status: bool):
         """Add config item to service config object.
 
         Args:
             trigger_id (int): The trigger ID for the current config.
             config (dict): The config for the current trigger.
             message (str): A simple message for the action.
-            status (str): The passed/fail status for the App handling of config.
+            status (boolean): The passed/fail status for the App handling of config.
         """
         try:
-            # add config to configs
-            self.configs[trigger_id] = config
+            status_msg = 'Success' if status is True else 'Failed'
+            if status is True:
+                # add config to configs
+                self.configs[trigger_id] = config
 
             # send ack response
             response = {
                 'command': 'Acknowledged',
                 'message': message,
-                'status': status,
+                'status': status_msg,
                 'type': 'CreateConfig',
                 'triggerId': trigger_id,
             }
@@ -111,7 +132,7 @@ class Services:
             self.tcex.log.error(f'Could not create config for Id {trigger_id} ({e}).')
             self.tcex.log.trace(traceback.format_exc())
 
-    def delete_config(self, trigger_id, message, status):
+    def delete_config(self, trigger_id: int, message: str, status: str):
         """Delete config item from config object.
 
         Args:
@@ -120,14 +141,15 @@ class Services:
             status (str): The passed/fail status for the App handling of config.
         """
         try:
-            # delete config from configs dict
+            status_msg = 'Success' if status is True else 'Failed'
+            # always delete config from configs dict, even when status is False
             del self.configs[trigger_id]
 
             # send ack response
             response = {
                 'command': 'Acknowledged',
                 'message': message,
-                'status': status,
+                'status': status_msg,
                 'type': 'DeleteConfig',
                 'triggerId': trigger_id,
             }
@@ -135,11 +157,11 @@ class Services:
         except Exception as e:
             self.tcex.log.error(f'Could not delete config for Id {trigger_id} ({e}).')
 
-    def fire_event(self, callback, **kwargs):
+    def fire_event(self, callback: Callable[[], bool], **kwargs: list):
         """Trigger a FireEvent command.
 
         Args:
-            callback (callable): The trigger method in the App to call.
+            callback (Callable[[], bool]): The trigger method in the App to call.
             trigger_ids (list, kwargs): A list of trigger ids to trigger.
         """
         if not callable(callback):
@@ -176,11 +198,18 @@ class Services:
             except Exception:
                 self.tcex.log.trace(traceback.format_exc())
 
-    def fire_event_trigger(self, callback, playbook, trigger_id, config, **kwargs):
+    def fire_event_trigger(
+        self,
+        callback: Callable[[], bool],
+        playbook: object,
+        trigger_id: int,
+        config: dict,
+        **kwargs: str,
+    ):
         """Fire event for trigger.
 
         Args:
-            callback (callable): The App callback method for firing an event.
+            callback (Callable[[], bool]): The App callback method for firing an event.
             playbook (tcex.Playbook): A configure playbook instance for using to interact with
                 KvStore.
             trigger_id (int): The current trigger Id.
@@ -201,12 +230,17 @@ class Services:
 
         try:
             if callback(playbook, trigger_id, config, **kwargs):
-                # self.tcex.log.info(f'Trigger ID {trigger_id} hit.')
                 self.increment_metric('Hits')
                 self.fire_event_publish(trigger_id, self.thread_name)
+
+                # capture fired status for testing framework
+                self._tcex_testing_fired_events(self.thread_name, True)
             else:
                 self.increment_metric('Misses')
                 self.tcex.log.info(f'Trigger ID {trigger_id} missed.')
+
+                # capture fired status for testing framework
+                self._tcex_testing_fired_events(self.thread_name, False)
         except Exception as e:
             self.increment_metric('Errors')
             self.tcex.log.error(f'The callback method encountered and error ({e}).')
@@ -218,7 +252,9 @@ class Services:
             # unregister thread from token
             self.tcex.token.unregister_thread(trigger_id, self.thread_name)
 
-    def fire_event_publish(self, trigger_id, session_id, request_key=None):
+    def fire_event_publish(
+        self, trigger_id: int, session_id: str, request_key: Optional[str] = None
+    ):
         """Send FireEvent command.
 
         Args:
@@ -238,7 +274,7 @@ class Services:
         # publish FireEvent command to client topic
         self.publish(json.dumps(msg))
 
-    def format_query_string(self, params):
+    def format_query_string(self, params: dict) -> str:
         """Convert name/value array to a query string.
 
         Args:
@@ -256,7 +292,7 @@ class Services:
             self.tcex.log.trace(traceback.format_exc())
         return '&'.join(query_string)
 
-    def format_request_headers(self, headers):
+    def format_request_headers(self, headers: dict) -> dict:
         """Convert name/value array to a headers dict.
 
         Args:
@@ -277,7 +313,7 @@ class Services:
             self.tcex.log.trace(traceback.format_exc())
         return headers_
 
-    def format_response_headers(self, headers):
+    def format_response_headers(self, headers: dict) -> dict:
         """Convert name/value array to a query string.
 
         Args:
@@ -316,7 +352,7 @@ class Services:
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
 
-    def increment_metric(self, label, value=1):
+    def increment_metric(self, label: str, value: Optional[int] = 1):
         """Increment a metric if already exists.
 
         Args:
@@ -333,6 +369,8 @@ class Services:
             target = self.listen_mqtt
         elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
             target = self.listen_redis
+        else:
+            raise RuntimeError('Invalid message broker type.')
 
         t = threading.Thread(name='broker-listener', target=target, args=())
         t.daemon = True  # use setter for py2
@@ -378,7 +416,7 @@ class Services:
         for message in p.listen():
             self.on_message_redis(message)
 
-    def loop_forever(self, sleep=1):
+    def loop_forever(self, sleep: Optional[int] = 1) -> bool:
         """Block and wait for shutdown.
 
         Args:
@@ -395,7 +433,9 @@ class Services:
                 time.sleep(1)
             return True
 
-    def message_thread(self, name, target, args, kwargs=None):
+    def message_thread(
+        self, name: str, target: Callable[[], bool], args: tuple, kwargs: Optional[dict] = None
+    ):
         """Start a message thread.
 
         Args:
@@ -413,14 +453,14 @@ class Services:
             self.tcex.log.trace(traceback.format_exc())
 
     @property
-    def metrics(self):
+    def metrics(self) -> dict:
         """Return current metrics."""
         if self._metrics.get('Active Playbooks') is not None:
             self.update_metric('Active Playbooks', len(self.configs))
         return self._metrics
 
     @metrics.setter
-    def metrics(self, metrics):
+    def metrics(self, metrics: dict):
         """Return current metrics."""
         if isinstance(metrics, dict):
             self._metrics = metrics
@@ -476,13 +516,13 @@ class Services:
             # messages on server topic must be json objects
             m = json.loads(message.payload)
         except ValueError:
-            self.tcex.log.warning(f'Cannot parse message ({m}).')
+            self.tcex.log.warning(f'Cannot parse message ({message.payload}).')
             return
 
         if message.topic == self.tcex.default_args.tc_svc_server_topic:
             self.server_topic(m)
 
-    def on_message_redis(self, message):  # pylint: disable=unused-argument
+    def on_message_redis(self, message: str):
         """Subscribe and listen to "message" on Redis topic."""
         self.tcex.log.trace(f'on_message - message {message}')
         # only process "message" on topic (exclude subscriptions, etc)
@@ -505,7 +545,7 @@ class Services:
         """Handle MQTT on_log events."""
         self.tcex.log.trace(f'on_subscribe - mid: {mid}, granted_qos: {granted_qos}')
 
-    def process_config(self, message):
+    def process_config(self, message: dict):
         """Process config message.
 
         Args:
@@ -513,60 +553,66 @@ class Services:
         """
         command = message.get('command')
         config = message.get('config')
-        status = 'Success'
+        status = True
         trigger_id = message.get('triggerId')
 
         if command.lower() == 'createconfig':
             self.tcex.log.info(f'CreateConfig - trigger_id: {trigger_id} config : {config}')
-            valid_config = True
 
             # register config apiToken
             self.tcex.token.register_token(
                 trigger_id, message.get('apiToken'), message.get('expireSeconds')
             )
 
+            msg = 'Create Config'
             if callable(self.create_config_callback):
-                msg = 'Config created'
                 kwargs = {}
                 if self.tcex.ij.runtime_level.lower() == 'webhooktriggerservice':
+                    # only webhook triggers get and require the PB url
                     kwargs['url'] = message.get('url')
+
                 try:
                     # call callback for create config and handle exceptions to protect thread
-                    valid_config = self.create_config_callback(  # pylint: disable=not-callable
+                    status = self.create_config_callback(  # pylint: disable=not-callable
                         trigger_id, config, **kwargs
                     )
+
+                    # if callback does not return a boolean value assume it worked
+                    if not isinstance(status, bool):
+                        status = True
                 except Exception as e:
-                    self.tcex.log.error(
-                        f'The create config callback method encountered an error ({e}).'
-                    )
+                    msg = f'The create config callback method encountered an error ({e}).'
+                    self.tcex.log.error(message)
                     self.tcex.log.trace(traceback.format_exc())
-                    status = 'Failed'
-                    valid_config = False
+                    status = False
 
             # create config after callback to report status and message
-            if valid_config is not False:
-                self.create_config(trigger_id, config, msg, status)
+            self.create_config(trigger_id, config, msg, status)
         elif command.lower() == 'deleteconfig':
             self.tcex.log.info(f'DeleteConfig - trigger_id: {trigger_id}')
 
             # unregister config apiToken
             self.tcex.token.unregister_token(trigger_id)
 
+            msg = 'Delete Config'
             if callable(self.delete_config_callback):
-                message = 'Delete created'
                 try:
                     # call callback for delete config and handle exceptions to protect thread
-                    self.delete_config_callback(trigger_id)  # pylint: disable=not-callable
+                    status = self.delete_config_callback(trigger_id)  # pylint: disable=not-callable
+
+                    # if callback does not return a boolean value assume it worked
+                    if not isinstance(status, bool):
+                        status = True
                 except Exception as e:
-                    message = f'The delete config callback method encountered an error ({e}).'
+                    msg = f'The delete config callback method encountered an error ({e}).'
                     self.tcex.log.error(message)
                     self.tcex.log.trace(traceback.format_exc())
-                    status = 'Failed'
+                    status = False
 
             # delete config
-            self.delete_config(trigger_id, message, status)
+            self.delete_config(trigger_id, msg, status)
 
-    def process_run_service(self, message):
+    def process_run_service(self, message: dict):
         """Process Webhook event messages.
 
         .. code-block:: python
@@ -594,7 +640,7 @@ class Services:
         self.tcex.log.debug(f'message: {message}')
 
         # thread event used to block response until body is written
-        e = threading.Event()
+        event = threading.Event()
 
         # process message
         request_key = message.get('requestKey')
@@ -662,7 +708,7 @@ class Services:
 
         def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
             """Handle WSGI Response"""
-            kwargs['e'] = e  # add event to kwargs for blocking
+            kwargs['event'] = event  # add event to kwargs for blocking
             kwargs['request_key'] = request_key
             t = threading.Thread(
                 name='response-handler',
@@ -687,7 +733,7 @@ class Services:
 
                 # set thread event to True to trigger response
                 self.tcex.log.info('API response body written')
-                e.set()
+                event.set()
             except Exception as e:
                 self.tcex.log.error(f'The api event callback method encountered and error ({e}).')
                 self.tcex.log.trace(traceback.format_exc())
@@ -702,7 +748,7 @@ class Services:
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
         """
         self.tcex.log.info('API response received, waiting on body to be written')
-        kwargs.get('e').wait(10)  # wait for thread event - (set on body write)
+        kwargs.get('event').wait(10)  # wait for thread event - (set on body write)
         self.tcex.log.trace(f'response args: {args}')
         try:
             status_code, status = args[0].split(' ', 1)
@@ -723,7 +769,7 @@ class Services:
             self.tcex.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
 
-    def process_shutdown(self, reason):
+    def process_shutdown(self, reason: str):
         """Handle a shutdown message.
 
         Args:
@@ -758,7 +804,7 @@ class Services:
         time.sleep(5)
         self.tcex.exit(0)  # final shutdown in case App did not
 
-    def process_webhook(self, message):
+    def process_webhook(self, message: dict):
         """Process Webhook event messages.
 
         Args:
@@ -792,6 +838,7 @@ class Services:
         config = self.configs.get(message.get('triggerId'))
         if config is None:
             self.tcex.log.error(f"Could not find config for triggerId {message.get('triggerId')}")
+            return
 
         # get an instance of playbooks for App
         outputs = config.get('tc_playbook_out_variables') or []
@@ -840,8 +887,14 @@ class Services:
 
                 # only required for testing in tcex framework
                 self._tcex_testing(self.thread_name, trigger_id)
+
+                # capture fired status for testing framework
+                self._tcex_testing_fired_events(self.thread_name, True)
             else:
                 self.increment_metric('Misses')
+
+                # capture fired status for testing framework
+                self._tcex_testing_fired_events(self.thread_name, False)
         except Exception as e:
             self.tcex.log.error(f'The callback method encountered and error ({e}).')
             self.tcex.log.trace(traceback.format_exc())
@@ -850,10 +903,10 @@ class Services:
             # remove temporary logging file handler
             self.tcex.logger.remove_handler_by_name(self.thread_name)
 
-            # unregister thread from token
+            # unregister thread from token module
             self.tcex.token.unregister_thread(message.get('triggerId'), self.thread_name)
 
-    def publish(self, message, topic=None):
+    def publish(self, message: str, topic: Optional[str] = None):
         """Publish a message on client topic.
 
         Args:
@@ -877,7 +930,7 @@ class Services:
         return self._ready
 
     @ready.setter
-    def ready(self, bool_val):
+    def ready(self, bool_val: bool):
         """Set ready boolean."""
         if isinstance(bool_val, bool) and bool_val is True:
             # wait until connected to send ready command
@@ -897,7 +950,7 @@ class Services:
             self._redis_client = self.tcex.redis_client
         return self._redis_client
 
-    def server_topic(self, message):
+    def server_topic(self, message: dict):
         """Handle any event coming in on server_topic.
 
         Args:
@@ -910,7 +963,6 @@ class Services:
         self.tcex.log.info(f'Command received: {command}')
         if command.lower() == 'heartbeat':
             self.heartbeat_watchdog = 0
-            self.heartbeat_miss_count = 0
 
             # send heartbeat -acknowledge- command
             response = {'command': 'Heartbeat', 'metric': self.metrics}
@@ -939,8 +991,10 @@ class Services:
             self.message_thread('process-config', self.process_config, (message,))
 
     @staticmethod
-    def session_id(trigger_id=None):  # pylint: disable=unused-argument
+    def session_id(trigger_id: Optional[str] = None):  # pylint: disable=unused-argument
         """Return a uuid4 session id.
+
+        Takes optional trigger_id for monkeypatch in testing framework.
 
         Args:
             trigger_id (str): Optional trigger_id value used in testing framework.
@@ -950,19 +1004,19 @@ class Services:
     @property
     def session_logfile(self):
         """Return a uuid4 session id."""
-        return f"{datetime.today().strftime('%Y%m%d')}/{self.thread_name}.log"
+        return f'''{datetime.today().strftime('%Y%m%d')}/{self.thread_name}.log'''
 
     @property
     def thread_name(self):
         """Return a uuid4 session id."""
         return threading.current_thread().name
 
-    def update_metric(self, label, value):
+    def update_metric(self, label: str, value: Union[int, str]):
         """Update a metric if already exists.
 
         Args:
             label (str): The metric label (e.g., hits) to update.
-            value (int|str): The updated value for the metric.
+            value (Union[int, str]): The updated value for the metric.
         """
         if self._metrics.get(label) is not None:
             self._metrics[label] = value

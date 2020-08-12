@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Playbook App"""
+# standard library
 import traceback
 
+# first-party
 from app_lib import AppLib
 
 
@@ -14,7 +16,11 @@ def run(**kwargs):
     app_lib.update_path()
 
     # import modules after path has been updated
+
+    # third-party
     from tcex import TcEx  # pylint: disable=import-outside-toplevel
+
+    # first-party
     from app import App  # pylint: disable=import-outside-toplevel
 
     tcex = TcEx()
@@ -43,7 +49,9 @@ def run(**kwargs):
         tcex.service.ready = True
 
         # loop until exit
-        tcex.service.loop_forever()
+        tcex.log.info('Looping until shutdown')
+        while tcex.service.loop_forever(sleep=1):
+            pass
 
         # start the webhook trigger (blocking)
         # tcex.service.api_service(callback=app.api_callback)

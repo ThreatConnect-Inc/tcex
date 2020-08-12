@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Logger module"""
+# standard library
 import logging
 import os
 import pathlib
@@ -230,7 +231,7 @@ class Logger:
             self.log.info(f'App Version: {self.tcex.ij.program_version}')
             if self.tcex.ij.commit_hash is not None:
                 self.log.info(f'App Commit Hash: {self.tcex.ij.commit_hash}')
-        except Exception:  # pragma: no cover
+        except Exception:  # nosec; pragma: no cover
             pass
 
     def _log_platform(self):

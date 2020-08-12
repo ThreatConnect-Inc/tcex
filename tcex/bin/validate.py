@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Validate Module."""
+# standard library
 import ast
 import importlib
 import json
@@ -9,6 +10,7 @@ import sys
 import traceback
 from collections import deque
 
+# third-party
 import colorama as c
 from jsonschema import SchemaError, ValidationError, validate
 from stdlib_list import stdlib_list
@@ -16,12 +18,14 @@ from stdlib_list import stdlib_list
 from .bin import Bin
 
 try:
+    # third-party
     import pkg_resources
 except PermissionError:
     # this module is only required for certain CLI commands
     pass
 
 try:
+    # standard library
     import sqlite3
 except ModuleNotFoundError:
     # this module is only required for certain CLI commands
@@ -314,15 +318,15 @@ class Validate(Bin):
                 if 'sqlite3' in sys.modules:
                     if p.get('display'):
                         display_query = (
-                            f'SELECT * FROM {self.permutations.input_table}'
-                            f" WHERE {p.get('display')}"
+                            f'''SELECT * FROM {self.permutations.input_table}'''  # nosec
+                            f''' WHERE {p.get('display')}'''
                         )
                         try:
                             self.permutations.db_conn.execute(display_query.replace('"', ''))
                         except sqlite3.Error:
                             self.validation_data['errors'].append(
-                                'Layouts input.parameters[].display validations failed '
-                                f"""("{p.get('display')}" query is an invalid statement)."""
+                                '''Layouts input.parameters[].display validations failed '''
+                                f'''("{p.get('display')}" query is an invalid statement).'''
                             )
                             status = False
 
@@ -344,15 +348,16 @@ class Validate(Bin):
             if o.get('name') not in ij_output_names:
                 # update validation data errors
                 self.validation_data['errors'].append(
-                    f"Layouts output validations failed ({o.get('name')} is defined "
-                    'in layout.json, but not found in install.json).'
+                    f'''Layouts output validations failed ({o.get('name')} is defined '''
+                    '''in layout.json, but not found in install.json).'''
                 )
                 status = False
 
             if 'sqlite3' in sys.modules:
                 if o.get('display'):
                     display_query = (
-                        f"SELECT * FROM {self.permutations.input_table} WHERE {o.get('display')}"
+                        f'''SELECT * FROM {self.permutations.input_table} '''  # nosec
+                        f'''WHERE {o.get('display')}'''
                     )
                     try:
                         self.permutations.db_conn.execute(display_query.replace('"', ''))

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx Utils Module."""
+# standard library
 import json
 import os
 from random import randint
 from uuid import uuid4
 
+# first-party
 from tcex.profile import Profile
 
 
@@ -17,6 +19,7 @@ class TestProfileAdd:
     @property
     def default_args(self):
         """Return default args dict."""
+        return {}
 
     def load_profile(self, filename):
         """Load profile from disk
@@ -45,10 +48,7 @@ class TestProfileAdd:
                     'vault_url': 'https://vault-01.tci.ninja:8200',
                 },
             },
-            'options': {
-                'autostage': {'enabled': False, 'only_inputs': None},
-                'session': {'blur': [], 'enabled': False},
-            },
+            'options': {'session': {'blur': [], 'enabled': False}},
             'outputs': {
                 '#App:9876:one!String': {'expected_output': '1', 'op': 'eq'},
                 '#App:9876:three!String': {'expected_output': None, 'op': 'eq'},
@@ -63,10 +63,9 @@ class TestProfileAdd:
                     ]
                 }
             },
-            'version': '2.0.6.1591912709.340581',
         }
 
-    def test_profile_add(self):
+    def test_profile_add(self, tcex):  # pylint: disable=unused-argument
         """Test adding a profile.
 
         {
@@ -112,7 +111,7 @@ class TestProfileAdd:
         profile = Profile(default_args=default_args, feature=feature, name=name)
 
         # add profile
-        profile.add()
+        profile.add()  # required tcex fixture for install.json to be created
 
         # load profile from disk
         profile_data = self.load_profile(f'{name}.json')
@@ -184,6 +183,7 @@ class TestProfileAdd:
         context = str(uuid4())
         profile = Profile(
             default_args=self.default_args.copy(),
+            feature='PyTest',
             name=profile_name,
             redis_client=tcex.redis_client,
             tcex_testing_context=context,
@@ -195,7 +195,18 @@ class TestProfileAdd:
         # load profile
         profile_data = self.load_profile(f'{profile_name}.json')
 
-        print('profile_data', profile_data)
+        # validate redis was renamed to kvstore
+        assert profile_data.get('stage', {}).get('redis') is None
+        assert profile_data.get('stage', {}).get('kvstore') is not None
+        # validate default input moved to default
+        assert (
+            profile_data.get('inputs', {}).get('defaults', {}).get('tc_proxy_host') == 'localhost'
+        )
+        # validate variable schema has been migrated
+        assert (
+            profile_data.get('inputs', {}).get('required', {}).get('vault_token')
+            == '${env:PYTEST_PWD}'
+        )
 
     # def test_populate_profile(self, tcex):
     #     """Test migrating profile."""

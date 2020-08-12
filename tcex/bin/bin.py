@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Bin Command Base Module."""
+# standard library
 import os
 import sys
 
+# third-party
 import colorama as c
 
 from ..app_config_object import InstallJson, LayoutJson, TcexJson

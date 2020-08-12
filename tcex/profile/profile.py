@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
+# standard library
 import json
 import logging
 import os
@@ -8,10 +9,12 @@ import sys
 from collections import OrderedDict
 from random import randint
 
+# third-party
 import colorama as c
 
 from ..app_config_object import InstallJson, LayoutJson, Permutations
 from ..env_store import EnvStore
+from ..sessions import TcSession
 from ..utils import Utils
 from .migrate import Migrate
 from .populate import Populate
@@ -53,7 +56,7 @@ class Profile:
         self._default_args = default_args or {}
         self._feature = feature
         self._name = name
-        self.log = logger or logging.getLogger('profile').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('profile')
         self.redis_client = redis_client
         self.pytestconfig = pytestconfig
         self.monkeypatch = monkeypatch
@@ -62,17 +65,18 @@ class Profile:
 
         # properties
         self._app_path = os.getcwd()
+        self._context_tracker = []
         self._data = None
         self._output_variables = None
-        self._context_tracker = []
         self._pytest_args = None
+        self._session_manager = None
+        self._session = None
         self.env_store = EnvStore(logger=self.log)
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
         self.permutations = Permutations(logger=self.log)
         self.populate = Populate(self)
         self.rules = Rules(self)
-        self._session_manager = None
         self.tc_staged_data = {}
         self.utils = Utils()
 
@@ -151,7 +155,7 @@ class Profile:
             profile['configs'].extend(
                 [
                     {
-                        'trigger_id': str(randint(1000, 9999)),
+                        'trigger_id': str(randint(1000, 9999)),  # nosec
                         'config': profile_data.get(
                             'inputs',
                             {
@@ -504,6 +508,17 @@ class Profile:
                 self.remove_comments(v)
 
     @property
+    def session(self):
+        """Return a instance of the session manager."""
+        if self._session is None:
+            self._session = TcSession(
+                self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_access_id'),
+                self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_secret_key'),
+                os.getenv('TC_API_PATH'),
+            )
+        return self._session
+
+    @property
     def session_manager(self):
         """Return a instance of the session manager."""
         if not self._session_manager:
@@ -567,7 +582,6 @@ class Profile:
             profile_data = self.contents
             profile_data['outputs'] = outputs
             self.write(profile_data)
-
         elif self.pytest_args.get('merge_outputs'):
             if trigger_id is not None:
                 # service Apps have a different structure with id: data
@@ -639,7 +653,7 @@ class Profile:
             # make business rules based on data type or content
             output_data = {'expected_output': data, 'op': 'eq'}
             if 1 not in self.exit_codes:
-                output_data = self.rules.data(data, variable)
+                output_data = self.rules.data(data)
 
             # get trigger id for service Apps
             if trigger_id is not None:
@@ -762,10 +776,7 @@ class Profile:
     @property
     def inputs_flattened(self):
         """Return inputs dict."""
-        inputs = self.inputs_defaults
-        inputs.update(self.inputs_optional)
-        inputs.update(self.inputs_required)
-        return dict(inputs)
+        return self._flatten_inputs(self.inputs)
 
     @property
     def inputs_optional(self):
@@ -794,16 +805,24 @@ class Profile:
     @property
     def owner(self):
         """Return the owner value."""
-        return (
-            self.data.get('required', {}).get('owner')
-            or self.data.get('optional', {}).get('owner')
-            or self.data.get('owner')
-        )
+        return self.inputs_flattened.get('owner')
 
     @property
     def outputs(self):
         """Return outputs dict."""
         return self.data.get('outputs')
+
+    @property
+    def rargs(self):
+        """Return combined/flattened args with value from staging data if required."""
+        rargs = {}
+        for arg, value in self.args.items():
+            if re.match(self.utils.variable_match, value):
+                # look for value in staging data
+                if self.stage_kvstore.get(value) is not None:
+                    value = self.stage_kvstore.get(value)
+            rargs[arg] = value
+        return rargs
 
     @property
     def stage(self):
@@ -888,6 +907,10 @@ class Profile:
                 # create a variable using key value
                 variable = self.ij.create_variable(data.get('key'), variable_type, job_id=9876)
                 output_variables.append(variable)
+
+        # APP-77 - add _fired for service Apps
+        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            output_variables.append('#Trigger:9876:_fired!String')
 
         return output_variables
 

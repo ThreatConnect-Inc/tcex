@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Env Store Module"""
+# standard library
 import logging
 import os
 import sys
 
 try:
+    # third-party
     import hvac
 except ImportError:
     # hvac on required for local dev/testing
@@ -20,7 +22,7 @@ class EnvStore:
 
     def __init__(self, logger=None):
         """Initialize the Class properties."""
-        self.log = logger or logging.getLogger('layout_json').addHandler(logging.NullHandler())
+        self.log = logger or logging.getLogger('layout_json')
 
         # properties
         self._vault_client = None

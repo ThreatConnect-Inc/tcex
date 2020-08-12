@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Playbook module"""
+# standard library
 import re
 
 from .playbooks_base import PlaybooksBase
@@ -268,7 +269,7 @@ class Playbooks(PlaybooksBase):
             return None
 
         if key is None:
-            self.log.info(f'Key has a none value and will not be written.')
+            self.log.info('Key has a none value and will not be written.')
             return None
 
         if value is None:
@@ -328,6 +329,9 @@ class Playbooks(PlaybooksBase):
         elif code not in [0, 1]:
             code = 1
 
+        # write outputs before exiting
+        self.write_output()
+
         # required only for tcex testing framework
         if self.tcex.args.tcex_testing_context is not None:  # pragma: no cover
             self.tcex.redis_client.hset(self.tcex.args.tcex_testing_context, '_exit_message', msg)
@@ -336,7 +340,7 @@ class Playbooks(PlaybooksBase):
 
     def is_variable(self, key):
         """Return True if provided key is a properly formatted variable."""
-        if key is None:
+        if not isinstance(key, str):
             return False
         if re.match(self._variable_match, key):
             return True
@@ -399,7 +403,7 @@ class Playbooks(PlaybooksBase):
         """
         # if a non-variable value is passed it should be the default
         value = key
-        if key is not None:
+        if isinstance(key, str):
             key = key.strip()
             variable_type = self.variable_type(key)
             if re.match(self._variable_match, key):
@@ -695,7 +699,7 @@ class Playbooks(PlaybooksBase):
             (str): The variable type.
         """
         var_type = 'String'
-        if variable is not None:
+        if isinstance(variable, str):
             variable = variable.strip()
             if re.match(self._variable_match, variable):
                 var_type = re.search(self._variable_parse, variable).group(4)

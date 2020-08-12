@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework"""
+# standard library
 import inspect
 import logging
 import os
@@ -8,6 +9,7 @@ import re
 import signal
 import sys
 import threading
+from typing import Optional
 from urllib.parse import quote
 
 from .app_config_object import InstallJson
@@ -97,6 +99,20 @@ class TcEx:
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
+    def advanced_request(self, session: object, timeout: Optional[int] = 600):
+        """Return instance of AdvancedRequest.
+
+        Args:
+            session (object): An instance of requests.Session.
+            timeout (int): The number of second before timing out the request.
+
+        Returns:
+            object: An instance of AdvancedRequest
+        """
+        from .app_feature import AdvancedRequest
+
+        return AdvancedRequest(session, self, timeout)
+
     def aot_rpush(self, exit_code):
         """Push message to AOT action channel."""
         if self.default_args.tc_playbook_db_type == 'Redis':
@@ -125,7 +141,13 @@ class TcEx:
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
-    def cache(self, domain, data_type, ttl_minutes=None, mapping=None):
+    def cache(
+        self,
+        domain: str,
+        data_type: str,
+        ttl_seconds: Optional[int] = None,
+        mapping: Optional[dict] = None,
+    ) -> object:
         """Get instance of the Cache module.
 
         Args:
@@ -134,14 +156,15 @@ class TcEx:
                 while "local" access is restricted to the App writing the data. The "system" option
                 should not be used in almost all cases.
             data_type (str): The data type descriptor (e.g., tc:whois:cache).
-            ttl_minutes (int): The number of minutes the cache is valid.
+            ttl_seconds (int): The number of seconds the cache is valid.
+            mapping (dict): Advanced - The datastore mapping if required.
 
         Returns:
             object: An instance of the Cache Class.
         """
         from .datastore import Cache
 
-        return Cache(self, domain, data_type, ttl_minutes, mapping)
+        return Cache(self, domain, data_type, ttl_seconds, mapping)
 
     @property
     def case_management(self):
@@ -158,7 +181,7 @@ class TcEx:
         """Include the Case Management Module."""
         return self.case_management
 
-    def datastore(self, domain, data_type, mapping=None):
+    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> object:
         """Get instance of the DataStore module.
 
         Args:
@@ -167,6 +190,7 @@ class TcEx:
                 while "local" access is restricted to the App writing the data. The "system" option
                 should not be used in almost all cases.
             data_type (str): The data type descriptor (e.g., tc:whois:cache).
+            mapping (Optional[dict] = None): ElasticSearch mappings data.
 
         Returns:
             object: An instance of the DataStore Class.
@@ -770,7 +794,31 @@ class TcEx:
         if self._session is None:
             from .sessions import TcSession
 
-            self._session = TcSession(self)
+            self._session = TcSession(
+                logger=self.log,
+                api_access_id=self.default_args.api_access_id,
+                api_secret_key=self.default_args.api_secret_key,
+                base_url=self.default_args.tc_api_path,
+            )
+
+            # set verify
+            self._session.verify = self.default_args.tc_verify
+
+            # set token
+            self._session.token = self.token
+
+            # update User-Agent
+            self._session.headers.update(
+                {'User-Agent': f'TcEx: {__import__(__name__).__version__}'}
+            )
+
+            # add proxy support if requested
+            if self.default_args.tc_proxy_tc:
+                self._session.proxies = self.proxies
+                self.log.info(
+                    f'Using proxy host {self.args.tc_proxy_host}:'
+                    f'{self.args.tc_proxy_port} for ThreatConnect session.'
+                )
         return self._session
 
     @property
@@ -779,7 +827,20 @@ class TcEx:
         if self._session_external is None:
             from .sessions import ExternalSession
 
-            self._session_external = ExternalSession(self)
+            self._session_external = ExternalSession(logger=self.log)
+
+            # add User-Agent to headers
+            self._session_external.headers.update(
+                {'User-Agent': f'TcEx App: {self.ij.display_name} - {self.ij.program_version}'}
+            )
+
+            # add proxy support if requested
+            if self.default_args.tc_proxy_external:
+                self._session_external.proxies = self.proxies
+                self.log.info(
+                    f'Using proxy host {self.args.tc_proxy_host}:'
+                    f'{self.args.tc_proxy_port} for external session.'
+                )
         return self._session_external
 
     @property

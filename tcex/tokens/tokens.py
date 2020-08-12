@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework Service module"""
+# standard library
 import threading
 import time
 
+# third-party
 # from requests import exceptions, get
 from requests import Session, exceptions
 from requests.adapters import HTTPAdapter

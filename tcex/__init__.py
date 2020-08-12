@@ -12,7 +12,6 @@ from .__metadata__ import (
 )
 
 try:
-    from .tcex import TcEx
     from .decorators import (
         Benchmark,
         Debug,
@@ -24,6 +23,7 @@ try:
         ReadArg,
         WriteOutput,
     )
+    from .tcex import TcEx
     from .threat_intelligence import ThreatIntelligence
 except ImportError as e:
     print(f'Error: {e}')

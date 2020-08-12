@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """Job App"""
+# standard library
 import os
 import traceback
+
+# first-party
 from app_lib import AppLib
 
 
@@ -13,7 +16,10 @@ def run():
     app_lib.update_path()
 
     # import modules after path has been updated
+    # third-party
     from tcex import TcEx  # pylint: disable=import-outside-toplevel
+
+    # first-party
     from app import App  # pylint: disable=import-outside-toplevel
 
     config_file = 'app_config.json'

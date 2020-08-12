@@ -6,8 +6,6 @@ Module: Datastore
 =================
 The ThreatConnect TcEx App Framework provides a simple interface for interacting with the ThreatConnect DataStore feature in Apps.  The :py:mod:`~tcex.datastore.Datastore` module provides an interface to get, add, put, and delete data from the Datastore.
 
-
-
 DataStore Instance
 ==================
 The ``tcex.datastore()`` module provides persistent storage for Apps. The domain value specifies access level for the data as described in the following section.

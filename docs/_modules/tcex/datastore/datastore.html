@@ -1,14 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.datastore.datastore &mdash; TcEx 2.0.6 documentation</title>
+  <title>tcex.datastore.datastore &mdash; TcEx 2.0.9 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
 
@@ -16,8 +21,9 @@
 
 
 
-
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
 
-
-
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
 </head>
@@ -49,7 +50,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home"> TcEx
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
 
 
 
@@ -59,7 +60,7 @@
 
 
               <div class="version">
-                2.0.6
+                2.0.9
               </div>
 
 
@@ -75,6 +76,7 @@
 
 
         </div>
+
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
@@ -94,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_cache.html">Module: Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
@@ -118,6 +121,7 @@
 
 
         </div>
+
       </div>
     </nav>
 
@@ -156,7 +160,7 @@
 
   <ul class="wy-breadcrumbs">
 
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
 
           <li><a href="../../index.html">Module code</a> &raquo;</li>
 
@@ -178,6 +182,11 @@
   <h1>Source code for tcex.datastore.datastore</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework Module for working with DataStore in the ThreatConnect Platform.&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="c1"># third-party</span>
+<span class="kn">from</span> <span class="nn">requests.models</span> <span class="kn">import</span> <span class="n">Response</span>
 
 
 <div class="viewcode-block" id="DataStore"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore">[docs]</a><span class="k">class</span> <span class="nc">DataStore</span><span class="p">:</span>
@@ -198,26 +207,21 @@
 <span class="sd">    The URI string after the typeName is assumed to be ElasticSearch relevant information and is</span>
 <span class="sd">    passed directly to ElasticSearch.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        tcex (TcEx): An instance of TcEx.</span>
+<span class="sd">        domain (str): A value of “system”, “organization”, or “local”.</span>
+<span class="sd">        data_type (str): A free form type name for the data.</span>
+<span class="sd">        mapping (Optional[dict] = None): Defaults to None. Elasticsearch mappings data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">domain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">data_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span> <span class="ow">or</span> <span class="p">{</span><span class="s1">&#39;dynamic&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            tcex ([type]): [description]</span>
-<span class="sd">            domain (str): A value of “system”, “organization”, or “local”.</span>
-<span class="sd">            data_type (str): A free form type name for the data.</span>
-<span class="sd">            mapping (dict, optional): Defaults to None. Elasticsearch mappings data.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            RuntimeError: [description]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">domain</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span> <span class="ow">or</span> <span class="p">{</span><span class="s1">&#39;dynamic&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
-
-        <span class="c1"># properties</span>
+        <span class="c1"># setup</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_create_index</span><span class="p">()</span>  <span class="c1"># create the initial index.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_mappings</span><span class="p">()</span>  <span class="c1"># update mappings</span>
 
@@ -227,14 +231,14 @@
             <span class="n">rid</span> <span class="o">=</span> <span class="s1">&#39;temp-index-create&#39;</span>
             <span class="n">index_settings</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;DB-Method&#39;</span><span class="p">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">}</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/</span><span class="si">{rid}</span><span class="s1">&#39;</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">index_settings</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">rid</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">r</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">index_settings</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-                <span class="n">error</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
+                <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">error</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;creating index. status_code: </span><span class="si">{r.status_code}</span><span class="s1">, response: &quot;</span><span class="si">{r.text}</span><span class="s1">&quot;.&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;creating index. status_code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, response: &quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
             <span class="p">)</span>
             <span class="c1"># delete temporary record</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
@@ -247,166 +251,251 @@
         <span class="c1"># This module requires a token.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s1">&#39;The DataModel TcEx Module requires a Token to interact with the &#39;</span>
-                <span class="s1">&#39;ThreatConnect platform.&#39;</span>
+                <span class="s1">&#39;The DataModel TcEx Module requires a Token to &#39;</span>
+                <span class="s1">&#39;interact with the ThreatConnect platform.&#39;</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="DataStore._update_mappings"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore._update_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">_update_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the mappings for the current index.&quot;&quot;&quot;</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;DB-Method&#39;</span><span class="p">:</span> <span class="s1">&#39;PUT&#39;</span><span class="p">}</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/_mappings&#39;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;update mapping. status_code: </span><span class="si">{r.status_code}</span><span class="s1">, response: &quot;</span><span class="si">{r.text}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span></div>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/_mappings&#39;</span>
+        <span class="n">r</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;update mapping. status_code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, response: &quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">index_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">index_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Check to see if index exists.&quot;&quot;&quot;</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;DB-Method&#39;</span><span class="p">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">}</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/_search&#39;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/_search&#39;</span>
+        <span class="n">r</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The provided index was not found (</span><span class="si">{r.text}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The provided index was not found (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-<div class="viewcode-block" id="DataStore.add"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStore.add"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Write data to the DataStore. Alias for post() method.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            rid (str): The record identifier.</span>
 <span class="sd">            data (dict): The record data.</span>
-<span class="sd">            raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.</span>
+<span class="sd">            raise_on_error (Optional[bool] = True): If True and not r.ok this</span>
+<span class="sd">                method will raise a RunTimeError.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            object : Python request response.</span>
+<span class="sd">            dict : The response data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataStore.delete"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStore.delete"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Delete a record from the index using provide Id.</span>
+
+<span class="sd">        **Example Response**</span>
+
+<span class="sd">        .. code-block:: json</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;_index&quot;: &quot;$local.usr5_pytest&quot;,</span>
+<span class="sd">              &quot;_type&quot;: &quot;pytest&quot;,</span>
+<span class="sd">              &quot;_id&quot;: &quot;three&quot;,</span>
+<span class="sd">              &quot;_version&quot;: 4,</span>
+<span class="sd">              &quot;result&quot;: &quot;deleted&quot;,</span>
+<span class="sd">              &quot;_shards&quot;: {</span>
+<span class="sd">                &quot;total&quot;: 2,</span>
+<span class="sd">                &quot;successful&quot;: 1,</span>
+<span class="sd">                &quot;failed&quot;: 0</span>
+<span class="sd">              },</span>
+<span class="sd">              &quot;_seq_no&quot;: 45,</span>
+<span class="sd">              &quot;_primary_term&quot;: 1</span>
+<span class="sd">            }</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            rid (str): The record identifier.</span>
-<span class="sd">            raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.</span>
+<span class="sd">            raise_on_error (Optional[bool] = True): If True and not r.ok this</span>
+<span class="sd">                method will raise a RunTimeError.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            object : Python request response.</span>
+<span class="sd">            dict : The response data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token_available</span><span class="p">()</span>  <span class="c1"># ensure a token is available</span>
 
         <span class="n">response_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;DB-Method&#39;</span><span class="p">:</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">}</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/</span><span class="si">{rid}</span><span class="s1">&#39;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore delete status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">rid</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">r</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore delete status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">and</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-            <span class="n">response_data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">response_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">error</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
+            <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">805</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">error</span><span class="p">],</span> <span class="n">raise_on_error</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response_data</span></div>
 
-<div class="viewcode-block" id="DataStore.get"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStore.get"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get data from the DataStore.</span>
 
+<span class="sd">        **Example Response**</span>
+
+<span class="sd">        .. code-block:: json</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;_index&quot;: &quot;$local.usr5_pytest&quot;,</span>
+<span class="sd">              &quot;_type&quot;: &quot;pytest&quot;,</span>
+<span class="sd">              &quot;_id&quot;: &quot;two&quot;,</span>
+<span class="sd">              &quot;_version&quot;: 1,</span>
+<span class="sd">              &quot;found&quot;: true,</span>
+<span class="sd">              &quot;_source&quot;: {</span>
+<span class="sd">                &quot;two&quot;: 2</span>
+<span class="sd">              }</span>
+<span class="sd">            }</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            rid (str, Optional): Defaults to None. The record identifier.</span>
-<span class="sd">            data (dict, Optional): Defaults to None. A search query</span>
-<span class="sd">            raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.</span>
+<span class="sd">            rid (Optional[str] = None): The record identifier.</span>
+<span class="sd">            data (Optional[dict] = None): A search query</span>
+<span class="sd">            raise_on_error (Optional[bool] = True): If True and not r.ok this</span>
+<span class="sd">                method will raise a RunTimeError.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            object : Python request response.</span>
+<span class="sd">            dict : Python request response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token_available</span><span class="p">()</span>  <span class="c1"># ensure a token is available</span>
 
         <span class="n">response_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;DB-Method&#39;</span><span class="p">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">rid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/</span><span class="si">{rid}</span><span class="s1">&#39;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore get status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">rid</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">r</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore get status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="c1"># as long as the content is JSON set the value</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">response_data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-            <span class="c1"># TODO this issue should be addressed by core.  This is a temporary solution</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">response_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="c1"># This issue should be addressed by core in a future release.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;DataStore API returned a non-JSON response, even though content-type was </span><span class="se">\</span>
-<span class="s1">                        application/json: </span><span class="si">{r.content}</span><span class="s1"> </span><span class="se">\</span>
-<span class="s1">                        error: </span><span class="si">{e}</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;DataStore API returned a non-JSON response, even though &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;content-type was application/json: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s1"> error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="n">error</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
+            <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">805</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">error</span><span class="p">],</span> <span class="n">raise_on_error</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response_data</span></div>
 
-<div class="viewcode-block" id="DataStore.post"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStore.post"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Write data to the DataStore.</span>
+
+<span class="sd">        **Example Response**</span>
+
+<span class="sd">        .. code-block:: json</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;_index&quot;: &quot;$local.usr5_pytest&quot;,</span>
+<span class="sd">              &quot;_type&quot;: &quot;pytest&quot;,</span>
+<span class="sd">              &quot;_id&quot;: &quot;one&quot;,</span>
+<span class="sd">              &quot;_version&quot;: 31,</span>
+<span class="sd">              &quot;result&quot;: &quot;updated&quot;,</span>
+<span class="sd">              &quot;_shards&quot;: {</span>
+<span class="sd">                &quot;total&quot;: 2,</span>
+<span class="sd">                &quot;successful&quot;: 1,</span>
+<span class="sd">                &quot;failed&quot;: 0</span>
+<span class="sd">              },</span>
+<span class="sd">              &quot;_seq_no&quot;: 53,</span>
+<span class="sd">              &quot;_primary_term&quot;: 1</span>
+<span class="sd">            }</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            rid (str): The record identifier. If a value of None is passed an identifier elastic</span>
 <span class="sd">                search will automatically generate a id.</span>
 <span class="sd">            data (dict): The record data.</span>
-<span class="sd">            raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.</span>
+<span class="sd">            raise_on_error (Optional[bool] = True): If True and not r.ok this</span>
+<span class="sd">                method will raise a RunTimeError.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            object : Python request response.</span>
+<span class="sd">            dict : The response data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token_available</span><span class="p">()</span>  <span class="c1"># ensure a token is available</span>
 
         <span class="n">response_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;DB-Method&#39;</span><span class="p">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">rid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/</span><span class="si">{rid}</span><span class="s1">&#39;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore post status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/&#39;</span>
+        <span class="k">if</span> <span class="n">rid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}{</span><span class="n">rid</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">r</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore post status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">and</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-            <span class="n">response_data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">response_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">error</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
+            <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">805</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">error</span><span class="p">],</span> <span class="n">raise_on_error</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response_data</span></div>
 
-<div class="viewcode-block" id="DataStore.put"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStore.put"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Update the data for the provided Id.</span>
+
+<span class="sd">        **Example Response**</span>
+
+<span class="sd">        .. code-block:: json</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;_index&quot;: &quot;$local.usr5_pytest&quot;,</span>
+<span class="sd">              &quot;_type&quot;: &quot;pytest&quot;,</span>
+<span class="sd">              &quot;_id&quot;: &quot;one&quot;,</span>
+<span class="sd">              &quot;_version&quot;: 33,</span>
+<span class="sd">              &quot;result&quot;: &quot;updated&quot;,</span>
+<span class="sd">              &quot;_shards&quot;: {</span>
+<span class="sd">                &quot;total&quot;: 2,</span>
+<span class="sd">                &quot;successful&quot;: 1,</span>
+<span class="sd">                &quot;failed&quot;: 0</span>
+<span class="sd">              },</span>
+<span class="sd">              &quot;_seq_no&quot;: 55,</span>
+<span class="sd">              &quot;_primary_term&quot;: 1</span>
+<span class="sd">            }</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            rid (str): The record identifier.</span>
 <span class="sd">            data (dict): A search query</span>
-<span class="sd">            raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.</span>
+<span class="sd">            raise_on_error (Optional[bool] = True): If True and not r.ok this</span>
+<span class="sd">                method will raise a RunTimeError.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            object : Python request response.</span>
+<span class="sd">            dict : The response dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token_available</span><span class="p">()</span>  <span class="c1"># ensure a token is available</span>
 
         <span class="n">response_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;DB-Method&#39;</span><span class="p">:</span> <span class="s1">&#39;PUT&#39;</span><span class="p">}</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{self.domain}</span><span class="s1">/</span><span class="si">{self.data_type}</span><span class="s1">/</span><span class="si">{rid}</span><span class="s1">&#39;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore put status code: </span><span class="si">{r.status_code}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/exchange/db/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">rid</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">r</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datastore put status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">and</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-            <span class="n">response_data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">response_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">error</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
+            <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">805</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;put&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">error</span><span class="p">],</span> <span class="n">raise_on_error</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response_data</span></div>
 
-<div class="viewcode-block" id="DataStore.update"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DataStore.update"><a class="viewcode-back" href="../../../tcex_docs/tcex.datastore.html#tcex.datastore.datastore.DataStore.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the for the provided Id. Alias for put() method.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            rid (str): The record identifier.</span>
 <span class="sd">            data (dict): The record data.</span>
-<span class="sd">            raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.</span>
+<span class="sd">            raise_on_error (Optional[bool] = True): If True and not r.ok this</span>
+<span class="sd">                method will raise a RunTimeError.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            object : Python request response.</span>
+<span class="sd">            dict : The response data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">)</span></div></div>
 </pre></div>
@@ -421,6 +510,7 @@
 
   <div role="contentinfo">
     <p>
+
         &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
@@ -434,7 +524,6 @@
     </section>
 
   </div>
-
 
 
   <script type="text/javascript">

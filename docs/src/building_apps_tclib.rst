@@ -23,7 +23,7 @@ To get the latest usage for ``tclib``, run ``tclib -h``.
 
 .. IMPORTANT:: Running the ``tcinit`` command overwrites any existing "lib" directory.
 
-.. code:: bash
+.. code-block:: bash
 
     usage: tclib [-h] [--app_name APP_NAME] [--app_path APP_PATH]
                  [--config CONFIG] [--no_cache_dir] [--branch BRANCH]
@@ -43,13 +43,13 @@ Common Usage
 
 To build the "lib" directory for the current project, the following is the most common command. This command can also be used to add or remove any changes made to requirements.
 
-.. code:: bash
+.. code-block:: bash
 
     tclib
 
 If using a PIP cache, it is sometimes required to tell ``pip`` to ignore the cache in order to pick up the latest package from pypi. Adding the ``--no_cache_dir`` flag to the command will force ``tclib`` to ignore any local cache directory.
 
-.. code:: bash
+.. code-block:: bash
 
     tclib --no_cache_dir
 
@@ -59,7 +59,7 @@ By default, the **tcex.json** configuration file will be loaded if it exists.  I
 
 **Linux**
 
-.. code:: javascript
+.. code-block:: javascript
 
   <...snipped>
   "lib_versions": [{
@@ -83,7 +83,7 @@ By default, the **tcex.json** configuration file will be loaded if it exists.  I
 
 For ease of management, when building multiple Apps the tcex.json file can contain environment **vars** defining the Python version (e.g., $env.PY36 for ``export PY36='3.6.5'``).
 
-.. code:: javascript
+.. code-block:: javascript
 
   <...snipped>
   {
@@ -94,7 +94,7 @@ For ease of management, when building multiple Apps the tcex.json file can conta
 
 **Windows**
 
-.. code:: javascript
+.. code-block:: javascript
 
   <...snipped>
   {

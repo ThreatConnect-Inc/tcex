@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Parse tab separated value snippet file."""
+# standard library
 import csv
 
 # print header
@@ -22,7 +23,7 @@ with open('snippets.tsv') as fd:
 
         # docs += f"{len(title) * '-'}\n"
         docs += f'{title}\n'
-        docs += f"{len(title) * '-'}\n\n"
+        docs += f'''{len(title) * '-'}\n\n'''
         docs += '.. code-block:: python\n'
         docs += '    :linenos:\n'
         docs += '    :lineno-start: 1\n\n'

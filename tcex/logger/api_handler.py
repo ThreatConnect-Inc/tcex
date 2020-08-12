@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """API Handler Class"""
+# standard library
 import logging
 import threading
 import time
@@ -56,7 +57,7 @@ class ApiHandler(logging.Handler):
             try:
                 headers = {'Content-Type': 'application/json'}
                 self.session.post('/v2/logs/app', headers=headers, json=entries)
-            except Exception:  # pragma: no cover
+            except Exception:  # nosec; pragma: no cover
                 pass
 
 

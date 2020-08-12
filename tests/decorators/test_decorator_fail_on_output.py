@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx FailOnOutput Decorator."""
+# third-party
 import pytest
+
+# first-party
 from tcex import FailOnOutput
 
 

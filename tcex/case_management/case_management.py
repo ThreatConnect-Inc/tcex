@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Case Management"""
-from .assignee import Assignee, User, Users
 from .artifact import Artifact, Artifacts
 from .artifact_type import ArtifactType, ArtifactTypes
+from .assignee import Assignee, User, Users
 from .case import Case, Cases
 from .note import Note, Notes
 from .tag import Tag, Tags
@@ -32,6 +32,7 @@ class CaseManagement:
             analytics_priority_level (int, kwargs): [Read-Only] The **Analytics Priority Level** for
                 the Artifact.
             analytics_score (int, kwargs): [Read-Only] The **Analytics Score** for the Artifact.
+            analytics_status (int, kwargs): [Read-Only] The **Analytics Status** for the Artifact.
             analytics_type (str, kwargs): [Read-Only] The **Analytics Type** for the Artifact.
             artifact_type (ArtifactType, kwargs): [Read-Only] The **Artifact Type**
                 for the Artifact.
