@@ -84,3 +84,23 @@ Retrieve Group to Indicator Associations
 
     for association in group.indicator_associations():
         print(association)
+
+-----------------------
+Enable DNS Whois Group
+-----------------------
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    group = self.tcex.ti.group(group_type=group_type, owner=owner, unique_id=group_id)
+    # get indicator associations
+    for indicator in group.indicator_associations():
+        if indicator.get('type') == 'Host':
+            ti_host = self.ti.host(
+                hostName=indicator.get('summary'),
+                owner=self.owner,
+                dns_active=True,
+                whois_active=True
+            )
+            r = ti_host.update()
+            ti_host_data = r.json().get('data', {}).get('host', {})
