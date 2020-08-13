@@ -71,14 +71,25 @@ class StixThreatActor(StixModel):
               "xid": "eed6df9be6bdcc0b2ca2f88d7245cfa0"
             }
         """
+        map = {
+            'id': '@.id',
+            'created': '@.dateAdded',
+            'modified': '@.dateAdded',
+            'name': '@.name',
+            # multiple groups
+            # 'description': '[].attribute[?type==`Description` && displayed==`true`].value | []',
+            # join the results from this
+            'description': '@.attribute[?type==`Description` && displayed==`true`].value',
+            'threat_actor_types': '@.attribute[?type==`Actor Type`].value',  # no idea
+            'spec_version': '2.1',
+            'type': 'threat-actor'
+        }
+
         if isinstance(tc_data, dict):
             tc_data = [tc_data]
 
-        actors = []
         for data in tc_data:
-            actors.append(ThreatActor(**self._map(data, self.map)))
-
-        return actors
+            yield ThreatActor(**self._map(data, map))
 
         # return ThreatActor(
         #     id='threat-actor--9a8a0d25-7636-429b-a99e-b2a73cd0f11f',
