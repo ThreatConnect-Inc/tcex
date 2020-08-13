@@ -18,20 +18,31 @@ class StixRegistryKeyObject(StixModel):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):
-        mapper = {
-            'type': 'Registry Key',
-            'summary': '@.name',
-            'attributes': {
-                'type': 'External Id', 'value': '@.id'
-                # 'type': 'Value Data', 'value': '@.id'
-            }
-        }
 
         if isinstance(stix_data, dict):
             stix_data = [stix_data]
 
-        for tc_data in self._map(stix_data, mapper):
-            return tc_data
+        for data in stix_data:
+            mapper = {
+                'type': 'Registry Key',
+                'Key Name': '@.key',
+                'attributes': {
+                    'type': 'External Id', 'value': '@.id',
+                }
+            }
+            if not data.get('values'):
+                for tc_data in self._map(stix_data, mapper):
+                    return tc_data
+            else:
+                for i in range(data.get('values')):
+                    mapper['Value Name'] = f'@.values[{i}]["name"].value',
+                    mapper['Value Type'] = f'@.values[{i}]["data_type"].value',
+                    mapper['attributes'] = [
+                        {'type': 'External Id', 'value': '@.id'},
+                        {'type': 'Value Data', 'value': f'@.values[{i}]["data"].value'}
+                    ]
+                    for tc_data in self._map(stix_data, mapper):
+                        return tc_data
 
     def produce(self, tc_data: Union[list, dict]):
         """Produce STIX 2.0 JSON object from TC API response.
