@@ -21,18 +21,15 @@ class StixASObject(StixModel):
         else:
             indicator_field = 'AS Number'
 
-        for data in list(tc_data):
-            yield AutonomousSystem(
-                **self._map(
-                    data,
-                    {
-                        'type': 'autonomous-system',
-                        'spec_version': '2.1',
-                        'id': '@.id',
-                        'number': f'@."{indicator_field}"',
-                    },
-                )
-            )
+        parse_map = {
+            'type': 'autonomous-system',
+            'spec_version': '2.1',
+            'id': '@.id',
+            'number': f'@."{indicator_field}"',
+        }
+
+        for stix_data in self._map(tc_data, parse_map):
+            yield AutonomousSystem(**stix_data)
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
@@ -53,18 +50,15 @@ class StixDomainNameObject(StixModel):
         else:
             indicator_field = 'hostName'
 
-        for data in list(tc_data):
-            yield DomainName(
-                **self._map(
-                    data,
-                    {
-                        'type': 'domain-name',
-                        'spec_version': '2.1',
-                        'id': '@.id',
-                        'value': f'@."{indicator_field}"',
-                    },
-                )
-            )
+        parse_map = {
+            'type': 'domain-name',
+            'spec_version': '2.1',
+            'id': '@.id',
+            'value': f'@."{indicator_field}"',
+        }
+
+        for stix_data in self._map(tc_data, parse_map):
+            yield DomainName(**stix_data)
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
@@ -85,18 +79,15 @@ class StixEmailAddressObject(StixModel):
         else:
             indicator_field = 'address'
 
-        for data in list(tc_data):
-            yield EmailAddress(
-                **self._map(
-                    data,
-                    {
-                        'type': 'email-addr',
-                        'spec_version': '2.1',
-                        'id': '@.id',
-                        'value': f'@."{indicator_field}"',
-                    },
-                )
-            )
+        parse_map = {
+            'type': 'email-addr',
+            'spec_version': '2.1',
+            'id': '@.id',
+            'value': f'@."{indicator_field}"',
+        }
+
+        for stix_data in self._map(tc_data, parse_map):
+            yield EmailAddress(**stix_data)
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
