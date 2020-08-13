@@ -782,9 +782,16 @@ class TcEx:
         .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
         """
         if self._service is None:
-            from .services import Services
+            if self.ij.runtime_level.lower() == 'apiservice':
+                from .services import ApiService as Service
+            elif self.ij.runtime_level.lower() == 'triggerservice':
+                from .services import TriggerService as Service
+            elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
+                from .services import WebhookTriggerService as Service
+            else:
+                self.exit(1, 'Could not determine the service type.')
 
-            self._service = Services(self)
+            self._service = Service(self)
         return self._service
 
     @property
