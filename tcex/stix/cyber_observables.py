@@ -5,7 +5,8 @@ from typing import Iterable, Union
 # third-party
 from stix2 import AutonomousSystem, DomainName, EmailAddress
 
-from .threat_actor import StixModel  # pylint: disable=relative-beyond-top-level
+# first-party
+from tcex.stix import StixModel
 
 
 class StixASObject(StixModel):
@@ -33,14 +34,15 @@ class StixASObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        parse_map = {'type': 'ASN', 'summary': '@.value', 'external_id': '@.id'}
-
-        for data in self._map(stix_data, parse_map):
-            yield {
-                'summary': data.get('summary'),
-                'type': data.get('type'),
-                'attributes': [{'type': 'External ID', 'value': data.get('external_id')}],
-            }
+        yield from self._map(
+            stix_data,
+            {
+                'type': 'ASN',
+                'summary': '@.value',
+                'attributes.type': 'External Id',
+                'attributes.value': '@.id',
+            },
+        )
 
 
 class StixDomainNameObject(StixModel):
@@ -68,14 +70,15 @@ class StixDomainNameObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        parse_map = {'type': 'Host', 'summary': '@.value', 'external_id': '@.id'}
-
-        for data in self._map(stix_data, parse_map):
-            yield {
-                'summary': data.get('summary'),
-                'type': data.get('type'),
-                'attributes': [{'type': 'External ID', 'value': data.get('external_id')}],
-            }
+        yield from self._map(
+            stix_data,
+            {
+                'type': 'EmailAddress',
+                'summary': '@.value',
+                'attributes.type': 'External Id',
+                'attributes.value': '@.id',
+            },
+        )
 
 
 class StixEmailAddressObject(StixModel):
@@ -103,11 +106,15 @@ class StixEmailAddressObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        parse_map = {'type': 'EmailAddress', 'summary': '@.value', 'external_id': '@.id'}
+        yield from self._map2(
+            stix_data,
+            {
+                'type': 'EmailAddress',
+                'summary': '@.value',
+                'attributes': [{'type': 'External ID', 'value': '@.id'}],
+            },
+        )
 
-        for data in self._map(stix_data, parse_map):
-            yield {
-                'summary': data.get('summary'),
-                'type': data.get('type'),
-                'attributes': [{'type': 'External ID', 'value': data.get('external_id')}],
-            }
+
+if __name__ == '__main__':
+    print(list(StixEmailAddressObject().consume({'id': 1234, 'value': 'my@email.com'})))
