@@ -85,11 +85,10 @@ class StixThreatActor(StixModel):
             'type': 'threat-actor'
         }
 
-        if isinstance(tc_data, dict):
-            tc_data = [tc_data]
+        tc_data = list(tc_data)
 
-        for data in tc_data:
-            yield ThreatActor(**self._map(data, map))
+        for stix_data in self._map(tc_data, map):
+            yield ThreatActor(**stix_data)
 
         # return ThreatActor(
         #     id='threat-actor--9a8a0d25-7636-429b-a99e-b2a73cd0f11f',

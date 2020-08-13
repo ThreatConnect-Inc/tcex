@@ -39,14 +39,19 @@ class StixModel:
         raise NotImplementedError
 
     @staticmethod
-    def _map(data: dict, mapping: dict) -> dict:
-        mapped_obj = {}
+    def _map(data: Union[list, dict], mapping: dict) -> list:
 
-        for key, value in mapping.items():
-            if not value.startswith('@'):
-                mapped_obj[key] = value
-            else:
-                mapped_obj[key] = jmespath.search(f"{value}", jmespath.search('@', data))
+        data = list(data)
 
-        return mapped_obj
+        mapped_list = []
+        for d in data:
+            mapped_obj = {}
+            for key, value in mapping.items():
+                if not value.startswith('@'):
+                    mapped_obj[key] = value
+                else:
+                    mapped_obj[key] = jmespath.search(f"{value}", jmespath.search('@', d))
+            mapped_list.append(mapped_obj)
+
+        return mapped_list
 
