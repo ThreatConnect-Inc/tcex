@@ -24,7 +24,8 @@ class StixThreatActor(StixModel):
             'attributes': {'type': 'External Id', 'value': '@.id'}
         }
 
-        stix_data = list(stix_data)
+        if isinstance(stix_data, dict):
+            stix_data = [stix_data]
 
         for tc_data in self._map(stix_data, mapper):
             return tc_data
@@ -77,7 +78,8 @@ class StixThreatActor(StixModel):
             'type': 'threat-actor'
         }
 
-        tc_data = list(tc_data)
+        if isinstance(tc_data, dict):
+            tc_data = [tc_data]
 
         for stix_data in self._map(tc_data, mapper):
             return ThreatActor(**stix_data)

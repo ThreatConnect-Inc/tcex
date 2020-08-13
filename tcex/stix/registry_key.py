@@ -27,7 +27,8 @@ class StixRegistryKeyObject(StixModel):
             }
         }
 
-        stix_data = list(stix_data)
+        if isinstance(stix_data, dict):
+            stix_data = [stix_data]
 
         for tc_data in self._map(stix_data, mapper):
             return tc_data
