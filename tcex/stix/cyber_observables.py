@@ -36,7 +36,8 @@ class StixASObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        return self._map(stix_data, {'AS Number': '@.number'})
+        for data in list(stix_data):
+            yield self._map(data, {'hostName': '@.value'})
 
 
 class StixDomainNameObject(StixModel):
@@ -67,7 +68,8 @@ class StixDomainNameObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        return self._map(stix_data, {'hostName': '@.value'})
+        for data in list(stix_data):
+            yield self._map(data, {'hostName': '@.value'})
 
 
 class StixEmailAddressObject(StixModel):
@@ -98,4 +100,5 @@ class StixEmailAddressObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        return self._map(stix_data, {'hostName': '@.value'})
+        for data in list(stix_data):
+            yield self._map(data, {'hostName': '@.value'})
