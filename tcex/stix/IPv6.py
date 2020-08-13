@@ -1,17 +1,7 @@
 """ThreatConnect STIX module"""
 from typing import Union
 from .model import StixModel
-import jmespath
-from stix2.v21 import (
-    ThreatActor,
-    Identity,
-    AttackPattern,
-    Campaign,
-    IntrusionSet,
-    Relationship,
-    ExternalReference,
-    Bundle,
-)
+from stix2 import IPv6Address
 
 
 class StixIPv6Object(StixModel):
@@ -55,5 +45,5 @@ class StixIPv6Object(StixModel):
         }
 
         for stix_data in self._map(tc_data, mapper):
-            return ThreatActor(**stix_data)
+            return IPv6Address(**stix_data)
 

@@ -1,17 +1,7 @@
 """ThreatConnect STIX module"""
 from typing import Union
 from .model import StixModel
-import jmespath
-from stix2.v21 import (
-    ThreatActor,
-    Identity,
-    AttackPattern,
-    Campaign,
-    IntrusionSet,
-    Relationship,
-    ExternalReference,
-    Bundle,
-)
+from stix2 import WindowsRegistryKey
 
 
 class StixRegistryKeyObject(StixModel):
@@ -91,4 +81,4 @@ class StixRegistryKeyObject(StixModel):
         }
 
         for stix_data in self._map(tc_data, mapper):
-            return stix_data
+            return WindowsRegistryKey(**stix_data)
