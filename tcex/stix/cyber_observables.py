@@ -33,8 +33,14 @@ class StixASObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        for data in list(stix_data):
-            yield self._map(data, {'hostName': '@.value'})
+        parse_map = {'type': 'ASN', 'summary': '@.value', 'external_id': '@.id'}
+
+        for data in self._map(stix_data, parse_map):
+            yield {
+                'summary': data.get('summary'),
+                'type': data.get('type'),
+                'attributes': [{'type': 'External ID', 'value': data.get('external_id')}],
+            }
 
 
 class StixDomainNameObject(StixModel):
@@ -62,8 +68,14 @@ class StixDomainNameObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        for data in list(stix_data):
-            yield self._map(data, {'hostName': '@.value'})
+        parse_map = {'type': 'Host', 'summary': '@.value', 'external_id': '@.id'}
+
+        for data in self._map(stix_data, parse_map):
+            yield {
+                'summary': data.get('summary'),
+                'type': data.get('type'),
+                'attributes': [{'type': 'External ID', 'value': data.get('external_id')}],
+            }
 
 
 class StixEmailAddressObject(StixModel):
@@ -91,5 +103,11 @@ class StixEmailAddressObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        for data in list(stix_data):
-            yield self._map(data, {'hostName': '@.value'})
+        parse_map = {'type': 'EmailAddress', 'summary': '@.value', 'external_id': '@.id'}
+
+        for data in self._map(stix_data, parse_map):
+            yield {
+                'summary': data.get('summary'),
+                'type': data.get('type'),
+                'attributes': [{'type': 'External ID', 'value': data.get('external_id')}],
+            }
