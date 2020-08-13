@@ -37,10 +37,6 @@ class StixModel:
 
         return mapped_obj
 
-    @property
-    def map(self):
-        raise NotImplementedError
-
 
 class StixThreatActor(StixModel):
     """STIX Threat Actor object."""
