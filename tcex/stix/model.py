@@ -79,8 +79,8 @@ class StixModel:
             tc_data = [tc_data]
 
         for data in tc_data:
-            type = data.get('type').lower()
-            handler = type_mapping.get(type.lower(), type.lower())
+            _type = data.get('type').lower()
+            handler = type_mapping.get(_type.lower(), _type.lower())
             yield from handler.produce(data)
 
     def consume(self, stix_data: Union[list, dict]):
