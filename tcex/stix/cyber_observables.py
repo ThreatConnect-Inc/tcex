@@ -34,7 +34,7 @@ class StixASObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        yield from self._map2(
+        yield from self._map(
             stix_data,
             {
                 'type': 'ASN',
@@ -69,7 +69,7 @@ class StixDomainNameObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        yield from self._map2(
+        yield from self._map(
             stix_data,
             {
                 'type': 'Host',
