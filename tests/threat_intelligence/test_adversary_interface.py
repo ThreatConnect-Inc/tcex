@@ -87,12 +87,12 @@ class TestAdversaryGroups(TestThreatIntelligence):
         adversary.add_association(host2)
 
         for indicator in adversary.indicator_associations():
-            if indicator['type'] == "Host":
+            if indicator['type'] == 'Host':
                 ti_host = self.ti.host(
                     hostName=indicator['summary'],
                     owner=self.owner,
                     dns_active=True,
-                    whois_active=True
+                    whois_active=True,
                 )
                 r = ti_host.update()
                 ti_host_data = r.json().get('data', {}).get('host', {})

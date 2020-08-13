@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """The RateLimitHandler implements request throttling based on X-RateLimit headers.
 
 See https://tools.ietf.org/id/draft-polli-ratelimit-headers-00.html for implementation details.
