@@ -61,7 +61,7 @@ The example below retrieves all Groups with a group of Crimeware.
 
 Get Groups by Filter
 --------------------
-To retrieve all Groups using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. The calling  ``many()`` method allows pagination over all Groups matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.
+To retrieve all Groups using a Filter from the ThreatConnect REST API, the `Filters <https://docs.threatconnect.com/en/latest/rest_api/groups/retrieve.html#filtering-groups>`_ can be provided to the ``many()`` method. The calling  ``many()`` method allows pagination over all Groups matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.
 
 The example below retrieves all Groups where the name equals ``my_name_filter``.
 
@@ -322,7 +322,7 @@ The example below retrieves all indicators with a tag of Crimeware.
 
 Get Indicators by Filter
 ------------------------
-To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all Indicators matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.
+To retrieve all Indicators using a Filter from the ThreatConnect REST API, the `Filters <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#filtering-indicators>`_ can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all Indicators matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.
 
 The example below retrieves all Indicators where name equals ``my_name_filter``.
 
@@ -438,7 +438,7 @@ File:
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    
+
     # creation args for file indicators - at least one hash type required
     indicator_object = self.tcex.ti.indicator(indicator_type='File', owner='MyOrg', md5='a'*32, sha1="a"*40, sha256="a"*64, size=512)
     response = indicator_object.create()
@@ -457,13 +457,13 @@ URL:
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    
+
     # tcex 2.0.x uses `text` for url keyword, previous versions used `url`
     if tcex.__version__ < "2.0":
         indicator_object = self.tcex.ti.indicator(indicator_type='URL', owner='MyOrg', url='https://example.org/foo')
     else:
         indicator_object = self.tcex.ti.indicator(indicator_type='URL', owner='MyOrg', text='https://example.org/foo')
-        
+
     response = indicator_object.create()
 
 Updating an Indicator

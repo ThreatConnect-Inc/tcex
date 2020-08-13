@@ -129,9 +129,9 @@ The following example adds the ``ReadArg`` decorator to a method that takes a St
     :linenos:
     :lineno-start: 1
 
-    from tcex import IterateOn
+    from tcex.decorators import ReadArg
 
-    @IterateOnArg(
+    @ReadArg(
         arg='append_chars',
         fail_enabled='fail_on_error,
         fail_msg='Failed to append characters to string input.',
@@ -140,3 +140,79 @@ The following example adds the ``ReadArg`` decorator to a method that takes a St
     def append(self, string, append_chars):
         """Return string with appended characters."""
         return f'{string}{append_chars}'
+
+The ``ReadArg()`` decorator includes several built-in transforms that modify the value of the input and validators that perform checks on the input but do not change its value.
+
+The following built-in transforms are available:
+
+- to_bool
+- to_float
+- to_int
+
+The following built-in validators are available:
+
+- equals
+- in_range
+- greater_than
+- greater_than_or_equal
+- less_than
+- less_than_or_equal
+- not_in (this is equivalent to fail_on)
+
+Transforms are run, in the order they are passed, before validators, which are also run in the order they are passed.
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    from tcex.decorators import ReadArg
+
+    @ReadArg(
+        arg='confidence',
+        fail_enabled='fail_on_error,
+        fail_msg='Failed to append characters to string input.',
+        fail_on=['None' ''],
+        to_int=True,
+        in_range={'min': 0, 'max': 100}
+    )
+    def append(self, confidence):
+        """Return string with appended characters."""
+        return f'{confidence}'
+
+Custom validators and transforms can be defined using the ``validators`` and ``transforms`` arguments.  Both validators and transforms are callables that accept the input value and input name and raise a ``tcex.validators.ValidationError`` if the input is invalid.  Validators do not return a value, but transforms should return a new value for the input.
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    from tcex.decorators import ReadArg
+    from tcex.validators import ValidationError
+
+    def to_email(value, arg_name):
+        """This is a transform that takes a name and returns the associated email address"""
+        name_to_email = {
+            'Bob': 'bob@foo.com',
+            'Sally': 'sally@foo.com'
+        }
+
+        if value in name_to_email:
+            return name_to_email.get(value)
+
+        raise ValidationError(f'no email found for {value}.')
+
+    def is_valid_label(value, arg_name):
+        valid_labels = ['High', 'Medium', 'Low']
+        if value not in valid_labels:
+            raise ValidationError(f'{arg_name} must be High, Medium, or Low')
+
+    @ReadArg(
+        arg='email_to',
+        transforms=[to_email]
+    )
+    @ReadArg(
+        arg='label',
+        validators=[is_valid_label]
+    )
+    def append(self, email_to, label):
+        """Return string with appended characters."""
+        return f'{email_to}  - {label}'

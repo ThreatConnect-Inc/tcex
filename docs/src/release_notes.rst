@@ -6,6 +6,7 @@ Release Notes
 2.0.10
 ======
 + APP-890 - Added discoverTypes to Ready command for API Services.
++ APP-890 - Restructure of Service module to better support API Services.
 
 2.0.9
 =====

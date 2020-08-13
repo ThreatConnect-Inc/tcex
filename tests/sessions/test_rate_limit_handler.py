@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the default RateLimitHandler"""
 # standard library
 import time

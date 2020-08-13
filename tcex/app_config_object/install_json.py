@@ -667,11 +667,10 @@ class InstallJson:
             return json_data
 
         for param in json_data.get('params', []):
-            if param.get('type', None) != 'String':
+            if param.get('type') != 'String':
                 continue
-            if 'String' not in (param.get('playbookDataType') or []):
-                param['playbookDataType'] = param.get('playbookDataType') or []
-                param['playbookDataType'].append('String')
+            if param.get('playbookDataType') in [None, []]:
+                param.setdefault('playbookDataType', []).append('String')
         return json_data
 
     def validate(self):
