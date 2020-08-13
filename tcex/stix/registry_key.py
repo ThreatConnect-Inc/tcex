@@ -21,8 +21,7 @@ class StixRegistryKeyObject(StixModel):
                 }
             }
             if not data.get('values'):
-                for tc_data in self._map(stix_data, mapper):
-                    return tc_data
+                yield from self._map(stix_data, mapper)
             else:
                 for i in range(data.get('values')):
                     mapper['Value Name'] = f'@.values[{i}]["name"].value',
@@ -31,8 +30,7 @@ class StixRegistryKeyObject(StixModel):
                         {'type': 'External Id', 'value': '@.id'},
                         {'type': 'Value Data', 'value': f'@.values[{i}]["data"].value'}
                     ]
-                    for tc_data in self._map(stix_data, mapper):
-                        return tc_data
+                    yield from self._map(stix_data, mapper)
 
     def produce(self, tc_data: Union[list, dict]):
         """Produce STIX 2.0 JSON object from TC API response.
@@ -81,4 +79,4 @@ class StixRegistryKeyObject(StixModel):
         }
 
         for stix_data in self._map(tc_data, mapper):
-            return WindowsRegistryKey(**stix_data)
+            yield WindowsRegistryKey(**stix_data)

@@ -17,8 +17,7 @@ class StixIPv6Object(StixModel):
         if isinstance(stix_data, dict):
             stix_data = [stix_data]
 
-        for tc_data in self._map(stix_data, mapper):
-            return tc_data
+        yield from self._map(stix_data, mapper)
 
     def produce(self, tc_data: Union[list, dict]):
         """Produce STIX 2.0 JSON object from TC API response.
@@ -45,5 +44,5 @@ class StixIPv6Object(StixModel):
         }
 
         for stix_data in self._map(tc_data, mapper):
-            return IPv6Address(**stix_data)
+            yield IPv6Address(**stix_data)
 
