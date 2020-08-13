@@ -17,25 +17,17 @@ from stix2.v21 import (
 class StixThreatActor(StixModel):
     """STIX Threat Actor object."""
 
-    @property
-    def produce_map(self):
-        # mapping of STIX fields to TC jmespath expressions
-        return {
-            'id': '@.id',
-            'created': '@.dateAdded',
-            'modified': '@.dateAdded',
-            'name': '@.name',
-            # multiple groups
-            # 'description': '[].attribute[?type==`Description` && displayed==`true`].value | []',
-            # join the results from this
-            'description': '@.attribute[?type==`Description` && displayed==`true`].value',
-            'threat_actor_types': '@.attribute[?type==`Actor Type`].value',  # no idea
-            'spec_version': '2.1',
-            'type': 'threat-actor'
+    def consume(self, stix_data: Union[list, dict]):
+        mapper = {
+            'type': 'Threat',
+            'summary': '@.name',
+            'attributes': {'type': 'External Id', 'value': '@.id'}
         }
 
-    def consume(self, stix_data: Union[list, dict]):
-        pass
+        stix_data = list(stix_data)
+
+        for tc_data in self._map(stix_data, mapper):
+            return tc_data
 
     def produce(self, tc_data: Union[list, dict]):
         """Produce STIX 2.0 JSON object from TC API response.
@@ -44,7 +36,7 @@ class StixThreatActor(StixModel):
 
             {
               "id": 130292,
-              "name": "kpot",
+              "summary": "kpot",
               "ownerName": "TCI",
               "dateAdded": "2020-07-22T18:45:06Z",
               "webLink": "https://int-tc-01.tci.ninja/auth/threat/threat.xhtml?threat=130292",
@@ -71,7 +63,7 @@ class StixThreatActor(StixModel):
               "xid": "eed6df9be6bdcc0b2ca2f88d7245cfa0"
             }
         """
-        map = {
+        mapper = {
             'id': '@.id',
             'created': '@.dateAdded',
             'modified': '@.dateAdded',
@@ -87,7 +79,7 @@ class StixThreatActor(StixModel):
 
         tc_data = list(tc_data)
 
-        for stix_data in self._map(tc_data, map):
+        for stix_data in self._map(tc_data, mapper):
             return ThreatActor(**stix_data)
 
         # return ThreatActor(
