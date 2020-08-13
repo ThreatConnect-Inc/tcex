@@ -45,20 +45,6 @@ class StixModel:
     @staticmethod
     def _map(data: Union[list, dict], mapping: dict):
 
-        data = list(data)
-
-        for d in data:
-            mapped_obj = {}
-            for key, value in mapping.items():
-                if not value.startswith('@'):
-                    mapped_obj[key] = value
-                else:
-                    mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
-            yield mapped_obj
-
-    @staticmethod
-    def _map2(data: Union[list, dict], mapping: dict):
-
         if isinstance(data, dict):
             data = [data]
 
