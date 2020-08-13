@@ -1,5 +1,6 @@
 """ThreatConnect STIX module"""
 from typing import Union
+from .model import StixModel
 import jmespath
 from stix2.v21 import (
     ThreatActor,
@@ -11,31 +12,6 @@ from stix2.v21 import (
     ExternalReference,
     Bundle,
 )
-
-
-class StixModel:
-    """STIX base model object."""
-
-    def __init__(self):
-        """Initialize Class properties."""
-
-    def produce(self, tc_data: Union[list, dict]):
-        raise NotImplementedError
-
-    def consume(self, stix_data: Union[list, dict]):
-        raise NotImplementedError
-
-    @staticmethod
-    def _map(data: dict, mapping: dict) -> dict:
-        mapped_obj = {}
-
-        for key, value in mapping.items():
-            if not value.startswith('@'):
-                mapped_obj[key] = value
-            else:
-                mapped_obj[key] = jmespath.search(f"{value}", jmespath.search('@', data))
-
-        return mapped_obj
 
 
 class StixThreatActor(StixModel):
