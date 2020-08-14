@@ -23,7 +23,7 @@ def _to_type(target_type, **kwargs):
         allow_none = kwargs.get('allow_none', False)
 
         if not isinstance(value, list):
-            if value is None and allow_none:
+            if (value is None or value == '') and allow_none:
                 return value
 
             try:
@@ -33,7 +33,7 @@ def _to_type(target_type, **kwargs):
 
         transformed = []
         for v in value:
-            if v is None and allow_none:
+            if (v is None or v == '') and allow_none:
                 transformed.append(v)
                 continue
 

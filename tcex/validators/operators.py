@@ -14,7 +14,7 @@ def _operator(
             value = [value]
 
         for v in value:
-            if allow_none and v is None:
+            if allow_none and (v is None or v == ''):
                 continue
 
             if not operator_call(v, compare_to):

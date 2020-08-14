@@ -13,7 +13,7 @@ def in_range(min: float, max: float, **kwargs):  # pylint: disable=redefined-bui
     Params:
         min (float): the minimum valid value for the argument
         max (float): the maximum valid value for the argument
-        allow_none (bool): If none values are ok in a StringArray. default: False
+        allow_none (bool): If none or '' values are ok in a StringArray. default: False
 
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
@@ -26,7 +26,7 @@ def in_range(min: float, max: float, **kwargs):  # pylint: disable=redefined-bui
             value = [value]
 
         for v in value:
-            if v is None and allow_none:
+            if (v is None or v == '') and allow_none:
                 continue
 
             if not min <= v <= max:

@@ -243,7 +243,7 @@ class ReadArg:
 
             try:
                 for transform in self.transforms:
-                    arg_data = transform(arg_data, self.arg)
+                     arg_data = transform(arg_data, self.arg)
             except ValidationError as v:
                 value_formatted = f'"{arg_data}"' if isinstance(arg_data, str) else str(arg_data)
                 message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
