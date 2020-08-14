@@ -86,8 +86,15 @@ class TestCase:
         """Return bool value from int or string."""
         return str(value).lower() in ['1', 'true']
 
-    def _update_args(self, args):
-        """Update args before running App."""
+    def _update_args(self, args: dict) -> dict:
+        """Update args before running App.
+
+        Args:
+            args: The current argument dictionary.
+
+        Returns:
+            dict: The updated argument dictionary.
+        """
 
         if self.ij.runtime_level.lower() in ['playbook']:
             # set requested output variables
@@ -425,7 +432,11 @@ class TestCase:
 
         # determine the token type
         token_type = 'api'
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '407')}
             token_type = 'svc'
 
@@ -472,7 +483,8 @@ class TestCase:
         self.validator.tcex.redis_client.connection_pool.disconnect()
 
         # update profile for session data
-        self.profile.session_manager.update_profile()
+        if self.profile:  # doesn't exist for API services
+            self.profile.session_manager.update_profile()
 
     @property
     def test_case_data(self):

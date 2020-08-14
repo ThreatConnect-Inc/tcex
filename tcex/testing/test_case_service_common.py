@@ -46,6 +46,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
                 'tc_svc_broker_port': int(os.getenv('TC_SVC_BROKER_PORT', '1883')),
                 'tc_svc_broker_service': os.getenv('TC_SVC_BROKER_SERVICE', 'mqtt'),
+                'tc_svc_broker_conn_timeout': int(os.getenv('TC_SVC_BROKER_CONN_TIMEOUT', '15')),
                 'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
                 'tc_svc_client_topic': self.client_topic,
                 'tc_svc_server_topic': self.server_topic,
@@ -60,9 +61,9 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         if self._mqtt_client is None:
             self._mqtt_client = mqtt.Client()
             self._mqtt_client.connect(
-                self.tcex.args.tc_svc_broker_host,
-                self.tcex.args.tc_svc_broker_port,
-                self.tcex.args.tc_svc_broker_timeout,
+                self.default_args.get('tc_svc_broker_host'),
+                self.default_args.get('tc_svc_broker_port'),
+                self.default_args.get('tc_svc_broker_conn_timeout'),
             )
         return self._mqtt_client
 
