@@ -106,7 +106,6 @@ class StixModel:
         if not isinstance(stix_data, list):
             stix_data = [stix_data]
 
-        list(filter(lambda d: d['type'].lower() == 'relationship', stix_data))
         relationships, other = self.partition(
             stix_data, lambda x: x.get('type').lower() == 'relationship'
         )
