@@ -1,6 +1,6 @@
 """ThreatConnect STIX module"""
 from typing import Union
-from .model import StixModel
+from ..model import StixModel
 from stix2 import URL
 
 
