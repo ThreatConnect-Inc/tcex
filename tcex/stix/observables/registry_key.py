@@ -1,6 +1,6 @@
 """ThreatConnect STIX module"""
 from typing import Union
-from .model import StixModel
+from ..model import StixModel
 from stix2 import WindowsRegistryKey
 
 
@@ -78,5 +78,4 @@ class StixRegistryKeyObject(StixModel):
             'type': 'windows-registry-key'
         }
 
-        for stix_data in self._map(tc_data, mapper):
-            yield WindowsRegistryKey(**stix_data)
+        yield from (WindowsRegistryKey(**stix_data) for stix_data in self._map(tc_data, mapper))
