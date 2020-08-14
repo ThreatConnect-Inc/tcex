@@ -1,10 +1,14 @@
 """Top-level Stix Model Class."""
 # standard library
-from .registry_key import WindowsRegistryKey
-from .url import URL
-from .ipv4 import IPv4Address
-from .ipv6 import IPv6Address
-from .cyber_observables import *
+from typing import Union
+
+from .observables.registry_key import WindowsRegistryKey
+from .observables.ipv4 import IPv4Address
+from .observables.ipv6 import IPv6Address
+from .observables.autonomous_system import StixASObject
+from .observables.email_address import StixEmailAddressObject
+from .observables.url import StixURLObject
+from .observables.domain_name import StixDomainNameObject
 # third-party
 import jmespath
 
@@ -49,7 +53,7 @@ class StixModel:
     @property
     def url(self):
         if not self._url:
-            self._url = URL()
+            self._url = StixURLObject()
         return self._url
 
     @property
