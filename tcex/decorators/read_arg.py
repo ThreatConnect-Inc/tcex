@@ -123,16 +123,14 @@ class ReadArg:
         self.group_values = kwargs.get('group_values', False)
         self.group_ids = kwargs.get('group_ids', False)
         self.strip_values = kwargs.get('strip_values', False)
-        self.transforms: Union[List[Callable], Callable] = kwargs.get(
-            'transforms', []
-        ) if isinstance(kwargs.get('transforms', []), list) else [kwargs.get('transforms')]
-        self.validators: Union[List[Callable], Callable] = kwargs.get(
-            'validators', []
-        ) if isinstance(kwargs.get('validators', []), list) else [kwargs.get('validators')]
-
+        self.transforms: Union[List[Callable], Callable] = kwargs.get('transforms', [])
+        self.validators: Union[List[Callable], Callable] = kwargs.get('validators', [])
         if self.fail_on:
             self.validators.insert(0, not_in(self.fail_on))
 
+        self._init_validators(**kwargs)
+
+    def _init_validators(self, **kwargs):
         validators_map = {
             'in_range': in_range,
             'equal_to': equal_to,
