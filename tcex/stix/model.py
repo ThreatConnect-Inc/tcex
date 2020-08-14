@@ -1,6 +1,7 @@
 """Top-level Stix Model Class."""
 # standard library
 from typing import Union
+from functools import reduce
 
 from .observables.registry_key import WindowsRegistryKey
 from .observables.ipv4 import IPv4Address
@@ -87,6 +88,10 @@ class StixModel:
             handler = type_mapping.get(_type.lower(), _type.lower())
             yield from handler.produce(data)
 
+    @staticmethod
+    def partition(l, p):
+        return reduce(lambda x, y: (x[0] + [y], x[1]) if p(y) else (x[0], x[1] + [y]), l, ([], []))
+
     def consume(self, stix_data: Union[list, dict]):
         type_mapping = {
             'autonomous-system': self.as_object,
@@ -101,10 +106,40 @@ class StixModel:
         if not isinstance(stix_data, list):
             stix_data = [stix_data]
 
-        for data in stix_data:
+        list(filter(lambda d: d['type'].lower() == 'relationship', stix_data))
+        relationships, other = self.partition(
+            stix_data, lambda x: x.get('type').lower() == 'relationship'
+        )
+
+        tc_data = {}
+        for data in other:
             type = data.get('type').lower()
             handler = type_mapping.get(type.lower(), type.lower())
-            yield from handler.produce(data)
+            tc_data[data.get('id')] = handler.produce(data)
+
+        for relationship in relationships:
+            target = tc_data.get(relationship.get('target_ref'))
+            source = tc_data.get(relationship.get('source_ref'))
+
+            self.add_association(target, source)
+
+        for data in tc_data:
+            yield data
+
+    @staticmethod
+    def add_association(target, source):
+        target.setdefault('associations', []).append(
+            {
+                'name': source.get('summary'),
+                'type': source.get('type'),
+            }
+        )
+        source.setdefault('associations', []).append(
+            {
+                'name': target.get('summary'),
+                'type': target.get('type'),
+            }
+        )
 
     @staticmethod
     def _map(data: Union[list, dict], mapping: dict):
