@@ -1,6 +1,6 @@
 """ThreatConnect STIX module"""
 from typing import Union
-from .model import StixModel
+from ..model import StixModel
 from stix2 import IPv6Address
 
 
@@ -13,9 +13,6 @@ class StixIPv6Object(StixModel):
             'summary': '@.value',
             'attributes': {'type': 'External Id', 'value': '@.id'}
         }
-
-        if isinstance(stix_data, dict):
-            stix_data = [stix_data]
 
         yield from self._map(stix_data, mapper)
 
@@ -43,6 +40,5 @@ class StixIPv6Object(StixModel):
             'type': 'ipv6-addr'
         }
 
-        for stix_data in self._map(tc_data, mapper):
-            yield IPv6Address(**stix_data)
+        yield from (IPv6Address(**stix_data) for stix_data in self._map(tc_data, mapper))
 
