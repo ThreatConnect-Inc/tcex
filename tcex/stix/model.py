@@ -10,11 +10,6 @@ from .observables.autonomous_system import StixASObject
 from .observables.email_address import StixEmailAddressObject
 from .observables.url import StixURLObject
 from .observables.domain_name import StixDomainNameObject
-# third-party
-import jmespath
-
-# import local modules for dynamic reference
-module = __import__(__name__)
 
 
 class StixModel:
@@ -105,21 +100,42 @@ class StixModel:
         if not isinstance(stix_data, list):
             stix_data = [stix_data]
 
-        relationships, other = self.partition(
+        relationships, other = self._partition(
             stix_data, lambda x: x.get('type').lower() == 'relationship'
         )
 
         tc_data = {}
         for data in other:
-            type = data.get('type').lower()
-            handler = type_mapping.get(type.lower(), type.lower())
+            _type = data.get('type').lower()
+            handler = type_mapping.get(_type.lower(), _type.lower())
             tc_data[data.get('id')] = handler.produce(data)
 
         for relationship in relationships:
             target = tc_data.get(relationship.get('target_ref'))
             source = tc_data.get(relationship.get('source_ref'))
 
-            self.add_association(target, source)
+            self._add_association(target, source)
 
         for data in tc_data:
             yield data
+
+    @staticmethod
+    def _add_association(target, source):
+        target.setdefault('associations', []).append(
+            {
+                'name': source.get('summary'),
+                'type': source.get('type'),
+            }
+        )
+        source.setdefault('associations', []).append(
+            {
+                'name': target.get('summary'),
+                'type': target.get('type'),
+            }
+        )
+
+    @staticmethod
+    def _partition(l, p):
+        return reduce(lambda x, y: (x[0] + [y], x[1]) if p(y) else (x[0], x[1] + [y]), l, ([], []))
+
+

@@ -4,24 +4,9 @@ from typing import Union
 import jmespath
 
 class StixParser:
-    @staticmethod
-    def partition(l, p):
-        return reduce(lambda x, y: (x[0] + [y], x[1]) if p(y) else (x[0], x[1] + [y]), l, ([], []))
 
-    @staticmethod
-    def add_association(target, source):
-        target.setdefault('associations', []).append(
-            {
-                'name': source.get('summary'),
-                'type': source.get('type'),
-            }
-        )
-        source.setdefault('associations', []).append(
-            {
-                'name': target.get('summary'),
-                'type': target.get('type'),
-            }
-        )
+
+
 
     @staticmethod
     def _map(data: Union[list, dict], mapping: dict):
