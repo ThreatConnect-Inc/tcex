@@ -10,6 +10,7 @@ from .observables.autonomous_system import StixASObject
 from .observables.email_address import StixEmailAddressObject
 from .observables.url import StixURLObject
 from .observables.domain_name import StixDomainNameObject
+from .indicator.indicator import Indicator
 
 
 class StixModel:
@@ -24,6 +25,7 @@ class StixModel:
         self._url = None
         self._domain_name = None
         self._email_address = None
+        self._indicator = None
 
     @property
     def as_object(self):
@@ -67,15 +69,22 @@ class StixModel:
             self._domain_name = StixDomainNameObject()
         return self._domain_name
 
+    @property
+    def indicator(self):
+        if not self._indicator:
+            self._indicator = Indicator
+        return self._indicator
+
     def produce(self, tc_data: Union[list, dict]):
 
         type_mapping = {
-            'asn': self.as_object,
-            'host': self.domain_name,
-            'emailaddress': self.email_address,
-            'address': self.ipv4,
-            'registry key': self.registry_key,
-            'url': self.url
+            'indicator': self.indicator,
+            # 'asn': self.as_object,
+            # 'host': self.domain_name,
+            # 'emailaddress': self.email_address,
+            # 'address': self.ipv4,
+            # 'registry key': self.registry_key,
+            # 'url': self.url
 
         }
         if not isinstance(tc_data, list):

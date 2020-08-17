@@ -31,7 +31,9 @@ class STIXVisitor(STIXPatternVisitor):
 
 
 class Indicator(StixParser):
-    def produce(self, tc_data: Union[list, dict]):
+
+    @staticmethod
+    def produce(tc_data: Union[list, dict]):
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
@@ -46,9 +48,10 @@ class Indicator(StixParser):
         }
 
         for data in tc_data:
-            yield type_map.get(data.get('type'))()  # TODO handle unsupported types
+            yield type_map.get(data.get('type'))(data)  # TODO handle unsupported types
 
-    def consume(self, stix_data: Union[list, dict]):
+    @staticmethod
+    def consume(stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
         if not isinstance(stix_data, list):
             stix_data = [stix_data]

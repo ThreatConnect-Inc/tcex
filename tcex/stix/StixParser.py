@@ -1,12 +1,8 @@
-from functools import reduce
 from typing import Union
 
 import jmespath
 
 class StixParser:
-
-
-
 
     @staticmethod
     def _map(data: Union[list, dict], mapping: dict):
