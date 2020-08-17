@@ -1,10 +1,11 @@
 """ThreatConnect STIX module"""
 from typing import Union
-from ..model import StixModel
+
+from ..StixParser import StixParser
 from stix2 import IPv6Address
 
 
-class StixIPv6Object(StixModel):
+class StixIPv6Object(StixParser):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):

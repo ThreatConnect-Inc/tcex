@@ -1,12 +1,11 @@
 """ThreatConnect STIX module"""
 from typing import Union
 # third-party
-from stix2 import IPv4Address
 
-from tcex.stix import StixModel
+from tcex.stix.StixParser import StixParser
 
 
-class StixIPv4Object(StixModel):
+class StixIPv4Object(StixParser):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):

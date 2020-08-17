@@ -4,7 +4,7 @@ from typing import Union
 from functools import reduce
 
 from .observables.registry_key import WindowsRegistryKey
-from .observables.ipv4 import IPv4Address
+from .observables.ipv4 import StixIPv4Object
 from .observables.ipv6 import IPv6Address
 from .observables.autonomous_system import StixASObject
 from .observables.email_address import StixEmailAddressObject
@@ -12,6 +12,9 @@ from .observables.url import StixURLObject
 from .observables.domain_name import StixDomainNameObject
 # third-party
 import jmespath
+
+# import local modules for dynamic reference
+module = __import__(__name__)
 
 
 class StixModel:
@@ -36,7 +39,7 @@ class StixModel:
     @property
     def ipv4(self):
         if not self._ipv4:
-            self._ipv4 = IPv4Address()
+            self._ipv4 = StixIPv4Object()
         return self._ipv4
 
     @property
@@ -88,10 +91,6 @@ class StixModel:
             handler = type_mapping.get(_type.lower(), _type.lower())
             yield from handler.produce(data)
 
-    @staticmethod
-    def partition(l, p):
-        return reduce(lambda x, y: (x[0] + [y], x[1]) if p(y) else (x[0], x[1] + [y]), l, ([], []))
-
     def consume(self, stix_data: Union[list, dict]):
         type_mapping = {
             'autonomous-system': self.as_object,
@@ -124,42 +123,3 @@ class StixModel:
 
         for data in tc_data:
             yield data
-
-    @staticmethod
-    def add_association(target, source):
-        target.setdefault('associations', []).append(
-            {
-                'name': source.get('summary'),
-                'type': source.get('type'),
-            }
-        )
-        source.setdefault('associations', []).append(
-            {
-                'name': target.get('summary'),
-                'type': target.get('type'),
-            }
-        )
-
-    @staticmethod
-    def _map(data: Union[list, dict], mapping: dict):
-
-        if isinstance(data, dict):
-            data = [data]
-
-        for d in data:
-            mapped_obj = mapping.copy()
-            for key, value in mapping.items():
-                if isinstance(value, list):
-                    new_list = []
-                    for item in value:
-                        new_list.append(list(StixModel._map(d, item))[0])
-
-                    mapped_obj[key] = new_list
-                elif isinstance(value, dict):
-                    mapped_obj[key] = list(StixModel._map(d, mapped_obj[key]))[0]
-                else:
-                    if not value.startswith('@'):
-                        mapped_obj[key] = value
-                    else:
-                        mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
-            yield mapped_obj

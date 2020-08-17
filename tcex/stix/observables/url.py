@@ -1,17 +1,21 @@
 """ThreatConnect STIX module"""
+# standard library
 from typing import Union
-from ..model import StixModel
+
+# third-party
 from stix2 import URL
 
+from ..StixParser import StixParser
 
-class StixURLObject(StixModel):
+
+class StixURLObject(StixParser):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):
         mapper = {
             'type': 'URL',
             'summary': '@.value',
-            'attributes': {'type': 'External Id', 'value': '@.id'}
+            'attributes': {'type': 'External Id', 'value': '@.id'},
         }
 
         if isinstance(stix_data, dict):
@@ -40,9 +44,8 @@ class StixURLObject(StixModel):
             'id': '@.id',
             'value': f'@.{indicator_field}',
             'spec_version': '2.1',
-            'type': 'url'
+            'type': 'url',
         }
 
         for stix_data in self._map(tc_data, mapper):
             yield URL(**stix_data)
-
