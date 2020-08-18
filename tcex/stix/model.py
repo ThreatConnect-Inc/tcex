@@ -38,9 +38,9 @@ class StixModel:
     @property
     def ipv6(self):
         if not self._ipv6:
-            from .observables.ipv6 import IPv6Address
+            from .observables.ipv6 import StixIPv6Object
 
-            self._ipv6 = IPv6Address()
+            self._ipv6 = StixIPv6Object()
         return self._ipv6
 
     @property
@@ -111,30 +111,41 @@ class StixModel:
             'ipv4-addr': self.ipv4,
             'ipv6-addr': self.ipv6,
             'windows-registry-key': self.registry_key,
-            'url': self.url
+            'url': self.url,
+            'indicator': self.indicator,
         }
 
         if not isinstance(stix_data, list):
             stix_data = [stix_data]
 
-        relationships, other = self._partition(
-            stix_data, lambda x: x.get('type').lower() == 'relationship'
-        )
+        for stix_data in stix_data:
+            stix_objects = \
+                stix_data.get('objects') if stix_data.get('type') == 'bundle' else stix_data
+            relationships, other = self._partition(
+                stix_objects, lambda x: x.get('type').lower() == 'relationship'
+            )
 
-        tc_data = {}
-        for data in other:
-            _type = data.get('type').lower()
-            handler = type_mapping.get(_type.lower(), _type.lower())
-            tc_data[data.get('id')] = handler.produce(data)
+            tc_data = {}
+            for data in other:
+                _type = data.get('type').lower()
+                handler = type_mapping.get(_type.lower())
+                if handler:
+                    tc_data[data.get('id')] = list(handler.consume(data))  # TODO try to figure out a way to make generators work here
+                else:
+                    # TODO handle unknown stix type
+                    pass
 
-        for relationship in relationships:
-            target = tc_data.get(relationship.get('target_ref'))
-            source = tc_data.get(relationship.get('source_ref'))
+            for relationship in relationships:
+                target = tc_data.get(relationship.get('target_ref'))
+                source = tc_data.get(relationship.get('source_ref'))
+                if target is not None and source is not None:
+                    self._add_association(target, source)
+                else:
+                    # TODO handle missed relationship (due to unsupported stix type, etc.
+                    pass
 
-            self._add_association(target, source)
-
-        for data in tc_data:
-            yield data
+        for data in tc_data.values():
+            yield from data
 
     def _map(self, data: Union[list, dict], mapping: dict):
 

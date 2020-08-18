@@ -15,13 +15,15 @@ class STIXVisitor(STIXPatternVisitor):
 
     def visitPropTestEqual(self, ctx: STIXPatternParser.PropTestEqualContext):
         test = ctx.getText()
-        path, value = test.split('=')
+        eq_index = test.index('=')
+        if eq_index:
+            path, value = test[eq_index:], test[:eq_index]
 
-        self._indicators.append({
-            'path': path.strip(),
-            'value': value[1:-2].strip()
-        })
-        return self.visitChildren(ctx)
+            self._indicators.append({
+                'path': path.strip(),
+                'value': value[1:-2].strip()
+            })
+            return self.visitChildren(ctx)
 
     # TODO implement in operator
 
@@ -55,18 +57,25 @@ class Indicator(StixModel):
             stix_data = [stix_data]
 
         for data in stix_data:
-            # TODO: handle other pattern_types
-            pattern = Pattern(data.get('pattern'))
-            s = STIXVisitor()
-            pattern.visit(s)
-            print(s.indicators)
+            signature = {
+                'type': 'Signature',
+                'xid': data.get('id'),
+                'name': data.get('name'),  # TODO what should default be?
+            }
+            if data.get('pattern_type', 'stix') == 'stix':
+                # We only parse indicators out of stix patterns...
+                pattern = Pattern(data.get('pattern'))
+                s = STIXVisitor()
+                pattern.visit(s)
 
-            yield from Indicator._default_consume_handler(s.indicators)
-            yield from Indicator._ip_consume_handler(s.indicators)
-            yield from Indicator._file_consume_handler(s.indicators)
+                yield from Indicator._default_consume_handler(s.indicators, signature)
+                yield from Indicator._ip_consume_handler(s.indicators, signature)
+                yield from Indicator._file_consume_handler(s.indicators, signature)
+
+            yield signature
 
     @staticmethod
-    def _default_consume_handler(stix_indicators: List[Dict[str, str]]):
+    def _default_consume_handler(stix_indicators: List[Dict[str, str]], signature):
         type_map = {
             'url:value': 'URL',
             'email-addr:value': 'EmailAddress',
@@ -77,13 +86,19 @@ class Indicator(StixModel):
         for i in filter(lambda i: i.get('path') in type_map.keys(), stix_indicators):
             path = i.get('path')
             value = i.get('value')
+            type = type_map.get(path)
+
             yield {
-                'type': type_map.get(path),
-                'value': value
+                'type': type,
+                'value': value,
+                'xid': None,  # TODO gen xid
+                'associatedGroups': [
+                    {'groupXid': signature.get('xid')}
+                ]
             }
 
     @staticmethod
-    def _ip_consume_handler(stix_indicators: List[Dict[str, str]]):
+    def _ip_consume_handler(stix_indicators: List[Dict[str, str]], signature):
         for i in filter(lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'],
                         stix_indicators):
             path = i.get('path')
@@ -93,30 +108,42 @@ class Indicator(StixModel):
                     yield {
                         'type': 'CIDR',
                         'summary': value,
-                        'associations': []  # TODO
+                        'xid': None,  # TODO gen xid
+                        'associatedGroups': [
+                            {'groupXid': signature.get('xid')}
+                        ]
                     }
                 else:  # this is an address
                     yield {
                         'type': 'Address',
                         'summary': value,
-                        'associations': []  # TODO
+                        'xid': None,  # TODO gen xid
+                        'associatedGroups': [
+                            {'groupXid': signature.get('xid')}
+                        ]
                     }
             elif 'ipv6-addr:value' == path:
                 if '/' in value and value.split('/')[1] != '132':  # this is a CIDR
                     yield {
                         'type': 'CIDR',
                         'summary': value,
-                        'associations': []  # TODO
+                        'xid': None,  # TODO gen xid
+                        'associatedGroups': [
+                            {'groupXid': signature.get('xid')}
+                        ]
                     }
                 else:  # this is an address
                     yield {
                         'type': 'Address',
                         'summary': value,
-                        'associations': []  # TODO
+                        'xid': None,  # TODO gen xid
+                        'associatedGroups': [
+                            {'groupXid': signature.get('xid')}
+                        ]
                     }
 
     @staticmethod
-    def _file_consume_handler(stix_indicators: List[Dict[str, str]]):
+    def _file_consume_handler(stix_indicators: List[Dict[str, str]], signature: dict):
         file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), stix_indicators))
 
         sha256_indicators = list(filter(lambda i: 'SHA-156' in i.get('path'), file_indicators))
@@ -129,13 +156,19 @@ class Indicator(StixModel):
             yield {
                 'type': 'File',
                 'summary': value,
-                'associations': []
-            }
+                'xid': None,  # TODO gen xid
+                'associatedGroups': [
+                    {'groupXid': signature.get('xid')}
+                ]}
         else:
             for i in file_indicators:
                 yield {
                     'type': 'File',
-                    'value': i.get('value')
+                    'value': i.get('value'),
+                    'xid': None,  # TODO gen xid
+                    'associatedGroups': [
+                        {'groupXid': signature.get('xid')}
+                    ]
                 }
 
     @staticmethod
