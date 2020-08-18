@@ -10,10 +10,9 @@ import time
 import uuid
 from multiprocessing import Process
 from random import randint
+from typing import Optional
 
-# third-party
-import paho.mqtt.client as mqtt
-
+from ..services import MqttMessageBroker
 from .test_case_playbook_common import TestCasePlaybookCommon
 
 
@@ -21,6 +20,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     """Service App TestCase Class"""
 
     _mqtt_client = None
+    _message_broker = None
     app_process = None
     client_topic = f'client-topic-{randint(100, 999)}'
     server_topic = f'server-topic-{randint(100, 999)}'
@@ -56,34 +56,32 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         return args
 
     @property
+    def message_broker(self):
+        """Return an instance of MqttMessageBroker."""
+        if self._message_broker is None:
+            self._message_broker = MqttMessageBroker(
+                broker_host=self.default_args.get('tc_svc_broker_host'),
+                broker_port=self.default_args.get('tc_svc_broker_port'),
+                broker_timeout=self.default_args.get('tc_svc_broker_conn_timeout'),
+                logger=self.log,
+            )
+            self._message_broker.register_callbacks()
+
+        return self._message_broker
+
+    @property
     def mqtt_client(self):
         """Return a mqtt client instance."""
-        if self._mqtt_client is None:
-            self._mqtt_client = mqtt.Client()
-            self._mqtt_client.connect(
-                self.default_args.get('tc_svc_broker_host'),
-                self.default_args.get('tc_svc_broker_port'),
-                self.default_args.get('tc_svc_broker_conn_timeout'),
-            )
-        return self._mqtt_client
+        return self.message_broker.client
 
-    def publish(self, message, topic=None):
+    def publish(self, message: str, topic: Optional[str] = None):
         """Publish message on server channel.
 
         Args:
-            message (str): The message to send.
-            topic (str, optional): The message broker topic. Defaults to None.
+            message: The message to send.
+            topic: The message broker topic. Defaults to None.
         """
-        topic = topic or self.server_topic
-
-        # self.log.debug(f'topic: ({topic})')
-        # self.log.debug(f'message: ({message})')
-        # self.log.debug(f'broker_service: ({self.tcex.args.tc_svc_broker_service})')
-
-        if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
-            self.mqtt_client.publish(topic, message)
-        elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
-            self.redis_client.publish(topic, message)
+        self.message_broker.publish(message, topic)
 
     def publish_create_config(self, message):
         """Send create config message.
@@ -104,7 +102,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         message['command'] = 'CreateConfig'
         message['config']['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
         message['triggerId'] = message.pop('trigger_id')
-        self.publish(json.dumps(message))
+        self.message_broker.publish(json.dumps(message), self.server_topic)
         time.sleep(self.sleep_after_publish_config)
 
     def publish_delete_config(self, message):
@@ -116,12 +114,17 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         time.sleep(self.sleep_before_delete_config)
         # using triggerId here instead of trigger_id do to pop in publish_create_config
         config_msg = {'command': 'DeleteConfig', 'triggerId': message.get('triggerId')}
-        self.publish(json.dumps(config_msg))
+        self.message_broker.publish(json.dumps(config_msg), self.server_topic)
+
+    def publish_heartbeat(self):
+        """Send heartbeat message to service."""
+        shutdown_msg = {'command': 'Heartbeat', 'metric': {}, 'memoryPercent': 0, 'cpuPercent': 0}
+        self.message_broker.publish(json.dumps(shutdown_msg), self.server_topic)
 
     def publish_shutdown(self):
         """Publish shutdown message."""
         config_msg = {'command': 'Shutdown'}
-        self.publish(json.dumps(config_msg))
+        self.message_broker.publish(json.dumps(config_msg), self.server_topic)
 
     def publish_webhook_event(
         self,
@@ -158,7 +161,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             'requestKey': request_key,
             'triggerId': trigger_id,
         }
-        self.publish(json.dumps(event))
+        self.message_broker.publish(json.dumps(event), self.server_topic)
         time.sleep(self.sleep_after_publish_webhook_event)
 
     def run(self):
@@ -183,7 +186,6 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             # run the Service App as a subprocess
             self.app_process = subprocess.Popen(['python', 'run.py'])
         elif self.service_run_method == 'thread':
-
             # run App in a thread
             t = threading.Thread(target=self.run, args=(), daemon=True)
             t.start()

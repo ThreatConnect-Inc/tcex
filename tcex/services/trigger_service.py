@@ -3,10 +3,10 @@
 import traceback
 from typing import Callable, Optional, Union
 
-from .service_trigger_common import ServiceTriggerCommon
+from .common_service_trigger import CommonServiceTrigger
 
 
-class TriggerService(ServiceTriggerCommon):
+class TriggerService(CommonServiceTrigger):
     """TcEx Framework Service Common module."""
 
     def fire_event(self, callback: Callable[[], bool], **kwargs: list):
@@ -28,7 +28,6 @@ class TriggerService(ServiceTriggerCommon):
                 continue
 
             try:
-                self.log.trace(f'triggering callback for config id: {trigger_id}')
                 # get a session_id specifically for this thread
                 session_id: str = self.session_id(trigger_id)
 
@@ -40,12 +39,13 @@ class TriggerService(ServiceTriggerCommon):
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
 
+                # get an instance of PB module with current session_id to pass to callback
                 playbook: object = self.tcex.pb(context=session_id, output_variables=outputs)
 
-                self.log.info(f'Trigger Session ID: {session_id}')
+                self.log.info(f'feature=trigger-service, event=fire-event, trigger-id={session_id}')
 
-                args = (callback, playbook, trigger_id, config)
                 # current thread has session_id as name
+                args = (callback, playbook, trigger_id, config)
                 self.message_thread(session_id, self.fire_event_trigger, args, kwargs)
             except Exception:
                 self.log.trace(traceback.format_exc())
@@ -77,7 +77,9 @@ class TriggerService(ServiceTriggerCommon):
             level=self.args.tc_log_level,
             path=self.args.tc_log_path,
         )
-        self.log.info(f'Handling fire event trigger ({self.thread_name})')
+        self.log.info(
+            f'feature=trigger-service, event=fire-event-trigger,  thread-name={self.thread_name}'
+        )
 
         try:
             if callback(playbook, trigger_id, config, **kwargs):
@@ -88,13 +90,18 @@ class TriggerService(ServiceTriggerCommon):
                 self._tcex_testing_fired_events(self.thread_name, True)
             else:
                 self.increment_metric('Misses')
-                self.log.info(f'Trigger ID {trigger_id} missed.')
+                self.log.info(
+                    'feature=trigger-service, event=fire-event-callback-miss, '
+                    f'trigger-id={trigger_id}'
+                )
 
                 # capture fired status for testing framework
                 self._tcex_testing_fired_events(self.thread_name, False)
         except Exception as e:
             self.increment_metric('Errors')
-            self.log.error(f'The callback method encountered and error ({e}).')
+            self.log.error(
+                f'feature=trigger-service, event=fire-event-callback-exception, error="""{e}"""'
+            )
             self.log.trace(traceback.format_exc())
         finally:
             # remove temporary logging file handler

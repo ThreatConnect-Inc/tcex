@@ -11,7 +11,7 @@ from typing import Callable, Optional, Union
 from .mqtt_message_broker import MqttMessageBroker
 
 
-class ServiceCommon(MqttMessageBroker):
+class CommonService:
     """TcEx Framework Service Common module
 
     Shared service logic between the supported service types:
@@ -26,15 +26,6 @@ class ServiceCommon(MqttMessageBroker):
         Args:
             tcex: Instance of TcEx.
         """
-        super().__init__(
-            broker_host=tcex.default_args.tc_svc_broker_host,
-            broker_port=tcex.default_args.tc_svc_broker_port,
-            broker_timeout=tcex.default_args.tc_svc_broker_conn_timeout,
-            broker_token=tcex.default_args.tc_svc_broker_token,
-            broker_cacert=tcex.default_args.tc_svc_broker_cacert_file,
-            client_topic=tcex.default_args.tc_svc_client_topic,
-            logger=tcex.log,
-        )
         self.tcex = tcex
 
         # properties
@@ -47,8 +38,16 @@ class ServiceCommon(MqttMessageBroker):
         self.heartbeat_max_misses = 3
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
+        self.log = tcex.log
+        self.message_broker = MqttMessageBroker(
+            broker_host=tcex.default_args.tc_svc_broker_host,
+            broker_port=tcex.default_args.tc_svc_broker_port,
+            broker_timeout=tcex.default_args.tc_svc_broker_conn_timeout,
+            broker_token=tcex.default_args.tc_svc_broker_token,
+            broker_cacert=tcex.default_args.tc_svc_broker_cacert_file,
+            logger=tcex.log,
+        )
         self.ready = False
-        self.shutdown = False
 
         # config callbacks
         self.shutdown_callback = None
@@ -75,18 +74,19 @@ class ServiceCommon(MqttMessageBroker):
 
     def heartbeat(self):
         """Start heartbeat process."""
-        # start heartbeat monitor thread
         t = threading.Thread(name='heartbeat', target=self.heartbeat_monitor, daemon=True)
         t.start()
-        self.log.info('Heartbeat monitor started')
 
     def heartbeat_monitor(self):
         """Publish heartbeat on timer."""
+        self.log.info('feature=service, event=heartbeat-monitor-started')
         while True:
             if self.heartbeat_watchdog > (
                 int(self.args.tc_svc_hb_timeout_seconds) / int(self.heartbeat_sleep_time)
             ):
-                self.log.error('Missed server heartbeat message. Service is shutting down.')
+                self.log.error(
+                    'feature=service, event=missed-heartbeat, action=shutting-service-down'
+                )
                 self.process_shutdown_command({'reason': 'Missed heartbeat commands.'})
                 break
             time.sleep(self.heartbeat_sleep_time)
@@ -104,18 +104,16 @@ class ServiceCommon(MqttMessageBroker):
 
     def listen(self):
         """List for message coming from broker."""
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
+        self.message_broker.add_on_connect_callback(self.on_connect_handler)
+        self.message_broker.add_on_message_callback(
+            self.on_message_handler, topics=[self.args.tc_svc_server_topic]
+        )
 
-        # only needed when debugging
-        # if self.tcex.log.getEffectiveLevel() == 5:
-        self.client.on_disconnect = self.on_disconnect
-        self.client.on_log = self.on_log
-        self.client.on_publish = self.on_publish
-        self.client.on_subscribe = self.on_subscribe
-        self.client.on_unsubscribe = self.on_unsubscribe
+        self.message_broker.register_callbacks()
 
-        t = threading.Thread(name='broker-listener', target=self.connect, args=(), daemon=True)
+        t = threading.Thread(
+            name='broker-listener', target=self.message_broker.connect, args=(), daemon=True
+        )
         t.start()
 
     def loop_forever(self, sleep: Optional[int] = 1) -> bool:
@@ -130,7 +128,7 @@ class ServiceCommon(MqttMessageBroker):
         while True:
             deadline = time.time() + sleep
             while time.time() < deadline:
-                if self.shutdown:
+                if self.message_broker.shutdown:
                     return False
                 time.sleep(1)
             return True
@@ -146,7 +144,6 @@ class ServiceCommon(MqttMessageBroker):
             args: The args to pass to the target method.
             kwargs: Additional args.
         """
-        # self.log.trace(f'message thread: {type(target)} - {args}')
         try:
             t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
             t.start()
@@ -167,35 +164,30 @@ class ServiceCommon(MqttMessageBroker):
         if isinstance(metrics, dict):
             self._metrics = metrics
         else:
-            self.log.error('Invalid data provided for metrics.')
+            self.log.error('feature=service, event=invalid-metrics')
 
-    def on_connect(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
+    def on_connect_handler(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
         """On connect method for mqtt broker."""
-        self.log.info(f'Message broker connection status: {str(rc)}')
+        self.log.info(
+            f'feature=service, event=topic-subscription, topic={self.args.tc_svc_server_topic}'
+        )
+        self.message_broker.client.subscribe(self.args.tc_svc_server_topic)
+        self.message_broker.client.disable_logger()
 
-        self.log.info(f'Subscribing to topic: {self.args.tc_svc_server_topic}')
-        self.client.subscribe(self.args.tc_svc_server_topic)
-        self._connected = True
-        self.client.disable_logger()
-
-    def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
+    def on_message_handler(self, client, userdata, message):  # pylint: disable=unused-argument
         """On message for mqtt."""
-        self.log.trace(f'on_message - message.payload: {message.payload}')
-        self.log.trace(f'on_message - message.topic: {message.topic}')
         try:
             # messages on server topic must be json objects
             m = json.loads(message.payload)
         except ValueError:
-            self.log.warning(f'Cannot parse message ({message.payload}).')
-            return
-
-        # only process messages on server topic
-        if message.topic != self.args.tc_svc_server_topic:
+            self.log.warning(
+                f'feature=service, event=parsing-issue, message="""{message.payload}"""'
+            )
             return
 
         # use the command to call the appropriate method defined in command_map
         command: str = m.get('command', 'invalid').lower()
-        self.log.info(f'Command received: {command}')
+        self.log.info(f'feature=service, event=command-received, command="{command}"')
         self.command_map.get(command, self.process_invalid_command)(m)
 
     def process_heartbeat_command(self, message: dict):  # pylint: disable=unused-argument
@@ -219,9 +211,10 @@ class ServiceCommon(MqttMessageBroker):
 
         # send heartbeat -acknowledge- command
         response = {'command': 'Heartbeat', 'metric': self.metrics}
-        self.publish(json.dumps(response))
-        self.log.info('Heartbeat command sent')
-        self.log.debug(f'metrics: {self.metrics}')
+        self.message_broker.publish(
+            message=json.dumps(response), topic=self.tcex.default_args.tc_svc_client_topic
+        )
+        self.log.info(f'feature=service, event=heartbeat-sent, metrics={self.metrics}')
 
     def process_logging_change_command(self, message: dict):
         """Process the LoggingChange command.
@@ -239,7 +232,7 @@ class ServiceCommon(MqttMessageBroker):
             message: The message payload from the server topic.
         """
         level: str = message.get('level')
-        self.log.info(f'LoggingChange - level: {level}')
+        self.log.info(f'feature=service, event=logging-change, level={level}')
         self.tcex.logger.update_handler_level(level)
 
     def process_invalid_command(self, message: dict):
@@ -248,10 +241,12 @@ class ServiceCommon(MqttMessageBroker):
         Args:
             message: The message payload from the server topic.
         """
-        self.log.warning(f'Invalid command found in payload: ({message}).')
+        self.log.warning(
+            f'feature=service, event=invalid-command-received, message="""({message})""".'
+        )
 
     def process_shutdown_command(self, message: dict):
-        """Process the Shutdown command.
+        """Implement parent method to process the shutdown command.
 
         .. code-block:: python
             :linenos:
@@ -268,10 +263,13 @@ class ServiceCommon(MqttMessageBroker):
         reason = message.get('reason') or (
             'A shutdown command was received on server topic. Service is shutting down.'
         )
-        self.log.info(f'Shutdown - reason: {reason}')
+        self.log.info(f'feature=service, event=shutdown, reason={reason}')
 
         # acknowledge shutdown command
-        self.publish(json.dumps({'command': 'Acknowledged', 'type': 'Shutdown'}))
+        self.message_broker.publish(
+            json.dumps({'command': 'Acknowledged', 'type': 'Shutdown'}),
+            self.tcex.default_args.tc_svc_client_topic,
+        )
 
         # call App shutdown callback
         if callable(self.shutdown_callback):
@@ -279,15 +277,17 @@ class ServiceCommon(MqttMessageBroker):
                 # call callback for shutdown and handle exceptions to protect thread
                 self.shutdown_callback()  # pylint: disable=not-callable
             except Exception as e:
-                self.log.error(f'The shutdown callback method encountered and error ({e}).')
+                self.log.error(
+                    f'feature=service, event=shutdown-callback-error, error="""({e})""".'
+                )
                 self.log.trace(traceback.format_exc())
 
         # unsubscribe and disconnect from the broker
-        self.client.unsubscribe(self.args.tc_svc_server_topic)
-        self.client.disconnect()
+        self.message_broker.client.unsubscribe(self.args.tc_svc_server_topic)
+        self.message_broker.client.disconnect()
 
         # update shutdown flag
-        self.shutdown = True
+        self.message_broker.shutdown = True
 
         # delay shutdown to give App time to cleanup
         time.sleep(5)
@@ -303,16 +303,18 @@ class ServiceCommon(MqttMessageBroker):
         """Set ready boolean."""
         if isinstance(bool_val, bool) and bool_val is True:
             # wait until connected to send ready command
-            while not self._connected:
-                if self.shutdown:
+            while not self.message_broker._connected:
+                if self.message_broker.shutdown:
                     break
                 time.sleep(1)
             else:  # pylint: disable=useless-else-on-loop
-                self.log.info('Service is Ready')
+                self.log.info('feature=service, event=service-ready')
                 ready_command = {'command': 'Ready'}
                 if self.tcex.ij.runtime_level.lower() in ['apiservice']:
                     ready_command['discoveryTypes'] = self.tcex.ij.service_discovery_types
-                self.publish(json.dumps(ready_command))
+                self.message_broker.publish(
+                    json.dumps(ready_command), self.tcex.default_args.tc_svc_client_topic
+                )
                 self._ready = True
 
     @property

@@ -7,10 +7,10 @@ import traceback
 from io import StringIO
 from typing import Any
 
-from .service_common import ServiceCommon
+from .common_service import CommonService
 
 
-class ApiService(ServiceCommon):
+class ApiService(CommonService):
     """TcEx Framework API Service module."""
 
     def __init__(self, tcex: object):
@@ -48,7 +48,9 @@ class ApiService(ServiceCommon):
             for q in params:
                 query_string.append(f'''{q.get('name')}={q.get('value')}''')
         except AttributeError as e:
-            self.log.error(f'Bad params data provided {params} ({e})')
+            self.log.error(
+                f'feature=api-service, event=bad-params-provided, params={params}, error="""{e})"""'
+            )
             self.log.trace(traceback.format_exc())
         return '&'.join(query_string)
 
@@ -69,7 +71,10 @@ class ApiService(ServiceCommon):
                 headers_.setdefault(h.get('name').lower(), str(h.get('value')))
 
         except AttributeError as e:
-            self.log.error(f'Bad header data provided {headers} ({e})')
+            self.log.error(
+                f'feature=api-service, event=bad-headers-provided, '
+                f'headers={headers}, error="""{e})"""'
+            )
             self.log.trace(traceback.format_exc())
         return headers_
 
@@ -87,7 +92,10 @@ class ApiService(ServiceCommon):
             for h in headers:
                 headers_.append({'name': h[0], 'value': h[1]})
         except AttributeError as e:
-            self.log.error(f'Bad header data provided {headers} ({e})')
+            self.log.error(
+                f'feature=api-service, event=bad-headers-provided, '
+                f'headers={headers}, error="""{e})"""'
+            )
             self.log.trace(traceback.format_exc())
         return headers_
 
@@ -115,8 +123,7 @@ class ApiService(ServiceCommon):
         self.tcex.token.register_token(
             self.thread_name, message.get('apiToken'), message.get('expireSeconds')
         )
-        self.log.info('Processing RunService Command')
-        self.log.debug(f'message: {message}')
+        self.log.info(f'feature=api-service, event=runservice-command, message="{message}"')
 
         # thread event used to block response until body is written
         event = threading.Event()
@@ -132,7 +139,7 @@ class ApiService(ServiceCommon):
                 if body is not None:
                     body = StringIO(base64.b64decode(body).decode('utf-8'))
         except Exception as e:
-            self.log.error(f'Failed reading body to Redis ({e})')
+            self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
             self.log.trace(traceback.format_exc())
         headers: dict = self.format_request_headers(message.get('headers'))
         method: str = message.get('method')
@@ -177,10 +184,10 @@ class ApiService(ServiceCommon):
                 environ['CONTENT_TYPE'] = (headers.get('content-type'),)
             if headers.get('content-length') is not None:
                 environ['CONTENT_LENGTH'] = headers.get('content-length')
-            self.log.trace(f'environ: {environ}')
+            self.log.trace(f'feature=api-service, environ={environ}')
             self.increment_metric('Requests')
         except Exception as e:
-            self.log.error(f'Failed building environ ({e})')
+            self.log.error(f'feature=api-service, event=failed-building-environ, error="""{e}"""')
             self.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
             return  # stop processing
@@ -211,10 +218,12 @@ class ApiService(ServiceCommon):
                 self.redis_client.hset(request_key, 'response.body', body)
 
                 # set thread event to True to trigger response
-                self.log.info('API response body written')
+                self.log.info('feature=api-service, event=response-body-written')
                 event.set()
             except Exception as e:
-                self.log.error(f'The api event callback method encountered and error ({e}).')
+                self.log.error(
+                    f'feature=api-service, event=api-event-callback-failed, error="""{e}""".'
+                )
                 self.log.trace(traceback.format_exc())
                 self.increment_metric('Errors')
 
@@ -226,9 +235,9 @@ class ApiService(ServiceCommon):
 
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
         """
-        self.log.info('API response received, waiting on body to be written')
+        self.log.info('feature=api-service, event=response=received, status=waiting-for-body')
         kwargs.get('event').wait(10)  # wait for thread event - (set on body write)
-        self.log.trace(f'response args: {args}')
+        self.log.trace(f'feature=api-service, event=response, args={args}')
         try:
             status_code, status = args[0].split(' ', 1)
             response = {
@@ -240,11 +249,15 @@ class ApiService(ServiceCommon):
                 'statusCode': status_code,
                 'type': 'RunService',
             }
-            self.log.info('API response sent')
-            self.publish(json.dumps(response))
+            self.log.info('feature=api-service, event=response-sent')
+            self.message_broker.publish(
+                json.dumps(response), self.tcex.default_args.tc_svc_client_topic
+            )
             self.increment_metric('Responses')
         except Exception as e:
-            self.log.error(f'Failed creating response body ({e})')
+            self.log.error(
+                f'feature=api-service, event=failed-creating-response-body, error="""{e}"""'
+            )
             self.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
 

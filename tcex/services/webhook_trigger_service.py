@@ -5,10 +5,10 @@ import json
 import traceback
 from typing import Any, Optional, Union
 
-from .service_trigger_common import ServiceTriggerCommon
+from .common_service_trigger import CommonServiceTrigger
 
 
-class WebhookTriggerService(ServiceTriggerCommon):
+class WebhookTriggerService(CommonServiceTrigger):
     """TcEx Framework Webhook Service Trigger module."""
 
     def __init__(self, tcex: object):
@@ -79,10 +79,10 @@ class WebhookTriggerService(ServiceTriggerCommon):
             level=self.args.tc_log_level,
             path=self.args.tc_log_path,
         )
-        self.log.trace('Process webhook event trigger')
+        self.log.trace('feature=webhooktrigger-service, event=process-webhook-event')
 
         # acknowledge webhook event
-        self.publish(
+        self.message_broker.publish(
             json.dumps(
                 {
                     'command': 'Acknowledged',
@@ -90,13 +90,17 @@ class WebhookTriggerService(ServiceTriggerCommon):
                     'triggerId': message.get('triggerId'),
                     'type': 'WebhookEvent',
                 }
-            )
+            ),
+            self.tcex.default_args.tc_svc_client_topic,
         )
 
         # get config using triggerId passed in WebhookEvent data
         config: dict = self.configs.get(message.get('triggerId'))
         if config is None:
-            self.log.error(f"Could not find config for triggerId {message.get('triggerId')}")
+            self.log.error(
+                '''feature=webhooktrigger-service, event=missing-config, '''
+                f'''trigger-id={message.get('triggerId')}'''
+            )
             return
 
         # get an instance of playbooks for App
@@ -130,7 +134,7 @@ class WebhookTriggerService(ServiceTriggerCommon):
                     )
 
                 # webhook responses are for providers that require a subscription req/resp.
-                self.publish(
+                self.message_broker.publish(
                     json.dumps(
                         {
                             'sessionId': self.thread_name,  # session/context
@@ -141,7 +145,8 @@ class WebhookTriggerService(ServiceTriggerCommon):
                             'headers': callback_response.get('headers', []),
                             'statusCode': callback_response.get('statusCode', 200),
                         }
-                    )
+                    ),
+                    self.tcex.default_args.tc_svc_client_topic,
                 )
             elif isinstance(callback_response, bool) and callback_response:
                 self.increment_metric('Hits')
@@ -158,9 +163,11 @@ class WebhookTriggerService(ServiceTriggerCommon):
                 # capture fired status for testing framework
                 self._tcex_testing_fired_events(self.thread_name, False)
         except Exception as e:
-            self.log.error(f'The callback method encountered and error ({e}).')
-            self.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
+            self.log.error(
+                f'feature=webhooktrigger-service, event=webhook-callback-exception, error="""{e}"""'
+            )
+            self.log.trace(traceback.format_exc())
         finally:
             # remove temporary logging file handler
             self.tcex.logger.remove_handler_by_name(self.thread_name)

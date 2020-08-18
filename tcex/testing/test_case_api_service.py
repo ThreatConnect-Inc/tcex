@@ -6,7 +6,6 @@ import os
 import socketserver
 import sys
 import time
-import traceback
 from base64 import b64decode, b64encode
 from threading import Event, Thread
 from typing import Optional
@@ -35,68 +34,49 @@ class ApiServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
         self.test_case = test_case
 
         # properties
-        self._connected = False
+        self._host = bind_addr[0]
+        self._port = bind_addr[1]
         self.active_requests = {}
         self.active_responses = {}
-        # self.args = test_case.args
         self.args = test_case.default_args
         self.log = test_case.log
-        self.mqtt_client = test_case.mqtt_client
+        self.message_broker = test_case.message_broker
+        self.mqtt_client = test_case.message_broker.client
 
         # start server thread
         service = Thread(group=None, target=self.run, name='SimpleServerThread', daemon=True)
         service.start()
 
-    def connect(self):
-        """Listen for message coming from broker."""
-        try:
-            # handle connection issues by not using loop_forever. give the service X seconds to
-            # connect to message broker, else timeout and log generic connection error.
-            self.mqtt_client.loop_start()
-            deadline = time.time() + self.args.get('tc_svc_broker_conn_timeout')
-            while True:
-                if not self._connected and deadline < time.time():
-                    self.mqtt_client.loop_stop()
-                    raise ConnectionError(
-                        '''failed to connect to message broker host '''
-                        f'''{self.args.get('tc_svc_broker_host')} on port '''
-                        f'''{self.args.get('tc_svc_broker_port')}.'''
-                    )
-                time.sleep(1)
-
-        except Exception as e:
-            self.log.trace(f'error in listen_mqtt: {e}')
-            self.log.error(traceback.format_exc())
-
     def listen(self):
         """List for message coming from broker."""
-        self.mqtt_client.on_connect = self.on_connect
-        self.mqtt_client.on_message = self.on_message
+        self.message_broker.add_on_connect_callback(self.on_connect)
+        self.message_broker.add_on_message_callback(
+            callback=self.on_message, topics=[self.test_case.client_topic]
+        )
 
-        t = Thread(name='broker-listener', target=self.connect, args=(), daemon=True)
+        t = Thread(name='broker-listener', target=self.message_broker.connect, args=(), daemon=True)
         t.start()
 
     def on_connect(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
-        """Handle MQTT on_connect events."""
-        self.log.info(f'Message broker connection status: {str(rc)}')
+        """Handle message broker on_connect events."""
         # subscribe to client topic
         client.subscribe(self.test_case.client_topic)
-        self._connected = True
 
     def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
-        """Handle MQTT on_message events."""
+        """Handle message broker on_message events."""
         try:
             m = json.loads(message.payload)
         except ValueError:
             raise RuntimeError(f'Could not parse API service response JSON. ({message})')
 
-        # self.active_requests[m.get('requestKey')] = m
-        self.active_responses[m.get('requestKey')] = m
-        self.active_requests.pop(m.get('requestKey')).set()
+        # only process RunService Acknowledged commands.
+        if m.get('command').lower() == 'acknowledged' and m.get('type').lower() == 'runservice':
+            self.active_responses[m.get('requestKey')] = m
+            self.active_requests.pop(m.get('requestKey')).set()
 
     def run(self):
         """Run the server in threat."""
-        print('-- running server')
+        print(f'\nRunning server: http://{self._host}:{self._port}')
         self.serve_forever()
 
 
@@ -157,17 +137,12 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         # forward request to service
         request_key = str(uuid4())
 
-        # print('-- rfile dir', dir(self.rfile))
-        # print('-- rfile type', type(self.rfile))
-
         content_length = int(self.headers.get('content-length', 0))
-        # print('-- content_length', content_length)
-        body = self.rfile.read(content_length)
-        if body:
-            body = b64encode(body)
-        # print('-- body', body)
-        # print('-- body', type(body))
-        self.server.test_case.redis_client.hset(request_key, 'request.body', body)
+        if content_length:
+            body = self.rfile.read(content_length)
+            if body:
+                body = b64encode(body)
+            self.server.test_case.redis_client.hset(request_key, 'request.body', body)
         return {
             'apiToken': self.server.test_case.tc_token,
             'appId': 95,
@@ -242,11 +217,13 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         self.server.active_requests[request_key] = event
 
         # publish run service
-        self.server.test_case.publish(json.dumps(request))
+        self.server.test_case.publish(
+            message=json.dumps(request), topic=self.server.test_case.server_topic
+        )
 
         # block for x seconds
         event.wait(60)
-        response: dict = self.server.active_responses.pop(request_key)
+        response: dict = self.server.active_responses.pop(request_key, None)
 
         self._build_response(response=response)
 
@@ -274,12 +251,21 @@ class TestCaseApiService(TestCaseServiceCommon):
 
     api_service_host = os.getenv('API_SERVICE_HOST', 'localhost')
     api_service_port = int(os.getenv('API_SERVICE_PORT', '8042'))
+    stop_server = False
 
-    @property
-    def test_client(self):
-        """Return test client."""
-        base_url = f'http://{self.api_service_host}:{self.api_service_port}'
-        return ExternalSession(base_url)
+    def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
+        """Handle message broker on_message shutdown command events."""
+        # if message.topic != self.server_topic:
+        #     return
+
+        try:
+            m = json.loads(message.payload)
+        except ValueError:
+            raise RuntimeError(f'Could not parse API service response JSON. ({message})')
+
+        # only process RunService Acknowledged commands.
+        if message.topic == self.server_topic and m.get('command').lower() == 'shutdown':
+            self.stop_server = True
 
     def run(self):
         """Run the Playbook App.
@@ -315,4 +301,18 @@ class TestCaseApiService(TestCaseServiceCommon):
         api_server = ApiServer(self, (self.api_service_host, self.api_service_port))
         api_server.listen()
 
+        # subscribe to server topic
+        self.message_broker.client.subscribe(self.server_topic)
+
+        # register on_message shutdown monitor
+        self.message_broker.add_on_message_callback(
+            callback=self.on_message, index=0, topics=[self.server_topic]
+        )
+
         super().setup_method()
+
+    @property
+    def test_client(self):
+        """Return test client."""
+        base_url = f'http://{self.api_service_host}:{self.api_service_port}'
+        return ExternalSession(base_url)

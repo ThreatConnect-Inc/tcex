@@ -437,7 +437,7 @@ class TestCase:
             'triggerservice',
             'webhooktriggerservice',
         ]:
-            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '407')}
+            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '441')}
             token_type = 'svc'
 
         # retrieve token from API using HMAC auth
@@ -446,6 +446,8 @@ class TestCase:
             token = r.json().get('data')
             self.log.data('setup', 'Using Token', token)
             self.log.data('setup', 'Token Elapsed', r.elapsed, 'trace')
+        else:
+            self.log.error(f'Failed to retrieve token ({r.text})')
         return token
 
     @classmethod
@@ -459,6 +461,7 @@ class TestCase:
     def teardown_method(self):
         """Run after each test method runs."""
         if self.enable_update_profile and self.ij.runtime_level.lower() not in [
+            'apiservice',
             'triggerservice',
             'webhooktriggerservice',
         ]:

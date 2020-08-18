@@ -5,10 +5,10 @@ import traceback
 from datetime import datetime
 from typing import Optional
 
-from .service_common import ServiceCommon
+from .common_service import CommonService
 
 
-class ServiceTriggerCommon(ServiceCommon):
+class CommonServiceTrigger(CommonService):
     """TcEx Framework Service Trigger Common module.
 
     Shared service logic between the supported service types:
@@ -52,8 +52,10 @@ class ServiceTriggerCommon(ServiceCommon):
             self.redis_client.hset(session_id, '_trigger_id', trigger_id)
 
             # log
-            self.log.info(f'Wrote context {session_id} to _context_tracker')
-            self.log.info(f'Wrote trigger id {trigger_id} to _trigger_id')
+            self.log.info(
+                'feature=service, event=testing-context-tracker, '
+                f'context={session_id}, trigger-id={trigger_id}'
+            )
 
     def _tcex_testing_fired_events(self, session_id: str, fired: bool):
         """Write fired event data to KV Store to be used in test validation.
@@ -94,7 +96,7 @@ class ServiceTriggerCommon(ServiceCommon):
                 self.configs[trigger_id] = config
 
             # send ack response
-            self.publish(
+            self.message_broker.publish(
                 json.dumps(
                     {
                         'command': 'Acknowledged',
@@ -103,10 +105,15 @@ class ServiceTriggerCommon(ServiceCommon):
                         'type': 'CreateConfig',
                         'triggerId': trigger_id,
                     }
-                )
+                ),
+                self.tcex.default_args.tc_svc_client_topic,
             )
         except Exception as e:
             self.log.error(f'Could not create config for Id {trigger_id} ({e}).')
+            self.log.error(
+                'feature=service, event=create-config-callback-exception, '
+                f'trigger-id={trigger_id}, error="""{e}"""'
+            )
             self.log.trace(traceback.format_exc())
 
     def delete_config(self, trigger_id: int, message: str, status: str):
@@ -122,7 +129,7 @@ class ServiceTriggerCommon(ServiceCommon):
             del self.configs[trigger_id]
 
             # send ack response
-            self.publish(
+            self.message_broker.publish(
                 json.dumps(
                     {
                         'command': 'Acknowledged',
@@ -131,10 +138,15 @@ class ServiceTriggerCommon(ServiceCommon):
                         'type': 'DeleteConfig',
                         'triggerId': trigger_id,
                     }
-                )
+                ),
+                self.tcex.default_args.tc_svc_client_topic,
             )
         except Exception as e:
-            self.log.error(f'Could not delete config for Id {trigger_id} ({e}).')
+            self.log.error(
+                'feature=service, event=delete-config-callback-exception, '
+                f'trigger-id={trigger_id}, error="""{e}"""'
+            )
+            self.log.trace(traceback.format_exc())
 
     def fire_event_publish(
         self, trigger_id: int, session_id: str, request_key: Optional[str] = None
@@ -153,10 +165,10 @@ class ServiceTriggerCommon(ServiceCommon):
         }
         if request_key is not None:
             msg['requestKey'] = request_key  # reference for a specific playbook execution
-        self.log.info(f'Firing Event ({msg})')
+        self.log.info(f'feature=service, event=fire-event, msg={msg}')
 
         # publish FireEvent command to client topic
-        self.publish(json.dumps(msg))
+        self.message_broker.publish(json.dumps(msg), self.tcex.default_args.tc_svc_client_topic)
 
     def process_create_config_command(self, message: dict):
         """Process the CreateConfig command.
@@ -185,7 +197,9 @@ class ServiceTriggerCommon(ServiceCommon):
         config: dict = message.get('config')
         status = True
         trigger_id: int = message.get('triggerId')
-        self.log.info(f'CreateConfig - trigger_id: {trigger_id} config : {config}')
+        self.log.info(
+            f'feature=service, event=create-config, trigger_id={trigger_id}, config={config}'
+        )
 
         # register config apiToken
         self.tcex.token.register_token(
@@ -202,16 +216,22 @@ class ServiceTriggerCommon(ServiceCommon):
             try:
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
-                status: Optional[bool] = self.create_config_callback(trigger_id, config, **kwargs)
+                response: Optional[dict] = self.create_config_callback(trigger_id, config, **kwargs)
+                if isinstance(response, dict):
+                    status = response.get('status')
+                    msg = response.get('msg')
 
                 # if callback does not return a boolean value assume it worked
                 if not isinstance(status, bool):
                     status = True
             except Exception as e:
-                msg = f'The create config callback method encountered an error ({e}).'
+                status = False
+                msg = str(e)
+                self.log.error(
+                    f'feature=service, event=create-config-callback-exception, error="""{e}"""'
+                )
                 self.log.error(message)
                 self.log.trace(traceback.format_exc())
-                status = False
 
         # create config after callback to report status and message
         self.create_config(trigger_id, config, msg, status)
@@ -234,8 +254,7 @@ class ServiceTriggerCommon(ServiceCommon):
         """
         status = True
         trigger_id: int = message.get('triggerId')
-
-        self.log.info(f'DeleteConfig - trigger_id: {trigger_id}')
+        self.log.info(f'feature=service, event=delete-config, trigger_id={trigger_id}')
 
         # unregister config apiToken
         self.tcex.token.unregister_token(trigger_id)
@@ -251,8 +270,9 @@ class ServiceTriggerCommon(ServiceCommon):
                 if not isinstance(status, bool):
                     status = True
             except Exception as e:
-                msg = f'The delete config callback method encountered an error ({e}).'
-                self.log.error(message)
+                self.log.error(
+                    f'feature=service, event=delete-config-callback-exception, error="""{e}"""'
+                )
                 self.log.trace(traceback.format_exc())
                 status = False
 
