@@ -2,15 +2,7 @@
 # standard library
 from typing import Union
 from functools import reduce
-
-from .observables.registry_key import WindowsRegistryKey
-from .observables.ipv4 import StixIPv4Object
-from .observables.ipv6 import IPv6Address
-from .observables.autonomous_system import StixASObject
-from .observables.email_address import StixEmailAddressObject
-from .observables.url import StixURLObject
-from .observables.domain_name import StixDomainNameObject
-from .indicator.indicator import Indicator
+import jmespath
 
 
 class StixModel:
@@ -30,49 +22,65 @@ class StixModel:
     @property
     def as_object(self):
         if not self._as_object:
+            from .observables.autonomous_system import StixASObject
+
             self._as_object = StixASObject()
         return self._as_object
 
     @property
     def ipv4(self):
         if not self._ipv4:
+            from .observables.ipv4 import StixIPv4Object
+
             self._ipv4 = StixIPv4Object()
         return self._ipv4
 
     @property
     def ipv6(self):
         if not self._ipv6:
+            from .observables.ipv6 import IPv6Address
+
             self._ipv6 = IPv6Address()
         return self._ipv6
 
     @property
     def registry_key(self):
         if not self._registry_key:
+            from .observables.registry_key import WindowsRegistryKey
+
             self._registry_key = WindowsRegistryKey()
         return self._registry_key
 
     @property
     def url(self):
         if not self._url:
+            from .observables.url import StixURLObject
+
             self._url = StixURLObject()
         return self._url
 
     @property
     def email_address(self):
         if not self._email_address:
+            from .observables.email_address import StixEmailAddressObject
+
             self._email_address = StixEmailAddressObject()
         return self._email_address
 
     @property
     def domain_name(self):
         if not self._domain_name:
+            from .observables.domain_name import StixDomainNameObject
+
             self._domain_name = StixDomainNameObject()
         return self._domain_name
 
     @property
     def indicator(self):
         if not self._indicator:
-            self._indicator = Indicator
+            from .indicator.indicator import Indicator
+
+            self._indicator = Indicator()
         return self._indicator
 
     def produce(self, tc_data: Union[list, dict]):
@@ -127,6 +135,29 @@ class StixModel:
 
         for data in tc_data:
             yield data
+
+    def _map(self, data: Union[list, dict], mapping: dict):
+
+        if isinstance(data, dict):
+            data = [data]
+
+        for d in data:
+            mapped_obj = mapping.copy()
+            for key, value in mapping.items():
+                if isinstance(value, list):
+                    new_list = []
+                    for item in value:
+                        new_list.append(list(self._map(d, item))[0])
+
+                    mapped_obj[key] = new_list
+                elif isinstance(value, dict):
+                    mapped_obj[key] = list(self._map(d, mapped_obj[key]))[0]
+                else:
+                    if not value.startswith('@'):
+                        mapped_obj[key] = value
+                    else:
+                        mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
+            yield mapped_obj
 
     @staticmethod
     def _add_association(target, source):

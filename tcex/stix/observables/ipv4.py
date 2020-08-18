@@ -2,10 +2,10 @@
 from typing import Union
 # third-party
 
-from tcex.stix.StixParser import StixParser
+from tcex.stix.model import StixModel
 
 
-class StixIPv4Object(StixParser):
+class StixIPv4Object(StixModel):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):

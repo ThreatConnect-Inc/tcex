@@ -5,10 +5,10 @@ from typing import Union
 # third-party
 from stix2 import URL
 
-from ..StixParser import StixParser
+from tcex.stix.model import StixModel
 
 
-class StixURLObject(StixParser):
+class StixURLObject(StixModel):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):

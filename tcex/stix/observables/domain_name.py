@@ -2,10 +2,10 @@ from typing import Union, Iterable
 
 from stix2 import DomainName
 
-from ..StixParser import StixParser
+from tcex.stix.model import StixModel
 
 
-class StixDomainNameObject(StixParser):
+class StixDomainNameObject(StixModel):
     """Parser for STIX Domain Name Object.
 
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070687

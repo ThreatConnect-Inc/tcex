@@ -2,10 +2,10 @@ from typing import Union, Iterable
 
 from stix2 import EmailAddress
 
-from ..StixParser import StixParser
+from tcex.stix.model import StixModel
 
 
-class StixEmailAddressObject(StixParser):
+class StixEmailAddressObject(StixModel):
     """Parser for STIX Email Address Object.
 
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070690

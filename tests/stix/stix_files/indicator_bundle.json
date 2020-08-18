@@ -358,6 +358,7 @@
     },
     {
       "type": "indicator",
+
       "spec_version": "2.1",
       "pattern_type": "stix",
       "id": "indicator--b3b6b540-d838-41e2-853b-005056c00008",

@@ -1,11 +1,11 @@
 """ThreatConnect STIX module"""
 from typing import Union
 
-from ..StixParser import StixParser
+from tcex.stix.model import StixModel
 from stix2 import WindowsRegistryKey
 
 
-class StixRegistryKeyObject(StixParser):
+class StixRegistryKeyObject(StixModel):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):

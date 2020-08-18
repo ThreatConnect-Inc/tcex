@@ -2,10 +2,10 @@ from typing import Union, Iterable
 
 from stix2 import AutonomousSystem
 
-from tcex.stix.StixParser import StixParser
+from tcex.stix.model import StixModel
 
 
-class StixASObject(StixParser):
+class StixASObject(StixModel):
     """Parser for STIX AS Object.
 
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070683
