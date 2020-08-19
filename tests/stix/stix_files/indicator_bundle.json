@@ -1041,7 +1041,7 @@
       "modified": "2015-05-15T09:12:16.432Z",
       "relationship_type": "indicates",
       "source_ref": "indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5",
-      "target_ref": "malware--33159b98-3264-4e10-a968-d67975b6272f"
+      "target_ref": "indicator--da1d061b-2bc9-467a-b16f-8d14f468e1f0"
     },
     {
       "type": "relationship",

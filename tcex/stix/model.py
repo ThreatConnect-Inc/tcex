@@ -1,5 +1,6 @@
 """Top-level Stix Model Class."""
 # standard library
+import itertools
 from typing import Union
 from functools import reduce
 import jmespath
@@ -18,6 +19,9 @@ class StixModel:
         self._domain_name = None
         self._email_address = None
         self._indicator = None
+        self._relationship = None
+
+        self._visitors = []
 
     @property
     def as_object(self):
@@ -83,6 +87,13 @@ class StixModel:
             self._indicator = Indicator()
         return self._indicator
 
+    @property
+    def relationship(self):
+        if not self._relationship:
+            from .relationship.relationship import Relationship
+            self._relationship = Relationship(self)
+        return self._relationship
+
     def produce(self, tc_data: Union[list, dict]):
 
         type_mapping = {
@@ -115,37 +126,40 @@ class StixModel:
             'indicator': self.indicator,
         }
 
+        visitor_mapping = {
+            'relationship': self.relationship
+        }
+
         if not isinstance(stix_data, list):
             stix_data = [stix_data]
 
+        tc_data = []
         for stix_data in stix_data:
+            # Handle a bundle OR just one or more stix objects.
             stix_objects = \
                 stix_data.get('objects') if stix_data.get('type') == 'bundle' else stix_data
-            relationships, other = self._partition(
-                stix_objects, lambda x: x.get('type').lower() == 'relationship'
-            )
 
-            tc_data = {}
-            for data in other:
-                _type = data.get('type').lower()
-                handler = type_mapping.get(_type.lower())
-                if handler:
-                    tc_data[data.get('id')] = list(handler.consume(data))  # TODO try to figure out a way to make generators work here
+            for stix_object in stix_objects:
+                _type = stix_object.get('type').lower()
+                if _type in visitor_mapping:
+                    visitor_mapping.get(_type).consume(stix_object)
                 else:
-                    # TODO handle unknown stix type
-                    pass
+                    if _type in type_mapping:
+                        # sub-parsers return generators, so chain them all together to flatten.
+                        tc_data = itertools.chain(
+                            tc_data,
+                            type_mapping.get(_type).consume(stix_object))
+                    else:
+                        # TODO handle unknown stix type
+                        pass
 
-            for relationship in relationships:
-                target = tc_data.get(relationship.get('target_ref'))
-                source = tc_data.get(relationship.get('source_ref'))
-                if target is not None and source is not None:
-                    self._add_association(target, source)
-                else:
-                    # TODO handle missed relationship (due to unsupported stix type, etc.
-                    pass
+        for visitor in self._visitors:
+            tc_data = visitor.visit(tc_data)
 
-        for data in tc_data.values():
-            yield from data
+        yield from tc_data
+
+    def register_visitor(self, visitor):
+        self._visitors.append(visitor)
 
     def _map(self, data: Union[list, dict], mapping: dict):
 
