@@ -9,7 +9,7 @@ from .common_service_trigger import CommonServiceTrigger
 class TriggerService(CommonServiceTrigger):
     """TcEx Framework Service Common module."""
 
-    def fire_event(self, callback: Callable[[], bool], **kwargs: list):
+    def fire_event(self, callback: Callable[[], bool], **kwargs: list) -> None:
         """Trigger a FireEvent command.
 
         Args:
@@ -57,7 +57,7 @@ class TriggerService(CommonServiceTrigger):
         trigger_id: int,
         config: dict,
         **kwargs: str,
-    ):
+    ) -> None:
         """Fire event for trigger.
 
         Args:

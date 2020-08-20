@@ -50,7 +50,7 @@ class MqttMessageBroker:
         self._on_unsubscribe_callbacks: List[callable] = []
         self.shutdown = False  # used in service App for shutdown flag
 
-    def add_on_connect_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_connect_callback(self, callback: callable, index: Optional[int] = None) -> None:
         """Add a callback for on_connect events.
 
         Args:
@@ -60,7 +60,7 @@ class MqttMessageBroker:
         index = index or len(self._on_connect_callbacks)
         self._on_connect_callbacks.insert(index, callback)
 
-    def add_on_disconnect_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_disconnect_callback(self, callback: callable, index: Optional[int] = None) -> None:
         """Add a callback for on_disconnect events.
 
         Args:
@@ -70,7 +70,7 @@ class MqttMessageBroker:
         index = index or len(self._on_disconnect_callbacks)
         self._on_disconnect_callbacks.insert(callback)
 
-    def add_on_log_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_log_callback(self, callback: callable, index: Optional[int] = None) -> None:
         """Add a callback for on_log events.
 
         Args:
@@ -82,7 +82,7 @@ class MqttMessageBroker:
 
     def add_on_message_callback(
         self, callback: callable, index: Optional[int] = None, topics: Optional[List[str]] = None
-    ):
+    ) -> None:
         """Add a callback for on_message events.
 
         Args:
@@ -94,7 +94,7 @@ class MqttMessageBroker:
         index = index or len(self._on_message_callbacks)
         self._on_message_callbacks.insert(index, {'callback': callback, 'topics': topics})
 
-    def add_on_publish_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_publish_callback(self, callback: callable, index: Optional[int] = None) -> None:
         """Add a callback for on_publish events.
 
         Args:
@@ -104,7 +104,7 @@ class MqttMessageBroker:
         index = index or len(self._on_publish_callbacks)
         self._on_publish_callbacks.insert(index, callback)
 
-    def add_on_subscribe_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_subscribe_callback(self, callback: callable, index: Optional[int] = None) -> None:
         """Add a callback for on_subscribe events.
 
         Args:
@@ -114,7 +114,7 @@ class MqttMessageBroker:
         index = index or len(self._on_subscribe_callbacks)
         self._on_subscribe_callbacks.insert(index, callback)
 
-    def add_on_unsubscribe_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_unsubscribe_callback(self, callback: callable, index: Optional[int] = None) -> None:
         """Add a callback for on_unsubscribe events.
 
         Args:
@@ -125,7 +125,7 @@ class MqttMessageBroker:
         self._on_unsubscribe_callbacks.insert(index, callback)
 
     @property
-    def client(self):
+    def client(self) -> object:
         """Return MQTT client."""
         if self._client is None:
             try:
@@ -151,7 +151,7 @@ class MqttMessageBroker:
 
         return self._client
 
-    def connect(self):
+    def connect(self) -> None:
         """Listen for message coming from broker."""
         try:
             # handle connection issues by not using loop_forever. give the service X seconds to
@@ -172,26 +172,26 @@ class MqttMessageBroker:
             self.log.trace(f'feature=message-broker, event=connection-error, error="""{e}"""')
             self.log.error(traceback.format_exc())
 
-    def on_connect(self, client, userdata, flags, rc):
+    def on_connect(self, client, userdata, flags, rc) -> None:
         """Handle MQTT on_connect events."""
         self.log.info(f'feature=message-broker, event=broker-connect, status={str(rc)}')
         self._connected = True
         for callback in self._on_connect_callbacks:
             callback(client, userdata, flags, rc)
 
-    def on_disconnect(self, client, userdata, rc):
+    def on_disconnect(self, client, userdata, rc) -> None:
         """Handle MQTT on_disconnect events."""
         self.log.info(f'feature=message-broker, event=broker-disconnect, status={str(rc)}')
         for callback in self._on_disconnect_callbacks:
             callback(client, userdata, rc)
 
-    def on_log(self, client, userdata, level, buf):
+    def on_log(self, client, userdata, level, buf) -> None:
         """Handle MQTT on_log events."""
         # self.log.trace(f'feature=message-broker, event=on_log, buf={buf}, level={level}')
         for callback in self._on_log_callbacks:
             callback(client, userdata, level, buf)
 
-    def on_message(self, client, userdata, message):
+    def on_message(self, client, userdata, message) -> None:
         """Handle MQTT on_message events."""
         mp = message.payload.decode().replace('\n', '')
         self.log.trace(
@@ -202,13 +202,13 @@ class MqttMessageBroker:
             if topics is None or message.topic in topics:
                 cd.get('callback')(client, userdata, message)
 
-    def on_publish(self, client, userdata, result):
+    def on_publish(self, client, userdata, result) -> None:
         """Handle MQTT on_publish events."""
         # self.log.trace(f'feature=message-broker, event=on_publish, result={result}')
         for callback in self._on_publish_callbacks:
             callback(client, userdata, result)
 
-    def on_subscribe(self, client, userdata, mid, granted_qos):
+    def on_subscribe(self, client, userdata, mid, granted_qos) -> None:
         """Handle MQTT on_subscribe events."""
         # self.log.trace(
         #     f'feature=message-broker, event=on_subscribe, mid={mid}, granted_qos={granted_qos}'
@@ -216,13 +216,13 @@ class MqttMessageBroker:
         for callback in self._on_subscribe_callbacks:
             callback(client, userdata, mid, granted_qos)
 
-    def on_unsubscribe(self, client, userdata, mid):
+    def on_unsubscribe(self, client, userdata, mid) -> None:
         """Handle MQTT on_unsubscribe events."""
         # self.log.trace(f'feature=message-broker, event=on_subscribe, mid={mid}')
         for callback in self._on_unsubscribe_callbacks:
             callback(client, userdata, mid)
 
-    def publish(self, message: str, topic: str):
+    def publish(self, message: str, topic: str) -> None:
         """Publish a message on client topic.
 
         Args:
@@ -235,7 +235,7 @@ class MqttMessageBroker:
             f'message={message}, response={r}'
         )
 
-    def register_callbacks(self):
+    def register_callbacks(self) -> None:
         """Register all the message broker callbacks."""
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect

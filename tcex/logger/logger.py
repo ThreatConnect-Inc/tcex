@@ -38,7 +38,7 @@ class Logger:
     def _formatter(self):
         """Return log formatter."""
         tx_format = (
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
+            '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
             '(%(filename)s:%(funcName)s:%(lineno)d)'
         )
         return logging.Formatter(tx_format)
@@ -47,7 +47,7 @@ class Logger:
     def _formatter_thread_name(self):
         """Return log formatter."""
         tx_format = (
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
+            '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
             '(%(filename)s:%(funcName)s:%(lineno)d:%(threadName)s)'
         )
         return logging.Formatter(tx_format)
@@ -222,25 +222,25 @@ class Logger:
         """Log the App data information."""
         # Best Effort
         try:
-            self.log.info(f'App Name: {self.tcex.ij.display_name}')
+            self.log.info(f'app-name="{self.tcex.ij.display_name}"')
             if self.tcex.ij.features:
-                self.log.info(f"App Features: {','.join(self.tcex.ij.features)}")
-            self.log.info(f'App Minimum ThreatConnect Version: {self.tcex.ij.min_server_version}')
-            self.log.info(f'App Runtime Level: {self.tcex.ij.runtime_level}')
-            self.log.info(f'App Version: {self.tcex.ij.program_version}')
+                self.log.info(f'app-features={self.tcex.ij.features}')
+            self.log.info(f'app-minimum-threatconnect-version={self.tcex.ij.min_server_version}')
+            self.log.info(f'app-runtime-level={self.tcex.ij.runtime_level}')
+            self.log.info(f'app-version={self.tcex.ij.program_version}')
             if self.tcex.ij.commit_hash is not None:
-                self.log.info(f'App Commit Hash: {self.tcex.ij.commit_hash}')
+                self.log.info(f'app-commit-hash={self.tcex.ij.commit_hash}')
         except Exception:  # nosec; pragma: no cover
             pass
 
     def _log_platform(self):
         """Log the current Platform."""
-        self.log.info(f'Platform: {platform.platform()}')
+        self.log.info(f'platform="{platform.platform()}"')
 
     def _log_python_version(self):
         """Log the current Python version."""
         self.log.info(
-            f'Python Version: {sys.version_info.major}.'
+            f'python-version={sys.version_info.major}.'
             f'{sys.version_info.minor}.'
             f'{sys.version_info.micro}'
         )
@@ -248,15 +248,15 @@ class Logger:
     def _log_tc_proxy(self, args):
         """Log the proxy settings."""
         if args.tc_proxy_tc:
-            self.log.info(f'Proxy Server (TC): {args.tc_proxy_host}:{args.tc_proxy_port}.')
+            self.log.info(f'proxy-server-tc={args.tc_proxy_host}:{args.tc_proxy_port}')
 
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
-        self.log.info(f'TcEx Version: {__import__(__name__).__version__}')
+        self.log.info(f'tcex-version={__import__(__name__).__version__}')
 
     def _log_tcex_path(self):
         """Log the current TcEx path."""
         app_path = str(pathlib.Path().parent.absolute())
         full_path = str(pathlib.Path(__file__).parent.absolute())
         tcex_path = os.path.dirname(full_path.replace(app_path, ''))
-        self.log.info(f'TcEx Path: {tcex_path}')
+        self.log.info(f'tcex-path="{tcex_path}"')

@@ -28,7 +28,7 @@ class ApiService(CommonService):
         self.api_event_callback = None
 
     @property
-    def command_map(self):
+    def command_map(self) -> dict:
         """Return the command map for the current Service type."""
         command_map = super().command_map
         command_map.update({'runservice': self.process_run_service_command})
@@ -38,7 +38,7 @@ class ApiService(CommonService):
         """Convert name/value array to a query string.
 
         Args:
-            params (dict): The query params for the request.
+            params: The query params for the request.
 
         Returns:
             str: The query params reformatted as a string.
@@ -58,7 +58,7 @@ class ApiService(CommonService):
         """Convert name/value array to a headers dict.
 
         Args:
-            headers (dict): The dict of key/value header data.
+            headers: The dict of key/value header data.
 
         Returns:
             dict: The restructured header data.
@@ -82,7 +82,7 @@ class ApiService(CommonService):
         """Convert name/value array to a query string.
 
         Args:
-            headers (dict): The dict header data to be converted to key/value pairs.
+            headers: The dict header data to be converted to key/value pairs.
 
         Returns:
             dict: The restructured header data.
@@ -99,7 +99,7 @@ class ApiService(CommonService):
             self.log.trace(traceback.format_exc())
         return headers_
 
-    def run_service(self, message: dict):
+    def run_service(self, message: dict) -> None:
         """Process Webhook event messages.
 
         .. code-block:: python
@@ -117,7 +117,7 @@ class ApiService(CommonService):
             }
 
         Args:
-            message (dict): The broker message.
+            message: The broker message.
         """
         # register config apiToken (before any logging)
         self.tcex.token.register_token(
@@ -230,7 +230,7 @@ class ApiService(CommonService):
         # unregister config apiToken
         self.tcex.token.unregister_token(self.thread_name)
 
-    def process_run_service_response(self, *args, **kwargs):
+    def process_run_service_response(self, *args, **kwargs) -> None:
         """Handle service event responses.
 
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
@@ -261,7 +261,7 @@ class ApiService(CommonService):
             self.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
 
-    def process_run_service_command(self, message: dict):
+    def process_run_service_command(self, message: dict) -> None:
         """Process the RunService command.
 
         .. code-block:: python
@@ -279,6 +279,6 @@ class ApiService(CommonService):
             }
 
         Args:
-            message (dict): The message payload from the server topic.
+            message: The message payload from the server topic.
         """
         self.message_thread(self.session_id(message.get('triggerId')), self.run_service, (message,))

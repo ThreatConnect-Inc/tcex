@@ -23,13 +23,13 @@ class WebhookTriggerService(CommonServiceTrigger):
         self.webhook_event_callback = None
 
     @property
-    def command_map(self):
+    def command_map(self) -> dict:
         """Return the command map for the current Service type."""
         command_map: dict = super().command_map
         command_map.update({'webhookevent': self.process_webhook_event_command})
         return command_map
 
-    def process_webhook_event_command(self, message: dict):
+    def process_webhook_event_command(self, message: dict) -> None:
         """Process the WebhookEvent command.
 
         .. code-block:: python
@@ -63,7 +63,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         """
         self.message_thread(self.session_id(message.get('triggerId')), self.webhook, (message,))
 
-    def webhook(self, message: dict):
+    def webhook(self, message: dict) -> None:
         """Process Webhook event messages.
 
         Args:

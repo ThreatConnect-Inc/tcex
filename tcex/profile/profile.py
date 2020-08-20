@@ -843,7 +843,11 @@ class Profile:
     @property
     def tc_in_path(self):
         """Return fqpn tc_in_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_in_path = os.path.join(self._default_args.get('tc_in_path'), self.feature)
         else:
             tc_in_path = os.path.join(
@@ -854,7 +858,11 @@ class Profile:
     @property
     def tc_log_path(self):
         """Return fqpn tc_log_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_log_path = os.path.join(self._default_args.get('tc_log_path'), self.feature)
         else:
             tc_log_path = os.path.join(
@@ -865,7 +873,11 @@ class Profile:
     @property
     def tc_out_path(self):
         """Return fqpn tc_out_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_out_path = os.path.join(self._default_args.get('tc_out_path'), self.feature)
         else:
             tc_out_path = os.path.join(
@@ -916,7 +928,11 @@ class Profile:
     @property
     def tc_temp_path(self):
         """Return fqpn tc_temp_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_temp_path = os.path.join(self._default_args.get('tc_temp_path'), self.feature)
         else:
             tc_temp_path = os.path.join(

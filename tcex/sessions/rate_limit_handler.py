@@ -109,7 +109,7 @@ class RateLimitHandler:
         ):
             self.sleep(request)
 
-    def sleep(self, request: PreparedRequest):  # pylint: disable=unused-argument
+    def sleep(self, request: PreparedRequest) -> None:  # pylint: disable=unused-argument
         """Sleeps to rate-limit.
 
         Sleeps until the time specified in X-RateLimit-Reset.

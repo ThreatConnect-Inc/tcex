@@ -55,7 +55,7 @@ class Utils:
         return self._camel_pattern.sub(' ', camel_string).lower()
 
     @property
-    def datetime(self):
+    def datetime(self) -> object:
         """Return an instance of DatetimeUtils."""
         return DatetimeUtils()
 
@@ -145,7 +145,7 @@ class Utils:
         return flat_list
 
     @property
-    def inflect(self):
+    def inflect(self) -> object:
         """Return instance of inflect."""
         if self._inflect is None:
             # third-party
@@ -195,22 +195,25 @@ class Utils:
 
     @staticmethod
     def printable_cred(
-        cred: str, visible: Optional[int] = 1, mask_char: Optional[str] = '*'
+        cred: str,
+        visible: Optional[int] = 1,
+        mask_char: Optional[str] = '*',
+        mask_char_count: Optional[int] = 4,
     ) -> str:
         """Return a printable (masked) version of the provided credential.
 
         Args:
-            cred (str): The cred to print.
-            visible (Optional[int] = 1): The number of characters at the beginning and
-                ending of the cred to not mask.
-            mask_char (Optional[str] = '*'): The character to use in the mask.
+            cred: The cred to print.
+            visible: The number of characters at the beginning and ending of the cred to not mask.
+            mask_char: The character to use in the mask.
+            mask_char_count: How many mask character to insert (obscure cred length).
 
         Returns:
             str: The reformatted token.
         """
         mask_char = mask_char or '*'
         if cred is not None and len(cred) >= visible * 2:
-            cred = f'{cred[:visible]}{mask_char * 4}{cred[-visible:]}'
+            cred = f'{cred[:visible]}{mask_char * mask_char_count}{cred[-visible:]}'
         return cred
 
     @staticmethod
@@ -246,8 +249,8 @@ class Utils:
         Returns:
             str: The curl command.
         """
-        proxies = kwargs.get('proxies', {})
-        verify = kwargs.get('verify', True)
+        proxies: dict = kwargs.get('proxies', {})
+        verify: bool = kwargs.get('verify', True)
 
         # APP-79 - adding the ability to log request as curl commands
         cmd = ['curl', '-X', request.method]
@@ -269,7 +272,7 @@ class Utils:
 
                 for p in patterns:
                     if re.match(rf'.*{p}.*', k, re.IGNORECASE):
-                        v = self.printable_cred(v)
+                        v: str = self.printable_cred(v)
 
                 # using gzip in Accept-Encoding with CURL on the CLI produces
                 # the warning "Binary output can mess up your terminal."
@@ -278,7 +281,7 @@ class Utils:
                     for encoding in list(encodings):
                         if encoding in ['gzip']:
                             encodings.remove(encoding)
-                    v = ', '.join(encodings)
+                    v: str = ', '.join(encodings)
 
             cmd.append(f"-H '{k}: {v}'")
 
@@ -290,7 +293,7 @@ class Utils:
                     body = body.decode('utf-8')
                 body_data = f'-d "{body}"'
             except Exception:
-                temp_file = self.write_temp_binary_file(body)
+                temp_file: str = self.write_temp_binary_file(body)
                 body_data = f'--data-binary @{temp_file}'
             cmd.append(body_data)
 
@@ -418,7 +421,7 @@ class Utils:
         return method_name
 
     @property
-    def variable_pattern(self):
+    def variable_pattern(self) -> str:
         """Regex pattern to match and parse a playbook variable."""
         return (
             r'#([A-Za-z]+)'  # match literal (#App) at beginning of String

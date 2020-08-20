@@ -2,12 +2,14 @@
 # standard library
 import threading
 import time
+from typing import Optional
 
 # third-party
-# from requests import exceptions, get
 from requests import Session, exceptions
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+from ..utils import Utils
 
 
 def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504)):
@@ -29,112 +31,99 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
 
 
 class Tokens:
-    """Service methods for customer Service (e.g., Triggers).
+    """Service methods for customer Service (e.g., Triggers)."""
 
-    Args:
-        token_url (str): The ThreatConnect URL
-        verify (bool): A boolean to enable/disable SSL verification
-        logger (logging.logger): An pre-configured instance of a logger.
-    """
+    def __init__(self, token_url: str, sleep_interval: int, verify: bool, logger: object):
+        """Initialize the Class properties.
 
-    def __init__(self, token_url, sleep_interval, verify, logger):
-        """Initialize the Class properties."""
-        self.lock = threading.Lock()
-        # tcex logger
+        Args:
+            token_url: The ThreatConnect URL for token renewal.
+            sleep_interval: Token monitor sleep interval.
+            verify: A boolean to enable/disable SSL verification.
+            logger: An pre-configured instance of a logger.
+        """
+        self.token_url = token_url
+        self.sleep_interval = sleep_interval
         self.log = logger
+        self.verify = verify
+
+        # properties
+        self.lock = threading.Lock()
         # session with retry for token renewal
-        self.session = retry_session()
+        self.session: Session = retry_session()
         # shutdown boolean
         self.shutdown = False
-        # token monitor sleep interval
-        self.sleep_interval = sleep_interval
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
-        # base url for token renewal
-        self.token_url = token_url
         # amount of seconds to pad before token renewal
         self.token_window = 60
-        # ssl verification setting for TC token renewal
-        self.verify = verify
+        self.utils = Utils
 
         # start token renewal process
         self.token_renewal()
 
     @property
-    def key(self):
+    def key(self) -> str:
         """Return the current key"""
         key = 'MainThread'  # default Python parent thread name
-        # self.log.trace(f'in key - thread_name: {self.thread_name}')
         if self.thread_name in self.token_map:
             # for Job, Playbook, and ApiService Apps the key is the thread name.
-            key = self.thread_name
+            key: str = self.thread_name
         else:
             # for Trigger and Webhook Apps the key is ConfigId.
             # find ConfigId using array of registered thread names.
             for k, d in self.token_map.items():
                 if self.thread_name in d.get('thread_names', []):
-                    key = k
+                    key: str = k
                     break
             else:  # pragma: no cover
-                self.log.trace(f'Thread name not found, defaulting to {key}')
+                self.log.trace(
+                    f'feature=token, action=get-key, status=not-found, result="defaulting to {key}"'
+                )
         return key
 
-    @staticmethod
-    def printable_token(token):
-        """Return a printable token
-
-        Args:
-            token (str): The token to print.
-
-        Returns:
-            str: The reformatted token.
-        """
-        if token is not None:
-            token = f'{token[:10]}...{token[-10:]}'
-        return token
-
-    def register_thread(self, key, thread_name):
+    def register_thread(self, key: str, thread_name: str) -> None:
         """Register a thread name to a key.
 
         For Trigger and Webhook Apps multiple threads will share a token registered to a ConfigId.
 
         Args:
-            key (str): The key to use to identify a token.
-            thread_name (str): The thread to register to a key.
+            key: The key to use to identify a token.
+            thread_name: The thread to register to a key.
         """
         self.token_map.setdefault(key, {}).setdefault('thread_names', []).append(thread_name)
-        self.log.info(f'Token thread registered -  key: {key}, thread: {thread_name}')
+        self.log.info(f'feature=token, action=register-thread, key={key}, thread={thread_name}')
 
-    def register_token(self, key, token, expires):
+    def register_token(self, key: str, token: str, expires: int) -> None:
         """Register a token.
 
         Args:
-            key (str): The key to use to identify a token. Typically a thread name or a config id.
-            token (str): The ThreatConnect API token.
-            expires (int): The token expiration timestamp.
+            key: The key to use to identify a token. Typically a thread name or a config id.
+            token: The ThreatConnect API token.
+            expires: The token expiration timestamp.
         """
         if token is None or expires is None:  # pragma: no cover
             self.log.error(
-                f'Invalid token data provided - token: {self.printable_token(token)}, '
-                f'expires: {expires}.'
+                'feature=token, event=invalid-token-data, '
+                f'token="{self.utils.printable_cred(token, 10)}", '
+                f'expires={expires}.'
             )
             return
 
         self.token_map[key] = {'thread_names': [], 'token': token, 'token_expires': int(expires)}
         self.log.info(
-            f'Token registered - key: {key}, '
-            f'token: {self.printable_token(token)}, '
-            f'expiration {expires}'
+            f'feature=token, action=token-register, key={key}, '
+            f'token="{self.utils.printable_cred(token, 10)}", '
+            f'expiration={expires}'
         )
 
-    def renew_token(self, token):
+    def renew_token(self, token: str) -> None:
         """Renew expired ThreatConnect Token.
 
         This method will renew a token and update the token_map with new token and expiration.
 
         Args:
-            token (str): The ThreatConnect API token.
-            token_expires (int): The token expiration timestamp.
+            token: The ThreatConnect API token.
         """
         api_token_data = {}
         self.log.in_token_renewal = True  # pause API logging
@@ -148,9 +137,9 @@ class Tokens:
             if not r.ok:
                 err_reason = r.text or r.reason
                 err_msg = (
-                    f'Token Retry Error. API status code: {r.status_code}, '
-                    f'API message: {err_reason}, '
-                    f'Token: {self.printable_token(token)}.'
+                    f'feature=token, event=token-retry-error, status_code={r.status_code}, '
+                    f'api-message={err_reason}, '
+                    f'token="{self.utils.printable_cred(token, 10)}".'
                 )
                 self.log.error(err_msg)
                 raise RuntimeError(1042, err_msg)
@@ -168,39 +157,38 @@ class Tokens:
         return api_token_data
 
     @property
-    def thread_name(self):
+    def thread_name(self) -> str:
         """Return the current thread name."""
         return threading.current_thread().name
 
     @property
-    def token(self):
+    def token(self) -> Optional[str]:
         """Return token for current thread."""
         return self.token_map.get(self.key, {}).get('token')
 
     @token.setter
-    def token(self, token):
+    def token(self, token: str) -> None:
         """Set token for current thread."""
         self.token_map.setdefault(self.key, {})['token'] = token
 
     @property
-    def token_expires(self):
+    def token_expires(self) -> Optional[int]:
         """Return token_expires for current thread."""
         return self.token_map.get(self.key, {}).get('token_expires')
 
     @token_expires.setter
-    def token_expires(self, expires):
+    def token_expires(self, expires) -> None:
         """Set token expires for current thread."""
         self.token_map.setdefault(self.key, {})['token_expires'] = int(expires)
 
-    def token_renewal(self):
+    def token_renewal(self) -> None:
         """Start token renewal monitor thread."""
-        self.log.debug('Token renewal monitor starting')
-        t = threading.Thread(name='token-renewal', target=self.token_renewal_monitor)
-        t.daemon = True  # use setter for py2
+        t = threading.Thread(name='token-renewal', target=self.token_renewal_monitor, daemon=True)
         t.start()
 
-    def token_renewal_monitor(self):
+    def token_renewal_monitor(self) -> None:
         """Monitor token expiration and renew when required."""
+        self.log.debug('feature=token, event=renewal-monitor-started')
         while True:
             for key, token_data in dict(self.token_map).items():
                 # calculate the time left to sleep
@@ -208,38 +196,41 @@ class Tokens:
                     token_data.get('token_expires') - int(time.time()) - self.token_window
                 )
                 self.log.debug(
-                    f'token status - key: {key}, '
-                    f"token: {self.printable_token(token_data.get('token'))}, "
-                    f"expires: {token_data.get('token_expires')}, "
-                    f'sleep-seconds: {sleep_seconds}'
+                    '''feature=token, '''
+                    f'''event=token-status, key={key}, '''
+                    f'''token="{self.utils.printable_cred(token_data.get('token'), 10)}", '''
+                    f'''expires={token_data.get('token_expires')}, '''
+                    f'''sleep-seconds={sleep_seconds}'''
                 )
 
-                if sleep_seconds < 0:
-                    # renew token data
-                    with self.lock:
+                if sleep_seconds > 0:
+                    continue
+
+                # renew token data
+                with self.lock:
+                    try:
+                        api_token_data = self.renew_token(token_data.get('token'))
+                        self.token_map[key]['token'] = api_token_data['apiToken']
+                        self.token_map[key]['token_expires'] = int(
+                            api_token_data['apiTokenExpires']
+                        )
+                        self.log.info(
+                            f'''feature=token, action=token-renewed, key={key}, token='''
+                            f'''"{self.utils.printable_cred(api_token_data['apiToken'], 10)}", '''
+                            f'''expires={api_token_data['apiTokenExpires']}'''
+                        )
+                    except RuntimeError as e:
+                        self.log.error(e)
                         try:
-                            api_token_data = self.renew_token(token_data.get('token'))
-                            self.token_map[key]['token'] = api_token_data['apiToken']
-                            self.token_map[key]['token_expires'] = int(
-                                api_token_data['apiTokenExpires']
-                            )
-                            self.log.info(
-                                f'Token renewed - key: {key}, '
-                                f"token: {self.printable_token(api_token_data['apiToken'])}, "
-                                f"expires: {api_token_data['apiTokenExpires']}"
-                            )
-                        except RuntimeError as e:
-                            self.log.error(e)
-                            try:
-                                del self.token_map[key]
-                                self.log.error(f'Failed token removed - key: {key}')
-                            except KeyError:  # pragma: no cover
-                                pass
+                            del self.token_map[key]
+                            self.log.error(f'feature=token, event=token-removal-failure, key={key}')
+                        except KeyError:  # pragma: no cover
+                            pass
             time.sleep(self.sleep_interval)
             if self.shutdown:
                 break
 
-    def unregister_thread(self, key, thread_name):
+    def unregister_thread(self, key: str, thread_name: str) -> None:
         """Unregister a thread name for a key.
 
         Args:
@@ -248,11 +239,13 @@ class Tokens:
         """
         try:
             self.token_map[key]['thread_names'].remove(thread_name)
-            self.log.info(f'Token thread unregistered -  key: {key}, thread: {thread_name}')
+            self.log.info(
+                f'feature=token, action=unregister-thread, key={key}, thread={thread_name}'
+            )
         except (KeyError, ValueError):  # pragma: no cover
             pass
 
-    def unregister_token(self, key):
+    def unregister_token(self, key: str) -> None:
         """Unregister a token.
 
         Args:
@@ -260,6 +253,6 @@ class Tokens:
         """
         try:
             del self.token_map[key]
-            self.log.info(f'Token unregistered - key: {key}')
+            self.log.info(f'feature=token, action=token-unregister, key={key}')
         except KeyError:
             pass

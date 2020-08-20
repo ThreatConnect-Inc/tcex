@@ -33,12 +33,12 @@ class CommonServiceTrigger(CommonService):
         self.create_config_callback = None
         self.delete_config_callback = None
 
-    def _tcex_testing(self, session_id: str, trigger_id: int):
+    def _tcex_testing(self, session_id: str, trigger_id: int) -> None:
         """Write data required for testing framework to Redis.
 
         Args:
-            session_id (str): The context/session id value for the current operation.
-            trigger_id (int): The trigger ID for the current playbook.
+            session_id: The context/session id value for the current operation.
+            trigger_id: The trigger ID for the current playbook.
         """
         if self.args.tcex_testing_context is not None:
             _context_tracker: str = (
@@ -57,12 +57,12 @@ class CommonServiceTrigger(CommonService):
                 f'context={session_id}, trigger-id={trigger_id}'
             )
 
-    def _tcex_testing_fired_events(self, session_id: str, fired: bool):
+    def _tcex_testing_fired_events(self, session_id: str, fired: bool) -> None:
         """Write fired event data to KV Store to be used in test validation.
 
         Args:
-            session_id (str): The context/session id value for the current operation.
-            fired (bool): The value to increment the count by.
+            session_id: The context/session id value for the current operation.
+            fired: The value to increment the count by.
         """
         if self.args.tcex_testing_context is not None:
             self.redis_client.hset(
@@ -70,7 +70,7 @@ class CommonServiceTrigger(CommonService):
             )
 
     @property
-    def command_map(self):
+    def command_map(self) -> dict:
         """Return the command map for the current Service type."""
         command_map = super().command_map
         command_map.update(
@@ -81,14 +81,14 @@ class CommonServiceTrigger(CommonService):
         )
         return command_map
 
-    def create_config(self, trigger_id: int, config: dict, message: str, status: bool):
+    def create_config(self, trigger_id: int, config: dict, message: str, status: bool) -> None:
         """Add config item to service config object.
 
         Args:
-            trigger_id (int): The trigger ID for the current config.
-            config (dict): The config for the current trigger.
-            message (str): A simple message for the action.
-            status (boolean): The passed/fail status for the App handling of config.
+            trigger_id: The trigger ID for the current config.
+            config: The config for the current trigger.
+            message: A simple message for the action.
+            status: The passed/fail status for the App handling of config.
         """
         try:
             if status is True:
@@ -116,13 +116,13 @@ class CommonServiceTrigger(CommonService):
             )
             self.log.trace(traceback.format_exc())
 
-    def delete_config(self, trigger_id: int, message: str, status: str):
+    def delete_config(self, trigger_id: int, message: str, status: str) -> None:
         """Delete config item from config object.
 
         Args:
-            trigger_id (int): The trigger ID for the current config.
-            message (str): A simple message for the action.
-            status (str): The passed/fail status for the App handling of config.
+            trigger_id: The trigger ID for the current config.
+            message: A simple message for the action.
+            status: The passed/fail status for the App handling of config.
         """
         try:
             # always delete config from configs dict, even when status is False
@@ -150,13 +150,13 @@ class CommonServiceTrigger(CommonService):
 
     def fire_event_publish(
         self, trigger_id: int, session_id: str, request_key: Optional[str] = None
-    ):
+    ) -> None:
         """Send FireEvent command.
 
         Args:
-            trigger_id (int): The ID of the trigger.
-            session_id (str): The generated session for this fired event.
-            request_key (str): The request key for this response.
+            trigger_id: The ID of the trigger.
+            session_id: The generated session for this fired event.
+            request_key: The request key for this response.
         """
         msg = {
             'command': 'FireEvent',
@@ -170,7 +170,7 @@ class CommonServiceTrigger(CommonService):
         # publish FireEvent command to client topic
         self.message_broker.publish(json.dumps(msg), self.tcex.default_args.tc_svc_client_topic)
 
-    def process_create_config_command(self, message: dict):
+    def process_create_config_command(self, message: dict) -> None:
         """Process the CreateConfig command.
 
         .. code-block:: python
@@ -236,7 +236,7 @@ class CommonServiceTrigger(CommonService):
         # create config after callback to report status and message
         self.create_config(trigger_id, config, msg, status)
 
-    def process_delete_config_command(self, message: dict):
+    def process_delete_config_command(self, message: dict) -> None:
         """Process the DeleteConfig command.
 
         .. code-block:: python
@@ -280,6 +280,6 @@ class CommonServiceTrigger(CommonService):
         self.delete_config(trigger_id, msg, status)
 
     @property
-    def session_logfile(self):
+    def session_logfile(self) -> str:
         """Return a uuid4 session id."""
         return f'''{datetime.today().strftime('%Y%m%d')}/{self.thread_name}.log'''

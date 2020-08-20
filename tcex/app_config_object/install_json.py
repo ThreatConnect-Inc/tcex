@@ -522,34 +522,34 @@ class InstallJson:
             json_data = json.load(fh)
 
             # update appId field
-            json_data = self.update_app_id(json_data)
+            self.update_app_id(json_data)
 
             # update commitHash field
             if commit_hash is True:
-                json_data = self.update_commit_hash(json_data)
+                self.update_commit_hash(json_data)
 
             # update displayName field
-            json_data = self.update_display_name(json_data)
+            self.update_display_name(json_data)
 
             # update features array
             if features is True:
-                json_data = self.update_features(json_data)
+                self.update_features(json_data)
 
             if migrate is True:
                 # update programMain to run
-                json_data = self.update_program_main(json_data)
+                self.update_program_main(json_data)
 
             # update sequence numbers
             if sequence is True:
-                json_data = self.update_sequence_numbers(json_data)
+                self.update_sequence_numbers(json_data)
 
             # update valid values
             if valid_values is True:
-                json_data = self.update_valid_values(json_data)
+                self.update_valid_values(json_data)
 
             # update playbook data types
             if playbook_data_types is True:
-                json_data = self.update_playbook_data_types(json_data)
+                self.update_playbook_data_types(json_data)
 
             # app feature - update install.json for Advanced Request
             if 'advancedRequest' in self.features and self.output_prefix is not None:
@@ -564,7 +564,7 @@ class InstallJson:
         self._contents = json_data
 
     @staticmethod
-    def update_app_id(json_data):
+    def update_app_id(json_data: dict) -> None:
         """Update to ensure an appId field exists.
 
         All App should have an appId to uniquely identify the App. this is not intended to be
@@ -575,27 +575,24 @@ class InstallJson:
             json_data['appId'] = str(
                 uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
             )
-        return json_data
 
-    def update_commit_hash(self, json_data):
+    def update_commit_hash(self, json_data: dict) -> None:
         """Update to ensure an appId field exists.
 
         Add/Update the commit hash to the install.json file if possible.
         """
         if self._commit_hash:
             json_data['commitHash'] = self._commit_hash
-        return json_data
 
-    def update_display_name(self, json_data):
+    def update_display_name(self, json_data: dict) -> None:
         """Update the displayName parameter."""
         if not json_data.get('displayName'):
             display_name = os.path.basename(os.getcwd()).replace(self.app_prefix, '')
             display_name = display_name.replace('_', ' ').replace('-', ' ')
             display_name = ' '.join([a.title() for a in display_name.split(' ')])
             json_data['displayName'] = display_name
-        return json_data
 
-    def update_features(self, json_data):
+    def update_features(self, json_data: dict) -> None:
         """Update feature set based on App type."""
         features = self.features
         if self.runtime_level.lower() in ['organization']:
@@ -624,28 +621,25 @@ class InstallJson:
                 features.append(feature)
 
         json_data['features'] = sorted(features)
-        return json_data
 
-    def update_program_main(self, json_data):
+    def update_program_main(self, json_data: dict) -> None:
         """Update program main on App type."""
         if self.program_main:
             if self.runtime_level.lower() in ['playbook']:
                 json_data['programMain'] = 'run'
             elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
                 json_data['programMain'] = 'run'
-        return json_data
 
     @staticmethod
-    def update_sequence_numbers(json_data):
+    def update_sequence_numbers(json_data: dict) -> None:
         """Update program main on App type."""
         sequence_number = 1
         for param in json_data.get('params', []):
             param['sequence'] = sequence_number
             sequence_number += 1
-        return json_data
 
     @staticmethod
-    def update_valid_values(json_data):
+    def update_valid_values(json_data: dict) -> None:
         """Update program main on App type."""
         for param in json_data.get('params', []):
             if param.get('type', None) not in ['String', 'KeyValueList']:
@@ -658,20 +652,18 @@ class InstallJson:
                 if '${TEXT}' not in (param.get('validValues') or []):
                     param['validValues'] = param.get('validValues') or []
                     param['validValues'].append('${TEXT}')
-        return json_data
 
     @staticmethod
-    def update_playbook_data_types(json_data):
+    def update_playbook_data_types(json_data: dict) -> None:
         """Update program main on App type."""
         if json_data.get('runtimeLevel', None) != 'Playbook':
-            return json_data
+            return
 
         for param in json_data.get('params', []):
             if param.get('type') != 'String':
                 continue
             if param.get('playbookDataType') in [None, []]:
                 param.setdefault('playbookDataType', []).append('String')
-        return json_data
 
     def validate(self):
         """Validate install.json."""

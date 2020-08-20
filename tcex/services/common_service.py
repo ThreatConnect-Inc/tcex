@@ -52,7 +52,7 @@ class CommonService:
         # config callbacks
         self.shutdown_callback = None
 
-    def add_metric(self, label: str, value: Union[int, str]):
+    def add_metric(self, label: str, value: Union[int, str]) -> None:
         """Add a metric.
 
         Metrics are reported in heartbeat message.
@@ -64,7 +64,7 @@ class CommonService:
         self._metrics[label] = value
 
     @property
-    def command_map(self):
+    def command_map(self) -> dict:
         """Return the command map for the current Service type."""
         return {
             'heartbeat': self.process_heartbeat_command,
@@ -72,12 +72,12 @@ class CommonService:
             'shutdown': self.process_shutdown_command,
         }
 
-    def heartbeat(self):
+    def heartbeat(self) -> None:
         """Start heartbeat process."""
         t = threading.Thread(name='heartbeat', target=self.heartbeat_monitor, daemon=True)
         t.start()
 
-    def heartbeat_monitor(self):
+    def heartbeat_monitor(self) -> None:
         """Publish heartbeat on timer."""
         self.log.info('feature=service, event=heartbeat-monitor-started')
         while True:
@@ -92,7 +92,7 @@ class CommonService:
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
 
-    def increment_metric(self, label: str, value: Optional[int] = 1):
+    def increment_metric(self, label: str, value: Optional[int] = 1) -> None:
         """Increment a metric if already exists.
 
         Args:
@@ -102,7 +102,7 @@ class CommonService:
         if self._metrics.get(label) is not None:
             self._metrics[label] += value
 
-    def listen(self):
+    def listen(self) -> None:
         """List for message coming from broker."""
         self.message_broker.add_on_connect_callback(self.on_connect_handler)
         self.message_broker.add_on_message_callback(
@@ -135,7 +135,7 @@ class CommonService:
 
     def message_thread(
         self, name: str, target: Callable[[], bool], args: tuple, kwargs: Optional[dict] = None
-    ):
+    ) -> None:
         """Start a message thread.
 
         Args:
@@ -166,7 +166,9 @@ class CommonService:
         else:
             self.log.error('feature=service, event=invalid-metrics')
 
-    def on_connect_handler(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
+    def on_connect_handler(
+        self, client, userdata, flags, rc  # pylint: disable=unused-argument
+    ) -> None:
         """On connect method for mqtt broker."""
         self.log.info(
             f'feature=service, event=topic-subscription, topic={self.args.tc_svc_server_topic}'
@@ -174,7 +176,9 @@ class CommonService:
         self.message_broker.client.subscribe(self.args.tc_svc_server_topic)
         self.message_broker.client.disable_logger()
 
-    def on_message_handler(self, client, userdata, message):  # pylint: disable=unused-argument
+    def on_message_handler(
+        self, client, userdata, message  # pylint: disable=unused-argument
+    ) -> None:
         """On message for mqtt."""
         try:
             # messages on server topic must be json objects
@@ -190,7 +194,7 @@ class CommonService:
         self.log.info(f'feature=service, event=command-received, command="{command}"')
         self.command_map.get(command, self.process_invalid_command)(m)
 
-    def process_heartbeat_command(self, message: dict):  # pylint: disable=unused-argument
+    def process_heartbeat_command(self, message: dict) -> None:  # pylint: disable=unused-argument
         """Process the HeartBeat command.
 
         .. code-block:: python
@@ -216,7 +220,7 @@ class CommonService:
         )
         self.log.info(f'feature=service, event=heartbeat-sent, metrics={self.metrics}')
 
-    def process_logging_change_command(self, message: dict):
+    def process_logging_change_command(self, message: dict) -> None:
         """Process the LoggingChange command.
 
         .. code-block:: python
@@ -235,7 +239,7 @@ class CommonService:
         self.log.info(f'feature=service, event=logging-change, level={level}')
         self.tcex.logger.update_handler_level(level)
 
-    def process_invalid_command(self, message: dict):
+    def process_invalid_command(self, message: dict) -> None:
         """Process all invalid commands.
 
         Args:
@@ -245,7 +249,7 @@ class CommonService:
             f'feature=service, event=invalid-command-received, message="""({message})""".'
         )
 
-    def process_shutdown_command(self, message: dict):
+    def process_shutdown_command(self, message: dict) -> None:
         """Implement parent method to process the shutdown command.
 
         .. code-block:: python
@@ -294,7 +298,7 @@ class CommonService:
         self.tcex.exit(0)  # final shutdown in case App did not
 
     @property
-    def ready(self):
+    def ready(self) -> bool:
         """Return ready boolean."""
         return self._ready
 
@@ -318,29 +322,32 @@ class CommonService:
                 self._ready = True
 
     @property
-    def redis_client(self):
+    def redis_client(self) -> object:
         """Return the correct KV store for this execution."""
         if self._redis_client is None:
             self._redis_client: object = self.tcex.redis_client
         return self._redis_client
 
     @staticmethod
-    def session_id(trigger_id: Optional[str] = None):  # pylint: disable=unused-argument
+    def session_id(trigger_id: Optional[str] = None) -> str:  # pylint: disable=unused-argument
         """Return a uuid4 session id.
 
         Takes optional trigger_id for monkeypatch in testing framework.
 
         Args:
-            trigger_id (str): Optional trigger_id value used in testing framework.
+            trigger_id: Optional trigger_id value used in testing framework.
+
+        Returns:
+            str: A unique UUID string value.
         """
         return str(uuid.uuid4())
 
     @property
-    def thread_name(self):
+    def thread_name(self) -> str:
         """Return a uuid4 session id."""
         return threading.current_thread().name
 
-    def update_metric(self, label: str, value: Union[int, str]):
+    def update_metric(self, label: str, value: Union[int, str]) -> None:
         """Update a metric if already exists.
 
         Args:

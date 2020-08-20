@@ -48,7 +48,7 @@ def run(**kwargs):
         tcex.service.ready = True
 
         # loop until exit
-        tcex.log.info('Looping until shutdown')
+        tcex.log.info('feature=app, event=loop-forever')
         while tcex.service.loop_forever(sleep=1):
             pass
 
@@ -62,7 +62,7 @@ def run(**kwargs):
         tcex.playbook.exit(msg=app.exit_message)
 
     except Exception as e:
-        main_err = f'Generic Error.  See logs for more details ({e}).'
+        main_err = f'Generic Error. See logs for more details ({e}).'
         tcex.log.error(traceback.format_exc())
         tcex.playbook.exit(1, main_err)
 
