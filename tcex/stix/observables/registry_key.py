@@ -1,9 +1,13 @@
 """ThreatConnect STIX module"""
+# standard library
 from typing import Union
 
-from tcex.stix.model import StixModel
+# third-party
 from stix2 import WindowsRegistryKey
 
+
+# first-party
+from tcex.stix.model import StixModel
 
 
 class StixRegistryKeyObject(StixModel):
@@ -18,19 +22,17 @@ class StixRegistryKeyObject(StixModel):
             mapper = {
                 'type': 'Registry Key',
                 'Key Name': '@.key',
-                'attributes': {
-                    'type': 'External Id', 'value': '@.id',
-                }
+                'attributes': {'type': 'External Id', 'value': '@.id',},
             }
             if not data.get('values'):
                 yield from self._map(stix_data, mapper)
             else:
                 for i in range(data.get('values')):
-                    mapper['Value Name'] = f'@.values[{i}]["name"].value',
-                    mapper['Value Type'] = f'@.values[{i}]["data_type"].value',
+                    mapper['Value Name'] = (f'@.values[{i}]["name"].value',)
+                    mapper['Value Type'] = (f'@.values[{i}]["data_type"].value',)
                     mapper['attributes'] = [
                         {'type': 'External Id', 'value': '@.id'},
-                        {'type': 'Value Data', 'value': f'@.values[{i}]["data"].value'}
+                        {'type': 'Value Data', 'value': f'@.values[{i}]["data"].value'},
                     ]
                     yield from self._map(stix_data, mapper)
 
@@ -69,15 +71,9 @@ class StixRegistryKeyObject(StixModel):
         mapper = {
             'id': '@.id',
             'key': '@.Key Name',
-            'value': [
-                {
-                    'name': '@.Value Name',
-                    'data': '',
-                    'data_type': '@.Value Type'
-                }
-            ],
+            'value': [{'name': '@.Value Name', 'data': '', 'data_type': '@.Value Type'}],
             'spec_version': '2.1',
-            'type': 'windows-registry-key'
+            'type': 'windows-registry-key',
         }
 
         yield from (WindowsRegistryKey(**stix_data) for stix_data in self._map(tc_data, mapper))

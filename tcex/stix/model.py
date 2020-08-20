@@ -1,8 +1,10 @@
 """Top-level Stix Model Class."""
 # standard library
 import itertools
-from typing import Union
 from functools import reduce
+from typing import Union
+
+# third-party
 import jmespath
 
 
@@ -146,16 +148,17 @@ class StixModel:
     @property
     def indicator(self):
         if not self._indicator:
-            from .indicator.indicator import Indicator
+            from .indicator.indicator import StixIndicator
 
-            self._indicator = Indicator()
+            self._indicator = StixIndicator()
         return self._indicator
 
     @property
     def relationship(self):
         if not self._relationship:
             from .relationship.relationship import Relationship
-            self._relationship = Relationship(self)
+
+            self._relationship = Relationship()
         return self._relationship
 
     def produce(self, tc_data: Union[list, dict]):
@@ -197,9 +200,7 @@ class StixModel:
             'indicator': self.indicator,
         }
 
-        visitor_mapping = {
-            'relationship': self.relationship
-        }
+        visitor_mapping = {'relationship': self.relationship}
 
         if not isinstance(stix_data, list):
             stix_data = [stix_data]
@@ -207,21 +208,20 @@ class StixModel:
         tc_data = []
         for stix_data in stix_data:
             # Handle a bundle OR just one or more stix objects.
-            stix_objects = stix_data
-            if stix_data.get('type') == 'bundle':
-                stix_objects = stix_data.get('objects')
+            stix_objects = (
                 stix_data.get('objects') if stix_data.get('type') == 'bundle' else stix_data
+            )
 
             for stix_object in stix_objects:
                 _type = stix_object.get('type').lower()
                 if _type in visitor_mapping:
-                    visitor_mapping.get(_type).consume(stix_object)
+                    self.register_visitor(visitor_mapping.get(_type).consume(stix_object))
                 else:
                     if _type in type_mapping:
                         # sub-parsers return generators, so chain them all together to flatten.
                         tc_data = itertools.chain(
-                            tc_data,
-                            type_mapping.get(_type).consume(stix_object))
+                            tc_data, type_mapping.get(_type).consume(stix_object)
+                        )
                     else:
                         # TODO handle unknown stix type
                         pass

@@ -1,36 +1,63 @@
-from tcex.stix.model import StixModel
+"""Test Consuming STIX data."""
+# standard library
 import json
-import inspect
+
+# third-party
+import deepdiff
+import pytest
+
+# first-party
+from tcex.stix.model import StixModel
 
 
 class TestStixConsumer:
+    """Test Consuming STIX data."""
     model = StixModel()
-    file_root = 'tests/stix/stix_files'
 
-    def test_domain_objects_bundle(self):
-        file_name = f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
-        
-        with open(file_name) as f:
+    @pytest.mark.parametrize(
+        'in_file_path, out_file_path',
+        [
+            (
+                './tests/stix/stix_files/indicator_bundle.json',
+                './tests/stix/stix_files/indicator_bundle_consumed.json',
+            ),
+            (
+                './tests/stix/stix_files/domain_objects_bundle.json',
+                './tests/stix/stix_files/domain_objects_bundle_consumed.json',
+            ),
+            (
+                './tests/stix/stix_files/ipv4_bundle.json',
+                './tests/stix/stix_files/ipv4_bundle_consumed.json',
+            ),
+        ],
+    )
+    def test_indicator_bundle(self, in_file_path, out_file_path):
+        """Parse stix json files and compare the output to known data.
+
+        Args:
+            in_file_path: path to a file with stix json in it.
+            out_file_path: path to a file with the expected output from parsing.
+        """
+        with open(in_file_path) as f:
             data = json.load(f)
 
-        for tc_data in self.model.consume(data):
-            print(tc_data)
+        tc_data = list(self.model.consume(data))
 
-    def test_indicator_bundle(self):
-        file_name = f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        with open(out_file_path) as f:
+            expected_data = json.load(f)
+        ddiff = deepdiff.DeepDiff(tc_data, expected_data, ignore_order=True)
+        assert not ddiff, str(ddiff)
 
-        with open(file_name) as f:
-            data = json.load(f)
+    def test_indicator(self):
+        indicator = {
+            'pattern': "[ipv4-addr:value IN ('1.2.3.4/15', '1.23.4.5', '192.168.1.2/12')]",
+            'name': 'foobar',
+            'id': 'foobar-id'
+        }
 
-        for tc_data in self.model.consume(data):
-            print(tc_data)
+        from tcex.stix.indicator.indicator import StixIndicator
+        si = StixIndicator()
+        indicators = list(si.consume(indicator))
+        print(indicators)
 
-    def test_ipv4_bundle(self):
-        file_name = f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
-
-        with open(file_name) as f:
-            data = json.load(f)
-
-        for tc_data in self.model.consume(data):
-            print(tc_data)
 

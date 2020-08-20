@@ -1,8 +1,12 @@
 """ThreatConnect STIX module"""
+# standard library
 from typing import Union
 
-from tcex.stix.model import StixModel
+# third-party
 from stix2 import IPv6Address
+
+# first-party
+from tcex.stix.model import StixModel
 
 
 class StixIPv6Object(StixModel):
@@ -12,7 +16,7 @@ class StixIPv6Object(StixModel):
         mapper = {
             'type': 'Address',
             'summary': '@.value',
-            'attributes': {'type': 'External Id', 'value': '@.id'}
+            'attributes': {'type': 'External Id', 'value': '@.id'},
         }
 
         yield from self._map(stix_data, mapper)
@@ -38,8 +42,7 @@ class StixIPv6Object(StixModel):
             'id': '@.id',
             'value': f'@.{indicator_field}',
             'spec_version': '2.1',
-            'type': 'ipv6-addr'
+            'type': 'ipv6-addr',
         }
 
         yield from (IPv6Address(**stix_data) for stix_data in self._map(tc_data, mapper))
-

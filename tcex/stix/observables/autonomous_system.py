@@ -1,7 +1,14 @@
-from typing import Union, Iterable
+"""Parser for STIX AS Object.
 
+see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070683
+"""
+# standard library
+from typing import Iterable, Union
+
+# third-party
 from stix2 import AutonomousSystem
 
+# first-party
 from tcex.stix.model import StixModel
 
 

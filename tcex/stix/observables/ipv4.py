@@ -1,7 +1,8 @@
 """ThreatConnect STIX module"""
+# standard library
 from typing import Union
-# third-party
 
+# first-party
 from tcex.stix.model import StixModel
 
 
@@ -13,13 +14,13 @@ class StixIPv4Object(StixModel):
         mapper_ip = {
             'type': 'Address',
             'summary': '@.value',
-            'attributes': {'type': 'External Id', 'value': '@.id'}
+            'attributes': {'type': 'External Id', 'value': '@.id'},
         }
 
         mapper_cider = {
             'type': 'CIDR',
             'summary': '@.value',
-            'attributes': {'type': 'External Id', 'value': '@.id'}
+            'attributes': {'type': 'External Id', 'value': '@.id'},
         }
 
         if isinstance(stix_data, dict):
@@ -55,7 +56,7 @@ class StixIPv4Object(StixModel):
             }
         """
         if isinstance(tc_data, dict):
-            tc_data =tc_data
+            tc_data = [tc_data]
 
         for data in tc_data:
             if 'ip' in data or data.get('type') == 'Address':
@@ -68,21 +69,27 @@ class StixIPv4Object(StixModel):
 
         ip_type = 'ipv6' if ':' in tc_data.get(indicator_field, '') else 'ipv4'
 
-        yield from self._map(tc_data, {
-            'id': '@.id',
-            'value': f'@.{indicator_field}',
-            'spec_version': '2.1',
-            'type': f'{ip_type}-addr'
-        })
+        yield from self._map(
+            tc_data,
+            {
+                'id': '@.id',
+                'value': f'@.{indicator_field}',
+                'spec_version': '2.1',
+                'type': f'{ip_type}-addr',
+            },
+        )
 
     def _produce_address(self, tc_data: dict):
         indicator_field = 'summary' if 'summary' in tc_data else 'ip'
 
         ip_type = 'ipv6' if ':' in tc_data.get(indicator_field, '') else 'ipv4'
 
-        yield from self._map(tc_data, {
-            'id': '@.id',
-            'value': f'@.{indicator_field}',
-            'spec_version': '2.1',
-            'type': f'{ip_type}-addr'
-        })
+        yield from self._map(
+            tc_data,
+            {
+                'id': '@.id',
+                'value': f'@.{indicator_field}',
+                'spec_version': '2.1',
+                'type': f'{ip_type}-addr',
+            },
+        )

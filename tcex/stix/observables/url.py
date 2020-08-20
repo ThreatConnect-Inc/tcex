@@ -5,6 +5,7 @@ from typing import Union
 # third-party
 from stix2 import URL
 
+# first-party
 from tcex.stix.model import StixModel
 
 

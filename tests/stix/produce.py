@@ -1,6 +1,9 @@
-from tcex.stix.model import StixModel
-import json
+# standard library
 import inspect
+import json
+
+# first-party
+from tcex.stix.model import StixModel
 
 
 class TestStixProducer:
@@ -8,7 +11,9 @@ class TestStixProducer:
     file_root = 'tests/stix/tc_files'
 
     def test_indicators(self):
-        file_name = f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        file_name = (
+            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        )
 
         with open(file_name) as f:
             data = json.load(f)
@@ -17,7 +22,9 @@ class TestStixProducer:
             print(stix_data)
 
     def test_addresses(self):
-        file_name = f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        file_name = (
+            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        )
 
         with open(file_name) as f:
             data = json.load(f)
@@ -26,7 +33,9 @@ class TestStixProducer:
             print(stix_data)
 
     def test_files(self):
-        file_name = f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        file_name = (
+            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        )
 
         with open(file_name) as f:
             data = json.load(f)
@@ -35,7 +44,9 @@ class TestStixProducer:
             print(stix_data)
 
     def test_registry_keys(self):
-        file_name = f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        file_name = (
+            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
+        )
 
         with open(file_name) as f:
             data = json.load(f)
