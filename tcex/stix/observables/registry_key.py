@@ -5,7 +5,6 @@ from typing import Union
 # third-party
 from stix2 import WindowsRegistryKey
 
-
 # first-party
 from tcex.stix.model import StixModel
 
@@ -36,7 +35,7 @@ class StixRegistryKeyObject(StixModel):
                     ]
                     yield from self._map(stix_data, mapper)
 
-    def produce(self, tc_data: Union[list, dict]):
+    def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 
         .. code:: json

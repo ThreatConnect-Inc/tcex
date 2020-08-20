@@ -4,27 +4,24 @@ import stix2
 see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
 """
 # standard library
-import ipaddress
 from typing import Dict, List, Union
 
 # third-party
+import stix2
 from dendrol import Pattern
 from dendrol.lang.STIXPatternListener import STIXPatternListener
 from dendrol.lang.STIXPatternParser import STIXPatternParser
-from dendrol.lang.STIXPatternVisitor import STIXPatternVisitor
-from dendrol.lang.STIXPatternParser import STIXPatternParser
-from stix2 import Indicator
-import ipaddress
 
 # first-party
 from tcex.batch import Batch
-from tcex.stix.model import StixModel
+from tcex.stix import StixModel
 
 
 class STIXListener(STIXPatternListener):
     """Visitor for the parsed stix pattern."""
 
     def __init__(self):
+        """Visitor for the parsed stix pattern."""
         super().__init__()
         self._indicators = []  # indicators that have been pulled out of this
 
@@ -33,9 +30,6 @@ class STIXListener(STIXPatternListener):
 
         Args:
             ctx: the context of the equals statement.
-
-        Returns:
-            The same thing unmodified.
         """
         test = ctx.getText()
         eq_index = test.index('=')
@@ -45,6 +39,11 @@ class STIXListener(STIXPatternListener):
             self._indicators.append({'path': path.strip(), 'value': value.strip()[1:-1]})
 
     def enterPropTestSet(self, ctx: STIXPatternParser.PropTestParenContext):
+        """Called for each statement with in (...).
+
+        Args:
+            ctx: the context of the equals statement.
+        """
         text = ctx.getText()
         path, values = text.split('IN')
 
@@ -68,12 +67,12 @@ class StixIndicator(StixModel):
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
     """
 
-    def produce(self, tc_data: Union[list, dict], indicator_type=None):
+    def produce(self, tc_data: Union[list, dict], **kwargs):
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
         for data in tc_data:
-            _type = indicator_type or data.get('type')
+            _type = kwargs.get('indicator_type') or data.get('type')
             indicator_details = self.indicator_type_details.get(_type)
             if not indicator_details:
                 continue
@@ -82,9 +81,9 @@ class StixIndicator(StixModel):
             yield stix2.Indicator(
                 name=data.get('summary'),
                 pattern_version='2.1',
-                indicator_types=["malicious-activity"],
-                pattern_type="stix",
-                pattern=indicator_details.get('lambda')(data)
+                indicator_types=['malicious-activity'],
+                pattern_type='stix',
+                pattern=indicator_details.get('lambda')(data),
             )
 
     def consume(self, stix_data: Union[list, dict]):
@@ -183,7 +182,9 @@ class StixIndicator(StixModel):
     def _file_consume_handler(stix_indicators: List[Dict[str, str]], signature: dict):
         file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), stix_indicators))
 
-        sha256_indicators = list(filter(lambda i: 'SHA-156' in i.get('path').upper(), file_indicators))
+        sha256_indicators = list(
+            filter(lambda i: 'SHA-156' in i.get('path').upper(), file_indicators)
+        )
         sha2_indicators = list(filter(lambda i: 'SHA-1' in i.get('path').upper(), file_indicators))
         md5_indicators = list(filter(lambda i: 'MD5' in i.get('path').upper(), file_indicators))
 
@@ -209,30 +210,3 @@ class StixIndicator(StixModel):
                         'xid': Batch.generate_xid([signature.get('xid'), i.get('value')]),
                         'associatedGroups': [{'groupXid': signature.get('xid')}],
                     }
-
-    @staticmethod
-    def _address_producer_helper(data):
-        if isinstance(ipaddress.ip_address(data.get('summary')), ipaddress.IPv6Address):
-            return f"[ipv6-addr:value = '{data.get('summary')}']"
-
-        return f"[ipv4-addr:value = '{data.get('summary')}']"
-
-    @staticmethod
-    def _cidr_producer_helper(data):
-        if isinstance(ipaddress.ip_network(data.get('summary')), ipaddress.IPv6Interface):
-            return f"[ipv6-addr:value = '{data.get('summary')}']"
-
-        return f"[ipv4-addr:value = '{data.get('summary')}']"
-
-    @staticmethod
-    def _file_producer_helper(data):
-        expressions = []
-        for _hash in data.get('summary', '').split(' : '):
-            if len(_hash) == 32:
-                expressions.append(f"file:hashes.md5 = '{_hash}'")
-            elif len(_hash) == 64:
-                expressions.append(f"file:hashes.sha1 = '{_hash}'")
-            else:
-                expressions.append(f"file:hashes.sha256 = '{_hash}'")
-
-        return f'[{" OR ".join(expressions)}]'

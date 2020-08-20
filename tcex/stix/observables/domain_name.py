@@ -18,7 +18,7 @@ class StixDomainNameObject(StixModel):
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070687
     """
 
-    def produce(self, tc_data: Union[list, dict]) -> Iterable[DomainName]:
+    def produce(self, tc_data: Union[list, dict], **kwargs) -> Iterable[DomainName]:
         """Produce STIX 2.0 JSON object from TC API response."""
         if isinstance(tc_data, list) and len(tc_data) > 0 and 'summary' in tc_data[0]:
             indicator_field = 'summary'

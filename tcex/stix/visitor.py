@@ -29,7 +29,9 @@ class Visitor:
 class VisitorProducer:
     """Creates and returns a visitor."""
 
-    def consume(self, stix_data: Union[List[dict], dict]) -> Visitor:  # pylint: disable=no-self-use
+    def consume(
+        self, stix_data: Union[List[dict], dict]
+    ) -> Iterable[Visitor]:  # pylint: disable=no-self-use
         """Parse STIX data and return a Visitor.
 
         Args:
@@ -40,7 +42,9 @@ class VisitorProducer:
             generator.
         """
 
-    def produce(self, tc_data: Union[List[dict], dict]) -> Visitor:  # pylint: disable=no-self-use
+    def produce(
+        self, tc_data: Union[List[dict], dict]
+    ) -> Iterable[Visitor]:  # pylint: disable=no-self-use
         """Parse ThreatConnect data and return a Visitor.
 
         Args:

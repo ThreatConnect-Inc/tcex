@@ -12,6 +12,7 @@ from tcex.stix.model import StixModel
 
 class TestStixConsumer:
     """Test Consuming STIX data."""
+
     model = StixModel()
 
     @pytest.mark.parametrize(
@@ -31,7 +32,7 @@ class TestStixConsumer:
             ),
         ],
     )
-    def test_indicator_bundle(self, in_file_path, out_file_path):
+    def test_bundles(self, in_file_path, out_file_path):
         """Parse stix json files and compare the output to known data.
 
         Args:
@@ -47,17 +48,3 @@ class TestStixConsumer:
             expected_data = json.load(f)
         ddiff = deepdiff.DeepDiff(tc_data, expected_data, ignore_order=True)
         assert not ddiff, str(ddiff)
-
-    def test_indicator(self):
-        indicator = {
-            'pattern': "[ipv4-addr:value IN ('1.2.3.4/15', '1.23.4.5', '192.168.1.2/12')]",
-            'name': 'foobar',
-            'id': 'foobar-id'
-        }
-
-        from tcex.stix.indicator.indicator import StixIndicator
-        si = StixIndicator()
-        indicators = list(si.consume(indicator))
-        print(indicators)
-
-

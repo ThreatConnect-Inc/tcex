@@ -105,6 +105,21 @@
       "id": "domain-name--ecb120bf-2694-4902-a737-62b74539a41b",
       "type": "domain-name",
       "value": "example.com"
+    },
+    {
+      "id": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "ipv4-addr",
+      "value": "198.51.100.2/16"
+    },
+    {
+      "id": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "ipv6-addr",
+      "value": "2001:0db8:85a3:0000:0000:8a2e:0370:7111"
+    },
+    {
+      "id": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "ipv6-addr",
+      "value": "2001:0db8:85a3:0000:0000:8a2e:0370:7111/64"
     }
   ],
   "type": "bundle"

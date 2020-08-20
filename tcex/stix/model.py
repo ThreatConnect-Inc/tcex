@@ -1,7 +1,6 @@
 """Top-level Stix Model Class."""
 # standard library
 import itertools
-from functools import reduce
 from typing import Union
 
 # third-party
@@ -42,55 +41,67 @@ class StixModel:
 
     @property
     def indicator_type_details(self):
+        """Details for individual ThreatConnect indicator types."""
         if not self._indicator_type_details:
-            from .indicator.indicator import Indicator
+            # first-party
+            from tcex.stix.indicator.stix_pattern_helpers import (
+                address_stix_pattern_producer,
+                asn_stix_pattern_producer,
+                cidr_stix_pattern_producer,
+                email_address_stix_pattern_producer,
+                file_stix_pattern_producer,
+                host_stix_pattern_producer,
+                registery_key_stix_pattern_producer,
+                url_stix_pattern_producer,
+            )
 
             self._indicator_type_details = {
                 'host': {
-                    'lambda': lambda data: f"[domain-name:value = '{data.get('summary')}']",
+                    'lambda': host_stix_pattern_producer,
                     'api_branch': 'hosts',
-                    'fields': ['text']
+                    'fields': ['text'],
                 },
                 'url': {
-                    'lambda': lambda data: f"[url:value = '{data.get('summary')}']",
+                    'lambda': url_stix_pattern_producer,
                     'api_branch': 'urls',
-                    'fields': ['text']
+                    'fields': ['text'],
                 },
                 'emailaddress': {
-                    'lambda': lambda data: f"[email-addr:value = '{data.get('summary')}']",
+                    'lambda': email_address_stix_pattern_producer,
                     'api_branch': 'emailaddresses',
-                    'fields': ['addresses']
+                    'fields': ['addresses'],
                 },
                 'asn': {
-                    'lambda': lambda data: f"[autonomous-system:name = '{data.get('summary')}']",
+                    'lambda': asn_stix_pattern_producer,
                     'api_branch': 'asns',
-                    'fields': ['as_number']
+                    'fields': ['as_number'],
                 },
                 'address': {
-                    'lambda': Indicator._address_producer_helper,
+                    'lambda': address_stix_pattern_producer,
                     'api_branch': 'address',
-                    'fields': ['ip']
+                    'fields': ['ip'],
                 },
                 'cidr': {
-                    'lambda': Indicator._cidr_producer_helper,
+                    'lambda': cidr_stix_pattern_producer,
                     'api_branch': 'address',
-                    'fields': ['ip']
+                    'fields': ['ip'],
                 },
                 'file': {
-                    'lambda': Indicator._file_producer_helper,
+                    'lambda': file_stix_pattern_producer,
                     'api_branch': 'files',
-                    'fields': ['md5', 'sha1', 'sha256']
+                    'fields': ['md5', 'sha1', 'sha256'],
                 },
                 'registry key': {
-                    'lambda': Indicator._file_producer_helper,
+                    'lambda': registery_key_stix_pattern_producer,
                     'api_branch': 'registryKeys',
-                    'fields': ['key name', 'value name', 'value type']
+                    'fields': ['key name', 'value name', 'value type'],
                 },
             }
         return self._indicator_type_details
 
     @property
     def as_object(self):
+        """ASN Parser."""
         if not self._as_object:
             from .observables.autonomous_system import StixASObject
 
@@ -99,22 +110,25 @@ class StixModel:
 
     @property
     def ipv4(self):
+        """IPv4 Parser."""
         if not self._ipv4:
-            from .observables.ipv4 import StixIPv4Object
+            from .observables.ip_addr import StixIPv4Object
 
             self._ipv4 = StixIPv4Object()
         return self._ipv4
 
     @property
     def ipv6(self):
+        """IPv6 Parser."""
         if not self._ipv6:
-            from .observables.ipv6 import StixIPv6Object
+            from .observables.ip_addr import StixIPv6Object
 
             self._ipv6 = StixIPv6Object()
         return self._ipv6
 
     @property
     def registry_key(self):
+        """Registry Key Parser."""
         if not self._registry_key:
             from .observables.registry_key import WindowsRegistryKey
 
@@ -123,6 +137,7 @@ class StixModel:
 
     @property
     def url(self):
+        """URL Parser."""
         if not self._url:
             from .observables.url import StixURLObject
 
@@ -131,6 +146,7 @@ class StixModel:
 
     @property
     def email_address(self):
+        """Email Address Parser."""
         if not self._email_address:
             from .observables.email_address import StixEmailAddressObject
 
@@ -139,6 +155,7 @@ class StixModel:
 
     @property
     def domain_name(self):
+        """Domain Name Parser."""
         if not self._domain_name:
             from .observables.domain_name import StixDomainNameObject
 
@@ -147,6 +164,7 @@ class StixModel:
 
     @property
     def indicator(self):
+        """Return Indicator Parser."""
         if not self._indicator:
             from .indicator.indicator import StixIndicator
 
@@ -155,22 +173,31 @@ class StixModel:
 
     @property
     def relationship(self):
+        """Relationship Parser."""
         if not self._relationship:
             from .relationship.relationship import Relationship
 
             self._relationship = Relationship()
         return self._relationship
 
-    def produce(self, tc_data: Union[list, dict]):
+    def produce(self, tc_data: Union[list, dict], **kwargs):  # pylint: disable=unused-argument
+        """Convert ThreatConnect data (in parsed JSON format) into STIX objects.
+
+        Args:
+            tc_data: one or more ThreatConnect object dictionaries
+
+        Yields:
+            STIX objects
+        """
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
         for data in tc_data:
-            for indicator_type, normalized_data in self.normalize_tc_objects(data):
+            for indicator_type, normalized_data in self._normalize_tc_objects(data):
                 yield from self.relationship.produce(normalized_data)
                 yield from self.indicator.produce(normalized_data, indicator_type=indicator_type)
 
-    def normalize_tc_objects(self, tc_data):
+    def _normalize_tc_objects(self, tc_data):
         indicator_type = None
         api_branch = 'indicator'
         data = tc_data.get('data', tc_data)
@@ -189,6 +216,14 @@ class StixModel:
             yield indicator_type, data
 
     def consume(self, stix_data: Union[list, dict]):
+        """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
+
+        Args:
+            stix_data: one or more stix_data dictionaries
+
+        Yields:
+            ThreatConnect objects
+        """
         type_mapping = {
             'autonomous-system': self.as_object,
             'domain-name': self.domain_name,
@@ -206,16 +241,15 @@ class StixModel:
             stix_data = [stix_data]
 
         tc_data = []
-        for stix_data in stix_data:
+        for data in stix_data:
             # Handle a bundle OR just one or more stix objects.
-            stix_objects = (
-                stix_data.get('objects') if stix_data.get('type') == 'bundle' else stix_data
-            )
+            stix_objects = data.get('objects') if data.get('type') == 'bundle' else data
 
             for stix_object in stix_objects:
                 _type = stix_object.get('type').lower()
                 if _type in visitor_mapping:
-                    self.register_visitor(visitor_mapping.get(_type).consume(stix_object))
+                    for visitor in visitor_mapping.get(_type).consume(stix_object):
+                        self.register_visitor(visitor)
                 else:
                     if _type in type_mapping:
                         # sub-parsers return generators, so chain them all together to flatten.
@@ -232,6 +266,7 @@ class StixModel:
         yield from tc_data
 
     def register_visitor(self, visitor):
+        """Register a visitor that will be passed all parsed data after consume is through."""
         self._visitors.append(visitor)
 
     def _map(self, data: Union[list, dict], mapping: dict):
@@ -256,4 +291,3 @@ class StixModel:
                     else:
                         mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
             yield mapped_obj
-
