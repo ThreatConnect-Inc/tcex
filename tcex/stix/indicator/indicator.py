@@ -1,8 +1,10 @@
 from typing import Union, List, Dict
 
+import stix2
 from dendrol import Pattern
 from dendrol.lang.STIXPatternVisitor import STIXPatternVisitor
 from dendrol.lang.STIXPatternParser import STIXPatternParser
+from stix2 import Indicator
 import ipaddress
 
 from tcex.stix.model import StixModel
@@ -34,22 +36,24 @@ class STIXVisitor(STIXPatternVisitor):
 
 class Indicator(StixModel):
 
-    def produce(self, tc_data: Union[list, dict]):
+    def produce(self, tc_data: Union[list, dict], indicator_type=None):
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
-        type_map = {
-            'Host': lambda data: f"[domain-name:value = '{data.get('summary')}']",
-            'URL': lambda data: f"[url:value = '{data.get('summary')}']",
-            'EmailAddress': lambda data: f"[email-addr:value = '{data.get('summary')}']",
-            'ASN': lambda data: f"[autonomous-system:name = '{data.get('summary')}']",
-            'Address': Indicator._address_producer_helper,
-            'CIDR': Indicator._cidr_producer_helper,
-            'File': Indicator._file_producer_helper,
-        }
-
         for data in tc_data:
-            yield type_map.get(data.get('type'))(data)  # TODO handle unsupported types
+            _type = indicator_type or data.get('type')
+            indicator_details = self.indicator_type_details.get(_type)
+            if not indicator_details:
+                continue
+            # for association in data.pop('associations', []):
+
+            yield stix2.Indicator(
+                name=data.get('summary'),
+                pattern_version='2.1',
+                indicator_types=["malicious-activity"],
+                pattern_type="stix",
+                pattern=indicator_details.get('lambda')(data)
+            )
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
@@ -57,20 +61,23 @@ class Indicator(StixModel):
             stix_data = [stix_data]
 
         for data in stix_data:
+            if data.get('pattern_type', 'stix') != 'stix':
+                continue
+
             signature = {
                 'type': 'Signature',
                 'xid': data.get('id'),
                 'name': data.get('name'),  # TODO what should default be?
             }
-            if data.get('pattern_type', 'stix') == 'stix':
-                # We only parse indicators out of stix patterns...
-                pattern = Pattern(data.get('pattern'))
-                s = STIXVisitor()
-                pattern.visit(s)
 
-                yield from Indicator._default_consume_handler(s.indicators, signature)
-                yield from Indicator._ip_consume_handler(s.indicators, signature)
-                yield from Indicator._file_consume_handler(s.indicators, signature)
+            # We only parse indicators out of stix patterns...
+            pattern = Pattern(data.get('pattern'))
+            s = STIXVisitor()
+            pattern.visit(s)
+
+            yield from Indicator._default_consume_handler(s.indicators, signature)
+            yield from Indicator._ip_consume_handler(s.indicators, signature)
+            yield from Indicator._file_consume_handler(s.indicators, signature)
 
             yield signature
 
@@ -188,12 +195,12 @@ class Indicator(StixModel):
     @staticmethod
     def _file_producer_helper(data):
         expressions = []
-        for hash in data.get('summary').split(' : '):
-            if len(hash) == 32:
-                expressions.append(f"file.hashes.'MD5' = '{hash}'")
-            elif len(hash) == 64:
-                expressions.append(f"file.hashes.'SHA-256' = '{hash}'")
+        for _hash in data.get('summary', '').split(' : '):
+            if len(_hash) == 32:
+                expressions.append(f"file:hashes.md5 = '{_hash}'")
+            elif len(_hash) == 64:
+                expressions.append(f"file:hashes.sha1 = '{_hash}'")
             else:
-                expressions.append(f"file.hashes.'SHA-2' = '{hash}'")
+                expressions.append(f"file:hashes.sha256 = '{_hash}'")
 
         return f'[{" OR ".join(expressions)}]'

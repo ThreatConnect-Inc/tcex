@@ -5,6 +5,7 @@ from tcex.stix.model import StixModel
 from stix2 import WindowsRegistryKey
 
 
+
 class StixRegistryKeyObject(StixModel):
     """STIX Threat Actor object."""
 

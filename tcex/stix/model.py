@@ -20,8 +20,72 @@ class StixModel:
         self._email_address = None
         self._indicator = None
         self._relationship = None
+        self._indicator_type_details = None
 
         self._visitors = []
+
+    def _construct_summary(self, data, indicator_type):
+        if 'summary' in data.keys():
+            return data.get('summary')
+
+        details = self.indicator_type_details.get(indicator_type)
+
+        summary = []
+        print(data)
+        for field in details.get('fields'):
+            print(data.get(field))
+            summary.append(data.get(field))
+
+        return ' : '.join(summary)
+
+    @property
+    def indicator_type_details(self):
+        if not self._indicator_type_details:
+            from .indicator.indicator import Indicator
+
+            self._indicator_type_details = {
+                'host': {
+                    'lambda': lambda data: f"[domain-name:value = '{data.get('summary')}']",
+                    'api_branch': 'hosts',
+                    'fields': ['text']
+                },
+                'url': {
+                    'lambda': lambda data: f"[url:value = '{data.get('summary')}']",
+                    'api_branch': 'urls',
+                    'fields': ['text']
+                },
+                'emailaddress': {
+                    'lambda': lambda data: f"[email-addr:value = '{data.get('summary')}']",
+                    'api_branch': 'emailaddresses',
+                    'fields': ['addresses']
+                },
+                'asn': {
+                    'lambda': lambda data: f"[autonomous-system:name = '{data.get('summary')}']",
+                    'api_branch': 'asns',
+                    'fields': ['as_number']
+                },
+                'address': {
+                    'lambda': Indicator._address_producer_helper,
+                    'api_branch': 'address',
+                    'fields': ['ip']
+                },
+                'cidr': {
+                    'lambda': Indicator._cidr_producer_helper,
+                    'api_branch': 'address',
+                    'fields': ['ip']
+                },
+                'file': {
+                    'lambda': Indicator._file_producer_helper,
+                    'api_branch': 'files',
+                    'fields': ['md5', 'sha1', 'sha256']
+                },
+                'registry key': {
+                    'lambda': Indicator._file_producer_helper,
+                    'api_branch': 'registryKeys',
+                    'fields': ['key name', 'value name', 'value type']
+                },
+            }
+        return self._indicator_type_details
 
     @property
     def as_object(self):
@@ -95,24 +159,31 @@ class StixModel:
         return self._relationship
 
     def produce(self, tc_data: Union[list, dict]):
-
-        type_mapping = {
-            'indicator': self.indicator,
-            # 'asn': self.as_object,
-            # 'host': self.domain_name,
-            # 'emailaddress': self.email_address,
-            # 'address': self.ipv4,
-            # 'registry key': self.registry_key,
-            # 'url': self.url
-
-        }
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
         for data in tc_data:
-            _type = data.get('type').lower()
-            handler = type_mapping.get(_type.lower(), _type.lower())
-            yield from handler.produce(data)
+            for indicator_type, normalized_data in self.normalize_tc_objects(data):
+                yield from self.relationship.produce(normalized_data)
+                yield from self.indicator.produce(normalized_data, indicator_type=indicator_type)
+
+    def normalize_tc_objects(self, tc_data):
+        indicator_type = None
+        api_branch = 'indicator'
+        data = tc_data.get('data', tc_data)
+        for key, values in self.indicator_type_details.items():
+            if values.get('api_branch') in data.keys():
+                api_branch = values.get('api_branch')
+                indicator_type = key
+                break
+        tc_data = data.get(api_branch)
+
+        for data in tc_data:
+            _type = indicator_type or data.get('type').lower()
+            data['summary'] = self._construct_summary(data, indicator_type)
+            for field in self.indicator_type_details.get(_type).get('fields'):
+                data.pop(field, '')
+            yield indicator_type, data
 
     def consume(self, stix_data: Union[list, dict]):
         type_mapping = {
@@ -136,7 +207,9 @@ class StixModel:
         tc_data = []
         for stix_data in stix_data:
             # Handle a bundle OR just one or more stix objects.
-            stix_objects = \
+            stix_objects = stix_data
+            if stix_data.get('type') == 'bundle':
+                stix_objects = stix_data.get('objects')
                 stix_data.get('objects') if stix_data.get('type') == 'bundle' else stix_data
 
             for stix_object in stix_objects:
@@ -183,24 +256,4 @@ class StixModel:
                     else:
                         mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
             yield mapped_obj
-
-    @staticmethod
-    def _add_association(target, source):
-        target.setdefault('associations', []).append(
-            {
-                'name': source.get('summary'),
-                'type': source.get('type'),
-            }
-        )
-        source.setdefault('associations', []).append(
-            {
-                'name': target.get('summary'),
-                'type': target.get('type'),
-            }
-        )
-
-    @staticmethod
-    def _partition(l, p):
-        return reduce(lambda x, y: (x[0] + [y], x[1]) if p(y) else (x[0], x[1] + [y]), l, ([], []))
-
 

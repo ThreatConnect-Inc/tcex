@@ -1,6 +1,10 @@
 from typing import Union, Iterable
 
+import stix2
+from tcex.batch import Batch
+
 from tcex.stix import StixModel
+from stix2 import Relationship
 
 
 class Visitor:
@@ -77,4 +81,17 @@ class Relationship(StixModel):
         for data in stix_data:
             relationship = RelationshipVisitor(data.get('target_ref'), data.get('source_ref'))
             self.model.register_visitor(relationship)
+
+    def produce(self, tc_data: Union[list, dict]):
+        if not isinstance(tc_data, list):
+            tc_data = [tc_data]
+
+        for data in tc_data:
+            associations = data.pop('associations', [])
+            for association in associations:
+                yield stix2.Relationship(
+                    source_ref=Batch.generate_xid(data.get('summary')),
+                    target_ref=Batch.generate_xid(association.get('summary')),
+                    relationship_type='uses'
+                )
 
