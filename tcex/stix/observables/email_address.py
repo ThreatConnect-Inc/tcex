@@ -18,7 +18,7 @@ class StixEmailAddressObject(StixModel):
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070690
     """
 
-    def produce(self, tc_data: Union[list, dict]) -> Iterable[EmailAddress]:
+    def produce(self, tc_data: Union[list, dict], **kwargs) -> Iterable[EmailAddress]:
         """Produce STIX 2.0 JSON object from TC API response."""
         if isinstance(tc_data, list) and len(tc_data) > 0 and 'summary' in tc_data[0]:
             indicator_field = 'summary'

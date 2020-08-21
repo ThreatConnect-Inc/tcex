@@ -2,15 +2,23 @@
 # standard library
 from typing import Union
 
+# third-party
+from stix2 import IPv6Address
+
 # first-party
 from tcex.stix.model import StixModel
 
 
-class StixIPv4Object(StixModel):
-    """STIX Threat Actor object."""
+class StixIPBase(StixModel):
+    """Base class for IPv4 and IPv6 objects."""
 
-    def consume(self, stix_data: Union[list, dict]):
+    def do_consume(self, stix_data: Union[list, dict], full_block_size: int):
+        """Convert a STIX object to a TC Address or CIDR.
 
+        Args:
+            stix_data: the data to convert
+            full_block_size: the size of a full block in the respective CIDR
+        """
         mapper_ip = {
             'type': 'Address',
             'summary': '@.value',
@@ -27,23 +35,21 @@ class StixIPv4Object(StixModel):
             stix_data = [stix_data]
 
         for data in stix_data:
-            if data.get('type') == 'ipv4-addr':
-                cidr_parts = data.get('value', '').split('/')
-                cidr_suffix = cidr_parts[1] if len(cidr_parts) > 1 else '32'
-                if cidr_suffix == '32':
-                    yield from self._map(data, mapper_ip)
-                else:
-                    yield from self._map(data, mapper_cider)
+            cidr_parts = data.get('value', '').split('/')
+            cidr_suffix = cidr_parts[1] if len(cidr_parts) > 1 else str(full_block_size)
+            if cidr_suffix == str(full_block_size):
+                yield from self._map(data, mapper_ip)
+            else:
+                yield from self._map(data, mapper_cider)
 
-            if data.get('type') == 'ipv6-addr':
-                cidr_parts = data.get('value', '').split('/')
-                cidr_suffix = cidr_parts[1] if len(cidr_parts) > 1 else '128'
-                if cidr_suffix == '128':
-                    yield from self._map(data, mapper_ip)
-                else:
-                    yield from self._map(data, mapper_cider)
 
-    def produce(self, tc_data: Union[list, dict]):
+class StixIPv4Object(StixIPBase):
+    """STIX Threat Actor object."""
+
+    def consume(self, stix_data: Union[list, dict]):
+        yield from super().do_consume(stix_data, 32)
+
+    def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 
         .. code:: json
@@ -93,3 +99,36 @@ class StixIPv4Object(StixModel):
                 'type': f'{ip_type}-addr',
             },
         )
+
+
+class StixIPv6Object(StixIPBase):
+    """STIX Threat Actor object."""
+
+    def consume(self, stix_data: Union[list, dict]):
+        yield from super().do_consume(stix_data, 128)
+
+    def produce(self, tc_data: Union[list, dict], **kwargs):
+        """Produce STIX 2.0 JSON object from TC API response.
+
+        .. code:: json
+
+            {
+              "type": "ipv6-addr",
+              "spec_version": "2.1",
+              "id": "ipv6-addr--1e61d36c-a16c-53b7-a80f-2a00161c96b1",
+              "value": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+            }
+        """
+        if isinstance(tc_data, list) and len(tc_data) > 0 and 'summary' in tc_data[0]:
+            indicator_field = 'summary'
+        else:
+            indicator_field = 'ip'
+
+        mapper = {
+            'id': '@.id',
+            'value': f'@.{indicator_field}',
+            'spec_version': '2.1',
+            'type': 'ipv6-addr',
+        }
+
+        yield from (IPv6Address(**stix_data) for stix_data in self._map(tc_data, mapper))

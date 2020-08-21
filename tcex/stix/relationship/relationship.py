@@ -8,21 +8,24 @@ see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_T
 # standard library
 from typing import Iterable, List, Union
 
+# third-party
+import stix2
+
 # first-party
-from tcex.stix import StixModel
-from stix2 import Relationship
+from tcex.batch import Batch
 from tcex.stix.visitor import Visitor, VisitorProducer
 
 
 class RelationshipVisitor(Visitor):
-    """Visitor that creates associations between ThreatConnect objects based on a STIX Relationship.
-
-    Args:
-        target_ref: xid of TC object on one side of the association.
-        source_ref: xid of the TC object on the other side of the association.
-    """
+    """Visitor that creates associations between TC objects based on a STIX Relationship."""
 
     def __init__(self, target_ref: str, source_ref: str):
+        """Visitor that creates associations between TC objects based on a STIX Relationship.
+
+        Args:
+            target_ref: xid of TC object on one side of the association.
+            source_ref: xid of the TC object on the other side of the association.
+        """
         super().__init__()
         self.target_ref = target_ref
         self.source_ref = source_ref
@@ -97,19 +100,30 @@ class Relationship(VisitorProducer):
         model: StixModel instance to register visitor on.
     """
 
-    def consume(self, stix_data: Union[List[dict], dict]) -> Visitor:
+    def consume(self, stix_data: Union[List[dict], dict]) -> Iterable[Visitor]:
         """Register a visitor to create ThreatConnect associations for STIX relationship.
 
         Args:
             stix_data: One or more STIX Relationship objects.
+
+        Yields:
+            Visitors that will create ThreatConnect Associations based on a STIX Relationship.
         """
         if not isinstance(stix_data, list):
             stix_data = [stix_data]
 
         for data in stix_data:
-            return RelationshipVisitor(data.get('target_ref'), data.get('source_ref'))
+            yield RelationshipVisitor(data.get('target_ref'), data.get('source_ref'))
 
-    def produce(self, tc_data: Union[list, dict]):
+    def produce(self, tc_data: Union[list, dict]) -> Iterable[Visitor]:
+        """Yield visitors that will apply relationship objects to a Stream of STIX data.
+
+        Args:
+            tc_data: the ThreatConnect data to produce Relationships based on.
+
+        Yields:
+            Visitors that will create STIX Relationship objects.
+        """
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
@@ -119,6 +133,5 @@ class Relationship(VisitorProducer):
                 yield stix2.Relationship(
                     source_ref=Batch.generate_xid(data.get('summary')),
                     target_ref=Batch.generate_xid(association.get('summary')),
-                    relationship_type='uses'
+                    relationship_type='uses',
                 )
-

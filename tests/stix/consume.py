@@ -31,7 +31,7 @@ class TestStixConsumer:
             ),
         ],
     )
-    def test_indicator_bundle(self, in_file_path, out_file_path):
+    def test_bundles(self, in_file_path, out_file_path):
         """Parse stix json files and compare the output to known data.
 
         Args:

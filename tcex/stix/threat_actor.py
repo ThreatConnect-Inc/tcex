@@ -18,7 +18,7 @@ class StixThreatActor(StixModel):
     """
 
     def consume(self, stix_data: Union[list, dict]):
-        """Converts a STIX Threat Actor to a ThreatConnect Threat.
+        """Convert a STIX Threat Actor to a ThreatConnect Threat.
 
         Args:
             stix_data: One or more STIX Threat Actor objects.
@@ -37,7 +37,7 @@ class StixThreatActor(StixModel):
 
         yield from self._map(stix_data, mapper)
 
-    def produce(self, tc_data: Union[list, dict]):
+    def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 
         .. code:: json

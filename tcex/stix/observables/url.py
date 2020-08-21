@@ -13,6 +13,7 @@ class StixURLObject(StixModel):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):
+        """Parse a STIX URL Object into a ThreatConnect URL Indicator."""
         mapper = {
             'type': 'URL',
             'summary': '@.value',
@@ -24,7 +25,7 @@ class StixURLObject(StixModel):
 
         yield from self._map(stix_data, mapper)
 
-    def produce(self, tc_data: Union[list, dict]):
+    def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 
         .. code:: json
