@@ -21,14 +21,16 @@ class StixIPBase(StixModel):
         """
         mapper_ip = {
             'type': 'Address',
-            'summary': '@.value',
-            'attributes': {'type': 'External Id', 'value': '@.id'},
+            'ip': '@.value',
+            'xid': '@.id',
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
         mapper_cider = {
             'type': 'CIDR',
-            'summary': '@.value',
-            'attributes': {'type': 'External Id', 'value': '@.id'},
+            'block': '@.value',
+            'xid': '@.id',
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
         if isinstance(stix_data, dict):
@@ -47,6 +49,14 @@ class StixIPv4Object(StixIPBase):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):
+        """Convert STIX IPv4-addr Cyber Observables to ThreatConnect indicators.
+
+        Args:
+            stix_data: One or more STIX ipv4-addr cyber observables.
+
+        Yields:
+            ThreatConnect addresses or CIDRs.
+        """
         yield from super().do_consume(stix_data, 32)
 
     def produce(self, tc_data: Union[list, dict], **kwargs):
@@ -105,6 +115,14 @@ class StixIPv6Object(StixIPBase):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):
+        """Convert STIX IPv6-addr Cyber Observables to ThreatConnect indicators.
+
+        Args:
+            stix_data: One or more STIX ipv6-addr cyber observables.
+
+        Yields:
+            ThreatConnect addresses or CIDRs.
+        """
         yield from super().do_consume(stix_data, 128)
 
     def produce(self, tc_data: Union[list, dict], **kwargs):

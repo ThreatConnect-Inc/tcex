@@ -9,7 +9,7 @@ from typing import Iterable, Union
 from stix2 import AutonomousSystem
 
 # first-party
-from tcex.stix.model import StixModel
+from tcex.stix.model import StixModel  # pylint: disable=cyclic-import
 
 
 class StixASObject(StixModel):
@@ -36,11 +36,15 @@ class StixASObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
-        yield from self._map(
-            stix_data,
-            {
-                'type': 'ASN',
-                'summary': '@.value',
-                'attributes': [{'type': 'External ID', 'value': '@.id'}],
-            },
-        )
+        parse_map = {
+            'type': 'ASN',
+            'summary': '@.number',
+            'xid': '@.id',
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
+        }
+
+        def _convert_summary_to_str(data):
+            data['summary'] = str(data.get('summary'))
+            return data
+
+        yield from map(_convert_summary_to_str, self._map(stix_data, parse_map))

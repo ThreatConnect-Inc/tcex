@@ -42,11 +42,11 @@ class RelationshipVisitor(Visitor):
          are not supported.
 
          Args:
-             data: generator of parsed data.
+            data: generator of parsed data.
 
         Yields:
             parsed data with associations added.
-         """
+        """
         for d in data:
             if self.done:
                 yield d  # get out asap if we're done to reduce overhead.
@@ -68,12 +68,12 @@ class RelationshipVisitor(Visitor):
                     elif self._is_group(self.target) and not self._is_group(self.source):
                         # source is an indicator, target is a group
                         self.source.setdefault('associatedGroups', []).append(
-                            {'groupXid', self.target.get('xid')}
+                            {'groupXid': self.target.get('xid')}
                         )
                     elif self._is_group(self.source) and not self._is_group(self.target):
                         # target is an indicator, source is a group
                         self.target.setdefault('associatedGroups', []).append(
-                            {'groupXid', self.source.get('xid')}
+                            {'groupXid': self.source.get('xid')}
                         )
                     else:
                         # TODO handle indicator-to-indicator, we can't do that in TC

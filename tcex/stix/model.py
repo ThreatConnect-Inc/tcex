@@ -130,9 +130,9 @@ class StixModel:
     def registry_key(self):
         """Registry Key Parser."""
         if not self._registry_key:
-            from .observables.registry_key import WindowsRegistryKey
+            from .observables.registry_key import StixRegistryKeyObject
 
-            self._registry_key = WindowsRegistryKey()
+            self._registry_key = StixRegistryKeyObject()
         return self._registry_key
 
     @property

@@ -16,8 +16,9 @@ class StixURLObject(StixModel):
         """Parse a STIX URL Object into a ThreatConnect URL Indicator."""
         mapper = {
             'type': 'URL',
-            'summary': '@.value',
-            'attributes': {'type': 'External Id', 'value': '@.id'},
+            'text': '@.value',
+            'xid': '@.id',
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
         if isinstance(stix_data, dict):

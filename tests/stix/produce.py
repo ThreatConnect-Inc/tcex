@@ -1,3 +1,4 @@
+"""Test producing STIX data."""
 # standard library
 import json
 
@@ -10,6 +11,8 @@ from tcex.stix.model import StixModel
 
 
 class TestStixProducer:
+    """Test producing STIX data."""
+
     model = StixModel()
     file_root = 'tests/stix/tc_files'
 
@@ -17,16 +20,13 @@ class TestStixProducer:
         'in_file_path, out_file_path',
         [
             (
-                    './tests/stix/tc_files/addresses.json',
-                    './tests/stix/tc_files/addresses_produced.json',
+                './tests/stix/tc_files/addresses.json',
+                './tests/stix/tc_files/addresses_produced.json',
             ),
+            ('./tests/stix/tc_files/files.json', './tests/stix/tc_files/files_produced.json',),
             (
-                    './tests/stix/tc_files/files.json',
-                    './tests/stix/tc_files/files_produced.json',
-            ),
-            (
-                    './tests/stix/tc_files/indicators.json',
-                    './tests/stix/tc_files/indicators_produced.json',
+                './tests/stix/tc_files/indicators.json',
+                './tests/stix/tc_files/indicators_produced.json',
             ),
             (
                 './tests/stix/tc_files/registry_key.json',

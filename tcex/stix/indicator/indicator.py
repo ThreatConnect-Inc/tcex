@@ -14,51 +14,7 @@ from dendrol.lang.STIXPatternParser import STIXPatternParser
 
 # first-party
 from tcex.batch import Batch
-from tcex.stix import StixModel
-
-
-class STIXListener(STIXPatternListener):
-    """Visitor for the parsed stix pattern."""
-
-    def __init__(self):
-        """Visitor for the parsed stix pattern."""
-        super().__init__()
-        self._indicators = []  # indicators that have been pulled out of this
-
-    def enterPropTestEqual(self, ctx: STIXPatternParser.PropTestEqualContext):
-        """Called for each statement with =.
-
-        Args:
-            ctx: the context of the equals statement.
-        """
-        test = ctx.getText()
-        eq_index = test.index('=')
-        if eq_index:
-            path, value = test[:eq_index], test[eq_index + 1 :]
-
-            self._indicators.append({'path': path.strip(), 'value': value.strip()[1:-1]})
-
-    def enterPropTestSet(self, ctx: STIXPatternParser.PropTestParenContext):
-        """Called for each statement with in (...).
-
-        Args:
-            ctx: the context of the equals statement.
-        """
-        text = ctx.getText()
-        path, values = text.split('IN')
-
-        path = path.strip()
-
-        values = values[1:-1]  # strip off the surrounding parens.
-        values = [v.strip()[1:-1] for v in values.split(',')]  # split on , and strip
-
-        for value in values:
-            self._indicators.append({'path': path, 'value': value})
-
-    @property
-    def indicators(self):
-        """Return the indicators parsed out of this pattern."""
-        return self._indicators
+from tcex.stix import StixModel  # pylint: disable=cyclic-import
 
 
 class StixIndicator(StixModel):
@@ -68,6 +24,14 @@ class StixIndicator(StixModel):
     """
 
     def produce(self, tc_data: Union[list, dict], **kwargs):
+        """Produce a STIX Indicator from a ThreatConnect Indicator.
+
+        Args:
+            tc_data: ThreatConnect indicator(s)
+
+        Yields:
+            A STIX Indicator.
+        """
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
 
@@ -210,3 +174,47 @@ class StixIndicator(StixModel):
                         'xid': Batch.generate_xid([signature.get('xid'), i.get('value')]),
                         'associatedGroups': [{'groupXid': signature.get('xid')}],
                     }
+
+
+class STIXListener(STIXPatternListener):
+    """Visitor for the parsed stix pattern."""
+
+    def __init__(self):
+        """Visitor for the parsed stix pattern."""
+        super().__init__()
+        self._indicators = []  # indicators that have been pulled out of this
+
+    def enterPropTestEqual(self, ctx: STIXPatternParser.PropTestEqualContext):
+        """Pull out path and value from statements with =.
+
+        Args:
+            ctx: the context of the equals statement.
+        """
+        test = ctx.getText()
+        eq_index = test.index('=')
+        if eq_index:
+            path, value = test[:eq_index], test[(eq_index + 1) :]  # noqa: E203
+
+            self._indicators.append({'path': path.strip(), 'value': value.strip()[1:-1]})
+
+    def enterPropTestSet(self, ctx: STIXPatternParser.PropTestParenContext):
+        """Pull out path and value from statements with in (...).
+
+        Args:
+            ctx: the context of the equals statement.
+        """
+        text = ctx.getText()
+        path, values = text.split('IN')
+
+        path = path.strip()
+
+        values = values[1:-1]  # strip off the surrounding parens.
+        values = [v.strip()[1:-1] for v in values.split(',')]  # split on , and strip
+
+        for value in values:
+            self._indicators.append({'path': path, 'value': value})
+
+    @property
+    def indicators(self):
+        """Return the indicators parsed out of this pattern."""
+        return self._indicators

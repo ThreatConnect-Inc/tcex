@@ -29,7 +29,7 @@ class StixThreatActor(StixModel):
         mapper = {
             'type': 'Threat',
             'summary': '@.name',
-            'attributes': {'type': 'External Id', 'value': '@.id'},
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
         if isinstance(stix_data, dict):

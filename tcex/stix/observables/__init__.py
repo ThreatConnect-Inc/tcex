@@ -1,4 +1,5 @@
 """Parsers for STIX Cyber Observables."""
+# flake8: noqa
 from .autonomous_system import StixASObject
 from .domain_name import StixDomainNameObject
 from .email_address import StixEmailAddressObject

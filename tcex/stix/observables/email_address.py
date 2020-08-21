@@ -9,7 +9,7 @@ from typing import Iterable, Union
 from stix2 import EmailAddress
 
 # first-party
-from tcex.stix.model import StixModel
+from tcex.stix.model import StixModel  # pylint: disable=cyclic-import
 
 
 class StixEmailAddressObject(StixModel):
@@ -40,7 +40,8 @@ class StixEmailAddressObject(StixModel):
             stix_data,
             {
                 'type': 'EmailAddress',
-                'summary': '@.value',
+                'address': '@.value',
+                'xid': '@.id',
                 'attributes': [{'type': 'External ID', 'value': '@.id'}],
             },
         )

@@ -40,7 +40,8 @@ class StixDomainNameObject(StixModel):
             stix_data,
             {
                 'type': 'Host',
-                'summary': '@.value',
+                'hostName': '@.value',
+                'xid': '@.id',
                 'attributes': [{'type': 'External ID', 'value': '@.id'}],
             },
         )

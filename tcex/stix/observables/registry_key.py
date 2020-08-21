@@ -13,7 +13,14 @@ class StixRegistryKeyObject(StixModel):
     """STIX Threat Actor object."""
 
     def consume(self, stix_data: Union[list, dict]):
+        """Convert STIX Windows Registry Key Cyber Observables to ThreatConnect Indicators.
 
+        Args:
+            stix_data: STIX Windows Registry Key Cyber Observables.
+
+        Yields:
+            ThreatConnect registry key indicators.
+        """
         if isinstance(stix_data, dict):
             stix_data = [stix_data]
 
@@ -21,19 +28,19 @@ class StixRegistryKeyObject(StixModel):
             mapper = {
                 'type': 'Registry Key',
                 'Key Name': '@.key',
-                'attributes': {'type': 'External Id', 'value': '@.id',},
+                'xid': '@.id',
+                'attributes': [{'type': 'External ID', 'value': '@.id'}],
             }
             if not data.get('values'):
-                yield from self._map(stix_data, mapper)
+                yield from self._map(data, mapper)
             else:
-                for i in range(data.get('values')):
-                    mapper['Value Name'] = (f'@.values[{i}]["name"].value',)
-                    mapper['Value Type'] = (f'@.values[{i}]["data_type"].value',)
-                    mapper['attributes'] = [
-                        {'type': 'External Id', 'value': '@.id'},
-                        {'type': 'Value Data', 'value': f'@.values[{i}]["data"].value'},
-                    ]
-                    yield from self._map(stix_data, mapper)
+                for i in range(len(data.get('values'))):
+                    mapper['Value Name'] = f'@.values[{i}].name'
+                    mapper['Value Type'] = f'@.values[{i}].data_type'
+                    mapper['attributes'].append(
+                        {'type': 'Value Data', 'value': f'@.values[{i}].data'}
+                    )
+                    yield from self._map(data, mapper)
 
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
