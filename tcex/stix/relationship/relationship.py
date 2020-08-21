@@ -108,6 +108,7 @@ class Relationship(VisitorProducer):
 
         for data in stix_data:
             return RelationshipVisitor(data.get('target_ref'), data.get('source_ref'))
+
     def produce(self, tc_data: Union[list, dict]):
         if not isinstance(tc_data, list):
             tc_data = [tc_data]

@@ -1,6 +1,9 @@
 # standard library
-import inspect
 import json
+
+# third-party
+import deepdiff
+import pytest
 
 # first-party
 from tcex.stix.model import StixModel
@@ -10,46 +13,40 @@ class TestStixProducer:
     model = StixModel()
     file_root = 'tests/stix/tc_files'
 
-    def test_indicators(self):
-        file_name = (
-            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
-        )
+    @pytest.mark.parametrize(
+        'in_file_path, out_file_path',
+        [
+            (
+                    './tests/stix/tc_files/addresses.json',
+                    './tests/stix/tc_files/addresses_produced.json',
+            ),
+            (
+                    './tests/stix/tc_files/files.json',
+                    './tests/stix/tc_files/files_produced.json',
+            ),
+            (
+                    './tests/stix/tc_files/indicators.json',
+                    './tests/stix/tc_files/indicators_produced.json',
+            ),
+            (
+                './tests/stix/tc_files/registry_key.json',
+                './tests/stix/tc_files/registry_key_produced.json',
+            ),
+        ],
+    )
+    def test_indicator_bundle(self, in_file_path, out_file_path):
+        """Parse stix json files and compare the output to known data.
 
-        with open(file_name) as f:
+        Args:
+            in_file_path: path to a file with stix json in it.
+            out_file_path: path to a file with the expected output from parsing.
+        """
+        with open(in_file_path) as f:
             data = json.load(f)
 
-        for stix_data in self.model.produce(data):
-            print(stix_data)
+        tc_data = list(self.model.consume(data))
 
-    def test_addresses(self):
-        file_name = (
-            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
-        )
-
-        with open(file_name) as f:
-            data = json.load(f)
-
-        for stix_data in self.model.produce(data):
-            print(stix_data)
-
-    def test_files(self):
-        file_name = (
-            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
-        )
-
-        with open(file_name) as f:
-            data = json.load(f)
-
-        for stix_data in self.model.produce(data):
-            print(stix_data)
-
-    def test_registry_keys(self):
-        file_name = (
-            f'{self.file_root}/{inspect.currentframe().f_code.co_name.replace("test_", "")}.json'
-        )
-
-        with open(file_name) as f:
-            data = json.load(f)
-
-        stix_data = self.model.produce(data)
-        assert len(stix_data) == 1
+        with open(out_file_path) as f:
+            expected_data = json.load(f)
+        ddiff = deepdiff.DeepDiff(tc_data, expected_data, ignore_order=True)
+        assert not ddiff, str(ddiff)

@@ -48,16 +48,4 @@ class TestStixConsumer:
         ddiff = deepdiff.DeepDiff(tc_data, expected_data, ignore_order=True)
         assert not ddiff, str(ddiff)
 
-    def test_indicator(self):
-        indicator = {
-            'pattern': "[ipv4-addr:value IN ('1.2.3.4/15', '1.23.4.5', '192.168.1.2/12')]",
-            'name': 'foobar',
-            'id': 'foobar-id'
-        }
-
-        from tcex.stix.indicator.indicator import StixIndicator
-        si = StixIndicator()
-        indicators = list(si.consume(indicator))
-        print(indicators)
-
 

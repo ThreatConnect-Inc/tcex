@@ -450,6 +450,7 @@ class CommonCaseManagement:
         """
         body = self.body or {}
 
+
         method = 'POST'
         url = self.api_endpoint
         if self.id:
