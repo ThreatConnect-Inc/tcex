@@ -9,8 +9,6 @@ from typing import Any, Optional
 import colorama as c
 import requests
 
-from ..utils import Utils
-
 try:
     # third-party
     from mako.template import Template
@@ -18,6 +16,7 @@ except ImportError:
     # mako is only required for local development
     pass
 
+from ..utils import Utils
 
 # autoreset colorama
 c.init(autoreset=True, strip=False)

@@ -1,7 +1,6 @@
 """TcEx Playbook Common module"""
-
-# standard library
 # import json
+# standard library
 import os
 import time
 import uuid

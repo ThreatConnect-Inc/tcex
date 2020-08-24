@@ -1,7 +1,6 @@
 """TcEx testing profile Class."""
-
-# standard library
 # import json
+# standard library
 import json
 import re
 

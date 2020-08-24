@@ -1,7 +1,6 @@
 """Testing module for TcEx Framework"""
-
-# first-party
 # flake8: noqa
+# first-party
 from tcex.testing.monkeypatch import monkeypatch, register_monkeypatch
 from tcex.testing.stage_data import Stager
 from tcex.testing.test_case_job import TestCaseJob

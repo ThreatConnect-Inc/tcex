@@ -7,15 +7,15 @@ import os
 import random
 import sys
 
-from .install_json import InstallJson
-from .layout_json import LayoutJson
-
 try:
     # standard library
     import sqlite3
 except ImportError:
     # only required for local development
     pass
+
+from .install_json import InstallJson
+from .layout_json import LayoutJson
 
 
 class Permutations:
