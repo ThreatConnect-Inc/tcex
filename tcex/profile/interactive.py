@@ -56,7 +56,7 @@ class Interactive:
         }
         # self.user_defaults_filename = os.path.join('tests', '.user_defaults')
 
-    def _default(self, data: dict) -> Union(list, str):  # pylint: disable=unused-argument
+    def _default(self, data: dict) -> Union[list, str]:  # pylint: disable=unused-argument
         """Return the best option for default.
 
         Args:
