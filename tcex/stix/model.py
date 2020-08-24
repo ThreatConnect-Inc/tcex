@@ -34,8 +34,10 @@ class StixModel:
         summary = []
         print(data)
         for field in details.get('fields'):
-            print(data.get(field))
-            summary.append(data.get(field))
+            if field in data:
+                summary.append(data.get(field))
+            else:
+                summary.append('')
 
         return ' : '.join(summary)
 
@@ -58,17 +60,17 @@ class StixModel:
             self._indicator_type_details = {
                 'host': {
                     'lambda': host_stix_pattern_producer,
-                    'api_branch': 'hosts',
+                    'api_branch': 'host',
                     'fields': ['text'],
                 },
                 'url': {
                     'lambda': url_stix_pattern_producer,
-                    'api_branch': 'urls',
+                    'api_branch': 'url',
                     'fields': ['text'],
                 },
                 'emailaddress': {
                     'lambda': email_address_stix_pattern_producer,
-                    'api_branch': 'emailaddresses',
+                    'api_branch': 'emailaddress',
                     'fields': ['addresses'],
                 },
                 'asn': {
@@ -83,17 +85,17 @@ class StixModel:
                 },
                 'cidr': {
                     'lambda': cidr_stix_pattern_producer,
-                    'api_branch': 'address',
+                    'api_branch': 'cidr',
                     'fields': ['ip'],
                 },
                 'file': {
                     'lambda': file_stix_pattern_producer,
-                    'api_branch': 'files',
+                    'api_branch': 'file',
                     'fields': ['md5', 'sha1', 'sha256'],
                 },
                 'registry key': {
                     'lambda': registery_key_stix_pattern_producer,
-                    'api_branch': 'registryKeys',
+                    'api_branch': 'registryKey',
                     'fields': ['key name', 'value name', 'value type'],
                 },
             }
@@ -202,7 +204,9 @@ class StixModel:
         api_branch = 'indicator'
         data = tc_data.get('data', tc_data)
         for key, values in self.indicator_type_details.items():
-            if values.get('api_branch') in data.keys():
+            if values.get('api_branch').upper() in [s.upper() for s in data.keys()] or values.get(
+                'type'
+            ).upper() in [s.upper() for s in data.keys()]:
                 api_branch = values.get('api_branch')
                 indicator_type = key
                 break

@@ -43,7 +43,8 @@ class StixIndicator(StixModel):
             # for association in data.pop('associations', []):
 
             yield stix2.Indicator(
-                name=data.get('summary'),
+                id=Batch.generate_xid([data.get('summary'), data.get('ownerName')]),
+                name=f'{data.get("ownerName")} - {data.get("summary")}',
                 pattern_version='2.1',
                 indicator_types=['malicious-activity'],
                 pattern_type='stix',

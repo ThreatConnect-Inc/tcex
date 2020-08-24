@@ -131,7 +131,9 @@ class Relationship(VisitorProducer):
             associations = data.pop('associations', [])
             for association in associations:
                 yield stix2.Relationship(
-                    source_ref=Batch.generate_xid(data.get('summary')),
-                    target_ref=Batch.generate_xid(association.get('summary')),
+                    source_ref=Batch.generate_xid([data.get('summary'), data.get('ownerName')]),
+                    target_ref=Batch.generate_xid(
+                        [association.get('summary'), association.get('ownerName')]
+                    ),
                     relationship_type='uses',
                 )

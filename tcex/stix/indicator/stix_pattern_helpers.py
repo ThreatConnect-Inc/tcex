@@ -25,9 +25,9 @@ def file_stix_pattern_producer(data):
     for _hash in data.get('summary', '').split(' : '):
         if len(_hash) == 32:
             expressions.append(f"file:hashes.md5 = '{_hash}'")
-        elif len(_hash) == 64:
+        elif len(_hash) == 40:
             expressions.append(f"file:hashes.sha1 = '{_hash}'")
-        else:
+        elif len(_hash) == 64:
             expressions.append(f"file:hashes.sha256 = '{_hash}'")
 
     return f'[{" OR ".join(expressions)}]'
