@@ -37,13 +37,11 @@ class StixIndicator(StixModel):
 
         for data in tc_data:
             _type = kwargs.get('indicator_type') or data.get('type')
-            indicator_details = self.indicator_type_details.get(_type)
+            indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
                 continue
-            # for association in data.pop('associations', []):
 
             yield stix2.Indicator(
-                id=Batch.generate_xid([data.get('summary'), data.get('ownerName')]),
                 name=f'{data.get("ownerName")} - {data.get("summary")}',
                 pattern_version='2.1',
                 indicator_types=['malicious-activity'],

@@ -15,6 +15,18 @@
         "confidence": 100,
         "dateAdded": "2020-07-30T13:40:24Z",
         "id": 4716778,
+        "ip": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+        "lastModified": "2020-07-30T13:40:24Z",
+        "ownerName": "TCI",
+        "rating": 3,
+        "threatAssessConfidence": 100,
+        "threatAssessRating": 3,
+        "webLink": "https://int-tc-01.tci.ninja/auth/indicators/details/address.xhtml?address=51.178.15.11&owner=TCI"
+      },
+      {
+        "confidence": 100,
+        "dateAdded": "2020-07-30T13:40:24Z",
+        "id": 4716778,
         "ip": "51.178.15.11",
         "lastModified": "2020-07-30T13:40:24Z",
         "ownerName": "TCI",

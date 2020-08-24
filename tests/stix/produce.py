@@ -44,18 +44,31 @@ class TestStixProducer:
         with open(in_file_path) as f:
             data = json.load(f)
 
-        stix_data = sorted(
-            list(json.loads(str(s)) for s in self.model.produce(data)), key=lambda x: x.get('name')
-        )
+        stix_data = list([json.loads(str(s)) for s in self.model.produce(data)])
 
-        with open(out_file_path, 'w') as f:
-            expected_data = sorted(json.load(f), key=lambda x: x.get('name'))
-        ddiff = deepdiff.DeepDiff(
-            stix_data,
-            expected_data,
-            ignore_order=True,
-            exclude_paths=['id', 'valid_from', 'created', 'modified'],
-            exclude_regex_paths='.*',
-        )
+        with open(out_file_path) as f:
+            expected_data = json.load(f)
 
+        for produced_data in stix_data:
+            self._compare_helper(produced_data, expected_data)
+
+    @staticmethod
+    def _compare_helper(produced_data, expected_data):
+        for compare_to_data in expected_data:
+            if compare_to_data.get('name') == produced_data.get('name'):
+                ddiff = deepdiff.DeepDiff(
+                    compare_to_data,
+                    produced_data,
+                    ignore_order=True,
+                    exclude_paths=[
+                        "root['id']",
+                        "root['valid_from']",
+                        "root['created']",
+                        "root['modified']",
+                    ],
+                )
+                assert not ddiff, str(ddiff)
+                return
+
+        ddiff = deepdiff.DeepDiff(None, produced_data)
         assert not ddiff, str(ddiff)

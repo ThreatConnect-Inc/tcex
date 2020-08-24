@@ -130,10 +130,13 @@ class Relationship(VisitorProducer):
         for data in tc_data:
             associations = data.pop('associations', [])
             for association in associations:
+                source_xid = Batch.generate_xid([data.get('summary'), data.get('ownerName')])
+                target_xid = Batch.generate_xid(
+                    [association.get('summary'), association.get('ownerName')]
+                )
+
                 yield stix2.Relationship(
-                    source_ref=Batch.generate_xid([data.get('summary'), data.get('ownerName')]),
-                    target_ref=Batch.generate_xid(
-                        [association.get('summary'), association.get('ownerName')]
-                    ),
+                    source_ref=f'indicator--{source_xid}',
+                    target_ref=f'indicator--{target_xid}',
                     relationship_type='uses',
                 )

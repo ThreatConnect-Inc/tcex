@@ -96,7 +96,7 @@ class StixModel:
                 'registry key': {
                     'lambda': registery_key_stix_pattern_producer,
                     'api_branch': 'registryKey',
-                    'fields': ['key name', 'value name', 'value type'],
+                    'fields': ['Key Name', 'Value Name', 'Value Type'],
                 },
             }
         return self._indicator_type_details
@@ -205,7 +205,7 @@ class StixModel:
         data = tc_data.get('data', tc_data)
         for key, values in self.indicator_type_details.items():
             if values.get('api_branch').upper() in [s.upper() for s in data.keys()] or values.get(
-                'type'
+                'type', ''
             ).upper() in [s.upper() for s in data.keys()]:
                 api_branch = values.get('api_branch')
                 indicator_type = key

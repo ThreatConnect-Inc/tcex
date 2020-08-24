@@ -13,7 +13,7 @@ def address_stix_pattern_producer(data):
 
 def cidr_stix_pattern_producer(data):
     """Convert a CIDR from TC to a STIX pattern."""
-    if isinstance(ipaddress.ip_network(data.get('summary')), ipaddress.IPv6Interface):
+    if isinstance(ipaddress.ip_network(data.get('summary'), strict=False), ipaddress.IPv6Network):
         return f"[ipv6-addr:value = '{data.get('summary')}']"
 
     return f"[ipv4-addr:value = '{data.get('summary')}']"
