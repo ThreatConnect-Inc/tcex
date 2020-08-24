@@ -31,9 +31,7 @@ class TestReadArgDecorators:
         self.args = self.tcex.args
         assert self.read_arg_single() == config_data.get('color')
 
-    @ReadArg(
-        'color', fail_on=[None, ''], fail_enabled=True, fail_msg='Invalid value provided for color.'
-    )
+    @ReadArg('color', fail_on=[None, ''], fail_enabled=True)
     def read_arg_single_fail_on(self, **kwargs):
         """Test fail on input decorator with no arg value (use first arg input)."""
         return kwargs.get('color')
@@ -77,10 +75,7 @@ class TestReadArgDecorators:
 
     @ReadArg('color')
     @ReadArg(
-        'fruit',
-        fail_on=[None, ''],
-        fail_enabled='fail_on_error',
-        fail_msg='Invalid value provided for fruit.',
+        'fruit', fail_on=[None, ''], fail_enabled='fail_on_error',
     )
     def read_arg_double_fail_on(self, color, fruit):
         """Test fail on input decorator with no arg value (use first arg input)."""
@@ -345,6 +340,20 @@ class TestReadArgDecorators:
         """Test various validators and transforms."""
         return kwargs.get('color')
 
+    @ReadArg(
+        'color',
+        fail_on=[''],
+        to_float=True,
+        to_int={'allow_none': True},
+        equal_to=123,
+        in_range={'min': 100, 'max': 200},
+        less_than=150,
+        fail_msg='Custom fail msg.',
+    )
+    def read_arg_validators_Fail_msg(self, **kwargs):
+        """Test various validators and transforms."""
+        return kwargs.get('color')
+
     @ReadArg('color', fail_on=[''], to_int=[], equal_to=123, in_range=[100, 200], less_than=150)
     def read_arg_validators_diff(self, **kwargs):
         """functionally the same as above but uses different input methods to exercise code."""
@@ -390,15 +399,24 @@ class TestReadArgDecorators:
         except SystemExit:
             assert self.exit_message == 'Invalid value ("") found for color: color must be a float.'
 
-    def test_validators_fail(self, playbook_app):
+    def test_validators_fail_msg(self, playbook_app):
         """Test validators that fail."""
         config_data = {'color': '90'}
         self.tcex = playbook_app(config_data=config_data).tcex
         self.args = self.tcex.args
         try:
-            self.read_arg_validators()
+            self.read_arg_validators_Fail_msg()
             assert False, 'Should have failed!'
         except SystemExit:
-            assert (
-                self.exit_message == 'Invalid value (90) found for color: color is not equal to 123'
-            )
+            assert self.exit_message == 'Custom fail msg.'
+
+    def test_transforms_fail_msg(self, playbook_app):
+        """Test validators that fail."""
+        config_data = {'color': 'abc'}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.args = self.tcex.args
+        try:
+            self.read_arg_validators_Fail_msg()
+            assert False, 'Should have failed!'
+        except SystemExit:
+            assert self.exit_message == 'Custom fail msg.'

@@ -134,7 +134,6 @@ The following example adds the ``ReadArg`` decorator to a method that takes a St
     @ReadArg(
         arg='append_chars',
         fail_enabled='fail_on_error,
-        fail_msg='Failed to append characters to string input.',
         fail_on=['None' ''],
     )
     def append(self, string, append_chars):
@@ -170,7 +169,6 @@ Transforms are run, in the order they are passed, before validators, which are a
     @ReadArg(
         arg='confidence',
         fail_enabled='fail_on_error,
-        fail_msg='Failed to append characters to string input.',
         fail_on=['None' ''],
         to_int=True,
         in_range={'min': 0, 'max': 100}

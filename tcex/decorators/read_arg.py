@@ -37,8 +37,7 @@ class ReadArg:
             arg='fruits',
             array=True,
             fail_on=[None, []],
-            fail_enabled=True,
-            fail_msg='Invalid input for fruits'
+            fail_enabled=True
         )
         def my_method(self, color, number, fruits):
             print('color', color)
@@ -53,8 +52,7 @@ class ReadArg:
             arg='fruits',
             array=True,
             fail_on=[None, []],
-            fail_enabled=True,
-            fail_msg='Invalid input for fruits'
+            fail_enabled=True
         )
         def my_method(self, **kwargs):
             print('color', kwargs.get('color'))
@@ -75,7 +73,6 @@ class ReadArg:
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
-        fail_msg (str, kwargs): The message to log when raising RuntimeError.
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
         greater_than (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg value is
             greater than the given compare_to value.
@@ -116,7 +113,7 @@ class ReadArg:
         self.array = kwargs.get('array')
         self.default = kwargs.get('default')
         self.fail_enabled = kwargs.get('fail_enabled', True)
-        self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
+        self.fail_msg = kwargs.get('fail_msg')
         self.fail_on = kwargs.get('fail_on', [])
         self.embedded = kwargs.get('embedded', True)
         self.indicator_values = kwargs.get('indicator_values', False)
@@ -205,8 +202,9 @@ class ReadArg:
             except AttributeError:
                 if enabled:
                     app.tcex.log.error(f'Arg {self.arg} was not found in Arg namespace.')
-                    app.exit_message = self.fail_msg  # for test cases
-                    app.tcex.exit(1, self.fail_msg)
+                    message = self.fail_msg or f'Invalid value provided for ({self.arg}).'
+                    app.exit_message = message  # for test cases
+                    app.tcex.exit(1, message)
                 else:
                     # add results to kwargs
                     kwargs[self.arg] = self.default
@@ -246,8 +244,12 @@ class ReadArg:
                 value_formatted = f'"{arg_data}"' if isinstance(arg_data, str) else str(arg_data)
                 message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
                 app.tcex.log.error(message)
-                app.exit_message = message  # for test cases
-                app.tcex.exit(1, message)
+                if self.fail_msg:
+                    app.exit_message = self.fail_msg  # for test cases
+                    app.tcex.exit(1, self.fail_msg)
+                else:
+                    app.exit_message = message
+                    app.tcex.exit(1, message)
 
             # check arg_data against fail_on_values
             if enabled:
@@ -259,9 +261,12 @@ class ReadArg:
                     )
                     message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
                     app.tcex.log.error(message)
-                    app.exit_message = message  # for test cases
-                    app.tcex.exit(1, message)
-
+                    if self.fail_msg:
+                        app.exit_message = self.fail_msg  # for test cases
+                        app.tcex.exit(1, self.fail_msg)
+                    else:
+                        app.exit_message = message
+                        app.tcex.exit(1, message)
             # add results to kwargs
             kwargs[self.arg] = arg_data
 
