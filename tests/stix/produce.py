@@ -13,7 +13,6 @@ from tcex.stix.model import StixModel
 class TestStixProducer:
     """Test producing STIX data."""
 
-    model = StixModel()
     file_root = 'tests/stix/tc_files'
 
     @pytest.mark.parametrize(
@@ -34,17 +33,19 @@ class TestStixProducer:
             ),
         ],
     )
-    def test_indicator_bundle(self, in_file_path, out_file_path):
+    def test_indicator_bundle(self, in_file_path, out_file_path, tcex):
         """Parse stix json files and compare the output to known data.
 
         Args:
             in_file_path: path to a file with stix json in it.
             out_file_path: path to a file with the expected output from parsing.
+            tcex: tcex module.
         """
+        model = StixModel(tcex.logger)
         with open(in_file_path) as f:
             data = json.load(f)
 
-        stix_data = list([json.loads(str(s)) for s in self.model.produce(data)])
+        stix_data = list([json.loads(str(s)) for s in model.produce(data)])
 
         with open(out_file_path) as f:
             expected_data = json.load(f)

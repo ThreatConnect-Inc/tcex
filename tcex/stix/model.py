@@ -6,12 +6,16 @@ from typing import Union
 # third-party
 import jmespath
 
+# first-party
+from tcex.logger import Logger
+
 
 class StixModel:
     """STIX base model object."""
 
-    def __init__(self):
+    def __init__(self, logger: Logger):
         """Initialize Class properties."""
+        self.logger = logger
         self._as_object = None
         self._ipv4 = None
         self._ipv6 = None
@@ -32,7 +36,6 @@ class StixModel:
         details = self.indicator_type_details.get(indicator_type)
 
         summary = []
-        print(data)
         for field in details.get('fields'):
             if field in data:
                 summary.append(data.get(field))
@@ -107,7 +110,7 @@ class StixModel:
         if not self._as_object:
             from .observables.autonomous_system import StixASObject
 
-            self._as_object = StixASObject()
+            self._as_object = StixASObject(self.logger)
         return self._as_object
 
     @property
@@ -116,7 +119,7 @@ class StixModel:
         if not self._ipv4:
             from .observables.ip_addr import StixIPv4Object
 
-            self._ipv4 = StixIPv4Object()
+            self._ipv4 = StixIPv4Object(self.logger)
         return self._ipv4
 
     @property
@@ -125,7 +128,7 @@ class StixModel:
         if not self._ipv6:
             from .observables.ip_addr import StixIPv6Object
 
-            self._ipv6 = StixIPv6Object()
+            self._ipv6 = StixIPv6Object(self.logger)
         return self._ipv6
 
     @property
@@ -134,7 +137,7 @@ class StixModel:
         if not self._registry_key:
             from .observables.registry_key import StixRegistryKeyObject
 
-            self._registry_key = StixRegistryKeyObject()
+            self._registry_key = StixRegistryKeyObject(self.logger)
         return self._registry_key
 
     @property
@@ -143,7 +146,7 @@ class StixModel:
         if not self._url:
             from .observables.url import StixURLObject
 
-            self._url = StixURLObject()
+            self._url = StixURLObject(self.logger)
         return self._url
 
     @property
@@ -152,7 +155,7 @@ class StixModel:
         if not self._email_address:
             from .observables.email_address import StixEmailAddressObject
 
-            self._email_address = StixEmailAddressObject()
+            self._email_address = StixEmailAddressObject(self.logger)
         return self._email_address
 
     @property
@@ -161,7 +164,7 @@ class StixModel:
         if not self._domain_name:
             from .observables.domain_name import StixDomainNameObject
 
-            self._domain_name = StixDomainNameObject()
+            self._domain_name = StixDomainNameObject(self.logger)
         return self._domain_name
 
     @property
@@ -170,7 +173,7 @@ class StixModel:
         if not self._indicator:
             from .indicator.indicator import StixIndicator
 
-            self._indicator = StixIndicator()
+            self._indicator = StixIndicator(self.logger)
         return self._indicator
 
     @property
@@ -277,21 +280,23 @@ class StixModel:
 
         if isinstance(data, dict):
             data = [data]
+        try:
+            for d in data:
+                mapped_obj = mapping.copy()
+                for key, value in mapping.items():
+                    if isinstance(value, list):
+                        new_list = []
+                        for item in value:
+                            new_list.append(list(self._map(d, item))[0])
 
-        for d in data:
-            mapped_obj = mapping.copy()
-            for key, value in mapping.items():
-                if isinstance(value, list):
-                    new_list = []
-                    for item in value:
-                        new_list.append(list(self._map(d, item))[0])
-
-                    mapped_obj[key] = new_list
-                elif isinstance(value, dict):
-                    mapped_obj[key] = list(self._map(d, mapped_obj[key]))[0]
-                else:
-                    if not value.startswith('@'):
-                        mapped_obj[key] = value
+                        mapped_obj[key] = new_list
+                    elif isinstance(value, dict):
+                        mapped_obj[key] = list(self._map(d, mapped_obj[key]))[0]
                     else:
-                        mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
-            yield mapped_obj
+                        if not value.startswith('@'):
+                            mapped_obj[key] = value
+                        else:
+                            mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
+                yield mapped_obj
+        except Exception:  # pylint: disable=bare-except
+            self.logger.log.error(f'Could not map {data} using {mapping}')
