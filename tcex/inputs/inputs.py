@@ -39,7 +39,7 @@ class Inputs:
         self.utils = Utils()
 
         # parser
-        self.parser = TcArgumentParser()
+        self.parser = TcArgumentParser(conflict_handler='resolve')  # APP-964 allow duplicate args
 
         # a single config file is supported, typically from and external App or service App using
         # fileParam feature
