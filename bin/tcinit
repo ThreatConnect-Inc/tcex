@@ -163,7 +163,7 @@ if __name__ == '__main__':
         # print results
         tci.download_template.print_download_results()
 
-        # external and external_ignress templates do not use tcex.json or install.json
+        # external and external_ingress templates do not use tcex.json or install.json
         if not template.startswith('external'):
             # update install.json
             tci.ij.update()
