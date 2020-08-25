@@ -7,10 +7,13 @@ from playbook_app import PlaybookApp  # Import default Playbook App Class (Requi
 
 
 # pylint: disable=attribute-defined-outside-init
+from tcex import TcEx
+
+
 class App(PlaybookApp):
     """Playbook App"""
 
-    def __init__(self, _tcex: object):
+    def __init__(self, _tcex: TcEx):
         """Initialize class properties.
 
         This method can be OPTIONALLY overridden.
