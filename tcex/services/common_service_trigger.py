@@ -218,7 +218,7 @@ class CommonServiceTrigger(CommonService):
                 # pylint: disable=not-callable
                 response: Optional[dict] = self.create_config_callback(trigger_id, config, **kwargs)
                 if isinstance(response, dict):
-                    status = response.get('status')
+                    status = response.get('status', False)
                     msg = response.get('msg')
 
                 # if callback does not return a boolean value assume it worked

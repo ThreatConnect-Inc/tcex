@@ -7,7 +7,7 @@ from app_lib import AppLib
 
 
 # pylint: disable=no-member
-def run(**kwargs):
+def run(**kwargs) -> None:
     """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules

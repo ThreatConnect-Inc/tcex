@@ -9,7 +9,7 @@ class Custom:
     def __init__(self):
         """Initialize class properties."""
 
-    def setup_class(self, test_feature):
+    def setup_class(self, test_feature: object) -> None:
         """Run setup class code."""
         % if runtime_level in ['triggerservice', 'webhooktriggerservice']:
         test_feature.args = {}
@@ -34,56 +34,56 @@ class Custom:
         # test_feature.run_method = 'inline'
         % endif
 
-    def setup_method(self, test_feature):
+    def setup_method(self, test_feature: object) -> None:
         """Run setup method code."""
 
-    def teardown_class(self, test_feature):
+    def teardown_class(self, test_feature: object) -> None:
         """Run teardown class code."""
 
-    def teardown_method(self, test_feature):
+    def teardown_method(self, test_feature: object) -> None:
         """Run teardown method code."""
 
     % if runtime_level in ['triggerservice']:
     def trigger_method(
-        self, test_feature, profile_data, monkeypatch
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict, monkeypatch: object
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Perform action to trigger the event."""
         # trigger = profile_data.get('trigger')
 
     def test_pre_create_config(
-        self, test_feature, profile_data, monkeypatch
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict, monkeypatch: object
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Run test method code before create configs."""
 
     def test_pre_delete_config(
-        self, test_feature, profile_data, monkeypatch
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict, monkeypatch: object
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Run test method code before delete configs."""
 
     % elif runtime_level in ['webhooktriggerservice']:
     def test_pre_create_config(
-        self, test_feature, profile_data, monkeypatch
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict, monkeypatch: object
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Run test method code before create configs."""
 
     def test_pre_delete_config(
-        self, test_feature, profile_data, monkeypatch
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict, monkeypatch: object
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Run test method code before delete configs."""
 
     def test_pre_webhook(
-        self, test_feature, profile_data, monkeypatch
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict, monkeypatch: object
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Run test method code before webhook."""
 
     % else:
     def test_pre_run(
-        self, test_feature, profile_data, monkeypatch
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict, monkeypatch: object
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Run test method code before App run method."""
 
     def test_pre_validate(
-        self, test_feature, profile_data
-    ):  # pylint: disable=useless-super-delegation
+        self, test_feature: object, profile_data: dict
+    ) -> None:  # pylint: disable=useless-super-delegation
         """Run test method code before test validation."""
     % endif
