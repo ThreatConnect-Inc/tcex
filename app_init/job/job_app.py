@@ -2,13 +2,15 @@
 # first-party
 from args import Args
 
+from tcex import TcEx
+
 
 class JobApp:
     """Get the owners and indicators in the given owner."""
 
-    def __init__(self, _tcex: object):
+    def __init__(self, _tcex: TcEx):
         """Initialize class properties."""
-        self.tcex = _tcex
+        self.tcex: TcEx = _tcex
         self.args = None
         self.exit_message = 'Success'
 

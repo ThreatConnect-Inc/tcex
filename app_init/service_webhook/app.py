@@ -1,21 +1,24 @@
 """ThreatConnect Playbook App"""
-from typing import Union
+from typing import Union, List, Dict
 
 # first-party
 from service_app import ServiceApp  # Import default Service Class (Required)
 
 
 # pylint: disable=unused-argument
+from tcex.playbooks import Playbooks
+
+
 class App(ServiceApp):
     """Service App Template."""
 
     def webhook_event_callback(  # pylint: disable=no-self-use
         self,
         trigger_id: int,
-        playbook: object,
+        playbook: Playbooks,
         method: str,
-        headers: dict,
-        params: dict,
+        headers: Union[List[Dict[str, str], Dict[str, str]]],
+        params: Union[List[Dict[str, str], Dict[str, str]]],
         body: Union[bytes, str],
         config: dict,
     ):

@@ -1,12 +1,13 @@
 """External App Template."""
+from tcex import TcEx
 
 
 class ExternalApp:
     """Get the owners and indicators in the given owner."""
 
-    def __init__(self, _tcex: object):
+    def __init__(self, _tcex: TcEx):
         """Initialize class properties."""
-        self.tcex = _tcex
+        self.tcex: TcEx = _tcex
 
         # properties
         self.args = None
