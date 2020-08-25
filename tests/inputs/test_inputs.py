@@ -386,4 +386,6 @@ class TestInputsConfig:
         tcex.parser.add_argument('--name', required=True)
         tcex.parser.add_argument('--tc_api_path', required=True)
 
+        assert tcex.args.name == 'pytest'
+
         # parse args
