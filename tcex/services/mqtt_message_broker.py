@@ -32,8 +32,8 @@ class MqttMessageBroker:
             logger: A logging instance
         """
         self.broker_host = broker_host
-        self.broker_port = broker_port
-        self.broker_timeout = broker_timeout
+        self.broker_port = int(broker_port)
+        self.broker_timeout = int(broker_timeout)
         self.broker_token = broker_token
         self.broker_cacert = broker_cacert
         self.log = logger

@@ -11,29 +11,31 @@ class ApiServiceApp:
         _tcex (tcex.TcEx): An instance of tcex.
     """
 
-    def __init__(self, _tcex):
+    def __init__(self, _tcex: object):
         """Initialize class properties."""
         self.tcex = _tcex
+
+        # properties
         self.args = None
         self.exit_message = 'Success'
 
         # automatically parse args on init
         self.parse_args()
 
-    def parse_args(self):
+    def parse_args(self) -> None:
         """Parse CLI args."""
         Args(self.tcex.parser)
         self.args = self.tcex.args
         self.tcex.log.info('feature=app, event=args-parsed')
 
-    def setup(self):
+    def setup(self) -> None:
         """Perform prep/startup operations."""
         self.tcex.log.trace('feature=app, event=setup')
 
-    def shutdown_callback(self):
+    def shutdown_callback(self) -> None:
         """Handle shutdown messages."""
         self.tcex.log.trace('feature=app, event=shutdown-callback')
 
-    def teardown(self):
+    def teardown(self) -> None:
         """Perform cleanup operations and gracefully exit the App."""
         self.tcex.log.trace('feature=app, event=teardown')

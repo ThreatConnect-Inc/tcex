@@ -13,19 +13,21 @@ class TcExMiddleware:
 
     """
 
-    def __init__(self, args, tcex):
+    def __init__(self, args: object, tcex: object):
         """Initialize class properties.
 
         Args:
-            args (namespace): The argparser arg namespace.
-            tcex (obj): An instance of tcex
+            args: The argparser arg namespace.
+            tcex: An instance of tcex
         """
         self.args = args
         self.tcex = tcex
+
+        # properties
         self.log = tcex.log
 
     def process_resource(  # pylint: disable=no-self-use,unused-argument
-        self, req, resp, resource, params
+        self, req: falcon.Request, resp: falcon.Response, resource: object, params: dict
     ):
         """Process resource method."""
         resource.args = self.args
