@@ -56,6 +56,7 @@ junit.xml
 py36.xml
 py37.xml
 py38.xml
+dump.rdb
 
 #-------------------------------------------------
 # Other Nonsense
