@@ -384,6 +384,8 @@ class TestInputsConfig:
         # initialize tcex and add required argument
         tcex = playbook_app(config_data=config_data).tcex
         tcex.parser.add_argument('--name', required=True)
-        tcex.parser.add_argument('--tc_api_path', required=True)
+        tcex.parser.add_argument('--name', required=True)
+
+        assert tcex.args.name == 'pytest'
 
         # parse args
