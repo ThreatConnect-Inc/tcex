@@ -1,9 +1,27 @@
 """App Decorators Module."""
 # standard library
 import inspect
+from collections import Callable
+from ctypes import Union
+from typing import List
 
 # third-party
 import wrapt
+
+# first-party
+from tcex.validators import (
+    ValidationError,
+    equal_to,
+    greater_than,
+    greater_than_or_equal,
+    in_range,
+    less_than,
+    less_than_or_equal,
+    not_in,
+    to_bool,
+    to_float,
+    to_int,
+)
 
 
 class IterateOnArg:
@@ -42,7 +60,6 @@ class IterateOnArg:
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
-        fail_msg (str, kwargs): The message to log when raising RuntimeError.
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
     """
 
@@ -51,8 +68,49 @@ class IterateOnArg:
         self.arg = arg
         self.default = kwargs.get('default')
         self.fail_enabled = kwargs.get('fail_enabled', False)
-        self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
+        self.fail_msg = kwargs.get('fail_msg')
         self.fail_on = kwargs.get('fail_on', [])
+        self.transforms: Union[List[Callable], Callable] = kwargs.get('transforms', [])
+        self.validators: Union[List[Callable], Callable] = kwargs.get('validators', [])
+        if self.fail_on:
+            self.validators.insert(0, not_in(self.fail_on))
+
+        self._init_validators(**kwargs)
+
+    def _init_validators(self, **kwargs):
+        validators_map = {
+            'in_range': in_range,
+            'equal_to': equal_to,
+            'less_than': less_than,
+            'less_than_or_equal': less_than_or_equal,
+            'greater_than': greater_than,
+            'greater_than_or_equal': greater_than_or_equal,
+        }
+
+        for k, v in filter(lambda item: item[0] in validators_map, kwargs.items()):
+            validator = validators_map.get(k)
+            if isinstance(v, list):
+                self.validators.append(validator(*v))
+            elif isinstance(v, dict):
+                self.validators.append(validator(**v))
+            else:
+                self.validators.append(validator(v))
+
+        transform_map = {
+            'to_int': to_int,
+            'to_float': to_float,
+            'to_bool': to_bool,
+        }
+
+        for transform_name in filter(lambda t: t in transform_map, kwargs.keys()):
+            transform = transform_map.get(transform_name)
+            transform_args = kwargs.get(transform_name)
+            if isinstance(transform_args, list):
+                self.transforms.append(transform(*transform_args))
+            elif isinstance(transform_args, dict):
+                self.transforms.append(transform(**transform_args))
+            else:
+                self.transforms.append(transform())
 
     @wrapt.decorator
     def __call__(self, wrapped, instance, args, kwargs):
@@ -117,12 +175,36 @@ class IterateOnArg:
                         f'replacing null value with provided default value "{self.default}".'
                     )
 
-                # check arg_data against fail_on_values
-                if enabled and self.fail_on:
-                    if ad in self.fail_on:
-                        app.tcex.log.debug(f'Invalid value ({ad}) found for {self.arg}.')
-                        app.exit_message = self.fail_msg  # for test case
+                try:
+                    for transform in self.transforms:
+                        ad = transform(ad, self.arg)
+                except ValidationError as v:
+                    value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
+                    message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
+                    app.tcex.log.error(message)
+                    if self.fail_msg:
+                        app.exit_message = self.fail_msg  # for test cases
                         app.tcex.exit(1, self.fail_msg)
+                    else:
+                        app.exit_message = message
+                        app.tcex.exit(1, message)
+
+                # check ad against fail_on_values
+                if enabled:
+                    try:
+                        list([v(ad, self.arg) for v in self.validators])
+                    except ValidationError as v:
+                        value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
+                        message = (
+                            f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
+                        )
+                        app.tcex.log.error(message)
+                        if self.fail_msg:
+                            app.exit_message = self.fail_msg  # for test cases
+                            app.tcex.exit(1, self.fail_msg)
+                        else:
+                            app.exit_message = message
+                            app.tcex.exit(1, message)
 
                 # Add logging for debug/troubleshooting
                 if (
