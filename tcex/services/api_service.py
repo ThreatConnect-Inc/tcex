@@ -4,7 +4,7 @@ import base64
 import json
 import threading
 import traceback
-from io import StringIO
+from io import BytesIO
 from typing import Any
 
 from .common_service import CommonService
@@ -137,7 +137,7 @@ class ApiService(CommonService):
             if body_variable is not None:
                 body: Any = self.redis_client.hget(request_key, message.get('bodyVariable'))
                 if body is not None:
-                    body = StringIO(base64.b64decode(body).decode('utf-8'))
+                    body = BytesIO(body)
         except Exception as e:
             self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
             self.log.trace(traceback.format_exc())

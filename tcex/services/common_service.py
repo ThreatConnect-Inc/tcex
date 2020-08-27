@@ -192,7 +192,13 @@ class CommonService:
         # use the command to call the appropriate method defined in command_map
         command: str = m.get('command', 'invalid').lower()
         self.log.info(f'feature=service, event=command-received, command="{command}"')
-        self.command_map.get(command, self.process_invalid_command)(m)
+
+        # process inbound message in a thread
+        thread_name = command.lower()
+        if command.lower == 'createconfig':
+            thread_name = m.get('triggerId')
+        thread_method = self.command_map.get(command, self.process_invalid_command)
+        self.message_thread(name=thread_name, target=thread_method, args=(m,))
 
     def process_heartbeat_command(self, message: dict) -> None:  # pylint: disable=unused-argument
         """Process the HeartBeat command.

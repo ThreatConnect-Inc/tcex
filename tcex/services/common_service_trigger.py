@@ -1,6 +1,7 @@
 """TcEx Framework Service Trigger Common module."""
 # standard library
 import json
+import os
 import traceback
 from datetime import datetime
 from typing import Optional
@@ -89,6 +90,7 @@ class CommonServiceTrigger(CommonService):
             config: The config for the current trigger.
             message: A simple message for the action.
             status: The passed/fail status for the App handling of config.
+            logfile: The CreateConfig logfile to return in response ack.
         """
         try:
             if status is True:
@@ -100,6 +102,7 @@ class CommonServiceTrigger(CommonService):
                 json.dumps(
                     {
                         'command': 'Acknowledged',
+                        'logFile': os.path.basename(self.trigger_logfile),
                         'message': message,
                         'status': 'Success' if status is True else 'Failed',
                         'type': 'CreateConfig',
@@ -207,7 +210,18 @@ class CommonServiceTrigger(CommonService):
         )
 
         msg = 'Create Config'
+        logfile = None
         if callable(self.create_config_callback):
+            logfile = self.trigger_logfile
+            # create trigger id filehandler
+            self.tcex.logger.add_thread_file_handler(
+                name=str(trigger_id),
+                filename=logfile,
+                level=self.args.tc_log_level,
+                path=self.args.tc_log_path,
+            )
+            self.tcex.log.info('Create CreateConfig log')
+
             kwargs = {}
             if self.tcex.ij.runtime_level.lower() == 'webhooktriggerservice':
                 # only webhook triggers get and require the PB url
@@ -232,6 +246,11 @@ class CommonServiceTrigger(CommonService):
                 )
                 self.log.error(message)
                 self.log.trace(traceback.format_exc())
+
+            # remove temporary logging file handler
+            self.tcex.logger.remove_handler_by_name(str(trigger_id))
+
+        # remove trigger id from handler
 
         # create config after callback to report status and message
         self.create_config(trigger_id, config, msg, status)
@@ -281,5 +300,10 @@ class CommonServiceTrigger(CommonService):
 
     @property
     def session_logfile(self) -> str:
-        """Return a uuid4 session id."""
+        """Return the logfile name based on date and thread name."""
+        return f'''{datetime.today().strftime('%Y%m%d')}/{self.thread_name}.log'''
+
+    @property
+    def trigger_logfile(self) -> str:
+        """Return the logfile name based on date and thread name."""
         return f'''{datetime.today().strftime('%Y%m%d')}/{self.thread_name}.log'''

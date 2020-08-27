@@ -228,7 +228,7 @@ class ReadArg:
                     else:
                         app.tcex.log.warn(
                             f'strip_values is enabled but variable is of type {variable_type}, '
-                            f'only String and StringArray variables can be stripped.'
+                            'only String and StringArray variables can be stripped.'
                         )
 
             if self.default is not None and arg_data is None:
