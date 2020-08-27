@@ -5,6 +5,8 @@ import falcon
 # first-party
 from api_service_app import ApiServiceApp  # Import default API Service Class (Required)
 
+from tcex import TcEx
+
 
 class TcExMiddleware:
     """TcEx middleware module.
@@ -13,7 +15,7 @@ class TcExMiddleware:
 
     """
 
-    def __init__(self, args: object, tcex: object):
+    def __init__(self, args: object, tcex: TcEx):
         """Initialize class properties.
 
         Args:

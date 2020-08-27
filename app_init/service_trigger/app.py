@@ -5,6 +5,9 @@ from service_app import ServiceApp  # Import default Service App Class (Required
 
 
 # pylint: disable=unused-argument
+from tcex.playbooks import Playbooks
+
+
 class App(ServiceApp):
     """Service App Template."""
 
@@ -19,7 +22,9 @@ class App(ServiceApp):
             # available in kwargs in the callback method
             self.tcex.service.fire_event(self.trigger_callback, my_data='data')
 
-    def trigger_callback(self, playbook: object, trigger_id: int, config: dict, **kwargs) -> None:
+    def trigger_callback(
+        self, playbook: Playbooks, trigger_id: int, config: dict, **kwargs
+    ) -> None:
         """Execute trigger callback for all current configs.
 
         Args:

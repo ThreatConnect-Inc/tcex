@@ -5,6 +5,9 @@ import csv
 # first-party
 from job_app import JobApp  # Import default Job App Class (Required)
 
+from tcex.batch import Batch
+from tcex.sessions import ExternalSession
+
 
 class App(JobApp):
     """Job App"""
@@ -14,13 +17,13 @@ class App(JobApp):
         super().__init__(_tcex)
 
         # properties
-        self.batch: object = self.tcex.batch(self.args.tc_owner)
+        self.batch: Batch = self.tcex.batch(self.args.tc_owner)
         self.session = None
 
     def setup(self):
         """Perform prep/setup logic."""
         # using tcex session_external to get built-in features (e.g., proxy, logging, retries)
-        self.session: object = self.tcex.session_external
+        self.session: ExternalSession = self.tcex.session_external
 
         # setting the base url allow for subsequent API call to be made by only
         # providing the API endpoint/path.

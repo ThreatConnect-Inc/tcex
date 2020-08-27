@@ -4,6 +4,9 @@ from args import Args
 
 
 # pylint: disable=unused-argument
+from tcex import TcEx
+
+
 class ServiceApp:
     """Service App Class.
 
@@ -11,9 +14,9 @@ class ServiceApp:
         _tcex: An instance of tcex.
     """
 
-    def __init__(self, _tcex: object):
+    def __init__(self, _tcex: TcEx):
         """Initialize class properties."""
-        self.tcex = _tcex
+        self.tcex: TcEx = _tcex
         self.args = None
         self.exit_message = 'Success'
 
