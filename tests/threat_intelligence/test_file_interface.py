@@ -127,6 +127,16 @@ class TestFileIndicators(TestThreatIntelligence):
         """Test updating indicator metadata."""
         super().indicator_update()
 
+    def tests_ti_file_add_observation(self):
+        file = self.ti_helper.create_indicator()
+        now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        response = file.add_observers(2, now)
+        assert response.ok
+
+        count = file.observation_count()
+        assert count.ok
+        assert count.json().get('data').get('observationCount', {}).get('count') == 2
+
     def tests_ti_file_add_occurrence(self):
         """Test updating indicator metadata."""
         file = self.ti_helper.create_indicator()
