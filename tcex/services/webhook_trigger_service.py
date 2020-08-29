@@ -21,12 +21,14 @@ class WebhookTriggerService(CommonServiceTrigger):
 
         # config callbacks
         self.webhook_event_callback = None
+        self.webhook_marshall_event_callback = None
 
     @property
     def command_map(self) -> dict:
         """Return the command map for the current Service type."""
         command_map: dict = super().command_map
         command_map.update({'webhookevent': self.process_webhook_event_command})
+        command_map.update({'webhookmarshallevent': self.process_webhook_marshall_event_command})
         return command_map
 
     def process_webhook_event_command(self, message: dict) -> None:
@@ -53,46 +55,16 @@ class WebhookTriggerService(CommonServiceTrigger):
                         "name": "registration",
                         "value": "true"
                     }
-                ],
-                "apiToken": "SVC:8:p284JJ:1596817629413:387:Vn0TM7FlowersFirC2boatJfoB8RBobsB ... ",
-                "expireSeconds": 1596817629
+                ]
             }
 
         Args:
             message: The message payload from the server topic.
         """
-        self.message_thread(self.session_id(message.get('triggerId')), self.webhook, (message,))
-
-    def webhook(self, message: dict) -> None:
-        """Process Webhook event messages.
-
-        Args:
-            message: The message data from the broker.
-        """
-        # session auth shared data is thread name which needs to map back to config triggerId
-        self.tcex.token.register_thread(message.get('triggerId'), self.thread_name)
-
-        # add logger for current session
-        self.tcex.logger.add_thread_file_handler(
-            name=self.thread_name,
-            filename=self.session_logfile,
-            level=self.args.tc_log_level,
-            path=self.args.tc_log_path,
-        )
         self.log.trace('feature=webhooktrigger-service, event=process-webhook-event')
 
-        # acknowledge webhook event
-        self.message_broker.publish(
-            json.dumps(
-                {
-                    'command': 'Acknowledged',
-                    'requestKey': message.get('requestKey'),
-                    'triggerId': message.get('triggerId'),
-                    'type': 'WebhookEvent',
-                }
-            ),
-            self.tcex.default_args.tc_svc_client_topic,
-        )
+        # acknowledge webhook event (nothing is currently done with this message on the core side)
+        self.publish_webhook_event_acknowledge(message)
 
         # get config using triggerId passed in WebhookEvent data
         config: dict = self.configs.get(message.get('triggerId'))
@@ -108,8 +80,8 @@ class WebhookTriggerService(CommonServiceTrigger):
         if isinstance(outputs, str):
             outputs = outputs.split(',')
 
-        playbook: object = self.tcex.pb(context=self.thread_name, output_variables=outputs)
-
+        # get a context aware pb instance for the App callback method
+        playbook: object = self.tcex.pb(context=self.session_id(), output_variables=outputs)
         try:
             request_key: str = message.get('requestKey')
             body: Any = self.redis_client.hget(request_key, 'request.body')
@@ -120,57 +92,133 @@ class WebhookTriggerService(CommonServiceTrigger):
             params: dict = message.get('queryParams')
             trigger_id: int = message.get('triggerId')
             # pylint: disable=not-callable
-            callback_response: Optional[bool] = self.webhook_event_callback(
+            callback_response: Union[bool, dict] = self.webhook_event_callback(
                 trigger_id, playbook, method, headers, params, body, config
             )
             if isinstance(callback_response, dict):
-                # write response body to redis
-                if callback_response.get('body') is not None:
-                    playbook.create_string(
-                        'response.body',
-                        base64.b64encode(callback_response.get('body').encode('utf-8')).decode(
-                            'utf-8'
-                        ),
-                    )
-
                 # webhook responses are for providers that require a subscription req/resp.
-                self.message_broker.publish(
-                    json.dumps(
-                        {
-                            'sessionId': self.thread_name,  # session/context
-                            'requestKey': request_key,
-                            'command': 'WebhookEventResponse',
-                            'triggerId': trigger_id,
-                            'bodyVariable': 'response.body',
-                            'headers': callback_response.get('headers', []),
-                            'statusCode': callback_response.get('statusCode', 200),
-                        }
-                    ),
-                    self.tcex.default_args.tc_svc_client_topic,
-                )
+                self.publish_webhook_event_response(message, callback_response)
             elif isinstance(callback_response, bool) and callback_response:
                 self.increment_metric('Hits')
-                self.fire_event_publish(trigger_id, self.thread_name, request_key)
+                self.fire_event_publish(trigger_id, self.session_id(), request_key)
 
                 # only required for testing in tcex framework
-                self._tcex_testing(self.thread_name, trigger_id)
+                self._tcex_testing(self.session_id(), trigger_id)
 
                 # capture fired status for testing framework
-                self._tcex_testing_fired_events(self.thread_name, True)
+                self._tcex_testing_fired_events(self.session_id(), True)
             else:
                 self.increment_metric('Misses')
 
                 # capture fired status for testing framework
-                self._tcex_testing_fired_events(self.thread_name, False)
+                self._tcex_testing_fired_events(self.session_id(), False)
         except Exception as e:
             self.increment_metric('Errors')
             self.log.error(
                 f'feature=webhooktrigger-service, event=webhook-callback-exception, error="""{e}"""'
             )
             self.log.trace(traceback.format_exc())
-        finally:
-            # remove temporary logging file handler
-            self.tcex.logger.remove_handler_by_name(self.thread_name)
 
-            # unregister thread from token module
-            self.tcex.token.unregister_thread(message.get('triggerId'), self.thread_name)
+    def process_webhook_marshall_event_command(self, message: dict) -> None:
+        """Process the WebhookMarshallEvent command.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            {
+                "appId": 95,
+                "bodyVariable": "request.body",
+                "command": "WebhookMarshallEvent",
+                "headers": [
+                    {
+                        "name": "Accept",
+                        "value": "*/*"
+                    }
+                ],
+                "requestKey": "c29927c8-b94d-4116-a397-e6eb7002f41c",
+                "statusCode": 200,
+                "triggerId": 1234
+            }
+
+        Args:
+            message: The message payload from the server topic.
+        """
+        # get config using triggerId passed in WebhookMarshallEvent data
+        config: dict = self.configs.get(message.get('triggerId'))
+        if config is None:
+            self.log.error(
+                '''feature=webhooktrigger-service, event=missing-config, '''
+                f'''trigger-id={message.get('triggerId')}'''
+            )
+            return
+
+        # read body from kv store
+        request_key: str = message.get('requestKey')
+        body: Any = self.redis_client.hget(request_key, 'request.body')
+        if body is not None:
+            body = base64.b64decode(body).decode()
+
+        # call callback method
+        # pylint: disable=not-callable
+        callback_response: Optional[dict] = self.webhook_marshall_event_callback(
+            body=body,
+            headers=message.get('headers'),
+            request_key=request_key,
+            status_code=message.get('statusCode'),
+            trigger_id=message.get('triggerId'),
+        )
+
+        # webhook responses are for providers that require a subscription req/resp.
+        self.publish_webhook_event_response(message, callback_response)
+
+    def publish_webhook_event_acknowledge(self, message: dict) -> None:
+        """Publish the WebhookEventResponse message.
+
+        Args:
+            message: The message from the broker.
+        """
+        self.message_broker.publish(
+            json.dumps(
+                {
+                    'command': 'Acknowledged',
+                    'requestKey': message.get('requestKey'),
+                    'triggerId': message.get('triggerId'),
+                    'type': 'WebhookEvent',
+                }
+            ),
+            self.args.tc_svc_client_topic,
+        )
+
+    def publish_webhook_event_response(self, message: dict, callback_response: dict) -> None:
+        """Publish the WebhookEventResponse message.
+
+        Args:
+            message: The message from the broker.
+            callback_response: The data from the callback method.
+            playbook: Configure instance of Playbook used to write body.
+        """
+        playbook: object = self.tcex.pb(context=self.session_id())
+
+        # write response body to redis
+        if callback_response.get('body') is not None:
+            playbook.create_string(
+                'response.body',
+                base64.b64encode(callback_response.get('body').encode('utf-8')).decode('utf-8'),
+            )
+
+        # publish response
+        self.message_broker.publish(
+            json.dumps(
+                {
+                    'sessionId': self.session_id(),  # session/context
+                    'requestKey': message.get('requestKey'),
+                    'command': 'WebhookEventResponse',
+                    'triggerId': message.get('triggerId'),
+                    'bodyVariable': 'response.body',
+                    'headers': callback_response.get('headers', []),
+                    'statusCode': callback_response.get('status_code', 200),
+                }
+            ),
+            self.args.tc_svc_client_topic,
+        )

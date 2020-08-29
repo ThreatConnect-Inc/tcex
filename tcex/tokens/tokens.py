@@ -69,30 +69,9 @@ class Tokens:
         if self.thread_name in self.token_map:
             # for Job, Playbook, and ApiService Apps the key is the thread name.
             key: str = self.thread_name
-        else:
-            # for Trigger and Webhook Apps the key is ConfigId.
-            # find ConfigId using array of registered thread names.
-            for k, d in self.token_map.items():
-                if self.thread_name in d.get('thread_names', []):
-                    key: str = k
-                    break
-            else:  # pragma: no cover
-                self.log.trace(
-                    f'feature=token, action=get-key, status=not-found, result="defaulting to {key}"'
-                )
+        elif self.trigger_id in self.token_map:
+            key: str = self.trigger_id
         return key
-
-    def register_thread(self, key: str, thread_name: str) -> None:
-        """Register a thread name to a key.
-
-        For Trigger and Webhook Apps multiple threads will share a token registered to a ConfigId.
-
-        Args:
-            key: The key to use to identify a token.
-            thread_name: The thread to register to a key.
-        """
-        self.token_map.setdefault(key, {}).setdefault('thread_names', []).append(thread_name)
-        self.log.info(f'feature=token, action=register-thread, key={key}, thread={thread_name}')
 
     def register_token(self, key: str, token: str, expires: int) -> None:
         """Register a token.
@@ -110,7 +89,7 @@ class Tokens:
             )
             return
 
-        self.token_map[key] = {'thread_names': [], 'token': token, 'token_expires': int(expires)}
+        self.token_map[key] = {'token': token, 'token_expires': int(expires)}
         self.log.info(
             f'feature=token, action=token-register, key={key}, '
             f'token="{self.utils.printable_cred(token, 10)}", '
@@ -230,20 +209,13 @@ class Tokens:
             if self.shutdown:
                 break
 
-    def unregister_thread(self, key: str, thread_name: str) -> None:
-        """Unregister a thread name for a key.
-
-        Args:
-            key (str): The key to use to identify a token.
-            thread_name (str): The thread to unregister from a key.
-        """
-        try:
-            self.token_map[key]['thread_names'].remove(thread_name)
-            self.log.info(
-                f'feature=token, action=unregister-thread, key={key}, thread={thread_name}'
-            )
-        except (KeyError, ValueError):  # pragma: no cover
-            pass
+    @property
+    def trigger_id(self) -> Optional[int]:
+        """Return the current trigger_id."""
+        trigger_id = threading.current_thread().trigger_id
+        if trigger_id is not None:
+            trigger_id = int(trigger_id)
+        return trigger_id
 
     def unregister_token(self, key: str) -> None:
         """Unregister a token.

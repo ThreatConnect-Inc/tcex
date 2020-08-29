@@ -17,8 +17,8 @@ class App(ServiceApp):
         trigger_id: int,
         playbook: Playbooks,
         method: str,
-        headers: Union[List[Dict[str, str], Dict[str, str]]],
-        params: Union[List[Dict[str, str], Dict[str, str]]],
+        headers: List[Dict[str, str]],
+        params: List[Dict[str, str]],
         body: Union[bytes, str],
         config: dict,
     ):
@@ -37,3 +37,36 @@ class App(ServiceApp):
             bool: True if playbook should trigger, False if not.
         """
         return True
+
+    def webhook_marshall_event_callback(  # pylint: disable=no-self-use
+        self,
+        body: Union[bytes, str],
+        headers: List[Dict[str, str]],
+        status_code: int,
+        trigger_id: int,
+    ):
+        """Run the trigger logic.
+
+        Example Headers:
+
+        "headers": [
+            {
+                "name": "Accept",
+                "value": "*/*"
+            }
+        ]
+
+        Args:
+            body: The response body.
+            headers: The response headers (multiple values will be returned in an array).
+            status_code: The response status code.
+            trigger_id: Optional trigger_id value used in testing framework.
+
+        Returns:
+            bool: True if playbook should trigger, False if not.
+        """
+        return {
+            'body': body,
+            'headers': headers,
+            'status_code': status_code,
+        }

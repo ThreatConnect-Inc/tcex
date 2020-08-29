@@ -33,21 +33,23 @@ class CommonService:
         self._redis_client = None
         self._start_time = datetime.now()
         self.args: object = tcex.default_args
-        # TODO: remove after moving metric
         self.configs = {}
         self.heartbeat_max_misses = 3
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
+        self.ij = tcex.ij
         self.log = tcex.log
+        self.logger = tcex.logger
         self.message_broker = MqttMessageBroker(
-            broker_host=tcex.default_args.tc_svc_broker_host,
-            broker_port=tcex.default_args.tc_svc_broker_port,
-            broker_timeout=tcex.default_args.tc_svc_broker_conn_timeout,
-            broker_token=tcex.default_args.tc_svc_broker_token,
-            broker_cacert=tcex.default_args.tc_svc_broker_cacert_file,
+            broker_host=self.args.tc_svc_broker_host,
+            broker_port=self.args.tc_svc_broker_port,
+            broker_timeout=self.args.tc_svc_broker_conn_timeout,
+            broker_token=self.args.tc_svc_broker_token,
+            broker_cacert=self.args.tc_svc_broker_cacert_file,
             logger=tcex.log,
         )
         self.ready = False
+        self.token = tcex.token
 
         # config callbacks
         self.shutdown_callback = None
@@ -74,8 +76,7 @@ class CommonService:
 
     def heartbeat(self) -> None:
         """Start heartbeat process."""
-        t = threading.Thread(name='heartbeat', target=self.heartbeat_monitor, daemon=True)
-        t.start()
+        self.service_thread(name='heartbeat', target=self.heartbeat_monitor)
 
     def heartbeat_monitor(self) -> None:
         """Publish heartbeat on timer."""
@@ -108,13 +109,10 @@ class CommonService:
         self.message_broker.add_on_message_callback(
             self.on_message_handler, topics=[self.args.tc_svc_server_topic]
         )
-
         self.message_broker.register_callbacks()
 
-        t = threading.Thread(
-            name='broker-listener', target=self.message_broker.connect, args=(), daemon=True
-        )
-        t.start()
+        # start listener thread
+        self.service_thread(name='broker-listener', target=self.message_broker.connect)
 
     def loop_forever(self, sleep: Optional[int] = 1) -> bool:
         """Block and wait for shutdown.
@@ -132,23 +130,6 @@ class CommonService:
                     return False
                 time.sleep(1)
             return True
-
-    def message_thread(
-        self, name: str, target: Callable[[], bool], args: tuple, kwargs: Optional[dict] = None
-    ) -> None:
-        """Start a message thread.
-
-        Args:
-            name: The name of the thread.
-            target: The method to call for the thread.
-            args: The args to pass to the target method.
-            kwargs: Additional args.
-        """
-        try:
-            t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
-            t.start()
-        except Exception:
-            self.log.trace(traceback.format_exc())
 
     @property
     def metrics(self) -> dict:
@@ -191,14 +172,22 @@ class CommonService:
 
         # use the command to call the appropriate method defined in command_map
         command: str = m.get('command', 'invalid').lower()
+        trigger_id: Optional[int] = m.get('triggerId')
+        request_key: Optional[str] = m.get('requestKey')
         self.log.info(f'feature=service, event=command-received, command="{command}"')
 
         # process inbound message in a thread
-        thread_name = command.lower()
-        if command.lower == 'createconfig':
-            thread_name = m.get('triggerId')
+        # thread_name = command.lower()
+        thread_name = str(uuid.uuid4())
+        if request_key is not None:
+            thread_name = request_key
+        elif trigger_id is not None:
+            trigger_id = int(trigger_id)  # ensure trigger_id is always int
+        #     thread_name = f'''trigger-id-{trigger_id}'''
         thread_method = self.command_map.get(command, self.process_invalid_command)
-        self.message_thread(name=thread_name, target=thread_method, args=(m,))
+        self.service_thread(
+            name=thread_name, target=thread_method, args=(m,), trigger_id=trigger_id
+        )
 
     def process_heartbeat_command(self, message: dict) -> None:  # pylint: disable=unused-argument
         """Process the HeartBeat command.
@@ -222,7 +211,7 @@ class CommonService:
         # send heartbeat -acknowledge- command
         response = {'command': 'Heartbeat', 'metric': self.metrics}
         self.message_broker.publish(
-            message=json.dumps(response), topic=self.tcex.default_args.tc_svc_client_topic
+            message=json.dumps(response), topic=self.args.tc_svc_client_topic
         )
         self.log.info(f'feature=service, event=heartbeat-sent, metrics={self.metrics}')
 
@@ -243,7 +232,7 @@ class CommonService:
         """
         level: str = message.get('level')
         self.log.info(f'feature=service, event=logging-change, level={level}')
-        self.tcex.logger.update_handler_level(level)
+        self.logger.update_handler_level(level)
 
     def process_invalid_command(self, message: dict) -> None:
         """Process all invalid commands.
@@ -278,7 +267,7 @@ class CommonService:
         # acknowledge shutdown command
         self.message_broker.publish(
             json.dumps({'command': 'Acknowledged', 'type': 'Shutdown'}),
-            self.tcex.default_args.tc_svc_client_topic,
+            self.args.tc_svc_client_topic,
         )
 
         # call App shutdown callback
@@ -320,10 +309,10 @@ class CommonService:
             else:  # pylint: disable=useless-else-on-loop
                 self.log.info('feature=service, event=service-ready')
                 ready_command = {'command': 'Ready'}
-                if self.tcex.ij.runtime_level.lower() in ['apiservice']:
-                    ready_command['discoveryTypes'] = self.tcex.ij.service_discovery_types
+                if self.ij.runtime_level.lower() in ['apiservice']:
+                    ready_command['discoveryTypes'] = self.ij.service_discovery_types
                 self.message_broker.publish(
-                    json.dumps(ready_command), self.tcex.default_args.tc_svc_client_topic
+                    json.dumps(ready_command), self.args.tc_svc_client_topic
                 )
                 self._ready = True
 
@@ -334,24 +323,46 @@ class CommonService:
             self._redis_client: object = self.tcex.redis_client
         return self._redis_client
 
-    @staticmethod
-    def session_id(trigger_id: Optional[str] = None) -> str:  # pylint: disable=unused-argument
-        """Return a uuid4 session id.
-
-        Takes optional trigger_id for monkeypatch in testing framework.
+    def service_thread(
+        self,
+        name: str,
+        target: Callable[[], bool],
+        args: Optional[tuple] = None,
+        kwargs: Optional[dict] = None,
+        trigger_id: Optional[int] = None,
+    ) -> None:
+        """Start a message thread.
 
         Args:
-            trigger_id: Optional trigger_id value used in testing framework.
-
-        Returns:
-            str: A unique UUID string value.
+            name: The name of the thread.
+            target: The method to call for the thread.
+            args: The args to pass to the target method.
+            kwargs: Additional args.
+            trigger_id: The current trigger id.
         """
-        return str(uuid.uuid4())
+        self.log.info(f'feature=service, event=service-thread-creation, name={name}')
+        args = args or ()
+        try:
+            t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
+            t.trigger_id = trigger_id
+            t.start()
+        except Exception:
+            self.log.trace(traceback.format_exc())
 
     @property
     def thread_name(self) -> str:
         """Return a uuid4 session id."""
         return threading.current_thread().name
+
+    @property
+    def trigger_id(self) -> Optional[int]:
+        """Return the current trigger_id."""
+        trigger_id = None
+        if hasattr(threading.current_thread(), 'trigger_id'):
+            trigger_id = threading.current_thread().trigger_id
+            if trigger_id is not None:
+                trigger_id = int(trigger_id)
+        return trigger_id
 
     def update_metric(self, label: str, value: Union[int, str]) -> None:
         """Update a metric if already exists.

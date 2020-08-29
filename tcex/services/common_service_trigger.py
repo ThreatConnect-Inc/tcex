@@ -2,7 +2,9 @@
 # standard library
 import json
 import os
+import threading
 import traceback
+import uuid
 from datetime import datetime
 from typing import Optional
 
@@ -102,17 +104,19 @@ class CommonServiceTrigger(CommonService):
                 json.dumps(
                     {
                         'command': 'Acknowledged',
-                        'logFile': os.path.basename(self.trigger_logfile),
+                        'logFile': os.path.join(
+                            os.path.basename(os.path.dirname(self.trigger_logfile)),
+                            os.path.basename(self.trigger_logfile),
+                        ),
                         'message': message,
                         'status': 'Success' if status is True else 'Failed',
                         'type': 'CreateConfig',
                         'triggerId': trigger_id,
                     }
                 ),
-                self.tcex.default_args.tc_svc_client_topic,
+                self.args.tc_svc_client_topic,
             )
         except Exception as e:
-            self.log.error(f'Could not create config for Id {trigger_id} ({e}).')
             self.log.error(
                 'feature=service, event=create-config-callback-exception, '
                 f'trigger-id={trigger_id}, error="""{e}"""'
@@ -142,14 +146,14 @@ class CommonServiceTrigger(CommonService):
                         'triggerId': trigger_id,
                     }
                 ),
-                self.tcex.default_args.tc_svc_client_topic,
+                self.args.tc_svc_client_topic,
             )
         except Exception as e:
             self.log.error(
                 'feature=service, event=delete-config-callback-exception, '
                 f'trigger-id={trigger_id}, error="""{e}"""'
             )
-            self.log.trace(traceback.format_exc())
+            # self.log.trace(traceback.format_exc())
 
     def fire_event_publish(
         self, trigger_id: int, session_id: str, request_key: Optional[str] = None
@@ -171,7 +175,7 @@ class CommonServiceTrigger(CommonService):
         self.log.info(f'feature=service, event=fire-event, msg={msg}')
 
         # publish FireEvent command to client topic
-        self.message_broker.publish(json.dumps(msg), self.tcex.default_args.tc_svc_client_topic)
+        self.message_broker.publish(json.dumps(msg), self.args.tc_svc_client_topic)
 
     def process_create_config_command(self, message: dict) -> None:
         """Process the CreateConfig command.
@@ -199,31 +203,30 @@ class CommonServiceTrigger(CommonService):
         """
         config: dict = message.get('config')
         status = True
-        trigger_id: int = message.get('triggerId')
+        trigger_id = int(message.get('triggerId'))
+
+        # create trigger id logging filehandler
+        self.logger.add_thread_file_handler(
+            name=self.thread_name,
+            filename=self.trigger_logfile,
+            level=self.args.tc_log_level,
+            path=self.args.tc_log_path,
+            handler_key=trigger_id,
+            thread_key='trigger_id',
+        )
+
         self.log.info(
             f'feature=service, event=create-config, trigger_id={trigger_id}, config={config}'
         )
 
         # register config apiToken
-        self.tcex.token.register_token(
-            trigger_id, message.get('apiToken'), message.get('expireSeconds')
-        )
+        self.token.register_token(trigger_id, message.get('apiToken'), message.get('expireSeconds'))
 
         msg = 'Create Config'
-        logfile = None
         if callable(self.create_config_callback):
-            logfile = self.trigger_logfile
-            # create trigger id filehandler
-            self.tcex.logger.add_thread_file_handler(
-                name=str(trigger_id),
-                filename=logfile,
-                level=self.args.tc_log_level,
-                path=self.args.tc_log_path,
-            )
-            self.tcex.log.info('Create CreateConfig log')
 
             kwargs = {}
-            if self.tcex.ij.runtime_level.lower() == 'webhooktriggerservice':
+            if self.ij.runtime_level.lower() == 'webhooktriggerservice':
                 # only webhook triggers get and require the PB url
                 kwargs['url'] = message.get('url')
 
@@ -247,11 +250,6 @@ class CommonServiceTrigger(CommonService):
                 self.log.error(message)
                 self.log.trace(traceback.format_exc())
 
-            # remove temporary logging file handler
-            self.tcex.logger.remove_handler_by_name(str(trigger_id))
-
-        # remove trigger id from handler
-
         # create config after callback to report status and message
         self.create_config(trigger_id, config, msg, status)
 
@@ -272,11 +270,11 @@ class CommonServiceTrigger(CommonService):
             message: The message payload from the server topic.
         """
         status = True
-        trigger_id: int = message.get('triggerId')
+        trigger_id = int(message.get('triggerId'))
         self.log.info(f'feature=service, event=delete-config, trigger_id={trigger_id}')
 
         # unregister config apiToken
-        self.tcex.token.unregister_token(trigger_id)
+        self.token.unregister_token(trigger_id)
 
         msg = 'Delete Config'
         if callable(self.delete_config_callback):
@@ -298,6 +296,25 @@ class CommonServiceTrigger(CommonService):
         # delete config
         self.delete_config(trigger_id, msg, status)
 
+        # remove temporary logging file handler
+        self.logger.remove_handler_by_name(self.thread_name)
+
+    @staticmethod
+    def session_id(trigger_id: Optional[str] = None) -> str:  # pylint: disable=unused-argument
+        """Return a uuid4 session id.
+
+        Takes optional trigger_id for monkeypatch in testing framework.
+
+        Args:
+            trigger_id: Optional trigger_id value used in testing framework.
+
+        Returns:
+            str: A unique UUID string value.
+        """
+        if not hasattr(threading.current_thread(), 'session_id'):
+            threading.current_thread().session_id = str(uuid.uuid4())
+        return threading.current_thread().session_id
+
     @property
     def session_logfile(self) -> str:
         """Return the logfile name based on date and thread name."""
@@ -306,4 +323,12 @@ class CommonServiceTrigger(CommonService):
     @property
     def trigger_logfile(self) -> str:
         """Return the logfile name based on date and thread name."""
-        return f'''{datetime.today().strftime('%Y%m%d')}/{self.thread_name}.log'''
+        return f'''{datetime.today().strftime('%Y%m%d')}/trigger-id-{self.thread_trigger_id}.log'''
+
+    @property
+    def thread_trigger_id(self) -> Optional[str]:
+        """Return the current thread trigger id."""
+        trigger_id = None
+        if hasattr(threading.current_thread(), 'trigger_id'):
+            trigger_id = threading.current_thread().trigger_id
+        return trigger_id

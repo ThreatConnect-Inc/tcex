@@ -99,8 +99,37 @@ class ApiService(CommonService):
             self.log.trace(traceback.format_exc())
         return headers_
 
-    def run_service(self, message: dict) -> None:
-        """Process Webhook event messages.
+    def process_run_service_response(self, *args, **kwargs) -> None:
+        """Handle service event responses.
+
+        ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
+        """
+        self.log.info('feature=api-service, event=response=received, status=waiting-for-body')
+        kwargs.get('event').wait(30)  # wait for thread event - (set on body write)
+        self.log.trace(f'feature=api-service, event=response, args={args}')
+        try:
+            status_code, status = args[0].split(' ', 1)
+            response = {
+                'bodyVariable': 'response.body',
+                'command': 'Acknowledged',
+                'headers': self.format_response_headers(args[1]),
+                'requestKey': kwargs.get('request_key'),  # pylint: disable=cell-var-from-loop
+                'status': status,
+                'statusCode': status_code,
+                'type': 'RunService',
+            }
+            self.log.info('feature=api-service, event=response-sent')
+            self.message_broker.publish(json.dumps(response), self.args.tc_svc_client_topic)
+            self.increment_metric('Responses')
+        except Exception as e:
+            self.log.error(
+                f'feature=api-service, event=failed-creating-response-body, error="""{e}"""'
+            )
+            self.log.trace(traceback.format_exc())
+            self.increment_metric('Errors')
+
+    def process_run_service_command(self, message: dict) -> None:
+        """Process the RunService command.
 
         .. code-block:: python
             :linenos:
@@ -117,10 +146,10 @@ class ApiService(CommonService):
             }
 
         Args:
-            message: The broker message.
+            message: The message payload from the server topic.
         """
         # register config apiToken (before any logging)
-        self.tcex.token.register_token(
+        self.token.register_token(
             self.thread_name, message.get('apiToken'), message.get('expireSeconds')
         )
         self.log.info(f'feature=api-service, event=runservice-command, message="{message}"')
@@ -137,6 +166,7 @@ class ApiService(CommonService):
             if body_variable is not None:
                 body: Any = self.redis_client.hget(request_key, message.get('bodyVariable'))
                 if body is not None:
+                    # for API service the data in Redis is not b64 encoded
                     body = BytesIO(body)
         except Exception as e:
             self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
@@ -196,14 +226,12 @@ class ApiService(CommonService):
             """Handle WSGI Response"""
             kwargs['event'] = event  # add event to kwargs for blocking
             kwargs['request_key'] = request_key
-            t = threading.Thread(
+            self.service_thread(
                 name='response-handler',
                 target=self.process_run_service_response,
                 args=args,
                 kwargs=kwargs,
-                daemon=True,
             )
-            t.start()
 
         if callable(self.api_event_callback):
             try:
@@ -228,57 +256,4 @@ class ApiService(CommonService):
                 self.increment_metric('Errors')
 
         # unregister config apiToken
-        self.tcex.token.unregister_token(self.thread_name)
-
-    def process_run_service_response(self, *args, **kwargs) -> None:
-        """Handle service event responses.
-
-        ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
-        """
-        self.log.info('feature=api-service, event=response=received, status=waiting-for-body')
-        kwargs.get('event').wait(10)  # wait for thread event - (set on body write)
-        self.log.trace(f'feature=api-service, event=response, args={args}')
-        try:
-            status_code, status = args[0].split(' ', 1)
-            response = {
-                'bodyVariable': 'response.body',
-                'command': 'Acknowledged',
-                'headers': self.format_response_headers(args[1]),
-                'requestKey': kwargs.get('request_key'),  # pylint: disable=cell-var-from-loop
-                'status': status,
-                'statusCode': status_code,
-                'type': 'RunService',
-            }
-            self.log.info('feature=api-service, event=response-sent')
-            self.message_broker.publish(
-                json.dumps(response), self.tcex.default_args.tc_svc_client_topic
-            )
-            self.increment_metric('Responses')
-        except Exception as e:
-            self.log.error(
-                f'feature=api-service, event=failed-creating-response-body, error="""{e}"""'
-            )
-            self.log.trace(traceback.format_exc())
-            self.increment_metric('Errors')
-
-    def process_run_service_command(self, message: dict) -> None:
-        """Process the RunService command.
-
-        .. code-block:: python
-            :linenos:
-            :lineno-start: 1
-
-            {
-              "command": "RunService",
-              "apiToken": "abc123",
-              "bodyVariable": "request.body",
-              "headers": [ { key/value pairs } ],
-              "method": "GET",
-              "queryParams": [ { key/value pairs } ],
-              "requestKey": "123abc"
-            }
-
-        Args:
-            message: The message payload from the server topic.
-        """
-        self.message_thread(self.session_id(message.get('triggerId')), self.run_service, (message,))
+        self.token.unregister_token(self.thread_name)

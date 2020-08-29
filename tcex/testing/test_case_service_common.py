@@ -133,7 +133,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         headers=None,
         method='GET',
         query_params=None,
-        request_key='abc123',
+        request_key: Optional[str] = None,
     ):
         """Send create config message.
 
@@ -146,6 +146,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             request_key (str, optional): The current request key.
         """
         body = body or ''
+        request_key = request_key or str(uuid.uuid4())
         if isinstance(body, dict):
             body = json.dumps(body)
 
