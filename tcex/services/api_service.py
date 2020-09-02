@@ -2,6 +2,7 @@
 # standard library
 import base64
 import json
+import sys
 import threading
 import traceback
 from io import BytesIO
@@ -104,7 +105,7 @@ class ApiService(CommonService):
 
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
         """
-        self.log.info('feature=api-service, event=response=received, status=waiting-for-body')
+        self.log.info('feature=api-service, event=response-received, status=waiting-for-body')
         kwargs.get('event').wait(30)  # wait for thread event - (set on body write)
         self.log.trace(f'feature=api-service, event=response, args={args}')
         try:
@@ -180,7 +181,7 @@ class ApiService(CommonService):
             # TODO: research required field for wsgi and update
             # TODO: move to a method
             environ = {
-                'wsgi.errors': self.log.error,  # sys.stderr
+                'wsgi.errors': sys.stderr,
                 # 'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>
                 'wsgi.input': body,
                 'wsgi.multithread': True,
@@ -235,13 +236,31 @@ class ApiService(CommonService):
 
         if callable(self.api_event_callback):
             try:
-                body: Any = self.api_event_callback(  # pylint: disable=not-callable
+                body_data: Any = self.api_event_callback(  # pylint: disable=not-callable
                     environ, response_handler
                 )
 
-                # decode body entries
-                # TODO: validate this logic
-                body = [base64.b64encode(b).decode('utf-8') for b in body][0]
+                # process body
+                body = ''
+                if hasattr(body_data, 'read'):
+                    body = base64.b64encode(body_data.read()).decode()
+                elif isinstance(body_data, list):
+                    for bd in body_data:
+                        if hasattr(bd, 'read'):
+                            # body += base64.b64encode(bd.read()).decode()
+                            body += bd.read()
+                        elif isinstance(bd, bytes):
+                            # body += base64.b64encode(bd.read()).decode()
+                            body += bd.decode()
+                        elif isinstance(bd, list):
+                            for b in bd:
+                                self.log.error(f'unhandled type - {type(b)}')
+                        else:
+                            self.log.error(f'unhandled type - {type(body)}')
+                            self.log.error(f'unhandled type dir - {dir(body)}')
+                    # encode body
+                    body = base64.b64encode(body.encode()).decode()
+
                 # write body to Redis
                 self.redis_client.hset(request_key, 'response.body', body)
 

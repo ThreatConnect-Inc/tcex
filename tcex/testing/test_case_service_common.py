@@ -10,7 +10,7 @@ import time
 import uuid
 from multiprocessing import Process
 from random import randint
-from typing import Optional
+from typing import Any, Optional
 
 from ..services import MqttMessageBroker
 from .test_case_playbook_common import TestCasePlaybookCommon
@@ -128,22 +128,22 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
 
     def publish_webhook_event(
         self,
-        trigger_id,
-        body=None,
-        headers=None,
-        method='GET',
-        query_params=None,
+        trigger_id: int,
+        body: Optional[Any] = None,
+        headers: Optional[list] = None,
+        method: Optional[str] = 'GET',
+        query_params: Optional[list] = None,
         request_key: Optional[str] = None,
     ):
         """Send create config message.
 
         Args:
-            trigger_id (str): The trigger ID.
-            body (str): The Body of the request.
-            headers (list, optional): A list of headers name/value pairs. Defaults to [].
-            method (str, optional): The method. Defaults to 'GET'.
-            query_params (list, optional): A list of query param name/value pairs. Defaults to [].
-            request_key (str, optional): The current request key.
+            trigger_id: The trigger ID.
+            body: The HTTP request body.
+            headers: The HTTP request headers name/value pairs.
+            method: The HTTP request method.
+            query_params: The HTTP request query param name/value pairs.
+            request_key: The current request key.
         """
         body = body or ''
         request_key = request_key or str(uuid.uuid4())
@@ -161,6 +161,43 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             'body': 'request.body',
             'requestKey': request_key,
             'triggerId': trigger_id,
+        }
+        self.message_broker.publish(json.dumps(event), self.server_topic)
+        time.sleep(self.sleep_after_publish_webhook_event)
+
+    def publish_marshall_webhook_event(
+        self,
+        trigger_id: int,
+        body: Optional[Any] = None,
+        headers: Optional[list] = None,
+        request_key: Optional[str] = None,
+        status_code: Optional[int] = 200,
+    ):
+        """Send create config message.
+
+        Args:
+            trigger_id: The trigger ID.
+            body: The HTTP response Body.
+            headers: The HTTP response headers name/value pairs.
+            request_key: The request key to reply with.
+            status_code: The HTTP response status code.
+            request_key: The current request key.
+        """
+        body = body or ''
+        request_key = request_key or str(uuid.uuid4())
+        if isinstance(body, dict):
+            body = json.dumps(body)
+
+        body = self.redis_client.hset(
+            request_key, 'request.body', base64.b64encode(body.encode('utf-8'))
+        )
+        event = {
+            'command': 'WebhookMarshallEvent',
+            'headers': headers or [],
+            'body': 'request.body',
+            'requestKey': request_key,
+            'triggerId': trigger_id,
+            'statusCode': status_code,
         }
         self.message_broker.publish(json.dumps(event), self.server_topic)
         time.sleep(self.sleep_after_publish_webhook_event)

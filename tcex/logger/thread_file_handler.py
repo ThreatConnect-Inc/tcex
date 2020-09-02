@@ -1,12 +1,12 @@
-"""API Handler Class"""
+"""Thread File Handler Class"""
 # standard library
-import logging
 import os
 import threading
+from logging.handlers import RotatingFileHandler
 from typing import Optional
 
 
-class ThreadFileHandler(logging.FileHandler):
+class ThreadFileHandler(RotatingFileHandler):
     """Logger handler for ThreatConnect Exchange File logging."""
 
     handler_key = None
@@ -16,21 +16,24 @@ class ThreadFileHandler(logging.FileHandler):
         self,
         filename: str,
         mode: Optional[str] = 'a',
+        maxBytes: Optional[int] = 0,
+        backupCount: Optional[int] = 0,
         encoding: Optional[str] = None,
-        delay: Optional[int] = 0,
+        delay: Optional[bool] = False,
     ):
         """Add logic to create log directory if it does not exists.
 
         Args:
             filename: The name of the logfile.
             mode: The write mode for the file.
+            maxBytes: The max file size before rotating.
+            backupCount: The maximum # of backup files.
             encoding: The log file encoding.
-            delay: The delay period.
+            delay: If True, then file opening is deferred until the first call to emit().
         """
-        if not os.path.exists(os.path.dirname(filename)):  # pragma: no cover
+        if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
-
-        logging.FileHandler.__init__(self, filename, mode, encoding, delay)
+        RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
 
     def emit(self, record: object) -> None:
         """Emit a record.
@@ -43,4 +46,4 @@ class ThreadFileHandler(logging.FileHandler):
         # handler_key and thread_key are added in logger.add_thread_file_handler() method
         if hasattr(threading.current_thread(), self.thread_key):
             if self.handler_key == getattr(threading.current_thread(), self.thread_key):
-                logging.FileHandler.emit(self, record)
+                RotatingFileHandler.emit(self, record)

@@ -70,6 +70,10 @@ class TestProfiles(${class_name}):
 
         # send webhook event
         self.publish_webhook_event(**self.profile.webhook_event)
+
+        # send webhook marshall event
+        if self.ij.has_feature('webhookresponsemarshall'):
+            self.publish_marshall_webhook_event(**self.profile.webhook_marshall_event)
         % else:
         # trigger custom event
         self.custom.trigger_method(self, self.profile.data, monkeypatch)

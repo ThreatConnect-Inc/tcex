@@ -54,6 +54,23 @@ class CommonService:
         # config callbacks
         self.shutdown_callback = None
 
+    def _create_logging_handler(self):
+        """Create a logging handler."""
+        if self.logger.handler_exist(self.thread_name):
+            return
+
+        # create trigger id logging filehandler
+        self.logger.add_pattern_file_handler(
+            name=self.thread_name,
+            filename=f'''{datetime.today().strftime('%Y%m%d')}/{self.session_id}.log''',
+            level=self.args.tc_log_level,
+            path=self.args.tc_log_path,
+            # uuid4 pattern for session_id
+            pattern=r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}.log$',
+            handler_key=self.session_id,
+            thread_key='session_id',
+        )
+
     def add_metric(self, label: str, value: Union[int, str]) -> None:
         """Add a metric.
 
@@ -73,6 +90,15 @@ class CommonService:
             'loggingchange': self.process_logging_change_command,
             'shutdown': self.process_shutdown_command,
         }
+
+    @staticmethod
+    def create_session_id() -> str:  # pylint: disable=unused-argument
+        """Return a uuid4 session id.
+
+        Returns:
+            str: A unique UUID string value.
+        """
+        return str(uuid.uuid4())
 
     def heartbeat(self) -> None:
         """Start heartbeat process."""
@@ -173,20 +199,24 @@ class CommonService:
         # use the command to call the appropriate method defined in command_map
         command: str = m.get('command', 'invalid').lower()
         trigger_id: Optional[int] = m.get('triggerId')
-        request_key: Optional[str] = m.get('requestKey')
+        if trigger_id is not None:
+            # coerce trigger_id to int in case a string was provided (testing framework)
+            trigger_id = int(trigger_id)
         self.log.info(f'feature=service, event=command-received, command="{command}"')
 
-        # process inbound message in a thread
-        # thread_name = command.lower()
-        thread_name = str(uuid.uuid4())
-        if request_key is not None:
-            thread_name = request_key
-        elif trigger_id is not None:
-            trigger_id = int(trigger_id)  # ensure trigger_id is always int
-        #     thread_name = f'''trigger-id-{trigger_id}'''
+        # create unique session id to be used as thread name
+        # and stored as property of thread for logging emit
+        session_id = self.create_session_id()
+
+        # get the target method from command_map for the current command
         thread_method = self.command_map.get(command, self.process_invalid_command)
         self.service_thread(
-            name=thread_name, target=thread_method, args=(m,), trigger_id=trigger_id
+            # use session_id as thread name to provide easy debugging per thread
+            name=session_id,
+            target=thread_method,
+            args=(m,),
+            session_id=session_id,
+            trigger_id=trigger_id,
         )
 
     def process_heartbeat_command(self, message: dict) -> None:  # pylint: disable=unused-argument
@@ -329,6 +359,7 @@ class CommonService:
         target: Callable[[], bool],
         args: Optional[tuple] = None,
         kwargs: Optional[dict] = None,
+        session_id: Optional[str] = None,
         trigger_id: Optional[int] = None,
     ) -> None:
         """Start a message thread.
@@ -338,16 +369,27 @@ class CommonService:
             target: The method to call for the thread.
             args: The args to pass to the target method.
             kwargs: Additional args.
+            session_id: The current session id.
             trigger_id: The current trigger id.
         """
         self.log.info(f'feature=service, event=service-thread-creation, name={name}')
         args = args or ()
         try:
             t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
+            # add session_id to thread to use in logger emit
+            t.session_id = session_id
+            # add trigger_id to thread to use in logger emit
             t.trigger_id = trigger_id
             t.start()
         except Exception:
             self.log.trace(traceback.format_exc())
+
+    @property
+    def session_id(self) -> Optional[str]:
+        """Return the current session_id."""
+        if not hasattr(threading.current_thread(), 'session_id'):
+            threading.current_thread().session_id = self.create_session_id()
+        return threading.current_thread().session_id
 
     @property
     def thread_name(self) -> str:

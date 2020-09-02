@@ -1,9 +1,7 @@
 """App Decorators Module."""
 # standard library
 import inspect
-from collections import Callable
-from ctypes import Union
-from typing import List
+from typing import List, Union
 
 # third-party
 import wrapt
@@ -70,8 +68,8 @@ class IterateOnArg:
         self.fail_enabled = kwargs.get('fail_enabled', False)
         self.fail_msg = kwargs.get('fail_msg')
         self.fail_on = kwargs.get('fail_on', [])
-        self.transforms: Union[List[Callable], Callable] = kwargs.get('transforms', [])
-        self.validators: Union[List[Callable], Callable] = kwargs.get('validators', [])
+        self.transforms: Union[List[callable], callable] = kwargs.get('transforms', [])
+        self.validators: Union[List[callable], callable] = kwargs.get('validators', [])
         if self.fail_on:
             self.validators.insert(0, not_in(self.fail_on))
 

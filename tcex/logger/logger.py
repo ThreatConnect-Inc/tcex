@@ -9,6 +9,7 @@ from typing import Optional
 
 from .api_handler import ApiHandler, ApiHandlerFormatter
 from .cache_handler import CacheHandler
+from .pattern_file_handler import PatternFileHandler
 from .rotating_file_handler_custom import RotatingFileHandlerCustom
 from .thread_file_handler import ThreadFileHandler
 from .trace_logger import TraceLogger
@@ -52,6 +53,20 @@ class Logger:
             '(%(filename)s:%(funcName)s:%(lineno)d:%(threadName)s)'
         )
         return logging.Formatter(tx_format)
+
+    def handler_exist(self, handler_name: str) -> bool:
+        """Remove a file handler by name.
+
+        Args:
+            handler_name: The handler name to remove.
+
+        Returns:
+            bool: True if handler current exists
+        """
+        for h in self._logger.handlers:
+            if h.get_name() == handler_name:
+                return True
+        return False
 
     @property
     def log(self) -> logging.Logger:
@@ -146,6 +161,48 @@ class Logger:
         cache.setFormatter(self._formatter)
         self._logger.addHandler(cache)
 
+    def add_pattern_file_handler(
+        self,
+        name: str,
+        filename: str,
+        level: int,
+        path: str,
+        pattern: str,
+        formatter: Optional[str] = None,
+        handler_key: Optional[str] = None,
+        max_log_count: Optional[int] = 100,
+        thread_key: Optional[str] = None,
+    ) -> None:
+        """Add custom file logging handler.
+
+        This handler is intended for service Apps that need to log events based on the
+        current session id. All log event would be in context to a single playbook execution.
+
+        Args:
+            name: The name of the handler.
+            filename: The name of the logfile.
+            level: The logging level.
+            path: The path for the logfile.
+            formatter: The logging formatter to use.
+            handler_key: Additional properties for handler to thread condition.
+            max_log_count: The maximun number of logs to keep that match the provided pattern.
+            pattern: The pattern used to match the log files.
+            thread_key: Additional properties for handler to thread condition.
+        """
+        self.remove_handler_by_name(name)
+        formatter = formatter or self._formatter
+        # create customized handler
+        fh = PatternFileHandler(
+            filename=os.path.join(path, filename), pattern=pattern, max_log_count=max_log_count
+        )
+        fh.set_name(name)
+        fh.setFormatter(formatter)
+        fh.setLevel(self.log_level(level))
+        # add keys for halder emit method conditional
+        fh.handler_key = handler_key
+        fh.thread_key = thread_key
+        self._logger.addHandler(fh)
+
     def add_rotating_file_handler(
         self,
         name: str,
@@ -157,7 +214,7 @@ class Logger:
         formatter: Optional[str] = None,
         mode: Optional[str] = 'a',
     ) -> None:
-        """Add a rotating file handler
+        """Add custom file logging handler.
 
         Args:
             name: The name of the handler.
@@ -187,7 +244,7 @@ class Logger:
         formatter: Optional[str] = None,
         level: Optional[int] = None,
     ) -> None:
-        """Return stream logging handler.
+        """Add stream logging handler.
 
         Args:
             name: The name of the handler.
@@ -207,27 +264,38 @@ class Logger:
         self,
         name: str,
         filename: str,
-        level: int,
+        level: str,
         path: str,
+        backup_count: Optional[int] = 0,
         formatter: Optional[str] = None,
         handler_key: Optional[str] = None,
+        max_bytes: Optional[int] = 0,
+        mode: Optional[str] = 'a',
         thread_key: Optional[str] = None,
     ) -> None:
-        """Add File logging handler.
+        """Add custom file logging handler.
+
+        This handler is intended for service Apps that need to log events based on the
+        current trigger id. All log events would be in context to a single playbook.
 
         Args:
             name: The name of the handler.
             filename: The name of the logfile.
             level: The logging level.
             path: The path for the logfile.
+            backup_count: The maximum # of backup files.
             formatter: The logging formatter to use.
             handler_key: Additional properties for handler to thread condition.
+            max_bytes: The max file size before rotating.
+            mode: The write mode for the file.
             thread_key: Additional properties for handler to thread condition.
         """
         self.remove_handler_by_name(name)
-        formatter = formatter or self._formatter
+        formatter = formatter or self._formatter_thread_name
         # create customized handler
-        fh = ThreadFileHandler(os.path.join(path, filename))
+        fh = ThreadFileHandler(
+            os.path.join(path, filename), backupCount=backup_count, maxBytes=max_bytes, mode=mode
+        )
         fh.set_name(name)
         fh.setFormatter(formatter)
         fh.setLevel(self.log_level(level))
