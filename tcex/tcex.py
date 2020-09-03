@@ -527,6 +527,9 @@ class TcEx:
             message: The message to add to message_tc file
             max_length: The maximum length of an exit message. Defaults to 255.
         """
+        if not isinstance(message, str):
+            message = str(message)
+
         if os.access(self.default_args.tc_out_path, os.W_OK):
             message_file = os.path.join(self.default_args.tc_out_path, 'message.tc')
         else:
