@@ -9,7 +9,17 @@ from .validation_exception import ValidationError
 def _operator(
     operator_call: Callable, compare_to: Any, message_posfix: str, allow_none=False,
 ):
-    def _validate(value, arg_name):
+    def _validate(value: Any, arg_name: str, label: str):
+        """Run validation on input data.
+
+        Args:
+            value: The input data to validate.
+            arg_name: The name of the input arg.
+            label: The label displayed to the user.
+
+        Raises:
+            ValidationError: raised on validation failure.
+        """
         if not isinstance(value, list):
             value = [value]
 
@@ -18,7 +28,7 @@ def _operator(
                 continue
 
             if not operator_call(v, compare_to):
-                raise ValidationError(f'{arg_name} {message_posfix}')
+                raise ValidationError(f'"{label}" ({arg_name}) {message_posfix}')
 
     return _validate
 
@@ -31,6 +41,7 @@ def equal_to(compare_to: Any, allow_none=False) -> Callable[[str, str], None]:
     Args:
         compare_to (Any): the value to compare the argument value to.
         allow_none (bool): skip any None elements
+
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
     """
@@ -46,6 +57,7 @@ def less_than(compare_to: Any, allow_none=False) -> Callable[[str, str], None]:
     Args:
         compare_to (Any): the value to compare the argument value to.
         allow_none (bool): skip any None elements
+
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
     """
@@ -61,6 +73,7 @@ def less_than_or_equal(compare_to: Any, allow_none=False) -> Callable[[str, str]
     Args:
         compare_to (Any): the value to compare the argument value to.
         allow_none (bool): skip any None elements
+
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
     """
@@ -78,6 +91,7 @@ def greater_than(compare_to: Any, allow_none=False) -> Callable[[str, str], None
     Args:
         compare_to (Any): the value to compare the argument value to.
         allow_none (bool): skip any None elements
+
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
     """
@@ -93,6 +107,7 @@ def greater_than_or_equal(compare_to: Any, allow_none=False) -> Callable[[str, s
     Args:
         compare_to (Any): the value to compare the argument value to.
         allow_none (bool): skip any None elements
+
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
     """

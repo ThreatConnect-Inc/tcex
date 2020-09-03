@@ -10,16 +10,27 @@ def in_range(min: float, max: float, **kwargs):  # pylint: disable=redefined-bui
     Allowed argument types: String, StringArray
 
 
-    Params:
-        min (float): the minimum valid value for the argument
-        max (float): the maximum valid value for the argument
-        allow_none (bool): If none or '' values are ok in a StringArray. default: False
+    Args:
+        min: the minimum valid value for the argument
+        max: the maximum valid value for the argument
+        **kwargs ():
+            allow_none (bool): If none or '' values are ok in a StringArray.
 
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
     """
 
-    def _validate(value, arg_name):
+    def _validate(value, arg_name, label):
+        """Run validation on input data.
+
+        Args:
+            value: The input data to validate.
+            arg_name: The name of the input arg.
+            label: The label displayed to the user.
+
+        Raises:
+            ValidationError: raised on validation failure.
+        """
         allow_none = kwargs.get('allow_none', False)
 
         if not isinstance(value, list):
@@ -30,6 +41,6 @@ def in_range(min: float, max: float, **kwargs):  # pylint: disable=redefined-bui
                 continue
 
             if not min <= v <= max:
-                raise ValidationError(f'{arg_name} is not between {min} and {max}.')
+                raise ValidationError(f'"{label}" ({arg_name}) is not between {min} and {max}.')
 
     return _validate

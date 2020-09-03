@@ -134,6 +134,9 @@ class IterateOnArg:
             Args:
                 app (class): The instance of the App class "self".
             """
+            # retrieve the label for the current Arg
+            label = app.tcex.ij.params_dict.get(self.arg, {}).get('label')
+
             # get the signature for the decorated method
             fn_signature = inspect.signature(wrapped, follow_wrapped=True).parameters
 
@@ -175,7 +178,7 @@ class IterateOnArg:
 
                 try:
                     for transform in self.transforms:
-                        ad = transform(ad, self.arg)
+                        ad = transform(ad, self.arg, label)
                 except ValidationError as v:
                     value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
                     message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
@@ -190,7 +193,7 @@ class IterateOnArg:
                 # check ad against fail_on_values
                 if enabled:
                     try:
-                        list([v(ad, self.arg) for v in self.validators])
+                        list([v(ad, self.arg, label) for v in self.validators])
                     except ValidationError as v:
                         value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
                         message = (

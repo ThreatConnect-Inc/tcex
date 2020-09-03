@@ -15,10 +15,10 @@ from tcex.validators import (
     less_than,
     less_than_or_equal,
     not_in,
+    to_bool,
     to_float,
     to_int,
 )
-from tcex.validators.transforms import to_bool
 
 
 class ReadArg:
@@ -186,6 +186,9 @@ class ReadArg:
             Args:
                 app (class): The instance of the App class "self".
             """
+            # retrieve the label for the current Arg
+            label = app.tcex.ij.params_dict.get(self.arg, {}).get('label')
+
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled
             if not isinstance(self.fail_enabled, bool):
@@ -239,7 +242,7 @@ class ReadArg:
 
             try:
                 for transform in self.transforms:
-                    arg_data = transform(arg_data, self.arg)
+                    arg_data = transform(arg_data, self.arg, label)
             except ValidationError as v:
                 value_formatted = f'"{arg_data}"' if isinstance(arg_data, str) else str(arg_data)
                 message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
@@ -254,7 +257,7 @@ class ReadArg:
             # check arg_data against fail_on_values
             if enabled:
                 try:
-                    list([v(arg_data, self.arg) for v in self.validators])
+                    list([v(arg_data, self.arg, label) for v in self.validators])
                 except ValidationError as v:
                     value_formatted = (
                         f'"{arg_data}"' if isinstance(arg_data, str) else str(arg_data)
