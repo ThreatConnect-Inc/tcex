@@ -181,7 +181,7 @@ class IterateOnArg:
                         ad = transform(ad, self.arg, label)
                 except ValidationError as v:
                     value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
-                    message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
+                    message = f'Invalid value ({value_formatted}) found for "{label}": {v.message}'
                     app.tcex.log.error(message)
                     if self.fail_msg:
                         app.exit_message = self.fail_msg  # for test cases
@@ -197,7 +197,7 @@ class IterateOnArg:
                     except ValidationError as v:
                         value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
                         message = (
-                            f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
+                            f'Invalid value ({value_formatted}) found for "{label}": {v.message}'
                         )
                         app.tcex.log.error(message)
                         if self.fail_msg:

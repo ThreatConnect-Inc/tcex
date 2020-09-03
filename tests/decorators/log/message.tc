@@ -1,7 +1,0 @@
-Failed iterate_on_args
-Failed iterate_on_args
-Failed iterate_on_args
-Invalid value (135) found for colors: colors is not equal to 123
-Custom fail msg.
-Custom fail msg.
-Invalid value ("abc") found for colors: colors must be a float.

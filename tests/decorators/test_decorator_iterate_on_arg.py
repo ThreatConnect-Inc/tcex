@@ -371,7 +371,7 @@ class TestIterateOnArgDecorators:
         except SystemExit:
             assert (
                 self.exit_message
-                == 'Invalid value (135) found for colors: "None" (colors) is not equal to 123'
+                == 'Invalid value (135) found for "Colors": "Colors" (colors) is not equal to 123'
             )
 
     @pytest.mark.parametrize(
@@ -450,5 +450,5 @@ class TestIterateOnArgDecorators:
         except SystemExit:
             assert (
                 self.exit_message
-                == 'Invalid value ("abc") found for colors: "None" (colors) must be a float.'
+                == 'Invalid value ("abc") found for "Colors": "Colors" (colors) must be a float.'
             )

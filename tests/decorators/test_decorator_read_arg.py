@@ -52,7 +52,7 @@ class TestReadArgDecorators:
             assert e.code == 1
             assert (
                 self.exit_message
-                == 'Invalid value (None) found for color: "None" (color) cannot be in [None, ""]'
+                == 'Invalid value (None) found for "Color": "Color" (color) cannot be in [None, ""]'
             )
 
     @ReadArg('color')
@@ -97,7 +97,7 @@ class TestReadArgDecorators:
             assert e.code == 1
             assert (
                 self.exit_message
-                == 'Invalid value (None) found for fruit: "None" (fruit) cannot be in [None, ""]'
+                == 'Invalid value (None) found for "Fruit": "Fruit" (fruit) cannot be in [None, ""]'
             )
 
     @ReadArg('color')
@@ -399,7 +399,7 @@ class TestReadArgDecorators:
         except SystemExit:
             assert (
                 self.exit_message
-                == 'Invalid value ("") found for color: "None" (color) must be a float.'
+                == 'Invalid value ("") found for "Color": "Color" (color) must be a float.'
             )
 
     def test_validators_fail_msg(self, playbook_app):
