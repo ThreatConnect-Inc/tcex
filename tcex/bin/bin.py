@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Framework Bin Command Base Module."""
 # standard library
 import os

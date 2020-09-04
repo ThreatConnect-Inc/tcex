@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Playbook App"""
 
 # third-party
@@ -21,7 +20,7 @@ class App(PlaybookApp):
     @OnException(exit_msg='Failed to run capitalize operation.')
     @OnSuccess(exit_msg='Successfully ran capitalize operation.')
     @Output(attribute='output_strings')
-    def capitalize(self, input_strings):
+    def capitalize(self, input_strings) -> str:
         """Return capitalized string."""
         return input_strings.capitalize()
 
@@ -29,7 +28,7 @@ class App(PlaybookApp):
     @OnException(exit_msg='Failed to run lowercase operation.')
     @OnSuccess(exit_msg='Successfully ran lowercase operation.')
     @Output(attribute='output_strings')
-    def lowercase(self, input_strings):
+    def lowercase(self, input_strings) -> str:
         """Return string in lowercase."""
         return input_strings.lower()
 
@@ -37,7 +36,7 @@ class App(PlaybookApp):
     @OnException(exit_msg='Failed to run reverse operation.')
     @OnSuccess(exit_msg='Successfully ran reverse operation.')
     @Output(attribute='output_strings')
-    def reverse(self, input_strings):
+    def reverse(self, input_strings) -> str:
         """Return string reversed."""
         return input_strings[::-1]
 
@@ -45,7 +44,7 @@ class App(PlaybookApp):
     @OnException(exit_msg='Failed to run strip operation.')
     @OnSuccess(exit_msg='Successfully ran strip operation.')
     @Output(attribute='output_strings')
-    def strip(self, input_strings):
+    def strip(self, input_strings) -> str:
         """Return string stripping any whitespaces at beginning and end."""
         return input_strings.strip()
 
@@ -53,7 +52,7 @@ class App(PlaybookApp):
     @OnException(exit_msg='Failed to run swap case operation.')
     @OnSuccess(exit_msg='Successfully ran swap case operation.')
     @Output(attribute='output_strings')
-    def swap_case(self, input_strings):
+    def swap_case(self, input_strings) -> str:
         """Return string with the case swapped."""
         return input_strings.swapcase()
 
@@ -61,7 +60,7 @@ class App(PlaybookApp):
     @OnException(exit_msg='Failed to run title case operation.')
     @OnSuccess(exit_msg='Successfully ran title case operation.')
     @Output(attribute='output_strings')
-    def title_case(self, input_strings):
+    def title_case(self, input_strings) -> str:
         """Return string in title case."""
         return input_strings.title()
 
@@ -69,7 +68,7 @@ class App(PlaybookApp):
     @OnException(exit_msg='Failed to run uppercase operation.')
     @OnSuccess(exit_msg='Successfully ran uppercase operation.')
     @Output(attribute='output_strings')
-    def uppercase(self, input_strings):
+    def uppercase(self, input_strings) -> str:
         """Return string in uppercase."""
         return input_strings.upper()
 

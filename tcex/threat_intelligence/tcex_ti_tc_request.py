@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Module"""
 # standard library
 import hashlib
@@ -793,7 +792,7 @@ class TiTcRequest:
         params = {'owner': owner} if owner else {}
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/observations'
-        r = self._post(url, data, params)
+        r = self._post_json(url, data, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r
@@ -952,7 +951,9 @@ class TiTcRequest:
         value = str(value)
         return value.lower() in ['true', '1', 't', 'y', 'yes']
 
-    def deleted(self, main_type, sub_type, deleted_since=None, owner=None, filters=None, params=None):
+    def deleted(
+        self, main_type, sub_type, deleted_since=None, owner=None, filters=None, params=None
+    ):
         """
 
         Args:

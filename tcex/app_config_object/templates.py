@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Framework Template Download/Generation Module."""
 # standard library
 import os
 import sys
+from typing import Any, Optional
 
 # third-party
 import colorama as c
@@ -30,7 +30,7 @@ class TemplateBase:
         profile (Profile): An instance of Profile.
     """
 
-    def __init__(self, profile, branch='master'):
+    def __init__(self, profile: object, branch: Optional[str] = 'master'):
         """Initialize class properties."""
         self.url = f'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/{branch}/app_init'
         self.profile = profile
@@ -40,7 +40,9 @@ class TemplateBase:
         self._template_render_results = []
 
     @staticmethod
-    def _short_string(string, length=65, prepend_ellipsis=True):
+    def _short_string(
+        string: str, length: Optional[int] = 65, prepend_ellipsis: Optional[bool] = True
+    ) -> str:
         """Return a shortened destination."""
         ellipsis = ''
         if prepend_ellipsis and len(string) > length:
@@ -49,14 +51,14 @@ class TemplateBase:
         return f'{ellipsis}{string[-length:]}'
 
     @staticmethod
-    def download_template(url):
+    def download_template(url: str) -> Any:
         """Return template file"""
-        r = requests.get(url, allow_redirects=True, headers={'Cache-Control': 'no-cache'})
+        r: object = requests.get(url, allow_redirects=True, headers={'Cache-Control': 'no-cache'})
         if not r.ok:
             raise RuntimeError(f'Could not download template file ({url}).')
         return r.content
 
-    def print_results(self, results):
+    def print_results(self, results: list) -> None:
         """Print the results."""
         if results:
             # get the max length of url
@@ -100,15 +102,21 @@ class TemplateBase:
                     f'{status_color}{status!s:<10}'
                 )
 
-    def print_download_results(self):
+    def print_download_results(self) -> None:
         """Print the download results."""
         self.print_results(self._download_results)
 
-    def print_template_render_results(self):
+    def print_template_render_results(self) -> None:
         """Print the download results."""
         self.print_results(self._template_render_results)
 
-    def render(self, template_url, destination, variables, overwrite=False):
+    def render(
+        self,
+        template_url: str,
+        destination: str,
+        variables: dict,
+        overwrite: Optional[bool] = False,
+    ):
         """Render the provided template"""
         if 'mako' not in sys.modules:
             print(
@@ -118,9 +126,9 @@ class TemplateBase:
 
         status = 'Failed'
         if not os.path.isfile(destination) or overwrite:
-            template_data = self.download_template(template_url)
-            template = Template(template_data)  # nosec
-            rendered_template = template.render(**variables)
+            template_data: str = self.download_template(template_url)
+            template: object = Template(template_data)  # nosec
+            rendered_template: str = template.render(**variables)
             with open(destination, 'w') as f:
                 f.write(rendered_template)
             status = 'Success'
@@ -140,17 +148,23 @@ class CustomTemplates(TemplateBase):
         profile (Profile): An instance of Profile.
     """
 
+    def __init__(self, profile: Optional[object] = None, branch: Optional[str] = 'master'):
+        """Initialize Class properties."""
+        super().__init__(profile, branch)
+
     def custom_py(self):
         """Render the custom.py template."""
-        filename = os.path.join(self.profile.test_directory, 'custom.py')
+        filename: str = os.path.join(self.profile.test_directory, 'custom.py')
         variables = {'runtime_level': self.profile.ij.runtime_level.lower()}
-        self.render(f'{self.url}/tests/custom.py.tpl', filename, variables)
+        if not os.path.isfile(filename):
+            self.render(f'{self.url}/tests/custom.py.tpl', filename, variables)
 
     def custom_feature_py(self):
         """Render the custom.py template."""
         filename = os.path.join(self.profile.feature_directory, 'custom_feature.py')
         variables = {'runtime_level': self.profile.ij.runtime_level.lower()}
-        self.render(f'{self.url}/tests/custom_feature.py.tpl', filename, variables)
+        if not os.path.isfile(filename):
+            self.render(f'{self.url}/tests/custom_feature.py.tpl', filename, variables)
 
     def render_templates(self):
         """Render the templates and write to disk conditionally."""
@@ -166,14 +180,20 @@ class DownloadTemplates(TemplateBase):
         profile (Profile): An instance of Profile.
     """
 
-    def __init__(self, profile=None, branch='master'):
+    def __init__(self, profile: Optional[object] = None, branch: Optional[str] = 'master'):
         """Initialize Class properties."""
         super().__init__(profile, branch)
 
         # properties
         self.utils = Utils()
 
-    def download_file(self, url, destination, overwrite=False, default_choice='yes'):
+    def download_file(
+        self,
+        url: str,
+        destination: str,
+        overwrite: Optional[bool] = False,
+        default_choice: Optional[str] = 'yes',
+    ):
         """Download the provided source file to the provided destination.
 
         Args:
@@ -190,7 +210,7 @@ class DownloadTemplates(TemplateBase):
             and overwrite.lower() == 'prompt'
             and os.path.isfile(destination)
         ):
-            overwrite = self.download_prompt(destination, default_choice)
+            overwrite: bool = self.download_prompt(destination, default_choice)
             prompted = True
 
         status = 'Failed'
@@ -210,7 +230,7 @@ class DownloadTemplates(TemplateBase):
 
         self._download_results.append({'destination': destination, 'status': status, 'url': url})
 
-    def download_prompt(self, destination, default_choice):
+    def download_prompt(self, destination: str, default_choice: str):
         """Present the download prompt for the user.
 
         Args:
@@ -222,22 +242,22 @@ class DownloadTemplates(TemplateBase):
         """
         option_text = self.download_prompt_option_text(default_choice)
 
-        print(f"{c.Style.BRIGHT}{'File:'!s:<15}{c.Fore.CYAN}{self._short_string(destination)}")
+        print(f'''{c.Style.BRIGHT}{'File:'!s:<15}{c.Fore.CYAN}{self._short_string(destination)}''')
         message = (
             f'{c.Fore.MAGENTA}Replace '
             f'{c.Style.BRIGHT}{c.Fore.WHITE}({option_text}):{c.Fore.RESET} '
         )
-        response = input(message).strip()  # nosec
+        response: str = input(message).strip()  # nosec
         if not response:
             response = default_choice
         return self.utils.to_bool(response)
 
     @staticmethod
-    def download_prompt_option_text(default_choice):
+    def download_prompt_option_text(default_choice: str):
         """Return the default value and option text.
 
         Args:
-            default_choice (str, optional): The default choice for the prompt.
+            default_choice: The default choice for the prompt.
 
         Returns:
             str: The options text string.
@@ -246,15 +266,13 @@ class DownloadTemplates(TemplateBase):
 
         options = []
         for v in valid_values:
-            # o = f'{c.Fore.YELLOW}{v}{c.Fore.RESET}'
             o = v
             if v.lower() == default_choice.lower():
-                # o = f'{c.Fore.GREEN}[{v}]{c.Fore.RESET}'
                 o = f'[{v}]'
             options.append(o)
-        return f"{'/'.join(options)}"
+        return f'''{'/'.join(options)}'''
 
-    def init_common_files(self, template=None):
+    def init_common_files(self, template: Optional[str] = None):
         """Download common files."""
         self.download_file(
             f'{self.url}/.pre-commit-config.yaml',
@@ -295,8 +313,8 @@ class DownloadTemplates(TemplateBase):
             overwrite='prompt',
             default_choice='no',
         )
+        self.download_file(f'{self.url}/app_lib.py', destination='app_lib.py', overwrite=True)
         if template and not template.startswith('external'):
-            self.download_file(f'{self.url}/app_lib.py', destination='app_lib.py', overwrite=True)
             self.download_file(
                 f'{self.url}/{template}/args.py',
                 destination='args.py',
@@ -316,7 +334,7 @@ class DownloadTemplates(TemplateBase):
                 default_choice='no',
             )
 
-    def init_external(self, template):
+    def init_external(self, template: str):
         """Download external App files."""
         self.download_file(
             f'{self.url}/external/external_app.py', destination='external_app.py', overwrite=True,
@@ -342,7 +360,7 @@ class DownloadTemplates(TemplateBase):
         )
         self.download_file(f'{self.url}/playbook/run.py', destination='run.py', overwrite=True)
 
-    def init_service(self, template):
+    def init_service(self, template: str):
         """Download service App files."""
         self.download_file(
             f'{self.url}/service/service_app.py', destination='service_app.py', overwrite=True
@@ -354,7 +372,7 @@ class DownloadTemplates(TemplateBase):
         if not self.profile:
             raise RuntimeError('Download of "conftest.py" requires a Profile object.')
         url = f'{self.url}/tests/conftest.py'
-        destination = os.path.join(self.profile.test_directory, 'conftest.py')
+        destination: str = os.path.join(self.profile.test_directory, 'conftest.py')
         self.download_file(url, destination, overwrite=True)
 
     def test_profiles_py(self):
@@ -365,16 +383,16 @@ class TestProfileTemplates(TemplateBase):
     """TestProfile Template Class
 
     Args:
-        branch (str): The git branch of tcex to use for downloads.
-        profile (Profile): An instance of Profile.
+        branch: The git branch of tcex to use for downloads.
+        profile: An instance of Profile.
     """
 
-    def __init__(self, profile=None, branch='master'):
+    def __init__(self, profile: Optional[object] = None, branch: Optional[str] = 'master'):
         """Initialize Class properties."""
         super().__init__(profile, branch)
 
     @property
-    def app_class(self):
+    def app_class(self) -> str:
         """Return the proper App class based on runtime level."""
         app_type_to_class = {
             'organization': 'TestCaseJob',
@@ -390,7 +408,7 @@ class TestProfileTemplates(TemplateBase):
 
     def test_profiles_py(self):
         """Render the test_profiles.py template."""
-        filename = os.path.join(self.profile.feature_directory, 'test_profiles.py')
+        filename: str = os.path.join(self.profile.feature_directory, 'test_profiles.py')
         variables = {
             'class_name': self.app_class,
             'runtime_level': self.profile.ij.runtime_level.lower(),
@@ -409,14 +427,14 @@ class ValidationTemplates(TemplateBase):
         NotImplementedError: The delete method is not currently implemented.
     """
 
-    def __init__(self, profile=None, branch='master'):
+    def __init__(self, profile: Optional[object] = None, branch: Optional[str] = 'master'):
         """Initialize Class properties."""
         super().__init__(profile, branch)
 
         # properties
         self.utils = Utils()
 
-    def output_data(self, output_variables):
+    def output_data(self, output_variables: Optional[list]):
         """Return formatted output data.
 
         variable format: #App:9876:http.content!Binary
@@ -428,7 +446,7 @@ class ValidationTemplates(TemplateBase):
 
     def validate_py(self):
         """Render the validate.py template."""
-        filename = os.path.join(self.profile.test_directory, 'validate.py')
+        filename: str = os.path.join(self.profile.test_directory, 'validate.py')
         variables = {
             'feature': self.profile.feature,
             'output_data': self.output_data(self.profile.ij.tc_playbook_out_variables),
@@ -437,7 +455,7 @@ class ValidationTemplates(TemplateBase):
 
     def validate_custom_py(self):
         """Render the validate_custom.py template."""
-        filename = os.path.join(self.profile.test_directory, 'validate_custom.py')
+        filename: str = os.path.join(self.profile.test_directory, 'validate_custom.py')
         variables = {
             'feature': self.profile.feature,
             'output_data': self.output_data(self.profile.ij.tc_playbook_out_variables),
@@ -446,7 +464,7 @@ class ValidationTemplates(TemplateBase):
 
     def validate_feature_py(self):
         """Render the validate_custom.py template."""
-        filename = os.path.join(self.profile.feature_directory, 'validate_feature.py')
+        filename: str = os.path.join(self.profile.feature_directory, 'validate_feature.py')
         variables = {
             'feature': self.profile.feature,
             'output_data': self.output_data(self.profile.ij.tc_playbook_out_variables),

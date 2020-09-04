@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect API Service App"""
 # third-party
 import falcon
 
 # first-party
 from api_service_app import ApiServiceApp  # Import default API Service Class (Required)
+
+from tcex import TcEx
 
 
 class TcExMiddleware:
@@ -14,19 +15,21 @@ class TcExMiddleware:
 
     """
 
-    def __init__(self, args, tcex):
+    def __init__(self, args: object, tcex: TcEx):
         """Initialize class properties.
 
         Args:
-            args (namespace): The argparser arg namespace.
-            tcex (obj): An instance of tcex
+            args: The argparser arg namespace.
+            tcex: An instance of tcex
         """
         self.args = args
         self.tcex = tcex
+
+        # properties
         self.log = tcex.log
 
     def process_resource(  # pylint: disable=no-self-use,unused-argument
-        self, req, resp, resource, params
+        self, req: falcon.Request, resp: falcon.Response, resource: object, params: dict
     ):
         """Process resource method."""
         resource.args = self.args

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
 # standard library
 import base64
@@ -79,12 +78,12 @@ class TcSession(Session):
         if self.token_available:
             # service Apps only use tokens and playbook/runtime Apps will use token if available
             self.auth = TokenAuth(self.token)
-            self.log.debug('Using token authorization.')
+            self.log.debug('feature=tc-session, event=auth, type=token')
         elif self.api_access_id and self.api_secret_key:
             try:
                 # for external Apps or testing Apps locally
                 self.auth = HmacAuth(self.api_access_id, self.api_secret_key)
-                self.log.debug('Using HMAC authorization.')
+                self.log.debug('feature=tc-session, event=auth, type=hmac')
             except AttributeError:  # pragma: no cover
                 raise RuntimeError('No valid ThreatConnect API credentials provided.')
         else:  # pragma: no cover
@@ -131,8 +130,10 @@ class TcSession(Session):
             except Exception:  # nosec
                 pass  # logging curl command is best effort
 
-        self.log.debug(f'request url: {response.request.url}')
-        self.log.debug(f'status_code: {response.status_code}')
+        self.log.debug(
+            f'feature=tc-session, request-url={response.request.url}, '
+            f'status_code={response.status_code}'
+        )
 
         return response
 

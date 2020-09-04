@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Benchmark Decorator."""
 # first-party
 from tcex import Benchmark

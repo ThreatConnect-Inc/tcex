@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Adversary """
 # standard library
 from urllib.parse import quote_plus

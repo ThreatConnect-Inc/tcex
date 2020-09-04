@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework TcexJson Object."""
 # standard library
 import json
@@ -39,7 +38,7 @@ class TcexJson:
         """Return install.json contents."""
         if self._contents is None:
             try:
-                with open(self.filename, 'r') as fh:
+                with open(self.filename) as fh:
                     contents = json.load(fh, object_pairs_hook=OrderedDict)
 
                     # replace all variables

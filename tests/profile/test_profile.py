@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Utils Module."""
 # standard library
 import json
@@ -28,7 +27,7 @@ class TestProfileAdd:
             filename (str): The filename to load.
         """
         profile_filename = os.path.join(self.profile_dir, filename)
-        with open(profile_filename, 'r') as fh:
+        with open(profile_filename) as fh:
             return json.load(fh)
 
     @property
@@ -45,7 +44,7 @@ class TestProfileAdd:
                     'read_keys': '#App:1234:read_keys!KeyValueArray',
                     'tc_action': 'Read Keys',
                     'vault_token': '$env.PYTEST_PWD',
-                    'vault_url': 'https://vault-01.tci.ninja:8200',
+                    'vault_addr': 'https://vault-01.tci.ninja:8200',
                 },
             },
             'options': {'session': {'blur': [], 'enabled': False}},

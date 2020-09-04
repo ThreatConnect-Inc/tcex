@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Class to set App lib directory for current version of Python"""
 # standard library
 import os
@@ -17,7 +16,7 @@ class AppLib:
         self.lib_minor_version = f'{self.lib_major_version}.{sys.version_info.minor}'
         self.lib_micro_version = f'{self.lib_minor_version}.{sys.version_info.micro}'
 
-    def find_lib_directory(self):
+    def find_lib_directory(self) -> str:
         """Find the optimal lib directory."""
         lib_directory = None
         if self.lib_micro_version in self.lib_directories:
@@ -38,7 +37,7 @@ class AppLib:
         return lib_directory
 
     @property
-    def lib_directories(self):
+    def lib_directories(self) -> list:
         """Return all "lib_" directories."""
         if self._lib_directories is None:
             self._lib_directories = []
@@ -50,7 +49,7 @@ class AppLib:
                     self._lib_directories.append(c)
         return sorted(self._lib_directories, reverse=True)
 
-    def update_path(self):
+    def update_path(self) -> None:
         """Update sys path to ensure all required modules can be found.
 
         All Apps must be able to access included modules, this method will ensure that the system

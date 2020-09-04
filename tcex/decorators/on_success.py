@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """App Decorators Module."""
 # third-party
 import wrapt

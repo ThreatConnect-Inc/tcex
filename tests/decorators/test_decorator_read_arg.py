@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx ReadArg Decorator."""
 # third-party
 import pytest
@@ -6,8 +5,9 @@ import pytest
 # first-party
 from tcex import ReadArg
 
-
 # pylint: disable=no-self-use
+
+
 class TestReadArgDecorators:
     """Test the TcEx ReadArg Decorators."""
 
@@ -31,9 +31,7 @@ class TestReadArgDecorators:
         self.args = self.tcex.args
         assert self.read_arg_single() == config_data.get('color')
 
-    @ReadArg(
-        'color', fail_on=[None, ''], fail_enabled=True, fail_msg='Invalid value provided for color.'
-    )
+    @ReadArg('color', fail_on=[None, ''], fail_enabled=True)
     def read_arg_single_fail_on(self, **kwargs):
         """Test fail on input decorator with no arg value (use first arg input)."""
         return kwargs.get('color')
@@ -52,7 +50,10 @@ class TestReadArgDecorators:
             assert False, 'fail on value was not caught'
         except SystemExit as e:
             assert e.code == 1
-            assert self.exit_message == 'Invalid value provided for color.'
+            assert (
+                self.exit_message
+                == 'Invalid value (None) found for "Color": "Color" (color) cannot be in [None, ""]'
+            )
 
     @ReadArg('color')
     @ReadArg('fruit')
@@ -74,10 +75,7 @@ class TestReadArgDecorators:
 
     @ReadArg('color')
     @ReadArg(
-        'fruit',
-        fail_on=[None, ''],
-        fail_enabled='fail_on_error',
-        fail_msg='Invalid value provided for fruit.',
+        'fruit', fail_on=[None, ''], fail_enabled='fail_on_error',
     )
     def read_arg_double_fail_on(self, color, fruit):
         """Test fail on input decorator with no arg value (use first arg input)."""
@@ -97,7 +95,10 @@ class TestReadArgDecorators:
             assert False, 'fail on value was not caught'
         except SystemExit as e:
             assert e.code == 1
-            assert self.exit_message == 'Invalid value provided for fruit.'
+            assert (
+                self.exit_message
+                == 'Invalid value (None) found for "Fruit": "Fruit" (fruit) cannot be in [None, ""]'
+            )
 
     @ReadArg('color')
     @ReadArg('fruit', default='pear')
@@ -325,3 +326,100 @@ class TestReadArgDecorators:
         self.tcex.playbook.create_key_value(variable, value)
         self.args = self.tcex.args
         assert self.read_arg_strip() == value
+
+    @ReadArg(
+        'color',
+        fail_on=[''],
+        to_float=True,
+        to_int={'allow_none': True},
+        equal_to=123,
+        in_range={'min': 100, 'max': 200},
+        less_than=150,
+    )
+    def read_arg_validators(self, **kwargs):
+        """Test various validators and transforms."""
+        return kwargs.get('color')
+
+    @ReadArg(
+        'color',
+        fail_on=[''],
+        to_float=True,
+        to_int={'allow_none': True},
+        equal_to=123,
+        in_range={'min': 100, 'max': 200},
+        less_than=150,
+        fail_msg='Custom fail msg.',
+    )
+    def read_arg_validators_Fail_msg(self, **kwargs):
+        """Test various validators and transforms."""
+        return kwargs.get('color')
+
+    @ReadArg('color', fail_on=[''], to_int=[], equal_to=123, in_range=[100, 200], less_than=150)
+    def read_arg_validators_diff(self, **kwargs):
+        """functionally the same as above but uses different input methods to exercise code."""
+        return kwargs.get('color')
+
+    def test_validators(self, playbook_app):
+        """Test validators happy-path."""
+        config_data = {'color': '123'}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.args = self.tcex.args
+        assert self.read_arg_validators() == 123
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:colours!String', 123)],
+    )
+    def test_validators_string(self, variable, value, playbook_app):
+        """Test a string input that should pass."""
+        config_data = {'color': variable}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.tcex.playbook.create_string(variable, value)
+        self.args = self.tcex.args
+        assert self.read_arg_validators() == value
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0001:colours!StringArray', [123, 123])],
+    )
+    def test_validators_string_array(self, variable, value, playbook_app):
+        """Test a string array."""
+        config_data = {'color': variable}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.tcex.playbook.create_string_array(variable, value)
+        self.args = self.tcex.args
+        assert self.read_arg_validators_diff() == value
+
+    def test_validators_fail_on(self, playbook_app):
+        """Test that fail_on still works."""
+        config_data = {'color': ''}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.args = self.tcex.args
+        try:
+            self.read_arg_validators()
+            assert False, 'Should have failed!'
+        except SystemExit:
+            assert (
+                self.exit_message
+                == 'Invalid value ("") found for "Color": "Color" (color) must be a float.'
+            )
+
+    def test_validators_fail_msg(self, playbook_app):
+        """Test validators that fail."""
+        config_data = {'color': '90'}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.args = self.tcex.args
+        try:
+            self.read_arg_validators_Fail_msg()
+            assert False, 'Should have failed!'
+        except SystemExit:
+            assert self.exit_message == 'Custom fail msg.'
+
+    def test_transforms_fail_msg(self, playbook_app):
+        """Test validators that fail."""
+        config_data = {'color': 'abc'}
+        self.tcex = playbook_app(config_data=config_data).tcex
+        self.args = self.tcex.args
+        try:
+            self.read_arg_validators_Fail_msg()
+            assert False, 'Should have failed!'
+        except SystemExit:
+            assert self.exit_message == 'Custom fail msg.'

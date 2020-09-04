@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Framework Test Generation Module."""
 # standard library
 import copy
@@ -119,7 +118,7 @@ class Test(Bin):
         """Load staging data to migrate legacy templates."""
         staging_data = {}
         for sf in staging_files:
-            with open(sf, 'r') as fh:
+            with open(sf) as fh:
                 data = json.load(fh)
             for d in data:
                 staging_data[d.get('variable')] = d.get('data')
@@ -130,10 +129,10 @@ class Test(Bin):
         data = []
         profile_file = os.path.join(self.app_path, 'tcex.d', 'profiles', self.args.profile_file)
         if os.path.isfile(self.args.profile_file):
-            with open(self.args.profile_file, 'r') as fh:
+            with open(self.args.profile_file) as fh:
                 data = json.load(fh)
         elif os.path.isfile(profile_file):
-            with open(profile_file, 'r') as fh:
+            with open(profile_file) as fh:
                 data = json.load(fh)
         else:
             self.handle_error(f'Error reading in profile file: {self.args.profile_file}', True)

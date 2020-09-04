@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
 # standard library
 import base64

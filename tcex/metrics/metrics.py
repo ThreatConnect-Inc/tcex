@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
 
 

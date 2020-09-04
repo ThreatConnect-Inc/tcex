@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Playbook module"""
 # standard library
 import base64
@@ -150,6 +149,8 @@ class PlaybooksBase:
     @staticmethod
     def _is_key_value(data):
         """Return True if provided data has proper structure for Key Value."""
+        if data is None:
+            return False
         return all(x in data for x in ['key', 'value'])
 
     def _is_key_value_array(self, data):
@@ -162,6 +163,8 @@ class PlaybooksBase:
     @staticmethod
     def _is_tc_entity(data):
         """Return True if provided data has proper structure for TC Entity."""
+        if data is None:
+            return False
         return all(x in data for x in ['id', 'value', 'type'])
 
     def _is_tc_entity_array(self, data):
@@ -345,7 +348,6 @@ class PlaybooksBase:
 
         Args:
             value (str): The value to parsed and updated from the DB.
-            parent_var_type (str): The parent type of the embedded variable.
 
         Returns:
             (str): Results retrieved from DB
@@ -364,6 +366,10 @@ class PlaybooksBase:
 
             if v is not None:
                 # only replace variable if a non-null value is returned from kv store
+                # APP-1030 need to revisit this to handle variable references in kv/kvarrays that
+                # are None.  Would like to be able to say if value is just the variable reference,
+                # sub None value, else insert '' in string.  That would require a kv-specific
+                # version of this method that gets the entire list/dict instead of just the string.
                 value = re.sub(variable, v, value)
         return value
 

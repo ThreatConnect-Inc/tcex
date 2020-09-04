@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Datetime Utilities Module"""
 # standard library
 import calendar
@@ -6,6 +5,7 @@ import math
 import re
 import time
 from datetime import datetime
+from typing import Optional
 
 # third-party
 import parsedatetime as pdt
@@ -19,8 +19,15 @@ class DatetimeUtils:
     """TcEx framework Datetime Utils module"""
 
     @staticmethod
-    def _replace_timezone(dateutil_parser):
-        """Replace the timezone on a datetime object."""
+    def _replace_timezone(dateutil_parser: object) -> object:
+        """Replace the timezone on a datetime object.
+
+        Args:
+            dateutil_parser: The dateutil object.
+
+        Returns:
+            object: Update dateutils object.
+        """
         try:
             # try to get the timezone from tzlocal
             tzinfo = pytz.timezone(get_localzone().zone)
@@ -33,7 +40,7 @@ class DatetimeUtils:
                 tzinfo = pytz.timezone('UTC')
         return tzinfo.localize(dateutil_parser)
 
-    def any_to_datetime(self, time_input, tz=None):
+    def any_to_datetime(self, time_input: str, tz: Optional[str] = None) -> datetime:
         """Return datetime object from multiple formats.
 
             Formats:
@@ -44,23 +51,23 @@ class DatetimeUtils:
             #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
+            time_input: The time input string (see formats above).
+            tz): The time zone for the returned data.
 
         Returns:
             (datetime.datetime): Python datetime.datetime object.
         """
         # handle timestamp (e.g. 1510686617 or 1510686617.298753)
-        dt_value = self.unix_time_to_datetime(time_input, tz)
+        dt_value: Optional[object] = self.unix_time_to_datetime(time_input, tz)
 
         # handle ISO or other formatted date (e.g. 2017-11-08T16:52:42Z,
         # 2017-11-08T16:52:42.400306+00:00)
         if dt_value is None:
-            dt_value = self.date_to_datetime(time_input, tz)
+            dt_value: Optional[object] = self.date_to_datetime(time_input, tz)
 
         # handle human readable relative time (e.g. 30 days ago, last friday)
         if dt_value is None:
-            dt_value = self.human_date_to_datetime(time_input, tz)
+            dt_value: Optional[object] = self.human_date_to_datetime(time_input, tz)
 
         # if all attempt to convert fail raise an error
         if dt_value is None:
@@ -68,12 +75,12 @@ class DatetimeUtils:
 
         return dt_value
 
-    def date_to_datetime(self, time_input, tz=None):
+    def date_to_datetime(self, time_input: str, tz: Optional[str] = None) -> datetime:
         """Convert ISO 8601 and other date strings to datetime.datetime type.
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
+            time_input: The time input string (see formats above).
+            tz: The time zone for the returned data.
 
         Returns:
             (datetime.datetime): Python datetime.datetime object.
@@ -81,7 +88,7 @@ class DatetimeUtils:
         dt = None
         try:
             # dt = parser.parse(time_input, fuzzy_with_tokens=True)[0]
-            dt = parser.parse(time_input)
+            dt: object = parser.parse(time_input)
             # don't convert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
                 if dt.tzinfo is None:
@@ -95,7 +102,9 @@ class DatetimeUtils:
             pass
         return dt
 
-    def format_datetime(self, time_input, tz=None, date_format=None):
+    def format_datetime(
+        self, time_input: str, tz: Optional[str] = None, date_format: Optional[str] = None
+    ) -> str:
         """Return timestamp from multiple input formats.
 
             Formats:
@@ -109,9 +118,9 @@ class DatetimeUtils:
                   does not natively support **%s**, however this method has support.
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
-            date_format (string): The strftime format to use, ISO by default.
+            time_input: The time input string (see formats above).
+            tz: The time zone for the returned data.
+            date_format: The strftime format to use, ISO by default.
 
         Returns:
             (string): Formatted datetime string.
@@ -130,7 +139,9 @@ class DatetimeUtils:
 
         return dt_value
 
-    def human_date_to_datetime(self, time_input, tz=None, source_datetime=None):
+    def human_date_to_datetime(
+        self, time_input: str, tz: Optional[str] = None, source_datetime: Optional[datetime] = None
+    ) -> datetime:
         """Convert human readable date (e.g. 30 days ago) to datetime.datetime.
 
         Examples:
@@ -154,9 +165,9 @@ class DatetimeUtils:
         * 2 days from tomorrow
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned datetime.
-            source_datetime (datetime.datetime): The reference or source datetime.
+            time_input: The time input string (see formats above).
+            tz: The time zone for the returned datetime.
+            source_datetime: The reference or source datetime.
 
         Returns:
             (datetime.datetime): Python datetime.datetime object.
@@ -184,21 +195,21 @@ class DatetimeUtils:
 
         return dt
 
-    def timedelta(self, time_input1, time_input2):
+    def timedelta(self, time_input1: str, time_input2: str) -> dict:
         """Calculate the time delta between two time expressions.
 
         Args:
-            time_input1 (string): The time input string (see formats above).
-            time_input2 (string): The time input string (see formats above).
+            time_input1: The time input string (see formats above).
+            time_input2: The time input string (see formats above).
 
         Returns:
             (dict): Dict with delta values.
         """
-        time_input1 = self.any_to_datetime(time_input1)
-        time_input2 = self.any_to_datetime(time_input2)
+        time_input1: datetime = self.any_to_datetime(time_input1)
+        time_input2: datetime = self.any_to_datetime(time_input2)
 
         diff = time_input1 - time_input2  # timedelta
-        delta = relativedelta(time_input1, time_input2)  # relativedelta
+        delta: object = relativedelta(time_input1, time_input2)  # relativedelta
 
         # totals
         total_months = (delta.years * 12) + delta.months
@@ -229,7 +240,7 @@ class DatetimeUtils:
         }
 
     @staticmethod
-    def unix_time_to_datetime(time_input, tz=None):
+    def unix_time_to_datetime(time_input: str, tz: Optional[str] = None):
         """Convert timestamp into datetime.
 
         Convert (unix time|epoch time|posix time) in format of 1510686617
@@ -240,8 +251,8 @@ class DatetimeUtils:
         .. note:: This method only accepts a 9-10 character time_input.
 
         Args:
-            time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned datetime (e.g. UTC).
+            time_input: The time input string (see formats above).
+            tz: The time zone for the returned datetime (e.g. UTC).
 
         Returns:
             (datetime.datetime): Python datetime.datetime object.

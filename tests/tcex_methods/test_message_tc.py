@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Batch Module."""
 # standard library
 import os
@@ -33,7 +32,7 @@ class TestMessageTc:
             assert False, f'The message.tc file {message_tc_file} could not be found.'
 
         # read contents of file for assert
-        with open(message_tc_file, 'r') as fh:
+        with open(message_tc_file) as fh:
             message_tc = fh.read()
 
         # add a new line if not already there (tcex will add a newline if it doesn't exist)
@@ -71,7 +70,7 @@ class TestMessageTc:
             assert False, f'The message.tc file {message_tc_file} could not be found.'
 
         # read contents of file for assert
-        with open(message_tc_file, 'r') as fh:
+        with open(message_tc_file) as fh:
             message_tc = fh.read()
 
         # add a new line if not already there (tcex will add a newline if it doesn't exist)
@@ -108,7 +107,7 @@ class TestMessageTc:
             assert False, f'The message.tc file {message_tc_file} could not be found.'
 
         # read contents of file for assert
-        with open(message_tc_file, 'r') as fh:
+        with open(message_tc_file) as fh:
             message_tc = fh.read()
 
         # add a new line if not already there (tcex will add a newline if it doesn't exist)

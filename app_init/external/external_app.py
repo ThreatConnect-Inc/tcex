@@ -1,22 +1,24 @@
-# -*- coding: utf-8 -*-
 """External App Template."""
+from tcex import TcEx
 
 
 class ExternalApp:
     """Get the owners and indicators in the given owner."""
 
-    def __init__(self, _tcex):
+    def __init__(self, _tcex: TcEx):
         """Initialize class properties."""
-        self.tcex = _tcex
+        self.tcex: TcEx = _tcex
+
+        # properties
         self.args = None
         self.exit_message = 'Success'
-        self.args = self.tcex.args
+        self.args: object = self.tcex.args
 
-    def run(self):
+    def run(self) -> None:
         """Run the App main logic."""
         self.tcex.log.info('No run logic provided.')
 
-    def setup(self):
+    def setup(self) -> None:
         """Perform prep/setup logic."""
         # run legacy method
         if hasattr(self, 'start'):
@@ -24,7 +26,7 @@ class ExternalApp:
             self.start()  # pylint: disable=no-member
         self.tcex.log.trace('setup')
 
-    def teardown(self):
+    def teardown(self) -> None:
         """Perform cleanup/teardown logic."""
         # run legacy method
         if hasattr(self, 'done'):

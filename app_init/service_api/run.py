@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Playbook App"""
 # standard library
 import traceback
@@ -8,7 +7,7 @@ from app_lib import AppLib
 
 
 # pylint: disable=no-member
-def run(**kwargs):
+def run(**kwargs) -> None:
     """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules
@@ -49,23 +48,20 @@ def run(**kwargs):
         tcex.service.ready = True
 
         # loop until exit
-        tcex.log.info('Looping until shutdown')
+        tcex.log.info('feature=app, event=loop-forever')
         while tcex.service.loop_forever(sleep=1):
             pass
-
-        # start the webhook trigger (blocking)
-        # tcex.service.api_service(callback=app.api_callback)
 
         # perform cleanup/teardown operations
         app.teardown()
 
         # explicitly call the exit method
-        tcex.playbook.exit(msg=app.exit_message)
+        tcex.exit(msg=app.exit_message)
 
     except Exception as e:
-        main_err = f'Generic Error.  See logs for more details ({e}).'
+        main_err = f'Generic Error. See logs for more details ({e}).'
         tcex.log.error(traceback.format_exc())
-        tcex.playbook.exit(1, main_err)
+        tcex.exit(1, main_err)
 
 
 if __name__ == '__main__':

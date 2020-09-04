@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Case Management Module."""
 # standard library
 import os

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Env Store Module"""
 # standard library
 import logging
@@ -28,7 +27,7 @@ class EnvStore:
         self._vault_client = None
         self.cache = {}
         self.vault_token = os.getenv('VAULT_TOKEN')
-        self.vault_url = os.getenv('VAULT_URL')
+        self.vault_addr = os.getenv('VAULT_ADDR') or os.getenv('VAULT_URL')
 
     @staticmethod
     def _convert_env(env_variable):
@@ -136,6 +135,6 @@ class EnvStore:
     def vault_client(self):
         """Return configured vault client."""
         if self._vault_client is None and 'hvac' in sys.modules:
-            if self.vault_url is not None and self.vault_token is not None:
-                self._vault_client = hvac.Client(url=self.vault_url, token=self.vault_token)
+            if self.vault_addr is not None and self.vault_token is not None:
+                self._vault_client = hvac.Client(url=self.vault_addr, token=self.vault_token)
         return self._vault_client

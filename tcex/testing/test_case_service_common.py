@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Service Common Module"""
 # standard library
 import base64
@@ -11,10 +10,9 @@ import time
 import uuid
 from multiprocessing import Process
 from random import randint
+from typing import Any, Optional
 
-# third-party
-import paho.mqtt.client as mqtt
-
+from ..services import MqttMessageBroker
 from .test_case_playbook_common import TestCasePlaybookCommon
 
 
@@ -22,6 +20,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     """Service App TestCase Class"""
 
     _mqtt_client = None
+    _message_broker = None
     app_process = None
     client_topic = f'client-topic-{randint(100, 999)}'
     server_topic = f'server-topic-{randint(100, 999)}'
@@ -47,6 +46,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
                 'tc_svc_broker_host': os.getenv('TC_SVC_BROKER_HOST', 'localhost'),
                 'tc_svc_broker_port': int(os.getenv('TC_SVC_BROKER_PORT', '1883')),
                 'tc_svc_broker_service': os.getenv('TC_SVC_BROKER_SERVICE', 'mqtt'),
+                'tc_svc_broker_conn_timeout': int(os.getenv('TC_SVC_BROKER_CONN_TIMEOUT', '15')),
                 'tc_svc_broker_token': os.getenv('TC_SVC_BROKER_TOKEN'),
                 'tc_svc_client_topic': self.client_topic,
                 'tc_svc_server_topic': self.server_topic,
@@ -56,34 +56,32 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         return args
 
     @property
+    def message_broker(self):
+        """Return an instance of MqttMessageBroker."""
+        if self._message_broker is None:
+            self._message_broker = MqttMessageBroker(
+                broker_host=self.default_args.get('tc_svc_broker_host'),
+                broker_port=self.default_args.get('tc_svc_broker_port'),
+                broker_timeout=self.default_args.get('tc_svc_broker_conn_timeout'),
+                logger=self.log,
+            )
+            self._message_broker.register_callbacks()
+
+        return self._message_broker
+
+    @property
     def mqtt_client(self):
         """Return a mqtt client instance."""
-        if self._mqtt_client is None:
-            self._mqtt_client = mqtt.Client()
-            self._mqtt_client.connect(
-                self.tcex.args.tc_svc_broker_host,
-                self.tcex.args.tc_svc_broker_port,
-                self.tcex.args.tc_svc_broker_timeout,
-            )
-        return self._mqtt_client
+        return self.message_broker.client
 
-    def publish(self, message, topic=None):
+    def publish(self, message: str, topic: Optional[str] = None):
         """Publish message on server channel.
 
         Args:
-            message (str): The message to send.
-            topic (str, optional): The message broker topic. Defaults to None.
+            message: The message to send.
+            topic: The message broker topic. Defaults to None.
         """
-        topic = topic or self.server_topic
-
-        # self.log.debug(f'topic: ({topic})')
-        # self.log.debug(f'message: ({message})')
-        # self.log.debug(f'broker_service: ({self.tcex.args.tc_svc_broker_service})')
-
-        if self.tcex.args.tc_svc_broker_service.lower() == 'mqtt':
-            self.mqtt_client.publish(topic, message)
-        elif self.tcex.args.tc_svc_broker_service.lower() == 'redis':
-            self.redis_client.publish(topic, message)
+        self.message_broker.publish(message, topic)
 
     def publish_create_config(self, message):
         """Send create config message.
@@ -104,7 +102,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         message['command'] = 'CreateConfig'
         message['config']['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
         message['triggerId'] = message.pop('trigger_id')
-        self.publish(json.dumps(message))
+        self.message_broker.publish(json.dumps(message), self.server_topic)
         time.sleep(self.sleep_after_publish_config)
 
     def publish_delete_config(self, message):
@@ -116,33 +114,39 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         time.sleep(self.sleep_before_delete_config)
         # using triggerId here instead of trigger_id do to pop in publish_create_config
         config_msg = {'command': 'DeleteConfig', 'triggerId': message.get('triggerId')}
-        self.publish(json.dumps(config_msg))
+        self.message_broker.publish(json.dumps(config_msg), self.server_topic)
+
+    def publish_heartbeat(self):
+        """Send heartbeat message to service."""
+        shutdown_msg = {'command': 'Heartbeat', 'metric': {}, 'memoryPercent': 0, 'cpuPercent': 0}
+        self.message_broker.publish(json.dumps(shutdown_msg), self.server_topic)
 
     def publish_shutdown(self):
         """Publish shutdown message."""
         config_msg = {'command': 'Shutdown'}
-        self.publish(json.dumps(config_msg))
+        self.message_broker.publish(json.dumps(config_msg), self.server_topic)
 
     def publish_webhook_event(
         self,
-        trigger_id,
-        body=None,
-        headers=None,
-        method='GET',
-        query_params=None,
-        request_key='abc123',
+        trigger_id: int,
+        body: Optional[Any] = None,
+        headers: Optional[list] = None,
+        method: Optional[str] = 'GET',
+        query_params: Optional[list] = None,
+        request_key: Optional[str] = None,
     ):
         """Send create config message.
 
         Args:
-            trigger_id (str): The trigger ID.
-            body (str): The Body of the request.
-            headers (list, optional): A list of headers name/value pairs. Defaults to [].
-            method (str, optional): The method. Defaults to 'GET'.
-            query_params (list, optional): A list of query param name/value pairs. Defaults to [].
-            request_key (str, optional): The current request key.
+            trigger_id: The trigger ID.
+            body: The HTTP request body.
+            headers: The HTTP request headers name/value pairs.
+            method: The HTTP request method.
+            query_params: The HTTP request query param name/value pairs.
+            request_key: The current request key.
         """
         body = body or ''
+        request_key = request_key or str(uuid.uuid4())
         if isinstance(body, dict):
             body = json.dumps(body)
 
@@ -158,7 +162,44 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             'requestKey': request_key,
             'triggerId': trigger_id,
         }
-        self.publish(json.dumps(event))
+        self.message_broker.publish(json.dumps(event), self.server_topic)
+        time.sleep(self.sleep_after_publish_webhook_event)
+
+    def publish_marshall_webhook_event(
+        self,
+        trigger_id: int,
+        body: Optional[Any] = None,
+        headers: Optional[list] = None,
+        request_key: Optional[str] = None,
+        status_code: Optional[int] = 200,
+    ):
+        """Send create config message.
+
+        Args:
+            trigger_id: The trigger ID.
+            body: The HTTP response Body.
+            headers: The HTTP response headers name/value pairs.
+            request_key: The request key to reply with.
+            status_code: The HTTP response status code.
+            request_key: The current request key.
+        """
+        body = body or ''
+        request_key = request_key or str(uuid.uuid4())
+        if isinstance(body, dict):
+            body = json.dumps(body)
+
+        body = self.redis_client.hset(
+            request_key, 'request.body', base64.b64encode(body.encode('utf-8'))
+        )
+        event = {
+            'command': 'WebhookMarshallEvent',
+            'headers': headers or [],
+            'body': 'request.body',
+            'requestKey': request_key,
+            'triggerId': trigger_id,
+            'statusCode': status_code,
+        }
+        self.message_broker.publish(json.dumps(event), self.server_topic)
         time.sleep(self.sleep_after_publish_webhook_event)
 
     def run(self):
@@ -183,7 +224,6 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             # run the Service App as a subprocess
             self.app_process = subprocess.Popen(['python', 'run.py'])
         elif self.service_run_method == 'thread':
-
             # run App in a thread
             t = threading.Thread(target=self.run, args=(), daemon=True)
             t.start()

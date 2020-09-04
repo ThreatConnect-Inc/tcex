@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """MonkeyPatch Testing Module"""
 # pylint: disable=cell-var-from-loop,redefined-outer-name
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Exchange App Feature Advanced Request Module"""
 # standard library
 import json
@@ -58,7 +57,7 @@ class AdvancedRequest:
             except ValueError:  # pragma: no cover
                 self.tcex.log.error('Failed loading body as JSON data.')
 
-    @ReadArg('tc_adv_req_headers', array=True)
+    @ReadArg('tc_adv_req_headers', array=True, embedded=False)
     def configure_headers(self, tc_adv_req_headers: List[Dict[str, str]]):
         """Configure Headers
 
@@ -71,9 +70,10 @@ class AdvancedRequest:
             tc_adv_req_headers (List[Dict[str, str]]): A dict of headers.
         """
         for header_data in tc_adv_req_headers:
-            self.headers[str(header_data.get('key'))] = header_data.get('value')
+            value: str = self.tcex.playbook.read(header_data.get('value'))
+            self.headers[str(header_data.get('key'))] = str(value)
 
-    @ReadArg('tc_adv_req_params', array=True)
+    @ReadArg('tc_adv_req_params', array=True, embedded=False)
     def configure_params(self, tc_adv_req_params: List[Dict[str, str]]):
         """Configure Params
 
@@ -87,7 +87,7 @@ class AdvancedRequest:
         """
         for param_data in tc_adv_req_params:
             param: str = str(param_data.get('key'))
-            values: str = param_data.get('value')
+            values: str = self.tcex.playbook.read(param_data.get('value'))
             if not isinstance(values, list):
                 values: list = [values]
             for value in values:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 # standard library
 import json
@@ -8,6 +7,7 @@ import math
 import re
 import sys
 from base64 import b64encode
+from typing import Optional, Union
 
 # third-party
 import colorama as c
@@ -17,14 +17,14 @@ c.init(autoreset=True, strip=False)
 
 
 class Interactive:
-    """Testing Profile Interactive Class.
+    """Testing Profile Interactive Class."""
 
-    Args:
-        profile (Profile): The profile object to build interactive inputs.
-    """
+    def __init__(self, profile: object):
+        """Initialize Class properties.
 
-    def __init__(self, profile):
-        """Initialize Class properties."""
+        Args:
+            profile (Profile): The profile object to build interactive inputs.
+        """
         self.profile = profile
 
         # properties
@@ -56,24 +56,31 @@ class Interactive:
         }
         # self.user_defaults_filename = os.path.join('tests', '.user_defaults')
 
-    def _default(self, data, data_type=None):  # pylint: disable=unused-argument
-        """Return the best option for default."""
+    def _default(self, data: dict) -> Union[list, str]:  # pylint: disable=unused-argument
+        """Return the best option for default.
+
+        Args:
+            data: The install.json params object.
+
+        Returns:
+            list, str: The default value for the input.
+        """
         if data.get('type').lower() == 'boolean':
             default = str(data.get('default', 'false')).lower()
         elif data.get('type').lower() == 'choice':
             default = 0
-            valid_values = self._expand_valid_values(data.get('validValues', []))
+            valid_values: list = self._expand_valid_values(data.get('validValues', []))
             if data.get('name') == 'tc_action':
                 for vv in valid_values:
                     if self.profile.feature.lower() == vv.replace(' ', '_').lower():
                         default = vv
                         break
             else:
-                default = data.get('default')
+                default: str = data.get('default')
         elif data.get('type').lower() == 'multichoice':
-            default = data.get('default')
+            default: str = data.get('default')
             if default is not None and isinstance(default, str):
-                default = default.split('|')
+                default: list = default.split('|')
         else:
             default = data.get('default')
             # if default is None:
@@ -81,7 +88,7 @@ class Interactive:
             #     default = self.user_defaults.get(data.get('name'))
         return default
 
-    def _expand_valid_values(self, valid_values):
+    def _expand_valid_values(self, valid_values: list) -> list:
         """Expand supported playbook variables to their full list.
 
         Args:
@@ -175,8 +182,16 @@ class Interactive:
 
         return valid_values
 
-    def _input_value(self, label, option_text=None):
-        """Return user input."""
+    def _input_value(self, label: str, option_text: Optional[str] = None) -> str:
+        """Return user input.
+
+        Args:
+            label: The label to display to the user.
+            option_text: the Option text to display to the user.
+
+        Returns:
+            str: The value selected by the user.
+        """
         # update option text to include help message
         option_text = option_text or ''
         if option_text:
@@ -195,13 +210,26 @@ class Interactive:
         return input_value
 
     @staticmethod
-    def _split_list(data):
-        """Split a list in two "equal" parts."""
-        half = math.ceil(len(data) / 2)
+    def _split_list(data: list) -> tuple:
+        """Split a list in two "equal" parts.
+
+        Args:
+            data: The list of data to split into two equal parts.
+
+        Returns:
+            tuple: The two halves of the list.
+        """
+        half: int = math.ceil(len(data) / 2)
         return data[:half], data[half:]
 
-    def add_input(self, name, data, value):
-        """Add an input to inputs."""
+    def add_input(self, name: str, data: dict, value: str) -> None:
+        """Add an input to inputs.
+
+        Args:
+            name: The name of the input.
+            data: The install.json params object.
+            value: The value for the input.
+        """
         if data.get('required', False):
             self._inputs['required'].setdefault(name, value)
         else:
@@ -220,37 +248,40 @@ class Interactive:
     #     if self.user_defaults.get('base') is None:
     #         self.user_defaults['base'] = self.user_defaults[self.profile.feature]
 
-    def add_staging_data(self, name, type_, value):
+    def add_staging_data(self, name: str, type_: str, value: str) -> str:
         """Create staging data and return variable value.
 
         Args:
-            name (str): The name of the input.
-            type_ (str): The type of input (Binary, StringArray, etc.)
-            value (str): The value to write in the staging data.
+            name: The name of the input.
+            type_: The type of input (Binary, StringArray, etc.)
+            value: The value to write in the staging data.
 
         Returns:
-            [type]: [description]
+            str: The newly create variable string.
         """
         arg_value = value
         if (
             self.profile.ij.runtime_level.lower() not in ['triggerservice', 'webhooktriggerservice']
             and value is not None
         ):
-            arg_value = self.profile.ij.create_variable(name, type_)
+            arg_value: str = self.profile.ij.create_variable(name, type_)
             self._staging_data['kvstore'].setdefault(arg_value, value)
 
         return arg_value
 
-    def collect_binary(self, **kwargs):
+    def collect_binary(self, **kwargs) -> str:
         """Collect binary data
 
         Args:
             default (str, kwargs): The default value if no value provided by user.
-            feedback (book, kwargs): If True user feedback will be printed.
+            feedback (bool, kwargs): If True user feedback will be printed.
             option_text (str, kwargs): The text shown to the user.
             required (str, kwargs): If True the user cannot continue until they provide a value.
+
+        Returns:
+            str: The input str from the user.
         """
-        input_value = self._input_value('Input', kwargs.get('option_text'))
+        input_value: str = self._input_value('Input', kwargs.get('option_text'))
         if not input_value:
             # if no default value and required force user to input again
             if kwargs.get('default') is None and kwargs.get('required') is True:
@@ -258,10 +289,10 @@ class Interactive:
                 return self.collect_binary(**kwargs)
 
         if input_value not in [None, '']:
-            input_data = b64encode(input_value.encode()).decode()
+            input_data: str = b64encode(input_value.encode()).decode()
             feedback = f'{input_value} -> ({input_data})'
         else:
-            input_data = kwargs.get('default')
+            input_data: str = kwargs.get('default')
             feedback = input_data
 
         # print user feedback
@@ -270,11 +301,14 @@ class Interactive:
 
         return input_data
 
-    def collect_binary_array(self, **kwargs):
+    def collect_binary_array(self, **kwargs) -> list:
         """Collect binary array data
 
         Args:
             required (str, kwargs): If True the user cannot continue until they provide a value.
+
+        Returns:
+            list: The input list from the user.
         """
         input_values = []
         required = kwargs.get('required', False)
@@ -294,12 +328,15 @@ class Interactive:
 
         return input_values
 
-    def collect_boolean(self, **kwargs):
+    def collect_boolean(self, **kwargs) -> bool:
         """Collect binary data
 
         Args:
             default (str, kwargs): The default value if no value provided by user.
             option_text (str, kwargs): The text shown to the user.
+
+        Returns:
+            bool: The boolean value select by the user.
         """
         input_value = self._input_value('Input', kwargs.get('option_text'))
         if input_value == '':
@@ -317,7 +354,7 @@ class Interactive:
 
         return input_value
 
-    def collect_choice(self, **kwargs):
+    def collect_choice(self, **kwargs) -> str:
         """Collect choice data
 
         Args:
@@ -325,9 +362,12 @@ class Interactive:
             option_text (str, kwargs): The text shown to the user.
             required (str, kwargs): If True the user cannot continue until they provide a value.
             valid_values (str, kwargs): A list of valid values
+
+        Returns:
+            str: The users selected choice.
         """
         # collect input value from user and set default if required
-        input_value = self._input_value('Choice', kwargs.get('option_text')) or kwargs.get(
+        input_value: str = self._input_value('Choice', kwargs.get('option_text')) or kwargs.get(
             'default'
         )
 
@@ -341,7 +381,7 @@ class Interactive:
             return input_value
 
         # set valid values
-        valid_values = kwargs.get('valid_values', [])
+        valid_values: list = kwargs.get('valid_values', [])
 
         # convert to int or recollect input
         try:
@@ -369,8 +409,15 @@ class Interactive:
 
         return input_value
 
-    def collect_exit_code(self, **kwargs):
-        """Collect exit codes."""
+    def collect_exit_code(self, **kwargs) -> int:
+        """Collect exit codes.
+
+        Args:
+            option_text (str, kwargs): The text shown to the user.
+
+        Returns:
+            str: The users provided exit code.
+        """
         input_value = self._input_value('Code', kwargs.get('option_text'))
 
         if input_value != '':
@@ -386,8 +433,12 @@ class Interactive:
 
         return input_value
 
-    def collect_exit_codes(self, **kwargs):
-        """Collect exit codes."""
+    def collect_exit_codes(self, **kwargs) -> list:
+        """Collect exit codes.
+
+        Returns:
+            list: The users provided exit code.
+        """
         input_values = []
         while True:
             input_value = self.collect_exit_code(**kwargs)
@@ -404,8 +455,16 @@ class Interactive:
 
         return input_values
 
-    def collect_key_value(self, **kwargs):
-        """Collect key value data"""
+    def collect_key_value(self, **kwargs) -> dict:
+        """Collect key value data.
+
+        Args:
+            option_text (str, kwargs): The text shown to the user.
+            required (str, kwargs): If True the user cannot continue until they provide a value.
+
+        Returns:
+            dict: The users provided key value input.
+        """
         input_value = None
         key = self._input_value('Key', option_text=kwargs.get('option_text'))
 
@@ -426,10 +485,19 @@ class Interactive:
 
         return input_value
 
-    def collect_key_value_array(self, **kwargs):
-        """Collect key value array data"""
+    def collect_key_value_array(self, **kwargs) -> list:
+        """Collect key value array data
+
+        Args:
+            default (str, kwargs): The default value if no value provided by user.
+            option_text (str, kwargs): The text shown to the user.
+            required (str, kwargs): If True the user cannot continue until they provide a value.
+
+        Returns:
+            list: The users provided list of key value inputs.
+        """
         input_values = []
-        required = kwargs.get('required')
+        required: bool = kwargs.get('required')
         while True:
             input_value = self.collect_key_value(
                 default=kwargs.get('default'),
@@ -451,8 +519,16 @@ class Interactive:
 
         return input_values
 
-    def collect_multichoice(self, **kwargs):
-        """Collect multichoice data"""
+    def collect_multichoice(self, **kwargs) -> list:
+        """Collect multichoice data
+
+        Args:
+            required (str, kwargs): If True the user cannot continue until they provide a value.
+            valid_values (str, kwargs): A list of valid values
+
+        Returns:
+            list: The users provided list of choice inputs.
+        """
         input_values = []
         required = kwargs.get('required', False)
         while True:
@@ -480,12 +556,15 @@ class Interactive:
 
         return input_values
 
-    def collect_string(self, **kwargs):
+    def collect_string(self, **kwargs) -> str:
         """Collect string data
 
         Args:
             option_text (str, kwargs): The text shown to the user.
             default (str, kwargs): The default value if no value provided by user.
+
+        Returns:
+            str: The user provided input.
         """
         input_value = self._input_value('Input', kwargs.get('option_text', ''))
         if not input_value:
@@ -507,8 +586,15 @@ class Interactive:
 
         return input_value
 
-    def collect_string_array(self, **kwargs):
-        """Collect string array data"""
+    def collect_string_array(self, **kwargs) -> list:
+        """Collect string data
+
+        Args:
+            required (str, kwargs): If True the user cannot continue until they provide a value.
+
+        Returns:
+            str: The user provided input.
+        """
         input_values = []
         required = kwargs.get('required', False)
         while True:
@@ -527,8 +613,15 @@ class Interactive:
 
         return input_values
 
-    def collect_tcentity(self, **kwargs):
-        """Collect tcentity data"""
+    def collect_tcentity(self, **kwargs) -> dict:
+        """Collect tcentity data
+
+        Args:
+            required (str, kwargs): If True the user cannot continue until they provide a value.
+
+        Returns:
+            str: The user provided input.
+        """
         input_value = None
         id_ = self._input_value('ID')
         if id_:
@@ -546,8 +639,15 @@ class Interactive:
 
         return input_value
 
-    def collect_tcentity_array(self, **kwargs):
-        """Collect tcentity array data"""
+    def collect_tcentity_array(self, **kwargs) -> list:
+        """Collect tcentity array data
+
+        Args:
+            required (str, kwargs): If True the user cannot continue until they provide a value.
+
+        Returns:
+            list: The user provided inputs.
+        """
         input_values = []
         required = kwargs.get('required', False)
         while True:
@@ -567,14 +667,14 @@ class Interactive:
         return input_values
 
     @property
-    def inputs(self):
+    def inputs(self) -> dict:
         """Return inputs dict."""
         return self._inputs
 
-    def present(self):
+    def present(self) -> None:
         """Present interactive menu to build profile."""
 
-        def params_data():
+        def params_data() -> tuple:
             # handle non-layout and layout based App appropriately
             if self.profile.lj.has_layout:
                 # using inputs from layout.json since they are required to be in order
@@ -603,15 +703,23 @@ class Interactive:
                     continue
 
             # present the input
-            value = self.input_type_map.get(data.get('type').lower())(name, data)
+            value: str = self.input_type_map.get(data.get('type').lower())(name, data)
 
             # update inputs
             inputs[name] = value
 
         self.present_exit_code()
 
-    def present_boolean(self, name, data):
-        """Build a question for boolean input."""
+    def present_boolean(self, name: str, data) -> bool:
+        """Build a question for boolean input.
+
+        Args:
+            name: The name of the input field.
+            data: The install.json input param object.
+
+        Returns:
+            bool: The user provided input.
+        """
         # print header information
         self.print_header(data)
 
@@ -635,8 +743,16 @@ class Interactive:
 
         return value
 
-    def present_choice(self, name, data):
-        """Build a question for choice input."""
+    def present_choice(self, name: str, data: dict) -> str:
+        """Build a question for choice input.
+
+        Args:
+            name: The name of the input field.
+            data: The install.json input param object.
+
+        Returns:
+            str: The user provided input.
+        """
         # print header information
         self.print_header(data)
 
@@ -689,12 +805,15 @@ class Interactive:
 
         return value
 
-    def present_data_types(self, data_types, required=False):
+    def present_data_types(self, data_types: list, required: Optional[bool] = False) -> str:
         """Present data types options.
 
         Args:
-            data_types (list): A list of optional data types.
-            required (bool): If False the no selection option will be added.
+            data_types: A list of optional data types.
+            required: If False the no selection option will be added.
+
+        Returns:
+            str: The user provided input.
         """
         if 'Any' in data_types:
             data_types = [
@@ -739,13 +858,13 @@ class Interactive:
 
         return data_type
 
-    def present_exit_code(self):
+    def present_exit_code(self) -> None:
         """Provide user input for exit code."""
         self.print_header({'label': 'Exit Codes'})
         self.exit_codes = list(set(self.collect_exit_codes(default=[0], option_text='[0]')))
 
     @staticmethod
-    def present_help():
+    def present_help() -> None:
         """Provide user help information."""
         print(
             f'{c.Fore.CYAN}For String type inputs: \n'
@@ -754,8 +873,16 @@ class Interactive:
         )
         print(f'{c.Fore.CYAN}When done entering array data press enter to continue.')
 
-    def present_key_value_list(self, name, data):
-        """Build a question for key value list input."""
+    def present_key_value_list(self, name: str, data: dict) -> None:
+        """Build a question for key value list input.
+
+        Args:
+            name: The name of the input field.
+            data: The install.json input param object.
+
+        Returns:
+            str: The user provided input.
+        """
         # print header information
         self.print_header(data)
 
@@ -782,8 +909,16 @@ class Interactive:
 
         return variable
 
-    def present_multichoice(self, name, data):
-        """Build a question for choice input."""
+    def present_multichoice(self, name: str, data: dict) -> list:
+        """Build a question for multichoice input.
+
+        Args:
+            name: The name of the input field.
+            data: The install.json input param object.
+
+        Returns:
+            list: The user provided inputs.
+        """
         # print header information
         self.print_header(data)
 
@@ -842,8 +977,16 @@ class Interactive:
 
         return values
 
-    def present_string(self, name, data):
-        """Build a question for boolean input."""
+    def present_string(self, name: str, data: dict) -> str:
+        """Build a question for string input.
+
+        Args:
+            name: The name of the input field.
+            data: The install.json input param object.
+
+        Returns:
+            str: The user provided input.
+        """
         # display header information
         self.print_header(data)
 
@@ -861,7 +1004,7 @@ class Interactive:
             return None
 
         # the default value from install.json or user_data
-        default = self._default(data, data_type)
+        default = self._default(data)
 
         option_text = ''
         if default is not None:
@@ -889,15 +1032,19 @@ class Interactive:
         return variable
 
     @staticmethod
-    def print_feedback(feedback_value):
+    def print_feedback(feedback_value: Union[list, str]) -> None:
         """Print the value used."""
         print(f'Using value: {c.Fore.GREEN}{feedback_value}\n')
 
     @staticmethod
-    def print_header(data):
-        """Enrich the header with metadata."""
+    def print_header(data: dict) -> None:
+        """Enrich the header with metadata.
 
-        def _print_metadata(title, value):
+        Args:
+            data: The install.json input param object.
+        """
+
+        def _print_metadata(title: str, value: str) -> None:
             """Print the title and value"""
             print(f'{c.Fore.CYAN}{title!s:<22}: {c.Fore.RESET}{c.Style.BRIGHT}{value}')
 
@@ -936,30 +1083,34 @@ class Interactive:
         print('-' * 50)
 
     @staticmethod
-    def print_invalid_bool():
+    def print_invalid_bool() -> None:
         """Print a invalid bool error."""
         print(f'{c.Fore.RED}The provided value is not a boolean value (true/false).\n')
 
     @staticmethod
-    def print_invalid_exit_code():
+    def print_invalid_exit_code() -> None:
         """Print a invalid exit code error."""
         print(f'{c.Fore.RED}The provided value is not a valid exit code (0, 1).\n')
 
     @staticmethod
-    def print_invalid_index(range_):
-        """Print a invalid index error."""
+    def print_invalid_index(range_: str) -> None:
+        """Print a invalid index error.
+
+        Args:
+            range_: The range of possible value for choice or multichoice selections.
+        """
         print(
             f'{c.Fore.RED}The provided index value is not '
             f'valid, please select a valid value between {range_}.\n'
         )
 
     @staticmethod
-    def print_required():
+    def print_required() -> None:
         """Print a required error."""
         print(f'{c.Fore.RED}This input is required, please enter an appropriate value.\n')
 
     @property
-    def staging_data(self):
+    def staging_data(self) -> None:
         """Return staging data dict."""
         return self._staging_data
 

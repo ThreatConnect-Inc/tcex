@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Tag"""
 from .api_endpoints import ApiEndpoints
 from .common_case_management import CommonCaseManagement

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Base pytest configuration file."""
 # standard library
 import os

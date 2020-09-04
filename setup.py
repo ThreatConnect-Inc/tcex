@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Setup for TcEx Module."""
 # standard library
 import os
@@ -14,7 +13,7 @@ with open(metadata_file, mode='r', encoding='utf-8',) as f:
 if not metadata:
     raise RuntimeError(f'Could not load metadata file ({metadata_file}).')
 
-with open('README.md', 'r') as f:
+with open('README.md') as f:
     readme = f.read()
 
 dev_packages = [
@@ -28,12 +27,11 @@ dev_packages = [
     'mako',
     'pre-commit',
     'pydocstyle',
-    'pylint>2.5.0',
-    # restrict pytest version due to changes that break pytest-html
-    'pytest<6.0.0',
+    'pylint>=2.5.0',
+    'pytest',
     'pytest-cov',
     'pytest-html',
-    'pytest-xdist',
+    'pytest-xdist>=2.0.0',
     'pyupgrade',
     'recommonmark',
     'reno',
@@ -79,6 +77,7 @@ setup(
         'requests>=2.18.4',
         'six>=1.11.0',
         'stdlib-list>=0.6.0',
+        'stix2',
         'tzlocal',
         'wrapt',
     ],

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework InstallJson Object."""
 # standard library
 import json
@@ -215,7 +214,7 @@ class InstallJson:
 
         # get current branch
         if os.path.isfile(branch_file):
-            with open(branch_file, 'r') as f:
+            with open(branch_file) as f:
                 try:
                     branch = f.read().strip().split('/')[2]
                 except IndexError:
@@ -225,7 +224,7 @@ class InstallJson:
             if branch:
                 hash_file = f'.git/refs/heads/{branch}'
                 if os.path.isfile(hash_file):
-                    with open(hash_file, 'r') as f:
+                    with open(hash_file) as f:
                         commit_hash = f.read().strip()
         return commit_hash
 
@@ -262,7 +261,7 @@ class InstallJson:
         """Return install.json contents."""
         if self._contents is None:
             try:
-                with open(self.filename, 'r') as fh:
+                with open(self.filename) as fh:
                     self._contents = json.load(fh, object_pairs_hook=OrderedDict)
             except OSError:
                 self._contents = {'runtimeLevel': 'external'}
@@ -387,6 +386,10 @@ class InstallJson:
 
             params.setdefault(p.get('name'), p)
         return params
+
+    def has_feature(self, feature):
+        """Return True if App has the provided feature."""
+        return feature.lower() in [f.lower() for f in self.features]
 
     @property
     def optional_params_dict(self):
@@ -523,34 +526,34 @@ class InstallJson:
             json_data = json.load(fh)
 
             # update appId field
-            json_data = self.update_app_id(json_data)
+            self.update_app_id(json_data)
 
             # update commitHash field
             if commit_hash is True:
-                json_data = self.update_commit_hash(json_data)
+                self.update_commit_hash(json_data)
 
             # update displayName field
-            json_data = self.update_display_name(json_data)
+            self.update_display_name(json_data)
 
             # update features array
             if features is True:
-                json_data = self.update_features(json_data)
+                self.update_features(json_data)
 
             if migrate is True:
                 # update programMain to run
-                json_data = self.update_program_main(json_data)
+                self.update_program_main(json_data)
 
             # update sequence numbers
             if sequence is True:
-                json_data = self.update_sequence_numbers(json_data)
+                self.update_sequence_numbers(json_data)
 
             # update valid values
             if valid_values is True:
-                json_data = self.update_valid_values(json_data)
+                self.update_valid_values(json_data)
 
             # update playbook data types
             if playbook_data_types is True:
-                json_data = self.update_playbook_data_types(json_data)
+                self.update_playbook_data_types(json_data)
 
             # app feature - update install.json for Advanced Request
             if 'advancedRequest' in self.features and self.output_prefix is not None:
@@ -565,7 +568,7 @@ class InstallJson:
         self._contents = json_data
 
     @staticmethod
-    def update_app_id(json_data):
+    def update_app_id(json_data: dict) -> None:
         """Update to ensure an appId field exists.
 
         All App should have an appId to uniquely identify the App. this is not intended to be
@@ -576,27 +579,24 @@ class InstallJson:
             json_data['appId'] = str(
                 uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
             )
-        return json_data
 
-    def update_commit_hash(self, json_data):
+    def update_commit_hash(self, json_data: dict) -> None:
         """Update to ensure an appId field exists.
 
         Add/Update the commit hash to the install.json file if possible.
         """
         if self._commit_hash:
             json_data['commitHash'] = self._commit_hash
-        return json_data
 
-    def update_display_name(self, json_data):
+    def update_display_name(self, json_data: dict) -> None:
         """Update the displayName parameter."""
         if not json_data.get('displayName'):
             display_name = os.path.basename(os.getcwd()).replace(self.app_prefix, '')
             display_name = display_name.replace('_', ' ').replace('-', ' ')
             display_name = ' '.join([a.title() for a in display_name.split(' ')])
             json_data['displayName'] = display_name
-        return json_data
 
-    def update_features(self, json_data):
+    def update_features(self, json_data: dict) -> None:
         """Update feature set based on App type."""
         features = self.features
         if self.runtime_level.lower() in ['organization']:
@@ -619,34 +619,36 @@ class InstallJson:
         if os.path.isfile(os.path.join(self._path, 'layout.json')):
             features.append('layoutEnabledApp')
 
-        # re-add other non-standard (optional) features
+        # re-add supported optional features
         for feature in self.features:
-            if feature in ['advancedRequest', 'CALSettings']:
+            if feature in [
+                'advancedRequest',
+                'CALSettings',
+                'webhookResponseMarshall',
+                'webhookServiceEndpoint',
+            ]:
                 features.append(feature)
 
         json_data['features'] = sorted(features)
-        return json_data
 
-    def update_program_main(self, json_data):
+    def update_program_main(self, json_data: dict) -> None:
         """Update program main on App type."""
         if self.program_main:
             if self.runtime_level.lower() in ['playbook']:
                 json_data['programMain'] = 'run'
             elif self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
                 json_data['programMain'] = 'run'
-        return json_data
 
     @staticmethod
-    def update_sequence_numbers(json_data):
+    def update_sequence_numbers(json_data: dict) -> None:
         """Update program main on App type."""
         sequence_number = 1
         for param in json_data.get('params', []):
             param['sequence'] = sequence_number
             sequence_number += 1
-        return json_data
 
     @staticmethod
-    def update_valid_values(json_data):
+    def update_valid_values(json_data: dict) -> None:
         """Update program main on App type."""
         for param in json_data.get('params', []):
             if param.get('type', None) not in ['String', 'KeyValueList']:
@@ -659,21 +661,18 @@ class InstallJson:
                 if '${TEXT}' not in (param.get('validValues') or []):
                     param['validValues'] = param.get('validValues') or []
                     param['validValues'].append('${TEXT}')
-        return json_data
 
     @staticmethod
-    def update_playbook_data_types(json_data):
+    def update_playbook_data_types(json_data: dict) -> None:
         """Update program main on App type."""
         if json_data.get('runtimeLevel', None) != 'Playbook':
-            return json_data
+            return
 
         for param in json_data.get('params', []):
-            if param.get('type', None) != 'String':
+            if param.get('type') != 'String':
                 continue
-            if 'String' not in (param.get('playbookDataType') or []):
-                param['playbookDataType'] = param.get('playbookDataType') or []
-                param['playbookDataType'].append('String')
-        return json_data
+            if param.get('playbookDataType') in [None, []]:
+                param.setdefault('playbookDataType', []).append('String')
 
     def validate(self):
         """Validate install.json."""
@@ -842,3 +841,13 @@ class InstallJson:
     def runtime_level(self):
         """Return property."""
         return self.contents.get('runtimeLevel')
+
+    @property
+    def service(self):
+        """Return service."""
+        return self.contents.get('service', {})
+
+    @property
+    def service_discovery_types(self):
+        """Return service."""
+        return self.service.get('discoveryTypes', [])

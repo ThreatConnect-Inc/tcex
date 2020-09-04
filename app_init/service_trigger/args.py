@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
-"""Playbook Args"""
+"""Service Args"""
+from argparse import ArgumentParser
 
 
 class Args:
     """Playbook Args"""
 
-    def __init__(self, parser):
+    def __init__(self, parser: ArgumentParser):
         """Initialize class properties."""
         parser.add_argument('--example_input')

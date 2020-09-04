@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Inputs Config Module."""
 # standard library
 import json
@@ -367,3 +366,26 @@ class TestInputsConfig:
         assert tcex.rargs.my_bool is True  # pylint: disable=no-member
         assert tcex.args.my_multi == ['one', 'two']
         assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
+
+    @staticmethod
+    def test_duplicate_args(playbook_app):
+        """APP-964 handle args that have been defined multiple times.
+
+        Args:
+            playbook_app (callable, fixture): An instantiated instance of MockApp.
+        """
+        # update config data
+        config_data = {
+            'name': 'pytest',
+            'logging': 'trace',
+            'tc_log_to_api': True,
+        }
+
+        # initialize tcex and add required argument
+        tcex = playbook_app(config_data=config_data).tcex
+        tcex.parser.add_argument('--name', required=True)
+        tcex.parser.add_argument('--name', required=True)
+
+        assert tcex.args.name == 'pytest'
+
+        # parse args

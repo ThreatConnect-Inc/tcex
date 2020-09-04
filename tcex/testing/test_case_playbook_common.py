@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Playbook Common module"""
 # import json
 # standard library
@@ -84,7 +83,8 @@ class TestCasePlaybookCommon(TestCase):
             self.profile.update_outputs()
 
         # clear context tracker
-        self.profile._context_tracker = []
+        if self.profile:  # doesn't exist for API services
+            self.profile._context_tracker = []
 
         # run test_case teardown_method
         super().teardown_method()

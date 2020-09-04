@@ -9,6 +9,6 @@ class ValidateFeature(ValidateCustom):
     This file will only be auto-generated once to ensure any changes are not overwritten.
     """
 
-    def __init__(self, validator):  # pylint: disable=useless-super-delegation
+    def __init__(self, validator: object):  # pylint: disable=useless-super-delegation
         """Initialize class properties."""
         super(ValidateFeature, self).__init__(validator)

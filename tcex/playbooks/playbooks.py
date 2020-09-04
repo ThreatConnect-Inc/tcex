@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Playbook module"""
 # standard library
 import re

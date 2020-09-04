@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx Framework Pytest Profile Generation Module"""
 # standard library
 import argparse
@@ -137,6 +136,9 @@ if __name__ == '__main__':
                     # update test_profiles.py
                     tc_test.test_profile_template.profile = profile
                     tc_test.test_profile_template.render_templates()
+                    # generates the custom.py and custom_feature.py files
+                    tc_test.custom_templates.profile = profile
+                    tc_test.custom_templates.render_templates()
 
                 profile = Profile(default_args={}, feature='', name='')
                 # render validate.py

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 # standard library
 import json
@@ -234,7 +233,7 @@ class Profile:
     def contents(self):
         """Return mutable copy of profile JSON contents."""
         try:
-            with open(self.filename, 'r') as fh:
+            with open(self.filename) as fh:
                 return json.load(fh, object_pairs_hook=OrderedDict)
         except (OSError, ValueError):
             print(f'{c.Fore.RED}Could not open/read profile {self.filename}.')
@@ -535,7 +534,7 @@ class Profile:
         """Update validation rules from exit_message section of profile."""
         message_tc = ''
         if os.path.isfile(self.message_tc_filename):
-            with open(self.message_tc_filename, 'r') as mh:
+            with open(self.message_tc_filename) as mh:
                 message_tc = mh.read()
 
         profile_data = self.contents
@@ -844,7 +843,11 @@ class Profile:
     @property
     def tc_in_path(self):
         """Return fqpn tc_in_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_in_path = os.path.join(self._default_args.get('tc_in_path'), self.feature)
         else:
             tc_in_path = os.path.join(
@@ -855,7 +858,11 @@ class Profile:
     @property
     def tc_log_path(self):
         """Return fqpn tc_log_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_log_path = os.path.join(self._default_args.get('tc_log_path'), self.feature)
         else:
             tc_log_path = os.path.join(
@@ -866,7 +873,11 @@ class Profile:
     @property
     def tc_out_path(self):
         """Return fqpn tc_out_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_out_path = os.path.join(self._default_args.get('tc_out_path'), self.feature)
         else:
             tc_out_path = os.path.join(
@@ -917,7 +928,11 @@ class Profile:
     @property
     def tc_temp_path(self):
         """Return fqpn tc_temp_path arg relative to profile."""
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             tc_temp_path = os.path.join(self._default_args.get('tc_temp_path'), self.feature)
         else:
             tc_temp_path = os.path.join(
@@ -934,3 +949,8 @@ class Profile:
     def webhook_event(self):
         """Return webhook event dict."""
         return self.data.get('webhook_event', {})
+
+    @property
+    def webhook_marshall_event(self):
+        """Return webhook event dict."""
+        return self.data.get('webhook_marshall_event', {})

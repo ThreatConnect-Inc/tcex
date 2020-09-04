@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Logger Module."""
 # standard library
 import os

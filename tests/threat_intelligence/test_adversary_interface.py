@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 """Test the TcEx Threat Intel Module."""
 # standard library
 import os
+from random import randint
 
 from .ti_helpers import TestThreatIntelligence, TIHelper
 
@@ -55,6 +55,49 @@ class TestAdversaryGroups(TestThreatIntelligence):
         # cleanup group
         r = ti.delete()
         assert r.status_code == 200
+
+    def tests_ti_adversary_update_associations(self):
+        """Create a group using specific interface."""
+        group_data = {
+            'name': self.ti_helper.rand_name(),
+            'owner': self.owner,
+        }
+        adversary = self.ti.adversary(**group_data)
+        adversary.create()
+
+        indicator_data = {
+            'hostName': self.ti_helper.rand_host(),
+            'confidence': randint(0, 100),
+            'owner': self.owner,
+            'rating': randint(0, 5),
+        }
+        host1 = self.ti.host(**indicator_data)
+        host1.create()
+
+        indicator_data = {
+            'hostName': self.ti_helper.rand_host(),
+            'confidence': randint(0, 100),
+            'owner': self.owner,
+            'rating': randint(0, 5),
+        }
+        host2 = self.ti.host(**indicator_data)
+        host2.create()
+
+        adversary.add_association(host1)
+        adversary.add_association(host2)
+
+        for indicator in adversary.indicator_associations():
+            if indicator['type'] == 'Host':
+                ti_host = self.ti.host(
+                    hostName=indicator['summary'],
+                    owner=self.owner,
+                    dns_active=True,
+                    whois_active=True,
+                )
+                r = ti_host.update()
+                ti_host_data = r.json().get('data', {}).get('host', {})
+                assert ti_host_data.get('dnsActive', 'false').lower() == 'true'
+                assert ti_host_data.get('whoisActive', 'false').lower() == 'true'
 
     def tests_ti_adversary_add_attribute(self, request):
         """Test group add attribute."""

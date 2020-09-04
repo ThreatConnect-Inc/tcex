@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect TI Security Label"""
 
 from .mappings import Mappings

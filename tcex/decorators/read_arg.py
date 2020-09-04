@@ -1,7 +1,24 @@
-# -*- coding: utf-8 -*-
 """ReadArg App Decorators."""
+# standard library
+from typing import Callable, List, Union
+
 # third-party
 import wrapt
+
+# first-party
+from tcex.validators import (
+    ValidationError,
+    equal_to,
+    greater_than,
+    greater_than_or_equal,
+    in_range,
+    less_than,
+    less_than_or_equal,
+    not_in,
+    to_bool,
+    to_float,
+    to_int,
+)
 
 
 class ReadArg:
@@ -20,8 +37,7 @@ class ReadArg:
             arg='fruits',
             array=True,
             fail_on=[None, []],
-            fail_enabled=True,
-            fail_msg='Invalid input for fruits'
+            fail_enabled=True
         )
         def my_method(self, color, number, fruits):
             print('color', color)
@@ -36,8 +52,7 @@ class ReadArg:
             arg='fruits',
             array=True,
             fail_on=[None, []],
-            fail_enabled=True,
-            fail_msg='Invalid input for fruits'
+            fail_enabled=True
         )
         def my_method(self, **kwargs):
             print('color', kwargs.get('color'))
@@ -52,20 +67,44 @@ class ReadArg:
             returned as an array.
         default (str, kwargs): Defaults to None. Default value to pass to method if arg
             value is None. Only supported for String or StringArray.
+        equal_to (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg value is
+            equal to the given compare_to value.
         fail_enabled (boolean|str, kwargs): Accepts a boolean or string value.  If a boolean value
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
-        fail_msg (str, kwargs): The message to log when raising RuntimeError.
         fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
+        greater_than (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg value is
+            greater than the given compare_to value.
+        greater_than_or_equal (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg
+            value is greater than or equal to the given compare_to value.
         group_values (bool, kwargs): Defaults to False. If True, return a list of group names from
             the given argument.
         group_ids (bool, kwargs): Defaults to False. If True, return a list of group ids from the
             given argument.
+        in_range (Dict[str, float]|List[float], kwargs): Validator that verifies the arg value is in
+            the range min <= value <= max.  For Array args, will verify each member of the array.
+            Expected value is {'min': <min_value>, 'max': <max_value>} OR [<min_value>, <max_value>]
         indicator_values (bool, kwargs): Defaults to False. If True, return a list of
             indicator values from the given argument (e.g. ["foo.example.com", "bar.example.com"]).
+        less_than (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg value is
+            less than the given compare_to value.
+        less_than_or_equal (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg
+            value is less than or equal to the given compare_to value.
         strip_values (bool, kwargs): Defaults to False.  If True, automatically strips whitespace
             from arg value.  Not valid if group_values, group_ids, or indicator_values is True.
+        to_bool (bool, kwargs): Transform the arg value into a bool where 'true' (case-insensitive),
+            '1' (str), and 1 (int or float) will become True and everything else will become False.
+            Accepts one parameter 'disallow_none' which, if True, will fail if the arg value is
+            none.
+        to_float (bool, kwargs):  Transform the arg value into an float.  Accepts one
+            parameter 'disallow_none' which, if True, will fail if the arg value is none.
+        to_int (bool, kwargs):  Transform the arg value into an int.  Accepts one
+            parameter 'disallow_none' which, if True, will fail if the arg value is none.
+        validators (Union[List[Callable], Callable]): A callable or list of callables that will be
+            invoked with the arg value and arg name and must raise a ValidationError if
+            the arg is not valid.  Any return value will be ignored.  Validators will be invoked in
+            the order they are given.  If one validator fails, no others will be invoked.
     """
 
     def __init__(self, arg, **kwargs):
@@ -74,13 +113,54 @@ class ReadArg:
         self.array = kwargs.get('array')
         self.default = kwargs.get('default')
         self.fail_enabled = kwargs.get('fail_enabled', True)
-        self.fail_msg = kwargs.get('fail_msg', f'Invalid value provided for ({arg}).')
+        self.fail_msg = kwargs.get('fail_msg')
         self.fail_on = kwargs.get('fail_on', [])
         self.embedded = kwargs.get('embedded', True)
         self.indicator_values = kwargs.get('indicator_values', False)
         self.group_values = kwargs.get('group_values', False)
         self.group_ids = kwargs.get('group_ids', False)
         self.strip_values = kwargs.get('strip_values', False)
+        self.transforms: Union[List[Callable], Callable] = kwargs.get('transforms', [])
+        self.validators: Union[List[Callable], Callable] = kwargs.get('validators', [])
+        if self.fail_on:
+            self.validators.insert(0, not_in(self.fail_on))
+
+        self._init_validators(**kwargs)
+
+    def _init_validators(self, **kwargs):
+        validators_map = {
+            'in_range': in_range,
+            'equal_to': equal_to,
+            'less_than': less_than,
+            'less_than_or_equal': less_than_or_equal,
+            'greater_than': greater_than,
+            'greater_than_or_equal': greater_than_or_equal,
+        }
+
+        for k, v in filter(lambda item: item[0] in validators_map, kwargs.items()):
+            validator = validators_map.get(k)
+            if isinstance(v, list):
+                self.validators.append(validator(*v))
+            elif isinstance(v, dict):
+                self.validators.append(validator(**v))
+            else:
+                self.validators.append(validator(v))
+
+        transform_map = {
+            'to_int': to_int,
+            'to_float': to_float,
+            'to_bool': to_bool,
+        }
+
+        for transform_name in filter(lambda t: t in transform_map, kwargs.keys()):
+            transform = transform_map.get(transform_name)
+            transform_args = kwargs.get(transform_name)
+            if isinstance(transform_args, list):
+                self.transforms.append(transform(*transform_args))
+            elif isinstance(transform_args, dict):
+                self.transforms.append(transform(**transform_args))
+            else:
+                self.transforms.append(transform())
 
     @wrapt.decorator
     def __call__(self, wrapped, instance, args, kwargs):
@@ -106,6 +186,9 @@ class ReadArg:
             Args:
                 app (class): The instance of the App class "self".
             """
+            # retrieve the label for the current Arg
+            label = app.tcex.ij.params_dict.get(self.arg, {}).get('label')
+
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled
             if not isinstance(self.fail_enabled, bool):
@@ -122,8 +205,9 @@ class ReadArg:
             except AttributeError:
                 if enabled:
                     app.tcex.log.error(f'Arg {self.arg} was not found in Arg namespace.')
-                    app.exit_message = self.fail_msg  # for test cases
-                    app.tcex.exit(1, self.fail_msg)
+                    message = self.fail_msg or f'Invalid value provided for "{label}" ({self.arg}).'
+                    app.exit_message = message  # for test cases
+                    app.tcex.exit(1, message)
                 else:
                     # add results to kwargs
                     kwargs[self.arg] = self.default
@@ -147,7 +231,7 @@ class ReadArg:
                     else:
                         app.tcex.log.warn(
                             f'strip_values is enabled but variable is of type {variable_type}, '
-                            f'only String and StringArray variables can be stripped.'
+                            'only String and StringArray variables can be stripped.'
                         )
 
             if self.default is not None and arg_data is None:
@@ -156,13 +240,36 @@ class ReadArg:
                     f'replacing null value with provided default value "{self.default}".'
                 )
 
-            # check arg_data against fail_on_values
-            if enabled and self.fail_on:
-                if arg_data in self.fail_on:
-                    app.tcex.log.error(f'Invalid value ({arg_data}) found for {self.arg}.')
+            try:
+                for transform in self.transforms:
+                    arg_data = transform(arg_data, self.arg, label)
+            except ValidationError as v:
+                value_formatted = f'"{arg_data}"' if isinstance(arg_data, str) else str(arg_data)
+                message = f'Invalid value ({value_formatted}) found for "{label}": {v.message}'
+                app.tcex.log.error(message)
+                if self.fail_msg:
                     app.exit_message = self.fail_msg  # for test cases
                     app.tcex.exit(1, self.fail_msg)
+                else:
+                    app.exit_message = message
+                    app.tcex.exit(1, message)
 
+            # check arg_data against fail_on_values
+            if enabled:
+                try:
+                    list([v(arg_data, self.arg, label) for v in self.validators])
+                except ValidationError as v:
+                    value_formatted = (
+                        f'"{arg_data}"' if isinstance(arg_data, str) else str(arg_data)
+                    )
+                    message = f'Invalid value ({value_formatted}) found for "{label}": {v.message}'
+                    app.tcex.log.error(message)
+                    if self.fail_msg:
+                        app.exit_message = self.fail_msg  # for test cases
+                        app.tcex.exit(1, self.fail_msg)
+                    else:
+                        app.exit_message = message
+                        app.tcex.exit(1, message)
             # add results to kwargs
             kwargs[self.arg] = arg_data
 

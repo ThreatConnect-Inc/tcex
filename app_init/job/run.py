@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Job App"""
 # standard library
 import traceback
@@ -8,7 +7,7 @@ from app_lib import AppLib
 
 
 # pylint: disable=no-member
-def run():
+def run() -> None:
     """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """TcEx App Init."""
 # standard library
 import argparse
@@ -164,11 +163,13 @@ if __name__ == '__main__':
         # print results
         tci.download_template.print_download_results()
 
-        # update install.json
-        tci.ij.update()
+        # external and external_ingress templates do not use tcex.json or install.json
+        if not template.startswith('external'):
+            # update install.json
+            tci.ij.update()
 
-        # update tcex.json
-        tci.tj.update(template)
+            # update tcex.json
+            tci.tj.update(template)
 
         # provide helpful user info
         if not args.update:

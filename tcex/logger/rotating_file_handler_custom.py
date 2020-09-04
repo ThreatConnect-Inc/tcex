@@ -1,23 +1,31 @@
-# -*- coding: utf-8 -*-
 """API Handler Class"""
 # standard library
 import os
 from logging.handlers import RotatingFileHandler
+from typing import Optional
 
 
 class RotatingFileHandlerCustom(RotatingFileHandler):
     """Logger handler for ThreatConnect Exchange File logging."""
 
-    def __init__(self, filename, mode='a', maxBytes=0, backupCount=0, encoding=None, delay=0):
+    def __init__(
+        self,
+        filename: str,
+        mode: Optional[str] = 'a',
+        maxBytes: Optional[int] = 0,
+        backupCount: Optional[int] = 0,
+        encoding: Optional[str] = None,
+        delay: Optional[bool] = False,
+    ):
         """Customize RotatingFileHandler to create full log path.
 
         Args:
-            filename (str): The name of the logfile.
-            mode (str, optional): The write mode for the file. Defaults to 'a'.
-            maxBytes (int, optional): The max file size before rotating. Defaults to 0.
-            backupCount (int, optional): The maximum # of backup files. Defaults to 0.
-            encoding (str, optional): The log file encoding. Defaults to None.
-            delay (int, optional): The delay period. Defaults to 0.
+            filename: The name of the logfile.
+            mode: The write mode for the file.
+            maxBytes: The max file size before rotating.
+            backupCount: The maximum # of backup files.
+            encoding: The log file encoding.
+            delay: If True, then file opening is deferred until the first call to emit().
         """
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename), exist_ok=True)

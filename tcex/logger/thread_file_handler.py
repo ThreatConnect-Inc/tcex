@@ -1,39 +1,49 @@
-# -*- coding: utf-8 -*-
-"""API Handler Class"""
+"""Thread File Handler Class"""
 # standard library
-import logging
 import os
 import threading
+from logging.handlers import RotatingFileHandler
+from typing import Optional
 
 
-class ThreadFileHandler(logging.FileHandler):
+class ThreadFileHandler(RotatingFileHandler):
     """Logger handler for ThreatConnect Exchange File logging."""
 
-    def __init__(self, filename, mode='a', encoding=None, delay=0):
+    handler_key = None
+    thread_key = None
+
+    def __init__(
+        self,
+        filename: str,
+        mode: Optional[str] = 'a',
+        maxBytes: Optional[int] = 0,
+        backupCount: Optional[int] = 0,
+        encoding: Optional[str] = None,
+        delay: Optional[bool] = False,
+    ):
         """Add logic to create log directory if it does not exists.
 
         Args:
-            filename (str): The name of the logfile.
-            mode (str, optional): The write mode for the file. Defaults to 'a'.
-            encoding (str, optional): The log file encoding. Defaults to None.
-            delay (int, optional): The delay period. Defaults to 0.
+            filename: The name of the logfile.
+            mode: The write mode for the file.
+            maxBytes: The max file size before rotating.
+            backupCount: The maximum # of backup files.
+            encoding: The log file encoding.
+            delay: If True, then file opening is deferred until the first call to emit().
         """
-        if not os.path.exists(os.path.dirname(filename)):  # pragma: no cover
-            try:
-                # pylint: disable=unexpected-keyword-arg
-                os.makedirs(os.path.dirname(filename), exist_ok=True)
-            except TypeError:
-                # TODO: [py2] - remove py2 specific code and pylint-disable
-                if not os.path.exists(os.path.dirname(filename)):
-                    os.makedirs(os.path.dirname(filename))
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+        RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
 
-        logging.FileHandler.__init__(self, filename, mode, encoding, delay)
-
-    def emit(self, record):
+    def emit(self, record: object) -> None:
         """Emit a record.
 
+        Emit logging events only if handler_key matches thread_key.
+
         Args:
-            record (obj): The record to be logged.
+            record: The record to be logged.
         """
-        if self.get_name() == threading.current_thread().name:
-            logging.FileHandler.emit(self, record)
+        # handler_key and thread_key are added in logger.add_thread_file_handler() method
+        if hasattr(threading.current_thread(), self.thread_key):
+            if self.handler_key == getattr(threading.current_thread(), self.thread_key):
+                RotatingFileHandler.emit(self, record)

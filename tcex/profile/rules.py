@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing profile Class."""
 # import json
 # standard library
@@ -32,6 +31,8 @@ class Rules:
         # NOTE: The order of these if statements matter.
         if data is None:
             return {'expected_output': data, 'op': 'eq'}
+        if isinstance(data, list) and not data:
+            return {'expected_output': data, 'op': 'dd', 'ignore_order': False, 'exclude_paths': []}
         if self.matches_url_rule(data):
             return {'expected_output': data, 'op': 'is_url'}
         if self.matches_number_rule(data):

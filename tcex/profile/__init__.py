@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Profile module for TcEx Framework"""
 from .interactive import Interactive
 

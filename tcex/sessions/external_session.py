@@ -1,32 +1,76 @@
-# -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
 # standard library
 import logging
-from typing import Optional
+import time
+from typing import Callable, Optional
 
 # third-party
 import urllib3
-from requests import Session, adapters, exceptions
+from requests import Response, Session, adapters, exceptions
+from requests.adapters import DEFAULT_POOLBLOCK, DEFAULT_POOLSIZE, DEFAULT_RETRIES
 from urllib3.util.retry import Retry
 
 from ..utils import Utils
+from .rate_limit_handler import RateLimitHandler
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def default_too_many_requests_handler(response: Response) -> float:
+    """Implement 429 response handling that uses the Retry-After header.
+
+    Will return the value in Retry-After.  See: https://tools.ietf.org/html/rfc6585#page-3.
+
+    Assumptions:
+        - Response has a Retry-After header.
+        - The Retry-After header contains the number of seconds to wait before sending the next
+          request.
+
+    Args:
+        response: The 429 response.
+
+    Returns:
+        The number of seconds to wait before sending the next request, from the Retry-After header.
+    """
+    return float(response.headers.get('Retry-After', 0))
+
+
 class CustomAdapter(adapters.HTTPAdapter):
     """Custom Adapter to properly handle retries."""
 
+    def __init__(
+        self,
+        rate_limit_handler: Optional[RateLimitHandler] = None,
+        pool_connections=DEFAULT_POOLSIZE,
+        pool_maxsize=DEFAULT_POOLSIZE,
+        max_retries=DEFAULT_RETRIES,
+        pool_block=DEFAULT_POOLBLOCK,
+    ):
+        """Initialize CustomAdapter.
+
+        Args:
+            rate_limit_handler: RateLimitHandler responsible for throttling.
+            pool_connections: passed to super
+            pool_maxsize: passed to super
+            max_retries: passed to super
+            pool_block: passed to super
+        """
+        super().__init__(pool_connections, pool_maxsize, max_retries, pool_block)
+        self._rate_limit_handler = rate_limit_handler
+
     def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
         """Send PreparedRequest object. Returns Response object."""
+        if self.rate_limit_handler:
+            self.rate_limit_handler.pre_send(request)
+
         try:
             response = super().send(request, stream, timeout, verify, cert, proxies)
         except exceptions.RetryError:
             # store current retries configuration
             max_retries = self.max_retries
 
-            # temporarily disable retries and max one last request
+            # temporarily disable retries and make one last request
             self.max_retries = Retry(0, read=False)
 
             # make request with max_retries turned off
@@ -35,7 +79,20 @@ class CustomAdapter(adapters.HTTPAdapter):
             # reset retries configuration
             self.max_retries = max_retries
 
+        if self.rate_limit_handler:
+            self.rate_limit_handler.post_send(response)
+
         return response
+
+    @property
+    def rate_limit_handler(self) -> RateLimitHandler:
+        """Get the RateLimitHandler."""
+        return self._rate_limit_handler
+
+    @rate_limit_handler.setter
+    def rate_limit_handler(self, rate_limit_handler: RateLimitHandler) -> None:
+        """Set the RateLimitHandler."""
+        self._rate_limit_handler = rate_limit_handler
 
 
 class ExternalSession(Session):
@@ -73,10 +130,14 @@ class ExternalSession(Session):
         self._base_url: str = base_url
         self.log: object = logger or logging.getLogger('session')
 
+        self._custom_adapter: Optional[CustomAdapter] = None
+        self.utils: object = Utils()
+
         # properties
         self._mask_headers = True
         self._mask_patterns = None
-        self.utils: object = Utils()
+        self._rate_limit_handler = None
+        self._too_many_requests_handler = None
 
         # Add default Retry
         self.retry()
@@ -111,6 +172,55 @@ class ExternalSession(Session):
         """Return mask patterns."""
         self._mask_patterns = patterns
 
+    @property
+    def too_many_requests_handler(self) -> Callable[[Response], float]:
+        """Get the too_many_requests_handler.
+
+        The too_many_requests_handler is responsible for determining how long to sleep (in seconds)
+        on a 429 response.  The default returns the value in the `Retry-After` header.
+        """
+        if not self._too_many_requests_handler:
+            self._too_many_requests_handler = default_too_many_requests_handler
+        return self._too_many_requests_handler
+
+    @too_many_requests_handler.setter
+    def too_many_requests_handler(self, too_many_requests_handler: Callable[[Response], float]):
+        """Set the too_many_requests_handler.
+
+        The too_many_requests_handler is responsible for determining how long to sleep (in seconds)
+        on a 429 response.  The default returns the value in the `Retry-After` header.
+
+        Args:
+            too_many_requests_handler: callable that returns the number of seconds to wait on a
+                429 response.
+        """
+        self._too_many_requests_handler = too_many_requests_handler
+
+    @property
+    def rate_limit_handler(self) -> RateLimitHandler:
+        """Return the RateLimitHandler.
+
+        The RateLimitHandler is responsible for throttling request frequency.  The default
+        implementation uses X-RateLimit-Remaining and X-RateLimit-Reset headers.
+        """
+        if not self._rate_limit_handler:
+            self._rate_limit_handler = RateLimitHandler()
+        return self._rate_limit_handler
+
+    @rate_limit_handler.setter
+    def rate_limit_handler(self, rate_limit_handler: RateLimitHandler):
+        """Set the RateLimitHandler.
+
+        The RateLimitHandler is responsible for throttling request frequency.  The default
+        implementation uses X-RateLimit-Remaining and X-RateLimit-Reset headers.
+
+        Args:
+            rate_limit_handler: the RateLimitHandler object to use.
+        """
+        self._rate_limit_handler = rate_limit_handler
+        if self._custom_adapter:
+            self._custom_adapter.rate_limit_handler = rate_limit_handler
+
     def request(  # pylint: disable=arguments-differ
         self, method: str, url: str, **kwargs
     ) -> object:
@@ -126,7 +236,17 @@ class ExternalSession(Session):
         if self.base_url is not None and not url.startswith('https'):
             url = f'{self.base_url}{url}'
 
-        response: object = super().request(method, url, **kwargs)
+        # this kwargs value is used to signal 429 handling that this is a retry, but the super
+        # method doesn't expect it so it needs to be removed.
+        tc_is_retry = kwargs.pop('tc_is_retry', False)
+
+        response: Response = super().request(method, url, **kwargs)
+
+        if response.status_code == 429 and not tc_is_retry:
+            too_many_requests_handler = self.too_many_requests_handler
+            time.sleep(too_many_requests_handler(response))
+            kwargs['tc_is_retry'] = True
+            return self.request(method, url, **kwargs)
 
         # APP-79 - adding logging of request as curl commands
         try:
@@ -141,10 +261,32 @@ class ExternalSession(Session):
             )
         except Exception:  # nosec
             pass  # logging curl command is best effort
-        self.log.debug(f'request url: {response.request.url}')
-        self.log.debug(f'status_code: {response.status_code}')
+        self.log.debug(
+            f'feature=external-session, request-url={response.request.url}, '
+            f'status_code={response.status_code}'
+        )
 
         return response
+
+    def rate_limit_config(
+        self,
+        limit_remaining_header: str = 'X-RateLimit-Remaining',
+        limit_reset_header: str = 'X-RateLimit-Reset',
+        remaining_threshold: int = 0,
+    ):
+        """Configure rate-limiting.
+
+        Configures the RateLimitHandler to use the given headers and remaining requests threshold.
+
+        Args:
+            limit_remaining_header: The header containing the number of requests remaining.
+            limit_reset_header: The header that specifies when the rate limit period will reset.
+            remaining_threshold: When the value in the limit_remaining_header is this value or
+                lower, sleep until the time from the limit_reset_header.
+        """
+        self.rate_limit_handler.limit_remaining_header = limit_remaining_header
+        self.rate_limit_handler.limit_reset_header = limit_reset_header
+        self.rate_limit_handler.remaining_threshold = remaining_threshold
 
     def retry(
         self,
@@ -168,5 +310,13 @@ class ExternalSession(Session):
             backoff_factor=backoff_factor,
             status_forcelist=status_forcelist or [500, 502, 504],
         )
-        # mount all https requests
-        self.mount('https://', CustomAdapter(max_retries=retries))
+
+        if self._custom_adapter:
+            self._custom_adapter.max_retries = retries
+        else:
+            self._custom_adapter = CustomAdapter(
+                rate_limit_handler=self.rate_limit_handler, max_retries=retries
+            )
+
+            # mount all https requests
+            self.mount('https://', self._custom_adapter)

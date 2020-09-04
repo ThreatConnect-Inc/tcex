@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx testing Framework."""
 # standard library
 import json
@@ -87,8 +86,15 @@ class TestCase:
         """Return bool value from int or string."""
         return str(value).lower() in ['1', 'true']
 
-    def _update_args(self, args):
-        """Update args before running App."""
+    def _update_args(self, args: dict) -> dict:
+        """Update args before running App.
+
+        Args:
+            args: The current argument dictionary.
+
+        Returns:
+            dict: The updated argument dictionary.
+        """
 
         if self.ij.runtime_level.lower() in ['playbook']:
             # set requested output variables
@@ -426,8 +432,12 @@ class TestCase:
 
         # determine the token type
         token_type = 'api'
-        if self.ij.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
-            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '407')}
+        if self.ij.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
+            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '441')}
             token_type = 'svc'
 
         # retrieve token from API using HMAC auth
@@ -436,6 +446,8 @@ class TestCase:
             token = r.json().get('data')
             self.log.data('setup', 'Using Token', token)
             self.log.data('setup', 'Token Elapsed', r.elapsed, 'trace')
+        else:
+            self.log.error(f'Failed to retrieve token ({r.text})')
         return token
 
     @classmethod
@@ -449,6 +461,7 @@ class TestCase:
     def teardown_method(self):
         """Run after each test method runs."""
         if self.enable_update_profile and self.ij.runtime_level.lower() not in [
+            'apiservice',
             'triggerservice',
             'webhooktriggerservice',
         ]:
@@ -473,7 +486,8 @@ class TestCase:
         self.validator.tcex.redis_client.connection_pool.disconnect()
 
         # update profile for session data
-        self.profile.session_manager.update_profile()
+        if self.profile:  # doesn't exist for API services
+            self.profile.session_manager.update_profile()
 
     @property
     def test_case_data(self):
@@ -516,7 +530,7 @@ class TestCase:
             )
             app_exit_message = None
             if os.path.isfile(message_tc_file):
-                with open(message_tc_file, 'r') as mh:
+                with open(message_tc_file) as mh:
                     app_exit_message = mh.read()
 
                 if app_exit_message:

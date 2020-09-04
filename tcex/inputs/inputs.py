@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """TcEx Framework Inputs module"""
 # standard library
 import json
@@ -40,7 +39,7 @@ class Inputs:
         self.utils = Utils()
 
         # parser
-        self.parser = TcArgumentParser()
+        self.parser = TcArgumentParser(conflict_handler='resolve')  # APP-964 allow duplicate args
 
         # a single config file is supported, typically from and external App or service App using
         # fileParam feature
@@ -105,7 +104,7 @@ class Inputs:
         Returns:
             dict: Parameters ("inputs") from the TC API.
         """
-        self.tcex.log.info('Loading secure params.')
+        self.tcex.log.info('feature=inputs, event=loading-secure-params')
 
         # Retrieve secure params from API
         r = self.tcex.session.get('/internal/job/execution/parameters')
@@ -131,7 +130,9 @@ class Inputs:
             params = self.aot_blpop()
             updated_params = self.update_params(params)
             # log number of params returned from AOT
-            self.tcex.log.info(f'Loaded {len(updated_params)} inputs from AOT params.')
+            self.tcex.log.info(
+                f'feature=inputs, event=loaded-aot-params, count={len(updated_params)}'
+            )
             self.config(updated_params)
 
     def _load_secure_params(self):
@@ -140,7 +141,9 @@ class Inputs:
             # update default_args with secure params from API
             params = self._get_secure_params()
             updated_params = self.update_params(params)
-            self.tcex.log.info(f'Loaded {len(updated_params)} inputs from secure params.')
+            self.tcex.log.info(
+                f'feature=inputs, event=loaded-secure-params, count={len(updated_params)}'
+            )
             self.config(updated_params)
 
     def _results_tc_args(self):  # pragma: no cover
@@ -155,7 +158,7 @@ class Inputs:
         else:
             result_file = 'results.tc'
         if os.path.isfile(result_file):
-            with open(result_file, 'r') as rh:
+            with open(result_file) as rh:
                 results = rh.read().strip().split('\n')
             os.remove(result_file)
         for line in results:
@@ -175,7 +178,7 @@ class Inputs:
         res = None
         if self._default_args.tc_playbook_db_type == 'Redis':
             try:
-                self.tcex.log.info('Blocking for AOT message.')
+                self.tcex.log.info('feature=inputs, event=blocking-for-aot')
                 msg_data = self.tcex.redis_client.blpop(
                     keys=self._default_args.tc_action_channel,
                     timeout=self._default_args.tc_terminate_seconds,
@@ -191,7 +194,9 @@ class Inputs:
                 elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
                 else:  # pragma: no cover
-                    self.tcex.log.warn(f'Unsupported AOT message type: ({msg_type}).')
+                    self.tcex.log.warn(
+                        f'feature=inputs, event=unsupported-aot-message, type={msg_type}'
+                    )
                     res = self.aot_blpop()
             except Exception as e:  # pragma: no cover
                 self.tcex.exit(1, f'Exception during AOT subscription ({e}).')
@@ -307,17 +312,21 @@ class Inputs:
                     os.unlink(filename)
                 except Exception:  # pragma: no cover
                     self.tcex.log.error(
-                        f'Could not read or decrypt configuration file "{filename}".'
+                        f'feature=inputs, event=config-decryption-failure, filename={filename}'
                     )
-                self.tcex.log.info(f'Loaded {len(file_content)} inputs from config file.')
+                self.tcex.log.info(
+                    f'feature=inputs, event=config-loaded, count={len(file_content)}'
+                )
             else:
                 try:
-                    with open(filename, 'r') as fh:
+                    with open(filename) as fh:
                         file_content = json.load(fh)
                 except ValueError:  # pragma: no cover
-                    self.tcex.log.error(f'Could not parse configuration file "{filename}".')
+                    self.tcex.log.error(
+                        f'feature=inputs, event=config-parse-failure, filename={filename}'
+                    )
         elif filename is not None:  # pragma: no cover
-            self.tcex.log.error(f'Could not load configuration file "{filename}".')
+            self.tcex.log.error(f'feature=inputs, event=config-load-failure, filename={filename}')
         return file_content
 
     @property
@@ -438,7 +447,7 @@ class Inputs:
         for u in self._unknown_args:
             if u == 'run':
                 continue
-            self.tcex.log.warning(f'Unsupported arg found ({u}).')
+            self.tcex.log.warning(f'feature=inputs, event=unsupported-arg, arg={u}')
 
     def update_logging(self):
         """Update the TcEx logger with appropriate handlers."""
