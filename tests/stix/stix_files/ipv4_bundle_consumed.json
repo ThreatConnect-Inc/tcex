@@ -1,0 +1,17 @@
+[
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--33fe3b22-0201-47cf-85d0-97c02164528d"
+      }
+    ],
+    "summary": "10.0.0.0",
+    "type": "Address",
+    "xid": "2458ecf56cf02d5458ad4146d594b55a80fa2f989c93b2c6698a6a7008d05312"
+  },
+  {
+    "name": "IP Address for known C2 channel",
+    "type": "Signature",
+    "xid": "indicator--33fe3b22-0201-47cf-85d0-97c02164528d"
+  }
+]
