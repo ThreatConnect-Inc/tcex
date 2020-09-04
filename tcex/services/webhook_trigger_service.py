@@ -355,12 +355,16 @@ class WebhookTriggerService(CommonServiceTrigger):
     def publish_webhook_marshall_event_acknowledge(self, message: dict) -> None:
         """Publish the WebhookEventResponse message.
 
-        {
-            "command": "Acknowledged",
-            "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
-            "triggerId": 1,
-            "type": "WebhookMarshallResponse"
-        }
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            {
+                "command": "Acknowledged",
+                "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
+                "triggerId": 1,
+                "type": "WebhookMarshallResponse"
+            }
 
         Args:
             message: The message from the broker.
