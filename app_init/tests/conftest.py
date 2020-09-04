@@ -12,8 +12,15 @@ if os.getenv('TCEX_SITE_PACKAGE') is None:
     AppLib().update_path()
 
 
-def profiles(profiles_dir):
-    """Get all testing profile names for current feature."""
+def profiles(profiles_dir: str) -> list:
+    """Get all testing profile names for current feature.
+
+    Args:
+        profiles_dir: The profile.d directory for the current test.
+
+    Returns:
+        list: All profile names for the current test case.
+    """
     profile_names = []
     for filename in sorted(os.listdir(profiles_dir)):
         if filename.endswith('.json'):
@@ -21,8 +28,12 @@ def profiles(profiles_dir):
     return profile_names
 
 
-def pytest_addoption(parser):
-    """Add arg flag to control replacement of outputs."""
+def pytest_addoption(parser: object) -> None:
+    """Add arg flag to control replacement of outputs.
+
+    Args:
+        parser: Pytest argparser instance.
+    """
     parser.addoption('--merge_inputs', action='store_true')
     parser.addoption('--merge_outputs', action='store_true')
     parser.addoption('--replace_exit_message', action='store_true')
@@ -34,7 +45,7 @@ def pytest_addoption(parser):
     )
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc: object) -> None:
     """Generate parametrize values for test_profiles.py::test_profiles tests case.
 
     Replacing "@pytest.mark.parametrize('profile_name', profile_names)"
@@ -62,7 +73,7 @@ def pytest_generate_tests(metafunc):
 
 
 # clear log directory
-def clear_log_directory():
+def clear_log_directory() -> None:
     """Clear the App log directory."""
     log_directory = 'log'
     if os.path.isdir(log_directory):
@@ -75,7 +86,7 @@ def clear_log_directory():
                 os.remove(file_path)
 
 
-def pytest_unconfigure(config):  # pylint: disable=unused-argument
+def pytest_unconfigure(config: object) -> None:  # pylint: disable=unused-argument
     """Execute unconfigure logic before test process is exited."""
     log_directory = os.path.join(os.getcwd(), 'log')
 

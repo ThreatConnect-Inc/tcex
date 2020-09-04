@@ -127,6 +127,17 @@ class TestFileIndicators(TestThreatIntelligence):
         """Test updating indicator metadata."""
         super().indicator_update()
 
+    def tests_ti_file_add_observation(self):
+        """Test adding observation."""
+        file = self.ti_helper.create_indicator()
+        now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        response = file.add_observers(2, now)
+        assert response.ok
+
+        count = file.observation_count()
+        assert count.ok
+        assert count.json().get('data').get('observationCount', {}).get('count') == 2
+
     def tests_ti_file_add_occurrence(self):
         """Test updating indicator metadata."""
         file = self.ti_helper.create_indicator()
@@ -154,7 +165,7 @@ class TestFileIndicators(TestThreatIntelligence):
     def tests_ti_file_get_occurrences(self):
         """Test retrieving multiple file occurrences."""
         file = self.ti_helper.create_indicator()
-        occurrence_names = ['pytest_occurrence_1', 'pytest_occurence_2']
+        occurrence_names = ['pytest_occurrence_1', 'pytest_occurrence_2']
         file.add_occurrence(
             occurrence_names[0], (datetime.now() - timedelta(days=2)).isoformat(), '.'
         )

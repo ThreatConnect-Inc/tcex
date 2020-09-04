@@ -37,11 +37,11 @@ The following example adds the ``FailOnOutput`` decorator to a method that takes
             return False
         return True
 
-Iterate On
+Iterate On Arg
 ==========
-The ``IterateOn()`` decorator is useful in decorating methods that process a single and array input. This decorator can be very useful in **action** based Apps.
+The ``IterateOnArg()`` decorator is useful in decorating methods that process a single and array input. This decorator can be very useful in **action** based Apps. This decorator accepts validators and transforms in the same manner as ``ReadArg()``, please see that section for details.
 
-The following example adds the ``IterateOn`` decorator to a method that takes a String or StringArray input and returns the value capitalized.  The decorator will call the method one time for each item in the input array (a single String input value would be automatically converted to an StringArray). If the ``fail_on_error`` input is enabled and the input matches a value in the **fail_on** array, the App would then exit using the **fail_msg** string provided. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.
+The following example adds the ``IterateOnArg`` decorator to a method that takes a String or StringArray input and returns the value capitalized.  The decorator will call the method one time for each item in the input array (a single String input value would be automatically converted to an StringArray). If the ``fail_enabled`` input is enabled and any supplied validators fail, the App would then exit using the **fail_msg** string provided. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.
 
 .. code-block:: python
     :linenos:
@@ -134,7 +134,6 @@ The following example adds the ``ReadArg`` decorator to a method that takes a St
     @ReadArg(
         arg='append_chars',
         fail_enabled='fail_on_error,
-        fail_msg='Failed to append characters to string input.',
         fail_on=['None' ''],
     )
     def append(self, string, append_chars):
@@ -170,7 +169,6 @@ Transforms are run, in the order they are passed, before validators, which are a
     @ReadArg(
         arg='confidence',
         fail_enabled='fail_on_error,
-        fail_msg='Failed to append characters to string input.',
         fail_on=['None' ''],
         to_int=True,
         in_range={'min': 0, 'max': 100}

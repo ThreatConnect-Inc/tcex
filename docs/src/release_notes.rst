@@ -7,6 +7,7 @@ Release Notes
 ======
 + APP-890 - Added discoverTypes to Ready command for API Services.
 + APP-890 - Restructure of Service module to better support API Services.
++ SUP-8557 - Updated how the Threat Intelligence module was adding observations to ThreatConnect objects
 
 2.0.9
 =====

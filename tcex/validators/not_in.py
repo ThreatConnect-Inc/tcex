@@ -11,21 +11,31 @@ def not_in(invalid_values: List[Any]):
     Allowed argument types: String, StringArray, TCEntity, TCEntityArray
 
 
-    Params:
-        invalid_values (List[Any]): List of values that the argument value cannot be.
+    Args:
+        invalid_values: List of values that the argument value cannot be.
         **kwargs ():
-            strip (Bool): call .strip() on the argument value
+            strip (bool): call .strip() on the argument value
 
     Returns:
         A validator function that can be used in the validators argument to @ReadArg.
     """
 
-    def _validate(value, arg_name):
+    def _validate(value: str, arg_name: str, label: str):
+        """Run validation on input data.
+
+        Args:
+            value: The input data to validate.
+            arg_name: The name of the input arg.
+            label: The label displayed to the user.
+
+        Raises:
+            ValidationError: raised on validation failure.
+        """
         if value in invalid_values:
             formatted_values = ', '.join(
                 [f'"{n}"' if isinstance(n, str) else str(n) for n in invalid_values]
             )
 
-            raise ValidationError(f'{arg_name} cannot be in [{formatted_values}]')
+            raise ValidationError(f'"{label}" ({arg_name}) cannot be in [{formatted_values}]')
 
     return _validate

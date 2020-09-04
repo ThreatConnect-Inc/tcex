@@ -7,7 +7,7 @@ from app_lib import AppLib
 
 
 # pylint: disable=no-member
-def run():
+def run() -> None:
     """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules
@@ -37,8 +37,8 @@ def run():
             # triggers a call to the app.<tc_action>() method.  an exact match to the method is
             # tried first, followed by a normalization of the tc_action value, and finally an
             # attempt is made to find the reserved "tc_action_map" property to map value to method.
-            tc_action = app.args.tc_action
-            tc_action_formatted = tc_action.lower().replace(' ', '_')
+            tc_action: str = app.args.tc_action
+            tc_action_formatted: str = tc_action.lower().replace(' ', '_')
             tc_action_map = 'tc_action_map'  # reserved property name for action to method map
             # run action method
             if hasattr(app, tc_action):

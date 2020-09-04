@@ -25,7 +25,7 @@ class TcArgumentParser(ArgumentParser):
         self._tc_log_file = 'app.log'
         self._tc_log_level = 'info'
         self._tc_log_path = '/tmp'  # nosec
-        self._tc_log_max_bytes = 10485760
+        self._tc_log_max_bytes = 10485760  # 10Mb
         self._tc_log_to_api = False
 
         # playbook defaults

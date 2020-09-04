@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Auto-generated App Args"""
+from argparse import ArgumentParser
 
 class Args:
     """App Args"""
 
-    def __init__(self, parser):
+    def __init__(self, parser: ArgumentParser):
         """Initialize class properties."""
 <#list install.params as param>
 <#if param.type == "Boolean">

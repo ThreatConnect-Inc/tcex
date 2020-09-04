@@ -71,7 +71,7 @@ class Migrate:
             str: The variable for the staged data.
         """
         profile_data.setdefault('stage', {}).setdefault('kvstore', {})
-        variable = self.profile.ij.create_variable(name, type_)
+        variable: str = self.profile.ij.create_variable(name, type_)
         profile_data['stage']['kvstore'][variable] = value
         return variable
 
@@ -144,7 +144,11 @@ class Migrate:
 
     @staticmethod
     def deprecated_fields(profile_data: dict) -> None:
-        """Remove deprecated fields."""
+        """Remove deprecated fields.
+
+        Args:
+            profile_data: The profile data dict.
+        """
         deprecated_fields = ['version']
         for d in deprecated_fields:
             try:
@@ -239,7 +243,7 @@ class Migrate:
         if 'stage' not in profile_data.keys():
             profile_data['stage'] = {'kvstore': {}}
         if 'kvstore' not in profile_data.get('stage').keys():
-            profile_data['stage']['kvstore'] = []
+            profile_data['stage']['kvstore'] = {}
 
     def stage_inputs(self, profile_data: dict) -> None:
         """Stage any non-staged profile data.
@@ -253,18 +257,18 @@ class Migrate:
 
         for input_type in ['optional', 'required']:
             for k, v in dict(profile_data.get('inputs', {}).get(input_type, {})).items():
-                # check that value requires staging
+                # skip staging inputs with a null value
                 if v is None:
                     continue
 
-                # get ij data for k
+                # get ij data for key/field
                 ij_data = self.profile.ij.params_dict.get(k)
 
-                # input is not define in install.json, possibly default arg
+                # skip staging inputs that are not defined in install.json (possibly default args)
                 if ij_data is None:
                     continue
 
-                # check input type to see if it support staging data
+                # skip staging for input types that don't support playbookDataType
                 if ij_data.get('type').lower() in [
                     'boolean',
                     'choice',
@@ -272,11 +276,11 @@ class Migrate:
                 ]:
                     continue
 
-                # check value to see if there are any variables in the data
+                # skip staging if variable if found in current input value
                 if re.search(self.profile.utils.variable_parse, v):
                     continue
 
-                # get PB data type, APP-607
+                # get the current PB data type, APP-607
                 data_types = ij_data.get('playbookDataType', [])
 
                 # only stage String values
