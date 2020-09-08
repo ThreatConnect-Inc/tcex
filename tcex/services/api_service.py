@@ -1,6 +1,5 @@
 """TcEx Framework API Service module."""
 # standard library
-import base64
 import json
 import sys
 import threading
@@ -143,7 +142,11 @@ class ApiService(CommonService):
               "headers": [ { key/value pairs } ],
               "method": "GET",
               "queryParams": [ { key/value pairs } ],
-              "requestKey": "123abc"
+              "requestKey": "123abc",
+              "userConfig": [{
+                "name": "tlpExportSetting",
+                "value": "TLP:RED"
+              }],
             }
 
         Args:
@@ -178,43 +181,39 @@ class ApiService(CommonService):
         path: str = message.get('path')
 
         try:
-            # TODO: research required field for wsgi and update
-            # TODO: move to a method
             environ = {
                 'wsgi.errors': sys.stderr,
-                # 'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>
                 'wsgi.input': body,
                 'wsgi.multithread': True,
                 'wsgi.multiprocess': False,
                 'wsgi.run_once': True,
                 'wsgi.url_scheme': 'https',
                 'wsgi.version': (1, 0),
-                # 'GATEWAY_INTERFACE': 'CGI/1.1',
-                # 'HTTP_ACCEPT': '',
-                'HTTP_ACCEPT': headers.get('accept', ''),
-                # 'HTTP_ACCEPT_ENCODING': '',
-                # 'HTTP_ACCEPT_LANGUAGE': '',
-                # 'HTTP_COOKIE': '',
-                # 'HTTP_DNT': 1,
-                # 'HTTP_CONNECTION': 'keep-alive',
-                # 'HTTP_HOST': '',
-                # 'HTTP_UPGRADE_INSECURE_REQUESTS': 1,
-                'HTTP_USER_AGENT': headers.get('user-agent', ''),
                 'PATH_INFO': path,
                 'QUERY_STRING': self.format_query_string(params),
-                # 'REMOTE_ADDR': '',
-                # 'REMOTE_HOST': '',
+                'REMOTE_ADDR': message.get('remoteAddress', ''),
+                # 'REMOTE_HOST': message.get('remoteAddress', ''),
                 'REQUEST_METHOD': method.upper(),
                 'SCRIPT_NAME': '/',
                 'SERVER_NAME': '',
                 'SERVER_PORT': '',
                 'SERVER_PROTOCOL': 'HTTP/1.1',
-                # 'SERVER_SOFTWARE': 'WSGIServer/0.2',
             }
+
+            # Add user config for TAXII or other service that supports the data type
+            environ['user_config'] = message.get('userConfig', [])
+
+            # add headers
             if headers.get('content-type') is not None:
-                environ['CONTENT_TYPE'] = (headers.get('content-type'),)
+                environ['CONTENT_TYPE'] = headers.pop('content-type')
+
+            # add content length
             if headers.get('content-length') is not None:
-                environ['CONTENT_LENGTH'] = headers.get('content-length')
+                environ['CONTENT_LENGTH'] = headers.pop('content-length')
+
+            for header, value in headers.items():
+                environ[f'HTTP_{header}'.upper()] = value
+
             self.log.trace(f'feature=api-service, environ={environ}')
             self.increment_metric('Requests')
         except Exception as e:
@@ -243,14 +242,12 @@ class ApiService(CommonService):
                 # process body
                 body = ''
                 if hasattr(body_data, 'read'):
-                    body = base64.b64encode(body_data.read()).decode()
+                    body = body_data.read()
                 elif isinstance(body_data, list):
                     for bd in body_data:
                         if hasattr(bd, 'read'):
-                            # body += base64.b64encode(bd.read()).decode()
                             body += bd.read()
                         elif isinstance(bd, bytes):
-                            # body += base64.b64encode(bd.read()).decode()
                             body += bd.decode()
                         elif isinstance(bd, list):
                             for b in bd:
@@ -258,8 +255,6 @@ class ApiService(CommonService):
                         else:
                             self.log.error(f'unhandled type - {type(body)}')
                             self.log.error(f'unhandled type dir - {dir(body)}')
-                    # encode body
-                    body = base64.b64encode(body.encode()).decode()
 
                 # write body to Redis
                 self.redis_client.hset(request_key, 'response.body', body)
