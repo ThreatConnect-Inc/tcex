@@ -618,7 +618,7 @@ class MitreAttackUtils:
     def technique_id_to_tags(technique_id: str, include_ndt_tag: bool = False) -> List[str]:
         """Return the ThreatConnect tags for the given technique_id."""
         matching_tags = []
-        technique_id_prefix = f'{technique_id} -'
+        technique_id_prefix = f'{technique_id.title()} -'
         for tag in MITRE_ATTACK_TAGS_SPLIT:
             if tag.startswith(technique_id_prefix):
                 is_ndt_tag = '- NDT - ' in tag
