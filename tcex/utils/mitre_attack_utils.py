@@ -1,4 +1,4 @@
-"""TcEx Datetime Utilities Module"""
+"""TcEx Mitre Attack Utilities Module"""
 # standard library
 from typing import List
 
@@ -612,7 +612,7 @@ MITRE_ATTACK_TACTIC_ABBREVIATIONS = {
 
 
 class MitreAttackUtils:
-    """TcEx framework Mitre Attacks Utils module"""
+    """TcEx framework Mitre Attacks Utils class"""
 
     @staticmethod
     def technique_id_to_tags(technique_id: str, include_ndt_tag: bool = False) -> List[str]:
