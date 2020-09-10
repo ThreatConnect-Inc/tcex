@@ -5,11 +5,11 @@ import json
 import os
 import subprocess
 import sys
-import threading
 import time
 import uuid
 from multiprocessing import Process
 from random import randint
+from threading import Event, Lock, Thread
 from typing import Any, Optional
 
 from ..services import MqttMessageBroker
@@ -23,7 +23,9 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     _message_broker = None
     app_process = None
     client_topic = f'client-topic-{randint(100, 999)}'
+    lock = Lock()  # lock for subscription management
     server_topic = f'server-topic-{randint(100, 999)}'
+    service_ready = Event()
     service_run_method = 'subprocess'  # run service as subprocess, multiprocess, or thread
     shutdown = False
     shutdown_complete = False
@@ -32,6 +34,9 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     sleep_after_service_start = 5
     sleep_before_delete_config = 2
     sleep_before_shutdown = 0.5
+    subscriptions = {}  # dictionary of events, posted to by MID by on_subscribe
+    trigger_requests = {}
+    trigger_responses = {}
 
     def _app_callback(self, app):
         """Set app object from run.py callback"""
@@ -74,6 +79,37 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """Return a mqtt client instance."""
         return self.message_broker.client
 
+    def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
+        """Handle message broker on_message shutdown command events."""
+
+        try:
+            m = json.loads(message.payload)
+        except ValueError:
+            raise RuntimeError(f'Could not parse API service response JSON. ({message})')
+
+        command = m.get('command').lower()
+        if command == 'ready':
+            self.service_ready.set()
+
+        trigger_id = str(m.get('triggerId'))
+        cmd_type = m.get('type', command).lower()
+        key = f'{trigger_id}-{cmd_type}'
+        if key in self.trigger_responses:
+            self.log.warning(f'Additional response arrived for trigger {key} -- discarded')
+        else:
+            self.trigger_responses[key] = m
+        if self.trigger_requests.get(key) is not None:
+            self.trigger_requests.pop(key).set()
+
+    # pylint: disable=unused-argument
+    def on_subscribe(self, client, userdata, mid, granted_qos):
+        """Handle on subscribe callback after subscription completes"""
+
+        with self.lock:
+            event = self.subscriptions.pop(mid)
+            if event:
+                event.set()
+
     def publish(self, message: str, topic: Optional[str] = None):
         """Publish message on server channel.
 
@@ -83,12 +119,15 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         """
         self.message_broker.publish(message, topic)
 
-    def publish_create_config(self, message):
+    def publish_create_config(self, message: dict) -> dict:
         """Send create config message.
 
         Args:
             trigger_id (str): The trigger id for the config message.
             message (dict): The entire message with trigger_id and config.
+
+        Returns:
+            dict: CreateConfig Acknowledge response data.
         """
         # merge the message config (e.g., optional, required)
         message_config = message.pop('config')
@@ -102,8 +141,23 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         message['command'] = 'CreateConfig'
         message['config']['tc_playbook_out_variables'] = self.profile.tc_playbook_out_variables
         message['triggerId'] = message.pop('trigger_id')
+        self.log.data('run', 'create config', f'{message["triggerId"]}')
         self.message_broker.publish(json.dumps(message), self.server_topic)
-        time.sleep(self.sleep_after_publish_config)
+
+        # create thread wait event
+        event = Event()
+        key = f'{message["triggerId"]}-createconfig'
+        self.trigger_requests[key] = event
+        event.wait(10)  # wait for 10 seconds
+        # time.sleep(self.sleep_after_publish_config)
+        result = self.trigger_responses.pop(key, {})
+        self.log.data(
+            'run',
+            'create config',
+            f'{message["triggerId"]} {result.get("status", "No Status")} '
+            f'{result.get("message", "No Message")}',
+        )
+        return dict(status=result.get('status', False), message=result.get('message'))
 
     def publish_delete_config(self, message):
         """Send delete config message.
@@ -114,6 +168,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         time.sleep(self.sleep_before_delete_config)
         # using triggerId here instead of trigger_id do to pop in publish_create_config
         config_msg = {'command': 'DeleteConfig', 'triggerId': message.get('triggerId')}
+        self.log.data('run', 'delete config', f'{message["triggerId"]}')
         self.message_broker.publish(json.dumps(config_msg), self.server_topic)
 
     def publish_heartbeat(self):
@@ -124,6 +179,7 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
     def publish_shutdown(self):
         """Publish shutdown message."""
         config_msg = {'command': 'Shutdown'}
+        self.log.data('run', 'service', 'shutdown requested')
         self.message_broker.publish(json.dumps(config_msg), self.server_topic)
 
     def publish_webhook_event(
@@ -162,8 +218,17 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             'requestKey': request_key,
             'triggerId': trigger_id,
         }
+
+        trigger_id = str(trigger_id)
+        self.log.data('run', 'webhook event', trigger_id)
+        ready = Event()
+        key = f'{trigger_id}-webhookevent'
+        self.trigger_requests[key] = ready
         self.message_broker.publish(json.dumps(event), self.server_topic)
-        time.sleep(self.sleep_after_publish_webhook_event)
+        ready.wait(10)  # wait for 10 seconds
+        status = 'Complete' if ready.isSet() else 'Timed Out'
+        self.trigger_responses.pop(key, {})
+        self.log.data('run', 'webhook event', f'{trigger_id} {status}')
 
     def publish_marshall_webhook_event(
         self,
@@ -199,8 +264,16 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             'triggerId': trigger_id,
             'statusCode': status_code,
         }
+        trigger_id = str(trigger_id)
+        self.log.data('run', 'webhook marshal', trigger_id)
+        ready = Event()
+        key = f'{trigger_id}-webhookmarshallevent'
+        self.trigger_requests[key] = ready
         self.message_broker.publish(json.dumps(event), self.server_topic)
-        time.sleep(self.sleep_after_publish_webhook_event)
+        ready.wait(10)  # wait for 10 seconds
+        status = 'Complete' if ready.isSet() else 'Timed Out'
+        self.trigger_responses.pop(key, {})
+        self.log.data('run', 'webhook marshal', f'{trigger_id} {status}')
 
     def run(self):
         """Implement in Child Class"""
@@ -225,14 +298,11 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
             self.app_process = subprocess.Popen(['python', 'run.py'])
         elif self.service_run_method == 'thread':
             # run App in a thread
-            t = threading.Thread(target=self.run, args=(), daemon=True)
+            t = Thread(target=self.run, args=(), daemon=True)
             t.start()
         elif self.service_run_method == 'multiprocess':
             p = Process(target=self.run, args=(), daemon=True)
             p.start()
-
-        # give app some time to initialize before continuing
-        time.sleep(self.sleep_after_service_start)
 
         # restore sys.argv
         sys.argv = sys_argv_orig
@@ -253,14 +323,40 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex.redis_client
 
+        for key in list(self.trigger_requests.keys()):
+            del self.trigger_requests[key]
+
+        for key in list(self.trigger_responses.keys()):
+            del self.trigger_responses[key]
+
+        self.service_ready.clear()
+
+        # register on_message shutdown monitor
+        self.message_broker.add_on_message_callback(
+            callback=self.on_message, topics=[self.client_topic]
+        )
+
+        # register on_subscribe notification
+        self.message_broker.add_on_subscribe_callback(callback=self.on_subscribe)
+
+        self.message_broker.client.loop_start()
+
+        self.subscribe(self.client_topic)
+
         # only start service if it hasn't been started already base on file flag.
         if not os.path.isfile(self.service_file):
             open(self.service_file, 'w+').close()  # create service started file flag
             self.run_service()
 
             # start shutdown monitor thread
-            t = threading.Thread(target=self.shutdown_monitor, daemon=True)
+            t = Thread(target=self.shutdown_monitor, daemon=True)
             t.start()
+
+        self.service_ready.wait(30)
+        if not self.service_ready.isSet():
+            self.log.data('run', 'service', 'failed to start')
+        else:
+            self.log.data('run', 'service', 'ready')
 
     def shutdown_monitor(self):
         """Monitor for shutdown flag."""
@@ -294,6 +390,19 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         for key, value in list(staged_data.get('redis', {}).items()):
             self.stager.redis.stage(key, value)
 
+    def subscribe(self, topic):
+        """Subscribe to a topic and wait for the subscription to complete"""
+        event = Event()
+        with self.lock:
+            # don't try to subscribe outside of lock, since
+            # it could come back *before* we wait on it
+            _, mid = self.message_broker.client.subscribe(topic)
+            self.subscriptions[mid] = event
+
+        event.wait(10)
+        if mid in self.subscriptions:  # failed to subscribe
+            self.log.error(f'Failed to subscribe to topic {topic}')
+
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
@@ -310,6 +419,8 @@ class TestCaseServiceCommon(TestCasePlaybookCommon):
         time.sleep(self.sleep_before_shutdown)
         # run test_case_playbook_common teardown_method
         super().teardown_method()
+
+        self.message_broker.client.loop_stop()
 
         # clean up tcex testing context after populate_output has run
         self.clear_context(self.tcex_testing_context)
