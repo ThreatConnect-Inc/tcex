@@ -212,7 +212,9 @@ class Tokens:
     @property
     def trigger_id(self) -> Optional[int]:
         """Return the current trigger_id."""
-        trigger_id = threading.current_thread().trigger_id
+        trigger_id = None
+        if hasattr(threading.current_thread(), 'trigger_id'):
+            trigger_id = threading.current_thread().trigger_id
         if trigger_id is not None:
             trigger_id = int(trigger_id)
         return trigger_id

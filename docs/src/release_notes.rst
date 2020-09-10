@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.11
+======
++
+
 2.0.10
 ======
 + APP-890 - Added discoverTypes to Ready command for API Services.

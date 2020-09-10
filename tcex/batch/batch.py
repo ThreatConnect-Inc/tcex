@@ -8,6 +8,7 @@ import re
 import shelve
 import time
 import uuid
+from collections import deque
 from typing import Optional
 
 from .group import (
@@ -512,24 +513,25 @@ class Batch:
             list: A list of group dicts.
         """
         groups = []
-        group_data = None
 
-        # get group data from one of the arrays
-        if self.groups.get(xid) is not None:
-            group_data = self.groups.get(xid)
-            del self.groups[xid]
-        elif self.groups_shelf.get(xid) is not None:
-            group_data = self.groups_shelf.get(xid)
-            del self.groups_shelf[xid]
+        xids = deque()
+        xids.append(xid)
 
-        if group_data is not None:
-            # convert any obj into dict and process file data
-            group_data = self.data_group_type(group_data)
-            groups.append(group_data)
+        while xids:
+            xid = xids.popleft()  # remove current xid
+            group_data = None
 
-            # recursively get associations
-            for assoc_xid in group_data.get('associatedGroupXid', []):
-                groups.extend(self.data_group_association(assoc_xid))
+            if xid in self.groups:
+                group_data = self.groups.get(xid)
+                del self.groups[xid]
+            elif xid in self.groups_shelf:
+                group_data = self.groups_shelf.get(xid)
+                del self.groups_shelf[xid]
+
+            if group_data:
+                group_data = self.data_group_type(group_data)
+                groups.append(group_data)
+                xids.extend(group_data.get('associatedGroupXid', []))
 
         return groups
 
@@ -552,9 +554,8 @@ class Batch:
                     'type': group_data.get('type'),
                 }
         else:
-            GROUPS_STRINGS_WITH_FILE_CONTENTS = ['Document', 'Report']
             # process file content
-            if group_data.data.get('type') in GROUPS_STRINGS_WITH_FILE_CONTENTS:
+            if group_data.data.get('type') in ['Document', 'Report']:
                 self._files[group_data.data.get('xid')] = group_data.file_data
             group_data = group_data.data
         return group_data
@@ -1560,9 +1561,8 @@ class Batch:
                 upload_status.append({'uploaded': False, 'xid': xid})
                 self.tcex.log.warning(f'File content was null for xid {xid}.')
                 continue
-            if content_data.get('type') == 'Document':
-                api_branch = 'documents'
-            elif content_data.get('type') == 'Report':
+            api_branch = 'documents'
+            if content_data.get('type') == 'Report':
                 api_branch = 'reports'
 
             if self.debug and content_data.get('fileName'):
@@ -1624,6 +1624,7 @@ class Batch:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
             self.tcex.handle_error(10505, [e], halt_on_error)
+
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
             self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
         data = r.json()

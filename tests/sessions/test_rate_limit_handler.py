@@ -16,6 +16,10 @@ class TestRateLimitHandler:
     @staticmethod
     def test_pre_send():
         """Test the pre_send method."""
+        # backup time methods
+        backup_sleep = time.sleep
+        backup_time = time.time
+
         rate_limit_handler = RateLimitHandler()
 
         sleep = MagicMock(return_value=None)
@@ -33,6 +37,10 @@ class TestRateLimitHandler:
 
         rate_limit_handler.pre_send(request)
         sleep.assert_called_once_with(3)
+
+        # restore time methods
+        time.sleep = backup_sleep
+        time.time = backup_time
 
     @staticmethod
     def test_post_send():
