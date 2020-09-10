@@ -4,7 +4,9 @@ import stix2
 see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
 """
 # standard library
+import hashlib
 from typing import Dict, List, Union
+import uuid
 
 # third-party
 import stix2
@@ -15,6 +17,7 @@ from dendrol.lang.STIXPatternParser import STIXPatternParser
 # first-party
 from tcex.batch import Batch
 from tcex.stix import StixModel  # pylint: disable=cyclic-import
+
 
 
 class StixIndicator(StixModel):
@@ -40,9 +43,63 @@ class StixIndicator(StixModel):
             indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
                 continue
+            labels = []
+            description = None
+            latest = None
+            for tag in data.get('tag', []):
+                labels.append(tag.get('name'))
+            for attribute in data.get('attribute', []):
+                if attribute.get('type').lower() == 'description':
+                    value = attribute.get('value')
+                    last_modified = attribute.get('lastModified'), '%y-%m-%d'
+                    if attribute.get('displayed'):
+                        description = value
+                        break
+                    if not latest or latest > last_modified:
+                        latest = last_modified
+                        description = value
+
+            id_ = f'''{data.get('ownerName').lower()}--{_type.lower()}--{data.get('summary')}'''
+            self.logger.log.error(f'indicator--{id_}')
+            # id_ = base64.b16encode(id_.encode()).decode()
+            id_ = hashlib.md5(id_.encode('utf-8')).hexdigest()
+            id_ = uuid.uuid5(uuid.NAMESPACE_X500, id_)
+
+            # indicator--8fde163c-3395-d8d7-dac6-996127d3f183
+            # indicator--a862ff86-68d9-42e5-8095-cd80c040e112
+            # indicator--a740531e-63ff-4e49-a9e1-a0a3eed0e3e7
+            #            b1d0cac0-d50d-11e8-b57b-ccaf789d94a0
+
+
+
+            # TODO: currently a md5 hash of indicator--ownername--type--summary
+            # This means that searching based on a id filter will still be super painful
+            # {
+            #     "type": "indicator",
+            #     "spec_version": "2.1",
+            #     "id": "indicator--78e53a5c-9510-4a95-88b1-dbac1ee60ca5",
+            #     "created": "2020-09-08T19:16:25.481964Z",
+            #     "modified": "2020-09-08T19:16:25.481964Z",
+            #     "name": "TCI - kqvri.com",
+            #     "description": "visible description",
+            #     "indicator_types": [
+            #         "malicious-activity"
+            #     ],
+            #     "pattern": "[domain-name:value = 'kqvri.com']",
+            #     "pattern_type": "stix",
+            #     "pattern_version": "2.1",
+            #     "valid_from": "2020-09-08T19:16:25.481964Z",
+            #     "labels": [
+            #         "test1"
+            #     ]
+            # }
 
             yield stix2.Indicator(
-                name=f'{data.get("ownerName")} - {data.get("summary")}',
+                labels=labels,
+                created=data.get('dateAdded'),
+                description=description,
+                id=f'indicator--{id_}',
+                name=f'{data.get("summary")}',
                 pattern_version='2.1',
                 indicator_types=['malicious-activity'],
                 pattern_type='stix',

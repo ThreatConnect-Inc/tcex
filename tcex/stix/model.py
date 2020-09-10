@@ -36,7 +36,7 @@ class StixModel:
         details = self.indicator_type_details.get(indicator_type)
 
         summary = []
-        for field in details.get('fields'):
+        for field in details.get('fields', []):
             if field in data:
                 summary.append(data.get(field))
             else:
@@ -213,14 +213,28 @@ class StixModel:
                 api_branch = values.get('api_branch')
                 indicator_type = key
                 break
-        tc_data = data.get(api_branch)
+
+        if indicator_type is None:
+            for key, values in self.indicator_type_details.items():
+                for field in values.get('fields'):
+                    if field.lower() in map(str.lower, data.keys()):
+                        indicator_type = key
+                        break
+                if indicator_type:
+                    break
+
+        tc_data = data.get(api_branch, data)
+
+        if not isinstance(tc_data, list):
+            tc_data = [tc_data]
 
         for data in tc_data:
             _type = indicator_type or data.get('type').lower()
-            data['summary'] = self._construct_summary(data, indicator_type)
+            self.logger.log.error(f'_type: {_type}')
+            data['summary'] = self._construct_summary(data, _type)
             for field in self.indicator_type_details.get(_type).get('fields'):
                 data.pop(field, '')
-            yield indicator_type, data
+            yield _type, data
 
     def consume(self, stix_data: Union[list, dict]):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
