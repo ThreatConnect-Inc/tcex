@@ -82,20 +82,19 @@ class CommonServiceTrigger(CommonService):
         )
         return command_map
 
-    def create_config(self, trigger_id: int, config: dict, message: str, status: bool) -> None:
+    def create_config(self, trigger_id: int, message: str, status: bool) -> None:
         """Add config item to service config object.
 
         Args:
             trigger_id: The trigger ID for the current config.
-            config: The config for the current trigger.
             message: A simple message for the action.
             status: The passed/fail status for the App handling of config.
             logfile: The CreateConfig logfile to return in response ack.
         """
         try:
-            if status is True:
+            if status is not True and self.configs.get(str(trigger_id)) is not None:
                 # add config to configs
-                self.configs[trigger_id] = config
+                del self.configs[str(trigger_id)]
 
             # send ack response
             self.message_broker.publish(
@@ -315,6 +314,9 @@ class CommonServiceTrigger(CommonService):
         # register config apiToken
         self.token.register_token(trigger_id, message.get('apiToken'), message.get('expireSeconds'))
 
+        # temporarily add config, will be removed if callback fails
+        self.configs[trigger_id] = config
+
         msg = 'Create Config'
         if callable(self.create_config_callback):
 
@@ -344,7 +346,7 @@ class CommonServiceTrigger(CommonService):
                 self.log.trace(traceback.format_exc())
 
         # create config after callback to report status and message
-        self.create_config(trigger_id, config, msg, status)
+        self.create_config(trigger_id, msg, status)
 
     def process_delete_config_command(self, message: dict) -> None:
         """Process the DeleteConfig command.

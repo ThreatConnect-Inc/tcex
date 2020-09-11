@@ -251,9 +251,6 @@ class TestCaseApiService(TestCaseServiceCommon):
 
     def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
         """Handle message broker on_message shutdown command events."""
-        # if message.topic != self.server_topic:
-        #     return
-
         try:
             m = json.loads(message.payload)
         except ValueError:
