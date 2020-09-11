@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.utils &mdash; TcEx 2.0.10 documentation</title>
+  <title>tcex.utils.utils &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.10
+                2.0.11
               </div>
 
 
@@ -195,6 +195,7 @@
 <span class="kn">import</span> <span class="nn">pyaes</span>
 
 <span class="kn">from</span> <span class="nn">.date_utils</span> <span class="kn">import</span> <span class="n">DatetimeUtils</span>
+<span class="kn">from</span> <span class="nn">.mitre_attack_utils</span> <span class="kn">import</span> <span class="n">MitreAttackUtils</span>
 
 
 <div class="viewcode-block" id="Utils"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils">[docs]</a><span class="k">class</span> <span class="nc">Utils</span><span class="p">:</span>
@@ -240,6 +241,11 @@
     <span class="k">def</span> <span class="nf">datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of DatetimeUtils.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DatetimeUtils</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mitre_attack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return an instance of MitreAttackUtils.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MitreAttackUtils</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Utils.decrypt_aes_cbc"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.decrypt_aes_cbc">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">decrypt_aes_cbc</span><span class="p">(</span>

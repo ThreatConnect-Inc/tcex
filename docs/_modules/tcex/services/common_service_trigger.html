@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.services.common_service_trigger &mdash; TcEx 2.0.10 documentation</title>
+  <title>tcex.services.common_service_trigger &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.10
+                2.0.11
               </div>
 
 
@@ -264,20 +264,19 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">command_map</span>
 
-<div class="viewcode-block" id="CommonServiceTrigger.create_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service_trigger.CommonServiceTrigger.create_config">[docs]</a>    <span class="k">def</span> <span class="nf">create_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="CommonServiceTrigger.create_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service_trigger.CommonServiceTrigger.create_config">[docs]</a>    <span class="k">def</span> <span class="nf">create_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add config item to service config object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            trigger_id: The trigger ID for the current config.</span>
-<span class="sd">            config: The config for the current trigger.</span>
 <span class="sd">            message: A simple message for the action.</span>
 <span class="sd">            status: The passed/fail status for the App handling of config.</span>
 <span class="sd">            logfile: The CreateConfig logfile to return in response ack.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># add config to configs</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">trigger_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">)]</span>
 
             <span class="c1"># send ack response</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">message_broker</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
@@ -497,6 +496,9 @@
         <span class="c1"># register config apiToken</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">register_token</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiToken&#39;</span><span class="p">),</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;expireSeconds&#39;</span><span class="p">))</span>
 
+        <span class="c1"># temporarily add config, will be removed if callback fails</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">trigger_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Create Config&#39;</span>
         <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_config_callback</span><span class="p">):</span>
 
@@ -526,7 +528,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
 
         <span class="c1"># create config after callback to report status and message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CommonServiceTrigger.process_delete_config_command"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service_trigger.CommonServiceTrigger.process_delete_config_command">[docs]</a>    <span class="k">def</span> <span class="nf">process_delete_config_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Process the DeleteConfig command.</span>
