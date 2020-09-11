@@ -68,8 +68,14 @@ class testMitreAttackFindTacticAbbreviation:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
-        assert tcex.utils.mitre_attack.tactic_name_abbreviation('Establish&MaintainInfrastructure') == 'EMI'
-        assert tcex.utils.mitre_attack.tactic_name_abbreviation('Establish & Maintain Infrastructure') == 'EMI'
+        assert (
+            tcex.utils.mitre_attack.tactic_name_abbreviation('Establish&MaintainInfrastructure')
+            == 'EMI'
+        )
+        assert (
+            tcex.utils.mitre_attack.tactic_name_abbreviation('Establish & Maintain Infrastructure')
+            == 'EMI'
+        )
         assert tcex.utils.mitre_attack.tactic_name_abbreviation('Execution') == 'EXE'
         assert tcex.utils.mitre_attack.tactic_name_abbreviation('CommandAndControl') == 'C&C'
         assert tcex.utils.mitre_attack.tactic_name_abbreviation('commandandcontrol') == 'C&C'

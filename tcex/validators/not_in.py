@@ -1,11 +1,11 @@
 """not_in argument validator."""
 # standard library
-from typing import Any, List
+from typing import Any, Callable, List
 
 from .validation_exception import ValidationError
 
 
-def not_in(invalid_values: List[Any]):
+def not_in(invalid_values: List[Any]) -> Callable[..., None]:
     """Validate a String is in not equal to any of the values in invalid_values.
 
     Allowed argument types: String, StringArray, TCEntity, TCEntityArray
@@ -20,7 +20,7 @@ def not_in(invalid_values: List[Any]):
         A validator function that can be used in the validators argument to @ReadArg.
     """
 
-    def _validate(value: str, arg_name: str, label: str):
+    def _validate(value: str, arg_name: str, label: str) -> None:
         """Run validation on input data.
 
         Args:

@@ -2,6 +2,7 @@
 # standard library
 from typing import List
 
+# flake8: noqa
 MITRE_ATTACK_TAGS = """T1001 - Data Obfuscation - C&C - ENT - ATT&CK
 T1003 - OS Credential Dumping - CRA - ENT - ATT&CK
 T1005 - Data from Local System - COL - ENT - ATT&CK
