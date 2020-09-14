@@ -61,19 +61,8 @@ class StixIndicator(StixModel):
 
             id_ = f'''{data.get('ownerName').lower()}--{_type.lower()}--{data.get('summary')}'''
             self.logger.log.error(f'indicator--{id_}')
-            # id_ = base64.b16encode(id_.encode()).decode()
-            id_ = hashlib.md5(id_.encode('utf-8')).hexdigest()
             id_ = uuid.uuid5(uuid.NAMESPACE_X500, id_)
 
-            # indicator--8fde163c-3395-d8d7-dac6-996127d3f183
-            # indicator--a862ff86-68d9-42e5-8095-cd80c040e112
-            # indicator--a740531e-63ff-4e49-a9e1-a0a3eed0e3e7
-            #            b1d0cac0-d50d-11e8-b57b-ccaf789d94a0
-
-
-
-            # TODO: currently a md5 hash of indicator--ownername--type--summary
-            # This means that searching based on a id filter will still be super painful
             # {
             #     "type": "indicator",
             #     "spec_version": "2.1",
@@ -95,6 +84,7 @@ class StixIndicator(StixModel):
             # }
 
             yield stix2.Indicator(
+                confidence=data.get('confidence'),
                 labels=labels,
                 created=data.get('dateAdded'),
                 description=description,
