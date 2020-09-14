@@ -1,8 +1,13 @@
 """in_range argument validator."""
+# standard library
+from typing import Any, Callable
+
 from .validation_exception import ValidationError
 
 
-def in_range(min: float, max: float, **kwargs):  # pylint: disable=redefined-builtin
+def in_range(
+    min: float, max: float, **kwargs  # pylint: disable=redefined-builtin
+) -> Callable[..., None]:
     """Validate a value is in the range min <= value <= max.
 
     For a StringArray, validates that every element in the array is min <= value <= max.
@@ -20,7 +25,7 @@ def in_range(min: float, max: float, **kwargs):  # pylint: disable=redefined-bui
         A validator function that can be used in the validators argument to @ReadArg.
     """
 
-    def _validate(value, arg_name, label):
+    def _validate(value: Any, arg_name: str, label: str) -> None:
         """Run validation on input data.
 
         Args:

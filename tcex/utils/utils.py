@@ -14,6 +14,7 @@ import jmespath
 import pyaes
 
 from .date_utils import DatetimeUtils
+from .mitre_attack_utils import MitreAttackUtils
 
 
 class Utils:
@@ -59,6 +60,11 @@ class Utils:
     def datetime(self) -> object:
         """Return an instance of DatetimeUtils."""
         return DatetimeUtils()
+
+    @property
+    def mitre_attack(self) -> object:
+        """Return an instance of MitreAttackUtils."""
+        return MitreAttackUtils()
 
     @staticmethod
     def decrypt_aes_cbc(

@@ -20,7 +20,7 @@ class TestOperators:
         validator = equal_to('foo')
 
         try:
-            validator('foo', 'test_arg')
+            validator('foo', 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'equal_to failed when it should have passed.'
 
@@ -30,7 +30,7 @@ class TestOperators:
         validator = equal_to('foo', allow_none=True)
 
         try:
-            validator(None, 'test_arg')
+            validator(None, 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'equal_to failed when it should have passed.'
 
@@ -40,10 +40,10 @@ class TestOperators:
         validator = equal_to('bar')
 
         try:
-            validator('foo', 'test_arg')
+            validator('foo', 'test_arg', 'Test Arg')
             assert False, 'equal_to passed when it should have failed.'
         except ValidationError as v:
-            assert v.message == 'test_arg is not equal to "bar"'
+            assert v.message == '"Test Arg" (test_arg) is not equal to "bar"'
 
     # less_than
     @staticmethod
@@ -52,9 +52,9 @@ class TestOperators:
         validator = less_than(12)
 
         try:
-            validator(10, 'test_arg')
+            validator(10, 'test_arg', 'Test Arg')
         except ValidationError:
-            assert False, 'less_than failed when it should have passed.'
+            assert False, '"Test Arg" (less_than failed when it should have passed.'
 
     @staticmethod
     def test_less_than_fail():
@@ -62,10 +62,10 @@ class TestOperators:
         validator = less_than(12)
 
         try:
-            validator(12, 'test_arg')
+            validator(12, 'test_arg', 'Test Arg')
             assert False, 'less_than passed when it should have failed.'
         except ValidationError as v:
-            assert v.message == 'test_arg is not less than 12'
+            assert v.message == '"Test Arg" (test_arg) is not less than 12'
 
     # less_than_or_equal
     @staticmethod
@@ -74,7 +74,7 @@ class TestOperators:
         validator = less_than_or_equal(12)
 
         try:
-            validator(12, 'test_arg')
+            validator(12, 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'less_than_or_equal failed when it should have passed.'
 
@@ -84,10 +84,10 @@ class TestOperators:
         validator = less_than_or_equal(12)
 
         try:
-            validator(13, 'test_arg')
+            validator(13, 'test_arg', 'Test Arg')
             assert False, 'less_than_or_equal passed when it should have failed.'
         except ValidationError as v:
-            assert v.message == 'test_arg is not less than or equal to 12'
+            assert v.message == '"Test Arg" (test_arg) is not less than or equal to 12'
 
     # greater_than
     @staticmethod
@@ -96,7 +96,7 @@ class TestOperators:
         validator = greater_than(12)
 
         try:
-            validator(13, 'test_arg')
+            validator(13, 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'greater_than failed when it should have passed.'
 
@@ -106,10 +106,10 @@ class TestOperators:
         validator = greater_than(12)
 
         try:
-            validator(11, 'test_arg')
+            validator(11, 'test_arg', 'Test Arg')
             assert False, 'greater_than passed when it should have failed.'
         except ValidationError as v:
-            assert v.message == 'test_arg is not greater than 12'
+            assert v.message == '"Test Arg" (test_arg) is not greater than 12'
 
     # greater_than_or_equal
     @staticmethod
@@ -118,7 +118,7 @@ class TestOperators:
         validator = greater_than_or_equal(12)
 
         try:
-            validator(12, 'test_arg')
+            validator(12, 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'greater_than_or_equal failed when it should have passed.'
 
@@ -128,7 +128,7 @@ class TestOperators:
         validator = greater_than_or_equal(12)
 
         try:
-            validator(10, 'test_arg')
+            validator(10, 'test_arg', 'Test Arg')
             assert False, 'greater_than_or_equal passed when it should have failed.'
         except ValidationError as v:
-            assert v.message == 'test_arg is not greater than or equal to 12'
+            assert v.message == '"Test Arg" (test_arg) is not greater than or equal to 12'
