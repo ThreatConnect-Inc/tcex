@@ -345,18 +345,6 @@ class Document(Group):
         self._file_content = kwargs.get('file_content')
 
     @property
-    def file_content(self):
-        """Return Group files."""
-        if callable(self._file_content):
-            return self._file_content(self.xid)
-        return self._file_content
-
-    @file_content.setter
-    def file_content(self, file_content):
-        """Set Document or Report file data."""
-        self._file_content = file_content
-
-    @property
     def file_data(self):
         """Return Group files."""
         return {
@@ -586,18 +574,6 @@ class Report(Group):
         super().__init__('Report', name, **kwargs)
         # file data/content to upload
         self._file_content = kwargs.get('file_content')
-
-    @property
-    def file_content(self):
-        """Return Group files."""
-        if callable(self._file_content):
-            return self._file_content(self.xid)
-        return self._file_content
-
-    @file_content.setter
-    def file_content(self, file_content):
-        """Set Document or Report file data."""
-        self._file_content = file_content
 
     @property
     def file_data(self):
