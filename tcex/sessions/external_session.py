@@ -261,9 +261,10 @@ class ExternalSession(Session):
             )
         except Exception:  # nosec
             pass  # logging curl command is best effort
+
         self.log.debug(
             f'feature=external-session, request-url={response.request.url}, '
-            f'status_code={response.status_code}'
+            f'status_code={response.status_code}, elapsed={response.elapsed}'
         )
 
         return response

@@ -1,6 +1,7 @@
 """Test the TcEx Logger Module."""
 # standard library
 import os
+from random import randint
 
 
 class TestLogs:
@@ -28,4 +29,25 @@ class TestLogs:
         # simple assert to ensure the log file was created
         assert os.path.exists(
             os.path.join(tcex.default_args.tc_log_path, tcex.default_args.tc_log_file)
+        )
+
+    @staticmethod
+    def test_logger_rotate(playbook_app):
+        """Test TcEx logger
+
+        Args:
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        config_data = {'tc_log_file': 'rotate.log', 'tc_log_max_bytes': 1_048_576}
+        tcex = playbook_app(config_data=config_data).tcex
+
+        for _ in range(0, 5_000):
+            tcex.log.info(f'A long random string {tcex.utils.random_string(randint(200, 250))}')
+
+        # simple assert to ensure the log file was created
+        assert os.path.exists(
+            os.path.join(tcex.default_args.tc_log_path, tcex.default_args.tc_log_file)
+        )
+        assert os.path.exists(
+            os.path.join(tcex.default_args.tc_log_path, f'{tcex.default_args.tc_log_file}.1.gz')
         )

@@ -1,6 +1,8 @@
 """API Handler Class"""
 # standard library
+import gzip
 import os
+import shutil
 from logging.handlers import RotatingFileHandler
 from typing import Optional
 
@@ -30,6 +32,33 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
+
+        # set namer
+        self.namer = self.custom_gzip_namer
+        self.rotator = self.custom_gzip_rotator
+
+    @staticmethod
+    def custom_gzip_namer(name):
+        """Namer for rotating log handler with gz extension.
+
+        Args:
+            name: The current name of the logfile.
+        """
+        return name + '.gz'
+
+    @staticmethod
+    def custom_gzip_rotator(source: str, dest: str) -> None:
+        """Rotate and compress log file.
+
+        Args:
+            source: The source filename.
+            dest: The destination filename.
+        """
+        # os.rename(source, dest)
+        with open(source, 'rb') as f_in:
+            with gzip.open(dest, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+        os.remove(source)
 
 
 # class RotatingFileHandlerFormatter(logging.Formatter):
