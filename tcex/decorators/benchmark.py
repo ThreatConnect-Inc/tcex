@@ -48,10 +48,8 @@ class Benchmark:
                 app (class): The instance of the App class "self".
             """
 
-            # before = float('{time.clock():.4f}')
             before = datetime.datetime.now()
             data = wrapped(*args, **kwargs)
-            # after = float('{time.clock():.4f}')
             after = datetime.datetime.now()
             app.tcex.log.debug(
                 f'function: "{self.__class__.__name__}", benchmark_time: "{after - before}"'
