@@ -245,18 +245,23 @@ class Utils:
 
         Args:
             request (object): The response.request object.
-            mask_headers (Optional[bool] = True): If True then values for certain header
-                key will be masked.
-            mask_patterns (list[str] = None): A list of patterns if found in headers the value
-                will be masked.
+            mask_headers (Optional[bool] = True): If True then
+                values for certain header key will be masked.
+            mask_patterns (list[str] = None): A list of patterns
+                if found in headers the value will be masked.
+            body_limit (int, kwargs): The size limit for the body value.
             proxies (dict, kwargs): A dict containing the proxy configuration.
             verify (bool, kwargs): If False the curl command will include --insecure flag.
+            write_file (bool, kwargs): If True and the body is
+                binary it will be written as a temp file.
 
         Returns:
             str: The curl command.
         """
+        body_limit: int = kwargs.get('body_limit', 100)
         proxies: dict = kwargs.get('proxies', {})
         verify: bool = kwargs.get('verify', True)
+        write_file: bool = kwargs.get('write_file', False)
 
         # APP-79 - adding the ability to log request as curl commands
         cmd = ['curl', '-X', request.method]
@@ -297,10 +302,17 @@ class Utils:
             try:
                 if isinstance(body, bytes):
                     body = body.decode('utf-8')
+
+                # truncate body
+                body = self.truncate_string(t_string=body, length=body_limit, append_chars='...')
                 body_data = f'-d "{body}"'
             except Exception:
-                temp_file: str = self.write_temp_binary_file(body)
-                body_data = f'--data-binary @{temp_file}'
+                # set static filename so that when running a large job App thousands of files do
+                # no get created.
+                body_data = '--data-binary @/tmp/body-file'
+                if write_file is True:
+                    temp_file: str = self.write_temp_binary_file(content=body, filename='curl-body')
+                    body_data = f'--data-binary @{temp_file}'
             cmd.append(body_data)
 
         if proxies is not None and proxies.get('https'):
