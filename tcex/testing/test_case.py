@@ -434,13 +434,14 @@ class TestCase:
 
         # determine the token type
         token_type = 'api'
-        if self.ij.runtime_level.lower() in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]:
-            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '441')}
-            token_type = 'svc'
+        # per conversation with Marut, we should be able to just use api tokens
+        # if self.ij.runtime_level.lower() in [
+        #     'apiservice',
+        #     'triggerservice',
+        #     'webhooktriggerservice',
+        # ]:
+        #     data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '441')}
+        #     token_type = 'svc'
 
         # retrieve token from API using HMAC auth
         r = self.session_exchange.post(f'{token_url_path}/{token_type}', json=data, verify=True)
