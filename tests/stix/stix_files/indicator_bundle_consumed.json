@@ -1,0 +1,241 @@
+[
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5"
+      }
+    ],
+    "summary": "223.166.0.0/15",
+    "type": "CIDR",
+    "xid": "9f58f08d98b79f86d74cc818f51b800296a1f38de80bdd1ca4974f851dfbfa1a"
+  },
+  {
+    "associatedGroupXid": [
+      "indicator--da1d061b-2bc9-467a-b16f-8d14f468e1f0"
+    ],
+    "name": "HTRAN Hop Point Accessor",
+    "type": "Signature",
+    "xid": "indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--da1d061b-2bc9-467a-b16f-8d14f468e1f0"
+      }
+    ],
+    "summary": "58.246.0.0/15",
+    "type": "CIDR",
+    "xid": "c0ad7190db8a5a68b16c44e07b2de251e65627effbd920186b5c5654bef3f85e"
+  },
+  {
+    "associatedGroupXid": [
+      "indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5"
+    ],
+    "name": "HTRAN Hop Point Accessor",
+    "type": "Signature",
+    "xid": "indicator--da1d061b-2bc9-467a-b16f-8d14f468e1f0"
+  },
+  {
+    "associatedGroupXid": [
+      "indicator--da1d061b-2bc9-467a-b16f-8d14f468e1f0"
+    ],
+    "name": "HTRAN Hop Point Accessor",
+    "type": "Signature",
+    "xid": "indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--2173d108-5714-42fd-8213-4f3790259fda"
+      }
+    ],
+    "summary": "112.64.0.0/15",
+    "type": "CIDR",
+    "xid": "871358aa814ff936affcae725eadb99a1af851e99a311eff58cba3ecabd970a1"
+  },
+  {
+    "name": "HTRAN Hop Point Accessor",
+    "type": "Signature",
+    "xid": "indicator--2173d108-5714-42fd-8213-4f3790259fda"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8ce03314-dfea-4498-ac9b-136e41ab00e4"
+      }
+    ],
+    "summary": "139.226.0.0/15",
+    "type": "CIDR",
+    "xid": "4cd36052b86ded4d9024bca7f8ff1ac89fe8b21854b9cf85a5fa69c818d02173"
+  },
+  {
+    "name": "HTRAN Hop Point Accessor",
+    "type": "Signature",
+    "xid": "indicator--8ce03314-dfea-4498-ac9b-136e41ab00e4"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--3f3ff9f1-bb4e-4392-89e5-1991179042ba"
+      }
+    ],
+    "summary": "hugesoft.org",
+    "type": "Host",
+    "xid": "3e046269975ff8ac47602728c25cd4c7c1b1bf7bc4ac3e704c89f3f17a1409f8"
+  },
+  {
+    "name": "FQDN hugesoft.org",
+    "type": "Signature",
+    "xid": "indicator--3f3ff9f1-bb4e-4392-89e5-1991179042ba"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8390fd29-24ed-45d4-84d7-c5e5feaf195d"
+      }
+    ],
+    "summary": "arrowservice.net",
+    "type": "Host",
+    "xid": "620105f5446c0954e20b125319ecb7887578e1ecf10e674ce2e41ef18984b15e"
+  },
+  {
+    "name": "FQDN arrowservice.net",
+    "type": "Signature",
+    "xid": "indicator--8390fd29-24ed-45d4-84d7-c5e5feaf195d"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--1002c58e-cbde-4930-b5ee-490037fd4f7e"
+      }
+    ],
+    "summary": "msnhome.org",
+    "type": "Host",
+    "xid": "b00995a5fee80ad7142016f9370d795a233a8b10cd7aeaad74ceaef041a9f311"
+  },
+  {
+    "name": "FQDN msnhome.org",
+    "type": "Signature",
+    "xid": "indicator--1002c58e-cbde-4930-b5ee-490037fd4f7e"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+      }
+    ],
+    "summary": "001dd76872d80801692ff942308c64e6",
+    "type": "File",
+    "xid": "996351282b5f2e508962daaf872d1ff42f2a6ee25707beec371c54435ee72de4"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+      }
+    ],
+    "summary": "001dd76872d80801692ff942308c6333",
+    "type": "File",
+    "xid": "c0498cc145f7d9b75543dc42ea07e624ce8d0ee1f2ace4003dac4d0d72fb87b6"
+  },
+  {
+    "name": "Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'",
+    "type": "Signature",
+    "xid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--745e1537-b4f3-49da-9f64-df6b1b5df190"
+      }
+    ],
+    "summary": "002325a0a67fded0381b5648d7fe9b8e",
+    "type": "File",
+    "xid": "4be9bed1ec11ecf296f83037f5f6ebfd44d51cf8e123651a0b2655ff6d1a04c0"
+  },
+  {
+    "name": "Appendix E MD5 hash '002325a0a67fded0381b5648d7fe9b8e'",
+    "type": "Signature",
+    "xid": "indicator--745e1537-b4f3-49da-9f64-df6b1b5df190"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--1dbe6ed0-c305-458f-9cce-f83c678f5afd"
+      }
+    ],
+    "summary": "00dbb9e1c09dbdafb360f3163ba5a3de",
+    "type": "File",
+    "xid": "da1bedd50b11590750ea86a4b2adea6e9be964c008da65b651bd55a1125342fc"
+  },
+  {
+    "name": "Appendix E MD5 hash '00dbb9e1c09dbdafb360f3163ba5a3de'",
+    "type": "Signature",
+    "xid": "indicator--1dbe6ed0-c305-458f-9cce-f83c678f5afd"
+  },
+  {
+    "name": "Appendix F SSL Certificate for serial number '(Negative)4c:0b:1d:19:74:86:a7:66:b4:1a:bf:40:27:21:76:28'",
+    "type": "Signature",
+    "xid": "indicator--b3b6b540-d838-41e2-853b-005056c00008"
+  },
+  {
+    "name": "Appendix F SSL Certificate for serial number '0e:97:88:1c:6c:a1:37:96:42:03:bc:45:42:24:75:6c'",
+    "type": "Signature",
+    "xid": "indicator--b3b7035e-d838-41e2-8d38-005056c00008"
+  },
+  {
+    "name": "Test for IN Operator",
+    "type": "Signature",
+    "xid": "indicator--031778a4-057f-48e6-9db9-c8d72b811111"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--031778a4-057f-48e6-9db9-c8d72b811111"
+      }
+    ],
+    "summary": "1.2.3.4",
+    "type": "Address",
+    "xid": "0fd7a37f0367fb203b689e556ea26070f6698be5e61fc2ba8c91340b6dbe400e"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--031778a4-057f-48e6-9db9-c8d72b811111"
+      }
+    ],
+    "summary": "223.1.0.0/15",
+    "type": "CIDR",
+    "xid": "7c294c770053f008f6bc0e0334f561ddf6f120003f435f328d36ba16e6600327"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--031778a4-057f-48e6-9db9-c8d72b811111"
+      }
+    ],
+    "summary": "5.6.7.8/12",
+    "type": "CIDR",
+    "xid": "21796f60f773bd669549187ee999ba9299537b291527c9b6ae3c7cc915e9b0cf"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--031778a4-057f-48e6-9db9-c8d72b811111"
+      }
+    ],
+    "summary": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+    "type": "Address",
+    "xid": "392312ae891109dd1abb6c39d3b65a15ac97fe9aba9a7eb4f2b6083b35003a58"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--031778a4-057f-48e6-9db9-c8d72b811111"
+      }
+    ],
+    "summary": "2001:0db8:85a3:0000:0000:8a2e:0370:7111/64",
+    "type": "CIDR",
+    "xid": "b596ff9bbd8005c80749683ab656219aa02e0fb271b11ac0403433d453f45040"
+  }
+]

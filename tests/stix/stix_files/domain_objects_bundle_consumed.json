@@ -1,0 +1,206 @@
+[
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+      }
+    ],
+    "ip": "198.51.100.3",
+    "type": "Address",
+    "xid": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+  },
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "domain-name--ecb120bf-2694-4902-a737-62b74539a41b"
+      }
+    ],
+    "hostName": "example.com",
+    "type": "Host",
+    "xid": "domain-name--ecb120bf-2694-4902-a737-62b74539a41b"
+  },
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+      }
+    ],
+    "block": "198.51.100.2/16",
+    "type": "CIDR",
+    "xid": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+  },
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+      }
+    ],
+    "ip": "2001:0db8:85a3:0000:0000:8a2e:0370:7111",
+    "type": "Address",
+    "xid": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+  },
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+      }
+    ],
+    "block": "2001:0db8:85a3:0000:0000:8a2e:0370:7111/64",
+    "type": "CIDR",
+    "xid": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+  },
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "autonomous-system-1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+      }
+    ],
+    "summary": "1234567",
+    "type": "ASN",
+    "xid": "autonomous-system-1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+  },
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "autonomous-system-1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+      }
+    ],
+    "summary": "1234567",
+    "type": "ASN",
+    "xid": "autonomous-system-1e4ffad7-0b88-41d4-ba4d-77d27490b956"
+  },
+  {
+    "address": "john@example.com",
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "email-addr--2d77a846-6264-5d51-b586-e43822ea1ea3"
+      }
+    ],
+    "type": "EmailAddress",
+    "xid": "email-addr--2d77a846-6264-5d51-b586-e43822ea1ea3"
+  },
+  {
+    "Key Name": "hkey_local_machine\\system\\bar\\foo",
+    "Value Name": "Foo",
+    "Value Type": "REG_SZ",
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016"
+      },
+      {
+        "type": "Value Data",
+        "value": "qwerty"
+      }
+    ],
+    "type": "Registry Key",
+    "xid": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016"
+  },
+  {
+    "Key Name": "hkey_local_machine\\system\\bar\\foo",
+    "Value Name": "Bar",
+    "Value Type": "REG_DWORD",
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+      }
+    ],
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016"
+      },
+      {
+        "type": "Value Data",
+        "value": "qwerty"
+      },
+      {
+        "type": "Value Data",
+        "value": "42"
+      }
+    ],
+    "type": "Registry Key",
+    "xid": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016"
+  },
+  {
+    "Key Name": "HKEY_LOCAL_MACHINE\\System\\Foo\\Bar",
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "windows-registry-key--9d60798d-4e3e-5fe4-af8a-0e4986f0f90b"
+      }
+    ],
+    "type": "Registry Key",
+    "xid": "windows-registry-key--9d60798d-4e3e-5fe4-af8a-0e4986f0f90b"
+  },
+  {
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "url--c1477287-23ac-5971-a010-5c287877fa60"
+      }
+    ],
+    "text": "https://example.com/research/index.html",
+    "type": "URL",
+    "xid": "url--c1477287-23ac-5971-a010-5c287877fa60"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+      }
+    ],
+    "summary": "001dd76872d80801692ff942308c64e6",
+    "type": "File",
+    "xid": "996351282b5f2e508962daaf872d1ff42f2a6ee25707beec371c54435ee72de4"
+  },
+  {
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+      }
+    ],
+    "summary": "001dd76872d80801692ff942308c6333",
+    "type": "File",
+    "xid": "c0498cc145f7d9b75543dc42ea07e624ce8d0ee1f2ace4003dac4d0d72fb87b6"
+  },
+  {
+    "Key Name": "hkey_local_machine\\system\\bar\\foo",
+    "Value Name": "Bar",
+    "Value Type": "REG_DWORD",
+    "associatedGroups": [
+      {
+        "groupXid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+      }
+    ],
+    "attributes": [
+      {
+        "type": "External ID",
+        "value": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016"
+      },
+      {
+        "type": "Value Data",
+        "value": "qwerty"
+      },
+      {
+        "type": "Value Data",
+        "value": "42"
+      }
+    ],
+    "type": "Registry Key",
+    "xid": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016"
+  },
+  {
+    "name": "Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'",
+    "type": "Signature",
+    "xid": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691"
+  }
+]

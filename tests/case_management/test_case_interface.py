@@ -701,7 +701,7 @@ class TestCase(TestCaseManagement):
         # retrieve note using TQL
         cases = self.cm.cases()
         cases.filter.id(TQL.Operator.EQ, case.id)
-        cases.filter.target_id(TQL.Operator.EQ, 5)
+        cases.filter.target_ref(TQL.Operator.EQ, 5)
 
         for case in cases:
             assert case.name == request.node.name

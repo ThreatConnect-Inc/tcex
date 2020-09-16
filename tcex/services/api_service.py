@@ -214,6 +214,10 @@ class ApiService(CommonService):
             for header, value in headers.items():
                 environ[f'HTTP_{header}'.upper()] = value
 
+            for key, value in message.items():
+                if key not in environ and self.tcex.utils.camel_to_snake(key) not in environ:
+                    environ[self.tcex.utils.camel_to_snake(key)] = value
+
             self.log.trace(f'feature=api-service, environ={environ}')
             self.increment_metric('Requests')
         except Exception as e:
