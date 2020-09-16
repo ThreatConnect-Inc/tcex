@@ -53,6 +53,7 @@ class TcEx:
         self._service = None
         self._session = None
         self._session_external = None
+        self._stix_model = None
         self._utils = None
         self._ti = None
         self._token = None
@@ -882,6 +883,18 @@ class TcEx:
                     f'{self.args.tc_proxy_port} for external session.'
                 )
         return self._session_external
+
+    @property
+    def stix_model(self) -> object:
+        """Include the Threat Intel Module.
+
+        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
+        """
+        if self._stix_model is None:
+            from .stix import StixModel
+
+            self._stix_model = StixModel(self.logger)
+        return self._stix_model
 
     @property
     def ti(self) -> object:

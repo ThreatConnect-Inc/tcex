@@ -175,10 +175,10 @@ class ApiService(CommonService):
         except Exception as e:
             self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
             self.log.trace(traceback.format_exc())
-        headers: dict = self.format_request_headers(message.get('headers'))
-        method: str = message.get('method')
-        params: dict = message.get('queryParams')
-        path: str = message.get('path')
+        headers: dict = self.format_request_headers(message.pop('headers'))
+        method: str = message.pop('method')
+        params: dict = message.pop('queryParams')
+        path: str = message.pop('path')
 
         try:
             environ = {
