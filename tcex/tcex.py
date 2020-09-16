@@ -130,7 +130,7 @@ class TcEx:
     def batch(
         self,
         owner: str,
-        action: Optional[str] = None,
+        action: Optional[str] = 'Create',
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = False,
         playbook_triggers_enabled: Optional[bool] = False,
@@ -140,7 +140,7 @@ class TcEx:
         Args:
             tcex: An instance of TcEx object.
             owner: The ThreatConnect owner for Batch action.
-            action default:Create): Action for the batch job ['Create', 'Delete'].
+            action: Action for the batch job ['Create', 'Delete'].
             attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
             halt_on_error: If True any batch error will halt the batch job.
             playbook_triggers_enabled: Deprecated input, will not be used.
