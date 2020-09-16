@@ -83,6 +83,19 @@ class StixIndicator(StixModel):
             #     ]
             # }
 
+            if data.get('rating', None) == 0:
+                labels.append('Threat Rating: Unknown')
+            elif data.get('rating', None) == 1:
+                labels.append('Threat Rating: Suspicious')
+            elif data.get('rating', None) == 2:
+                labels.append('Threat Rating: Low')
+            elif data.get('rating', None) == 3:
+                labels.append('Threat Rating: Moderate')
+            elif data.get('rating', None) == 4:
+                labels.append('Threat Rating: High')
+            elif data.get('rating', None) == 5:
+                labels.append('Threat Rating: Very High')
+
             yield stix2.Indicator(
                 confidence=data.get('confidence'),
                 labels=labels,
@@ -90,6 +103,7 @@ class StixIndicator(StixModel):
                 description=description,
                 id=f'indicator--{id_}',
                 name=f'{data.get("summary")}',
+                lang='en',
                 pattern_version='2.1',
                 indicator_types=['malicious-activity'],
                 pattern_type='stix',
