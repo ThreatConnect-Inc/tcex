@@ -80,7 +80,6 @@ setup(
         'stix2',
         'tzlocal',
         'wrapt',
-        'dendrol'
     ],
     license=metadata['__license__'],
     long_description=readme,

@@ -1,7 +1,6 @@
 """TcEx Framework API Service module."""
 # standard library
 import json
-import base64
 import sys
 import threading
 import traceback
@@ -262,7 +261,7 @@ class ApiService(CommonService):
                             self.log.error(f'unhandled type dir - {dir(body)}')
 
                 # write body to Redis
-                self.redis_client.hset(request_key, 'response.body', base64.b64encode(body.encode()))
+                self.redis_client.hset(request_key, 'response.body', body)
 
                 # set thread event to True to trigger response
                 self.log.info('feature=api-service, event=response-body-written')
