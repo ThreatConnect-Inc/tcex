@@ -6,7 +6,6 @@ import os
 import socketserver
 import sys
 import time
-from base64 import b64decode, b64encode
 from threading import Event, Thread
 from typing import Optional
 from urllib.parse import parse_qs, urlparse
@@ -140,8 +139,6 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         content_length = int(self.headers.get('content-length', 0))
         if content_length:
             body = self.rfile.read(content_length)
-            if body:
-                body = b64encode(body)
             self.server.test_case.redis_client.hset(request_key, 'request.body', body)
         return {
             'apiToken': self.server.test_case.tc_token,
@@ -200,7 +197,6 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         # body
         body = self.server.test_case.redis_client.hget(response.get('requestKey'), 'response.body')
         if body is not None:
-            body = b64decode(body)
             self.wfile.write(body)
 
     def call_service(self, method: str):  # pylint: disable=useless-return
@@ -255,9 +251,6 @@ class TestCaseApiService(TestCaseServiceCommon):
 
     def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
         """Handle message broker on_message shutdown command events."""
-        # if message.topic != self.server_topic:
-        #     return
-
         try:
             m = json.loads(message.payload)
         except ValueError:

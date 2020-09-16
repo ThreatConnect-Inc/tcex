@@ -1,7 +1,7 @@
 """TcEx Framework API Service module."""
 # standard library
-import base64
 import json
+import sys
 import threading
 import traceback
 from io import BytesIO
@@ -99,144 +99,13 @@ class ApiService(CommonService):
             self.log.trace(traceback.format_exc())
         return headers_
 
-    def run_service(self, message: dict) -> None:
-        """Process Webhook event messages.
-
-        .. code-block:: python
-            :linenos:
-            :lineno-start: 1
-
-            {
-              "command": "RunService",
-              "apiToken": "abc123",
-              "bodyVariable": "request.body",
-              "headers": [ { key/value pairs } ],
-              "method": "GET",
-              "queryParams": [ { key/value pairs } ],
-              "requestKey": "123abc"
-            }
-
-        Args:
-            message: The broker message.
-        """
-        # register config apiToken (before any logging)
-        self.tcex.token.register_token(
-            self.thread_name, message.get('apiToken'), message.get('expireSeconds')
-        )
-        self.log.info(f'feature=api-service, event=runservice-command, message="{message}"')
-
-        # thread event used to block response until body is written
-        event = threading.Event()
-
-        # process message
-        request_key: str = message.get('requestKey')
-        body = None
-        try:
-            # read body from redis
-            body_variable: str = message.get('bodyVariable')
-            if body_variable is not None:
-                body: Any = self.redis_client.hget(request_key, message.get('bodyVariable'))
-                if body is not None:
-                    body = BytesIO(body)
-        except Exception as e:
-            self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
-            self.log.trace(traceback.format_exc())
-        headers: dict = self.format_request_headers(message.get('headers'))
-        method: str = message.get('method')
-        params: dict = message.get('queryParams')
-        path: str = message.get('path')
-
-        try:
-            # TODO: research required field for wsgi and update
-            # TODO: move to a method
-            environ = {
-                'wsgi.errors': self.log.error,  # sys.stderr
-                # 'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>
-                'wsgi.input': body,
-                'wsgi.multithread': True,
-                'wsgi.multiprocess': False,
-                'wsgi.run_once': True,
-                'wsgi.url_scheme': 'https',
-                'wsgi.version': (1, 0),
-                # 'GATEWAY_INTERFACE': 'CGI/1.1',
-                # 'HTTP_ACCEPT': '',
-                'HTTP_ACCEPT': headers.get('accept', ''),
-                # 'HTTP_ACCEPT_ENCODING': '',
-                # 'HTTP_ACCEPT_LANGUAGE': '',
-                # 'HTTP_COOKIE': '',
-                # 'HTTP_DNT': 1,
-                # 'HTTP_CONNECTION': 'keep-alive',
-                # 'HTTP_HOST': '',
-                # 'HTTP_UPGRADE_INSECURE_REQUESTS': 1,
-                'HTTP_USER_AGENT': headers.get('user-agent', ''),
-                'PATH_INFO': path,
-                'QUERY_STRING': self.format_query_string(params),
-                # 'REMOTE_ADDR': '',
-                # 'REMOTE_HOST': '',
-                'REQUEST_METHOD': method.upper(),
-                'SCRIPT_NAME': '/',
-                'SERVER_NAME': '',
-                'SERVER_PORT': '',
-                'SERVER_PROTOCOL': 'HTTP/1.1',
-                # 'SERVER_SOFTWARE': 'WSGIServer/0.2',
-            }
-            if headers.get('content-type') is not None:
-                environ['CONTENT_TYPE'] = (headers.get('content-type'),)
-            if headers.get('content-length') is not None:
-                environ['CONTENT_LENGTH'] = headers.get('content-length')
-            self.log.trace(f'feature=api-service, environ={environ}')
-            self.increment_metric('Requests')
-        except Exception as e:
-            self.log.error(f'feature=api-service, event=failed-building-environ, error="""{e}"""')
-            self.log.trace(traceback.format_exc())
-            self.increment_metric('Errors')
-            return  # stop processing
-
-        def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
-            """Handle WSGI Response"""
-            kwargs['event'] = event  # add event to kwargs for blocking
-            kwargs['request_key'] = request_key
-            t = threading.Thread(
-                name='response-handler',
-                target=self.process_run_service_response,
-                args=args,
-                kwargs=kwargs,
-                daemon=True,
-            )
-            t.start()
-
-        if callable(self.api_event_callback):
-            try:
-                body: Any = self.api_event_callback(  # pylint: disable=not-callable
-                    environ, response_handler
-                )
-
-                # decode body entries
-                # TODO: validate this logic
-                body = [base64.b64encode(b).decode('utf-8') for b in body][0]
-                # write body to Redis
-                self.redis_client.hset(request_key, 'response.body', body)
-
-                # set thread event to True to trigger response
-                self.log.info('feature=api-service, event=response-body-written')
-                event.set()
-            except Exception as e:
-                self.log.error(
-                    f'feature=api-service, event=api-event-callback-failed, error="""{e}""".'
-                )
-                self.log.trace(traceback.format_exc())
-                self.increment_metric('Errors')
-
-        # unregister config apiToken
-        self.tcex.token.unregister_token(self.thread_name)
-
     def process_run_service_response(self, *args, **kwargs) -> None:
         """Handle service event responses.
 
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
         """
-        self.log.info('feature=api-service, event=response=received, status=waiting-for-body')
-        kwargs.get('event').wait(10)  # wait for thread event - (set on body write)
+        self.log.info('feature=api-service, event=response-received, status=waiting-for-body')
+        kwargs.get('event').wait(30)  # wait for thread event - (set on body write)
         self.log.trace(f'feature=api-service, event=response, args={args}')
         try:
             status_code, status = args[0].split(' ', 1)
@@ -250,9 +119,7 @@ class ApiService(CommonService):
                 'type': 'RunService',
             }
             self.log.info('feature=api-service, event=response-sent')
-            self.message_broker.publish(
-                json.dumps(response), self.tcex.default_args.tc_svc_client_topic
-            )
+            self.message_broker.publish(json.dumps(response), self.args.tc_svc_client_topic)
             self.increment_metric('Responses')
         except Exception as e:
             self.log.error(
@@ -275,10 +142,132 @@ class ApiService(CommonService):
               "headers": [ { key/value pairs } ],
               "method": "GET",
               "queryParams": [ { key/value pairs } ],
-              "requestKey": "123abc"
+              "requestKey": "123abc",
+              "userConfig": [{
+                "name": "tlpExportSetting",
+                "value": "TLP:RED"
+              }],
             }
 
         Args:
             message: The message payload from the server topic.
         """
-        self.message_thread(self.session_id(message.get('triggerId')), self.run_service, (message,))
+        # register config apiToken (before any logging)
+        self.token.register_token(
+            self.thread_name, message.get('apiToken'), message.get('expireSeconds')
+        )
+        self.log.info(f'feature=api-service, event=runservice-command, message="{message}"')
+
+        # thread event used to block response until body is written
+        event = threading.Event()
+
+        # process message
+        request_key: str = message.get('requestKey')
+        body = None
+        try:
+            # read body from redis
+            body_variable: str = message.get('bodyVariable')
+            if body_variable is not None:
+                body: Any = self.redis_client.hget(request_key, message.get('bodyVariable'))
+                if body is not None:
+                    # for API service the data in Redis is not b64 encoded
+                    body = BytesIO(body)
+        except Exception as e:
+            self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
+            self.log.trace(traceback.format_exc())
+        headers: dict = self.format_request_headers(message.get('headers'))
+        method: str = message.get('method')
+        params: dict = message.get('queryParams')
+        path: str = message.get('path')
+
+        try:
+            environ = {
+                'wsgi.errors': sys.stderr,
+                'wsgi.input': body,
+                'wsgi.multithread': True,
+                'wsgi.multiprocess': False,
+                'wsgi.run_once': True,
+                'wsgi.url_scheme': 'https',
+                'wsgi.version': (1, 0),
+                'PATH_INFO': path,
+                'QUERY_STRING': self.format_query_string(params),
+                'REMOTE_ADDR': message.get('remoteAddress', ''),
+                # 'REMOTE_HOST': message.get('remoteAddress', ''),
+                'REQUEST_METHOD': method.upper(),
+                'SCRIPT_NAME': '/',
+                'SERVER_NAME': '',
+                'SERVER_PORT': '',
+                'SERVER_PROTOCOL': 'HTTP/1.1',
+            }
+
+            # Add user config for TAXII or other service that supports the data type
+            environ['user_config'] = message.get('userConfig', [])
+
+            # add headers
+            if headers.get('content-type') is not None:
+                environ['CONTENT_TYPE'] = headers.pop('content-type')
+
+            # add content length
+            if headers.get('content-length') is not None:
+                environ['CONTENT_LENGTH'] = headers.pop('content-length')
+
+            for header, value in headers.items():
+                environ[f'HTTP_{header}'.upper()] = value
+
+            self.log.trace(f'feature=api-service, environ={environ}')
+            self.increment_metric('Requests')
+        except Exception as e:
+            self.log.error(f'feature=api-service, event=failed-building-environ, error="""{e}"""')
+            self.log.trace(traceback.format_exc())
+            self.increment_metric('Errors')
+            return  # stop processing
+
+        def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
+            """Handle WSGI Response"""
+            kwargs['event'] = event  # add event to kwargs for blocking
+            kwargs['request_key'] = request_key
+            self.service_thread(
+                name='response-handler',
+                target=self.process_run_service_response,
+                args=args,
+                kwargs=kwargs,
+            )
+
+        if callable(self.api_event_callback):
+            try:
+                body_data: Any = self.api_event_callback(  # pylint: disable=not-callable
+                    environ, response_handler
+                )
+
+                # process body
+                body = ''
+                if hasattr(body_data, 'read'):
+                    body = body_data.read()
+                elif isinstance(body_data, list):
+                    for bd in body_data:
+                        if hasattr(bd, 'read'):
+                            body += bd.read()
+                        elif isinstance(bd, bytes):
+                            body += bd.decode()
+                        elif isinstance(bd, list):
+                            for b in bd:
+                                self.log.error(f'unhandled type - {type(b)}')
+                        else:
+                            self.log.error(f'unhandled type - {type(body)}')
+                            self.log.error(f'unhandled type dir - {dir(body)}')
+
+                # write body to Redis
+                self.redis_client.hset(request_key, 'response.body', body)
+
+                # set thread event to True to trigger response
+                self.log.info('feature=api-service, event=response-body-written')
+                event.set()
+            except Exception as e:
+                self.log.error(
+                    f'feature=api-service, event=api-event-callback-failed, error="""{e}""".'
+                )
+                self.log.trace(traceback.format_exc())
+                self.increment_metric('Errors')
+
+        # unregister config apiToken
+        self.token.unregister_token(self.thread_name)

@@ -36,6 +36,7 @@ pytest -n auto --cov=tcex/ --cov-report=term-missing tests/tcex_methods/
 pytest -n auto --cov=tcex/threat_intelligence/ --cov-report=term-missing tests/threat_intelligence/
 pytest --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
 pytest -n auto --cov=tcex/utils/ --cov-report=term-missing tests/utils/
+pytest -n auto --cov=tcex/validators/ --cov-report=term-missing tests/validators/
 
 # Release Testing Run
 # normal - in 1526.29s

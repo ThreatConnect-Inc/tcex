@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Decorators &mdash; TcEx 2.0.9 documentation</title>
+  <title>Decorators &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -361,12 +361,6 @@ The value of this boolean will control enabling/disabling this feature.</p>
 <dt class="field-even">type fail_enabled</dt>
 <dd class="field-even"><p>boolean|str, kwargs</p>
 </dd>
-<dt class="field-odd">param fail_msg</dt>
-<dd class="field-odd"><p>The message to log when raising RuntimeError.</p>
-</dd>
-<dt class="field-even">type fail_msg</dt>
-<dd class="field-even"><p>str, kwargs</p>
-</dd>
 <dt class="field-odd">param fail_on</dt>
 <dd class="field-odd"><p>Defaults to None. Fail if data read from Redis is in list.</p>
 </dd>
@@ -501,16 +495,13 @@ resolved value to the function.</p>
 24
 25
 26
-27
-28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
 <span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
 <span class="nd">@ReadArg</span><span class="p">(</span>
     <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fruits&#39;</span><span class="p">,</span>
     <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[]],</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;Invalid input for fruits&#39;</span>
+    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">fruits</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
@@ -525,8 +516,7 @@ resolved value to the function.</p>
     <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fruits&#39;</span><span class="p">,</span>
     <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[]],</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;Invalid input for fruits&#39;</span>
+    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">))</span>
@@ -557,6 +547,13 @@ value is None. Only supported for String or StringArray.</p>
 <dt class="field-even">type default</dt>
 <dd class="field-even"><p>str, kwargs</p>
 </dd>
+<dt class="field-odd">param equal_to</dt>
+<dd class="field-odd"><p>Verifies that the arg value is
+equal to the given compare_to value.</p>
+</dd>
+<dt class="field-even">type equal_to</dt>
+<dd class="field-even"><p>Union[Any, List[Any], Dict[str, Any], kwargs</p>
+</dd>
 <dt class="field-odd">param fail_enabled</dt>
 <dd class="field-odd"><p>Accepts a boolean or string value.  If a boolean value
 is provided that value will control enabling/disabling this feature. A string
@@ -566,17 +563,25 @@ The value of this boolean will control enabling/disabling this feature.</p>
 <dt class="field-even">type fail_enabled</dt>
 <dd class="field-even"><p>boolean|str, kwargs</p>
 </dd>
-<dt class="field-odd">param fail_msg</dt>
-<dd class="field-odd"><p>The message to log when raising RuntimeError.</p>
-</dd>
-<dt class="field-even">type fail_msg</dt>
-<dd class="field-even"><p>str, kwargs</p>
-</dd>
 <dt class="field-odd">param fail_on</dt>
 <dd class="field-odd"><p>Defaults to None. Fail if data read from Redis is in list.</p>
 </dd>
 <dt class="field-even">type fail_on</dt>
 <dd class="field-even"><p>list, kwargs</p>
+</dd>
+<dt class="field-odd">param greater_than</dt>
+<dd class="field-odd"><p>Verifies that the arg value is
+greater than the given compare_to value.</p>
+</dd>
+<dt class="field-even">type greater_than</dt>
+<dd class="field-even"><p>Union[Any, List[Any], Dict[str, Any], kwargs</p>
+</dd>
+<dt class="field-odd">param greater_than_or_equal</dt>
+<dd class="field-odd"><p>Verifies that the arg
+value is greater than or equal to the given compare_to value.</p>
+</dd>
+<dt class="field-even">type greater_than_or_equal</dt>
+<dd class="field-even"><p>Union[Any, List[Any], Dict[str, Any], kwargs</p>
 </dd>
 <dt class="field-odd">param group_values</dt>
 <dd class="field-odd"><p>Defaults to False. If True, return a list of group names from
@@ -592,6 +597,14 @@ given argument.</p>
 <dt class="field-even">type group_ids</dt>
 <dd class="field-even"><p>bool, kwargs</p>
 </dd>
+<dt class="field-odd">param in_range</dt>
+<dd class="field-odd"><p>Validator that verifies the arg value is in
+the range min &lt;= value &lt;= max.  For Array args, will verify each member of the array.
+Expected value is {‘min’: &lt;min_value&gt;, ‘max’: &lt;max_value&gt;} OR [&lt;min_value&gt;, &lt;max_value&gt;]</p>
+</dd>
+<dt class="field-even">type in_range</dt>
+<dd class="field-even"><p>Dict[str, float]|List[float], kwargs</p>
+</dd>
 <dt class="field-odd">param indicator_values</dt>
 <dd class="field-odd"><p>Defaults to False. If True, return a list of
 indicator values from the given argument (e.g. [“foo.example.com”, “bar.example.com”]).</p>
@@ -599,12 +612,58 @@ indicator values from the given argument (e.g. [“foo.example.com”, “bar.ex
 <dt class="field-even">type indicator_values</dt>
 <dd class="field-even"><p>bool, kwargs</p>
 </dd>
+<dt class="field-odd">param less_than</dt>
+<dd class="field-odd"><p>Verifies that the arg value is
+less than the given compare_to value.</p>
+</dd>
+<dt class="field-even">type less_than</dt>
+<dd class="field-even"><p>Union[Any, List[Any], Dict[str, Any], kwargs</p>
+</dd>
+<dt class="field-odd">param less_than_or_equal</dt>
+<dd class="field-odd"><p>Verifies that the arg
+value is less than or equal to the given compare_to value.</p>
+</dd>
+<dt class="field-even">type less_than_or_equal</dt>
+<dd class="field-even"><p>Union[Any, List[Any], Dict[str, Any], kwargs</p>
+</dd>
 <dt class="field-odd">param strip_values</dt>
 <dd class="field-odd"><p>Defaults to False.  If True, automatically strips whitespace
 from arg value.  Not valid if group_values, group_ids, or indicator_values is True.</p>
 </dd>
 <dt class="field-even">type strip_values</dt>
 <dd class="field-even"><p>bool, kwargs</p>
+</dd>
+<dt class="field-odd">param to_bool</dt>
+<dd class="field-odd"><p>Transform the arg value into a bool where ‘true’ (case-insensitive),
+‘1’ (str), and 1 (int or float) will become True and everything else will become False.
+Accepts one parameter ‘disallow_none’ which, if True, will fail if the arg value is
+none.</p>
+</dd>
+<dt class="field-even">type to_bool</dt>
+<dd class="field-even"><p>bool, kwargs</p>
+</dd>
+<dt class="field-odd">param to_float</dt>
+<dd class="field-odd"><p>Transform the arg value into an float.  Accepts one
+parameter ‘disallow_none’ which, if True, will fail if the arg value is none.</p>
+</dd>
+<dt class="field-even">type to_float</dt>
+<dd class="field-even"><p>bool, kwargs</p>
+</dd>
+<dt class="field-odd">param to_int</dt>
+<dd class="field-odd"><p>Transform the arg value into an int.  Accepts one
+parameter ‘disallow_none’ which, if True, will fail if the arg value is none.</p>
+</dd>
+<dt class="field-even">type to_int</dt>
+<dd class="field-even"><p>bool, kwargs</p>
+</dd>
+<dt class="field-odd">param validators</dt>
+<dd class="field-odd"><p>A callable or list of callables that will be
+invoked with the arg value and arg name and must raise a ValidationError if
+the arg is not valid.  Any return value will be ignored.  Validators will be invoked in
+the order they are given.  If one validator fails, no others will be invoked.</p>
+</dd>
+<dt class="field-even">type validators</dt>
+<dd class="field-even"><p>Union[List[Callable], Callable]</p>
 </dd>
 </dl>
 </div>

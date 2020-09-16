@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.9 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -180,8 +180,7 @@
            <div itemprop="articleBody">
 
   <h1>Source code for tcex.batch.batch</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;ThreatConnect Batch Import Module.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Batch Import Module.&quot;&quot;&quot;</span>
 <span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -191,6 +190,7 @@
 <span class="kn">import</span> <span class="nn">shelve</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">.group</span> <span class="kn">import</span> <span class="p">(</span>
@@ -695,24 +695,25 @@
 <span class="sd">            list: A list of group dicts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">group_data</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># get group data from one of the arrays</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span>
+        <span class="n">xids</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="n">xids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">group_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># convert any obj into dict and process file data</span>
-            <span class="n">group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_group_type</span><span class="p">(</span><span class="n">group_data</span><span class="p">)</span>
-            <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_data</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">xids</span><span class="p">:</span>
+            <span class="n">xid</span> <span class="o">=</span> <span class="n">xids</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>  <span class="c1"># remove current xid</span>
+            <span class="n">group_data</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="c1"># recursively get associations</span>
-            <span class="k">for</span> <span class="n">assoc_xid</span> <span class="ow">in</span> <span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associatedGroupXid&#39;</span><span class="p">,</span> <span class="p">[]):</span>
-                <span class="n">groups</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_group_association</span><span class="p">(</span><span class="n">assoc_xid</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">xid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">xid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="p">:</span>
+                <span class="n">group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">group_data</span><span class="p">:</span>
+                <span class="n">group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_group_type</span><span class="p">(</span><span class="n">group_data</span><span class="p">)</span>
+                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_data</span><span class="p">)</span>
+                <span class="n">xids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associatedGroupXid&#39;</span><span class="p">,</span> <span class="p">[]))</span>
 
         <span class="k">return</span> <span class="n">groups</span></div>
 
@@ -735,9 +736,8 @@
                     <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span>
                 <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">GROUPS_STRINGS_WITH_FILE_CONTENTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;Report&#39;</span><span class="p">]</span>
             <span class="c1"># process file content</span>
-            <span class="k">if</span> <span class="n">group_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">GROUPS_STRINGS_WITH_FILE_CONTENTS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">group_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;Report&#39;</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">group_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">file_data</span>
             <span class="n">group_data</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">data</span>
         <span class="k">return</span> <span class="n">group_data</span></div>
@@ -1743,9 +1743,8 @@
                 <span class="n">upload_status</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;uploaded&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;xid&#39;</span><span class="p">:</span> <span class="n">xid</span><span class="p">})</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File content was null for xid </span><span class="si">{</span><span class="n">xid</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-                <span class="n">api_branch</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
-            <span class="k">elif</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Report&#39;</span><span class="p">:</span>
+            <span class="n">api_branch</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
+            <span class="k">if</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Report&#39;</span><span class="p">:</span>
                 <span class="n">api_branch</span> <span class="o">=</span> <span class="s1">&#39;reports&#39;</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="ow">and</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">):</span>
@@ -1807,6 +1806,7 @@
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/v2/batch&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">10505</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">10510</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>

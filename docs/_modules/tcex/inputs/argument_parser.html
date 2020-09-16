@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.9 documentation</title>
+  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -180,8 +180,7 @@
            <div itemprop="articleBody">
 
   <h1>Source code for tcex.inputs.argument_parser</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;TcEx Common Arg Handler&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;TcEx Common Arg Handler&quot;&quot;&quot;</span>
 <span class="c1"># standard library</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">Namespace</span>
 
@@ -208,7 +207,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span> <span class="o">=</span> <span class="s1">&#39;app.log&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_level</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_max_bytes</span> <span class="o">=</span> <span class="mi">10485760</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_max_bytes</span> <span class="o">=</span> <span class="mi">10485760</span>  <span class="c1"># 10Mb</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># playbook defaults</span>
@@ -232,6 +231,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_advanced_request</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_arguments</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cal_settings_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service_arguments</span><span class="p">()</span>
@@ -353,6 +353,23 @@
             <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Append&#39;</span><span class="p">,</span> <span class="s1">&#39;Replace&#39;</span><span class="p">],</span>
             <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Append or Replace attributes.&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcArgumentParser._cal_settings_arguments"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.argument_parser.TcArgumentParser._cal_settings_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_cal_settings_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Define arguments TC sends for the CALSettings feature</span>
+
+<span class="sd">        --tc_cal_host                  CAL host (just the hostname, without &quot;https://&quot;).</span>
+<span class="sd">        --tc_cal_token                 Authentication token for CAL.</span>
+<span class="sd">        --tc_cal_timestamp             Timestamp to use with tc_cal_token to authenticate to CAL.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_cal_host&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;CAL API host&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_cal_token&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;CAL authentication token&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_cal_timestamp&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Timestamp to use with tc_cal_token to authenticate to CAL.&#39;</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcArgumentParser._logger_arguments"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.argument_parser.TcArgumentParser._logger_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_logger_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

@@ -37,11 +37,11 @@ The following example adds the ``FailOnOutput`` decorator to a method that takes
             return False
         return True
 
-Iterate On
-==========
-The ``IterateOn()`` decorator is useful in decorating methods that process a single and array input. This decorator can be very useful in **action** based Apps.
+Iterate On Arg
+==============
+The ``IterateOnArg()`` decorator is useful in decorating methods that process a single and array input. This decorator can be very useful in **action** based Apps. This decorator accepts validators and transforms in the same manner as ``ReadArg()``, please see that section for details.
 
-The following example adds the ``IterateOn`` decorator to a method that takes a String or StringArray input and returns the value capitalized.  The decorator will call the method one time for each item in the input array (a single String input value would be automatically converted to an StringArray). If the ``fail_on_error`` input is enabled and the input matches a value in the **fail_on** array, the App would then exit using the **fail_msg** string provided. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.
+The following example adds the ``IterateOnArg`` decorator to a method that takes a String or StringArray input and returns the value capitalized.  The decorator will call the method one time for each item in the input array (a single String input value would be automatically converted to an StringArray). If the ``fail_enabled`` input is enabled and any supplied validators fail, the App would then exit using the **fail_msg** string provided. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.
 
 .. code-block:: python
     :linenos:
@@ -129,14 +129,88 @@ The following example adds the ``ReadArg`` decorator to a method that takes a St
     :linenos:
     :lineno-start: 1
 
-    from tcex import IterateOn
+    from tcex.decorators import ReadArg
 
-    @IterateOnArg(
+    @ReadArg(
         arg='append_chars',
         fail_enabled='fail_on_error,
-        fail_msg='Failed to append characters to string input.',
         fail_on=['None' ''],
     )
     def append(self, string, append_chars):
         """Return string with appended characters."""
         return f'{string}{append_chars}'
+
+The ``ReadArg()`` decorator includes several built-in transforms that modify the value of the input and validators that perform checks on the input but do not change its value.
+
+The following built-in transforms are available:
+
+- to_bool
+- to_float
+- to_int
+
+The following built-in validators are available:
+
+- equals
+- in_range
+- greater_than
+- greater_than_or_equal
+- less_than
+- less_than_or_equal
+- not_in (this is equivalent to fail_on)
+
+Transforms are run, in the order they are passed, before validators, which are also run in the order they are passed.
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    from tcex.decorators import ReadArg
+
+    @ReadArg(
+        arg='confidence',
+        fail_enabled='fail_on_error,
+        fail_on=['None' ''],
+        to_int=True,
+        in_range={'min': 0, 'max': 100}
+    )
+    def append(self, confidence):
+        """Return string with appended characters."""
+        return f'{confidence}'
+
+Custom validators and transforms can be defined using the ``validators`` and ``transforms`` arguments.  Both validators and transforms are callables that accept the input value and input name and raise a ``tcex.validators.ValidationError`` if the input is invalid.  Validators do not return a value, but transforms should return a new value for the input.
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+
+    from tcex.decorators import ReadArg
+    from tcex.validators import ValidationError
+
+    def to_email(value, arg_name):
+        """This is a transform that takes a name and returns the associated email address"""
+        name_to_email = {
+            'Bob': 'bob@foo.com',
+            'Sally': 'sally@foo.com'
+        }
+
+        if value in name_to_email:
+            return name_to_email.get(value)
+
+        raise ValidationError(f'no email found for {value}.')
+
+    def is_valid_label(value, arg_name):
+        valid_labels = ['High', 'Medium', 'Low']
+        if value not in valid_labels:
+            raise ValidationError(f'{arg_name} must be High, Medium, or Low')
+
+    @ReadArg(
+        arg='email_to',
+        transforms=[to_email]
+    )
+    @ReadArg(
+        arg='label',
+        validators=[is_valid_label]
+    )
+    def append(self, email_to, label):
+        """Return string with appended characters."""
+        return f'{email_to}  - {label}'

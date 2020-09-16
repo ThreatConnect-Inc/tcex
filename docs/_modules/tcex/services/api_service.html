@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.services.api_service &mdash; TcEx 2.0.11 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+
+
+
+
+
+
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.11
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_cache.html">Module: Cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.services.api_service</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.services.api_service</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;TcEx Framework API Service module.&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">.common_service</span> <span class="kn">import</span> <span class="n">CommonService</span>
+
+
+<div class="viewcode-block" id="ApiService"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.api_service.ApiService">[docs]</a><span class="k">class</span> <span class="nc">ApiService</span><span class="p">(</span><span class="n">CommonService</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;TcEx Framework API Service module.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcex: Instance of TcEx.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Errors&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Requests&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Responses&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+        <span class="c1"># config callbacks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_event_callback</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">command_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the command map for the current Service type.&quot;&quot;&quot;</span>
+        <span class="n">command_map</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">command_map</span>
+        <span class="n">command_map</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;runservice&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_run_service_command</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">command_map</span>
+
+<div class="viewcode-block" id="ApiService.format_query_string"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.api_service.ApiService.format_query_string">[docs]</a>    <span class="k">def</span> <span class="nf">format_query_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert name/value array to a query string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: The query params for the request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The query params reformatted as a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_string</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">query_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="si">{</span><span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;feature=api-service, event=bad-params-provided, params=</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">)&quot;&quot;&quot;&#39;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="k">return</span> <span class="s1">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ApiService.format_request_headers"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.api_service.ApiService.format_request_headers">[docs]</a>    <span class="k">def</span> <span class="nf">format_request_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert name/value array to a headers dict.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            headers: The dict of key/value header data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The restructured header data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">headers_</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+                <span class="c1"># TODO: either support tuple or csv list of values</span>
+                <span class="c1"># headers_.setdefault(h.get(&#39;name&#39;).lower(), []).append(h.get(&#39;value&#39;))</span>
+                <span class="n">headers_</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)))</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;feature=api-service, event=bad-headers-provided, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;headers=</span><span class="si">{</span><span class="n">headers</span><span class="si">}</span><span class="s1">, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">)&quot;&quot;&quot;&#39;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">headers_</span></div>
+
+<div class="viewcode-block" id="ApiService.format_response_headers"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.api_service.ApiService.format_response_headers">[docs]</a>    <span class="k">def</span> <span class="nf">format_response_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert name/value array to a query string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            headers: The dict header data to be converted to key/value pairs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The restructured header data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">headers_</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+                <span class="n">headers_</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;feature=api-service, event=bad-headers-provided, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;headers=</span><span class="si">{</span><span class="n">headers</span><span class="si">}</span><span class="s1">, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">)&quot;&quot;&quot;&#39;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">headers_</span></div>
+
+<div class="viewcode-block" id="ApiService.process_run_service_response"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.api_service.ApiService.process_run_service_response">[docs]</a>    <span class="k">def</span> <span class="nf">process_run_service_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle service event responses.</span>
+
+<span class="sd">        (&#39;200 OK&#39;, [(&#39;content-type&#39;, &#39;application/json&#39;), (&#39;content-length&#39;, &#39;103&#39;)])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;feature=api-service, event=response-received, status=waiting-for-body&#39;</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>  <span class="c1"># wait for thread event - (set on body write)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=api-service, event=response, args=</span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">status_code</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;bodyVariable&#39;</span><span class="p">:</span> <span class="s1">&#39;response.body&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="s1">&#39;Acknowledged&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;headers&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_response_headers</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="s1">&#39;requestKey&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;request_key&#39;</span><span class="p">),</span>  <span class="c1"># pylint: disable=cell-var-from-loop</span>
+                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                <span class="s1">&#39;statusCode&#39;</span><span class="p">:</span> <span class="n">status_code</span><span class="p">,</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;RunService&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;feature=api-service, event=response-sent&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message_broker</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_svc_client_topic</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Responses&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;feature=api-service, event=failed-creating-response-body, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;&#39;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Errors&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ApiService.process_run_service_command"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.api_service.ApiService.process_run_service_command">[docs]</a>    <span class="k">def</span> <span class="nf">process_run_service_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Process the RunService command.</span>
+
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :lineno-start: 1</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;command&quot;: &quot;RunService&quot;,</span>
+<span class="sd">              &quot;apiToken&quot;: &quot;abc123&quot;,</span>
+<span class="sd">              &quot;bodyVariable&quot;: &quot;request.body&quot;,</span>
+<span class="sd">              &quot;headers&quot;: [ { key/value pairs } ],</span>
+<span class="sd">              &quot;method&quot;: &quot;GET&quot;,</span>
+<span class="sd">              &quot;queryParams&quot;: [ { key/value pairs } ],</span>
+<span class="sd">              &quot;requestKey&quot;: &quot;123abc&quot;,</span>
+<span class="sd">              &quot;userConfig&quot;: [{</span>
+<span class="sd">                &quot;name&quot;: &quot;tlpExportSetting&quot;,</span>
+<span class="sd">                &quot;value&quot;: &quot;TLP:RED&quot;</span>
+<span class="sd">              }],</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message: The message payload from the server topic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># register config apiToken (before any logging)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">register_token</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiToken&#39;</span><span class="p">),</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;expireSeconds&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=api-service, event=runservice-command, message=&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># thread event used to block response until body is written</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+
+        <span class="c1"># process message</span>
+        <span class="n">request_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requestKey&#39;</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># read body from redis</span>
+            <span class="n">body_variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bodyVariable&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">body_variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">body</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="n">request_key</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bodyVariable&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">body</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># for API service the data in Redis is not b64 encoded</span>
+                    <span class="n">body</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=api-service, event=failed-reading-body, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_request_headers</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;headers&#39;</span><span class="p">))</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">)</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;queryParams&#39;</span><span class="p">)</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">environ</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;wsgi.errors&#39;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
+                <span class="s1">&#39;wsgi.input&#39;</span><span class="p">:</span> <span class="n">body</span><span class="p">,</span>
+                <span class="s1">&#39;wsgi.multithread&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;wsgi.multiprocess&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;wsgi.run_once&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;wsgi.url_scheme&#39;</span><span class="p">:</span> <span class="s1">&#39;https&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;wsgi.version&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s1">&#39;PATH_INFO&#39;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
+                <span class="s1">&#39;QUERY_STRING&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_query_string</span><span class="p">(</span><span class="n">params</span><span class="p">),</span>
+                <span class="s1">&#39;REMOTE_ADDR&#39;</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;remoteAddress&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                <span class="c1"># &#39;REMOTE_HOST&#39;: message.get(&#39;remoteAddress&#39;, &#39;&#39;),</span>
+                <span class="s1">&#39;REQUEST_METHOD&#39;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+                <span class="s1">&#39;SCRIPT_NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;SERVER_NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;SERVER_PORT&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;SERVER_PROTOCOL&#39;</span><span class="p">:</span> <span class="s1">&#39;HTTP/1.1&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="c1"># Add user config for TAXII or other service that supports the data type</span>
+            <span class="n">environ</span><span class="p">[</span><span class="s1">&#39;user_config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;userConfig&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+            <span class="c1"># add headers</span>
+            <span class="k">if</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CONTENT_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span>
+
+            <span class="c1"># add content length</span>
+            <span class="k">if</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CONTENT_LENGTH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">environ</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;HTTP_</span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=api-service, environ=</span><span class="si">{</span><span class="n">environ</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Requests&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=api-service, event=failed-building-environ, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Errors&#39;</span><span class="p">)</span>
+            <span class="k">return</span>  <span class="c1"># stop processing</span>
+
+        <span class="k">def</span> <span class="nf">response_handler</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+            <span class="sd">&quot;&quot;&quot;Handle WSGI Response&quot;&quot;&quot;</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span>  <span class="c1"># add event to kwargs for blocking</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;request_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request_key</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service_thread</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;response-handler&#39;</span><span class="p">,</span>
+                <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">process_run_service_response</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_event_callback</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">body_data</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_event_callback</span><span class="p">(</span>  <span class="c1"># pylint: disable=not-callable</span>
+                    <span class="n">environ</span><span class="p">,</span> <span class="n">response_handler</span>
+                <span class="p">)</span>
+
+                <span class="c1"># process body</span>
+                <span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">body_data</span><span class="p">,</span> <span class="s1">&#39;read&#39;</span><span class="p">):</span>
+                    <span class="n">body</span> <span class="o">=</span> <span class="n">body_data</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">bd</span> <span class="ow">in</span> <span class="n">body_data</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bd</span><span class="p">,</span> <span class="s1">&#39;read&#39;</span><span class="p">):</span>
+                            <span class="n">body</span> <span class="o">+=</span> <span class="n">bd</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bd</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                            <span class="n">body</span> <span class="o">+=</span> <span class="n">bd</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bd</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bd</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unhandled type - </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unhandled type - </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">body</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unhandled type dir - </span><span class="si">{</span><span class="nb">dir</span><span class="p">(</span><span class="n">body</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="c1"># write body to Redis</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="n">request_key</span><span class="p">,</span> <span class="s1">&#39;response.body&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+
+                <span class="c1"># set thread event to True to trigger response</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;feature=api-service, event=response-body-written&#39;</span><span class="p">)</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;feature=api-service, event=api-event-callback-failed, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;.&#39;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">increment_metric</span><span class="p">(</span><span class="s1">&#39;Errors&#39;</span><span class="p">)</span>
+
+        <span class="c1"># unregister config apiToken</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">unregister_token</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.services.mqtt_message_broker &mdash; TcEx 2.0.11 documentation</title>
+
+
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+
+
+
+
+
+
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                2.0.11
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_cache.html">Module: Cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_case_management.html">Module: Case Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_datastore.html">Module: Datastore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_decorators.html">Module: Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_services.html">Module: Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_threat_intelligence.html">Module: Threat Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tcex_docs/modules.html">TcEx Package</a></li>
+</ul>
+
+
+
+        </div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.services.mqtt_message_broker</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.services.mqtt_message_broker</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;TcEx Framework MQTT message broker module.&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># third-party</span>
+<span class="kn">import</span> <span class="nn">paho.mqtt.client</span> <span class="k">as</span> <span class="nn">mqtt</span>
+
+
+<div class="viewcode-block" id="MqttMessageBroker"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker">[docs]</a><span class="k">class</span> <span class="nc">MqttMessageBroker</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;TcEx Framework MQTT message broker module.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">broker_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">broker_port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">broker_timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">logger</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+        <span class="n">broker_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">broker_cacert</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            broker_host: The MQTT server host (IP).</span>
+<span class="sd">            broker_port: The MQTT server port.</span>
+<span class="sd">            broker_timeout: The MQTT connection timeout.</span>
+<span class="sd">            broker_token: The MQTT connect token.</span>
+<span class="sd">            broker_cacert: The CA certfile for connection.</span>
+<span class="sd">            logger: A logging instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker_host</span> <span class="o">=</span> <span class="n">broker_host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">broker_port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker_timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">broker_timeout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker_token</span> <span class="o">=</span> <span class="n">broker_token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker_cacert</span> <span class="o">=</span> <span class="n">broker_cacert</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logger</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_connect_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_disconnect_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_log_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_message_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_publish_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_subscribe_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_unsubscribe_callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># used in service App for shutdown flag</span>
+
+<div class="viewcode-block" id="MqttMessageBroker.add_on_connect_callback"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_connect_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_on_connect_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a callback for on_connect events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: A callback that matches signature of an on_connect event.</span>
+<span class="sd">            index: The index value to insert the callback into the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_connect_callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_connect_callbacks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.add_on_disconnect_callback"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_disconnect_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_on_disconnect_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a callback for on_disconnect events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: A callback that matches signature of an on_disconnect event.</span>
+<span class="sd">            index: The index value to insert the callback into the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_disconnect_callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_disconnect_callbacks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.add_on_log_callback"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_log_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_on_log_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a callback for on_log events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: A callback that matches signature of an on_log event.</span>
+<span class="sd">            index: The index value to insert the callback into the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_log_callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_log_callbacks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.add_on_message_callback"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_message_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_on_message_callback</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">topics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a callback for on_message events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: A callback that matches signature of an on_message event.</span>
+<span class="sd">            index: The index value to insert the callback into the list.</span>
+<span class="sd">            topics: A optional list of topics to call callback. If value is None then callback</span>
+<span class="sd">                will always be called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_message_callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_message_callbacks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;callback&#39;</span><span class="p">:</span> <span class="n">callback</span><span class="p">,</span> <span class="s1">&#39;topics&#39;</span><span class="p">:</span> <span class="n">topics</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.add_on_publish_callback"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_publish_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_on_publish_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a callback for on_publish events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: A callback that matches signature of an on_publish event.</span>
+<span class="sd">            index: The index value to insert the callback into the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_publish_callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_publish_callbacks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.add_on_subscribe_callback"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_subscribe_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_on_subscribe_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a callback for on_subscribe events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: A callback that matches signature of an on_subscribe event.</span>
+<span class="sd">            index: The index value to insert the callback into the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_subscribe_callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_subscribe_callbacks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.add_on_unsubscribe_callback"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_unsubscribe_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_on_unsubscribe_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add a callback for on_unsubscribe events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: A callback that matches signature of an on_unsubscribe event.</span>
+<span class="sd">            index: The index value to insert the callback into the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_unsubscribe_callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_unsubscribe_callbacks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return MQTT client.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">mqtt</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">clean_session</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_timeout</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_cacert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">tls_set</span><span class="p">(</span>
+                        <span class="n">ca_certs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_cacert</span><span class="p">,</span>
+                        <span class="n">cert_reqs</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">CERT_REQUIRED</span><span class="p">,</span>
+                        <span class="n">tls_version</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">PROTOCOL_TLSv1_2</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">tls_insecure_set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="c1"># add logger</span>
+                <span class="c1"># if self.log.getEffectiveLevel() == 5:</span>
+                <span class="c1">#     self._client.enable_logger(logger=self.log)</span>
+                <span class="c1"># username must be a empty string</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">username_pw_set</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_token</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=message-broker, event=failed-connection, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span>
+
+<div class="viewcode-block" id="MqttMessageBroker.connect"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Listen for message coming from broker.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># handle connection issues by not using loop_forever. give the service X seconds to</span>
+            <span class="c1"># connect to message broker, else timeout and log generic connection error.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">loop_start</span><span class="p">()</span>
+            <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_timeout</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="ow">and</span> <span class="n">deadline</span> <span class="o">&lt;</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">loop_stop</span><span class="p">()</span>
+                    <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;failed to connect to message broker host &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_host</span><span class="si">}</span><span class="s1"> on port &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_port</span><span class="si">}</span><span class="s1">.&#39;</span>
+                    <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=message-broker, event=connection-error, error=&quot;&quot;&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&quot;&quot;&quot;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.on_connect"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.on_connect">[docs]</a>    <span class="k">def</span> <span class="nf">on_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">rc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle MQTT on_connect events.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=message-broker, event=broker-connect, status=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_connect_callbacks</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">rc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.on_disconnect"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.on_disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">on_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">rc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle MQTT on_disconnect events.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=message-broker, event=broker-disconnect, status=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_disconnect_callbacks</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">rc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.on_log"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.on_log">[docs]</a>    <span class="k">def</span> <span class="nf">on_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle MQTT on_log events.&quot;&quot;&quot;</span>
+        <span class="c1"># self.log.trace(f&#39;feature=message-broker, event=on_log, buf={buf}, level={level}&#39;)</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_log_callbacks</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.on_message"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.on_message">[docs]</a>    <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle MQTT on_message events.&quot;&quot;&quot;</span>
+        <span class="n">mp</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;&#39;&#39;feature=message-broker, message-topic=</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">topic</span><span class="si">}</span><span class="s1">, message-payload=</span><span class="si">{</span><span class="n">mp</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">cd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_message_callbacks</span><span class="p">:</span>
+            <span class="n">topics</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;topics&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">topics</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">message</span><span class="o">.</span><span class="n">topic</span> <span class="ow">in</span> <span class="n">topics</span><span class="p">:</span>
+                <span class="n">cd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;callback&#39;</span><span class="p">)(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.on_publish"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.on_publish">[docs]</a>    <span class="k">def</span> <span class="nf">on_publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle MQTT on_publish events.&quot;&quot;&quot;</span>
+        <span class="c1"># self.log.trace(f&#39;feature=message-broker, event=on_publish, result={result}&#39;)</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_publish_callbacks</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.on_subscribe"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.on_subscribe">[docs]</a>    <span class="k">def</span> <span class="nf">on_subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">granted_qos</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle MQTT on_subscribe events.&quot;&quot;&quot;</span>
+        <span class="c1"># self.log.trace(</span>
+        <span class="c1">#     f&#39;feature=message-broker, event=on_subscribe, mid={mid}, granted_qos={granted_qos}&#39;</span>
+        <span class="c1"># )</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_subscribe_callbacks</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">granted_qos</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.on_unsubscribe"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.on_unsubscribe">[docs]</a>    <span class="k">def</span> <span class="nf">on_unsubscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle MQTT on_unsubscribe events.&quot;&quot;&quot;</span>
+        <span class="c1"># self.log.trace(f&#39;feature=message-broker, event=on_subscribe, mid={mid}&#39;)</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_unsubscribe_callbacks</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.publish"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Publish a message on client topic.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message: The message to be sent on client topic.</span>
+<span class="sd">            topic: The broker topic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;feature=service, event=publish-message, topic=&quot;</span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s1">&quot;, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;message=</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">, response=</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MqttMessageBroker.register_callbacks"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.mqtt_message_broker.MqttMessageBroker.register_callbacks">[docs]</a>    <span class="k">def</span> <span class="nf">register_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Register all the message broker callbacks.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">on_connect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_connect</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">on_disconnect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_disconnect</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">on_log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">on_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">on_publish</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_publish</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">on_subscribe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_subscribe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">on_unsubscribe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_unsubscribe</span></div></div>
+</pre></div>
+
+           </div>
+
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

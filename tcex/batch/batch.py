@@ -6,9 +6,11 @@ import math
 import os
 import re
 import shelve
+import sys
 import time
 import uuid
-from typing import Optional
+from collections import deque
+from typing import List, Optional
 
 from .group import (
     Adversary,
@@ -43,36 +45,39 @@ module = __import__(__name__)
 
 
 class Batch:
-    """ThreatConnect Batch Import Module
-
-    Args:
-        tcex (obj): An instance of TcEx object.
-        owner (str): The ThreatConnect owner for Batch action.
-        action (str, default:Create): Action for the batch job ['Create', 'Delete'].
-        attribute_write_type (str, default:Replace): Write type for Indicator attributes
-            ['Append', 'Replace'].
-        halt_on_error (bool, default:True): If True any batch error will halt the batch job.
-    """
+    """ThreatConnect Batch Import Module"""
 
     def __init__(
         self,
-        tcex,
-        owner,
-        action=None,
-        attribute_write_type=None,
-        halt_on_error=True,
-        playbook_triggers_enabled=None,
+        tcex: object,
+        owner: str,
+        action: Optional[str] = 'Create',
+        attribute_write_type: Optional[str] = 'Replace',
+        halt_on_error: Optional[bool] = True,
+        playbook_triggers_enabled: Optional[str] = None,
     ):
-        """Initialize Class properties."""
+        """Initialize Class properties.
+
+        Args:
+            tcex: An instance of TcEx object.
+            owner: The ThreatConnect owner for Batch action.
+            action: Action for the batch job ['Create', 'Delete'].
+            attribute_write_type: Write type for Indicator attributes ['Append', 'Replace'].
+            halt_on_error: If True any batch error will halt the batch job.
+            playbook_triggers_enabled: **DEPRECATED**
+        """
         self.tcex = tcex
-        self._action = action or 'Create'
-        self._attribute_write_type = attribute_write_type or 'Replace'
-        self._batch_max_chunk = 5000
+        self._action = action
+        self._attribute_write_type = attribute_write_type
         self._halt_on_error = halt_on_error
-        self._hash_collision_mode = None
-        self._file_merge_mode = None
         self._owner = owner
         self._playbook_triggers_enabled = playbook_triggers_enabled
+
+        # properties
+        self._batch_max_chunk = 5000
+        self._batch_max_size = 95_000_000  # max size in bytes
+        self._file_merge_mode = None
+        self._hash_collision_mode = None
 
         # shelf settings
         self._group_shelf_fqfn = None
@@ -104,6 +109,16 @@ class Batch:
 
         # build custom indicator classes
         self._gen_indicator_class()
+
+        # batch debug/replay variables
+        self._debug = None
+        self.debug_path = os.path.join(self.tcex.args.tc_temp_path, 'DEBUG')
+        self.debug_path_documents = os.path.join(self.tcex.args.tc_temp_path, 'documents')
+        self.debug_path_batch = os.path.join(self.debug_path, 'batch_data')
+        self.debug_path_group_shelf = os.path.join(self.debug_path, 'groups-saved')
+        self.debug_path_indicator_shelf = os.path.join(self.debug_path, 'indicators-saved')
+        self.debug_path_reports = os.path.join(self.tcex.args.tc_temp_path, 'reports')
+        self.debug_path_xids = os.path.join(self.debug_path, 'xids-saved')
 
     @property
     def _critical_failures(self):  # pragma: no cover
@@ -453,14 +468,7 @@ class Batch:
         """Cleanup batch job."""
         self.groups_shelf.close()
         self.indicators_shelf.close()
-        if self.debug and self.enable_saved_file:
-            fqfn = os.path.join(self.tcex.args.tc_temp_path, 'xids-saved')
-            if os.path.isfile(fqfn):
-                os.remove(fqfn)  # remove previous file to prevent duplicates
-            with open(fqfn, 'w') as fh:
-                for xid in self.saved_xids:
-                    fh.write(f'{xid}\n')
-        else:
+        if not self.debug and not self.enable_saved_file:
             # delete saved files
             if os.path.isfile(self.group_shelf_fqfn):
                 os.remove(self.group_shelf_fqfn)
@@ -478,58 +486,69 @@ class Batch:
         * Process indicators in shelf up to max batch size.
 
         This method will remove the group/indicator from memory and/or shelf.
+
+        Returns:
+            dict: A dictionary of group and/or indicators.
         """
         entity_count = 0
+        entity_size = 0
         data = {'group': [], 'indicator': []}
-        # process group data
-        group_data, entity_count = self.data_groups(self.groups, entity_count)
+
+        # process group from memory
+        group_data = self.data_groups(self.groups, entity_count, entity_size)
         data['group'].extend(group_data)
-        if entity_count >= self._batch_max_chunk:
-            return data
-        group_data, entity_count = self.data_groups(self.groups_shelf, entity_count)
-        data['group'].extend(group_data)
-        if entity_count >= self._batch_max_chunk:
+        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
             return data
 
-        # process indicator data
-        indicator_data, entity_count = self.data_indicators(self.indicators, entity_count)
-        data['indicator'].extend(indicator_data)
-        if entity_count >= self._batch_max_chunk:
+        # process group from shelf file
+        group_data = self.data_groups(self.groups_shelf, entity_count, entity_size)
+        data['group'].extend(group_data)
+        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
             return data
-        indicator_data, entity_count = self.data_indicators(self.indicators_shelf, entity_count)
+
+        # process indicator from memory
+        indicator_data = self.data_indicators(self.indicators, entity_count, entity_size)
         data['indicator'].extend(indicator_data)
-        if entity_count >= self._batch_max_chunk:
+        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
             return data
+
+        # process indicator from shelf file
+        indicator_data = self.data_indicators(self.indicators_shelf, entity_count, entity_size)
+        data['indicator'].extend(indicator_data)
+        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
+            return data
+
         return data
 
-    def data_group_association(self, xid):
+    def data_group_association(self, xid: str) -> List[dict]:
         """Return group dict array following all associations.
 
         Args:
-            xid (str): The xid of the group to retrieve associations.
+            xid: The xid of the group to retrieve associations.
 
         Returns:
-            list: A list of group dicts.
+            List[dict]: A list of group dicts.
         """
         groups = []
-        group_data = None
 
-        # get group data from one of the arrays
-        if self.groups.get(xid) is not None:
-            group_data = self.groups.get(xid)
-            del self.groups[xid]
-        elif self.groups_shelf.get(xid) is not None:
-            group_data = self.groups_shelf.get(xid)
-            del self.groups_shelf[xid]
+        xids = deque()
+        xids.append(xid)
 
-        if group_data is not None:
-            # convert any obj into dict and process file data
-            group_data = self.data_group_type(group_data)
-            groups.append(group_data)
+        while xids:
+            xid = xids.popleft()  # remove current xid
+            group_data = None
 
-            # recursively get associations
-            for assoc_xid in group_data.get('associatedGroupXid', []):
-                groups.extend(self.data_group_association(assoc_xid))
+            if xid in self.groups:
+                group_data = self.groups.get(xid)
+                del self.groups[xid]
+            elif xid in self.groups_shelf:
+                group_data = self.groups_shelf.get(xid)
+                del self.groups_shelf[xid]
+
+            if group_data:
+                group_data = self.data_group_type(group_data)
+                groups.append(group_data)
+                xids.extend(group_data.get('associatedGroupXid', []))
 
         return groups
 
@@ -552,59 +571,86 @@ class Batch:
                     'type': group_data.get('type'),
                 }
         else:
-            GROUPS_STRINGS_WITH_FILE_CONTENTS = ['Document', 'Report']
             # process file content
-            if group_data.data.get('type') in GROUPS_STRINGS_WITH_FILE_CONTENTS:
+            if group_data.data.get('type') in ['Document', 'Report']:
                 self._files[group_data.data.get('xid')] = group_data.file_data
             group_data = group_data.data
         return group_data
 
-    def data_groups(self, groups, entity_count):
+    def data_groups(self, groups: list, entity_count: int, entity_size: int) -> list:
         """Process Group data.
 
         Args:
-            groups (list): The list of groups to process.
+            groups: The list of groups to process.
+            entity_count: The total count of all entities collected.
+            entity_size: The total size in bytes of all entities collected.
 
         Returns:
-            list: A list of groups including associations
+            list: A list of groups
         """
         data = []
+        # convert groups.keys() to a list to prevent dictionary change error caused by
+        # the data_group_association function deleting items from the object.
+
         # process group objects
-        # we are converting groups.keys() to a list because the data_group_association function
-        # will be deleting items the groups dictionary which would raise a
-        # "dictionary changed size during iteration" error
         for xid in list(groups.keys()):
             # get association from group data
             assoc_group_data = self.data_group_association(xid)
             data += assoc_group_data
             entity_count += len(assoc_group_data)
+            entity_size += sys.getsizeof(json.dumps(assoc_group_data))
 
-            if entity_count >= self._batch_max_chunk:
+            if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
                 break
-        return data, entity_count
+        return data
 
-    def data_indicators(self, indicators, entity_count):
-        """Process Indicator data."""
+    def data_indicators(self, indicators: list, entity_count: int, entity_size: int) -> list:
+        """Process Indicator data.
+
+        Args:
+            indicators: The list of indicators to process.
+            entity_count: The total count of all entities collected.
+            entity_size: The total size in bytes of all entities collected.
+
+        Returns:
+            list: A list of indicators
+        """
         data = []
         # process indicator objects
         for xid, indicator_data in list(indicators.items()):
-            entity_count += 1
-            if isinstance(indicator_data, dict):
-                data.append(indicator_data)
-            else:
-                data.append(indicator_data.data)
+            if not isinstance(indicator_data, dict):
+                indicator_data = indicator_data.data
+            data.append(indicator_data)
             del indicators[xid]
-            if entity_count >= self._batch_max_chunk:
+            entity_count += 1
+            entity_size += sys.getsizeof(json.dumps(indicator_data))
+
+            if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
                 break
-        return data, entity_count
+        return data
 
     @property
     def debug(self):
         """Return debug setting"""
-        debug = False
-        if os.path.isfile(os.path.join(self.tcex.args.tc_temp_path, 'DEBUG')):
-            debug = True
-        return debug
+        if self._debug is None:
+            self._debug = False
+
+            # switching DEBUG file to a directory
+            if os.path.isfile(self.debug_path):
+                os.remove(self.debug_path)
+                os.makedirs(self.debug_path, exist_ok=True)
+
+            if os.path.isdir(self.debug_path) and os.access(self.debug_path, os.R_OK):
+                # create directories only required when debug is enabled
+                # batch_json - store the batch*.json files
+                # documents - store the file downloads (e.g., *.pdf)
+                # reports - store the file downloads (e.g., *.pdf)
+                os.makedirs(self.debug_path, exist_ok=True)
+                os.makedirs(self.debug_path_batch, exist_ok=True)
+                os.makedirs(self.debug_path_documents, exist_ok=True)
+                os.makedirs(self.debug_path_reports, exist_ok=True)
+                self._debug = True
+        return self._debug
 
     def document(self, name, file_name, **kwargs):
         """Add Document data to Batch object.
@@ -824,7 +870,7 @@ class Batch:
 
             # saved shelf file
             if self.saved_groups:
-                self._group_shelf_fqfn = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
+                self._group_shelf_fqfn = self.debug_path_group_shelf
         return self._group_shelf_fqfn
 
     @property
@@ -962,9 +1008,7 @@ class Batch:
 
             # saved shelf file
             if self.saved_indicators:
-                self._indicator_shelf_fqfn = os.path.join(
-                    self.tcex.args.tc_temp_path, 'indicators-saved'
-                )
+                self._indicator_shelf_fqfn = self.debug_path_indicator_shelf
         return self._indicator_shelf_fqfn
 
     @property
@@ -1057,16 +1101,10 @@ class Batch:
             self._poll_interval = 15
 
         # poll retry back_off factor
-        if back_off is None:
-            poll_interval_back_off = 2.5
-        else:
-            poll_interval_back_off = float(back_off)
+        poll_interval_back_off = float(2.5 if back_off is None else back_off)
 
         # poll retry seconds
-        if retry_seconds is None:
-            poll_retry_seconds = 5
-        else:
-            poll_retry_seconds = int(retry_seconds)
+        poll_retry_seconds = int(5 if retry_seconds is None else retry_seconds)
 
         # poll timeout
         if timeout is None:
@@ -1197,6 +1235,7 @@ class Batch:
 
         if resource_type is not None and xid is not None:
             saved = True
+
             if resource_type in self.tcex.group_types:
                 try:
                     # groups
@@ -1229,11 +1268,10 @@ class Batch:
         """Return True if saved group files exits, else False."""
         if self._saved_groups is None:
             self._saved_groups = False
-            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
             if (
                 self.enable_saved_file
-                and os.path.isfile(fqfn_saved)
-                and os.access(fqfn_saved, os.R_OK)
+                and os.path.isfile(self.debug_path_group_shelf)
+                and os.access(self.debug_path_group_shelf, os.R_OK)
             ):
                 self._saved_groups = True
                 self.tcex.log.debug('groups-saved file found')
@@ -1244,11 +1282,10 @@ class Batch:
         """Return True if saved indicators files exits, else False."""
         if self._saved_indicators is None:
             self._saved_indicators = False
-            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
             if (
                 self.enable_saved_file
-                and os.path.isfile(fqfn_saved)
-                and os.access(fqfn_saved, os.R_OK)
+                and os.path.isfile(self.debug_path_indicator_shelf)
+                and os.access(self.debug_path_indicator_shelf, os.R_OK)
             ):
                 self._saved_indicators = True
                 self.tcex.log.debug('indicators-saved file found')
@@ -1260,11 +1297,18 @@ class Batch:
         if self._saved_xids is None:
             self._saved_xids = []
             if self.debug:
-                fpfn = os.path.join(self.tcex.args.tc_temp_path, 'xids-saved')
-                if os.path.isfile(fpfn) and os.access(fpfn, os.R_OK):
-                    with open(fpfn) as fh:
+                if os.path.isfile(self.debug_path_xids) and os.access(
+                    self.debug_path_xids, os.R_OK
+                ):
+                    with open(self.debug_path_xids) as fh:
                         self._saved_xids = fh.read().splitlines()
         return self._saved_xids
+
+    @saved_xids.setter
+    def saved_xids(self, xid):
+        """Append xid to xids saved file."""
+        with open(self.debug_path_xids, 'a') as fh:
+            fh.write(f'{xid}\n')
 
     @property
     def settings(self):
@@ -1444,23 +1488,10 @@ class Batch:
                 batch_data['uploadStatus'] = self.submit_files(halt_on_error)
             batch_data_array.append(batch_data)
 
-            if self.debug:
-                self.write_error_json(batch_data.get('errors'))
+            # write errors for debugging
+            self.write_error_json(batch_data.get('errors'))
 
         return batch_data_array
-
-    def write_error_json(self, errors: list):
-        """Write the errors to a JSON file for debuging purposes.
-
-        Args:
-            errors (list): A list of errors to write out.
-        """
-        if not errors:
-            errors = []
-        timestamp = str(time.time()).replace('.', '')
-        error_json_file = os.path.join(self.tcex.args.tc_temp_path, f'errors-{timestamp}.json')
-        with open(error_json_file, 'w') as fh:
-            json.dump(errors, fh, indent=2)
 
     def submit_create_and_upload(self, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
@@ -1474,9 +1505,8 @@ class Batch:
 
         content = self.data
         if content.get('group') or content.get('indicator'):
-            if self.debug:
-                # special code for debugging App using batchV2.
-                self.write_batch_json(content)
+            # special code for debugging App using batchV2.
+            self.write_batch_json(content)
 
             # store the length of the batch data to use for poll interval calculations
             self.tcex.log.info(f"Batch Group Size: {len(content.get('group')):,}.")
@@ -1549,26 +1579,34 @@ class Batch:
 
             # used for debug/testing to prevent upload of previously uploaded file
             if self.debug and xid in self.saved_xids:
-                self.tcex.log.debug(f'skipping previously saved file {xid}.')
+                self.tcex.log.debug(
+                    f'feature=batch-submit-files, action=skip-previously-saved-file, xid={xid}'
+                )
                 continue
 
             # process the file content
             content = content_data.get('fileContent')
             if callable(content):
+                content_callable_name = getattr(content, '__name__', repr(content))
+                self.tcex.log.trace(
+                    f'feature=batch-submit-files, method={content_callable_name}, xid={xid}'
+                )
                 content = content_data.get('fileContent')(xid)
+
             if content is None:
                 upload_status.append({'uploaded': False, 'xid': xid})
-                self.tcex.log.warning(f'File content was null for xid {xid}.')
+                self.tcex.log.warning(f'feature=batch-submit-files, xid={xid}, event=content-null')
                 continue
-            if content_data.get('type') == 'Document':
-                api_branch = 'documents'
-            elif content_data.get('type') == 'Report':
+
+            api_branch = 'documents'
+            if content_data.get('type') == 'Report':
                 api_branch = 'reports'
 
             if self.debug and content_data.get('fileName'):
                 # special code for debugging App using batchV2.
                 fqfn = os.path.join(
-                    self.tcex.args.tc_temp_path,
+                    self.debug_path,
+                    api_branch,
                     f'''{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}''',
                 )
                 with open(fqfn, 'wb') as fh:
@@ -1587,8 +1625,10 @@ class Batch:
             if not r.ok:
                 status = False
                 self.tcex.handle_error(585, [r.status_code, r.text], halt_on_error)
-            elif self.debug:
-                self.saved_xids.append(xid)
+            elif self.debug and self.enable_saved_file and xid not in self.saved_xids:
+                # save xid "if" successfully uploaded and not already saved
+                self.saved_xids = xid
+
             self.tcex.log.info(f'Status {r.status_code} for file upload with xid {xid}.')
             upload_status.append({'uploaded': status, 'xid': xid})
         return upload_status
@@ -1624,6 +1664,7 @@ class Batch:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
             self.tcex.handle_error(10505, [e], halt_on_error)
+
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
             self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
         data = r.json()
@@ -1680,11 +1721,25 @@ class Batch:
         indicator_obj = URL(text, **kwargs)
         return self._indicator(indicator_obj)
 
+    def write_error_json(self, errors: list):
+        """Write the errors to a JSON file for debuging purposes.
+
+        Args:
+            errors: A list of errors to write out.
+        """
+        if self.debug:
+            if not errors:
+                errors = []
+            timestamp = str(time.time()).replace('.', '')
+            error_json_file = os.path.join(self.debug_path_batch, f'errors-{timestamp}.json')
+            with open(error_json_file, 'w') as fh:
+                json.dump(errors, fh, indent=2)
+
     def write_batch_json(self, content):
         """Write batch json data to a file."""
-        if content:
+        if self.debug and content:
             timestamp = str(time.time()).replace('.', '')
-            batch_json_file = os.path.join(self.tcex.args.tc_temp_path, f'batch-{timestamp}.json')
+            batch_json_file = os.path.join(self.debug_path_batch, f'batch-{timestamp}.json')
             with open(batch_json_file, 'w') as fh:
                 json.dump(content, fh, indent=2)
 
