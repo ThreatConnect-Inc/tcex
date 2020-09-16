@@ -76,6 +76,14 @@ class Owner:
         """
         self._tc_requests = tc_requests
 
+    def single(self, unique_id):
+        """Return main type."""
+        return self.tc_requests.single(
+            self.api_type,
+            None,
+            unique_id,
+        )
+
     def many(self):
         """Get all of the owners available.
 

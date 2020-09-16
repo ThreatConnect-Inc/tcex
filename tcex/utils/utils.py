@@ -8,6 +8,7 @@ import string
 import uuid
 from typing import Any, List, Optional, Union
 from urllib.parse import urlsplit
+import jmespath
 
 # third-party
 import pyaes
@@ -487,3 +488,34 @@ class Utils:
         with open(fqpn, mode) as fh:
             fh.write(content)
         return fqpn
+
+    def mapper(self, data: Union[list, dict], mapping: dict):
+
+        if isinstance(data, dict):
+            data = [data]
+        try:
+            for d in data:
+                mapped_obj = mapping.copy()
+                for key, value in mapping.items():
+                    if isinstance(value, list):
+                        new_list = []
+                        for item in value:
+                            if isinstance(item, dict):
+                                new_list.append(list(self.mapper(d, item))[0])
+                            else:
+                                if not item.startswith('@'):
+                                    new_list.append(item)
+                                else:
+                                    new_list.append(jmespath.search(f'{item}', jmespath.search('@', d)))
+
+                        mapped_obj[key] = new_list
+                    elif isinstance(value, dict):
+                        mapped_obj[key] = list(self.mapper(d, mapped_obj[key]))[0]
+                    else:
+                        if not value.startswith('@'):
+                            mapped_obj[key] = value
+                        else:
+                            mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
+                yield mapped_obj
+        except Exception:  # pylint: disable=bare-except
+            pass
