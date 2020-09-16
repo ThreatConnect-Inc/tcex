@@ -140,6 +140,11 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         if content_length:
             body = self.rfile.read(content_length)
             self.server.test_case.redis_client.hset(request_key, 'request.body', body)
+
+        request_url = self.headers.get('Host', 'http://localhost:8042')
+        if request_url.startwith(('http://', 'https://')):
+            request_url = f'https://{request_url}'
+
         return {
             'apiToken': self.server.test_case.tc_token,
             'appId': 95,
@@ -151,6 +156,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
             'path': url_parts.path,
             'queryParams': params,
             'requestKey': request_key,
+            'requestUrl': request_url,
+            'remoteAddress': '127.0.0.1',
         }
 
     def _build_response(self, response: Optional[dict] = None) -> None:
