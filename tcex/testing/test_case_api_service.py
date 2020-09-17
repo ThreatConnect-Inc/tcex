@@ -143,7 +143,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 
         request_url = self.headers.get('Host', 'http://localhost:8042')
 
-        if request_url and not request_url.startwith(('http://', 'https://')):
+        if request_url and not request_url.startswith(('http://', 'https://')):
             request_url = f'https://{request_url}'
 
         return {
