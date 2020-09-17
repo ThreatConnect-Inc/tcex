@@ -136,7 +136,7 @@ class ExternalSession(Session):
         # properties
         self._mask_headers = True
         self._mask_patterns = None
-        self._rate_limit_handler = None
+        self._rate_limit_handler = RateLimitHandler()
         self._too_many_requests_handler = None
 
         # Add default Retry

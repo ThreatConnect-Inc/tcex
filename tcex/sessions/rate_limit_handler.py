@@ -9,6 +9,9 @@ from typing import Optional
 # third-party
 from requests import PreparedRequest, Response
 
+# first-party
+from tcex.utils import Utils
+
 
 class RateLimitHandler:
     """Rate-limiting implementation using X-RateLimit-<X> headers."""
@@ -91,7 +94,7 @@ class RateLimitHandler:
             self._last_limit_remaining_value = int(
                 response.headers.get(self.limit_remaining_header, 0)
             )
-            self._last_limit_reset_value = int(response.headers.get(self.limit_reset_header))
+            self._last_limit_reset_value = response.headers.get(self.limit_reset_header)
 
     def pre_send(self, request: PreparedRequest) -> None:
         """Call before request is sent and provides an opportunity to pause for rate limiting.
@@ -117,4 +120,13 @@ class RateLimitHandler:
         Args:
             request:  The request that will be sent.
         """
-        time.sleep(self.last_limit_reset_value - time.time())
+        utils = Utils()
+        wait_until = self.last_limit_reset_value
+        try:
+            seconds = (
+                float(utils.datetime.format_datetime(wait_until, date_format='%s')) - time.time()
+            )
+        except RuntimeError:
+            seconds = wait_until
+
+        time.sleep(float(seconds))
