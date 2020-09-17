@@ -36,7 +36,52 @@ class TestRateLimitHandler:
         request: PreparedRequest = PreparedRequest()
 
         rate_limit_handler.pre_send(request)
-        sleep.assert_called_once_with(3)
+        sleep.assert_called_once_with(10)
+
+    @staticmethod
+    def test_pre_send_timestamp():
+        """Test the pre_send method."""
+        rate_limit_handler = RateLimitHandler()
+
+        sleep = MagicMock(return_value=None)
+        time.sleep = sleep
+
+        time.time = MagicMock(return_value=1600283000)
+
+        response: Response = Response()
+        type(response).ok = PropertyMock(True)
+        response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 1600284000}
+
+        rate_limit_handler.post_send(response)
+
+        request: PreparedRequest = PreparedRequest()
+
+        rate_limit_handler.pre_send(request)
+        sleep.assert_called_once_with(1000)
+
+    @staticmethod
+    def test_pre_send_IMF_fixdate():
+        """Test the pre_send method."""
+        rate_limit_handler = RateLimitHandler()
+
+        sleep = MagicMock(return_value=None)
+        time.sleep = sleep
+
+        time.time = MagicMock(return_value=1600283000)
+
+        response: Response = Response()
+        type(response).ok = PropertyMock(True)
+        response.headers = {
+            'X-RateLimit-Remaining': 0,
+            'X-RateLimit-Reset': 'Wed, 16 Sep 2020 19:04:00 GMT',
+        }
+
+        rate_limit_handler.post_send(response)
+
+        request: PreparedRequest = PreparedRequest()
+
+        rate_limit_handler.pre_send(request)
+        sleep.assert_called_once_with(40.0)
 
         # restore time methods
         time.sleep = backup_sleep

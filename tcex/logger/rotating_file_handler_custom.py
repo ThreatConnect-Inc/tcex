@@ -54,7 +54,6 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
             source: The source filename.
             dest: The destination filename.
         """
-        # os.rename(source, dest)
         with open(source, 'rb') as f_in:
             with gzip.open(dest, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)

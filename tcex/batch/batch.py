@@ -54,7 +54,7 @@ class Batch:
         action: Optional[str] = 'Create',
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = True,
-        playbook_triggers_enabled: Optional[str] = None,
+        playbook_triggers_enabled: Optional[bool] = False,
     ):
         """Initialize Class properties.
 
@@ -113,11 +113,10 @@ class Batch:
         # batch debug/replay variables
         self._debug = None
         self.debug_path = os.path.join(self.tcex.args.tc_temp_path, 'DEBUG')
-        self.debug_path_documents = os.path.join(self.tcex.args.tc_temp_path, 'documents')
         self.debug_path_batch = os.path.join(self.debug_path, 'batch_data')
         self.debug_path_group_shelf = os.path.join(self.debug_path, 'groups-saved')
         self.debug_path_indicator_shelf = os.path.join(self.debug_path, 'indicators-saved')
-        self.debug_path_reports = os.path.join(self.tcex.args.tc_temp_path, 'reports')
+        self.debug_path_files = os.path.join(self.debug_path, 'batch_files')
         self.debug_path_xids = os.path.join(self.debug_path, 'xids-saved')
 
     @property
@@ -647,8 +646,7 @@ class Batch:
                 # reports - store the file downloads (e.g., *.pdf)
                 os.makedirs(self.debug_path, exist_ok=True)
                 os.makedirs(self.debug_path_batch, exist_ok=True)
-                os.makedirs(self.debug_path_documents, exist_ok=True)
-                os.makedirs(self.debug_path_reports, exist_ok=True)
+                os.makedirs(self.debug_path_files, exist_ok=True)
                 self._debug = True
         return self._debug
 
@@ -1605,8 +1603,7 @@ class Batch:
             if self.debug and content_data.get('fileName'):
                 # special code for debugging App using batchV2.
                 fqfn = os.path.join(
-                    self.debug_path,
-                    api_branch,
+                    self.debug_path_files,
                     f'''{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}''',
                 )
                 with open(fqfn, 'wb') as fh:
@@ -1621,7 +1618,7 @@ class Batch:
                 # use PUT method if file already exists
                 self.tcex.log.info('Received 401 status code using POST. Trying PUT to update.')
                 r = self.submit_file_content('PUT', url, content, headers, params, halt_on_error)
-            self.tcex.log.debug(f"{content_data.get('type')} Upload URL: {r.url}.")
+            self.tcex.log.debug(f'''{content_data.get('type')} upload-url={r.url}''')
             if not r.ok:
                 status = False
                 self.tcex.handle_error(585, [r.status_code, r.text], halt_on_error)

@@ -274,6 +274,7 @@ class Utils:
                     'authorization',
                     'cookie',
                     'password',
+                    'secret',
                     'session',
                     'username',
                     'token',

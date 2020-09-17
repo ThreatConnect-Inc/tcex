@@ -3,6 +3,15 @@
 Release Notes
 #############
 
+2.0.12
+======
+APP-1126 - Compress backup log files and increase backup count to 25.
+APP-1127 - [Batch] Fixed issue with recursion when having a large number of associations.
+APP-1128 - [Batch] Updated DEBUG feature to assist in testing batch module..
+APP-1129 - [Batch] Added support for batch_max_size to truncate the batch job at ~95Mb.
+APP-1130 - [Batch] Removed file_contents getter and setter method.
+APP-1131 - Updated request_to_curl method in Utils module to truncate body and not write body to disk.
+
 2.0.11
 ======
 + APP-1107 - Added MITRE ATTACK Utils methods to return the properly formatted tag value.
