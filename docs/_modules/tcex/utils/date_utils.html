@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.date_utils &mdash; TcEx 2.0.9 documentation</title>
+  <title>tcex.utils.date_utils &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -180,14 +180,14 @@
            <div itemprop="articleBody">
 
   <h1>Source code for tcex.utils.date_utils</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;TcEx Datetime Utilities Module&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;TcEx Datetime Utilities Module&quot;&quot;&quot;</span>
 <span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="c1"># third-party</span>
 <span class="kn">import</span> <span class="nn">parsedatetime</span> <span class="k">as</span> <span class="nn">pdt</span>
@@ -201,8 +201,15 @@
     <span class="sd">&quot;&quot;&quot;TcEx framework Datetime Utils module&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="DatetimeUtils._replace_timezone"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils._replace_timezone">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_replace_timezone</span><span class="p">(</span><span class="n">dateutil_parser</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Replace the timezone on a datetime object.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_replace_timezone</span><span class="p">(</span><span class="n">dateutil_parser</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Replace the timezone on a datetime object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dateutil_parser: The dateutil object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            object: Update dateutils object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># try to get the timezone from tzlocal</span>
             <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
@@ -215,7 +222,7 @@
                 <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tzinfo</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">dateutil_parser</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DatetimeUtils.any_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DatetimeUtils.any_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tz</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return datetime object from multiple formats.</span>
 
 <span class="sd">            Formats:</span>
@@ -226,23 +233,23 @@
 <span class="sd">            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
+<span class="sd">            time_input: The time input string (see formats above).</span>
+<span class="sd">            tz): The time zone for the returned data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># handle timestamp (e.g. 1510686617 or 1510686617.298753)</span>
-        <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
+        <span class="n">dt_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
 
         <span class="c1"># handle ISO or other formatted date (e.g. 2017-11-08T16:52:42Z,</span>
         <span class="c1"># 2017-11-08T16:52:42.400306+00:00)</span>
         <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
+            <span class="n">dt_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
 
         <span class="c1"># handle human readable relative time (e.g. 30 days ago, last friday)</span>
         <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">human_date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
+            <span class="n">dt_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">human_date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
 
         <span class="c1"># if all attempt to convert fail raise an error</span>
         <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -250,12 +257,12 @@
 
         <span class="k">return</span> <span class="n">dt_value</span></div>
 
-<div class="viewcode-block" id="DatetimeUtils.date_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">date_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DatetimeUtils.date_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">date_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tz</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert ISO 8601 and other date strings to datetime.datetime type.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
+<span class="sd">            time_input: The time input string (see formats above).</span>
+<span class="sd">            tz: The time zone for the returned data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
@@ -263,7 +270,7 @@
         <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># dt = parser.parse(time_input, fuzzy_with_tokens=True)[0]</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">time_input</span><span class="p">)</span>
+            <span class="n">dt</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">time_input</span><span class="p">)</span>
             <span class="c1"># don&#39;t convert timezone if dt timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -277,7 +284,9 @@
             <span class="k">pass</span>
         <span class="k">return</span> <span class="n">dt</span></div>
 
-<div class="viewcode-block" id="DatetimeUtils.format_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DatetimeUtils.format_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tz</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">date_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return timestamp from multiple input formats.</span>
 
 <span class="sd">            Formats:</span>
@@ -291,9 +300,9 @@
 <span class="sd">                  does not natively support **%s**, however this method has support.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
-<span class="sd">            date_format (string): The strftime format to use, ISO by default.</span>
+<span class="sd">            time_input: The time input string (see formats above).</span>
+<span class="sd">            tz: The time zone for the returned data.</span>
+<span class="sd">            date_format: The strftime format to use, ISO by default.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): Formatted datetime string.</span>
@@ -312,7 +321,9 @@
 
         <span class="k">return</span> <span class="n">dt_value</span></div>
 
-<div class="viewcode-block" id="DatetimeUtils.human_date_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.human_date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">human_date_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DatetimeUtils.human_date_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.human_date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">human_date_to_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tz</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">source_datetime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert human readable date (e.g. 30 days ago) to datetime.datetime.</span>
 
 <span class="sd">        Examples:</span>
@@ -336,9 +347,9 @@
 <span class="sd">        * 2 days from tomorrow</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned datetime.</span>
-<span class="sd">            source_datetime (datetime.datetime): The reference or source datetime.</span>
+<span class="sd">            time_input: The time input string (see formats above).</span>
+<span class="sd">            tz: The time zone for the returned datetime.</span>
+<span class="sd">            source_datetime: The reference or source datetime.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
@@ -366,21 +377,21 @@
 
         <span class="k">return</span> <span class="n">dt</span></div>
 
-<div class="viewcode-block" id="DatetimeUtils.timedelta"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">):</span>
+<div class="viewcode-block" id="DatetimeUtils.timedelta"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Calculate the time delta between two time expressions.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input1 (string): The time input string (see formats above).</span>
-<span class="sd">            time_input2 (string): The time input string (see formats above).</span>
+<span class="sd">            time_input1: The time input string (see formats above).</span>
+<span class="sd">            time_input2: The time input string (see formats above).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (dict): Dict with delta values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">time_input1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input1</span><span class="p">)</span>
-        <span class="n">time_input2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input2</span><span class="p">)</span>
+        <span class="n">time_input1</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input1</span><span class="p">)</span>
+        <span class="n">time_input2</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input2</span><span class="p">)</span>
 
         <span class="n">diff</span> <span class="o">=</span> <span class="n">time_input1</span> <span class="o">-</span> <span class="n">time_input2</span>  <span class="c1"># timedelta</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">)</span>  <span class="c1"># relativedelta</span>
+        <span class="n">delta</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">)</span>  <span class="c1"># relativedelta</span>
 
         <span class="c1"># totals</span>
         <span class="n">total_months</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">years</span> <span class="o">*</span> <span class="mi">12</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">months</span>
@@ -411,7 +422,7 @@
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="DatetimeUtils.unix_time_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tz</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert timestamp into datetime.</span>
 
 <span class="sd">        Convert (unix time|epoch time|posix time) in format of 1510686617</span>
@@ -422,8 +433,8 @@
 <span class="sd">        .. note:: This method only accepts a 9-10 character time_input.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned datetime (e.g. UTC).</span>
+<span class="sd">            time_input: The time input string (see formats above).</span>
+<span class="sd">            tz: The time zone for the returned datetime (e.g. UTC).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>

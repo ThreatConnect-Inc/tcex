@@ -24,8 +24,6 @@ def default_too_many_requests_handler(response: Response) -> float:
 
     Assumptions:
         - Response has a Retry-After header.
-        - The Retry-After header contains the number of seconds to wait before sending the next
-          request.
 
     Args:
         response: The 429 response.
@@ -33,7 +31,14 @@ def default_too_many_requests_handler(response: Response) -> float:
     Returns:
         The number of seconds to wait before sending the next request, from the Retry-After header.
     """
-    return float(response.headers.get('Retry-After', 0))
+    utils = Utils()
+    retry_after = response.headers.get('Retry-After', 0)
+    try:
+        seconds = float(utils.datetime.format_datetime(retry_after, date_format='%s')) - time.time()
+    except RuntimeError:
+        # retry_after must be in seconds
+        seconds = retry_after
+    return float(seconds)
 
 
 class CustomAdapter(adapters.HTTPAdapter):
@@ -203,8 +208,6 @@ class ExternalSession(Session):
         The RateLimitHandler is responsible for throttling request frequency.  The default
         implementation uses X-RateLimit-Remaining and X-RateLimit-Reset headers.
         """
-        if not self._rate_limit_handler:
-            self._rate_limit_handler = RateLimitHandler()
         return self._rate_limit_handler
 
     @rate_limit_handler.setter
@@ -261,9 +264,10 @@ class ExternalSession(Session):
             )
         except Exception:  # nosec
             pass  # logging curl command is best effort
+
         self.log.debug(
             f'feature=external-session, request-url={response.request.url}, '
-            f'status_code={response.status_code}'
+            f'status_code={response.status_code}, elapsed={response.elapsed}'
         )
 
         return response

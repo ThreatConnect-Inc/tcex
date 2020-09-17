@@ -1,9 +1,7 @@
 """App Decorators Module."""
 # standard library
 import inspect
-from collections import Callable
-from ctypes import Union
-from typing import List
+from typing import List, Union
 
 # third-party
 import wrapt
@@ -70,8 +68,8 @@ class IterateOnArg:
         self.fail_enabled = kwargs.get('fail_enabled', False)
         self.fail_msg = kwargs.get('fail_msg')
         self.fail_on = kwargs.get('fail_on', [])
-        self.transforms: Union[List[Callable], Callable] = kwargs.get('transforms', [])
-        self.validators: Union[List[Callable], Callable] = kwargs.get('validators', [])
+        self.transforms: Union[List[callable], callable] = kwargs.get('transforms', [])
+        self.validators: Union[List[callable], callable] = kwargs.get('validators', [])
         if self.fail_on:
             self.validators.insert(0, not_in(self.fail_on))
 
@@ -136,6 +134,9 @@ class IterateOnArg:
             Args:
                 app (class): The instance of the App class "self".
             """
+            # retrieve the label for the current Arg
+            label = app.tcex.ij.params_dict.get(self.arg, {}).get('label')
+
             # get the signature for the decorated method
             fn_signature = inspect.signature(wrapped, follow_wrapped=True).parameters
 
@@ -177,10 +178,10 @@ class IterateOnArg:
 
                 try:
                     for transform in self.transforms:
-                        ad = transform(ad, self.arg)
+                        ad = transform(ad, self.arg, label)
                 except ValidationError as v:
                     value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
-                    message = f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
+                    message = f'Invalid value ({value_formatted}) found for "{label}": {v.message}'
                     app.tcex.log.error(message)
                     if self.fail_msg:
                         app.exit_message = self.fail_msg  # for test cases
@@ -192,11 +193,11 @@ class IterateOnArg:
                 # check ad against fail_on_values
                 if enabled:
                     try:
-                        list([v(ad, self.arg) for v in self.validators])
+                        list([v(ad, self.arg, label) for v in self.validators])
                     except ValidationError as v:
                         value_formatted = f'"{ad}"' if isinstance(ad, str) else str(ad)
                         message = (
-                            f'Invalid value ({value_formatted}) found for {self.arg}: {v.message}'
+                            f'Invalid value ({value_formatted}) found for "{label}": {v.message}'
                         )
                         app.tcex.log.error(message)
                         if self.fail_msg:

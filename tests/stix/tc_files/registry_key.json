@@ -1,0 +1,33 @@
+{
+  "data": {
+    "registryKey": [
+      {
+        "Key Name": "HKEY_CLASSES_ROOT",
+        "Value Type": "REG_NONE",
+        "dateAdded": "2020-08-13T15:25:38Z",
+        "id": 4737827,
+        "lastModified": "2020-08-13T15:25:38Z",
+        "ownerName": "TCI",
+        "threatAssessConfidence": 0,
+        "threatAssessRating": 0,
+        "type": "Registry Key",
+        "webLink": "https://int-tc-01.tci.ninja/auth/indicators/details/customIndicator.xhtml?id=4737827&owner=TCI"
+      },
+      {
+        "Key Name": "HKEY_CLASSES_ROOT",
+        "Value Name": "Foo",
+        "Value Type": "REG_NONE",
+        "dateAdded": "2020-08-13T15:20:14Z",
+        "id": 4737826,
+        "lastModified": "2020-08-13T15:20:14Z",
+        "ownerName": "TCI",
+        "threatAssessConfidence": 25,
+        "threatAssessRating": 1.5,
+        "type": "Registry Key",
+        "webLink": "https://int-tc-01.tci.ninja/auth/indicators/details/customIndicator.xhtml?id=4737826&owner=TCI"
+      }
+    ],
+    "resultCount": 2
+  },
+  "status": "Success"
+}

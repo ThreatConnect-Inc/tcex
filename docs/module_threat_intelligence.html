@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Threat Intelligence &mdash; TcEx 2.0.9 documentation</title>
+  <title>Module: Threat Intelligence &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -271,7 +271,7 @@
 </div>
 <div class="section" id="get-groups-by-filter">
 <h3>Get Groups by Filter<a class="headerlink" href="#get-groups-by-filter" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all Groups using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. The calling  <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Groups matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.</p>
+<p>To retrieve all Groups using a Filter from the ThreatConnect REST API, the <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/retrieve.html#filtering-groups">Group Filters</a> can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. The calling  <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Groups matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.</p>
 <p>The example below retrieves all Groups where the name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -303,7 +303,7 @@
 </div>
 <div class="section" id="get-group-metadata">
 <h3>Get Group Metadata<a class="headerlink" href="#get-group-metadata" title="Permalink to this headline">¶</a></h3>
-<p>There are six methods that retrieve metadata for a Group: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  Attributes, Labels, and Tags can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
+<p>There are six methods that retrieve metadata for a Group: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">victim_asset_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  Attributes, Labels, and Tags can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -537,7 +537,7 @@
 </div>
 <div class="section" id="get-indicators-by-filter">
 <h3>Get Indicators by Filter<a class="headerlink" href="#get-indicators-by-filter" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Indicators matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.</p>
+<p>To retrieve all Indicators using a Filter from the ThreatConnect REST API, the <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#filtering-indicators">Indicator Filters</a> can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Indicators matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.</p>
 <p>The example below retrieves all Indicators where name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -569,7 +569,7 @@
 </div>
 <div class="section" id="get-indicator-metadata">
 <h3>Get Indicator Metadata<a class="headerlink" href="#get-indicator-metadata" title="Permalink to this headline">¶</a></h3>
-<p>There are six methods that retrieve metadata for an Indicator: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  This data can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
+<p>There are six methods that retrieve metadata for an Indicator: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  Attributes, Labels, and Tags can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -666,7 +666,9 @@
 </td></tr></table></div>
 <p>File:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="o">*</span><span class="mi">32</span><span class="p">)</span>
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># creation args for file indicators - at least one hash type required</span>
+<span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="o">*</span><span class="mi">32</span><span class="p">,</span> <span class="n">sha1</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">,</span> <span class="n">sha256</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="o">*</span><span class="mi">64</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">indicator_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
@@ -678,7 +680,17 @@
 </td></tr></table></div>
 <p>URL:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">hostName</span><span class="o">=</span><span class="s1">&#39;https://example.org/foo&#39;</span><span class="p">)</span>
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># tcex 2.0.x uses `text` for url keyword, previous versions used `url`</span>
+<span class="k">if</span> <span class="n">tcex</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&lt;</span> <span class="s2">&quot;2.0&quot;</span><span class="p">:</span>
+    <span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;URL&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://example.org/foo&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">indicator_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;URL&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;https://example.org/foo&#39;</span><span class="p">)</span>
+
 <span class="n">response</span> <span class="o">=</span> <span class="n">indicator_object</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>

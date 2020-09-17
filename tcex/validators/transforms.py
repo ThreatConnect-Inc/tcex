@@ -1,4 +1,7 @@
 """Declares several transform functions that verify an argument is of a specified type."""
+# standard library
+from typing import Any
+
 # first-party
 from tcex.utils.utils import Utils
 
@@ -19,7 +22,17 @@ def _to_type(target_type, **kwargs):
         A transform function that can be used in the transforms argument to @ReadArg.
     """
 
-    def _transform(value, arg_name):
+    def _transform(value: Any, arg_name: str, label: str):
+        """Run transform on input data.
+
+        Args:
+            value: The input data to be transformed.
+            arg_name: The name of the input arg.
+            label: The label displayed to the user.
+
+        Raises:
+            ValidationError: raised on validation failure.
+        """
         allow_none = kwargs.get('allow_none', False)
 
         if not isinstance(value, list):
@@ -29,7 +42,7 @@ def _to_type(target_type, **kwargs):
             try:
                 return target_type(value)
             except:  # noqa: E722; pylint: disable=bare-except
-                raise ValidationError(f'{arg_name} must be a {target_type.__name__}.')
+                raise ValidationError(f'"{label}" ({arg_name}) must be a {target_type.__name__}.')
 
         transformed = []
         for v in value:
@@ -40,7 +53,7 @@ def _to_type(target_type, **kwargs):
             try:
                 transformed.append(target_type(v))
             except:  # noqa: E722; pylint: disable=bare-except
-                raise ValidationError(f'{arg_name} must be a {target_type.__name__}.')
+                raise ValidationError(f'"{label}" ({arg_name}) must be a {target_type.__name__}.')
 
         return transformed
 
@@ -52,6 +65,9 @@ def to_int(allow_none=False):
 
     Allowed argument types: String, StringArray
 
+    Args:
+        allow_none (bool): skip any None elements
+
     Returns:
         A transform function that can be used in the transforms argument to @ReadArg.
     """
@@ -62,6 +78,9 @@ def to_float(allow_none=False):
     """Transform an argument value into a float.
 
     Allowed argument types: String, StringArray
+
+    Args:
+        allow_none (bool): skip any None elements
 
     Returns:
         A transform function that can be used in the transforms argument to @ReadArg.
@@ -78,7 +97,7 @@ def to_bool():
         A transform function that can be used in the transforms argument to @ReadArg.
     """
 
-    def _validator(value, arg_name):  # pylint: disable=unused-argument
+    def _validator(value, arg_name, label):  # pylint: disable=unused-argument
         if not isinstance(value, list):
             return Utils.to_bool(value)
 

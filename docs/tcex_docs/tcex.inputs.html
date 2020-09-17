@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Inputs Module &mdash; TcEx 2.0.9 documentation</title>
+  <title>Inputs Module &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -530,6 +530,23 @@ completion.</p>
 </dd>
 <dt><kbd><span class="option">--batch_write_type <var>type</var></span></kbd></dt>
 <dd><p>Write type for Indicator attributes [‘Append’, ‘Replace’].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.inputs.argument_parser.TcArgumentParser._cal_settings_arguments">
+<code class="sig-name descname">_cal_settings_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/inputs/argument_parser.html#TcArgumentParser._cal_settings_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.inputs.argument_parser.TcArgumentParser._cal_settings_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define arguments TC sends for the CALSettings feature</p>
+<dl class="option-list">
+<dt><kbd><span class="option">--tc_cal_host</span></kbd></dt>
+<dd><p>CAL host (just the hostname, without “<a class="reference external" href="https://">https://</a>”).</p>
+</dd>
+<dt><kbd><span class="option">--tc_cal_token</span></kbd></dt>
+<dd><p>Authentication token for CAL.</p>
+</dd>
+<dt><kbd><span class="option">--tc_cal_timestamp</span></kbd></dt>
+<dd><p>Timestamp to use with tc_cal_token to authenticate to CAL.</p>
 </dd>
 </dl>
 </dd></dl>

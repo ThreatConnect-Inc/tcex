@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Examples &mdash; TcEx 2.0.9 documentation</title>
+  <title>Examples &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -116,6 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#create-indicator-to-group-association-2">Create Indicator to Group Association 2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-indicator-to-group-associations">Retrieve Indicator to Group Associations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-group-to-indicator-associations">Retrieve Group to Indicator Associations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enable-dns-whois-group">Enable DNS Whois Group</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-inactive-indicators">Retrieve Inactive Indicators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-active-and-inactive-indicators">Retrieve Active and Inactive Indicators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retrieve-indicators-with-date-added-filters">Retrieve Indicators with Date Added filters</a></li>
@@ -391,6 +392,34 @@
 
 <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">association</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="enable-dns-whois-group">
+<h3>Enable DNS Whois Group<a class="headerlink" href="#enable-dns-whois-group" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="n">group_type</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="n">group_id</span><span class="p">)</span>
+<span class="c1"># get indicator associations</span>
+<span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">indicator</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Host&#39;</span><span class="p">:</span>
+        <span class="n">ti_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">host</span><span class="p">(</span>
+            <span class="n">hostName</span><span class="o">=</span><span class="n">indicator</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">),</span>
+            <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
+            <span class="n">dns_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">whois_active</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ti_host</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="n">ti_host_data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="p">{})</span>
 </pre></div>
 </td></tr></table></div>
 </div>

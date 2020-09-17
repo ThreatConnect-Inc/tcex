@@ -3,6 +3,28 @@
 Release Notes
 #############
 
+2.0.11
+======
++ APP-1107 - Added MITRE ATTACK Utils methods to return the properly formatted tag value.
++ APP-1119 - Update to batch module to handle recursion issue with integrations that have a large number of group associations.
+
+2.0.10
+======
++ APP-890 - Added discoverTypes to Ready command for API Services.
++ APP-939 - Restructure of Service module to better support API Services.
++ APP-943, APP-1027, App-1036 - Updated ReadArg and IterateArgs decorators for better transform and validator support.
++ APP-944 - Added rate limit and 429 (too-many-requests) in external session module.
++ APP-964 - Updated inputs module to allow duplicate args (advanced request requirement).
++ SUP-8557 - Updated how the Threat Intelligence module was adding observations to ThreatConnect objects.
++ Multiple misc. enhancements (APP-865, APP-1021, APP-1030, APP-1086)
+
+Testing framework
+-----------------
++ APP-921 - Updated default operator rule for test cases.
++ APP-926 - Updated profile generation to not add String type to all inputs.
++ APP-935 - Updated tcinit to include custom_feature.py when missing.
++ APP-936 - Updated test handling when incorrect stage data is provided.
+
 2.0.9
 =====
 + APP-849 - Updated request_to_curl method to handle proxy values properly.

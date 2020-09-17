@@ -792,7 +792,7 @@ class TiTcRequest:
         params = {'owner': owner} if owner else {}
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/observations'
-        r = self._post(url, data, params)
+        r = self._post_json(url, data, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r

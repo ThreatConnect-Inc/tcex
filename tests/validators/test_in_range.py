@@ -12,7 +12,7 @@ class TestInRange:
         validator = in_range(0, 100)
 
         try:
-            validator(10, 'test_arg')
+            validator(10, 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'in_range threw exception when it should have passed'
 
@@ -22,7 +22,7 @@ class TestInRange:
         validator = in_range(0, 100)
 
         try:
-            validator([10, 15, 20], 'test_arg')
+            validator([10, 15, 20], 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'in_range threw exception when it should have passed'
 
@@ -32,7 +32,7 @@ class TestInRange:
         validator = in_range(0, 100)
 
         try:
-            validator([0, 100], 'test_arg')
+            validator([0, 100], 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'in_range threw exception when it should have passed'
 
@@ -42,12 +42,12 @@ class TestInRange:
         validator = in_range(0, 100)
 
         try:
-            validator(-1, 'test_arg')
+            validator(-1, 'test_arg', 'Test Arg')
             assert False, 'Validator should have failed!'
 
         except ValidationError as v:
             assert (
-                v.message == 'test_arg is not between 0 and 100.'
+                v.message == '"Test Arg" (test_arg) is not between 0 and 100.'
             ), 'Validator failed with incorrect message'
 
     @staticmethod
@@ -56,12 +56,12 @@ class TestInRange:
         validator = in_range(0, 100)
 
         try:
-            validator(101, 'test_arg')
+            validator(101, 'test_arg', 'Test Arg')
             assert False, 'Validator should have failed!'
 
         except ValidationError as v:
             assert (
-                v.message == 'test_arg is not between 0 and 100.'
+                v.message == '"Test Arg" (test_arg) is not between 0 and 100.'
             ), 'Validator failed with incorrect message'
 
     @staticmethod
@@ -70,11 +70,11 @@ class TestInRange:
         validator = in_range(0, 100)
 
         try:
-            validator([101, 100], 'test_arg')
+            validator([101, 100], 'test_arg', 'Test Arg')
             assert False, 'Validator should have failed!'
         except ValidationError as v:
             assert (
-                v.message == 'test_arg is not between 0 and 100.'
+                v.message == '"Test Arg" (test_arg) is not between 0 and 100.'
             ), 'Validator failed with incorrect message'
 
     @staticmethod
@@ -83,6 +83,6 @@ class TestInRange:
         validator = in_range(0, 100, allow_none=True)
 
         try:
-            validator([None, 100], 'test_arg')
+            validator([None, 100], 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'in_range threw exception when it should have passed'

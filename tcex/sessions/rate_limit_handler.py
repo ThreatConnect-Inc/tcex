@@ -18,9 +18,9 @@ class RateLimitHandler:
 
     def __init__(
         self,
-        limit_remaining_header: str = 'X-RateLimit-Remaining',
-        limit_reset_header: str = 'X-RateLimit-Reset',
-        remaining_threshold: int = 0,
+        limit_remaining_header: Optional[str] = 'X-RateLimit-Remaining',
+        limit_reset_header: Optional[str] = 'X-RateLimit-Reset',
+        remaining_threshold: Optional[int] = 0,
     ):
         """Rate-limiting implementation using X-RateLimit-<X> headers.
 
