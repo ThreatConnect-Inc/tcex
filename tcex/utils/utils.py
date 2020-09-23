@@ -401,8 +401,8 @@ class Utils:
         Returns:
             str: The truncated string.
         """
-        if t_string in ['', None] or length is None or len(t_string) < length:
-            return t_string
+        if not t_string:
+            t_string = ''
 
         # set sane default for append_chars
         append_chars = str(append_chars or '')
