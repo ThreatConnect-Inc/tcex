@@ -312,7 +312,8 @@ class Migrate:
         kvstore_data: Optional[dict] = profile_data['stage'].get('redis', None)
         if kvstore_data is not None:
             del profile_data['stage']['redis']
-            profile_data['stage']['kvstore'] = kvstore_data
+            if 'kvstore' not in profile_data['stage'].keys():
+                profile_data['stage']['kvstore'] = kvstore_data
 
     @staticmethod
     def stage_threatconnect_data(profile_data: dict) -> None:
