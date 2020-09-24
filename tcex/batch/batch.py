@@ -1188,7 +1188,7 @@ class Batch:
             poll_count += 1
             poll_time_total += self._poll_interval
             time.sleep(self._poll_interval)
-            self.tcex.log.info(f'Batch poll time: {poll_time_total} seconds')
+            self.tcex.log.info(f'feature=batch, event=progress, poll-time={poll_time_total}')
             try:
                 # retrieve job status
                 r = self.tcex.session.get(f'/v2/batch/{batch_id}', params=params)
@@ -1224,7 +1224,7 @@ class Batch:
                     # if completed on first poll, reduce poll interval.
                     self._poll_interval = self._poll_interval * 0.85
 
-                self.tcex.log.debug(f'Batch Status: {data}')
+                self.tcex.log.debug(f'feature=batch, status={data}')
                 return data
 
             # update poll_interval for retry with max poll time of 20 seconds
@@ -1262,8 +1262,14 @@ class Batch:
             self.write_batch_json(content)
 
             # store the length of the batch data to use for poll interval calculations
-            self.tcex.log.info(f'''Batch Group Size: {len(content.get('group')):,}.''')
-            self.tcex.log.info(f'''Batch Indicator Size {len(content.get('indicator')):,}.''')
+            self.tcex.log.info(
+                '''feature=batch, event=process-all, type=group, '''
+                f'''count={len(content.get('group')):,}'''
+            )
+            self.tcex.log.info(
+                '''feature=batch, event=process-all, type=indicator, '''
+                f'''count={len(content.get('indicator')):,}'''
+            )
 
         if process_files:
             self.process_files(file_data)
@@ -1416,7 +1422,7 @@ class Batch:
                 and os.access(self.debug_path_group_shelf, os.R_OK)
             ):
                 self._saved_groups = True
-                self.tcex.log.debug('groups-saved file found')
+                self.tcex.log.debug('feature=batch, event=saved-groups-file-found')
         return self._saved_groups
 
     @property
@@ -1430,7 +1436,7 @@ class Batch:
                 and os.access(self.debug_path_indicator_shelf, os.R_OK)
             ):
                 self._saved_indicators = True
-                self.tcex.log.debug('indicators-saved file found')
+                self.tcex.log.debug('feature=batch, event=saved-indicator-file-found')
         return self._saved_indicators
 
     @property
@@ -1639,7 +1645,7 @@ class Batch:
                 batch_id = batch_data.get('id')
 
             if batch_id is not None:
-                self.tcex.log.info(f'Batch ID: {batch_id}')
+                self.tcex.log.info(f'feature=batch, event=status, batch-id={batch_id}')
                 # job hit queue
                 if poll:
                     # poll for status
@@ -1654,7 +1660,6 @@ class Batch:
                         error_groups = batch_data.get('errorGroupCount', 0)
                         error_indicators = batch_data.get('errorIndicatorCount', 0)
                         if error_count > 0 or error_groups > 0 or error_indicators > 0:
-                            self.tcex.log.debug('retrieving batch errors')
                             batch_data['errors'] = self.errors(batch_id)
                 else:
                     # can't process files if status is unknown (polling must be enabled)
@@ -1713,11 +1718,13 @@ class Batch:
         # block here is there is already a batch submission being processed
         if hasattr(self._submit_thread, 'is_alive'):
             self.tcex.log.debug(
-                f'feature=batch, event=block, is-alive={self._submit_thread.is_alive()}'
+                'feature=batch, event=progress, status=blocked, '
+                f'is-alive={self._submit_thread.is_alive()}'
             )
             self._submit_thread.join()
             self.tcex.log.debug(
-                f'feature=batch, event=release, is-alive={self._submit_thread.is_alive()}'
+                'feature=batch, event=progress, status=released, '
+                f'is-alive={self._submit_thread.is_alive()}'
             )
 
         # submit the data and collect the response
@@ -1746,7 +1753,7 @@ class Batch:
     ) -> None:
         """Submit data in a thread."""
         batch_id = batch_data.get('id')
-        self.tcex.log.info(f'feature=batch, event=submit-callback-thread, batch-id={batch_id}')
+        self.tcex.log.info(f'feature=batch, event=progress, batch-id={batch_id}')
         if batch_id:
             # when batch_id is None it indicates that batch submission was small enough to be
             # processed inline (without being queued)
@@ -1761,7 +1768,6 @@ class Batch:
             error_groups = batch_status.get('errorGroupCount', 0)
             error_indicators = batch_status.get('errorIndicatorCount', 0)
             if error_count > 0 or error_groups > 0 or error_indicators > 0:
-                self.tcex.log.debug('retrieving batch errors')
                 batch_status['errors'] = self.errors(batch_id)
         else:
             batch_status = batch_data
@@ -1809,7 +1815,6 @@ class Batch:
             files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
             params = {'includeAdditional': 'true'}
             r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
-            self.tcex.log.debug(f'Batch Status Code: {r.status_code}')
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
             return r.json()
@@ -1838,7 +1843,9 @@ class Batch:
 
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
-        self.tcex.log.info(f'Batch Size: {self._batch_data_count:,}')
+        self.tcex.log.info(
+            f'feature=batch, action=submit-data, batch-size={self._batch_data_count:,}'
+        )
 
         headers = {'Content-Type': 'application/octet-stream'}
         try:
@@ -1917,9 +1924,8 @@ class Batch:
             r = self.submit_file_content('POST', url, content, headers, params, halt_on_error)
             if r.status_code == 401:
                 # use PUT method if file already exists
-                self.tcex.log.info('Received 401 status code using POST. Trying PUT to update.')
+                self.tcex.log.info('feature=batch, event=401-from-post, action=switch-to-put')
                 r = self.submit_file_content('PUT', url, content, headers, params, halt_on_error)
-            self.tcex.log.debug(f'''{content_data.get('type')} upload-url={r.url}''')
             if not r.ok:
                 status = False
                 self.tcex.handle_error(585, [r.status_code, r.text], halt_on_error)
@@ -1927,7 +1933,9 @@ class Batch:
                 # save xid "if" successfully uploaded and not already saved
                 self.saved_xids = xid
 
-            self.tcex.log.info(f'Status {r.status_code} for file upload with xid {xid}.')
+            self.tcex.log.info(
+                f'feature=batch, event=file-upload, status={r.status_code}, xid={xid}'
+            )
             upload_status.append({'uploaded': status, 'xid': xid})
 
         return upload_status
@@ -1984,7 +1992,7 @@ class Batch:
         data = r.json()
         if data.get('status') != 'Success':
             self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
-        self.tcex.log.debug(f'Batch Submit Data: {data}')
+        self.tcex.log.debug(f'feature=batch, event=submit-job, status={data}')
         return data.get('data', {}).get('batchId')
 
     def submit_thread(
