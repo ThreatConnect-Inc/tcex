@@ -2,6 +2,7 @@
 # standard library
 import json
 import uuid
+from typing import Any, Callable, Optional, Union
 
 from ..utils import Utils
 from .attribute import Attribute
@@ -28,7 +29,7 @@ class Group:
         'status',
     ]
 
-    def __init__(self, group_type, name, **kwargs):
+    def __init__(self, group_type: str, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -53,7 +54,7 @@ class Group:
         self._processed = False
 
     @property
-    def _metadata_map(self):
+    def _metadata_map(self) -> dict:
         """Return metadata map for Group objects."""
         return {
             'date_added': 'dateAdded',
@@ -67,7 +68,9 @@ class Group:
             'to_addr': 'to',
         }
 
-    def add_file(self, filename, file_content):
+    def add_file(
+        self, filename: str, file_content: Union[bytes, Callable[[str], Any], str]
+    ) -> None:
         """Add a file for Document and Report types.
 
         Example::
@@ -76,13 +79,13 @@ class Group:
             document.add_file('my_file.txt', 'my contents')
 
         Args:
-            filename (str): The name of the file.
-            file_content (bytes|method|str): The contents of the file or callback to get contents.
+            filename: The name of the file.
+            file_content: The contents of the file or callback to get contents.
         """
         self._group_data['fileName'] = filename
         self._file_content = file_content
 
-    def add_key_value(self, key, value):
+    def add_key_value(self, key: str, value: str) -> None:
         """Add custom field to Group object.
 
         .. note:: The key must be the exact name required by the batch schema.
@@ -93,8 +96,8 @@ class Group:
             document.add_key_value('fileName', 'something.pdf')
 
         Args:
-            key (str): The field key to add to the JSON batch data.
-            value (str): The field value to add to the JSON batch data.
+            key: The field key to add to the JSON batch data.
+            value: The field value to add to the JSON batch data.
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
@@ -108,17 +111,23 @@ class Group:
         else:
             self._group_data[key] = value
 
-    def association(self, group_xid):
+    def association(self, group_xid: str) -> None:
         """Add association using xid value.
 
         Args:
-            group_xid (str): The external id of the Group to associate.
+            group_xid: The external id of the Group to associate.
         """
         self._group_data.setdefault('associatedGroupXid', []).append(group_xid)
 
     def attribute(
-        self, attr_type, attr_value, displayed=False, source=None, unique=True, formatter=None
-    ):
+        self,
+        attr_type: str,
+        attr_value: str,
+        displayed: Optional[bool] = False,
+        source: Optional[str] = None,
+        unique: Optional[bool] = True,
+        formatter: Optional[Callable[[str], str]] = None,
+    ) -> Attribute:
         """Return instance of Attribute
 
         unique:
@@ -127,17 +136,16 @@ class Group:
             * True - Attribute type:value combo must be unique.
 
         Args:
-            attr_type (str): The ThreatConnect defined attribute type.
-            attr_value (str): The value for this attribute.
-            displayed (bool, default:false): If True the supported attribute will be marked for
-                display.
-            source (str, optional): The source value for this attribute.
-            unique (bool|string, optional): Control attribute creation.
-            formatter (method, optional): A method that takes a single attribute value and returns a
-                single formatted value.
+            attr_type: The ThreatConnect defined attribute type.
+            attr_value: The value for this attribute.
+            displayed: If True the supported attribute will be marked for display.
+            source: The source value for this attribute.
+            unique: Control attribute creation.
+            formatter: A callable that takes a single attribute
+                value and returns a single formatted value.
 
         Returns:
-            obj: An instance of Attribute.
+            Attribute: An instance of the Attribute class.
         """
         attr = Attribute(attr_type, attr_value, displayed, source, formatter)
         if unique == 'Type':
@@ -158,7 +166,7 @@ class Group:
         return attr
 
     @property
-    def data(self):
+    def data(self) -> dict:
         """Return Group data."""
         # add attributes
         if self._attributes:
@@ -180,19 +188,19 @@ class Group:
         return self._group_data
 
     @property
-    def date_added(self):
+    def date_added(self) -> str:
         """Return Group dateAdded."""
         return self._group_data.get('dateAdded')
 
     @date_added.setter
-    def date_added(self, date_added):
+    def date_added(self, date_added: str):
         """Set Indicator dateAdded."""
         self._group_data['dateAdded'] = self._utils.datetime.format_datetime(
             date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
-    def file_data(self):
+    def file_data(self) -> dict:
         """Return Group file (only supported for Document and Report)."""
         return {
             'fileContent': self._file_content,
@@ -201,12 +209,12 @@ class Group:
         }
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return Group name."""
         return self._group_data.get('name')
 
     @property
-    def processed(self):
+    def processed(self) -> bool:
         """Return processed value.
 
         .. note:: Processed value indicates that a group with this xid has already been processed.
@@ -214,23 +222,25 @@ class Group:
         return self._processed
 
     @processed.setter
-    def processed(self, processed):
+    def processed(self, processed: bool):
         """Set processed."""
         self._processed = processed
 
-    def security_label(self, name, description=None, color=None):
+    def security_label(
+        self, name: str, description: Optional[str] = None, color: Optional[str] = None
+    ) -> SecurityLabel:
         """Return instance of SecurityLabel.
 
         .. note:: The provided security label will be create if it doesn't exist. If the security
             label already exists nothing will be changed.
 
         Args:
-            name (str): The value for this security label.
-            description (str): A description for this security label.
-            color (str): A color (hex value) for this security label.
+            name: The value for this security label.
+            description: A description for this security label.
+            color: A color (hex value) for this security label.
 
         Returns:
-            obj: An instance of SecurityLabel.
+            SecurityLabel: An instance of the SecurityLabel class.
         """
         label = SecurityLabel(name, description, color)
         for label_data in self._labels:
@@ -241,16 +251,15 @@ class Group:
             self._labels.append(label)
         return label
 
-    def tag(self, name, formatter=None):
+    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> Tag:
         """Return instance of Tag.
 
         Args:
-            name (str): The value for this tag.
-            formatter (method, optional): A method that take a tag value and returns a
-                formatted tag.
+            name: The value for this tag.
+            formatter: A callable that take a tag value and returns a formatted tag.
 
         Returns:
-            obj: An instance of Tag.
+            Tag: An instance of the Tag class.
         """
         tag = Tag(name, formatter)
         for tag_data in self._tags:
@@ -262,16 +271,16 @@ class Group:
         return tag
 
     @property
-    def type(self):
+    def type(self) -> str:
         """Return Group type."""
         return self._group_data.get('type')
 
     @property
-    def xid(self):
+    def xid(self) -> str:
         """Return Group xid."""
         return self._group_data.get('xid')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of object."""
         return json.dumps(self.data, indent=4)
 
@@ -281,11 +290,11 @@ class Adversary(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            name (str): The name for this Group.
+            name: The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
@@ -297,11 +306,11 @@ class Campaign(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            name (str): The name for this Group.
+            name: The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             first_seen (str, kwargs): The first seen datetime expression for this Group.
             xid (str, kwargs): The external id for this Group.
@@ -309,12 +318,12 @@ class Campaign(Group):
         super().__init__('Campaign', name, **kwargs)
 
     @property
-    def first_seen(self):
+    def first_seen(self) -> str:
         """Return Document first seen."""
         return self._group_data.get('firstSeen')
 
     @first_seen.setter
-    def first_seen(self, first_seen):
+    def first_seen(self, first_seen: str):
         """Set Document first seen."""
         self._group_data['firstSeen'] = self._utils.datetime.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -326,12 +335,12 @@ class Document(Group):
 
     __slots__ = ['_file_data', '_group_data']
 
-    def __init__(self, name, file_name, **kwargs):
+    def __init__(self, name: str, file_name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            name (str): The name for this Group.
-            file_name (str): The name for the attached file for this Group.
+            name: The name for this Group.
+            file_name: The name for the attached file for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             file_content (str;method, kwargs): The file contents or callback method to retrieve
                                                file content.
@@ -345,7 +354,7 @@ class Document(Group):
         self._file_content = kwargs.get('file_content')
 
     @property
-    def file_data(self):
+    def file_data(self) -> dict:
         """Return Group files."""
         return {
             'fileContent': self._file_content,
@@ -354,22 +363,22 @@ class Document(Group):
         }
 
     @property
-    def malware(self):
+    def malware(self) -> bool:
         """Return Document malware."""
         return self._group_data.get('malware', False)
 
     @malware.setter
-    def malware(self, malware):
+    def malware(self, malware: bool):
         """Set Document malware."""
         self._group_data['malware'] = malware
 
     @property
-    def password(self):
+    def password(self) -> str:
         """Return Document password."""
         return self._group_data.get('password', False)
 
     @password.setter
-    def password(self, password):
+    def password(self, password: str):
         """Set Document password."""
         self._group_data['password'] = password
 
@@ -379,14 +388,14 @@ class Email(Group):
 
     __slots__ = []
 
-    def __init__(self, name, subject, header, body, **kwargs):
+    def __init__(self, name: str, subject: str, header: str, body: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            name (str): The name for this Group.
-            subject (str): The subject for this Email.
-            header (str): The header for this Email.
-            body (str): The body for this Email.
+            name: The name for this Group.
+            subject: The subject for this Email.
+            header: The header for this Email.
+            body: The body for this Email.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             from_addr (str, kwargs): The **from** address for this Email.
             to_addr (str, kwargs): The **to** address for this Email.
@@ -399,32 +408,32 @@ class Email(Group):
         self._group_data['score'] = 0
 
     @property
-    def from_addr(self):
+    def from_addr(self) -> str:
         """Return Email to."""
         return self._group_data.get('to')
 
     @from_addr.setter
-    def from_addr(self, from_addr):
+    def from_addr(self, from_addr: str):
         """Set Email from."""
         self._group_data['from'] = from_addr
 
     @property
-    def score(self):
+    def score(self) -> str:
         """Return Email to."""
         return self._group_data.get('score')
 
     @score.setter
-    def score(self, score):
+    def score(self, score: str):
         """Set Email from."""
         self._group_data['score'] = score
 
     @property
-    def to_addr(self):
+    def to_addr(self) -> str:
         """Return Email to."""
         return self._group_data.get('to')
 
     @to_addr.setter
-    def to_addr(self, to_addr):
+    def to_addr(self, to_addr: str):
         """Set Email to."""
         self._group_data['to'] = to_addr
 
@@ -434,7 +443,7 @@ class Event(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Valid Values:
@@ -444,7 +453,7 @@ class Event(Group):
         + No Further Action
 
         Args:
-            name (str): The name for this Group.
+            name: The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
@@ -453,24 +462,24 @@ class Event(Group):
         super().__init__('Event', name, **kwargs)
 
     @property
-    def event_date(self):
+    def event_date(self) -> str:
         """Return the Events "event date" value."""
         return self._group_data.get('firstSeen')
 
     @event_date.setter
-    def event_date(self, event_date):
+    def event_date(self, event_date: str):
         """Set the Events "event date" value."""
         self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
-    def status(self):
+    def status(self) -> str:
         """Return the Events status value."""
         return self._group_data.get('status')
 
     @status.setter
-    def status(self, status):
+    def status(self, status: str):
         """Set the Events status value."""
         self._group_data['status'] = status
 
@@ -480,7 +489,7 @@ class Incident(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Valid Values:
@@ -495,7 +504,7 @@ class Incident(Group):
         + Stalled
 
         Args:
-            name (str): The name for this Group.
+            name: The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
@@ -504,24 +513,24 @@ class Incident(Group):
         super().__init__('Incident', name, **kwargs)
 
     @property
-    def event_date(self):
+    def event_date(self) -> str:
         """Return Incident event date."""
         return self._group_data.get('eventDate')
 
     @event_date.setter
-    def event_date(self, event_date):
+    def event_date(self, event_date: str):
         """Set Incident event_date."""
         self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
-    def status(self):
+    def status(self) -> str:
         """Return Incident status."""
         return self._group_data.get('status')
 
     @status.setter
-    def status(self, status):
+    def status(self, status: str):
         """Set Incident status.
 
         Valid Values:
@@ -543,11 +552,11 @@ class IntrusionSet(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            name (str): The name for this Group.
+            name: The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
@@ -563,7 +572,7 @@ class Report(Group):
         """Initialize Class Properties.
 
         Args:
-            name (str): The name for this Group.
+            name: The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             file_name (str, kwargs): The name for the attached file for this Group.
             file_content (str;method, kwargs): The file contents or callback method to retrieve
@@ -576,7 +585,7 @@ class Report(Group):
         self._file_content = kwargs.get('file_content')
 
     @property
-    def file_data(self):
+    def file_data(self) -> dict:
         """Return Group files."""
         return {
             'fileContent': self._file_content,
@@ -585,12 +594,12 @@ class Report(Group):
         }
 
     @property
-    def publish_date(self):
+    def publish_date(self) -> str:
         """Return Report publish date."""
         return self._group_data.get('publishDate')
 
     @publish_date.setter
-    def publish_date(self, publish_date):
+    def publish_date(self, publish_date: str):
         """Set Report publish date"""
         self._group_data['publishDate'] = self._utils.datetime.format_datetime(
             publish_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -602,7 +611,7 @@ class Signature(Group):
 
     __slots__ = []
 
-    def __init__(self, name, file_name, file_type, file_text, **kwargs):
+    def __init__(self, name: str, file_name: str, file_type: str, file_text: str, **kwargs):
         """Initialize Class Properties.
 
         Valid file_types:
@@ -617,10 +626,10 @@ class Signature(Group):
         + SPL - Splunk ® Search Processing Language
 
         Args:
-            name (str): The name for this Group.
-            file_name (str): The name for the attached signature for this Group.
-            file_type (str): The signature type for this Group.
-            file_text (str): The signature content for this Group.
+            name: The name for this Group.
+            file_name: The name for the attached signature for this Group.
+            file_type: The signature type for this Group.
+            file_text: The signature content for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """
@@ -635,11 +644,11 @@ class Threat(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            name (str): The name for this Group.
+            name: The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
         """

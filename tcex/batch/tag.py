@@ -1,6 +1,7 @@
 """ThreatConnect Batch Import Module"""
 # standard library
 import json
+from typing import Callable, Optional
 
 
 class Tag:
@@ -8,13 +9,12 @@ class Tag:
 
     __slots__ = ['_tag_data', '_valid']
 
-    def __init__(self, name, formatter=None):
+    def __init__(self, name: str, formatter: Optional[Callable[[str], str]] = None):
         """Initialize Class Properties.
 
         Args:
-            name (str): The value for this tag.
-            formatter (method, optional): A method that take a tag value and returns a
-                formatted tag.
+            name: The value for this tag.
+            formatter: A callable that take a tag value and returns a formatted tag.
         """
         if formatter is not None:
             name = formatter(name)
@@ -25,20 +25,20 @@ class Tag:
             self._valid = False
 
     @property
-    def data(self):
+    def data(self) -> dict:
         """Return Tag data."""
         return self._tag_data
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return Tag name."""
         return self._tag_data.get('name')
 
     @property
-    def valid(self):
+    def valid(self) -> bool:
         """Return valid data."""
         return self._valid
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
