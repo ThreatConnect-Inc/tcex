@@ -63,7 +63,12 @@ class TiTcRequest:
         params['resultLimit'] = self.result_limit
 
         should_iterate = True
-        result_start = 0
+        result_start = params.get('resultStart', 0)
+        try:
+            result_start = int(result_start)
+        except Exception:
+            result_start = 0
+            self.tcex.log.error('Invalid ResultStart Param. Starting at 0')
         while should_iterate:
             params['resultStart'] = result_start
             r = self._get(url, params=params)

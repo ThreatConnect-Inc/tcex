@@ -59,7 +59,7 @@ class StixIndicator(StixModel):
                         latest = last_modified
                         description = value
 
-            id_ = f'''{data.get('ownerName').lower()}--{_type.lower()}--{data.get('summary')}'''
+            id_ = f'''{data.get('ownerName').lower()}-{_type.lower()}-{data.get('summary')}'''
             self.logger.log.error(f'indicator--{id_}')
             id_ = uuid.uuid5(uuid.NAMESPACE_X500, id_)
 
@@ -100,6 +100,7 @@ class StixIndicator(StixModel):
                 confidence=data.get('confidence'),
                 labels=labels,
                 created=data.get('dateAdded'),
+                modified=data.get('lastModified'),
                 description=description,
                 id=f'indicator--{id_}',
                 name=f'{data.get("summary")}',
