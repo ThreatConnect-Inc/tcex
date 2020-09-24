@@ -7,10 +7,12 @@ import os
 import re
 import shelve
 import sys
+import threading
 import time
+import traceback
 import uuid
 from collections import deque
-from typing import List, Optional
+from typing import Any, Callable, Optional, Union
 
 from .group import (
     Adversary,
@@ -75,9 +77,10 @@ class Batch:
 
         # properties
         self._batch_max_chunk = 5000
-        self._batch_max_size = 95_000_000  # max size in bytes
+        self._batch_max_size = 75_000_000  # max size in bytes
         self._file_merge_mode = None
         self._hash_collision_mode = None
+        self._submit_thread = None
 
         # shelf settings
         self._group_shelf_fqfn = None
@@ -101,7 +104,6 @@ class Batch:
         self._poll_timeout = 3600
 
         # containers
-        self._files = {}
         self._groups = None
         self._groups_shelf = None
         self._indicators = None
@@ -172,32 +174,36 @@ class Batch:
         def method_1(value1, xid, **kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, xid, **kwargs)
-            return self._indicator(indicator_obj)
+            return self._indicator(indicator_obj, kwargs.get('store', True))
 
         def method_2(value1, value2, xid, **kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, value2, xid, **kwargs)
-            return self._indicator(indicator_obj)
+            return self._indicator(indicator_obj, kwargs.get('store', True))
 
         def method_3(
             value1, value2, value3, xid, **kwargs
         ):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
             indicator_obj = custom_class(value1, value2, value3, xid, **kwargs)
-            return self._indicator(indicator_obj)
+            return self._indicator(indicator_obj, kwargs.get('store', True))
 
         method = locals()[f'method_{value_count}']
         setattr(self, method_name, method)
 
-    def _group(self, group_data):
+    def _group(self, group_data: Union[dict, object], store: Optional[bool] = True):
         """Return previously stored group or new group.
 
         Args:
-            group_data (dict|obj): An Group dict or instance of Group object.
+            group_data: An Group dict or instance of Group object.
+            store: If True the group data will be stored in instance list.
 
         Returns:
             dict|obj: The new Group dict/object or the previously stored dict/object.
         """
+        if store is False:
+            return group_data
+
         if isinstance(group_data, dict):
             # get xid from dict
             xid = group_data.get('xid')
@@ -216,16 +222,20 @@ class Batch:
             self.groups[xid] = group_data
         return group_data
 
-    def _indicator(self, indicator_data):
+    def _indicator(self, indicator_data: Union[dict, object], store: Optional[bool] = True):
         """Return previously stored indicator or new indicator.
 
         Args:
-            indicator_data (dict|obj): An Indicator dict or instance of Indicator object.
+            indicator_data: An Indicator dict or instance of Indicator object.
+            store: If True the indicator data will be stored in instance list.
 
         Returns:
             dict|obj: The new Indicator dict/object or the previously stored dict/object.
 
         """
+        if store is False:
+            return indicator_data
+
         if isinstance(indicator_data, dict):
             # get xid from dict
             xid = indicator_data.get('xid')
@@ -287,7 +297,7 @@ class Batch:
         """Set batch action."""
         self._action = action
 
-    def add_group(self, group_data):
+    def add_group(self, group_data, **kwargs):
         """Add a group to Batch Job.
 
         .. code-block:: javascript
@@ -312,10 +322,12 @@ class Batch:
         Args:
             group_data (dict): The full Group data including attributes, labels, tags, and
                 associations.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
         """
-        return self._group(group_data)
+        return self._group(group_data, kwargs.get('store', True))
 
-    def add_indicator(self, indicator_data):
+    def add_indicator(self, indicator_data, **kwargs):
         """Add an indicator to Batch Job.
 
         .. code-block:: javascript
@@ -350,6 +362,8 @@ class Batch:
         Args:
             indicator_data (dict): The Full Indicator data including attributes, labels, tags,
                 and associations.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
         """
         if indicator_data.get('type') not in ['Address', 'EmailAddress', 'File', 'Host', 'URL']:
             # for custom indicator types the valueX fields are required.
@@ -371,7 +385,7 @@ class Batch:
             whois_active = indicator_data.pop('whoisActive', None)
             if whois_active is not None:
                 indicator_data['flag2'] = whois_active
-        return self._indicator(indicator_data)
+        return self._indicator(indicator_data, kwargs.get('store', True))
 
     def address(self, ip, **kwargs):
         """Add Address data to Batch object.
@@ -383,12 +397,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Address.
         """
         indicator_obj = Address(ip, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def adversary(self, name, **kwargs):
         """Add Adversary data to Batch object.
@@ -397,12 +413,14 @@ class Batch:
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Adversary.
         """
         group_obj = Adversary(name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def asn(self, as_number, **kwargs):
         """Add ASN data to Batch object.
@@ -414,12 +432,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of ASN.
         """
         indicator_obj = ASN(as_number, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     @property
     def attribute_write_type(self):
@@ -439,12 +459,14 @@ class Batch:
             date_added (str, kwargs): The date timestamp the Indicator was created.
             first_seen (str, kwargs): The first seen datetime expression for this Group.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Campaign.
         """
         group_obj = Campaign(name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def cidr(self, block, **kwargs):
         """Add CIDR data to Batch object.
@@ -456,12 +478,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of CIDR.
         """
         indicator_obj = CIDR(block, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def close(self):
         """Cleanup batch job."""
@@ -476,7 +500,7 @@ class Batch:
 
     @property
     def data(self):
-        """Return the batch data to be sent to the ThreatConnect API.
+        """Return the batch indicator/group and file data to be sent to the ThreatConnect API.
 
         **Processing Order:**
         * Process groups in memory up to max batch size.
@@ -487,49 +511,45 @@ class Batch:
         This method will remove the group/indicator from memory and/or shelf.
 
         Returns:
-            dict: A dictionary of group and/or indicators.
+            dict: A dictionary of group, indicators, and/or file data.
         """
         entity_count = 0
         entity_size = 0
-        data = {'group': [], 'indicator': []}
+        data = {'file': {}, 'group': [], 'indicator': []}
 
-        # process group from memory
-        group_data = self.data_groups(self.groups, entity_count, entity_size)
-        data['group'].extend(group_data)
-        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
+        # process group from memory, returning if max values have been reached
+        if self.data_groups(data, self.groups, entity_count, entity_size) is True:
             return data
 
-        # process group from shelf file
-        group_data = self.data_groups(self.groups_shelf, entity_count, entity_size)
-        data['group'].extend(group_data)
-        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
+        # process group from shelf file, returning if max values have been reached
+        if self.data_groups(data, self.groups_shelf, entity_count, entity_size) is True:
             return data
 
-        # process indicator from memory
-        indicator_data = self.data_indicators(self.indicators, entity_count, entity_size)
-        data['indicator'].extend(indicator_data)
-        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
+        # process indicator from memory, returning if max values have been reached
+        if self.data_indicators(data, self.indicators, entity_count, entity_size) is True:
             return data
 
-        # process indicator from shelf file
-        indicator_data = self.data_indicators(self.indicators_shelf, entity_count, entity_size)
-        data['indicator'].extend(indicator_data)
-        if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
+        # process indicator from shelf file, returning if max values have been reached
+        if self.data_indicators(data, self.indicators_shelf, entity_count, entity_size) is True:
             return data
 
         return data
 
-    def data_group_association(self, xid: str) -> List[dict]:
+    def data_group_association(
+        self, data: dict, entity_count: int, entity_size: int, xid: str
+    ) -> None:
         """Return group dict array following all associations.
 
+        The *data* dict is passed by reference to make it easier to update both the group data
+        and file data inline versus passing the data all the way back up to the calling methods.
+        The entity_count and entity size values are also passed by reference for similar reasons.
+
         Args:
+            data: The data dict to update with group and file data.
+            entity_count: The total count of all entities collected.
+            entity_size: The total size in bytes of all entities collected.
             xid: The xid of the group to retrieve associations.
-
-        Returns:
-            List[dict]: A list of group dicts.
         """
-        groups = []
-
         xids = deque()
         xids.append(xid)
 
@@ -545,68 +565,78 @@ class Batch:
                 del self.groups_shelf[xid]
 
             if group_data:
-                group_data = self.data_group_type(group_data)
-                groups.append(group_data)
+                file_data, group_data = self.data_group_type(group_data)
+                data['group'].append(group_data)
+                if file_data:
+                    data['file'][xid] = file_data
+
+                # update entity trackers
+                entity_count += 1
+                entity_size += sys.getsizeof(json.dumps(group_data))
+
+                # groups.append(group_data)
                 xids.extend(group_data.get('associatedGroupXid', []))
 
-        return groups
-
-    def data_group_type(self, group_data):
-        """Return dict representation of group data.
+    @staticmethod
+    def data_group_type(group_data: Union[dict, object]) -> tuple:
+        """Return dict representation of group data and file data.
 
         Args:
             group_data (dict|obj): The group data dict or object.
 
         Returns:
-            dict: The group data in dict format.
+            Tuple[dict, dict]: A tuple containing file_data and group_data.
         """
+        file_data = {}
         if isinstance(group_data, dict):
             # process file content
             file_content = group_data.pop('fileContent', None)
             if file_content is not None:
-                self._files[group_data.get('xid')] = {
+                file_data = {
                     'fileContent': file_content,
                     'fileName': group_data.get('fileName'),
                     'type': group_data.get('type'),
                 }
         else:
-            # process file content
+            # get the file data from the object and return dict format of object
             if group_data.data.get('type') in ['Document', 'Report']:
-                self._files[group_data.data.get('xid')] = group_data.file_data
+                file_data = group_data.file_data
             group_data = group_data.data
-        return group_data
 
-    def data_groups(self, groups: list, entity_count: int, entity_size: int) -> list:
+        return file_data, group_data
+
+    def data_groups(self, data: dict, groups: list, entity_count: int, entity_size: int) -> bool:
         """Process Group data.
 
         Args:
+            data: The data dict to update with group and file data.
             groups: The list of groups to process.
             entity_count: The total count of all entities collected.
             entity_size: The total size in bytes of all entities collected.
 
         Returns:
-            list: A list of groups
+            bool: True if max values have been hit, else False.
         """
-        data = []
         # convert groups.keys() to a list to prevent dictionary change error caused by
         # the data_group_association function deleting items from the object.
 
         # process group objects
         for xid in list(groups.keys()):
             # get association from group data
-            assoc_group_data = self.data_group_association(xid)
-            data += assoc_group_data
-            entity_count += len(assoc_group_data)
-            entity_size += sys.getsizeof(json.dumps(assoc_group_data))
+            self.data_group_association(data, entity_count, entity_size, xid)
 
             if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
-                break
-        return data
+                # stop processing xid once max limit are reached
+                return True
+        return False
 
-    def data_indicators(self, indicators: list, entity_count: int, entity_size: int) -> list:
+    def data_indicators(
+        self, data: dict, indicators: list, entity_count: int, entity_size: int
+    ) -> bool:
         """Process Indicator data.
 
         Args:
+            data: The data dict to update with group and file data.
             indicators: The list of indicators to process.
             entity_count: The total count of all entities collected.
             entity_size: The total size in bytes of all entities collected.
@@ -614,19 +644,21 @@ class Batch:
         Returns:
             list: A list of indicators
         """
-        data = []
         # process indicator objects
         for xid, indicator_data in list(indicators.items()):
             if not isinstance(indicator_data, dict):
                 indicator_data = indicator_data.data
-            data.append(indicator_data)
+            data['indicator'].append(indicator_data)
             del indicators[xid]
+
+            # update entity trackers
             entity_count += 1
             entity_size += sys.getsizeof(json.dumps(indicator_data))
 
             if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
-                break
-        return data
+                # stop processing xid once max limit are reached
+                return True
+        return False
 
     @property
     def debug(self):
@@ -657,17 +689,19 @@ class Batch:
             name (str): The name for this Group.
             file_name (str): The name for the attached file for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
-            file_content (str;method, kwargs): The file contents or callback method to retrieve
-                                               file content.
+            file_content (str;method, kwargs): The file contents or
+                callback method to retrieve file content.
             malware (bool, kwargs): If true the file is considered malware.
             password (bool, kwargs): If malware is true a password for the zip archive is
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Document.
         """
         group_obj = Document(name, file_name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def email(self, name, subject, header, body, **kwargs):
         """Add Email data to Batch object.
@@ -681,12 +715,14 @@ class Batch:
             from_addr (str, kwargs): The **from** address for this Email.
             to_addr (str, kwargs): The **to** address for this Email.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Email.
         """
         group_obj = Email(name, subject, header, body, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def email_address(self, address, **kwargs):
         """Add Email Address data to Batch object.
@@ -698,12 +734,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of EmailAddress.
         """
         indicator_obj = EmailAddress(address, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     @property
     def error_codes(self):
@@ -725,7 +763,7 @@ class Batch:
             '0x2003': 'File Hash Merge Error',
         }
 
-    def errors(self, batch_id, halt_on_error=True):
+    def errors(self, batch_id: int, halt_on_error: Optional[bool] = True):
         """Retrieve Batch errors to ThreatConnect API.
 
         .. code-block:: javascript
@@ -739,19 +777,13 @@ class Batch:
             }]
 
         Args:
-            batch_id (str): The ID returned from the ThreatConnect API for the current batch job.
-            halt_on_error (bool, default:True): If True any exception will raise an error.
+            batch_id: The ID returned from the ThreatConnect API for the current batch job.
+            halt_on_error: If True any exception will raise an error.
         """
         errors = []
         try:
+            self.tcex.log.debug(f'feature=batch, event=retrieve-errors, batch-id={batch_id}')
             r = self.tcex.session.get(f'/v2/batch/{batch_id}/errors')
-            # if r.status_code == 404:
-            #     time.sleep(5)  # allow time for errors to be processed
-            #     r = self.tcex.session.get(f'/v2/batch/{batch_id}/errors')
-            self.tcex.log.debug(
-                f'Retrieve Errors for ID {batch_id}: status code {r.status_code}, errors {r.text}'
-            )
-            # self.tcex.log.debug(f'Retrieve Errors URL {r.url}')
             # API does not return correct content type
             if r.ok:
                 errors = json.loads(r.text)
@@ -775,12 +807,14 @@ class Batch:
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Event.
         """
         group_obj = Event(name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def file(self, md5=None, sha1=None, sha256=None, **kwargs):
         """Add File data to Batch object.
@@ -797,13 +831,15 @@ class Batch:
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of File.
 
         """
         indicator_obj = File(md5, sha1, sha256, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def file_merge_mode(self, value):
         """Set the file merge mode for the entire batch job.
@@ -812,11 +848,6 @@ class Batch:
             value (str): A value of Distribute or Merge.
         """
         self._file_merge_mode = value
-
-    @property
-    def files(self):
-        """Return dictionary containing all of the file content or callbacks."""
-        return self._files
 
     @staticmethod
     def generate_xid(identifier=None):
@@ -846,12 +877,14 @@ class Batch:
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Group.
         """
         group_obj = Group(group_type, name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     @property
     def group_shelf_fqfn(self):
@@ -950,12 +983,14 @@ class Batch:
             rating (str, kwargs): The threat rating for this Indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Host.
         """
         indicator_obj = Host(hostname, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def incident(self, name, **kwargs):
         """Add Incident data to Batch object.
@@ -966,12 +1001,14 @@ class Batch:
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Incident.
         """
         group_obj = Incident(name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def indicator(self, indicator_type, summary, **kwargs):
         """Add Indicator data to Batch object.
@@ -984,12 +1021,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Indicator.
         """
         indicator_obj = Indicator(indicator_type, summary, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     @property
     def indicator_shelf_fqfn(self):
@@ -1031,12 +1070,14 @@ class Batch:
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of IntrusionSet.
         """
         group_obj = IntrusionSet(name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def mutex(self, mutex, **kwargs):
         """Add Mutex data to Batch object.
@@ -1048,12 +1089,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Mutex.
         """
         indicator_obj = Mutex(mutex, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def poll(self, batch_id, retry_seconds=None, back_off=None, timeout=None, halt_on_error=True):
         """Poll Batch status to ThreatConnect API.
@@ -1176,6 +1219,74 @@ class Batch:
         """Set the poll timeout value."""
         self._poll_timeout = int(seconds)
 
+    def process_all(self, process_files=True):
+        """Process Batch request to ThreatConnect API.
+
+        Args:
+            process_files (bool, default:True): Send any document or report attachments to the API.
+        """
+        while True:
+            content = self.data
+            file_data = content.pop('file', {})
+            if not content.get('group') and not content.get('indicator'):
+                break
+
+            # special code for debugging App using batchV2.
+            self.write_batch_json(content)
+
+            # store the length of the batch data to use for poll interval calculations
+            self.tcex.log.info(f'''Batch Group Size: {len(content.get('group')):,}.''')
+            self.tcex.log.info(f'''Batch Indicator Size {len(content.get('indicator')):,}.''')
+
+        if process_files:
+            self.process_files(file_data)
+
+    def process_files(self, file_data: dict) -> None:
+        """Process Files for Documents and Reports to ThreatConnect API.
+
+        Returns:
+            dict: The upload status for each xid.
+        """
+        for xid, content_data in list(file_data.items()):
+            del file_data[xid]  # win or loose remove the entry
+
+            # define the saved filename
+            api_branch = 'documents' if content_data.get('type') == 'Report' else 'reports'
+            fqfn = os.path.join(
+                self.debug_path_files,
+                f'''{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}''',
+            )
+
+            # used for debug/testing to prevent upload of previously uploaded file
+            if self.debug and xid in self.saved_xids:
+                self.tcex.log.debug(
+                    f'feature=batch-submit-files, action=skip-previously-saved-file, xid={xid}'
+                )
+                continue
+
+            if os.path.isfile(fqfn):
+                self.tcex.log.debug(
+                    f'feature=batch-submit-files, action=skip-previously-saved-file, xid={xid}'
+                )
+                continue
+
+            # process the file content
+            content = content_data.get('fileContent')
+            if callable(content):
+                content_callable_name = getattr(content, '__name__', repr(content))
+                self.tcex.log.trace(
+                    f'feature=batch-submit-files, method={content_callable_name}, xid={xid}'
+                )
+                content = content_data.get('fileContent')(xid)
+
+            if content is None:
+                self.tcex.log.warning(f'feature=batch-submit-files, xid={xid}, event=content-null')
+                continue
+
+            # write the file to disk
+            with open(fqfn, 'wb') as fh:
+                fh.write(content)
+
     def registry_key(self, key_name, value_name, value_type, **kwargs):
         """Add Registry Key data to Batch object.
 
@@ -1188,12 +1299,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Registry Key.
         """
         indicator_obj = RegistryKey(key_name, value_name, value_type, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def report(self, name, **kwargs):
         """Add Report data to Batch object.
@@ -1206,12 +1319,14 @@ class Batch:
                 file content.
             publish_date (str, kwargs): The publish datetime expression for this Group.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Report.
         """
         group_obj = Report(name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def save(self, resource):
         """Save group|indicator dict or object to shelve.
@@ -1349,12 +1464,14 @@ class Batch:
             file_text (str): The signature content for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Signature.
         """
         group_obj = Signature(name, file_name, file_type, file_text, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def submit(self, poll=True, errors=True, process_files=True, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
@@ -1380,17 +1497,23 @@ class Batch:
         Returns.
             dict: The Batch Status from the ThreatConnect API.
         """
+        # get file, group, and indicator data
+        content = self.data
+        # pop any file content to pass to submit_files
+        file_data = content.pop('file', {})
         batch_data = (
-            self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus', {})
+            self.submit_create_and_upload(content=content, halt_on_error=halt_on_error)
+            .get('data', {})
+            .get('batchStatus', {})
         )
         batch_id = batch_data.get('id')
         if batch_id is not None:
-            self.tcex.log.info(f'Batch ID: {batch_id}')
+            self.tcex.log.info(f'feature=batch, event=submit, batch-id={batch_id}')
             # job hit queue
             if poll:
                 # poll for status
                 batch_data = (
-                    self.poll(batch_id, halt_on_error=halt_on_error)
+                    self.poll(batch_id=batch_id, halt_on_error=halt_on_error)
                     .get('data', {})
                     .get('batchStatus')
                 )
@@ -1399,7 +1522,6 @@ class Batch:
                     error_groups = batch_data.get('errorGroupCount', 0)
                     error_indicators = batch_data.get('errorIndicatorCount', 0)
                     if error_groups > 0 or error_indicators > 0:
-                        self.tcex.log.debug('retrieving batch errors')
                         batch_data['errors'] = self.errors(batch_id)
             else:
                 # can't process files if status is unknown (polling must be enabled)
@@ -1407,7 +1529,9 @@ class Batch:
 
         if process_files:
             # submit file data after batch job is complete
-            batch_data['uploadStatus'] = self.submit_files(halt_on_error)
+            self.submit_thread(
+                name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+            )
         return batch_data
 
     def submit_all(self, poll=True, errors=True, process_files=True, halt_on_error=True):
@@ -1435,29 +1559,41 @@ class Batch:
             dict: The Batch Status from the ThreatConnect API.
         """
         batch_data_array = []
+        file_data = {}
         while True:
             batch_data = {}
             batch_id = None
+
+            # get file, group, and indicator data
+            content = self.data
+
+            # break loop when end of data is reached
+            if not content.get('group') and not content.get('indicator'):
+                break
+
             if self.action.lower() == 'delete':
+                # no need to process files on a delete batch job
+                process_files = False
+
                 # while waiting of FR for delete support in createAndUpload submit delete request
                 # the old way (submit job + submit data), still using V2.
                 if len(self) > 0:  # pylint: disable=len-as-condition
                     batch_id = self.submit_job(halt_on_error)
                     if batch_id is not None:
-                        batch_data = self.submit_data(batch_id, halt_on_error)
+                        batch_data = self.submit_data(
+                            batch_id=batch_id, content=content, halt_on_error=halt_on_error
+                        )
                 else:
                     batch_data = {}
             else:
+                # pop any file content to pass to submit_files
+                file_data = content.pop('file', {})
                 batch_data = (
-                    self.submit_create_and_upload(halt_on_error)
+                    self.submit_create_and_upload(content=content, halt_on_error=halt_on_error)
                     .get('data', {})
                     .get('batchStatus', {})
                 )
                 batch_id = batch_data.get('id')
-
-            # break loop when end of data is reached
-            if not batch_data:
-                break
 
             if batch_id is not None:
                 self.tcex.log.info(f'Batch ID: {batch_id}')
@@ -1483,7 +1619,9 @@ class Batch:
 
             if process_files:
                 # submit file data after batch job is complete
-                batch_data['uploadStatus'] = self.submit_files(halt_on_error)
+                self.submit_thread(
+                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+                )
             batch_data_array.append(batch_data)
 
             # write errors for debugging
@@ -1491,8 +1629,118 @@ class Batch:
 
         return batch_data_array
 
-    def submit_create_and_upload(self, halt_on_error=True):
+    def submit_callback(
+        self,
+        callback: Callable[..., Any],
+        content: Optional[dict] = None,
+        halt_on_error: Optional[bool] = True,
+    ) -> bool:
+        """Submit batch data to ThreatConnect and poll in a separate thread.
+
+        The "normal" submit methods run in serial which will block when the batch poll is running.
+        Using this method the submit is done in serial, but the poll method is run in a thread,
+        which should allow the App to continue downloading and processing data while the batch
+        poll process is running. Only one batch submission is allowed at a time so that any
+        critical errors returned from batch can be handled before submitting a new batch job.
+
+        Args:
+            callback: The callback method that will handle
+                the batch status when polling is complete.
+            content: The dict of groups and indicator data (e.g., {"group": [], "indiciator": []}).
+            halt_on_error: If True the process should halt if any errors are encountered.
+
+        Raises:
+            RuntimeError: Raised on invalid callback method.
+
+        Returns:
+            bool: False when there is not data to process, else True
+        """
+        # user provided content or grab content from local group/indicator lists
+        if content is not None:
+            # process content
+            pass
+        else:
+            content = self.data
+        file_data = content.pop('file', {})
+
+        # return False when end of data is reached
+        if not content.get('group') and not content.get('indicator'):
+            return False
+
+        # block here is there is already a batch submission being processed
+        if hasattr(self._submit_thread, 'is_alive'):
+            self.tcex.log.debug(
+                f'feature=batch, event=block, is-alive={self._submit_thread.is_alive()}'
+            )
+            self._submit_thread.join()
+            self.tcex.log.debug(
+                f'feature=batch, event=release, is-alive={self._submit_thread.is_alive()}'
+            )
+
+        # submit the data and collect the response
+        batch_data: dict = (
+            self.submit_create_and_upload(content=content, halt_on_error=halt_on_error)
+            .get('data', {})
+            .get('batchStatus', {})
+        )
+        self.tcex.log.trace(f'feature=batch, event=submit-callback, batch-data={batch_data}')
+
+        # launch batch polling in a thread
+        self._submit_thread = self.submit_thread(
+            name='submit-poll',
+            target=self.submit_callback_thread,
+            args=(batch_data, callback, file_data),
+        )
+
+        return True
+
+    def submit_callback_thread(
+        self,
+        batch_data: int,
+        callback: Callable[..., Any],
+        file_data: dict,
+        halt_on_error: Optional[bool] = True,
+    ) -> None:
+        """Submit data in a thread."""
+        batch_id = batch_data.get('id')
+        self.tcex.log.info(f'feature=batch, event=submit-callback-thread, batch-id={batch_id}')
+        if batch_id:
+            # when batch_id is None it indicates that batch submission was small enough to be
+            # processed inline (without being queued)
+
+            # poll for status
+            batch_status = (
+                self.poll(batch_id, halt_on_error=halt_on_error).get('data', {}).get('batchStatus')
+            )
+
+            # retrieve errors
+            error_count = batch_status.get('errorCount', 0)
+            error_groups = batch_status.get('errorGroupCount', 0)
+            error_indicators = batch_status.get('errorIndicatorCount', 0)
+            if error_count > 0 or error_groups > 0 or error_indicators > 0:
+                self.tcex.log.debug('retrieving batch errors')
+                batch_status['errors'] = self.errors(batch_id)
+        else:
+            batch_status = batch_data
+
+        # launch file upload in a thread *after* batch status is returned. while only one batch
+        # submission thread is allowed, there is no limit on file upload threads. the upload
+        # status returned by file upload will be ignored when running in a thread.
+        self.submit_thread(
+            name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+        )
+
+        # send batch_status to callback
+        if callable(callback):
+            self.tcex.log.debug('feature=batch, event=calling-callback')
+            callback(batch_status)
+
+    def submit_create_and_upload(self, content: dict, halt_on_error: Optional[bool] = True):
         """Submit Batch request to ThreatConnect API.
+
+        Args:
+            content: The dict of groups and indicator data.
+            halt_on_error: If True the process should halt if any errors are encountered.
 
         Returns.
             dict: The Batch Status from the ThreatConnect API.
@@ -1501,59 +1749,66 @@ class Batch:
         if self.halt_on_batch_error is not None:
             halt_on_error = self.halt_on_batch_error
 
-        content = self.data
-        if content.get('group') or content.get('indicator'):
-            # special code for debugging App using batchV2.
-            self.write_batch_json(content)
+        # special code for debugging App using batchV2.
+        self.write_batch_json(content)
 
-            # store the length of the batch data to use for poll interval calculations
-            self.tcex.log.info(f"Batch Group Size: {len(content.get('group')):,}.")
-            self.tcex.log.info(f"Batch Indicator Size {len(content.get('indicator')):,}.")
+        # store the length of the batch data to use for poll interval calculations
+        self.tcex.log.info(
+            '''feature=batch, event=submit-create-and-upload, type=group, '''
+            f'''count={len(content.get('group')):,}'''
+        )
+        self.tcex.log.info(
+            '''feature=batch, event=submit-create-and-upload, type=indicator, '''
+            f'''count={len(content.get('indicator')):,}'''
+        )
 
-            try:
-                files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
-                params = {'includeAdditional': 'true'}
-                r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
-                self.tcex.log.debug(f'Batch Status Code: {r.status_code}')
-                if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                    self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
-                return r.json()
-            except Exception as e:
-                self.tcex.handle_error(10505, [e], halt_on_error)
+        try:
+            files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
+            params = {'includeAdditional': 'true'}
+            r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
+            self.tcex.log.debug(f'Batch Status Code: {r.status_code}')
+            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
+            return r.json()
+        except Exception as e:
+            self.tcex.handle_error(10505, [e], halt_on_error)
+
         return {}
 
-    def submit_data(self, batch_id: int, halt_on_error: Optional[bool] = True) -> dict:
+    def submit_data(
+        self, batch_id: int, content: dict, halt_on_error: Optional[bool] = True
+    ) -> dict:
         """Submit Batch request to ThreatConnect API.
 
         Args:
-            batch_id (int): The batch id of the current job.
+            batch_id: The batch id of the current job.
+            content: The dict of groups and indicator data.
             halt_on_error (Optional[bool] = True): If True the process should halt if any errors
                 are encountered.
 
         Returns:
             dict: The response data
         """
-
         # check global setting for override
         if self.halt_on_batch_error is not None:
             halt_on_error = self.halt_on_batch_error
 
-        content = self.data
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
         self.tcex.log.info(f'Batch Size: {self._batch_data_count:,}')
-        if content.get('group') or content.get('indicator'):
-            headers = {'Content-Type': 'application/octet-stream'}
-            try:
-                r = self.tcex.session.post(f'/v2/batch/{batch_id}', headers=headers, json=content)
-                if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                    self.tcex.handle_error(10525, [r.status_code, r.text], halt_on_error)
-                return r.json()
-            except Exception as e:
-                self.tcex.handle_error(10520, [e], halt_on_error)
-        return {}
 
-    def submit_files(self, halt_on_error=True):
+        headers = {'Content-Type': 'application/octet-stream'}
+        try:
+            r = self.tcex.session.post(f'/v2/batch/{batch_id}', headers=headers, json=content)
+            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                self.tcex.handle_error(10525, [r.status_code, r.text], halt_on_error)
+            return r.json()
+        except Exception as e:
+            self.tcex.handle_error(10520, [e], halt_on_error)
+
+        return None
+
+    def submit_files(self, file_data: dict, halt_on_error: Optional[bool] = True) -> dict:
         """Submit Files for Documents and Reports to ThreatConnect API.
 
         Critical Errors
@@ -1561,7 +1816,8 @@ class Batch:
         * There is insufficient document storage allocated to this account.
 
         Args:
-            halt_on_error (bool, default:True): If True any exception will raise an error.
+            halt_on_error: If True any exception will raise an error.
+            file_data: The file data to be submitted.
 
         Returns:
             dict: The upload status for each xid.
@@ -1571,8 +1827,8 @@ class Batch:
             halt_on_error = self.halt_on_file_error
 
         upload_status = []
-        for xid, content_data in list(self._files.items()):
-            del self._files[xid]  # win or loose remove the entry
+        for xid, content_data in list(file_data.items()):
+            del file_data[xid]  # win or loose remove the entry
             status = True
 
             # used for debug/testing to prevent upload of previously uploaded file
@@ -1628,6 +1884,7 @@ class Batch:
 
             self.tcex.log.info(f'Status {r.status_code} for file upload with xid {xid}.')
             upload_status.append({'uploaded': status, 'xid': xid})
+
         return upload_status
 
     def submit_file_content(self, method, url, data, headers, params, halt_on_error=True):
@@ -1670,6 +1927,31 @@ class Batch:
         self.tcex.log.debug(f'Batch Submit Data: {data}')
         return data.get('data', {}).get('batchId')
 
+    def submit_thread(
+        self,
+        name: str,
+        target: Callable[[], bool],
+        args: Optional[tuple] = None,
+        kwargs: Optional[dict] = None,
+    ) -> None:
+        """Start a submit thread.
+
+        Args:
+            name: The name of the thread.
+            target: The method to call for the thread.
+            args: The args to pass to the target method.
+            kwargs: Additional args.
+        """
+        self.tcex.log.info(f'feature=batch, event=submit-thread, name={name}')
+        args = args or ()
+        t = None
+        try:
+            t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
+            t.start()
+        except Exception:
+            self.tcex.log.trace(traceback.format_exc())
+        return t
+
     def threat(self, name, **kwargs):
         """Add Threat data to Batch object
 
@@ -1677,12 +1959,14 @@ class Batch:
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of Threat.
         """
         group_obj = Threat(name, **kwargs)
-        return self._group(group_obj)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def user_agent(self, text, **kwargs):
         """Add User Agent data to Batch object
@@ -1694,12 +1978,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of UserAgent.
         """
         indicator_obj = UserAgent(text, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def url(self, text, **kwargs):
         """Add URL Address data to Batch object.
@@ -1711,12 +1997,14 @@ class Batch:
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
 
         Returns:
             obj: An instance of URL.
         """
         indicator_obj = URL(text, **kwargs)
-        return self._indicator(indicator_obj)
+        return self._indicator(indicator_obj, kwargs.get('store', True))
 
     def write_error_json(self, errors: list):
         """Write the errors to a JSON file for debuging purposes.
@@ -1727,7 +2015,8 @@ class Batch:
         if self.debug:
             if not errors:
                 errors = []
-            timestamp = str(time.time()).replace('.', '')
+            # get timestamp as a string without decimal place and consistent length
+            timestamp = str(int(time.time() * 10000000))
             error_json_file = os.path.join(self.debug_path_batch, f'errors-{timestamp}.json')
             with open(error_json_file, 'w') as fh:
                 json.dump(errors, fh, indent=2)
@@ -1735,15 +2024,11 @@ class Batch:
     def write_batch_json(self, content):
         """Write batch json data to a file."""
         if self.debug and content:
-            timestamp = str(time.time()).replace('.', '')
+            # get timestamp as a string without decimal place and consistent length
+            timestamp = str(int(time.time() * 10000000))
             batch_json_file = os.path.join(self.debug_path_batch, f'batch-{timestamp}.json')
             with open(batch_json_file, 'w') as fh:
                 json.dump(content, fh, indent=2)
-
-    @property
-    def file_len(self):
-        """Return the number of current indicators."""
-        return len(self._files)
 
     @property
     def group_len(self):

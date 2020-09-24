@@ -27,9 +27,9 @@
       ]
     },
     {
-      "label": "Operation",
+      "label": "Action",
       "name": "tc_action",
-      "note": "The operation to perform on the String or StringArray. The Strip operations will strip only whitespace from the string.",
+      "note": "The action to perform on the String or StringArray. The Strip action will strip only whitespace from the string.",
       "required": true,
       "sequence": 2,
       "type": "Choice",
@@ -47,7 +47,7 @@
   "playbook": {
     "outputVariables": [
       {
-        "name": "string.operation",
+        "name": "string.action",
         "type": "String"
       },
       {

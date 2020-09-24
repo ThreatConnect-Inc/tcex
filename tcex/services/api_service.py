@@ -166,7 +166,7 @@ class ApiService(CommonService):
         body = None
         try:
             # read body from redis
-            body_variable: str = message.get('bodyVariable')
+            body_variable: str = message.pop('bodyVariable')
             if body_variable is not None:
                 body: Any = self.redis_client.hget(request_key, message.get('bodyVariable'))
                 if body is not None:
@@ -214,6 +214,8 @@ class ApiService(CommonService):
             for header, value in headers.items():
                 environ[f'HTTP_{header}'.upper()] = value
 
+            # make values from message available in env in camel
+            # case (e.g., falcon -> req.env.get('request_url))
             for key, value in message.items():
                 if key not in environ and self.tcex.utils.camel_to_snake(key) not in environ:
                     environ[self.tcex.utils.camel_to_snake(key)] = value
