@@ -259,6 +259,8 @@ class Migrate:
             for k, v in dict(profile_data.get('inputs', {}).get(input_type, {})).items():
                 # skip staging inputs with a null value
                 if v is None:
+                    variable: str = self.profile.ij.create_variable('null', 'String')
+                    profile_data['inputs'][input_type][k] = variable
                     continue
 
                 # get ij data for key/field
@@ -312,7 +314,8 @@ class Migrate:
         kvstore_data: Optional[dict] = profile_data['stage'].get('redis', None)
         if kvstore_data is not None:
             del profile_data['stage']['redis']
-            profile_data['stage']['kvstore'] = kvstore_data
+            if 'kvstore' not in profile_data['stage'].keys():
+                profile_data['stage']['kvstore'] = kvstore_data
 
     @staticmethod
     def stage_threatconnect_data(profile_data: dict) -> None:
