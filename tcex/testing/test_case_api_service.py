@@ -255,6 +255,7 @@ class TestCaseApiService(TestCaseServiceCommon):
 
     api_service_host = os.getenv('API_SERVICE_HOST', 'localhost')
     api_service_port = int(os.getenv('API_SERVICE_PORT', '8042'))
+    api_server = None
     stop_server = False
 
     def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
@@ -299,8 +300,8 @@ class TestCaseApiService(TestCaseServiceCommon):
 
     def setup_method(self):
         """Run before each test method runs."""
-        api_server = ApiServer(self, (self.api_service_host, self.api_service_port))
-        api_server.listen()
+        self.api_server = ApiServer(self, (self.api_service_host, self.api_service_port))
+        self.api_server.listen()
 
         # subscribe to server topic
         self.message_broker.client.subscribe(self.server_topic)
@@ -311,6 +312,11 @@ class TestCaseApiService(TestCaseServiceCommon):
         )
 
         super().setup_method()
+
+    def teardown_method(self):
+        """Run after each test method runs."""
+        self.api_server.server_close()
+        super().teardown_method()
 
     @property
     def test_client(self):
