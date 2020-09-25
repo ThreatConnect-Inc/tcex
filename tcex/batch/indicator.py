@@ -2,6 +2,7 @@
 # standard library
 import json
 import uuid
+from typing import Callable, Optional
 
 from ..utils import Utils
 from .attribute import Attribute
@@ -62,12 +63,12 @@ class Indicator:
         '_utils',
     ]
 
-    def __init__(self, indicator_type, summary, **kwargs):
+    def __init__(self, indicator_type: str, summary: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            indicator_type (str): The ThreatConnect define Indicator type.
-            summary (str): The value for this Indicator.
+            indicator_type: The ThreatConnect define Indicator type.
+            summary: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -93,7 +94,7 @@ class Indicator:
         self._tags = []
 
     @property
-    def _metadata_map(self):
+    def _metadata_map(self) -> dict:
         """Return metadata map for Indicator objects."""
         return {
             'date_added': 'dateAdded',
@@ -106,7 +107,7 @@ class Indicator:
             'whois_active': 'flag2',
         }
 
-    def add_key_value(self, key, value):
+    def add_key_value(self, key: str, value: str) -> None:
         """Add custom field to Indicator object.
 
         .. note:: The key must be the exact name required by the batch schema.
@@ -117,8 +118,8 @@ class Indicator:
             file_hash.add_key_value('size', '1024')
 
         Args:
-            key (str): The field key to add to the JSON batch data.
-            value (str): The field value to add to the JSON batch data.
+            key: The field key to add to the JSON batch data.
+            value: The field value to add to the JSON batch data.
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'lastModified']:
@@ -133,16 +134,16 @@ class Indicator:
             self._indicator_data[key] = value
 
     @property
-    def active(self):
+    def active(self) -> bool:
         """Return Indicator active."""
         return self._indicator_data.get('active')
 
     @active.setter
-    def active(self, active):
+    def active(self, active: bool):
         """Set Indicator active."""
         self._indicator_data['active'] = self._utils.to_bool(active)
 
-    def association(self, group_xid):
+    def association(self, group_xid: str) -> None:
         """Add association using xid value.
 
         Args:
@@ -152,8 +153,14 @@ class Indicator:
         self._indicator_data.setdefault('associatedGroups', []).append(association)
 
     def attribute(
-        self, attr_type, attr_value, displayed=False, source=None, unique=True, formatter=None
-    ):
+        self,
+        attr_type: str,
+        attr_value: str,
+        displayed: Optional[bool] = False,
+        source: Optional[str] = None,
+        unique: Optional[bool] = True,
+        formatter: Optional[Callable[[str], str]] = None,
+    ) -> Attribute:
         """Return instance of Attribute
 
         unique:
@@ -162,17 +169,16 @@ class Indicator:
             * True - Attribute type:value combo must be unique.
 
         Args:
-            attr_type (str): The ThreatConnect defined attribute type.
-            attr_value (str): The value for this attribute.
-            displayed (bool, default:false): If True the supported attribute will be marked for
-                display.
-            source (str, optional): The source value for this attribute.
-            unique (bool|string, optional): Control attribute creation.
-            formatter (method, optional): A method that takes a single attribute value and returns a
-                single formatted value.
+            attr_type: The ThreatConnect defined attribute type.
+            attr_value: The value for this attribute.
+            displayed: If True the supported attribute will be marked for display.
+            source: The source value for this attribute.
+            unique: Control attribute creation.
+            formatter: A callable that takes a single attribute
+                value and returns a single formatted value.
 
         Returns:
-            obj: An instance of Attribute.
+            Attribute: An instance of the Attribute class.
         """
         attr = Attribute(attr_type, attr_value, displayed, source, formatter)
         if unique == 'Type':
@@ -194,7 +200,9 @@ class Indicator:
         return attr
 
     @staticmethod
-    def build_summary(val1=None, val2=None, val3=None):
+    def build_summary(
+        val1: Optional[str] = None, val2: Optional[str] = None, val3: Optional[str] = None
+    ) -> str:
         """Build the Indicator summary using available values."""
         summary = []
         if val1 is not None:
@@ -209,17 +217,17 @@ class Indicator:
         return ' : '.join(summary)
 
     @property
-    def confidence(self):
+    def confidence(self) -> int:
         """Return Indicator confidence."""
         return self._indicator_data.get('confidence')
 
     @confidence.setter
-    def confidence(self, confidence):
+    def confidence(self, confidence: int):
         """Set Indicator confidence."""
         self._indicator_data['confidence'] = int(confidence)
 
     @property
-    def data(self):
+    def data(self) -> dict:
         """Return Indicator data."""
         # add attributes
         if self._attributes:
@@ -252,30 +260,35 @@ class Indicator:
         return self._indicator_data
 
     @property
-    def date_added(self):
+    def date_added(self) -> str:
         """Return Indicator dateAdded."""
         return self._indicator_data.get('dateAdded')
 
     @date_added.setter
-    def date_added(self, date_added):
+    def date_added(self, date_added: str):
         """Set Indicator dateAdded."""
         self._indicator_data['dateAdded'] = self._utils.datetime.format_datetime(
             date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
-    def last_modified(self):
+    def last_modified(self) -> str:
         """Return Indicator lastModified."""
         return self._indicator_data.get('lastModified')
 
     @last_modified.setter
-    def last_modified(self, last_modified):
+    def last_modified(self, last_modified: str):
         """Set Indicator lastModified."""
         self._indicator_data['lastModified'] = self._utils.datetime.format_datetime(
             last_modified, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
-    def occurrence(self, file_name=None, path=None, date=None):
+    def occurrence(
+        self,
+        file_name: Optional[str] = None,
+        path: Optional[str] = None,
+        date: Optional[str] = None,
+    ) -> object:
         """Add a file Occurrence.
 
         Args:
@@ -284,7 +297,7 @@ class Indicator:
             date (str, optional): The datetime expression for this occurrence.
 
         Returns:
-            obj: An instance of Occurrence.
+            FileOccurrence: An instance of Occurrence.
         """
         if self._indicator_data.get('type') != 'File':
             # Indicator object has no logger to output warning
@@ -295,43 +308,45 @@ class Indicator:
         return occurrence_obj
 
     @property
-    def private_flag(self):
+    def private_flag(self) -> bool:
         """Return Indicator private flag."""
         return self._indicator_data.get('privateFlag')
 
     @private_flag.setter
-    def private_flag(self, private_flag):
+    def private_flag(self, private_flag: bool):
         """Set Indicator private flag."""
         self._indicator_data['privateFlag'] = self._utils.to_bool(private_flag)
 
     @property
-    def rating(self):
+    def rating(self) -> float:
         """Return Indicator rating."""
         return self._indicator_data.get('rating')
 
     @rating.setter
-    def rating(self, rating):
+    def rating(self, rating: float):
         """Set Indicator rating."""
         self._indicator_data['rating'] = float(rating)
 
     @property
-    def summary(self):
+    def summary(self) -> str:
         """Return Indicator summary."""
         return self._indicator_data.get('summary')
 
-    def security_label(self, name, description=None, color=None):
+    def security_label(
+        self, name: str, description: Optional[str] = None, color: Optional[str] = None
+    ) -> SecurityLabel:
         """Return instance of SecurityLabel.
 
         .. note:: The provided security label will be create if it doesn't exist. If the security
             label already exists nothing will be changed.
 
         Args:
-            name (str): The value for this security label.
-            description (str): A description for this security label.
-            color (str): A color (hex value) for this security label.
+            name: The value for this security label.
+            description: A description for this security label.
+            color: A color (hex value) for this security label.
 
         Returns:
-            obj: An instance of SecurityLabel.
+            SecurityLabel: An instance of the SecurityLabel class.
         """
         label = SecurityLabel(name, description, color)
         for label_data in self._labels:
@@ -342,16 +357,15 @@ class Indicator:
             self._labels.append(label)
         return label
 
-    def tag(self, name, formatter=None):
+    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> Tag:
         """Return instance of Tag.
 
         Args:
-            name (str): The value for this tag.
-            formatter (method, optional): A method that take a tag value and returns a
-                formatted tag.
+            name: The value for this tag.
+            formatter: A method that take a tag value and returns a formatted tag.
 
         Returns:
-            obj: An instance of Tag.
+            Tag: An instance of the Tag class.
         """
         tag = Tag(name, formatter)
         for tag_data in self._tags:
@@ -363,16 +377,16 @@ class Indicator:
         return tag
 
     @property
-    def type(self):
+    def type(self) -> str:
         """Return Group type."""
         return self._indicator_data.get('type')
 
     @property
-    def xid(self):
+    def xid(self) -> str:
         """Return Group xid."""
         return self._indicator_data.get('xid')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string represtentation of object"""
         return json.dumps(self.data, indent=4)
 
@@ -382,11 +396,11 @@ class Address(Indicator):
 
     __slots__ = []
 
-    def __init__(self, ip, **kwargs):
+    def __init__(self, ip: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            ip (str): The value for this Indicator.
+            ip: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -403,11 +417,11 @@ class ASN(Indicator):
 
     __slots__ = []
 
-    def __init__(self, as_number, **kwargs):
+    def __init__(self, as_number: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            as_number (str): The value for this Indicator.
+            as_number: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -424,11 +438,11 @@ class CIDR(Indicator):
 
     __slots__ = []
 
-    def __init__(self, block, **kwargs):
+    def __init__(self, block: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            block (str): The value for this Indicator.
+            block: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -445,11 +459,11 @@ class EmailAddress(Indicator):
 
     __slots__ = []
 
-    def __init__(self, address, **kwargs):
+    def __init__(self, address: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            address (str): The value for this Indicator.
+            address: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -466,13 +480,19 @@ class File(Indicator):
 
     __slots__ = []
 
-    def __init__(self, md5=None, sha1=None, sha256=None, **kwargs):
+    def __init__(
+        self,
+        md5: Optional[str] = None,
+        sha1: Optional[str] = None,
+        sha256: Optional[str] = None,
+        **kwargs,
+    ):
         """Initialize Class Properties.
 
         Args:
-            md5 (str, optional): The md5 value for this Indicator.
-            sha1 (str, optional): The sha1 value for this Indicator.
-            sha256 (str, optional): The sha256 value for this Indicator.
+            md5: The md5 value for this Indicator.
+            sha1: The sha1 value for this Indicator.
+            sha256: The sha256 value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -486,49 +506,49 @@ class File(Indicator):
         super().__init__('File', summary, **kwargs)
         # self._file_action = []
 
-    def action(self, relationship):
+    def action(self, relationship: str) -> object:
         """Add a File Action."""
         action_obj = FileAction(self._indicator_data.get('xid'), relationship)
         self._file_actions.append(action_obj)
         return action_obj
 
     @property
-    def md5(self):
+    def md5(self) -> str:
         """Return Indicator md5."""
         return self._indicator_data.get('md5')
 
     @md5.setter
-    def md5(self, md5):
+    def md5(self, md5: str):
         """Set Indicator md5."""
         self._indicator_data['md5'] = md5
 
     @property
-    def sha1(self):
+    def sha1(self) -> str:
         """Return Indicator sha1."""
         return self._indicator_data.get('sha1')
 
     @sha1.setter
-    def sha1(self, sha1):
+    def sha1(self, sha1: str):
         """Set Indicator sha1."""
         self._indicator_data['sha1'] = sha1
 
     @property
-    def sha256(self):
+    def sha256(self) -> str:
         """Return Indicator sha256."""
         return self._indicator_data.get('sha256')
 
     @sha256.setter
-    def sha256(self, sha256):
+    def sha256(self, sha256: str):
         """Set Indicator sha256."""
         self._indicator_data['sha256'] = sha256
 
     @property
-    def size(self):
+    def size(self) -> int:
         """Return Indicator size."""
         return self._indicator_data.get('intValue1')
 
     @size.setter
-    def size(self, size):
+    def size(self, size: int):
         """Set Indicator size."""
         self._indicator_data['intValue1'] = size
 
@@ -538,11 +558,11 @@ class Host(Indicator):
 
     __slots__ = []
 
-    def __init__(self, hostname, **kwargs):
+    def __init__(self, hostname: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            hostname (str): The value for this Indicator.
+            hostname: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -556,24 +576,24 @@ class Host(Indicator):
         super().__init__('Host', hostname, **kwargs)
 
     @property
-    def dns_active(self):
+    def dns_active(self) -> bool:
         """Return Indicator dns active."""
         return self._indicator_data.get('flag1')
 
     @dns_active.setter
-    def dns_active(self, dns_active):
+    def dns_active(self, dns_active: bool):
         """Set Indicator dns active."""
-        self._indicator_data['flag1'] = dns_active
+        self._indicator_data['flag1'] = self._utils.to_bool(dns_active)
 
     @property
-    def whois_active(self):
+    def whois_active(self) -> bool:
         """Return Indicator whois active."""
         return self._indicator_data.get('flag2')
 
     @whois_active.setter
-    def whois_active(self, whois_active):
+    def whois_active(self, whois_active: bool):
         """Set Indicator whois active."""
-        self._indicator_data['flag2'] = whois_active
+        self._indicator_data['flag2'] = self._utils.to_bool(whois_active)
 
 
 class Mutex(Indicator):
@@ -581,11 +601,11 @@ class Mutex(Indicator):
 
     __slots__ = []
 
-    def __init__(self, mutex, **kwargs):
+    def __init__(self, mutex: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            mutex (str): The value for this Indicator.
+            mutex: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -602,13 +622,13 @@ class RegistryKey(Indicator):
 
     __slots__ = []
 
-    def __init__(self, key_name, value_name, value_type, **kwargs):
+    def __init__(self, key_name: str, value_name: str, value_type: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            key_name (str): The key_name value for this Indicator.
-            value_name (str): The value_name value for this Indicator.
-            value_type (str): The value_type value for this Indicator.
+            key_name: The key_name value for this Indicator.
+            value_name: The value_name value for this Indicator.
+            value_type: The value_type value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -626,11 +646,11 @@ class URL(Indicator):
 
     __slots__ = []
 
-    def __init__(self, text, **kwargs):
+    def __init__(self, text: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            text (str): The value for this Indicator.
+            text: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -647,11 +667,11 @@ class UserAgent(Indicator):
 
     __slots__ = []
 
-    def __init__(self, text, **kwargs):
+    def __init__(self, text: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
-            text (str): The value for this Indicator.
+            text: The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
@@ -668,13 +688,13 @@ class FileAction:
 
     __slots__ = ['_action_data', '_children', 'xid']
 
-    def __init__(self, parent_xid, relationship):
+    def __init__(self, parent_xid: str, relationship):
         """Initialize Class Properties.
 
         .. warning:: This code is not complete and may require some update to the API.
 
         Args:
-            parent_xid (str): The external id of the parent Indicator.
+            parent_xid: The external id of the parent Indicator.
             relationship: ???
         """
         self.xid = str(uuid.uuid4())
@@ -686,19 +706,19 @@ class FileAction:
         self._children = []
 
     @property
-    def data(self):
+    def data(self) -> dict:
         """Return File Occurrence data."""
         if self._children:
             for child in self._children:
                 self._action_data.setdefault('children', []).append(child.data)
         return self._action_data
 
-    def action(self, relationship):
+    def action(self, relationship) -> None:
         """Add a nested File Action."""
         action_obj = FileAction(self.xid, relationship)
         self._children.append(action_obj)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
 
@@ -708,7 +728,12 @@ class FileOccurrence:
 
     __slots__ = ['_occurrence_data', '_utils']
 
-    def __init__(self, file_name=None, path=None, date=None):
+    def __init__(
+        self,
+        file_name: Optional[str] = None,
+        path: Optional[str] = None,
+        date: Optional[str] = None,
+    ):
         """Initialize Class Properties
 
         Args:
@@ -728,42 +753,42 @@ class FileOccurrence:
             )
 
     @property
-    def data(self):
+    def data(self) -> dict:
         """Return File Occurrence data."""
         return self._occurrence_data
 
     @property
-    def date(self):
+    def date(self) -> str:
         """Return File Occurrence date."""
         return self._occurrence_data.get('date')
 
     @date.setter
-    def date(self, date):
+    def date(self, date: str):
         """Set File Occurrence date."""
         self._occurrence_data['date'] = self._utils.datetime.format_datetime(
             date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
-    def file_name(self):
+    def file_name(self) -> str:
         """Return File Occurrence file name."""
         return self._occurrence_data.get('fileName')
 
     @file_name.setter
-    def file_name(self, file_name):
+    def file_name(self, file_name: str):
         """Set File Occurrence file name."""
         self._occurrence_data['fileName'] = file_name
 
     @property
-    def path(self):
+    def path(self) -> str:
         """Return File Occurrence path."""
         return self._occurrence_data.get('path')
 
     @path.setter
-    def path(self, path):
+    def path(self, path: str):
         """Set File Occurrence path."""
         self._occurrence_data['path'] = path
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
