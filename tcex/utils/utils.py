@@ -404,6 +404,9 @@ class Utils:
         if not t_string:
             t_string = ''
 
+        if len(t_string) <= length:
+            return t_string
+
         # set sane default for append_chars
         append_chars = str(append_chars or '')
 
