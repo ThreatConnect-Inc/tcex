@@ -1,5 +1,6 @@
 """ThreatConnect Batch Import Module."""
 # standard library
+import gzip
 import hashlib
 import json
 import math
@@ -79,6 +80,7 @@ class Batch:
         self._batch_max_chunk = 5000
         self._batch_max_size = 75_000_000  # max size in bytes
         self._file_merge_mode = None
+        self._file_threads = []
         self._hash_collision_mode = None
         self._submit_thread = None
 
@@ -501,6 +503,14 @@ class Batch:
 
     def close(self) -> None:
         """Cleanup batch job."""
+        # allow pol thread to complete before wrapping up
+        if hasattr(self._submit_thread, 'is_alive'):
+            self._submit_thread.join()
+
+        # allow file threads to complete before wrapping up job
+        for t in self._file_threads:
+            t.join()
+
         self.groups_shelf.close()
         self.indicators_shelf.close()
         if not self.debug and not self.enable_saved_file:
@@ -1224,7 +1234,7 @@ class Batch:
                     # if completed on first poll, reduce poll interval.
                     self._poll_interval = self._poll_interval * 0.85
 
-                self.tcex.log.debug(f'feature=batch, status={data}')
+                self.tcex.log.debug(f'feature=batch, poll-time={poll_time_total}, status={data}')
                 return data
 
             # update poll_interval for retry with max poll time of 20 seconds
@@ -1572,8 +1582,10 @@ class Batch:
 
         if process_files:
             # submit file data after batch job is complete
-            self.submit_thread(
-                name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+            self._file_threads.append(
+                self.submit_thread(
+                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+                )
             )
         return batch_data
 
@@ -2085,18 +2097,18 @@ class Batch:
                 errors = []
             # get timestamp as a string without decimal place and consistent length
             timestamp = str(int(time.time() * 10000000))
-            error_json_file = os.path.join(self.debug_path_batch, f'errors-{timestamp}.json')
-            with open(error_json_file, 'w') as fh:
-                json.dump(errors, fh, indent=2)
+            error_json_file = os.path.join(self.debug_path_batch, f'errors-{timestamp}.json.gz')
+            with gzip.open(error_json_file, 'w') as fh:
+                json.dump(errors, fh)
 
     def write_batch_json(self, content: dict) -> None:
         """Write batch json data to a file."""
         if self.debug and content:
             # get timestamp as a string without decimal place and consistent length
             timestamp = str(int(time.time() * 10000000))
-            batch_json_file = os.path.join(self.debug_path_batch, f'batch-{timestamp}.json')
-            with open(batch_json_file, 'w') as fh:
-                json.dump(content, fh, indent=2)
+            batch_json_file = os.path.join(self.debug_path_batch, f'batch-{timestamp}.json.gz')
+            with gzip.open(batch_json_file, 'w') as fh:
+                json.dump(content, fh)
 
     @property
     def group_len(self) -> int:
