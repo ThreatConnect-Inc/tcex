@@ -1,5 +1,6 @@
 """TcEx Common Arg Handler"""
 # standard library
+import tempfile
 from argparse import ArgumentParser, Namespace
 
 
@@ -24,7 +25,7 @@ class TcArgumentParser(ArgumentParser):
         self._tc_log_backup_count = 25  # target 50Mb in total log size (1x10Mb + 25x~1.6Mb = ~50Mb)
         self._tc_log_file = 'app.log'
         self._tc_log_level = 'info'
-        self._tc_log_path = '/tmp'  # nosec
+        self._tc_log_path = tempfile.gettempdir() or '/tmp'  # nosec
         self._tc_log_max_bytes = 10_485_760  # 10Mb
         self._tc_log_to_api = False
 
@@ -39,10 +40,10 @@ class TcArgumentParser(ArgumentParser):
 
         # standard defaults
         self._tc_api_path = 'https://api.threatconnect.com'
-        self._tc_in_path = '/tmp'  # nosec
-        self._tc_out_path = '/tmp'  # nosec
+        self._tc_in_path = tempfile.gettempdir() or '/tmp'  # nosec
+        self._tc_out_path = tempfile.gettempdir() or '/tmp'  # nosec
         self._tc_secure_params = False
-        self._tc_temp_path = '/tmp'  # nosec
+        self._tc_temp_path = tempfile.gettempdir() or '/tmp'  # nosec
         self._tc_user_id = None
 
         # include arguments
