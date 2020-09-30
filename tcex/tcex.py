@@ -53,6 +53,7 @@ class TcEx:
         self._service = None
         self._session = None
         self._session_external = None
+        self._stix_model = None
         self._utils = None
         self._ti = None
         self._token = None
@@ -130,7 +131,7 @@ class TcEx:
     def batch(
         self,
         owner: str,
-        action: Optional[str] = None,
+        action: Optional[str] = 'Create',
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = False,
         playbook_triggers_enabled: Optional[bool] = False,
@@ -140,7 +141,7 @@ class TcEx:
         Args:
             tcex: An instance of TcEx object.
             owner: The ThreatConnect owner for Batch action.
-            action default:Create): Action for the batch job ['Create', 'Delete'].
+            action: Action for the batch job ['Create', 'Delete'].
             attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
             halt_on_error: If True any batch error will halt the batch job.
             playbook_triggers_enabled: Deprecated input, will not be used.
@@ -527,6 +528,9 @@ class TcEx:
             message: The message to add to message_tc file
             max_length: The maximum length of an exit message. Defaults to 255.
         """
+        if not isinstance(message, str):
+            message = str(message)
+
         if os.access(self.default_args.tc_out_path, os.W_OK):
             message_file = os.path.join(self.default_args.tc_out_path, 'message.tc')
         else:
@@ -816,7 +820,7 @@ class TcEx:
             if self.ij.runtime_level.lower() == 'apiservice':
                 from .services import ApiService as Service
             elif self.ij.runtime_level.lower() == 'triggerservice':
-                from .services import TriggerService as Service
+                from .services import CommonServiceTrigger as Service
             elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
                 from .services import WebhookTriggerService as Service
             else:
@@ -879,6 +883,18 @@ class TcEx:
                     f'{self.args.tc_proxy_port} for external session.'
                 )
         return self._session_external
+
+    @property
+    def stix_model(self) -> object:
+        """Include the Threat Intel Module.
+
+        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
+        """
+        if self._stix_model is None:
+            from .stix import StixModel
+
+            self._stix_model = StixModel(self.logger)
+        return self._stix_model
 
     @property
     def ti(self) -> object:

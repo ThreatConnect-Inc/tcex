@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Utils Module &mdash; TcEx 2.0.9 documentation</title>
+  <title>Utils Module &mdash; TcEx 2.0.11 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.9
+                2.0.11
               </div>
 
 
@@ -368,16 +368,22 @@ and for lists with a mix of lists and single values</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.utils.utils.Utils.mitre_attack">
+<em class="property">property </em><code class="sig-name descname">mitre_attack</code><a class="headerlink" href="#tcex.utils.utils.Utils.mitre_attack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an instance of MitreAttackUtils.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.utils.utils.Utils.printable_cred">
-<em class="property">static </em><code class="sig-name descname">printable_cred</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cred</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">visible</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">mask_char</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'*'</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.printable_cred"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.printable_cred" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">printable_cred</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cred</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">visible</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">mask_char</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'*'</span></em>, <em class="sig-param"><span class="n">mask_char_count</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">4</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.printable_cred"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.printable_cred" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a printable (masked) version of the provided credential.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cred</strong> (<em>str</em>) – The cred to print.</p></li>
-<li><p><strong>visible</strong> (<em>Optional</em><em>[</em><em>int</em><em>] </em><em>= 1</em>) – The number of characters at the beginning and
-ending of the cred to not mask.</p></li>
-<li><p><strong>mask_char</strong> (<em>Optional</em><em>[</em><em>str</em><em>] </em><em>= '*'</em>) – The character to use in the mask.</p></li>
+<li><p><strong>cred</strong> – The cred to print.</p></li>
+<li><p><strong>visible</strong> – The number of characters at the beginning and ending of the cred to not mask.</p></li>
+<li><p><strong>mask_char</strong> – The character to use in the mask.</p></li>
+<li><p><strong>mask_char_count</strong> – How many mask character to insert (obscure cred length).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -585,13 +591,24 @@ nearest space before the truncation length to avoid chopping words.</p></li>
 <p>TcEx framework Datetime Utils module</p>
 <dl class="py method">
 <dt id="tcex.utils.date_utils.DatetimeUtils._replace_timezone">
-<em class="property">static </em><code class="sig-name descname">_replace_timezone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dateutil_parser</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils._replace_timezone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils._replace_timezone" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">_replace_timezone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dateutil_parser</span><span class="p">:</span> <span class="n">object</span></em><span class="sig-paren">)</span> &#x2192; object<a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils._replace_timezone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils._replace_timezone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace the timezone on a datetime object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dateutil_parser</strong> – The dateutil object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Update dateutils object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="tcex.utils.date_utils.DatetimeUtils.any_to_datetime">
-<code class="sig-name descname">any_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span></em>, <em class="sig-param"><span class="n">tz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.any_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.any_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">any_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">tz</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.any_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.any_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return datetime object from multiple formats.</p>
 <blockquote>
 <div><p>Formats:</p>
@@ -605,8 +622,8 @@ nearest space before the truncation length to avoid chopping words.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
-<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
+<li><p><strong>time_input</strong> – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong><strong>)</strong> – The time zone for the returned data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -620,13 +637,13 @@ nearest space before the truncation length to avoid chopping words.</p></li>
 
 <dl class="py method">
 <dt id="tcex.utils.date_utils.DatetimeUtils.date_to_datetime">
-<code class="sig-name descname">date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span></em>, <em class="sig-param"><span class="n">tz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">tz</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.date_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ISO 8601 and other date strings to datetime.datetime type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
-<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
+<li><p><strong>time_input</strong> – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> – The time zone for the returned data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -640,7 +657,7 @@ nearest space before the truncation length to avoid chopping words.</p></li>
 
 <dl class="py method">
 <dt id="tcex.utils.date_utils.DatetimeUtils.format_datetime">
-<code class="sig-name descname">format_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span></em>, <em class="sig-param"><span class="n">tz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date_format</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.format_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.format_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">tz</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date_format</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.format_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.format_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return timestamp from multiple input formats.</p>
 <blockquote>
 <div><p>Formats:</p>
@@ -659,9 +676,9 @@ does not natively support <strong>%s</strong>, however this method has support.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
-<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</p></li>
-<li><p><strong>date_format</strong> (<em>string</em>) – The strftime format to use, ISO by default.</p></li>
+<li><p><strong>time_input</strong> – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> – The time zone for the returned data.</p></li>
+<li><p><strong>date_format</strong> – The strftime format to use, ISO by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -675,7 +692,7 @@ does not natively support <strong>%s</strong>, however this method has support.<
 
 <dl class="py method">
 <dt id="tcex.utils.date_utils.DatetimeUtils.human_date_to_datetime">
-<code class="sig-name descname">human_date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span></em>, <em class="sig-param"><span class="n">tz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_datetime</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">human_date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">tz</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_datetime</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>datetime.datetime<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert human readable date (e.g. 30 days ago) to datetime.datetime.</p>
 <p>Examples:
 * August 25th, 2008
@@ -699,9 +716,9 @@ does not natively support <strong>%s</strong>, however this method has support.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
-<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime.</p></li>
-<li><p><strong>source_datetime</strong> (<em>datetime.datetime</em>) – The reference or source datetime.</p></li>
+<li><p><strong>time_input</strong> – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> – The time zone for the returned datetime.</p></li>
+<li><p><strong>source_datetime</strong> – The reference or source datetime.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -715,13 +732,13 @@ does not natively support <strong>%s</strong>, however this method has support.<
 
 <dl class="py method">
 <dt id="tcex.utils.date_utils.DatetimeUtils.timedelta">
-<code class="sig-name descname">timedelta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input1</span></em>, <em class="sig-param"><span class="n">time_input2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.timedelta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.timedelta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">timedelta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input1</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">time_input2</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.timedelta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.timedelta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the time delta between two time expressions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_input1</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
-<li><p><strong>time_input2</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
+<li><p><strong>time_input1</strong> – The time input string (see formats above).</p></li>
+<li><p><strong>time_input2</strong> – The time input string (see formats above).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -735,7 +752,7 @@ does not natively support <strong>%s</strong>, however this method has support.<
 
 <dl class="py method">
 <dt id="tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime">
-<em class="property">static </em><code class="sig-name descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span></em>, <em class="sig-param"><span class="n">tz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_input</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">tz</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert timestamp into datetime.</p>
 <p>Convert (unix time|epoch time|posix time) in format of 1510686617
 or 1510686617.298753 to datetime.datetime type.</p>
@@ -750,8 +767,8 @@ or 1510686617.298753 to datetime.datetime type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</p></li>
-<li><p><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime (e.g. UTC).</p></li>
+<li><p><strong>time_input</strong> – The time input string (see formats above).</p></li>
+<li><p><strong>tz</strong> – The time zone for the returned datetime (e.g. UTC).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

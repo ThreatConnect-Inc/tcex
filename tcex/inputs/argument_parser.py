@@ -14,18 +14,18 @@ class TcArgumentParser(ArgumentParser):
         super().__init__(**kwargs)
         # batch defaults
         self._batch_action = 'Create'
-        self._batch_chunk = 25000
+        self._batch_chunk = 25_000
         self._batch_halt_on_error = False
         self._batch_poll_interval = 15
-        self._batch_poll_interval_max = 3600
+        self._batch_poll_interval_max = 3_600
         self._batch_write_type = 'Append'
 
         # logger defaults
-        self._tc_log_backup_count = 5
+        self._tc_log_backup_count = 25  # target 50Mb in total log size (1x10Mb + 25x~1.6Mb = ~50Mb)
         self._tc_log_file = 'app.log'
         self._tc_log_level = 'info'
         self._tc_log_path = '/tmp'  # nosec
-        self._tc_log_max_bytes = 10485760
+        self._tc_log_max_bytes = 10_485_760  # 10Mb
         self._tc_log_to_api = False
 
         # playbook defaults

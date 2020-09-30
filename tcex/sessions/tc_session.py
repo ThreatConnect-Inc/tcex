@@ -132,7 +132,7 @@ class TcSession(Session):
 
         self.log.debug(
             f'feature=tc-session, request-url={response.request.url}, '
-            f'status_code={response.status_code}'
+            f'status_code={response.status_code}, elapsed={response.elapsed}'
         )
 
         return response

@@ -11,6 +11,7 @@ import os
 import random
 import re
 from collections import OrderedDict
+from typing import Optional, Union
 from urllib.parse import quote, unquote
 
 from ..utils import Utils
@@ -19,8 +20,13 @@ from ..utils import Utils
 class Validator:
     """Validator"""
 
-    def __init__(self, tcex, log):
-        """Initialize class properties."""
+    def __init__(self, tcex: object, log: object):
+        """Initialize class properties.
+
+        Args:
+            tcex: A configure instance of tcex.
+            log: A configure instance of logger.
+        """
         self.log = log
         self.tcex = tcex
         # TODO: validate this
@@ -34,8 +40,15 @@ class Validator:
         self.utils = Utils()
 
     @staticmethod
-    def _string_to_int_float(x):
-        """Take string input and return float or int."""
+    def _string_to_int_float(x: str) -> Union[float, int]:
+        """Take string input and return float or int.
+
+        Args:
+            x: The value to coerce to float/int.
+
+        Returns:
+            Union[float, int]: The coerced valued.
+        """
         if isinstance(x, bytes):
             x = x.decode('utf-8')
 
@@ -51,7 +64,13 @@ class Validator:
                 return f  # return float
             return i  # return int
 
-    def compare(self, app_data, test_data, op=None, **kwargs):
+    def compare(
+        self,
+        app_data: Union[dict, list, str],
+        test_data: Union[dict, list, str],
+        op: Optional[str] = None,
+        **kwargs,
+    ) -> tuple:
         """Compare app_data to test data.
 
         Args:

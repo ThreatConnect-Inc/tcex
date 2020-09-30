@@ -387,6 +387,10 @@ class InstallJson:
             params.setdefault(p.get('name'), p)
         return params
 
+    def has_feature(self, feature):
+        """Return True if App has the provided feature."""
+        return feature.lower() in [f.lower() for f in self.features]
+
     @property
     def optional_params_dict(self):
         """Return params as name/data dict."""
@@ -615,9 +619,14 @@ class InstallJson:
         if os.path.isfile(os.path.join(self._path, 'layout.json')):
             features.append('layoutEnabledApp')
 
-        # re-add other non-standard (optional) features
+        # re-add supported optional features
         for feature in self.features:
-            if feature in ['advancedRequest', 'CALSettings']:
+            if feature in [
+                'advancedRequest',
+                'CALSettings',
+                'webhookResponseMarshall',
+                'webhookServiceEndpoint',
+            ]:
                 features.append(feature)
 
         json_data['features'] = sorted(features)

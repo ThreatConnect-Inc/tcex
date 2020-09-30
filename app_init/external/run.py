@@ -7,7 +7,7 @@ import traceback
 from app_lib import AppLib
 
 
-def run():
+def run() -> None:
     """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules
@@ -35,7 +35,7 @@ def run():
         app.setup()
 
         # run the App logic
-        app.run()
+        app.run()  # pylint: disable=no-member
 
         # perform cleanup/teardown operations
         app.teardown()
@@ -46,7 +46,7 @@ def run():
     except Exception as e:
         main_err = f'Generic Error.  See logs for more details ({e}).'
         tcex.log.error(traceback.format_exc())
-        tcex.playbook.exit(1, main_err)
+        tcex.exit(1, main_err)
 
 
 if __name__ == '__main__':

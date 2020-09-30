@@ -63,7 +63,12 @@ class TiTcRequest:
         params['resultLimit'] = self.result_limit
 
         should_iterate = True
-        result_start = 0
+        result_start = params.get('resultStart', 0)
+        try:
+            result_start = int(result_start)
+        except Exception:
+            result_start = 0
+            self.tcex.log.error('Invalid ResultStart Param. Starting at 0')
         while should_iterate:
             params['resultStart'] = result_start
             r = self._get(url, params=params)
@@ -792,7 +797,7 @@ class TiTcRequest:
         params = {'owner': owner} if owner else {}
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/observations'
-        r = self._post(url, data, params)
+        r = self._post_json(url, data, params)
         self.tcex.log.debug(f'status code: {r.status_code}')
         self.tcex.log.trace(f'url: {r.request.url}')
         return r

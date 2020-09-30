@@ -12,11 +12,11 @@ class TestNotIn:
         validator = not_in(['foo', None])
 
         try:
-            validator('foo', 'test_arg')
+            validator('foo', 'test_arg', 'Test Arg')
             assert False, 'not_in validator should have failed!'
         except ValidationError as v:
             assert (
-                v.message == 'test_arg cannot be in ["foo", None]'
+                v.message == '"Test Arg" (test_arg) cannot be in ["foo", None]'
             ), 'not_in validator raised exception with incorrect message.'
 
     @staticmethod
@@ -25,7 +25,7 @@ class TestNotIn:
         validator = not_in(['foo'])
 
         try:
-            validator('bar', 'test_arg')
+            validator('bar', 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'not_in should not have thrown exception.'
 
@@ -35,11 +35,11 @@ class TestNotIn:
         validator = not_in([[], ''])
 
         try:
-            validator([], 'test_arg')
+            validator([], 'test_arg', 'Test Arg')
             assert False, 'Validator should have failed!'
         except ValidationError as v:
             assert (
-                v.message == 'test_arg cannot be in [[], ""]'
+                v.message == '"Test Arg" (test_arg) cannot be in [[], ""]'
             ), 'not_in validator raised exception with incorrect message.'
 
     @staticmethod
@@ -48,6 +48,6 @@ class TestNotIn:
         validator = not_in([[]])
 
         try:
-            validator(['foo'], 'test_arg')
+            validator(['foo'], 'test_arg', 'Test Arg')
         except ValidationError:
             assert False, 'not_in should not have thrown exception.'

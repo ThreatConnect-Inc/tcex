@@ -264,7 +264,7 @@ class DatetimeUtils:
             dec = math.pow(10, time_input_length)
             time_input = float(time_input) / dec
 
-        if re.compile(r'^[0-9]{9,10}(?:\.[0-9]{0,6})?$').findall(str(time_input)):
+        if re.compile(r'^[0-9]{9,10}(?:\.[0-9]{0,7})?$').findall(str(time_input)):
             dt = datetime.fromtimestamp(float(time_input), tz=pytz.timezone('UTC'))
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():

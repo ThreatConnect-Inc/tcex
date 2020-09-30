@@ -8,11 +8,13 @@ import string
 import uuid
 from typing import Any, List, Optional, Union
 from urllib.parse import urlsplit
+import jmespath
 
 # third-party
 import pyaes
 
 from .date_utils import DatetimeUtils
+from .mitre_attack_utils import MitreAttackUtils
 
 
 class Utils:
@@ -58,6 +60,11 @@ class Utils:
     def datetime(self) -> object:
         """Return an instance of DatetimeUtils."""
         return DatetimeUtils()
+
+    @property
+    def mitre_attack(self) -> object:
+        """Return an instance of MitreAttackUtils."""
+        return MitreAttackUtils()
 
     @staticmethod
     def decrypt_aes_cbc(
@@ -239,18 +246,23 @@ class Utils:
 
         Args:
             request (object): The response.request object.
-            mask_headers (Optional[bool] = True): If True then values for certain header
-                key will be masked.
-            mask_patterns (list[str] = None): A list of patterns if found in headers the value
-                will be masked.
+            mask_headers (Optional[bool] = True): If True then
+                values for certain header key will be masked.
+            mask_patterns (list[str] = None): A list of patterns
+                if found in headers the value will be masked.
+            body_limit (int, kwargs): The size limit for the body value.
             proxies (dict, kwargs): A dict containing the proxy configuration.
             verify (bool, kwargs): If False the curl command will include --insecure flag.
+            write_file (bool, kwargs): If True and the body is
+                binary it will be written as a temp file.
 
         Returns:
             str: The curl command.
         """
+        body_limit: int = kwargs.get('body_limit', 100)
         proxies: dict = kwargs.get('proxies', {})
         verify: bool = kwargs.get('verify', True)
+        write_file: bool = kwargs.get('write_file', False)
 
         # APP-79 - adding the ability to log request as curl commands
         cmd = ['curl', '-X', request.method]
@@ -262,6 +274,7 @@ class Utils:
                     'authorization',
                     'cookie',
                     'password',
+                    'secret',
                     'session',
                     'username',
                     'token',
@@ -291,10 +304,17 @@ class Utils:
             try:
                 if isinstance(body, bytes):
                     body = body.decode('utf-8')
+
+                # truncate body
+                body = self.truncate_string(t_string=body, length=body_limit, append_chars='...')
                 body_data = f'-d "{body}"'
             except Exception:
-                temp_file: str = self.write_temp_binary_file(body)
-                body_data = f'--data-binary @{temp_file}'
+                # set static filename so that when running a large job App thousands of files do
+                # no get created.
+                body_data = '--data-binary @/tmp/body-file'
+                if write_file is True:
+                    temp_file: str = self.write_temp_binary_file(content=body, filename='curl-body')
+                    body_data = f'--data-binary @{temp_file}'
             cmd.append(body_data)
 
         if proxies is not None and proxies.get('https'):
@@ -381,7 +401,10 @@ class Utils:
         Returns:
             str: The truncated string.
         """
-        if t_string in ['', None] or length is None or len(t_string) < length:
+        if not t_string:
+            t_string = ''
+
+        if len(t_string) <= length:
             return t_string
 
         # set sane default for append_chars
@@ -469,3 +492,34 @@ class Utils:
         with open(fqpn, mode) as fh:
             fh.write(content)
         return fqpn
+
+    def mapper(self, data: Union[list, dict], mapping: dict):
+
+        if isinstance(data, dict):
+            data = [data]
+        try:
+            for d in data:
+                mapped_obj = mapping.copy()
+                for key, value in mapping.items():
+                    if isinstance(value, list):
+                        new_list = []
+                        for item in value:
+                            if isinstance(item, dict):
+                                new_list.append(list(self.mapper(d, item))[0])
+                            else:
+                                if not item.startswith('@'):
+                                    new_list.append(item)
+                                else:
+                                    new_list.append(jmespath.search(f'{item}', jmespath.search('@', d)))
+
+                        mapped_obj[key] = new_list
+                    elif isinstance(value, dict):
+                        mapped_obj[key] = list(self.mapper(d, mapped_obj[key]))[0]
+                    else:
+                        if not value.startswith('@'):
+                            mapped_obj[key] = value
+                        else:
+                            mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
+                yield mapped_obj
+        except Exception:  # pylint: disable=bare-except
+            pass

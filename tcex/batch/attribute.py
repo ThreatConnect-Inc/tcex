@@ -1,6 +1,7 @@
 """ThreatConnect Batch Import Module"""
 # standard library
 import json
+from typing import Callable, Optional
 
 
 class Attribute:
@@ -8,17 +9,23 @@ class Attribute:
 
     __slots__ = ['_attribute_data', '_valid']
 
-    def __init__(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
+    def __init__(
+        self,
+        attr_type: str,
+        attr_value: str,
+        displayed: Optional[bool] = False,
+        source: Optional[str] = None,
+        formatter: Optional[Callable[[str], str]] = None,
+    ) -> None:
         """Initialize Class Properties.
 
         Args:
-            attr_type (str): The ThreatConnect defined attribute type.
-            attr_value (str): The value for this attribute.
-            displayed (bool, default:false): If True the supported attribute will be marked for
-                display.
-            source (str, optional): The source value for this attribute.
-            formatter (method, optional): A method that take a single attribute value and return a
-                single formatted value.
+            attr_type: The ThreatConnect defined attribute type.
+            attr_value: The value for this attribute.
+            displayed: If True the supported attribute will be marked for display.
+            source: The source value for this attribute.
+            formatter: A callable that take a single attribute
+                value and return a single formatted value.
         """
         self._attribute_data = {'type': attr_type}
         if displayed:
@@ -37,45 +44,45 @@ class Attribute:
             self._valid = False
 
     @property
-    def data(self):
+    def data(self) -> dict:
         """Return Attribute data."""
         return self._attribute_data
 
     @property
-    def displayed(self):
+    def displayed(self) -> bool:
         """Return Attribute displayed."""
         return self._attribute_data.get('displayed')
 
     @displayed.setter
-    def displayed(self, displayed):
+    def displayed(self, displayed: bool):
         """Set Attribute displayed."""
         self._attribute_data['displayed'] = displayed
 
     @property
-    def source(self):
+    def source(self) -> str:
         """Return Attribute source."""
         return self._attribute_data.get('source')
 
     @source.setter
-    def source(self, source):
+    def source(self, source: str):
         """Set Attribute source."""
         self._attribute_data['source'] = source
 
     @property
-    def type(self):
+    def type(self) -> str:
         """Return attribute value."""
         return self._attribute_data.get('type')
 
     @property
-    def valid(self):
+    def valid(self) -> bool:
         """Return valid value."""
         return self._valid
 
     @property
-    def value(self):
+    def value(self) -> str:
         """Return attribute value."""
         return self._attribute_data.get('value')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)

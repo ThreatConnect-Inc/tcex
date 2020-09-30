@@ -7,7 +7,7 @@ from app_lib import AppLib
 
 
 # pylint: disable=no-member
-def run():
+def run() -> None:
     """Update path and run the App."""
 
     # update the path to ensure the App has access to required modules
@@ -40,7 +40,7 @@ def run():
     except Exception as e:
         main_err = f'Generic Error.  See logs for more details ({e}).'
         tcex.log.error(traceback.format_exc())
-        tcex.playbook.exit(1, main_err)
+        tcex.exit(1, main_err)
 
 
 if __name__ == '__main__':

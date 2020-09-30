@@ -67,7 +67,8 @@ class TestAttributes:
         batch.save(ti)
 
         # add same indicator again ensuring that previously created indicator is returned
-        assert ti.file_content == group_data.get('file_content')(group_data.get('xid'))
+        file_content = ti.file_data.get('fileContent')(ti.xid)
+        assert file_content == group_data.get('file_content')(group_data.get('xid'))
 
     @staticmethod
     def test_batch_indicator_existing(request, tcex):

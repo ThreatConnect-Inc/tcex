@@ -56,6 +56,7 @@ class TestCase:
     session = Session()
     tcex = None
     tcex_testing_context = None
+    use_token = True
     utils = Utils()
 
     def _reset_property_flags(self):
@@ -209,13 +210,14 @@ class TestCase:
             }
 
             # try to use token when possible
-            token = os.getenv('TC_TOKEN', self.tc_token)
-            if token is not None:
-                # if token was successfully retrieved from TC use token and remove hmac values
-                self._default_args['tc_token'] = token
-                self._default_args['tc_token_expires'] = '1700000000'
-                del self._default_args['api_access_id']
-                del self._default_args['api_secret_key']
+            if self.use_token is True:
+                token = os.getenv('TC_TOKEN', self.tc_token)
+                if token is not None:
+                    # if token was successfully retrieved from TC use token and remove hmac values
+                    self._default_args['tc_token'] = token
+                    self._default_args['tc_token_expires'] = int(time.time()) + 3600
+                    del self._default_args['api_access_id']
+                    del self._default_args['api_secret_key']
         return self._default_args
 
     def init_profile(self, profile_name, pytestconfig=None, monkeypatch=None, options=None):
@@ -382,9 +384,9 @@ class TestCase:
 
         # initialize new validator instance
         self._validator = self.validator_init()
+
         # Adding this for batch to created the -batch and errors files
-        with open(os.path.join(self.test_case_log_test_dir, 'DEBUG'), 'w+') as fp:
-            fp.close()
+        os.makedirs(os.path.join(self.test_case_log_test_dir, 'DEBUG'), exist_ok=True)
 
     @property
     def stager(self):
@@ -432,13 +434,14 @@ class TestCase:
 
         # determine the token type
         token_type = 'api'
-        if self.ij.runtime_level.lower() in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]:
-            data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '441')}
-            token_type = 'svc'
+        # per conversation with Marut, we should be able to just use api tokens
+        # if self.ij.runtime_level.lower() in [
+        #     'apiservice',
+        #     'triggerservice',
+        #     'webhooktriggerservice',
+        # ]:
+        #     data = {'serviceId': os.getenv('TC_TOKEN_SVC_ID', '441')}
+        #     token_type = 'svc'
 
         # retrieve token from API using HMAC auth
         r = self.session_exchange.post(f'{token_url_path}/{token_type}', json=data, verify=True)

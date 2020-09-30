@@ -6,7 +6,6 @@ import os
 import socketserver
 import sys
 import time
-from base64 import b64decode, b64encode
 from threading import Event, Thread
 from typing import Optional
 from urllib.parse import parse_qs, urlparse
@@ -140,9 +139,13 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         content_length = int(self.headers.get('content-length', 0))
         if content_length:
             body = self.rfile.read(content_length)
-            if body:
-                body = b64encode(body)
             self.server.test_case.redis_client.hset(request_key, 'request.body', body)
+
+        request_url = self.headers.get('Host', 'http://localhost:8042')
+
+        if request_url and not request_url.startswith(('http://', 'https://')):
+            request_url = f'https://{request_url}'
+
         return {
             'apiToken': self.server.test_case.tc_token,
             'appId': 95,
@@ -154,6 +157,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
             'path': url_parts.path,
             'queryParams': params,
             'requestKey': request_key,
+            'requestUrl': request_url,
+            'remoteAddress': '127.0.0.1',
         }
 
     def _build_response(self, response: Optional[dict] = None) -> None:
@@ -200,7 +205,6 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         # body
         body = self.server.test_case.redis_client.hget(response.get('requestKey'), 'response.body')
         if body is not None:
-            body = b64decode(body)
             self.wfile.write(body)
 
     def call_service(self, method: str):  # pylint: disable=useless-return
@@ -251,13 +255,11 @@ class TestCaseApiService(TestCaseServiceCommon):
 
     api_service_host = os.getenv('API_SERVICE_HOST', 'localhost')
     api_service_port = int(os.getenv('API_SERVICE_PORT', '8042'))
+    api_server = None
     stop_server = False
 
     def on_message(self, client, userdata, message):  # pylint: disable=unused-argument
         """Handle message broker on_message shutdown command events."""
-        # if message.topic != self.server_topic:
-        #     return
-
         try:
             m = json.loads(message.payload)
         except ValueError:
@@ -298,8 +300,8 @@ class TestCaseApiService(TestCaseServiceCommon):
 
     def setup_method(self):
         """Run before each test method runs."""
-        api_server = ApiServer(self, (self.api_service_host, self.api_service_port))
-        api_server.listen()
+        self.api_server = ApiServer(self, (self.api_service_host, self.api_service_port))
+        self.api_server.listen()
 
         # subscribe to server topic
         self.message_broker.client.subscribe(self.server_topic)
@@ -310,6 +312,11 @@ class TestCaseApiService(TestCaseServiceCommon):
         )
 
         super().setup_method()
+
+    def teardown_method(self):
+        """Run after each test method runs."""
+        self.api_server.server_close()
+        super().teardown_method()
 
     @property
     def test_client(self):

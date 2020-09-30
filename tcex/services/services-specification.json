@@ -1,0 +1,1537 @@
+{
+  "components": {
+    "responses": {
+      "CreateConfigResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateConfigAcknowledged"
+            }
+          }
+        },
+        "description": "A response to a CreateConfig command."
+      },
+      "DeleteConfigResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteConfigAcknowledged"
+            }
+          }
+        },
+        "description": "A response to a DeleteConfig command."
+      },
+      "RunServiceResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/WebhookEventAcknowledged"
+            }
+          }
+        },
+        "description": "A response to a RunService command."
+      },
+      "ShutdownResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ShutdownAcknowledged"
+            }
+          }
+        },
+        "description": "A response to a DeleteConfig command."
+      },
+      "WebhookEventResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RunServiceAcknowledged"
+            }
+          }
+        },
+        "description": "A response to a RunService command."
+      }
+    },
+    "schemas": {
+      "CreateConfig-custom": {
+        "description": "The CreateConfig command sent when a Playbook using a CustomTrigger Service is enabled.",
+        "example": {
+          "apiToken": "SVC:8:QQu...............................................................9v=",
+          "appId": 387,
+          "command": "CreateConfig",
+          "config": {
+            "cc_action": "pass",
+            "password": "test-pass",
+            "tc_playbook_out_variables": "#Trigger:1:testing.body!String",
+            "username": "test-user"
+          },
+          "expireSeconds": 1596817138,
+          "triggerId": 1
+        },
+        "properties": {
+          "apiToken": {
+            "description": "An API token for the current Playbook being enabled. This token can be used for subsequent API call to the ThreatConnect API and would already have permission for the Organization of the Playbook.",
+            "type": "string"
+          },
+          "appId": {
+            "description": "The global ID of the App (trigger).",
+            "format": "int32",
+            "type": "integer"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "config": {
+            "description": "The Playbook args/inputs. The contents of this object is depdent on the inputs defined in the install.json file (excluding ServiceConfig items).",
+            "properties": {
+              "cc_action": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "tc_playbook_out_variables": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          },
+          "expireSeconds": {
+            "description": "The epoch time of when the apiToken will expire. Used in the token thread to automatically renew the token.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "apiToken",
+          "appId",
+          "command",
+          "config",
+          "expireSeconds"
+        ],
+        "title": "Root Type for CreateConfig",
+        "type": "object"
+      },
+      "CreateConfig-webhook": {
+        "description": "The CreateConfig command sent when a Playbook using a Webhook Trigger Service is enabled.",
+        "example": {
+          "apiToken": "SVC:8:QQu...............................................................9v=",
+          "appId": 387,
+          "command": "CreateConfig",
+          "config": {
+            "cc_action": "pass",
+            "password": "test-pass",
+            "tc_playbook_out_variables": "#Trigger:1:testing.body!String",
+            "username": "test-user"
+          },
+          "expireSeconds": 1596817138,
+          "triggerId": 1,
+          "url": "https://my-tc.example/api/playbook/b964681e-b045-4ccb-b3be-ff25e19bbe9d"
+        },
+        "properties": {
+          "apiToken": {
+            "description": "An API token for the current Playbook being enabled. This token can be used for subsequent API call to the ThreatConnect API and would already have permission for the Organization of the Playbook.",
+            "type": "string"
+          },
+          "appId": {
+            "description": "The global ID of the App (trigger).",
+            "format": "int32",
+            "type": "integer"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "config": {
+            "description": "The Playbook args/inputs. The contents of this object is depdent on the inputs defined in the install.json file (excluding ServiceConfig items).",
+            "properties": {
+              "cc_action": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "tc_playbook_out_variables": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          },
+          "expireSeconds": {
+            "description": "The epoch time of when the apiToken will expire. Used in the token thread to automatically renew the token.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "url": {
+            "description": "The unique URL for the currrent webhook trigger.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "apiToken",
+          "appId",
+          "command",
+          "config",
+          "expireSeconds",
+          "triggerId",
+          "url"
+        ],
+        "title": "Root Type for CreateConfig",
+        "type": "object"
+      },
+      "CreateConfigAcknowledged": {
+        "description": "An acknowledge command for the CreateConfig command.",
+        "example": {
+          "command": "Acknowledged",
+          "logFile": "20200827/create-config-1.log",
+          "message": "Config created",
+          "status": "Success",
+          "triggerId": 1,
+          "type": "CreateConfig"
+        },
+        "properties": {
+          "command": {
+            "description": "The current type.",
+            "type": "string"
+          },
+          "logFile": {
+            "description": "A relative path from the App log directory. This path will be used on the core side to provide a download link to users in case of a failure during the initialization of the Playbook config.",
+            "type": "string"
+          },
+          "message": {
+            "description": "A response message describing the status of the messsage. This value is displayed in the UI to a user if the status is \"Failed\".",
+            "type": "string"
+          },
+          "status": {
+            "description": "The status of the command, Success during normal processing of the command or Failed if any errors are encountered.",
+            "enum": [
+              "Success",
+              "Failed"
+            ],
+            "type": "string"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": {
+            "description": "The command type for this \"Acknowledged\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "logFile",
+          "command",
+          "message",
+          "status",
+          "triggerId",
+          "type"
+        ],
+        "title": "Root Type for CreateConfigResponse",
+        "type": "object"
+      },
+      "DeleteConfig": {
+        "description": "The DeleteConfig command sent when a Playbook using a Trigger Service is disabled.",
+        "example": {
+          "appId": 387,
+          "command": "DeleteConfig",
+          "triggerId": 1
+        },
+        "properties": {
+          "appId": {
+            "description": "The global ID of the App (trigger).",
+            "format": "int32",
+            "type": "integer"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "appId",
+          "command",
+          "triggerId"
+        ],
+        "title": "Root Type for DeleteConfig",
+        "type": "object"
+      },
+      "DeleteConfigAcknowledged": {
+        "description": "An acknowledge command for the DeleteConfig command.",
+        "example": {
+          "command": "Acknowledged",
+          "message": "Delete created",
+          "status": "Success",
+          "triggerId": 1,
+          "type": "DeleteConfig"
+        },
+        "properties": {
+          "command": {
+            "description": "The current type.",
+            "type": "string"
+          },
+          "message": {
+            "description": "A response message describing the status of the messsage. This value is current unused.",
+            "type": "string"
+          },
+          "status": {
+            "description": "The status of the command, Success during normal processing of the command or Failed if any errors are encountered.",
+            "enum": [
+              "Success",
+              "Failed"
+            ],
+            "type": "string"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": {
+            "description": "The command type for this \"Acknowledged\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "triggerId",
+          "type",
+          "status"
+        ],
+        "title": "Root Type for DeleteConfigResponse",
+        "type": "object"
+      },
+      "FireEvent": {
+        "description": "The command sent from the Trigger Service to inform core to launch a single Playbook. A Service can send one or more FireEvent commands per event.",
+        "example": {
+          "command": "FireEvent",
+          "sessionId": "2950cb5f-9ed4-4e51-ab59-6a30ffc0cb7c",
+          "triggerId": "3454"
+        },
+        "properties": {
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "sessionId": {
+            "description": "The unique session ID (aka playbook context) generated for this single playbook execution.",
+            "type": "string"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "triggerId",
+          "sessionId"
+        ],
+        "title": "Root Type for FireEvent",
+        "type": "object"
+      },
+      "Heartbeat-Client": {
+        "description": "",
+        "example": {
+          "command": "Heartbeat",
+          "metric": {
+            "Errors": 0,
+            "Requests": 5,
+            "Responses": 5
+          }
+        },
+        "properties": {
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "metric": {
+            "description": "An object containing metrics to report back to Core (soft limit of 4). These metrics will be displayed on the service page.",
+            "properties": {
+              "Errors": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "Requests": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "Responses": {
+                "format": "int32",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "required": [
+          "command",
+          "metric"
+        ],
+        "title": "Root Type for Heartbeat-Client",
+        "type": "object"
+      },
+      "Heartbeat-Server": {
+        "description": "Server command to indicate server is still available.",
+        "example": {
+          "command": "Heartbeat",
+          "cpuPercent": 0,
+          "memoryPercent": 0,
+          "metric": {}
+        },
+        "properties": {
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "cpuPercent": {
+            "description": "Unused",
+            "format": "int32",
+            "type": "integer"
+          },
+          "memoryPercent": {
+            "description": "Unused",
+            "format": "int32",
+            "type": "integer"
+          },
+          "metric": {
+            "description": "Unused",
+            "type": "object"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "Root Type for Heartbeat-Server",
+        "type": "object"
+      },
+      "Ready": {
+        "description": "Client command to indicate the service is ready.",
+        "example": {
+          "command": "Ready",
+          "discoveryTypes": []
+        },
+        "properties": {
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "discoveryTypes": {
+            "description": "The discovery types for the current API service as defined in the service.discoveryTypes field of the install.json file. Not all API services will have a discovery type.",
+            "enum": [
+              "GraphAPI",
+              "KeyChainAPI",
+              "DetailsAPI",
+              "EnrichAPI"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "Root Type for Ready",
+        "type": "object"
+      },
+      "RunService": {
+        "description": "Command from server containing request data to be processed. The body of the data is stored in the KV Store and referenced by bodyVariable.",
+        "example": {
+          "apiToken": "SVC:8:QQu...............................................................9v=",
+          "appId": 95,
+          "bodyVariable": "request.body",
+          "command": "RunService",
+          "expireSeconds": 1596670377,
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "User-Agent",
+              "value": "PostmanRuntime/7.26.2"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            },
+            {
+              "name": "X-Forwarded-Proto",
+              "value": "https"
+            },
+            {
+              "name": "Host",
+              "value": "int-tc-50.tci.ninja"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Timestamp",
+              "value": "1596664977"
+            },
+            {
+              "name": "Authorization",
+              "value": "TC 22222222222222222222:eYOtsNU1FqdVmebMzs+F4gaicYTc9rO4r4McQXyQVQI="
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            },
+            {
+              "name": "X-Forwarded-For",
+              "value": "10.9.14.3"
+            },
+            {
+              "name": "Postman-Token",
+              "value": "4eeea8eb-b16d-4604-9197-be4e3752a5fa"
+            },
+            {
+              "name": "X-Real-IP",
+              "value": "10.9.14.3"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "method": "GET",
+          "path": "data",
+          "queryParams": [
+            {
+              "name": "max",
+              "value": "1000"
+            }
+          ],
+          "requestKey": "c29927c8-b94d-4116-a397-e6eb7002f41c"
+        },
+        "properties": {
+          "apiToken": {
+            "description": "An API token for the current Playbook being enabled. This token can be used for subsequent API call to the ThreatConnect API and would already have permission for the Organization of the Playbook.",
+            "type": "string"
+          },
+          "appId": {
+            "description": "The global ID of the App (trigger).",
+            "format": "int32",
+            "type": "integer"
+          },
+          "bodyVariable": {
+            "description": "The name of the body field to be retrieved from Redis. The retrieved value will be stored as bytes.",
+            "type": "string"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "expireSeconds": {
+            "description": "The epoch time of when the apiToken will expire. Used in the token thread to automatically renew the token.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "headers": {
+            "description": "The HTTP headers for the request.",
+            "items": {},
+            "type": "array"
+          },
+          "method": {
+            "description": "The HTTP method.",
+            "type": "string"
+          },
+          "path": {
+            "description": "The path part of the HTTP request specifically for the service. For the URL \"https://my-tc.example/api/services/testing/v1/data\" the path value would be \"data\". The \"testing\" value of the URL is define in the install.json and can be updated by configuration. The \"v1\" portion is automatically added by core based on the major version number of the programVersion field of the install.json. The \"data\" portion is the specific path defined in the App.",
+            "type": "string"
+          },
+          "queryParams": {
+            "description": "The HTTP query parameters for the request.",
+            "items": {},
+            "type": "array"
+          },
+          "requestKey": {
+            "description": "A unique key for the current request. This key will be returned in the response.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "requestKey",
+          "queryParams",
+          "path",
+          "method",
+          "headers",
+          "expireSeconds",
+          "bodyVariable"
+        ],
+        "title": "Root Type for RunService",
+        "type": "object"
+      },
+      "RunServiceAcknowledged": {
+        "description": "",
+        "example": {
+          "bodyVariable": "response.body",
+          "command": "Acknowledged",
+          "headers": [
+            {
+              "name": "x-cache",
+              "value": "MISS"
+            },
+            {
+              "name": "x-ratelimit-limit",
+              "value": "2"
+            },
+            {
+              "name": "x-ratelimit-remaining",
+              "value": "0"
+            },
+            {
+              "name": "x-ratelimit-reset",
+              "value": "1596746803"
+            },
+            {
+              "name": "retry-after",
+              "value": "20"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            },
+            {
+              "name": "vary",
+              "value": "Accept"
+            },
+            {
+              "name": "content-length",
+              "value": "102"
+            }
+          ],
+          "requestKey": "97190c5a-05e7-493d-8cb5-33844190eb72",
+          "status": "Too Many Requests",
+          "statusCode": "429",
+          "type": "RunService"
+        },
+        "properties": {
+          "bodyVariable": {
+            "description": "The name of the body field to be retrieved from Redis. The retrieved value will be stored as bytes.",
+            "type": "string"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "headers": {
+            "description": "The HTTP headers for the reponse.",
+            "items": {},
+            "type": "array"
+          },
+          "requestKey": {
+            "description": "The unique key from the request.",
+            "type": "string"
+          },
+          "status": {
+            "description": "The HTTP status message for the response.",
+            "type": "string"
+          },
+          "statusCode": {
+            "description": "The HTTP status code for the response.",
+            "type": "string"
+          },
+          "type": {
+            "description": "The command type for this \"Acknowledged\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bodyVariable",
+          "command",
+          "headers",
+          "requestKey",
+          "status",
+          "statusCode",
+          "type"
+        ],
+        "title": "Root Type for RunServiceResponse",
+        "type": "object"
+      },
+      "Shutdown": {
+        "description": "",
+        "example": {
+          "appId": 95,
+          "command": "Shutdown"
+        },
+        "properties": {
+          "appId": {
+            "description": "The global ID of the App (trigger).",
+            "format": "int32",
+            "type": "integer"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "appId"
+        ],
+        "title": "Root Type for Shutdown",
+        "type": "object"
+      },
+      "ShutdownAcknowledged": {
+        "description": "",
+        "example": {
+          "command": "Acknowledged",
+          "type": "Shutdown"
+        },
+        "properties": {
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "type": {
+            "description": "The command type for this \"Acknowledged\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "type"
+        ],
+        "title": "Root Type for ShutdownServiceResponse",
+        "type": "object"
+      },
+      "WebhookEvent": {
+        "description": "",
+        "example": {
+          "apiToken": "SVC:8:QQu...............................................................9v=",
+          "appId": 387,
+          "command": "WebhookEvent",
+          "expireSeconds": 1596817629,
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            },
+            {
+              "name": "X-Forwarded-Proto",
+              "value": "https"
+            },
+            {
+              "name": "Sec-Fetch-Dest",
+              "value": "document"
+            },
+            {
+              "name": "Sec-Fetch-Site",
+              "value": "none"
+            },
+            {
+              "name": "Host",
+              "value": "int-tc-50.tci.ninja"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "dnt",
+              "value": "1"
+            },
+            {
+              "name": "Sec-Fetch-Mode",
+              "value": "navigate"
+            },
+            {
+              "name": "Upgrade-Insecure-Requests",
+              "value": "1"
+            },
+            {
+              "name": "X-Forwarded-For",
+              "value": "10.9.14.3"
+            },
+            {
+              "name": "Sec-Fetch-User",
+              "value": "?1"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            },
+            {
+              "name": "X-Real-IP",
+              "value": "10.9.14.3"
+            }
+          ],
+          "method": "GET",
+          "queryParams": [
+            {
+              "name": "registration",
+              "value": "true"
+            }
+          ],
+          "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
+          "triggerId": 1
+        },
+        "properties": {
+          "apiToken": {
+            "description": "An API token for the current Playbook being enabled. This token can be used for subsequent API call to the ThreatConnect API and would already have permission for the Organization of the Playbook.",
+            "type": "string"
+          },
+          "appId": {
+            "description": "The global ID of the App (trigger).",
+            "format": "int32",
+            "type": "integer"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "expireSeconds": {
+            "description": "The epoch time of when the apiToken will expire. Used in the token thread to automatically renew the token.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "headers": {
+            "description": "The HTTP headers for the request.",
+            "items": {
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "method": {
+            "description": "The HTTP method.",
+            "type": "string"
+          },
+          "queryParams": {
+            "description": "The HTTP query parameters for the request.",
+            "items": {
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "requestKey": {
+            "description": "A unique key for the current request. This key will be returned in the response.",
+            "type": "string"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "Root Type for WebhookEvent",
+        "type": "object"
+      },
+      "WebhookEventAcknowledged": {
+        "description": "",
+        "example": {
+          "command": "Acknowledged",
+          "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
+          "triggerId": 1,
+          "type": "WebhookEvent"
+        },
+        "properties": {
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "requestKey": {
+            "description": "The unique key from the request.",
+            "type": "string"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": {
+            "description": "The command type for this \"Acknowledged\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "type",
+          "triggerId",
+          "requestKey"
+        ],
+        "title": "Root Type for WebhookEventAcknowledged",
+        "type": "object"
+      },
+      "WebhookEventResponse": {
+        "description": "",
+        "example": {
+          "bodyVariable": "response.body",
+          "command": "WebhookEventResponse",
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ],
+          "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
+          "sessionId": "b22cf702-bb44-4a64-bc2a-9d67ec3a2b2e",
+          "statusCode": 200,
+          "triggerId": 1
+        },
+        "properties": {
+          "bodyVariable": {
+            "description": "The name of the body field to be retrieved from Redis. The retrieved value will be stored as base64.",
+            "type": "string"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "headers": {
+            "description": "The HTTP headers for the reponse.",
+            "items": {},
+            "type": "array"
+          },
+          "requestKey": {
+            "description": "The unique key from the request.",
+            "type": "string"
+          },
+          "sessionId": {
+            "description": "The unique session ID (aka playbook context) generated for this single playbook execution.",
+            "type": "string"
+          },
+          "statusCode": {
+            "description": "The HTTP status code for the response.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "triggerId",
+          "statusCode",
+          "sessionId",
+          "requestKey",
+          "headers",
+          "command",
+          "bodyVariable"
+        ],
+        "title": "Root Type for WebhookEventResponse",
+        "type": "object"
+      },
+      "WebhookMarshallEvent": {
+        "description": "",
+        "example": {
+          "appId": 95,
+          "bodyVariable": "request.body",
+          "command": "WebhookMarshallEvent",
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "User-Agent",
+              "value": "PostmanRuntime/7.26.2"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            },
+            {
+              "name": "X-Forwarded-Proto",
+              "value": "https"
+            },
+            {
+              "name": "Host",
+              "value": "int-tc-50.tci.ninja"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Timestamp",
+              "value": "1596664977"
+            },
+            {
+              "name": "Authorization",
+              "value": "TC 22222222222222222222:eYOtsNU1FqdVmebMzs+F4gaicYTc9rO4r4McQXyQVQI="
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            },
+            {
+              "name": "X-Forwarded-For",
+              "value": "10.9.14.3"
+            },
+            {
+              "name": "Postman-Token",
+              "value": "4eeea8eb-b16d-4604-9197-be4e3752a5fa"
+            },
+            {
+              "name": "X-Real-IP",
+              "value": "10.9.14.3"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "requestKey": "c29927c8-b94d-4116-a397-e6eb7002f41c",
+          "statusCode": 200,
+          "triggerId": 1234
+        },
+        "properties": {
+          "appId": {
+            "description": "The global ID of the App (trigger).",
+            "format": "int32",
+            "type": "integer"
+          },
+          "bodyVariable": {
+            "description": "The name of the body field to be retrieved from Redis. The retrieved value will be stored as base64.",
+            "type": "string"
+          },
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "headers": {
+            "description": "The HTTP headers for the reponse.",
+            "items": {},
+            "type": "array"
+          },
+          "requestKey": {
+            "description": "The unique key from the request.",
+            "type": "string"
+          },
+          "statusCode": {
+            "description": "The HTTP status code for the response.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "appId",
+          "bodyVariable",
+          "command",
+          "headers",
+          "requestKey",
+          "statusCode",
+          "triggerId"
+        ],
+        "title": "Root Type for WebhookMarshallEvent",
+        "type": "object"
+      },
+      "WebhookMarshallResponseAcknowledge": {
+        "description": "",
+        "example": {
+          "command": "Acknowledged",
+          "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
+          "triggerId": 1,
+          "type": "WebhookMarshallResponse"
+        },
+        "properties": {
+          "command": {
+            "description": "The command type.",
+            "type": "string"
+          },
+          "requestKey": {
+            "description": "The unique key from the request.",
+            "type": "string"
+          },
+          "triggerId": {
+            "description": "The unique ID of the Playbook/Trigger.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": {
+            "description": "The command type for this \"Acknowledged\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "requestKey",
+          "triggerId",
+          "type"
+        ],
+        "title": "Root Type for WebhookMarshallResponseAcknowledge",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Service command definitions.\n\n* Server = Core\n* Client = Service App",
+    "title": "Services",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/api/client/Heartbeat": {
+      "description": "The client sends a heartbeat following each heartbeat received by Core.",
+      "post": {
+        "operationId": "apiClientHeartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat-Client"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "API Service"
+        ]
+      },
+      "summary": "Client -> heartbeat sent to \"tc_svc_client_topic\" topic."
+    },
+    "/api/client/Ready": {
+      "description": "The client sends a Ready command after fully initializing.",
+      "post": {
+        "operationId": "apiClientReady",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ready"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "API Service"
+        ]
+      },
+      "summary": "Client -> Ready command sent to \"tc_svc_client_topic\" topic to indicate that the service is ready to accept requests."
+    },
+    "/api/server/Heartbeat": {
+      "description": "The server sends a heartbeat to the client on a defined schedule.",
+      "post": {
+        "operationId": "apiServerHeartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat-Server"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "API Service"
+        ]
+      },
+      "summary": "Server -> heartbeat sent to \"tc_svc_server_topic\" topic."
+    },
+    "/api/server/RunService": {
+      "description": "The server sends a RunService command on any inbound requests.",
+      "post": {
+        "operationId": "apiServerRunService",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunService"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RunServiceResponse"
+          }
+        },
+        "tags": [
+          "API Service"
+        ]
+      },
+      "summary": "Server -> run service command sent to \"tc_svc_sever_topic\" topic."
+    },
+    "/api/server/Shutdown": {
+      "post": {
+        "operationId": "apiServerShutdown",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shutdown"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ShutdownResponse"
+          }
+        },
+        "tags": [
+          "API Service"
+        ]
+      }
+    },
+    "/custom/client/FireEvent": {
+      "post": {
+        "operationId": "customClientFireEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FireEvent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "Custom Service"
+        ]
+      }
+    },
+    "/custom/client/Heartbeat": {
+      "description": "The client sends a heartbeat following each heartbeat received by Core.",
+      "post": {
+        "operationId": "customClientHeartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat-Client"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "Custom Service"
+        ]
+      },
+      "summary": "Client -> heartbeat sent to \"tc_svc_client_topic\" topic."
+    },
+    "/custom/server/CreateConfig": {
+      "post": {
+        "operationId": "customServerCreateConfig",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConfig-custom"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CreateConfigResponse"
+          }
+        },
+        "tags": [
+          "Custom Service"
+        ]
+      }
+    },
+    "/custom/server/DeleteConfig": {
+      "post": {
+        "operationId": "customServerDeleteConfig",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DeleteConfigResponse"
+          }
+        },
+        "tags": [
+          "Custom Service"
+        ]
+      }
+    },
+    "/custom/server/Heartbeat": {
+      "post": {
+        "operationId": "customServerHeartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat-Server"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "Custom Service"
+        ]
+      }
+    },
+    "/custom/server/Shutdown": {
+      "post": {
+        "operationId": "customServerShutdown",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shutdown"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ShutdownResponse"
+          }
+        },
+        "tags": [
+          "Custom Service"
+        ]
+      }
+    },
+    "/webhook/client/Heartbeat": {
+      "post": {
+        "operationId": "webhookClientHeartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat-Client"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "Webhook Service"
+        ]
+      }
+    },
+    "/webhook/server/CreateConfig": {
+      "post": {
+        "operationId": "webhookServerCreateConfig",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConfig-webhook"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CreateConfigResponse"
+          }
+        },
+        "tags": [
+          "Webhook Service"
+        ]
+      }
+    },
+    "/webhook/server/DeleteConfig": {
+      "post": {
+        "operationId": "webhookServerDeleteConfig",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DeleteConfigResponse"
+          }
+        },
+        "tags": [
+          "Webhook Service"
+        ]
+      }
+    },
+    "/webhook/server/Heartbeat": {
+      "post": {
+        "operationId": "webhookServerHeartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat-Server"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No acknowledge is sent for the command."
+          }
+        },
+        "tags": [
+          "Webhook Service"
+        ]
+      }
+    },
+    "/webhook/server/Shutdown": {
+      "post": {
+        "operationId": "webhookServerShutdown",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shutdown"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ShutdownResponse"
+          }
+        },
+        "tags": [
+          "Webhook Service"
+        ]
+      }
+    },
+    "/webhook/server/WebhookEvent": {
+      "description": "",
+      "post": {
+        "operationId": "webhookServerWebhookEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/WebhookEventResponse"
+          }
+        },
+        "tags": [
+          "Webhook Service"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "Commands for API Services",
+      "name": "API Service"
+    },
+    {
+      "description": "Commands for Custom Services",
+      "name": "Custom Service"
+    },
+    {
+      "description": "Commands for Webhook Services",
+      "name": "Webhook Service"
+    }
+  ]
+}

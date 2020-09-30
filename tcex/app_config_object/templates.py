@@ -313,12 +313,7 @@ class DownloadTemplates(TemplateBase):
             overwrite='prompt',
             default_choice='no',
         )
-        self.download_file(
-            f'{self.url}/app_lib.py',
-            destination='app_lib.py',
-            overwrite='prompt',
-            default_choice='no',
-        )
+        self.download_file(f'{self.url}/app_lib.py', destination='app_lib.py', overwrite=True)
         if template and not template.startswith('external'):
             self.download_file(
                 f'{self.url}/{template}/args.py',

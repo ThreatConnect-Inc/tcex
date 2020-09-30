@@ -8,12 +8,12 @@ import inspect
 class Validate:
     """Validate base class for App output validation."""
 
-    def __init__(self, validator):
+    def __init__(self, validator: object):
         """Initialize class properties."""
         self.validator = validator
 
     @staticmethod
-    def validate_outputs(app_outputs, profile_outputs):
+    def validate_outputs(app_outputs: list, profile_outputs: dict) -> None:
         """Assert outputs match."""
         if not isinstance(app_outputs, list) or not isinstance(profile_outputs, dict):
             assertion_error = (
@@ -33,7 +33,7 @@ class Validate:
             )
             assert False, assertion_error
 
-    def validate(self, output_variables):
+    def validate(self, output_variables: dict) -> None:
         """Validate Redis output data."""
         if output_variables is None:
             return
@@ -50,7 +50,7 @@ class Validate:
             else:
                 self.dynamic_output_variable(k, dict(v))
 
-    def dynamic_output_variable(self, variable, data):
+    def dynamic_output_variable(self, variable: str, data: dict) -> None:
         """Assert for dynamic output variables."""
         expected_output = data.pop('expected_output')
         op = data.pop('op', '=')
@@ -60,7 +60,7 @@ class Validate:
         assert passed, assert_error
     % for data in output_data:
 
-    def ${data['method']}(self, variable, data):
+    def ${data['method']}(self, variable: str, data: dict) -> None:
         """Assert for ${data['variable']}."""
         expected_output = data.pop('expected_output')
         op = data.pop('op', '=')

@@ -949,3 +949,8 @@ class Profile:
     def webhook_event(self):
         """Return webhook event dict."""
         return self.data.get('webhook_event', {})
+
+    @property
+    def webhook_marshall_event(self):
+        """Return webhook event dict."""
+        return self.data.get('webhook_marshall_event', {})
