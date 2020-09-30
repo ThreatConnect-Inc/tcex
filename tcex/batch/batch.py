@@ -2098,7 +2098,7 @@ class Batch:
             # get timestamp as a string without decimal place and consistent length
             timestamp = str(int(time.time() * 10000000))
             error_json_file = os.path.join(self.debug_path_batch, f'errors-{timestamp}.json.gz')
-            with gzip.open(error_json_file, 'w') as fh:
+            with gzip.open(error_json_file, mode='wt', encoding='utf-8') as fh:
                 json.dump(errors, fh)
 
     def write_batch_json(self, content: dict) -> None:
@@ -2107,7 +2107,7 @@ class Batch:
             # get timestamp as a string without decimal place and consistent length
             timestamp = str(int(time.time() * 10000000))
             batch_json_file = os.path.join(self.debug_path_batch, f'batch-{timestamp}.json.gz')
-            with gzip.open(batch_json_file, 'w') as fh:
+            with gzip.open(batch_json_file, mode='wt', encoding='utf-8') as fh:
                 json.dump(content, fh)
 
     @property
