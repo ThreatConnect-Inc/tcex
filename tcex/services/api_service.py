@@ -166,9 +166,11 @@ class ApiService(CommonService):
         body = None
         try:
             # read body from redis
+            print('body: ', message.get('bodyVariable'))
             body_variable: str = message.pop('bodyVariable')
             if body_variable is not None:
-                body: Any = self.redis_client.hget(request_key, message.get('bodyVariable'))
+                body: Any = self.redis_client.hget(request_key, body_variable)
+                print('body_content: ', body)
                 if body is not None:
                     # for API service the data in Redis is not b64 encoded
                     body = BytesIO(body)
