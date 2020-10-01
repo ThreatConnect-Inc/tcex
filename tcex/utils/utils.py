@@ -9,6 +9,7 @@ import uuid
 from typing import Any, List, Optional, Union
 from urllib.parse import urlsplit
 import jmespath
+import tempfile
 
 # third-party
 import pyaes
@@ -26,7 +27,7 @@ class Utils:
 
     def __init__(self, temp_path: Optional[str] = None):
         """Initialize the Class properties."""
-        self.temp_path = temp_path or '/tmp'  # nosec
+        self.temp_path = temp_path or tempfile.gettempdir() or '/tmp'  # nosec
 
         # properties
         self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
