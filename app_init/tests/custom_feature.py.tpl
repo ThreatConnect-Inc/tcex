@@ -66,7 +66,8 @@ class CustomFeature(Custom):
         super(CustomFeature, self).test_pre_webhook(test_feature, profile_data, monkeypatch)
 
     % else:
-    def test_pre_run(self, test_feature: object, profile_data: dict, monkeypatch: Optional[object]) -> None:
+    def test_pre_run(self, test_feature: object,
+                     profile_data: dict, monkeypatch: Optional[object]) -> None:
         """Run test method code before App run method.
 
         Args:
