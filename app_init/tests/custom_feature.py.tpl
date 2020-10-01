@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Custom test method feature class."""
+from typing import Optional
+
 from ..custom import Custom  # pylint: disable=relative-beyond-top-level
 
 
@@ -64,8 +66,14 @@ class CustomFeature(Custom):
         super(CustomFeature, self).test_pre_webhook(test_feature, profile_data, monkeypatch)
 
     % else:
-    def test_pre_run(self, test_feature: object, profile_data: dict, monkeypatch: object) -> None:
-        """Run test method code before App run method."""
+    def test_pre_run(self, test_feature: object, profile_data: dict, monkeypatch: Optional[object]) -> None:
+        """Run test method code before App run method.
+
+        Args:
+            test_feature: test_feature object for this test run.
+            profile_data: Data loaded from the test profile json file.
+            monkeypatch: if run_method is 'inline', then a monkeypatch object, else None
+        """
         super(CustomFeature, self).test_pre_run(test_feature, profile_data, monkeypatch)
 
     def test_pre_validate(self, test_feature: object, profile_data: dict) -> None:
