@@ -121,7 +121,10 @@ class TestProfiles(${class_name}):
         assert valid, message
 
         # run custom test method before run method
-        self.custom.test_pre_run(self, self.profile.data, monkeypatch)
+        self.custom.test_pre_run(
+            self,
+            self.profile.data,
+            monkeypatch if self.run_method == 'inline' else None)
 
         assert self.run_profile() in self.profile.exit_codes
 
