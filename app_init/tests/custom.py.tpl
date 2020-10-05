@@ -18,7 +18,7 @@ class Custom:
         # test_feature.service_run_method = 'subprocess'
 
         # uncomment and modify to control sleep times
-        # test_feature.sleep_after_pu`blish_config = 0.5
+        # test_feature.sleep_after_publish_config = 0.5
         # test_feature.sleep_after_publish_webhook_event = 0.5
         # test_feature.sleep_after_service_start = 5
         # test_feature.sleep_before_delete_config = 2
@@ -33,8 +33,6 @@ class Custom:
         # from site-packages and not the lib_ directory.
         # test_feature.run_method = 'inline'
         % endif
-        if
-        self.test_feature.log.warning(''
 
     def setup_method(self, test_feature: object) -> None:
         """Run setup method code."""
