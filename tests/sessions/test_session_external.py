@@ -4,10 +4,14 @@ from unittest.mock import MagicMock, PropertyMock
 
 # third-party
 from requests import PreparedRequest, Response, Session
+from urllib3.util.retry import Retry
 
 # first-party
 from tcex.sessions.external_session import default_too_many_requests_handler
 from tcex.sessions.rate_limit_handler import RateLimitHandler
+
+# set max backoff seconds
+Retry.BACKOFF_MAX = 30
 
 
 class TestUtils:
@@ -163,3 +167,21 @@ class TestUtils:
         response = s.get('https://www.google.com', verify=False)
 
         assert response.status_code == 429
+
+    # @staticmethod
+    # def test_session_external_500_retry(tcex_proxy):
+    #     """Test tc.session_external property.
+
+    #     Args:
+    #         tcex_proxy (TcEx, fixture): An instantiated instance of TcEx object.
+    #     """
+    #     session = tcex_proxy.session_external
+    #     session.retry(retries=12, backoff_factor=5)
+    #     session.base_url = 'https://httpbin.tci.ninja'
+    #     session.mask_headers = False
+    #     print('\nbefore', datetime.now().isoformat())
+    #     r = session.get('/status/500', verify=False)
+    #     print('\nafter', datetime.now().isoformat())
+    #     print('\nr.status_code', r.status_code)
+    #     # assert tcex.session_external.proxies == {}
+    #     # assert r.status_code == 200

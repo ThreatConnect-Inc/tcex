@@ -559,18 +559,21 @@ class Batch:
 
     def data_group_association(
         self, data: dict, entity_count: int, entity_size: int, xid: str
-    ) -> None:
+    ) -> Tuple[int, int]:
         """Return group dict array following all associations.
 
         The *data* dict is passed by reference to make it easier to update both the group data
         and file data inline versus passing the data all the way back up to the calling methods.
-        The entity_count and entity size values are also passed by reference for similar reasons.
+        The entity_count and entity size values are immutable and must be returned.
 
         Args:
             data: The data dict to update with group and file data.
             entity_count: The total count of all entities collected.
             entity_size: The total size in bytes of all entities collected.
             xid: The xid of the group to retrieve associations.
+
+        Returns:
+            Tuple[int, int]: Return tuple containting updated entity_count and entity_size.
         """
         xids = deque()
         xids.append(xid)
@@ -598,6 +601,8 @@ class Batch:
 
                 # groups.append(group_data)
                 xids.extend(group_data.get('associatedGroupXid', []))
+
+        return entity_count, entity_size
 
     @staticmethod
     def data_group_type(group_data: Union[dict, object]) -> Tuple[dict, dict]:
@@ -645,10 +650,21 @@ class Batch:
         # process group objects
         for xid in list(groups.keys()):
             # get association from group data
-            self.data_group_association(data, entity_count, entity_size, xid)
+            entity_count, entity_size = self.data_group_association(
+                data, entity_count, entity_size, xid
+            )
+
+            if entity_count % 250 == 0:
+                # log count/size at a sane level
+                self.tcex.log.info(
+                    f'feature=batch, action=data-groups, count={entity_count}, size={entity_size}'
+                )
 
             if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
                 # stop processing xid once max limit are reached
+                self.tcex.log.info(
+                    f'feature=batch, event=max-hit, count={entity_count}, size={entity_size}'
+                )
                 return True
         return False
 
@@ -677,8 +693,18 @@ class Batch:
             entity_count += 1
             entity_size += sys.getsizeof(json.dumps(indicator_data))
 
+            if entity_count % 250 == 0:
+                # log count/size at a sane level
+                self.tcex.log.info(
+                    'feature=batch, action=data-indicator, '
+                    f'count={entity_count}, size={entity_size}'
+                )
+
             if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
                 # stop processing xid once max limit are reached
+                self.tcex.log.info(
+                    f'feature=batch, event=max-hit, count={entity_count}, size={entity_size}'
+                )
                 return True
         return False
 
