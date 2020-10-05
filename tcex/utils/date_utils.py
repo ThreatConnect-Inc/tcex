@@ -5,7 +5,7 @@ import math
 import re
 import time
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Tuple, Union
 
 # third-party
 import parsedatetime as pdt
@@ -74,6 +74,61 @@ class DatetimeUtils:
             raise RuntimeError(f'Could not format input ({time_input}) to datetime string.')
 
         return dt_value
+
+    def chunk_date_range(
+        self,
+        start_date: Union[int, str, datetime],
+        end_date: Union[int, str, datetime],
+        chunk_size: int,
+        chunk_unit: Optional[str] = 'months',
+        date_format: Optional[str] = None,
+    ) -> Tuple[Union[datetime, str], Union[datetime, str]]:
+        """Chunk a date range based on unit and size
+
+        Args:
+            start_date: Date time expression or datetime object.
+            end_data: Date time expression or datetime object.
+            chunk_size: Chunk size for the provided units.
+            chunk_unit: A value of (years, months, days, weeks, hours, minuts, seconds)
+            date_format: If None datetime object will be returned. Any other value
+                must be a valid strftime format (%s for epoch seconds).
+
+        Returns:
+            Tuple[Union[datetime, str], Union[datetime, str]]: Either a datetime object
+                or a string representation of the date.
+        """
+        # define relative delta settings
+        relative_delta_settings = {chunk_unit: +chunk_size}
+
+        # normalize inputs into datetime objects
+        if isinstance(start_date, (int, str)):
+            start_date = self.any_to_datetime(start_date, 'UTC')
+        if isinstance(end_date, (int, str)):
+            end_date = self.any_to_datetime(end_date, 'UTC')
+
+        # set sd value for iteration
+        sd = start_date
+        # set ed value the the smaller of end_date or relative date
+        ed = min(end_date, start_date + relativedelta(**relative_delta_settings))
+
+        while 1:
+            sdf = sd
+            edf = ed
+            if date_format is not None:
+                # format the response data to a date formatted string
+                sdf = self.format_datetime(sd.isoformat(), 'UTC', date_format)
+                edf = self.format_datetime(ed.isoformat(), 'UTC', date_format)
+
+            # yield chunked data
+            yield sdf, edf
+
+            # break iteration once chunked ed is gte to provided end_date
+            if ed >= end_date:
+                break
+
+            # update sd and ed values for next iteration
+            sd = ed
+            ed = min(end_date, sd + relativedelta(**relative_delta_settings))
 
     def date_to_datetime(self, time_input: str, tz: Optional[str] = None) -> datetime:
         """Convert ISO 8601 and other date strings to datetime.datetime type.
