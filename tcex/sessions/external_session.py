@@ -139,6 +139,7 @@ class ExternalSession(Session):
         self.utils: object = Utils()
 
         # properties
+        self._log_curl: bool = True
         self._mask_headers = True
         self._mask_patterns = None
         self._rate_limit_handler = RateLimitHandler()
@@ -156,6 +157,16 @@ class ExternalSession(Session):
     def base_url(self, url):
         """Set base_url."""
         self._base_url = url.strip('/')
+
+    @property
+    def log_curl(self) -> bool:
+        """Return whether or not requests will be logged as a curl command."""
+        return self._log_curl
+
+    @log_curl.setter
+    def log_curl(self, log_curl: bool):
+        """Enable or disable logging curl commands."""
+        self._log_curl = log_curl
 
     @property
     def mask_headers(self) -> bool:
@@ -252,18 +263,19 @@ class ExternalSession(Session):
             return self.request(method, url, **kwargs)
 
         # APP-79 - adding logging of request as curl commands
-        try:
-            self.log.debug(
-                self.utils.requests_to_curl(
-                    response.request,
-                    mask_headers=self.mask_headers,
-                    mask_patterns=self.mask_patterns,
-                    proxies=self.proxies,
-                    verify=self.verify,
+        if self.log_curl:
+            try:
+                self.log.debug(
+                    self.utils.requests_to_curl(
+                        response.request,
+                        mask_headers=self.mask_headers,
+                        mask_patterns=self.mask_patterns,
+                        proxies=self.proxies,
+                        verify=self.verify,
+                    )
                 )
-            )
-        except Exception:  # nosec
-            pass  # logging curl command is best effort
+            except Exception:  # nosec
+                pass  # logging curl command is best effort
 
         self.log.debug(
             f'feature=external-session, request-url={response.request.url}, '

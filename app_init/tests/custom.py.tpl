@@ -33,8 +33,6 @@ class Custom:
         # from site-packages and not the lib_ directory.
         # test_feature.run_method = 'inline'
         % endif
-        if
-        self.test_feature.log.warning(''
 
     def setup_method(self, test_feature: object) -> None:
         """Run setup method code."""
