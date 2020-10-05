@@ -14,6 +14,73 @@ class TestUtils:
     """Test the TcEx Utils Module."""
 
     @pytest.mark.parametrize(
+        'start_date,end_date,chunk_size,chunk_unit,date_format,expected',
+        [
+            (
+                '2018-01-01T00:00:00Z',
+                '2020-01-01T00:00:00Z',
+                12,
+                'months',
+                '%s',
+                [[1514764800, 1546300800], [1546300800, 1577836800]],
+            ),
+            (
+                '2018-01-01T00:00:00Z',
+                '2020-01-01T00:00:00Z',
+                12,
+                'months',
+                '%Y-%m-%dT%H:%M:%SZ',
+                [
+                    ['2018-01-01T00:00:00Z', '2019-01-01T00:00:00Z'],
+                    ['2019-01-01T00:00:00Z', '2020-01-01T00:00:00Z'],
+                ],
+            ),
+            (
+                '2016-01-01T00:00:00Z',
+                '2020-01-01T00:00:00Z',
+                12,
+                'months',
+                '%Y-%m-%dT%H:%M:%SZ',
+                [
+                    ['2016-01-01T00:00:00Z', '2017-01-01T00:00:00Z'],
+                    ['2017-01-01T00:00:00Z', '2018-01-01T00:00:00Z'],
+                    ['2018-01-01T00:00:00Z', '2019-01-01T00:00:00Z'],
+                    ['2019-01-01T00:00:00Z', '2020-01-01T00:00:00Z'],
+                ],
+            ),
+            (
+                '2020-01-01T00:00:00Z',
+                '2020-02-01T00:00:00Z',
+                12,
+                'months',
+                '%Y-%m-%dT%H:%M:%SZ',
+                [['2020-01-01T00:00:00Z', '2020-02-01T00:00:00Z']],
+            ),
+        ],
+    )
+    def test_utils_datetime_chunk_date_range(
+        self, tcex, start_date, end_date, chunk_size, chunk_unit, date_format, expected
+    ):
+        """Test **any_to_datetime** method of TcEx Utils datetime module.
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            start_date: Date time expression or datetime object.
+            end_date: Date time expression or datetime object.
+            chunk_size: Chunk size for the provided units.
+            chunk_unit: A value of (years, months, days, weeks, hours, minuts, seconds)
+            date_format: If None datetime object will be returned. Any other value
+                must be a valid strftime format (%s for epoch seconds).
+            expected: The expected results.
+        """
+        dates = []
+        for sd, ed in tcex.utils.datetime.chunk_date_range(
+            start_date, end_date, chunk_size, chunk_unit, date_format
+        ):
+            dates.append([sd, ed])
+        assert dates == expected
+
+    @pytest.mark.parametrize(
         'date,tz,results',
         [
             (1229084481, 'US/Eastern', r'2008-12-12T07:21:21-05:00'),

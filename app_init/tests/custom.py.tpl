@@ -18,7 +18,7 @@ class Custom:
         # test_feature.service_run_method = 'subprocess'
 
         # uncomment and modify to control sleep times
-        # test_feature.sleep_after_pu`blish_config = 0.5
+        # test_feature.sleep_after_publish_config = 0.5
         # test_feature.sleep_after_publish_webhook_event = 0.5
         # test_feature.sleep_after_service_start = 5
         # test_feature.sleep_before_delete_config = 2
