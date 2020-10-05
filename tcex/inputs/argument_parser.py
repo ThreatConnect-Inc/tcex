@@ -202,6 +202,7 @@ class TcArgumentParser(ArgumentParser):
         --tc_log_to_api              Flag to indicate that app should log to API.
         --tc_log_level level         The logging level for the app.
         --logging level              Alias for **tc_log_level**.
+        --log_curl                   Log external requests as CURL commands
         """
         self.add_argument(
             '--tc_log_backup_count',
@@ -242,6 +243,13 @@ class TcArgumentParser(ArgumentParser):
             dest='tc_log_level',
             help='Logging Level',
             type=str.lower,
+        )
+        self.add_argument(
+            '--tc_log_curl',
+            default=False,
+            dest='tc_log_curl',
+            help='Log external requests as CURL commands.',
+            action='store_true',
         )
 
     def _playbook_arguments(self):

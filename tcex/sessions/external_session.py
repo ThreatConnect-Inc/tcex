@@ -139,7 +139,7 @@ class ExternalSession(Session):
         self.utils: object = Utils()
 
         # properties
-        self._log_curl: bool = True
+        self._log_curl: bool = False
         self._mask_headers = True
         self._mask_patterns = None
         self._rate_limit_handler = RateLimitHandler()
@@ -263,7 +263,7 @@ class ExternalSession(Session):
             return self.request(method, url, **kwargs)
 
         # APP-79 - adding logging of request as curl commands
-        if self.log_curl:
+        if not response.ok or self.log_curl:
             try:
                 self.log.debug(
                     self.utils.requests_to_curl(
