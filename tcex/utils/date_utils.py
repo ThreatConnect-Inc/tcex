@@ -5,7 +5,7 @@ import math
 import re
 import time
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 
 # third-party
 import parsedatetime as pdt
@@ -82,7 +82,7 @@ class DatetimeUtils:
         chunk_size: int,
         chunk_unit: Optional[str] = 'months',
         date_format: Optional[str] = None,
-    ) -> Union[datetime, str]:
+    ) -> Tuple[Union[datetime, str], Union[datetime, str]]:
         """Chunk a date range based on unit and size
 
         Args:
@@ -94,34 +94,39 @@ class DatetimeUtils:
                 must be a valid strftime format (%s for epoch seconds).
 
         Returns:
-            Union[datetime, str]: Either a datetime object
+            Tuple[Union[datetime, str], Union[datetime, str]]: Either a datetime object
                 or a string representation of the date.
         """
+        # define relative delta settings
         relative_delta_settings = {chunk_unit: +chunk_size}
-        # normalize inputs into epoch timestamps
+
+        # normalize inputs into datetime objects
         if isinstance(start_date, (int, str)):
             start_date = self.any_to_datetime(start_date, 'UTC')
         if isinstance(end_date, (int, str)):
             end_date = self.any_to_datetime(end_date, 'UTC')
 
-        # get
+        # set sd value for iteration
         sd = start_date
+        # set ed value the the smaller of end_date or relative date
         ed = min(end_date, start_date + relativedelta(**relative_delta_settings))
 
         while 1:
             sdf = sd
             edf = ed
             if date_format is not None:
+                # format the response data to a date formatted string
                 sdf = self.format_datetime(sd.isoformat(), 'UTC', date_format)
                 edf = self.format_datetime(ed.isoformat(), 'UTC', date_format)
 
             # yield chunked data
             yield sdf, edf
 
+            # break iteration once chunked ed is gte to provided end_date
             if ed >= end_date:
                 break
 
-            # update start and end date
+            # update sd and ed values for next iteration
             sd = ed
             ed = min(end_date, sd + relativedelta(**relative_delta_settings))
 
