@@ -860,6 +860,10 @@ class TcEx:
                     f'Using proxy host {self.args.tc_proxy_host}:'
                     f'{self.args.tc_proxy_port} for ThreatConnect session.'
                 )
+
+            # enable curl logging if tc_log_curl param is set.
+            if self.args.tc_log_curl:
+                self._session.log_curl = True
         return self._session
 
     @property
