@@ -29,6 +29,8 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
             encoding: The log file encoding.
             delay: If True, then file opening is deferred until the first call to emit().
         """
+        if encoding is None and os.getenv('LANG') is None:
+            encoding = 'UTF-8'
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)

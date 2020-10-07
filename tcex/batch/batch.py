@@ -654,7 +654,7 @@ class Batch:
                 data, entity_count, entity_size, xid
             )
 
-            if entity_count % 250 == 0:
+            if entity_count % 2_500 == 0:
                 # log count/size at a sane level
                 self.tcex.log.info(
                     f'feature=batch, action=data-groups, count={entity_count}, size={entity_size}'
@@ -693,7 +693,7 @@ class Batch:
             entity_count += 1
             entity_size += sys.getsizeof(json.dumps(indicator_data))
 
-            if entity_count % 250 == 0:
+            if entity_count % 2_500 == 0:
                 # log count/size at a sane level
                 self.tcex.log.info(
                     'feature=batch, action=data-indicator, '
@@ -1578,6 +1578,7 @@ class Batch:
         """
         # get file, group, and indicator data
         content = self.data
+
         # pop any file content to pass to submit_files
         file_data = content.pop('file', {})
         batch_data = (
@@ -1755,7 +1756,7 @@ class Batch:
 
         # block here is there is already a batch submission being processed
         if hasattr(self._submit_thread, 'is_alive'):
-            self.tcex.log.debug(
+            self.tcex.log.info(
                 'feature=batch, event=progress, status=blocked, '
                 f'is-alive={self._submit_thread.is_alive()}'
             )
@@ -1813,14 +1814,18 @@ class Batch:
         # launch file upload in a thread *after* batch status is returned. while only one batch
         # submission thread is allowed, there is no limit on file upload threads. the upload
         # status returned by file upload will be ignored when running in a thread.
-        self.submit_thread(
-            name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
-        )
+        if file_data:
+            self.submit_thread(
+                name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+            )
 
         # send batch_status to callback
         if callable(callback):
             self.tcex.log.debug('feature=batch, event=calling-callback')
-            callback(batch_status)
+            try:
+                callback(batch_status)
+            except Exception as e:
+                self.tcex.log.warning(f'feature=batch, event=callback-error, err="""{e}"""')
 
     def submit_create_and_upload(self, content: dict, halt_on_error: Optional[bool] = True) -> dict:
         """Submit Batch request to ThreatConnect API.
@@ -1915,6 +1920,7 @@ class Batch:
             halt_on_error = self.halt_on_file_error
 
         upload_status = []
+        self.tcex.log.info(f'feature=batch, action=submit-files, count={len(file_data)}')
         for xid, content_data in list(file_data.items()):
             del file_data[xid]  # win or loose remove the entry
             status = True
@@ -1929,11 +1935,16 @@ class Batch:
             # process the file content
             content = content_data.get('fileContent')
             if callable(content):
-                content_callable_name = getattr(content, '__name__', repr(content))
-                self.tcex.log.trace(
-                    f'feature=batch-submit-files, method={content_callable_name}, xid={xid}'
-                )
-                content = content_data.get('fileContent')(xid)
+                try:
+                    content_callable_name = getattr(content, '__name__', repr(content))
+                    self.tcex.log.trace(
+                        f'feature=batch-submit-files, method={content_callable_name}, xid={xid}'
+                    )
+                    content = content_data.get('fileContent')(xid)
+                except Exception as e:
+                    self.tcex.log.warning(
+                        f'feature=batch, event=file-download-exception, err="""{e}"""'
+                    )
 
             if content is None:
                 upload_status.append({'uploaded': False, 'xid': xid})

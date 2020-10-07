@@ -862,7 +862,7 @@ class TcEx:
                 )
 
             # enable curl logging if tc_log_curl param is set.
-            if self.args.tc_log_curl:
+            if self.default_args.tc_log_curl:
                 self._session.log_curl = True
         return self._session
 
@@ -887,7 +887,7 @@ class TcEx:
                     f'{self.args.tc_proxy_port} for external session.'
                 )
 
-            if self.args.tc_log_curl:
+            if self.default_args.tc_log_curl:
                 self._session_external.log_curl = True
         return self._session_external
 
