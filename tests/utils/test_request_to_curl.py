@@ -148,7 +148,7 @@ class TestRequestToCurl:
         )
         r = requests.post('https://www.google.com', data=data)
         r_curl = tcex.utils.requests_to_curl(r.request)
-        filename = re.search(r'(@log\/[a-z0-9].+)\s(?:http)', r_curl)[1]
+        filename = re.search(r'(@\/tmp\/[a-z0-9].+)\s(?:http)', r_curl)[1]
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             '''-H 'Connection: keep-alive' -H 'Content-Length: 160' -H 'User-Agent: '''

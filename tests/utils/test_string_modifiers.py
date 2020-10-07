@@ -151,7 +151,7 @@ class TestStringModifiers:
             # truncate, append, spaces
             ('truncate  double spaces', 20, ' .', True, 'truncate  double .'),
             # return input
-            (None, 20, None, False, None),
+            (None, 20, None, False, ''),
             # return input
             ('', 20, None, False, ''),
             # return input
