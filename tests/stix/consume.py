@@ -10,9 +10,9 @@ import pytest
 from tcex.stix.model import StixModel
 
 
+# pylint: disable=no-self-use
 class TestStixConsumer:
     """Test Consuming STIX data."""
-
 
     @pytest.mark.parametrize(
         'in_file_path, out_file_path',

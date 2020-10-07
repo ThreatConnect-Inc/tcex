@@ -657,13 +657,14 @@ class Batch:
             if entity_count % 2_500 == 0:
                 # log count/size at a sane level
                 self.tcex.log.info(
-                    f'feature=batch, action=data-groups, count={entity_count}, size={entity_size}'
+                    'feature=batch, action=data-groups, '
+                    f'count={entity_count:,}, size={entity_size:,}'
                 )
 
             if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
                 # stop processing xid once max limit are reached
                 self.tcex.log.info(
-                    f'feature=batch, event=max-hit, count={entity_count}, size={entity_size}'
+                    f'feature=batch, event=max-hit, count={entity_count:,}, size={entity_size:,}'
                 )
                 return True
         return False
@@ -697,13 +698,13 @@ class Batch:
                 # log count/size at a sane level
                 self.tcex.log.info(
                     'feature=batch, action=data-indicator, '
-                    f'count={entity_count}, size={entity_size}'
+                    f'count={entity_count:,}, size={entity_size:,}'
                 )
 
             if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
                 # stop processing xid once max limit are reached
                 self.tcex.log.info(
-                    f'feature=batch, event=max-hit, count={entity_count}, size={entity_size}'
+                    f'feature=batch, event=max-hit, count={entity_count:,}, size={entity_size:,}'
                 )
                 return True
         return False

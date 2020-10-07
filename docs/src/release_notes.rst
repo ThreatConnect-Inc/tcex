@@ -5,12 +5,19 @@ Release Notes
 
 2.0.12
 ======
-APP-1126 - Compress backup log files and increase backup count to 25.
+APP-1126 - [Logger] Compress backup log files and increase backup count to 25.
 APP-1127 - [Batch] Fixed issue with recursion when having a large number of associations.
 APP-1128 - [Batch] Updated DEBUG feature to assist in testing batch module..
 APP-1129 - [Batch] Added support for batch_max_size to truncate the batch job at ~95Mb.
 APP-1130 - [Batch] Removed file_contents getter and setter method.
-APP-1131 - Updated request_to_curl method in Utils module to truncate body and not write body to disk.
+APP-1131 - [Session] Updated request_to_curl method in Utils module to truncate body and not write body to disk.
+APP-1262 - [App Feature] Update advanced_request module to take output_prefix as an arg.
+APP-1263 - [Session] Update session module to only log curl command when request receives an invalid response or enabled globally.
+APP-1264 - [Logger] - Update logger modules to set default encoding to "UTF-8" when no value set at the OS level.
+APP-1266 - [Utils] Update utils datetime module to include a chunk_date_range method to be used in job Apps that need to break request into smaller timeframes.
+APP-1267 - [Batch] Add batch callback method to batch module to allow downloading/processing of data while batch job polls for status.
+APP-1268 - Update the default temp directory to use an OS appropriate value.
+APP-1272 - [App Feature] - Remove feature to update install.json and layout.json for advanced_request.
 
 2.0.11
 ======

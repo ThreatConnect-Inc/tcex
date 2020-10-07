@@ -4,9 +4,8 @@ import stix2
 see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
 """
 # standard library
-import hashlib
-from typing import Dict, List, Union
 import uuid
+from typing import Dict, List, Union
 
 # third-party
 import stix2
@@ -17,7 +16,6 @@ from dendrol.lang.STIXPatternParser import STIXPatternParser
 # first-party
 from tcex.batch import Batch
 from tcex.stix import StixModel  # pylint: disable=cyclic-import
-
 
 
 class StixIndicator(StixModel):

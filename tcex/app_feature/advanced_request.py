@@ -20,8 +20,15 @@ class AdvancedRequest:
         timeout (Optional[int] = 600): The timeout value for the request.
     """
 
-    def __init__(self, session: object, tcex: object, timeout: Optional[int] = 600):
+    def __init__(
+        self,
+        session: object,
+        tcex: object,
+        timeout: Optional[int] = 600,
+        output_prefix: Optional[str] = None,
+    ):
         """Initialize class properties."""
+        self.output_prefix: str = output_prefix or tcex.ij.output_prefix
         self.session: object = session
         self.tcex: object = tcex
 
@@ -32,7 +39,6 @@ class AdvancedRequest:
         self.headers: dict = {}
         self.max_mb: int = 500
         self.mt: callable = MimeTypes()
-        self.output_prefix: str = self.tcex.ij.output_prefix
         self.params: dict = {}
         self.timeout: int = timeout or 600
 

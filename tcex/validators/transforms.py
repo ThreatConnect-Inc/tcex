@@ -41,7 +41,7 @@ def _to_type(target_type, **kwargs):
 
             try:
                 return target_type(value)
-            except:  # noqa: E722; pylint: disable=bare-except
+            except Exception:
                 raise ValidationError(f'"{label}" ({arg_name}) must be a {target_type.__name__}.')
 
         transformed = []
@@ -52,7 +52,7 @@ def _to_type(target_type, **kwargs):
 
             try:
                 transformed.append(target_type(v))
-            except:  # noqa: E722; pylint: disable=bare-except
+            except Exception:
                 raise ValidationError(f'"{label}" ({arg_name}) must be a {target_type.__name__}.')
 
         return transformed

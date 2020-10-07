@@ -5,13 +5,13 @@ import os
 import random
 import re
 import string
+import tempfile
 import uuid
 from typing import Any, List, Optional, Union
 from urllib.parse import urlsplit
-import jmespath
-import tempfile
 
 # third-party
+import jmespath
 import pyaes
 
 from .date_utils import DatetimeUtils
@@ -495,7 +495,8 @@ class Utils:
         return fqpn
 
     def mapper(self, data: Union[list, dict], mapping: dict):
-
+        """Yield something ..."""
+        # TODO - @bpurdy - update docstring
         if isinstance(data, dict):
             data = [data]
         try:
@@ -511,7 +512,9 @@ class Utils:
                                 if not item.startswith('@'):
                                     new_list.append(item)
                                 else:
-                                    new_list.append(jmespath.search(f'{item}', jmespath.search('@', d)))
+                                    new_list.append(
+                                        jmespath.search(f'{item}', jmespath.search('@', d))
+                                    )
 
                         mapped_obj[key] = new_list
                     elif isinstance(value, dict):
@@ -522,5 +525,5 @@ class Utils:
                         else:
                             mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
                 yield mapped_obj
-        except Exception:  # pylint: disable=bare-except
+        except Exception:  # nosec
             pass
