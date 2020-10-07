@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 # third-party
 import pytest
 import pytz
+from dateutil.relativedelta import relativedelta
 
 
 # pylint: disable=no-self-use
@@ -224,7 +225,7 @@ class TestUtils:
                 {
                     'operator': operator.add,
                     'strftime': '%Y-08-25T22:00:00',
-                    'timedelta': {'days': 1},
+                    'timedelta': {'days': 1, 'years': 1},
                 },
             ),
             (
@@ -233,7 +234,7 @@ class TestUtils:
                 {
                     'operator': operator.add,
                     'strftime': '%Y-08-25T22:00:00',
-                    'timedelta': {'days': 1},
+                    'timedelta': {'days': 1, 'years': 1},
                 },
             ),
             (
@@ -331,7 +332,8 @@ class TestUtils:
         """
         if isinstance(results, dict):
             results = results.get('operator')(
-                datetime.now().astimezone(pytz.timezone(tz)), timedelta(**results.get('timedelta'))
+                datetime.now().astimezone(pytz.timezone(tz)),
+                relativedelta(**results.get('timedelta')),
             ).strftime(results.get('strftime'))
             results = rf'{results}'
 

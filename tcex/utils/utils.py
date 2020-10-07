@@ -402,8 +402,11 @@ class Utils:
         Returns:
             str: The truncated string.
         """
-        if not t_string:
+        if t_string is None:
             t_string = ''
+
+        if length is None:
+            length = len(t_string)
 
         if len(t_string) <= length:
             return t_string
