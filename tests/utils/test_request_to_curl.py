@@ -119,6 +119,22 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
+    def test_curl_mask_body(self, tcex):
+        """Test an IPv4 address
+
+        Args:
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        r = requests.post('https://www.google.com', data='test')
+        r_curl = tcex.utils.requests_to_curl(r.request, mask_body=True)
+        r_curl_expected = re.compile(
+            r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
+            '''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
+            '''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -d \"t\\*\\*\\*\\*t\" '''
+            '''https://www.google.com/'''
+        )
+        assert r_curl_expected.match(r_curl)
+
     def test_curl_post_bytes(self, tcex):
         """Test an IPv4 address
 

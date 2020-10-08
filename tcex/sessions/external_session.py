@@ -143,6 +143,7 @@ class ExternalSession(Session):
 
         # properties
         self._log_curl: bool = False
+        self._mask_body = False
         self._mask_headers = True
         self._mask_patterns = None
         self._rate_limit_handler = RateLimitHandler()
@@ -172,23 +173,33 @@ class ExternalSession(Session):
         self._log_curl = log_curl
 
     @property
+    def mask_body(self) -> bool:
+        """Return property"""
+        return self._mask_body
+
+    @mask_body.setter
+    def mask_body(self, mask_bool: bool):
+        """Set property"""
+        self._mask_body = mask_bool
+
+    @property
     def mask_headers(self) -> bool:
-        """Return mask patterns."""
+        """Return property"""
         return self._mask_headers
 
     @mask_headers.setter
     def mask_headers(self, mask_bool: bool):
-        """Return mask patterns."""
+        """Set property"""
         self._mask_headers = mask_bool
 
     @property
     def mask_patterns(self) -> list:
-        """Return mask patterns."""
+        """Return property"""
         return self._mask_patterns
 
     @mask_patterns.setter
     def mask_patterns(self, patterns: list):
-        """Return mask patterns."""
+        """Set property"""
         self._mask_patterns = patterns
 
     @property
@@ -271,6 +282,7 @@ class ExternalSession(Session):
                 self.log.debug(
                     self.utils.requests_to_curl(
                         response.request,
+                        mask_body=self.mask_body,
                         mask_headers=self.mask_headers,
                         mask_patterns=self.mask_patterns,
                         proxies=self.proxies,

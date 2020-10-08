@@ -252,6 +252,7 @@ class Utils:
             mask_patterns (list[str] = None): A list of patterns
                 if found in headers the value will be masked.
             body_limit (int, kwargs): The size limit for the body value.
+            mask_body (bool, kwargs): If True the body will be masked.
             proxies (dict, kwargs): A dict containing the proxy configuration.
             verify (bool, kwargs): If False the curl command will include --insecure flag.
             write_file (bool, kwargs): If True and the body is
@@ -306,8 +307,14 @@ class Utils:
                 if isinstance(body, bytes):
                     body = body.decode('utf-8')
 
-                # truncate body
-                body = self.truncate_string(t_string=body, length=body_limit, append_chars='...')
+                if kwargs.get('mask_body', False):
+                    # mask_body
+                    body = self.printable_cred(body)
+                else:
+                    # truncate body
+                    body = self.truncate_string(
+                        t_string=body, length=body_limit, append_chars='...'
+                    )
                 body_data = f'-d "{body}"'
             except Exception:
                 # set static filename so that when running a large job App thousands of files do
