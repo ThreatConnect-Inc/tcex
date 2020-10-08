@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Index &mdash; TcEx 2.0.11 documentation</title>
+  <title>Index &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -980,6 +980,8 @@
 </li>
       <li><a href="tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.check_syntax">check_syntax() (tcex.bin.validate.Validate method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.chunk_date_range">chunk_date_range() (tcex.utils.date_utils.DatetimeUtils method)</a>
+</li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.indicator.CIDR">CIDR (class in tcex.batch.indicator)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.cidr">cidr() (tcex.batch.batch.Batch method)</a>
@@ -1122,6 +1124,10 @@
       </ul></li>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.created_by_id">created_by_id() (tcex.case_management.case.FilterCases method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.logger.html#tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom.custom_gzip_namer">custom_gzip_namer() (tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom static method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.logger.html#tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom.custom_gzip_rotator">custom_gzip_rotator() (tcex.logger.rotating_file_handler_custom.RotatingFileHandlerCustom static method)</a>
+</li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.indicator.custom_indicator_class_factory">custom_indicator_class_factory() (in module tcex.batch.indicator)</a>
 </li>
   </ul></td>
@@ -1152,7 +1158,7 @@
       </ul></li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_group_association">data_group_association() (tcex.batch.batch.Batch method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_group_type">data_group_type() (tcex.batch.batch.Batch method)</a>
+      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_group_type">data_group_type() (tcex.batch.batch.Batch static method)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_groups">data_groups() (tcex.batch.batch.Batch method)</a>
 </li>
@@ -1512,12 +1518,6 @@
       </ul></li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.group.Group.file_content">file_content (tcex.batch.group.Group attribute)</a>
 </li>
-      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.group.Document.file_content">file_content() (tcex.batch.group.Document property)</a>
-
-      <ul>
-        <li><a href="tcex_docs/tcex.batch.html#tcex.batch.group.Report.file_content">(tcex.batch.group.Report property)</a>
-</li>
-      </ul></li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.group.Document.file_data">file_data() (tcex.batch.group.Document property)</a>
 
       <ul>
@@ -1528,8 +1528,6 @@
         <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.artifact.Artifact.file_data">(tcex.case_management.artifact.Artifact property)</a>
 </li>
       </ul></li>
-      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.file_len">file_len() (tcex.batch.batch.Batch property)</a>
-</li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.file_merge_mode">file_merge_mode() (tcex.batch.batch.Batch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.indicator.FileOccurrence.file_name">file_name() (tcex.batch.indicator.FileOccurrence property)</a>
@@ -1541,8 +1539,6 @@
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.indicator.FileAction">FileAction (class in tcex.batch.indicator)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.indicator.FileOccurrence">FileOccurrence (class in tcex.batch.indicator)</a>
-</li>
-      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.files">files() (tcex.batch.batch.Batch property)</a>
 </li>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.filter.Filter">Filter (class in tcex.case_management.filter)</a>
 </li>
@@ -2034,10 +2030,10 @@
         <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvent.link">(tcex.case_management.workflow_event.WorkflowEvent property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.workflow_event.WorkflowEvent.link_text">link_text() (tcex.case_management.workflow_event.WorkflowEvent property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.artifact.Artifact.links">links() (tcex.case_management.artifact.Artifact property)</a>
 </li>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.common_case_management_collection.CommonCaseManagementCollection.list_as_dict">list_as_dict() (tcex.case_management.common_case_management_collection.CommonCaseManagementCollection static method)</a>
@@ -2052,6 +2048,8 @@
         <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.log">(tcex.tcex.TcEx property)</a>
 </li>
       </ul></li>
+      <li><a href="tcex_docs/tcex.sessions.html#tcex.sessions.tc_session.TcSession.log_curl">log_curl() (tcex.sessions.tc_session.TcSession property)</a>
+</li>
       <li><a href="tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.log_info">log_info() (tcex.logger.logger.Logger method)</a>
 </li>
       <li><a href="tcex_docs/tcex.logger.html#tcex.logger.logger.Logger.log_level">log_level() (tcex.logger.logger.Logger static method)</a>
@@ -2086,6 +2084,8 @@
         <li><a href="tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.many">(tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest method)</a>
 </li>
       </ul></li>
+      <li><a href="tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.mapper">mapper() (tcex.utils.utils.Utils method)</a>
+</li>
       <li><a href="tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings">Mappings (class in tcex.threat_intelligence.mappings.mappings)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.indicator.File.md5">md5() (tcex.batch.indicator.File property)</a>
@@ -2493,9 +2493,13 @@
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.indicator.Indicator.private_flag">private_flag() (tcex.batch.indicator.Indicator property)</a>
 </li>
+      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.process_all">process_all() (tcex.batch.batch.Batch method)</a>
+</li>
       <li><a href="tcex_docs/tcex.services.html#tcex.services.common_service_trigger.CommonServiceTrigger.process_create_config_command">process_create_config_command() (tcex.services.common_service_trigger.CommonServiceTrigger method)</a>
 </li>
       <li><a href="tcex_docs/tcex.services.html#tcex.services.common_service_trigger.CommonServiceTrigger.process_delete_config_command">process_delete_config_command() (tcex.services.common_service_trigger.CommonServiceTrigger method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.process_files">process_files() (tcex.batch.batch.Batch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.services.html#tcex.services.common_service.CommonService.process_heartbeat_command">process_heartbeat_command() (tcex.services.common_service.CommonService method)</a>
 </li>
@@ -2744,6 +2748,8 @@
       <li><a href="tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.single">single() (tcex.threat_intelligence.mappings.mappings.Mappings method)</a>
 
       <ul>
+        <li><a href="tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.owner.Owner.single">(tcex.threat_intelligence.mappings.owner.Owner method)</a>
+</li>
         <li><a href="tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.single">(tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest method)</a>
 </li>
       </ul></li>
@@ -2751,8 +2757,6 @@
 </li>
       <li><a href="tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.snake_to_camel">snake_to_camel() (tcex.utils.utils.Utils static method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.victim.Victim.social_assets">social_assets() (tcex.threat_intelligence.mappings.victim.Victim method)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.attribute.Attribute.source">source() (tcex.batch.attribute.Attribute property)</a>
@@ -2763,6 +2767,8 @@
         <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.source">(tcex.case_management.artifact.FilterArtifacts method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.utils.html#tcex.utils.utils.Utils.standardize_asn">standardize_asn() (tcex.utils.utils.Utils static method)</a>
 </li>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.tql.TQL.Operator.STARTS_WITH">STARTS_WITH (tcex.case_management.tql.TQL.Operator attribute)</a>
@@ -2789,6 +2795,8 @@
 </li>
       <li><a href="tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.status_value">status_value() (tcex.bin.validate.Validate static method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.stix_model">stix_model() (tcex.tcex.TcEx property)</a>
+</li>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.tql.TQL.Type.STRING">STRING (tcex.case_management.tql.TQL.Type attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.tql.TQL.Type.SUB_QUERY">SUB_QUERY (tcex.case_management.tql.TQL.Type attribute)</a>
@@ -2801,6 +2809,10 @@
       </ul></li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_all">submit_all() (tcex.batch.batch.Batch method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_callback">submit_callback() (tcex.batch.batch.Batch method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_callback_thread">submit_callback_thread() (tcex.batch.batch.Batch method)</a>
+</li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_create_and_upload">submit_create_and_upload() (tcex.batch.batch.Batch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_data">submit_data() (tcex.batch.batch.Batch method)</a>
@@ -2810,6 +2822,8 @@
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_files">submit_files() (tcex.batch.batch.Batch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_job">submit_job() (tcex.batch.batch.Batch method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.submit_thread">submit_thread() (tcex.batch.batch.Batch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.case_management.html#tcex.case_management.common_case_management.CommonCaseManagement.success">success() (tcex.case_management.common_case_management.CommonCaseManagement static method)</a>
 

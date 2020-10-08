@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.utils.date_utils &mdash; TcEx 2.0.11 documentation</title>
+  <title>tcex.utils.date_utils &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -187,7 +187,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="c1"># third-party</span>
 <span class="kn">import</span> <span class="nn">parsedatetime</span> <span class="k">as</span> <span class="nn">pdt</span>
@@ -256,6 +256,61 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not format input (</span><span class="si">{</span><span class="n">time_input</span><span class="si">}</span><span class="s1">) to datetime string.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">dt_value</span></div>
+
+<div class="viewcode-block" id="DatetimeUtils.chunk_date_range"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.chunk_date_range">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_date_range</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start_date</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span>
+        <span class="n">end_date</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span>
+        <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">chunk_unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
+        <span class="n">date_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Chunk a date range based on unit and size</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_date: Date time expression or datetime object.</span>
+<span class="sd">            end_data: Date time expression or datetime object.</span>
+<span class="sd">            chunk_size: Chunk size for the provided units.</span>
+<span class="sd">            chunk_unit: A value of (years, months, days, weeks, hours, minuts, seconds)</span>
+<span class="sd">            date_format: If None datetime object will be returned. Any other value</span>
+<span class="sd">                must be a valid strftime format (%s for epoch seconds).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[Union[datetime, str], Union[datetime, str]]: Either a datetime object</span>
+<span class="sd">                or a string representation of the date.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># define relative delta settings</span>
+        <span class="n">relative_delta_settings</span> <span class="o">=</span> <span class="p">{</span><span class="n">chunk_unit</span><span class="p">:</span> <span class="o">+</span><span class="n">chunk_size</span><span class="p">}</span>
+
+        <span class="c1"># normalize inputs into datetime objects</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="n">end_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
+
+        <span class="c1"># set sd value for iteration</span>
+        <span class="n">sd</span> <span class="o">=</span> <span class="n">start_date</span>
+        <span class="c1"># set ed value the the smaller of end_date or relative date</span>
+        <span class="n">ed</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="n">start_date</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="o">**</span><span class="n">relative_delta_settings</span><span class="p">))</span>
+
+        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sdf</span> <span class="o">=</span> <span class="n">sd</span>
+            <span class="n">edf</span> <span class="o">=</span> <span class="n">ed</span>
+            <span class="k">if</span> <span class="n">date_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># format the response data to a date formatted string</span>
+                <span class="n">sdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="n">sd</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span>
+                <span class="n">edf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="n">ed</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span>
+
+            <span class="c1"># yield chunked data</span>
+            <span class="k">yield</span> <span class="n">sdf</span><span class="p">,</span> <span class="n">edf</span>
+
+            <span class="c1"># break iteration once chunked ed is gte to provided end_date</span>
+            <span class="k">if</span> <span class="n">ed</span> <span class="o">&gt;=</span> <span class="n">end_date</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># update sd and ed values for next iteration</span>
+            <span class="n">sd</span> <span class="o">=</span> <span class="n">ed</span>
+            <span class="n">ed</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="n">sd</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="o">**</span><span class="n">relative_delta_settings</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="DatetimeUtils.date_to_datetime"><a class="viewcode-back" href="../../../tcex_docs/tcex.utils.html#tcex.utils.date_utils.DatetimeUtils.date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">date_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tz</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert ISO 8601 and other date strings to datetime.datetime type.</span>
@@ -446,7 +501,7 @@
             <span class="n">dec</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">time_input_length</span><span class="p">)</span>
             <span class="n">time_input</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_input</span><span class="p">)</span> <span class="o">/</span> <span class="n">dec</span>
 
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[0-9]{9,10}(?:\.[0-9]{0,6})?$&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_input</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[0-9]{9,10}(?:\.[0-9]{0,7})?$&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_input</span><span class="p">)):</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_input</span><span class="p">),</span> <span class="n">tz</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">))</span>
             <span class="c1"># don&#39;t covert timezone if dt timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>

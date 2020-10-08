@@ -18,6 +18,7 @@ APP-1266 - [Utils] Update utils datetime module to include a chunk_date_range me
 APP-1267 - [Batch] Add batch callback method to batch module to allow downloading/processing of data while batch job polls for status.
 APP-1268 - Update the default temp directory to use an OS appropriate value.
 APP-1272 - [App Feature] - Remove feature to update install.json and layout.json for advanced_request.
+APP-1280 - [Session] Add ability to mask the body when logging curl command.
 
 2.0.11
 ======

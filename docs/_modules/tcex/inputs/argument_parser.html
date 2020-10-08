@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.11 documentation</title>
+  <title>tcex.inputs.argument_parser &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -182,6 +182,7 @@
   <h1>Source code for tcex.inputs.argument_parser</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;TcEx Common Arg Handler&quot;&quot;&quot;</span>
 <span class="c1"># standard library</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">Namespace</span>
 
 
@@ -196,18 +197,18 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># batch defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span> <span class="o">=</span> <span class="s1">&#39;Create&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span> <span class="o">=</span> <span class="mi">25000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span> <span class="o">=</span> <span class="mi">25_000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span> <span class="o">=</span> <span class="mi">15</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span> <span class="o">=</span> <span class="mi">3600</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span> <span class="o">=</span> <span class="mi">3_600</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span> <span class="o">=</span> <span class="s1">&#39;Append&#39;</span>
 
         <span class="c1"># logger defaults</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_backup_count</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_backup_count</span> <span class="o">=</span> <span class="mi">25</span>  <span class="c1"># target 50Mb in total log size (1x10Mb + 25x~1.6Mb = ~50Mb)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span> <span class="o">=</span> <span class="s1">&#39;app.log&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_level</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_max_bytes</span> <span class="o">=</span> <span class="mi">10485760</span>  <span class="c1"># 10Mb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_max_bytes</span> <span class="o">=</span> <span class="mi">10_485_760</span>  <span class="c1"># 10Mb</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># playbook defaults</span>
@@ -221,10 +222,10 @@
 
         <span class="c1"># standard defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span> <span class="o">=</span> <span class="s1">&#39;https://api.threatconnect.com&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_secure_params</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># nosec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_user_id</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># include arguments</span>
@@ -383,6 +384,7 @@
 <span class="sd">        --tc_log_to_api              Flag to indicate that app should log to API.</span>
 <span class="sd">        --tc_log_level level         The logging level for the app.</span>
 <span class="sd">        --logging level              Alias for **tc_log_level**.</span>
+<span class="sd">        --log_curl                   Log external requests as CURL commands</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_log_backup_count&#39;</span><span class="p">,</span>
@@ -423,6 +425,13 @@
             <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;tc_log_level&#39;</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Logging Level&#39;</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_log_curl&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;tc_log_curl&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Log external requests as CURL commands.&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcArgumentParser._playbook_arguments"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.argument_parser.TcArgumentParser._playbook_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_playbook_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

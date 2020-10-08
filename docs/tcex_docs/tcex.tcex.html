@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TcEx &mdash; TcEx 2.0.11 documentation</title>
+  <title>TcEx &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -279,14 +279,14 @@ tcex logger.</p></li>
 
 <dl class="py method">
 <dt id="tcex.tcex.TcEx.batch">
-<code class="sig-name descname">batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">owner</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">action</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attribute_write_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'Replace'</span></em>, <em class="sig-param"><span class="n">halt_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">playbook_triggers_enabled</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; object<a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">owner</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">action</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'Create'</span></em>, <em class="sig-param"><span class="n">attribute_write_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'Replace'</span></em>, <em class="sig-param"><span class="n">halt_on_error</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">playbook_triggers_enabled</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; object<a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Batch</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tcex</strong> – An instance of TcEx object.</p></li>
 <li><p><strong>owner</strong> – The ThreatConnect owner for Batch action.</p></li>
-<li><p><strong>default</strong> (<em>action</em>) – Create): Action for the batch job [‘Create’, ‘Delete’].</p></li>
+<li><p><strong>action</strong> – Action for the batch job [‘Create’, ‘Delete’].</p></li>
 <li><p><strong>attribute_write_type</strong> – Write type for TI attributes [‘Append’, ‘Replace’].</p></li>
 <li><p><strong>halt_on_error</strong> – If True any batch error will halt the batch job.</p></li>
 <li><p><strong>playbook_triggers_enabled</strong> – Deprecated input, will not be used.</p></li>
@@ -831,6 +831,16 @@ method will store the values for TC to read and put into the Database.</p>
 <dt id="tcex.tcex.TcEx.session_external">
 <em class="property">property </em><code class="sig-name descname">session_external</code><a class="headerlink" href="#tcex.tcex.TcEx.session_external" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.tcex.TcEx.stix_model">
+<em class="property">property </em><code class="sig-name descname">stix_model</code><a class="headerlink" href="#tcex.tcex.TcEx.stix_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Include the Threat Intel Module.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Threat Intell methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.ti.&lt;method&gt;</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">

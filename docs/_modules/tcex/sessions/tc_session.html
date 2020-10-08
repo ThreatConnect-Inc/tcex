@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.sessions.tc_session &mdash; TcEx 2.0.11 documentation</title>
+  <title>tcex.sessions.tc_session &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -247,6 +247,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;session&#39;</span><span class="p">)</span>
 
         <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_curl</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
@@ -270,6 +271,16 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;No valid ThreatConnect API credentials provided.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;No valid ThreatConnect API credentials provided.&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">log_curl</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return whether or not requests will be logged as a curl command.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_curl</span>
+
+    <span class="nd">@log_curl</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">log_curl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_curl</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Enable or disable logging curl commands.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_curl</span> <span class="o">=</span> <span class="n">log_curl</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -303,18 +314,19 @@
         <span class="c1"># don&#39;t show curl message for logging commands</span>
         <span class="k">if</span> <span class="s1">&#39;/v2/logs/app&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
             <span class="c1"># APP-79 - adding logging of request as curl commands</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">requests_to_curl</span><span class="p">(</span>
-                        <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proxies</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_curl</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">requests_to_curl</span><span class="p">(</span>
+                            <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proxies</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span>
+                        <span class="p">)</span>
                     <span class="p">)</span>
-                <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># nosec</span>
-                <span class="k">pass</span>  <span class="c1"># logging curl command is best effort</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># nosec</span>
+                    <span class="k">pass</span>  <span class="c1"># logging curl command is best effort</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;feature=tc-session, request-url=</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">, &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;status_code=</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;status_code=</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, elapsed=</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">elapsed</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">response</span></div>

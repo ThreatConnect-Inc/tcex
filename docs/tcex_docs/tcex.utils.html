@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Utils Module &mdash; TcEx 2.0.11 documentation</title>
+  <title>Utils Module &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -368,6 +368,12 @@ and for lists with a mix of lists and single values</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.utils.utils.Utils.mapper">
+<code class="sig-name descname">mapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>list<span class="p">, </span>dict<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mapping</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/utils/utils.html#Utils.mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.utils.Utils.mapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield something …</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.utils.utils.Utils.mitre_attack">
 <em class="property">property </em><code class="sig-name descname">mitre_attack</code><a class="headerlink" href="#tcex.utils.utils.Utils.mitre_attack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of MitreAttackUtils.</p>
@@ -420,12 +426,16 @@ and for lists with a mix of lists and single values</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>request</strong> (<em>object</em>) – The response.request object.</p></li>
-<li><p><strong>mask_headers</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True then values for certain header
-key will be masked.</p></li>
-<li><p><strong>mask_patterns</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>= None</em>) – A list of patterns if found in headers the value
-will be masked.</p></li>
+<li><p><strong>mask_headers</strong> (<em>Optional</em><em>[</em><em>bool</em><em>] </em><em>= True</em>) – If True then
+values for certain header key will be masked.</p></li>
+<li><p><strong>mask_patterns</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>= None</em>) – A list of patterns
+if found in headers the value will be masked.</p></li>
+<li><p><strong>body_limit</strong> (<em>int</em><em>, </em><em>kwargs</em>) – The size limit for the body value.</p></li>
+<li><p><strong>mask_body</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If True the body will be masked.</p></li>
 <li><p><strong>proxies</strong> (<em>dict</em><em>, </em><em>kwargs</em>) – A dict containing the proxy configuration.</p></li>
 <li><p><strong>verify</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If False the curl command will include –insecure flag.</p></li>
+<li><p><strong>write_file</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If True and the body is
+binary it will be written as a temp file.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -631,6 +641,34 @@ nearest space before the truncation length to avoid chopping words.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>(datetime.datetime)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.utils.date_utils.DatetimeUtils.chunk_date_range">
+<code class="sig-name descname">chunk_date_range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_date</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>str<span class="p">, </span>datetime.datetime<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">end_date</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>str<span class="p">, </span>datetime.datetime<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">chunk_unit</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'months'</span></em>, <em class="sig-param"><span class="n">date_format</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Union<span class="p">[</span>datetime.datetime<span class="p">, </span>str<span class="p">]</span><span class="p">, </span>Union<span class="p">[</span>datetime.datetime<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/tcex/utils/date_utils.html#DatetimeUtils.chunk_date_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.utils.date_utils.DatetimeUtils.chunk_date_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chunk a date range based on unit and size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_date</strong> – Date time expression or datetime object.</p></li>
+<li><p><strong>end_data</strong> – Date time expression or datetime object.</p></li>
+<li><p><strong>chunk_size</strong> – Chunk size for the provided units.</p></li>
+<li><p><strong>chunk_unit</strong> – A value of (years, months, days, weeks, hours, minuts, seconds)</p></li>
+<li><p><strong>date_format</strong> – If None datetime object will be returned. Any other value
+must be a valid strftime format (%s for epoch seconds).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Either a datetime object</dt><dd><p>or a string representation of the date.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[Union[datetime, str], Union[datetime, str]]</p>
 </dd>
 </dl>
 </dd></dl>

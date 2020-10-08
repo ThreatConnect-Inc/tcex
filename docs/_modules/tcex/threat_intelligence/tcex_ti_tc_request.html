@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.11 documentation</title>
+  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -245,7 +245,12 @@
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultLimit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_limit</span>
 
         <span class="n">should_iterate</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">result_start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">result_start</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resultStart&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result_start</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">result_start</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid ResultStart Param. Starting at 0&#39;</span><span class="p">)</span>
         <span class="k">while</span> <span class="n">should_iterate</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultStart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_start</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>

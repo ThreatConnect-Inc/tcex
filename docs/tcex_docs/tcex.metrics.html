@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Metrics module &mdash; TcEx 2.0.11 documentation</title>
+  <title>Metrics module &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -230,7 +230,8 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>value</strong> (<em>str</em>) – The value of the metric.</p></li>
 <li><p><strong>date</strong> (<em>str</em><em>, </em><em>optional</em>) – The optional date of the metric.</p></li>
-<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>return_value</em>) – False): Tell the API to return the updates metric value.</p></li>
+<li><p><strong>(</strong><strong>bool</strong> (<em>return_value</em>) – False): Tell the API to return the updates metric value.</p></li>
+<li><p><strong>default</strong> – False): Tell the API to return the updates metric value.</p></li>
 <li><p><strong>key</strong> (<em>str</em><em>, </em><em>optional</em>) – The key value for keyed metrics.</p></li>
 <li><p><strong>weight</strong> (<em>str</em><em>, </em><em>optional</em>) – The weight value (only needed for averages)</p></li>
 </ul>
@@ -258,7 +259,8 @@
 <li><p><strong>value</strong> (<em>str</em>) – The value of the metric.</p></li>
 <li><p><strong>key</strong> (<em>str</em>) – The key value for keyed metrics.</p></li>
 <li><p><strong>date</strong> (<em>str</em><em>, </em><em>optional</em>) – The optional date of the metric.</p></li>
-<li><p><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>return_value</em>) – False): Tell the API to return the updates metric value.</p></li>
+<li><p><strong>(</strong><strong>bool</strong> (<em>return_value</em>) – False): Tell the API to return the updates metric value.</p></li>
+<li><p><strong>default</strong> – False): Tell the API to return the updates metric value.</p></li>
 <li><p><strong>weight</strong> (<em>str</em><em>, </em><em>optional</em>) – The weight value (only needed for averages)</p></li>
 </ul>
 </dd>
@@ -283,7 +285,7 @@
     <span class="s2">&quot;status&quot;</span><span class="o">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
     <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
         <span class="s2">&quot;customMetricConfig&quot;</span><span class="o">:</span> <span class="p">{</span>
-            <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mf">12</span><span class="p">,</span>
             <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Added Reports&quot;</span><span class="p">,</span>
             <span class="s2">&quot;dataType&quot;</span><span class="o">:</span> <span class="s2">&quot;Sum&quot;</span><span class="p">,</span>
             <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;Daily&quot;</span><span class="p">,</span>
@@ -303,10 +305,10 @@
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;status&quot;</span><span class="o">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
     <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
-        <span class="s2">&quot;resultCount&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;resultCount&quot;</span><span class="o">:</span> <span class="mf">1</span><span class="p">,</span>
         <span class="s2">&quot;customMetricConfig&quot;</span><span class="o">:</span> <span class="p">[</span>
             <span class="p">{</span>
-                <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">9</span><span class="p">,</span>
+                <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mf">9</span><span class="p">,</span>
                 <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;My Metric&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;dataType&quot;</span><span class="o">:</span> <span class="s2">&quot;Sum&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;Daily&quot;</span><span class="p">,</span>

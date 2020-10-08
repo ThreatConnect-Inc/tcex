@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 2.0.11 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 2.0.12 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.11
+                2.0.12
               </div>
 
 
@@ -235,6 +235,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stix_model</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="kc">None</span>
@@ -312,7 +313,7 @@
 <div class="viewcode-block" id="TcEx.batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.batch">[docs]</a>    <span class="k">def</span> <span class="nf">batch</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">action</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Create&#39;</span><span class="p">,</span>
         <span class="n">attribute_write_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Replace&#39;</span><span class="p">,</span>
         <span class="n">halt_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">playbook_triggers_enabled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -322,7 +323,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            tcex: An instance of TcEx object.</span>
 <span class="sd">            owner: The ThreatConnect owner for Batch action.</span>
-<span class="sd">            action default:Create): Action for the batch job [&#39;Create&#39;, &#39;Delete&#39;].</span>
+<span class="sd">            action: Action for the batch job [&#39;Create&#39;, &#39;Delete&#39;].</span>
 <span class="sd">            attribute_write_type: Write type for TI attributes [&#39;Append&#39;, &#39;Replace&#39;].</span>
 <span class="sd">            halt_on_error: If True any batch error will halt the batch job.</span>
 <span class="sd">            playbook_triggers_enabled: Deprecated input, will not be used.</span>
@@ -1041,6 +1042,10 @@
                     <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="si">}</span><span class="s1">:&#39;</span>
                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="si">}</span><span class="s1"> for ThreatConnect session.&#39;</span>
                 <span class="p">)</span>
+
+            <span class="c1"># enable curl logging if tc_log_curl param is set.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_curl</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">log_curl</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
 
     <span class="nd">@property</span>
@@ -1063,7 +1068,22 @@
                     <span class="sa">f</span><span class="s1">&#39;Using proxy host </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="si">}</span><span class="s1">:&#39;</span>
                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="si">}</span><span class="s1"> for external session.&#39;</span>
                 <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_curl</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">log_curl</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stix_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Include the Threat Intel Module.</span>
+
+<span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stix_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.stix</span> <span class="kn">import</span> <span class="n">StixModel</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stix_model</span> <span class="o">=</span> <span class="n">StixModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stix_model</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ti</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
