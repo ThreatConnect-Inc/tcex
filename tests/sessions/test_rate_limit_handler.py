@@ -1,7 +1,7 @@
 """Test the default RateLimitHandler"""
 # standard library
 import time
-from unittest.mock import MagicMock, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
 
 # third-party
 from requests import PreparedRequest, Response
@@ -14,19 +14,11 @@ class TestRateLimitHandler:
     """Test the default RateLimitHandler"""
 
     @staticmethod
-    def test_pre_send():
+    @patch('time.sleep', MagicMock(return_value=None))
+    @patch('time.time', MagicMock(return_value=7))
+    def test_pre_send_std():
         """Test the pre_send method."""
-        # backup time methods
-        # backup_sleep = time.sleep
-        # backup_time = time.time
-
         rate_limit_handler = RateLimitHandler()
-
-        sleep = MagicMock(return_value=None)
-        time.sleep = sleep
-
-        time.time = MagicMock(return_value=7)
-
         response: Response = Response()
         type(response).ok = PropertyMock(True)
         response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 10}
@@ -36,39 +28,30 @@ class TestRateLimitHandler:
         request: PreparedRequest = PreparedRequest()
 
         rate_limit_handler.pre_send(request)
-        sleep.assert_called_once_with(10)
+        time.sleep.assert_called_once_with(10)  # pylint: disable=no-member
 
     @staticmethod
+    @patch('time.sleep', MagicMock(return_value=None))
+    @patch('time.time', MagicMock(return_value=1600283000))
     def test_pre_send_timestamp():
         """Test the pre_send method."""
         rate_limit_handler = RateLimitHandler()
-
-        sleep = MagicMock(return_value=None)
-        time.sleep = sleep
-
-        time.time = MagicMock(return_value=1600283000)
-
         response: Response = Response()
         type(response).ok = PropertyMock(True)
         response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 1600284000}
 
         rate_limit_handler.post_send(response)
-
         request: PreparedRequest = PreparedRequest()
 
         rate_limit_handler.pre_send(request)
-        sleep.assert_called_once_with(1000)
+        time.sleep.assert_called_once_with(1000)  # pylint: disable=no-member
 
     @staticmethod
+    @patch('time.sleep', MagicMock(return_value=None))
+    @patch('time.time', MagicMock(return_value=1600283000))
     def test_pre_send_IMF_fixdate():
         """Test the pre_send method."""
         rate_limit_handler = RateLimitHandler()
-
-        sleep = MagicMock(return_value=None)
-        time.sleep = sleep
-
-        time.time = MagicMock(return_value=1600283000)
-
         response: Response = Response()
         type(response).ok = PropertyMock(True)
         response.headers = {
@@ -77,15 +60,10 @@ class TestRateLimitHandler:
         }
 
         rate_limit_handler.post_send(response)
-
         request: PreparedRequest = PreparedRequest()
 
         rate_limit_handler.pre_send(request)
-        sleep.assert_called_once_with(40.0)
-
-        # restore time methods
-        # time.sleep = backup_sleep
-        # time.time = backup_time
+        time.sleep.assert_called_once_with(40.0)  # pylint: disable=no-member
 
     @staticmethod
     def test_post_send():

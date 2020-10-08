@@ -234,7 +234,10 @@ class MockApp:
         """Return a valid API token."""
         r = self.session.post(f'{self.tc_api_path}{self.tc_token_url}api', verify=False)
         if r.status_code != 200:
-            raise RuntimeError(f'This feature requires ThreatConnect 6.0 or higher ({r.text})')
+            raise RuntimeError(
+                f'This feature requires ThreatConnect 6.0 or higher. response={r.text}, '
+                f'url={r.request.url}, status_code={r.status_code}'
+            )
         return r.json().get('data')
 
     @property
