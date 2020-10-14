@@ -1990,7 +1990,8 @@ class Batch:
                 self.saved_xids = xid
 
             self.tcex.log.info(
-                f'feature=batch, event=file-upload, status={r.status_code}, xid={xid}'
+                f'feature=batch, event=file-upload, status={r.status_code}, '
+                f'xid={xid}, remaining={len(file_data)}'
             )
             upload_status.append({'uploaded': status, 'xid': xid})
 
