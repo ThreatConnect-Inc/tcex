@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.12 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.13 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.12
+                2.0.13
               </div>
 
 
@@ -1794,7 +1794,7 @@
             <span class="c1"># submit file data after batch job is complete</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_file_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
-                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,)</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,),</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">batch_data</span></div>
@@ -1889,8 +1889,12 @@
 
             <span class="k">if</span> <span class="n">process_files</span><span class="p">:</span>
                 <span class="c1"># submit file data after batch job is complete</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
-                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span>
+                        <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,),</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
             <span class="n">batch_data_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_data</span><span class="p">)</span>
 
@@ -1998,8 +2002,10 @@
         <span class="c1"># submission thread is allowed, there is no limit on file upload threads. the upload</span>
         <span class="c1"># status returned by file upload will be ignored when running in a thread.</span>
         <span class="k">if</span> <span class="n">file_data</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,),</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="c1"># send batch_status to callback</span>
@@ -2166,7 +2172,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">saved_xids</span> <span class="o">=</span> <span class="n">xid</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;feature=batch, event=file-upload, status=</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, xid=</span><span class="si">{</span><span class="n">xid</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;feature=batch, event=file-upload, status=</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;xid=</span><span class="si">{</span><span class="n">xid</span><span class="si">}</span><span class="s1">, remaining=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
             <span class="n">upload_status</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;uploaded&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s1">&#39;xid&#39;</span><span class="p">:</span> <span class="n">xid</span><span class="p">})</span>
 
