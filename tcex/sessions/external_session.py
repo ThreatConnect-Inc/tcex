@@ -335,7 +335,7 @@ class ExternalSession(Session):
             backoff_factor (Optional[float] = 0.3): The backoff factor for retries.
             status_forcelist (Optional[list] = [500, 502, 504]): A list of status code to retry on.
             urls (list, kwargs): An optional URL to apply the retry. If not provided the retry
-                apples to all request with "https://".
+                applies to all request with "https://".
         """
         retry_object: object = Retry(
             total=retries,

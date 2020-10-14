@@ -1612,7 +1612,7 @@ class Batch:
             # submit file data after batch job is complete
             self._file_threads.append(
                 self.submit_thread(
-                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,),
                 )
             )
         return batch_data
@@ -1707,8 +1707,12 @@ class Batch:
 
             if process_files:
                 # submit file data after batch job is complete
-                self.submit_thread(
-                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+                self._file_threads.append(
+                    self.submit_thread(
+                        name='submit-files',
+                        target=self.submit_files,
+                        args=(file_data, halt_on_error,),
+                    )
                 )
             batch_data_array.append(batch_data)
 
@@ -1816,8 +1820,10 @@ class Batch:
         # submission thread is allowed, there is no limit on file upload threads. the upload
         # status returned by file upload will be ignored when running in a thread.
         if file_data:
-            self.submit_thread(
-                name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,)
+            self._file_threads.append(
+                self.submit_thread(
+                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,),
+                )
             )
 
         # send batch_status to callback
