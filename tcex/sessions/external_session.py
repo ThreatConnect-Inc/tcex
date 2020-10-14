@@ -324,6 +324,7 @@ class ExternalSession(Session):
         retries: Optional[int] = 3,
         backoff_factor: Optional[float] = 0.3,
         status_forcelist: Optional[list] = None,
+        **kwargs,
     ):
         """Add retry to Requests Session
 
@@ -333,21 +334,29 @@ class ExternalSession(Session):
             retries (Optional[int] = 3): The number of retry attempts.
             backoff_factor (Optional[float] = 0.3): The backoff factor for retries.
             status_forcelist (Optional[list] = [500, 502, 504]): A list of status code to retry on.
+            urls (list, kwargs): An optional URL to apply the retry. If not provided the retry
+                apples to all request with "https://".
         """
-        retries: object = Retry(
+        retry_object: object = Retry(
             total=retries,
             read=retries,
             connect=retries,
             backoff_factor=backoff_factor,
             status_forcelist=status_forcelist or [500, 502, 504],
         )
+        urls = kwargs.get('urls') or ['https://']
 
         if self._custom_adapter:
-            self._custom_adapter.max_retries = retries
+            self._custom_adapter.max_retries = retry_object
         else:
             self._custom_adapter = CustomAdapter(
-                rate_limit_handler=self.rate_limit_handler, max_retries=retries
+                rate_limit_handler=self.rate_limit_handler, max_retries=retry_object
             )
 
-            # mount all https requests
-            self.mount('https://', self._custom_adapter)
+        # mount the custom adapter
+        for url in urls:
+            self.log.info(
+                f'feature=external-session, action=applying-retry, retries={retries}, '
+                f'backoff-factor={backoff_factor}, status-forcelist={status_forcelist}, url={url}'
+            )
+            self.mount(url, self._custom_adapter)
