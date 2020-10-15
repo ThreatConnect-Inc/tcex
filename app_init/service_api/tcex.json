@@ -1,0 +1,15 @@
+{
+  "package": {
+    "app_name": "TCVA_-_",
+    "excludes": [
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "local-*",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex.json",
+      "*.install.json",
+      "tcex.d"
+    ]
+  }
+}
