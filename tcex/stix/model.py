@@ -1,10 +1,11 @@
 """Top-level Stix Model Class."""
 # standard library
 import itertools
-from typing import Dict, Union
+from typing import Dict, Iterable, Union
 
 # third-party
 import jmespath
+from stix2.base import _STIXBase
 
 # first-party
 from tcex.logger import Logger
@@ -326,3 +327,41 @@ class StixModel:
                 yield mapped_obj
         except Exception:  # pylint: disable=bare-except
             self.logger.log.error(f'Could not map {data} using {mapping}')
+
+
+class JMESPathStixModel(StixModel):
+    """Generic implmenetation of StixModel that converts data based on jmespath statements."""
+
+    def __init__(
+        self,
+        produce_map: Dict[str, str],
+        produce_type: _STIXBase,
+        consume_map: Dict[str, str],
+        logger: Logger,
+    ):
+        """Instantiate a JMESPath StixModel.
+
+        Args:
+            produce_map: map of target field name to a jmespath query to pull that data from the
+                tc object.
+            produce_type: The class to use for the STIX object.
+            consume_map: map of target field name to a jmespath query to pull data from the stix
+                object.
+            logger: logger
+        """
+        super().__init__(logger)
+        self._produce_map = produce_map
+        self._produce_type = produce_type
+        self._consume_map = consume_map
+
+    # pylint: disable=arguments-differ
+    def produce(self, tc_data: Union[list, dict], **kwargs) -> Iterable:
+        """Accept TC entities and produces STIX objects."""
+        yield from (
+            self._produce_type(**stix_data) for stix_data in self._map(tc_data, self._produce_map)
+        )
+
+    # pylint: disable=arguments-differ
+    def consume(self, stix_data: Union[list, dict], **kwargs):
+        """Accept STIX objects and produces TC Entities."""
+        yield from self._map(stix_data, self._consume_map)
