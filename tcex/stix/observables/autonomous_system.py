@@ -18,9 +18,13 @@ class StixASObject(StixModel):
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070683
     """
 
+    # pylint: disable=arguments-differ
     def produce(self, tc_data: Union[list, dict], **kwargs) -> Iterable[AutonomousSystem]:
         """Produce STIX 2.0 JSON object from TC API response."""
-        if isinstance(tc_data, list) and len(tc_data) > 0 and 'summary' in tc_data[0]:
+        if not isinstance(tc_data, list):
+            tc_data = [tc_data]
+
+        if len(tc_data) > 0 and 'summary' in tc_data[0]:
             indicator_field = 'summary'
         else:
             indicator_field = 'AS Number'
@@ -34,7 +38,8 @@ class StixASObject(StixModel):
 
         yield from (AutonomousSystem(**stix_data) for stix_data in self._map(tc_data, parse_map))
 
-    def consume(self, stix_data: Union[list, dict]):
+    # pylint: disable=arguments-differ
+    def consume(self, stix_data: Union[list, dict], **kwargs):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
         parse_map = {
             'type': 'ASN',
