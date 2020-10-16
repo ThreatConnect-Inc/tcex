@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.14
+======
++ APP-1394 - [Batch] Updated batch data processing to handle max sizes appropriately.
+
 2.0.13
 ======
 + APP-1296 - [Session] Updated external session retry to accept a URL for retry mount.

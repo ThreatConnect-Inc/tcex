@@ -535,45 +535,38 @@ class Batch:
         Returns:
             dict: A dictionary of group, indicators, and/or file data.
         """
-        entity_count = 0
-        entity_size = 0
         data = {'file': {}, 'group': [], 'indicator': []}
+        tracker = {'count': 0, 'bytes': 0}
 
         # process group from memory, returning if max values have been reached
-        if self.data_groups(data, self.groups, entity_count, entity_size) is True:
+        if self.data_groups(data, self.groups, tracker) is True:
             return data
 
         # process group from shelf file, returning if max values have been reached
-        if self.data_groups(data, self.groups_shelf, entity_count, entity_size) is True:
+        if self.data_groups(data, self.groups_shelf, tracker) is True:
             return data
 
         # process indicator from memory, returning if max values have been reached
-        if self.data_indicators(data, self.indicators, entity_count, entity_size) is True:
+        if self.data_indicators(data, self.indicators, tracker) is True:
             return data
 
         # process indicator from shelf file, returning if max values have been reached
-        if self.data_indicators(data, self.indicators_shelf, entity_count, entity_size) is True:
+        if self.data_indicators(data, self.indicators_shelf, tracker) is True:
             return data
 
         return data
 
-    def data_group_association(
-        self, data: dict, entity_count: int, entity_size: int, xid: str
-    ) -> Tuple[int, int]:
+    def data_group_association(self, data: dict, tracker: dict, xid: str) -> None:
         """Return group dict array following all associations.
 
         The *data* dict is passed by reference to make it easier to update both the group data
         and file data inline versus passing the data all the way back up to the calling methods.
-        The entity_count and entity size values are immutable and must be returned.
 
         Args:
             data: The data dict to update with group and file data.
-            entity_count: The total count of all entities collected.
-            entity_size: The total size in bytes of all entities collected.
+            tracker: A dict containing total count of all entities collected and
+                the total size in bytes of all entities collected.
             xid: The xid of the group to retrieve associations.
-
-        Returns:
-            Tuple[int, int]: Return tuple containting updated entity_count and entity_size.
         """
         xids = deque()
         xids.append(xid)
@@ -596,13 +589,11 @@ class Batch:
                     data['file'][xid] = file_data
 
                 # update entity trackers
-                entity_count += 1
-                entity_size += sys.getsizeof(json.dumps(group_data))
+                tracker['count'] += 1
+                tracker['bytes'] += sys.getsizeof(json.dumps(group_data))
 
-                # groups.append(group_data)
+                # extend xids with any groups associated with the same object
                 xids.extend(group_data.get('associatedGroupXid', []))
-
-        return entity_count, entity_size
 
     @staticmethod
     def data_group_type(group_data: Union[dict, object]) -> Tuple[dict, dict]:
@@ -632,14 +623,14 @@ class Batch:
 
         return file_data, group_data
 
-    def data_groups(self, data: dict, groups: list, entity_count: int, entity_size: int) -> bool:
+    def data_groups(self, data: dict, groups: list, tracker: dict) -> bool:
         """Process Group data.
 
         Args:
             data: The data dict to update with group and file data.
             groups: The list of groups to process.
-            entity_count: The total count of all entities collected.
-            entity_size: The total size in bytes of all entities collected.
+            tracker: A dict containing total count of all entities collected and
+                the total size in bytes of all entities collected.
 
         Returns:
             bool: True if max values have been hit, else False.
@@ -650,35 +641,35 @@ class Batch:
         # process group objects
         for xid in list(groups.keys()):
             # get association from group data
-            entity_count, entity_size = self.data_group_association(
-                data, entity_count, entity_size, xid
-            )
+            self.data_group_association(data, tracker, xid)
 
-            if entity_count % 2_500 == 0:
+            if tracker.get('count') % 2_500 == 0:
                 # log count/size at a sane level
                 self.tcex.log.info(
-                    'feature=batch, action=data-groups, '
-                    f'count={entity_count:,}, size={entity_size:,}'
+                    '''feature=batch, action=data-groups, '''
+                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
 
-            if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
+            if (
+                tracker.get('count') >= self._batch_max_chunk
+                or tracker.get('bytes') >= self._batch_max_size
+            ):
                 # stop processing xid once max limit are reached
                 self.tcex.log.info(
-                    f'feature=batch, event=max-hit, count={entity_count:,}, size={entity_size:,}'
+                    '''feature=batch, event=max-value-reached, '''
+                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
                 return True
         return False
 
-    def data_indicators(
-        self, data: dict, indicators: list, entity_count: int, entity_size: int
-    ) -> bool:
+    def data_indicators(self, data: dict, indicators: list, tracker: dict) -> bool:
         """Process Indicator data.
 
         Args:
             data: The data dict to update with group and file data.
             indicators: The list of indicators to process.
-            entity_count: The total count of all entities collected.
-            entity_size: The total size in bytes of all entities collected.
+            tracker: A dict containing total count of all entities collected and
+                the total size in bytes of all entities collected.
 
         Returns:
             bool: True if max values have been hit, else False.
@@ -691,20 +682,24 @@ class Batch:
             del indicators[xid]
 
             # update entity trackers
-            entity_count += 1
-            entity_size += sys.getsizeof(json.dumps(indicator_data))
+            tracker['count'] += 1
+            tracker['bytes'] += sys.getsizeof(json.dumps(indicator_data))
 
-            if entity_count % 2_500 == 0:
+            if tracker.get('count') % 2_500 == 0:
                 # log count/size at a sane level
                 self.tcex.log.info(
-                    'feature=batch, action=data-indicator, '
-                    f'count={entity_count:,}, size={entity_size:,}'
+                    '''feature=batch, action=data-indicators, '''
+                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
 
-            if entity_count >= self._batch_max_chunk or entity_size >= self._batch_max_size:
+            if (
+                tracker.get('count') >= self._batch_max_chunk
+                or tracker.get('bytes') >= self._batch_max_size
+            ):
                 # stop processing xid once max limit are reached
                 self.tcex.log.info(
-                    f'feature=batch, event=max-hit, count={entity_count:,}, size={entity_size:,}'
+                    '''feature=batch, event=max-value-reached, '''
+                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
                 return True
         return False
