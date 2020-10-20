@@ -199,7 +199,7 @@ class StixModel:
             STIX objects
         """
 
-        type_mapping = type_mapping or None
+        type_mapping = type_mapping or {}
 
         if not isinstance(tc_data, list):
             tc_data = [tc_data]
@@ -210,8 +210,11 @@ class StixModel:
                     yield from type_mapping.get(indicator_type).produce(
                         normalized_data, indicator_type=indicator_type
                     )
-                yield from self.relationship.produce(normalized_data)
-                yield from self.indicator.produce(normalized_data, indicator_type=indicator_type)
+                else:
+                    yield from self.relationship.produce(normalized_data)
+                    yield from self.indicator.produce(
+                        normalized_data, indicator_type=indicator_type
+                    )
 
     def _normalize_tc_objects(self, tc_data):
         indicator_type = None
