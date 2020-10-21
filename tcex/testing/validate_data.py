@@ -400,8 +400,6 @@ class Validator:
         if self.check_null(app_data):
             return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
 
-        app_data = "1.43"
-
         if not isinstance(app_data, list):
             app_data = [app_data]
 
