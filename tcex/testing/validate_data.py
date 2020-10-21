@@ -155,6 +155,7 @@ class Validator:
             'is_url': self.operator_is_url,
             'is_date': self.operator_is_date,
             'is_number': self.operator_is_number,
+            'is_json': self.operator_is_json,
             'length_eq': self.operator_length_eq,
             'leq': self.operator_length_eq,
             'eq': self.operator_eq,
@@ -393,6 +394,41 @@ class Validator:
             bad_data.append(data)
             passed = False
         return passed, ','.join(bad_data)
+
+    def operator_is_json(self, app_data, test_data):  # pylint: disable=unused-argument
+        """Check if the app_data is a json."""
+        if self.check_null(app_data):
+            return False, f'Invalid app_data: {app_data}. One or more values in app_data is null'
+
+        app_data = "1.43"
+
+        if not isinstance(app_data, list):
+            app_data = [app_data]
+
+        bad_data = []
+        for data in app_data:
+            if isinstance(data, str):
+                try:
+                    data = json.loads(data)
+                    if not isinstance(data, list):
+                        data = [data]
+                    for item in data:
+                        if not isinstance(item, dict):
+                            bad_data.append(f'Invalid JSON data provide ({item}).')
+                except ValueError as e:
+                    print('failed to load data')
+                    bad_data.append(f'Invalid JSON data provide ({data}).')
+            elif isinstance(data, (OrderedDict, dict)):
+                try:
+                    data = json.dumps(data)
+                except ValueError:
+                    bad_data.append(f'Invalid JSON data provide ({data}).')
+            else:
+                bad_data.append(f'Invalid JSON data provide ({data}).')
+
+        if bad_data:
+            return False, ','.join(bad_data)
+        return True, ','.join(bad_data)
 
     def operator_json_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
