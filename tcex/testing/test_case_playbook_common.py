@@ -78,7 +78,7 @@ class TestCasePlaybookCommon(TestCase):
 
     def teardown_method(self):
         """Run after each test method runs."""
-        if self.enable_update_profile:
+        if self.enable_update_profile and self._skip:
             self.log.title('Update Outputs')
             self.profile.update_outputs()
 

@@ -57,6 +57,7 @@ class TestCase:
     tcex = None
     tcex_testing_context = None
     use_token = True
+    _skip = False
     utils = Utils()
 
     def _reset_property_flags(self):
@@ -135,8 +136,7 @@ class TestCase:
         """Return TC API Secret Key"""
         return self.env_store.getenv('/ninja/tc/tci/exchange_admin/api_secret_key')
 
-    @staticmethod
-    def check_environment(environments, os_environments=None):
+    def check_environment(self, environments, os_environments=None):
         """Check if test case matches current environments, else skip test.
 
         Args:
@@ -147,6 +147,7 @@ class TestCase:
         os_envs = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
         if os_environments:
             os_envs = set(os_environments)
+            self._skip = True
         if not os_envs.intersection(set(test_envs)):
             pytest.skip('Profile skipped based on current environment.')
 
@@ -238,8 +239,10 @@ class TestCase:
         if pytestconfig:
             os_environments = pytestconfig.option.environment
 
+        print('before checking the env')
         # check profile environment
         self.check_environment(self._profile.environments, os_environments)
+        print('after checking the env')
 
         # migrate profile to latest schema
         self._profile.migrate()
