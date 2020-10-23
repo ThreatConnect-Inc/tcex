@@ -259,8 +259,6 @@ class Migrate:
             for k, v in dict(profile_data.get('inputs', {}).get(input_type, {})).items():
                 # skip staging inputs with a null value
                 if v is None:
-                    variable: str = self.profile.ij.create_variable('null', 'String')
-                    profile_data['inputs'][input_type][k] = variable
                     continue
 
                 # get ij data for key/field
