@@ -1010,6 +1010,13 @@ class ThreatConnect:
             )
             return
 
+        if not os.path.isdir(batch_data_path):
+            self.log.info(f'action=validate-batch, data_path={batch_data_path}')
+            self.log.data(
+                'validate', 'Batch Submission', 'Skipping validation due to no batch data files'
+            )
+            return
+
         batch_submit_totals = self._get_batch_submit_totals(batch_data_path)
 
         if validation_count:
