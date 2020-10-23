@@ -239,10 +239,8 @@ class TestCase:
         if pytestconfig:
             os_environments = pytestconfig.option.environment
 
-        print('before checking the env')
         # check profile environment
         self.check_environment(self._profile.environments, os_environments)
-        print('after checking the env')
 
         # migrate profile to latest schema
         self._profile.migrate()
