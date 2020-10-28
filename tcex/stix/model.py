@@ -251,12 +251,12 @@ class StixModel:
             yield _type, data
 
     # pylint: disable=unused-argument
-    def consume(self, stix_data: Union[list, dict], type_mapping: Dict = None, **kwargs):
+    def consume(self, stix_data: Union[list, dict], custom_type_mapping: Dict = None, **kwargs):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
 
         Args:
             stix_data: one or more stix_data dictionaries
-            type_mapping: mapping of stix type to a StixModel object that can consume() it.
+            custom_type_mapping: mapping of stix type to a StixModel object that can consume() it.
 
         Yields:
             ThreatConnect objects
@@ -270,7 +270,7 @@ class StixModel:
             'windows-registry-key': self.registry_key,
             'url': self.url,
             'indicator': self.indicator,
-        }.update(type_mapping or {})
+        }.update(custom_type_mapping or {})
 
         visitor_mapping = {'relationship': self.relationship}
 
