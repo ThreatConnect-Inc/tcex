@@ -269,8 +269,9 @@ class StixModel:
             'ipv6-addr': self.ipv6,
             'windows-registry-key': self.registry_key,
             'url': self.url,
-            'indicator': self.indicator,
-        }.update(custom_type_mapping or {})
+            'indicator': self.indicator
+        }
+        type_mapping.update(custom_type_mapping or {})
 
         visitor_mapping = {'relationship': self.relationship}
 
