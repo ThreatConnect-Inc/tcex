@@ -60,6 +60,7 @@ def registery_key_stix_pattern_producer(data):
     parts = []
 
     if key_name.strip():
+        key_name = key_name.strip().replace('\\', '/')
         parts.append(f"windows-registry-key:key = '{key_name.strip()}'")
 
     if value_name.strip():
