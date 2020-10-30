@@ -245,6 +245,9 @@ class StixModel:
         for data in tc_data:
             _type = indicator_type or data.get('type').lower()
             self.logger.log.error(f'_type: {_type}')
+            if _type not in self.indicator_type_details:
+                self.logger.log.info(f'unable to convert indicator type {_type} to stix object')
+                continue
             data['summary'] = self._construct_summary(data, _type)
             for field in self.indicator_type_details.get(_type).get('fields'):
                 data.pop(field, '')
