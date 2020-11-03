@@ -9,6 +9,7 @@ from typing import Dict, List, Union
 
 # third-party
 import stix2
+from datetime import datetime
 from dendrol import Pattern
 from dendrol.lang.STIXPatternListener import STIXPatternListener
 from dendrol.lang.STIXPatternParser import STIXPatternParser
@@ -60,13 +61,15 @@ class StixIndicator(StixModel):
             for attribute in data.get('attribute', []):
                 if attribute.get('type').lower() == 'description':
                     value = attribute.get('value')
-                    last_modified = attribute.get('lastModified'), '%y-%m-%d'
+                    last_modified = datetime.strptime(attribute.get('lastModified'), '%Y-%m-%dT%H:%M:%SZ')
                     if attribute.get('displayed'):
                         description = value
                         break
-                    if not latest or latest > last_modified:
+                    if not latest or latest < last_modified:
                         latest = last_modified
                         description = value
+
+            print(f'description: {description}')
 
             id_ = f'''{data.get('ownerName').lower()}-{_type.lower()}-{data.get('summary')}'''
             id_ = uuid.uuid5(uuid.NAMESPACE_X500, id_)
