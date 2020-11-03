@@ -71,7 +71,7 @@ class StixIndicator(StixModel):
 
             id_ = f'''{data.get('ownerName').lower()}-{_type.lower()}-{data.get('summary')}'''
             id_ = uuid.uuid5(uuid.NAMESPACE_X500, id_)
-            self.logger.log.info(f'indicator_id: indicator--{id_}')
+            self.logger.log.trace(f'indicator_id: indicator--{id_}')
 
             # {
             #     "type": "indicator",

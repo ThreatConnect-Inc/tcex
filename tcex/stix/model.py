@@ -244,7 +244,7 @@ class StixModel:
 
         for data in tc_data:
             _type = indicator_type or data.get('type').lower()
-            self.logger.log.info(f'indicator_type: {_type}')
+            self.logger.log.trace(f'indicator_type: {_type}')
             if _type not in self.indicator_type_details:
                 self.logger.log.info(f'unable to convert indicator type {_type} to stix object')
                 continue
