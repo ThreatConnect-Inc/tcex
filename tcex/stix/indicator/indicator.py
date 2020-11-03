@@ -41,11 +41,22 @@ class StixIndicator(StixModel):
             indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
                 continue
+            object_marking_refs = []
             labels = []
             description = None
             latest = None
             for tag in data.get('tag', []):
                 labels.append(tag.get('name'))
+            for security_label in data.get('securityLabel', []):
+                security_label = security_label.get('name', '').strip().lower()
+                if security_label == 'tlp:white':
+                    object_marking_refs.append('marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9')
+                elif security_label == 'tlp:green':
+                    object_marking_refs.append('marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da')
+                elif security_label == 'tlp:amber':
+                    object_marking_refs.append('marking-definition--f88d31f6-486f-44da-b317-01333bde0b82')
+                elif security_label == 'tlp:red':
+                    object_marking_refs.append('marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed')
             for attribute in data.get('attribute', []):
                 if attribute.get('type').lower() == 'description':
                     value = attribute.get('value')
@@ -97,6 +108,7 @@ class StixIndicator(StixModel):
             yield stix2.Indicator(
                 confidence=data.get('confidence'),
                 labels=labels,
+                object_marking_refs=object_marking_refs,
                 created=data.get('dateAdded'),
                 modified=data.get('lastModified'),
                 description=description,
