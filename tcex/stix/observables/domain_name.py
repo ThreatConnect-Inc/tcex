@@ -36,12 +36,16 @@ class StixDomainNameObject(StixModel):
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
+        parse_map = {
+            'type': 'Host',
+            'hostName': '@.value',
+            'xid': '@.id',
+            'confidence': '@.confidence',
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
+        }
+        parse_map.update(self.default_map)
+
         yield from self._map(
             stix_data,
-            {
-                'type': 'Host',
-                'hostName': '@.value',
-                'xid': '@.id',
-                'attributes': [{'type': 'External ID', 'value': '@.id'}],
-            },
+            parse_map,
         )

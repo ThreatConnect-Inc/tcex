@@ -50,14 +50,8 @@ class StixIndicator(StixModel):
                 labels.append(tag.get('name'))
             for security_label in data.get('securityLabel', []):
                 security_label = security_label.get('name', '').strip().lower()
-                if security_label == 'tlp:white':
-                    object_marking_refs.append('marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9')
-                elif security_label == 'tlp:green':
-                    object_marking_refs.append('marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da')
-                elif security_label == 'tlp:amber':
-                    object_marking_refs.append('marking-definition--f88d31f6-486f-44da-b317-01333bde0b82')
-                elif security_label == 'tlp:red':
-                    object_marking_refs.append('marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed')
+                if security_label in self.security_label_map:
+                    object_marking_refs.append(self.security_label_map.get(security_label))
             for attribute in data.get('attribute', []):
                 if attribute.get('type').lower() == 'description':
                     value = attribute.get('value')
@@ -92,18 +86,8 @@ class StixIndicator(StixModel):
             #     ]
             # }
 
-            if data.get('rating', None) == 0:
-                labels.append('Threat Rating: Unknown')
-            elif data.get('rating', None) == 1:
-                labels.append('Threat Rating: Suspicious')
-            elif data.get('rating', None) == 2:
-                labels.append('Threat Rating: Low')
-            elif data.get('rating', None) == 3:
-                labels.append('Threat Rating: Moderate')
-            elif data.get('rating', None) == 4:
-                labels.append('Threat Rating: High')
-            elif data.get('rating', None) == 5:
-                labels.append('Threat Rating: Very High')
+            if str(data.get('rating', '')) in self.x_threat_rating_map:
+                labels.append(self.x_threat_rating_map.get(str(data.get('rating'))))
 
             yield stix2.Indicator(
                 confidence=data.get('confidence'),
@@ -137,25 +121,17 @@ class StixIndicator(StixModel):
             if data.get('pattern_type', 'stix') != 'stix':
                 continue
 
-            signature = {
-                'type': 'Signature',
-                'xid': data.get('id'),
-                'name': data.get('name'),
-            }
             if data.get('pattern_type', 'stix') == 'stix':
                 # We only parse indicators out of stix patterns...
                 pattern = Pattern(data.get('pattern'))
                 s = STIXListener()
                 pattern.walk(s)
 
-                yield from StixIndicator._default_consume_handler(s.indicators, signature)
-                yield from StixIndicator._ip_consume_handler(s.indicators, signature)
-                yield from StixIndicator._file_consume_handler(s.indicators, signature)
+                yield from self._default_consume_handler(s.indicators, data)
+                yield from self._ip_consume_handler(s.indicators, data)
+                yield from self._file_consume_handler(s.indicators, data)
 
-            yield signature
-
-    @staticmethod
-    def _default_consume_handler(stix_indicators: List[Dict[str, str]], signature):
+    def _default_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
         type_map = {
             'url:value': 'URL',
             'email-addr:value': 'EmailAddress',
@@ -168,53 +144,53 @@ class StixIndicator(StixModel):
             value = i.get('value')
             indicator_type = type_map.get(path)
 
-            yield {
+            parse_map = {
                 'type': indicator_type,
                 'summary': value,
-                'xid': Batch.generate_xid([signature.get('xid'), value]),
-                'associatedGroups': [{'groupXid': signature.get('xid')}],
+                'confidence': '@.confidence',
+                'xid': Batch.generate_xid([stix_data.get('id'), value])
             }
+            parse_map.update(self.default_map)
+            yield from self._map(stix_data, parse_map)
 
-    @staticmethod
-    def _ip_consume_handler(stix_indicators: List[Dict[str, str]], signature):
+    def _ip_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
         for i in filter(
             lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], stix_indicators
         ):
             path = i.get('path')
             value = i.get('value')
+            parse_map = None
             if path == 'ipv4-addr:value':
                 if '/' in value and value.split('/')[1] != '32':  # this is a CIDR
-                    yield {
+                    parse_map = {
                         'type': 'CIDR',
                         'summary': value,
-                        'xid': Batch.generate_xid([signature.get('xid'), value]),
-                        'associatedGroups': [{'groupXid': signature.get('xid')}],
+                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 else:  # this is an address
-                    yield {
+                    parse_map = {
                         'type': 'Address',
                         'summary': value.split('/')[0],
-                        'xid': Batch.generate_xid([signature.get('xid'), value]),
-                        'associatedGroups': [{'groupXid': signature.get('xid')}],
+                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
             elif path == 'ipv6-addr:value':
                 if '/' in value and value.split('/')[1] != '128':  # this is a CIDR
-                    yield {
+                    parse_map = {
                         'type': 'CIDR',
                         'summary': value,
-                        'xid': Batch.generate_xid([signature.get('xid'), value]),
-                        'associatedGroups': [{'groupXid': signature.get('xid')}],
+                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 else:  # this is an address
-                    yield {
+                    parse_map = {
                         'type': 'Address',
                         'summary': value.split('/')[0],
-                        'xid': Batch.generate_xid([signature.get('xid'), value]),
-                        'associatedGroups': [{'groupXid': signature.get('xid')}],
+                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
+                parse_map['confidence'] = '@.confidence'
+                parse_map.update(self.default_map)
+                yield from self._map(stix_data, parse_map)
 
-    @staticmethod
-    def _file_consume_handler(stix_indicators: List[Dict[str, str]], signature: dict):
+    def _file_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
         file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), stix_indicators))
 
         sha256_indicators = list(
@@ -231,20 +207,24 @@ class StixIndicator(StixModel):
                 and len(md5_indicators) <= 1
             ):
                 value = ' : '.join([v.get('value') for v in file_indicators])
-                yield {
+                parse_map = {
                     'type': 'File',
                     'summary': value,
-                    'xid': Batch.generate_xid([signature.get('xid'), value]),
-                    'associatedGroups': [{'groupXid': signature.get('xid')}],
+                    'confidence': '@.confidence',
+                    'xid': Batch.generate_xid([stix_data.get('id'), value])
                 }
+                parse_map.update(self.default_map)
+                yield from self._map(stix_data, parse_map)
             else:
                 for i in file_indicators:
-                    yield {
+                    parse_map = {
                         'type': 'File',
                         'summary': i.get('value'),
-                        'xid': Batch.generate_xid([signature.get('xid'), i.get('value')]),
-                        'associatedGroups': [{'groupXid': signature.get('xid')}],
+                        'confidence': '@.confidence',
+                        'xid': Batch.generate_xid([stix_data.get('id'), i.get('value')])
                     }
+                parse_map.update(self.default_map)
+                yield from self._map(stix_data, parse_map)
 
 
 class STIXListener(STIXPatternListener):

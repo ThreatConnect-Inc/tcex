@@ -27,6 +27,12 @@ class StixModel:
         self._indicator = None
         self._relationship = None
         self._indicator_type_details = None
+        self.default_map = {
+          'dateAdded': '@.created',
+          'lastModified': '@.modified',
+          'tag': '@.labels',
+          'securityLabels': '@.object_marking_refs'
+        }
 
         self._visitors = []
 
@@ -44,6 +50,26 @@ class StixModel:
                 summary.append('')
 
         return ' : '.join(summary)
+
+    @property
+    def security_label_map(self):
+        return {
+            'tlp:white': 'marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9',
+            'tlp:green': 'marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da',
+            'tlp:amber': 'marking-definition--f88d31f6-486f-44da-b317-01333bde0b82',
+            'tlp:red':   'marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed'
+        }
+
+    @property
+    def x_threat_rating_map(self):
+        return {
+            '0': 'Threat Rating: Unknown',
+            '1': 'Threat Rating: Suspicious',
+            '2': 'Threat Rating: Low',
+            '3': 'Threat Rating: Moderate',
+            '4': 'Threat Rating: High',
+            '5': 'Threat Rating: Very High',
+        }
 
     @property
     def indicator_type_details(self):
@@ -329,7 +355,17 @@ class StixModel:
                         if not value.startswith('@'):
                             mapped_obj[key] = value
                         else:
-                            mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
+                            if key == 'securityLabels':
+                                object_marking_refs = jmespath.search(f'{value}', jmespath.search('@', d))
+                                mapped_obj[key] = []
+                                for object_marking_ref in object_marking_refs:
+                                    object_marking_ref = object_marking_ref.lower()
+                                    if object_marking_ref in self.security_label_map.values():
+                                        security_label = list(self.security_label_map.keys())[
+                                            list(self.security_label_map.values()).index(object_marking_ref)]
+                                        mapped_obj[key].append(security_label)
+                            else:
+                                mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
                 yield mapped_obj
         except Exception:  # pylint: disable=bare-except
             self.logger.log.error(f'Could not map {data} using {mapping}')

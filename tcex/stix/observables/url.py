@@ -18,8 +18,10 @@ class StixURLObject(StixModel):
             'type': 'URL',
             'text': '@.value',
             'xid': '@.id',
+            'confidence': '@.confidence',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
+        mapper.update(self.default_map)
 
         if isinstance(stix_data, dict):
             stix_data = [stix_data]

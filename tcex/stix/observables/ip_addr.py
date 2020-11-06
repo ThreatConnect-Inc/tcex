@@ -23,15 +23,19 @@ class StixIPBase(StixModel):
             'type': 'Address',
             'ip': '@.value',
             'xid': '@.id',
+            'confidence': '@.confidence',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
+        mapper_ip.update(self.default_map)
 
         mapper_cider = {
+            'confidence': '@.confidence',
             'type': 'CIDR',
             'block': '@.value',
             'xid': '@.id',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
+        mapper_cider.update(self.default_map)
 
         if isinstance(stix_data, dict):
             stix_data = [stix_data]
@@ -85,14 +89,16 @@ class StixIPv4Object(StixIPBase):
 
         ip_type = 'ipv6' if ':' in tc_data.get(indicator_field, '') else 'ipv4'
 
+        parse_map = {
+            'id': '@.id',
+            'value': f'@.{indicator_field}',
+            'spec_version': '2.1',
+            'type': f'{ip_type}-addr',
+        }
+
         yield from self._map(
             tc_data,
-            {
-                'id': '@.id',
-                'value': f'@.{indicator_field}',
-                'spec_version': '2.1',
-                'type': f'{ip_type}-addr',
-            },
+            parse_map,
         )
 
     def _produce_address(self, tc_data: dict):
@@ -100,14 +106,16 @@ class StixIPv4Object(StixIPBase):
 
         ip_type = 'ipv6' if ':' in tc_data.get(indicator_field, '') else 'ipv4'
 
+        parse_map = {
+            'id': '@.id',
+            'value': f'@.{indicator_field}',
+            'spec_version': '2.1',
+            'type': f'{ip_type}-addr',
+        }
+
         yield from self._map(
             tc_data,
-            {
-                'id': '@.id',
-                'value': f'@.{indicator_field}',
-                'spec_version': '2.1',
-                'type': f'{ip_type}-addr',
-            },
+            parse_map,
         )
 
 

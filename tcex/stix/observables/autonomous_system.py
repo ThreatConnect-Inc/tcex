@@ -44,9 +44,11 @@ class StixASObject(StixModel):
         parse_map = {
             'type': 'ASN',
             'summary': '@.number',
+            'confidence': '@.confidence',
             'xid': '@.id',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
+        parse_map.update(self.default_map)
 
         def _convert_summary_to_str(data):
             data['summary'] = str(data.get('summary'))

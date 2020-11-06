@@ -29,8 +29,10 @@ class StixRegistryKeyObject(StixModel):
                 'type': 'Registry Key',
                 'Key Name': '@.key',
                 'xid': '@.id',
+                'confidence': '@.confidence',
                 'attributes': [{'type': 'External ID', 'value': '@.id'}],
             }
+            mapper.update(self.default_map)
             if not data.get('values'):
                 yield from self._map(data, mapper)
             else:
