@@ -356,7 +356,7 @@ class StixModel:
                             mapped_obj[key] = value
                         else:
                             if key == 'securityLabel':
-                                object_marking_refs = jmespath.search(f'{value}', jmespath.search('@', d))
+                                object_marking_refs = jmespath.search(f'{value}', jmespath.search('@', d)) or []
                                 mapped_obj[key] = []
                                 for object_marking_ref in object_marking_refs:
                                     object_marking_ref = object_marking_ref.lower()
@@ -365,15 +365,17 @@ class StixModel:
                                             list(self.security_label_map.values()).index(object_marking_ref)]
                                         mapped_obj[key].append({'name': security_label.upper()})
                             elif key == 'tag':
-                                tags = jmespath.search(f'{value}', jmespath.search('@', d))
+                                tags = jmespath.search(f'{value}', jmespath.search('@', d)) or []
                                 mapped_obj[key] = []
                                 for tag in tags:
                                     mapped_obj[key].append({'name': tag})
                             else:
                                 mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
                 yield mapped_obj
-        except Exception:  # pylint: disable=bare-except
-            self.logger.log.error(f'Could not map {data} using {mapping}')
+        except Exception as e:  # pylint: disable=bare-except
+            raise e
+            # print(e)
+            # self.logger.log.error(f'Could not map {data} using {mapping}')
 
 
 class JMESPathStixModel(StixModel):
