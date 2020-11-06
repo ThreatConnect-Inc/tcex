@@ -2,6 +2,173 @@
   "id": "bundle--5330e3e3-8f58-4d21-9f4b-793a054c0d33",
   "objects": [
     {
+      "created": "2016-05-07T11:22:30.000Z",
+      "id": "infrastructure--38c47d93-d984-4fd9-b87b-d69d0841628d",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "labels": [
+        "command-and-control"
+      ],
+      "modified": "2016-05-07T11:22:30.000Z",
+      "name": "Poison Ivy C2",
+      "spec_version": "2.1",
+      "type": "infrastructure"
+    },
+    {
+      "created": "2016-05-09T08:17:27.000Z",
+      "id": "relationship--7aebe2f0-28d6-48a2-9c3e-b0aaa60266ed",
+      "modified": "2016-05-09T08:17:27.000Z",
+      "relationship_type": "controls",
+      "source_ref": "infrastructure--38c47d93-d984-4fd9-b87b-d69d0841628d",
+      "spec_version": "2.1",
+      "target_ref": "malware--16f4f3f9-1b68-4abb-bb66-7639d49f1e30",
+      "type": "relationship"
+    },
+    {
+      "created": "2016-05-08T14:31:09.000Z",
+      "id": "malware--16f4f3f9-1b68-4abb-bb66-7639d49f1e30",
+      "is_family": true,
+      "labels": [
+        "rat"
+      ],
+      "malware_types": [
+        "remote-access-trojan"
+      ],
+      "modified": "2016-05-08T14:31:09.000Z",
+      "name": "Poison Ivy",
+      "spec_version": "2.1",
+      "type": "malware"
+    },
+    {
+      "created": "2016-05-09T08:17:27.000Z",
+      "id": "relationship--7aebe2f0-28d6-48a2-9c3e-b0aaa60266ef",
+      "modified": "2016-05-09T08:17:27.000Z",
+      "relationship_type": "consists-of",
+      "source_ref": "infrastructure--38c47d93-d984-4fd9-b87b-d69d0841628d",
+      "spec_version": "2.1",
+      "target_ref": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "relationship"
+    },
+    {
+      "id": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "ipv4-addr",
+      "value": "198.51.100.3"
+    },
+    {
+      "created": "2016-11-22T09:22:30.000Z",
+      "id": "infrastructure--d09c50cf-5bab-465e-9e2d-543912148b73",
+      "infrastructure_types": [
+        "hosting-target-lists"
+      ],
+      "labels": [
+        "target-list-hosting"
+      ],
+      "modified": "2016-11-22T09:22:30.000Z",
+      "name": "Example target-list-hosting",
+      "spec_version": "2.1",
+      "type": "infrastructure"
+    },
+    {
+      "created": "2016-11-23T08:17:27.000Z",
+      "id": "relationship--37ac0c8d-f86d-4e56-aee9-914343959a4c",
+      "modified": "2016-11-23T08:17:27.000Z",
+      "relationship_type": "uses",
+      "source_ref": "malware--3a41e552-999b-4ad3-bedc-332b6d9ff80c",
+      "spec_version": "2.1",
+      "target_ref": "infrastructure--d09c50cf-5bab-465e-9e2d-543912148b73",
+      "type": "relationship"
+    },
+    {
+      "created": "2016-11-12T14:31:09.000Z",
+      "id": "malware--3a41e552-999b-4ad3-bedc-332b6d9ff80c",
+      "is_family": true,
+      "malware_types": [
+        "bot"
+      ],
+      "modified": "2016-11-12T14:31:09.000Z",
+      "name": "IMDDOS",
+      "spec_version": "2.1",
+      "type": "malware"
+    },
+    {
+      "created": "2016-11-23T10:42:39.000Z",
+      "id": "relationship--81f12913-1372-4c96-85ec-E9034ac98aba",
+      "modified": "2016-11-23T10:42:39.000Z",
+      "relationship_type": "consists-of",
+      "source_ref": "infrastructure--d09c50cf-5bab-465e-9e2d-543912148b73",
+      "spec_version": "2.1",
+      "target_ref": "domain-name--ecb120bf-2694-4902-a737-62b74539a41b",
+      "type": "relationship"
+    },
+    {
+      "id": "domain-name--ecb120bf-2694-4902-a737-62b74539a41b",
+      "type": "domain-name",
+      "value": "example.com"
+    },
+    {
+      "id": "ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "ipv4-addr",
+      "value": "198.51.100.2/16"
+    },
+    {
+      "id": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "ipv6-addr",
+      "value": "2001:0db8:85a3:0000:0000:8a2e:0370:7111"
+    },
+    {
+      "id": "ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "type": "ipv6-addr",
+      "value": "2001:0db8:85a3:0000:0000:8a2e:0370:7111/64"
+    },
+    {
+      "id": "autonomous-system-1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "number": 1234567,
+      "type": "autonomous-system"
+    },
+    {
+      "id": "autonomous-system-1e4ffad7-0b88-41d4-ba4d-77d27490b956",
+      "number": 1234567,
+      "type": "autonomous-system"
+    },
+    {
+      "display_name": "John Doe",
+      "id": "email-addr--2d77a846-6264-5d51-b586-e43822ea1ea3",
+      "spec_version": "2.1",
+      "type": "email-addr",
+      "value": "john@example.com"
+    },
+    {
+      "id": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016",
+      "key": "hkey_local_machine\\system\\bar\\foo",
+      "spec_version": "2.1",
+      "type": "windows-registry-key",
+      "values": [
+        {
+          "data": "qwerty",
+          "data_type": "REG_SZ",
+          "name": "Foo"
+        },
+        {
+          "data": "42",
+          "data_type": "REG_DWORD",
+          "name": "Bar"
+        }
+      ]
+    },
+    {
+      "id": "windows-registry-key--9d60798d-4e3e-5fe4-af8a-0e4986f0f90b",
+      "key": "HKEY_LOCAL_MACHINE\\System\\Foo\\Bar",
+      "spec_version": "2.1",
+      "type": "windows-registry-key"
+    },
+    {
+      "id": "url--c1477287-23ac-5971-a010-5c287877fa60",
+      "spec_version": "2.1",
+      "type": "url",
+      "value": "https://example.com/research/index.html"
+    },
+    {
       "created": "2015-05-15T09:12:16.432Z",
       "description": "Test description.",
       "id": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691",
