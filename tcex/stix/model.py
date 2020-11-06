@@ -31,7 +31,7 @@ class StixModel:
           'dateAdded': '@.created',
           'lastModified': '@.modified',
           'tag': '@.labels',
-          'securityLabels': '@.object_marking_refs'
+          'securityLabel': '@.object_marking_refs'
         }
 
         self._visitors = []
@@ -355,7 +355,7 @@ class StixModel:
                         if not value.startswith('@'):
                             mapped_obj[key] = value
                         else:
-                            if key == 'securityLabels':
+                            if key == 'securityLabel':
                                 object_marking_refs = jmespath.search(f'{value}', jmespath.search('@', d))
                                 mapped_obj[key] = []
                                 for object_marking_ref in object_marking_refs:
