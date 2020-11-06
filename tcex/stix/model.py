@@ -364,6 +364,11 @@ class StixModel:
                                         security_label = list(self.security_label_map.keys())[
                                             list(self.security_label_map.values()).index(object_marking_ref)]
                                         mapped_obj[key].append(security_label)
+                            elif key == 'tag':
+                                tags = jmespath.search(f'{value}', jmespath.search('@', d))
+                                mapped_obj[key] = []
+                                for tag in tags:
+                                    mapped_obj[key].append({'name': tag})
                             else:
                                 mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
                 yield mapped_obj
