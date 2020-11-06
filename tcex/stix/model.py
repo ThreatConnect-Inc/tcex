@@ -373,9 +373,7 @@ class StixModel:
                                 mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
                 yield mapped_obj
         except Exception as e:  # pylint: disable=bare-except
-            raise e
-            # print(e)
-            # self.logger.log.error(f'Could not map {data} using {mapping}')
+            self.logger.log.error(f'Could not map {data} using {mapping}')
 
 
 class JMESPathStixModel(StixModel):
