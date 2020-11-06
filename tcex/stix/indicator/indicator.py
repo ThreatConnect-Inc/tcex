@@ -42,29 +42,36 @@ class StixIndicator(StixModel):
             indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
                 continue
-            object_marking_refs = []
-            labels = []
-            description = None
+            kwargs = {'pattern_type': 'stix', 'lang': 'en', 'pattern_version': '2.1',
+                      'created': data.get('dateAdded'),
+                      'modified': data.get('lastModified'), 'name': data.get('summary'),
+                      'pattern': indicator_details.get('lambda')(data), 'description': '',
+                      'indicator_types': ['malicious-activity'], 'confidence': data.get('confidence')}
+            confidence = data.get('confidence')
+            if confidence is not None:
+                kwargs['confidence'] = confidence
+
             latest = None
             for tag in data.get('tag', []):
-                labels.append(tag.get('name'))
+                kwargs.setdefault('labels', []).append(tag.get('name'))
             for security_label in data.get('securityLabel', []):
                 security_label = security_label.get('name', '').strip().lower()
                 if security_label in self.security_label_map:
-                    object_marking_refs.append(self.security_label_map.get(security_label))
+                    kwargs.setdefault('object_marking_refs', [])
+                    kwargs['object_marking_refs'].append(self.security_label_map.get(security_label))
             for attribute in data.get('attribute', []):
                 if attribute.get('type').lower() == 'description':
                     value = attribute.get('value')
                     last_modified = datetime.strptime(attribute.get('lastModified'), '%Y-%m-%dT%H:%M:%SZ')
                     if attribute.get('displayed'):
-                        description = value
+                        kwargs['description'] = value
                         break
                     if not latest or latest < last_modified:
                         latest = last_modified
-                        description = value
+                        kwargs['description'] = value
 
             id_ = f'''{data.get('ownerName').lower()}-{_type.lower()}-{data.get('summary')}'''
-            id_ = uuid.uuid5(uuid.NAMESPACE_X500, id_)
+            kwargs['id'] = f'indicator--{uuid.uuid5(uuid.NAMESPACE_X500, id_)}'
 
             # {
             #     "type": "indicator",
@@ -86,24 +93,13 @@ class StixIndicator(StixModel):
             #     ]
             # }
 
-            if str(data.get('rating', '')) in self.x_threat_rating_map:
-                labels.append(self.x_threat_rating_map.get(str(data.get('rating'))))
+            try:
+                rating = str(int(data.get('rating')))
+                kwargs.setdefault('labels', []).append(self.x_threat_rating_map[rating])
+            except Exception:
+                pass
 
-            yield stix2.Indicator(
-                confidence=data.get('confidence'),
-                labels=labels,
-                object_marking_refs=object_marking_refs,
-                created=data.get('dateAdded'),
-                modified=data.get('lastModified'),
-                description=description,
-                id=f'indicator--{id_}',
-                name=f'{data.get("summary")}',
-                lang='en',
-                pattern_version='2.1',
-                indicator_types=['malicious-activity'],
-                pattern_type='stix',
-                pattern=indicator_details.get('lambda')(data),
-            )
+            yield stix2.Indicator(**kwargs)
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object.
@@ -155,7 +151,7 @@ class StixIndicator(StixModel):
 
     def _ip_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
         for i in filter(
-            lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], stix_indicators
+                lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], stix_indicators
         ):
             path = i.get('path')
             value = i.get('value')
@@ -201,10 +197,10 @@ class StixIndicator(StixModel):
 
         if len(file_indicators) > 0:
             if (
-                len(file_indicators) <= 3
-                and len(sha256_indicators) <= 1
-                and len(sha2_indicators) <= 1
-                and len(md5_indicators) <= 1
+                    len(file_indicators) <= 3
+                    and len(sha256_indicators) <= 1
+                    and len(sha2_indicators) <= 1
+                    and len(md5_indicators) <= 1
             ):
                 value = ' : '.join([v.get('value') for v in file_indicators])
                 parse_map = {
@@ -244,7 +240,7 @@ class STIXListener(STIXPatternListener):
         test = ctx.getText()
         eq_index = test.index('=')
         if eq_index:
-            path, value = test[:eq_index], test[(eq_index + 1) :]  # noqa: E203
+            path, value = test[:eq_index], test[(eq_index + 1):]  # noqa: E203
 
             self._indicators.append({'path': path.strip(), 'value': value.strip()[1:-1]})
 
