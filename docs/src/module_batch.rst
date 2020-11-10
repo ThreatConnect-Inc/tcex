@@ -53,10 +53,10 @@ The example below passes only the required fields to **document()**.  The option
     :emphasize-lines: 2-5,6-7,9,11-13,15
 
     batch = tcex.batch('MyOrg')
-    document = batch.document('document-001', 'example.txt')
+    document_content = 'example file content'
+    document = batch.document('document-001', 'example.txt', file_content=document_content)
     document.malware = True
     document.password = 'test'
-    document.file_content = 'example file content'
     # Add Attribute
     attr = document.attribute('Description', 'Example Description')
     attr.displayed = True
@@ -71,7 +71,7 @@ The example below passes only the required fields to **document()**.  The option
 
 .. note:: The optional ``batch.save()`` method will write the Group or Indicator to disk.  When processing large amounts of data, this is the preferred method in order to save on the memory usage of the App.
 
-.. important:: The **file_content** parameter for Documents and Reports will accept multiple types of data as well as a callback method.  The callback method will be passed in the xid of the Documents and Reports and expects a single response containing the contents of the file.  If loading a large number of Documents, it is best practice to not load the contents in memory, but instead to use the callback method so that the files can be processed one at a time.
+.. important:: The **file_content** kwarg for Documents and Reports will accept multiple types of data as well as a callback method.  The callback method will be passed in the xid of the Documents and Reports and expects a single response containing the contents of the file.  If loading a large number of Documents, it is best practice to not load the contents in memory, but instead to use the callback method so that the files can be processed one at a time.
 
 Group Interface 2
 -----------------
