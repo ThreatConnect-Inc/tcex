@@ -35,7 +35,7 @@ class StixModel:
           'lastModified': '@.modified',
           'tag': '@.labels',
           'securityLabel': '@.object_marking_refs',
-          'attributes': [
+          'attribute': [
               {'type': 'Object ID', 'value': '@.id'},
           ],
         }
@@ -329,11 +329,14 @@ class StixModel:
                 dd[k] = v
         tc_data = []
         for data in stix_data.get('objects', []):
+            if not dd.get('xid'):
+                dd['xid'] = self.tcex.batch.generate_xid(stix_data.get('id'))
             _type = data.get('type').lower()
             instance = visitor_mapping.get(_type)
             if not instance:
                 instance = type_mapping.get(_type)
             if not instance:
+                tc_data = itertools.chain(tc_data, self._map(data, dd))
                 continue
             instance.default_map = dd
 
