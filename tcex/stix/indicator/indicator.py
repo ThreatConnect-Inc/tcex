@@ -25,6 +25,13 @@ class StixIndicator(StixModel):
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
     """
 
+    @staticmethod
+    def _add_milliseconds(time):
+        new_time = f'''{time.upper().replace('Z', '')}.000'''
+        if time.lower().endswith('z'):
+            return f'{new_time}Z'
+        return new_time
+
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce a STIX Indicator from a ThreatConnect Indicator.
 
@@ -42,15 +49,22 @@ class StixIndicator(StixModel):
             indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
                 continue
-            kwargs = {'pattern_type': 'stix', 'lang': 'en', 'pattern_version': '2.1',
-                      'created': data.get('dateAdded'),
-                      'modified': data.get('lastModified'), 'name': data.get('summary'),
-                      'pattern': indicator_details.get('lambda')(data), 'description': '',
-                      'indicator_types': ['malicious-activity'], 'confidence': data.get('confidence')}
-            confidence = data.get('confidence')
-            if confidence is not None:
-                kwargs['confidence'] = confidence
-
+            kwargs = {
+                'pattern_type': 'stix',
+                'lang': 'en',
+                'pattern_version': '2.1',
+                'type': 'indicator',
+                'created': self._add_milliseconds(data.get('dateAdded')),
+                'valid_from': self._add_milliseconds(data.get('dateAdded')),
+                'modified': self._add_milliseconds(data.get('lastModified')),
+                'name': data.get('summary'),
+                'pattern': indicator_details.get('lambda')(data),
+                'description': '',
+                'indicator_types': ['malicious-activity'],
+                'confidence': data.get('confidence', 0),
+            }
+            if not data.get('active', True):
+                kwargs['revoked'] = True
             latest = None
             for tag in data.get('tag', []):
                 kwargs.setdefault('labels', []).append(tag.get('name'))
@@ -66,7 +80,7 @@ class StixIndicator(StixModel):
                     if attribute.get('displayed'):
                         kwargs['description'] = value
                         break
-                    if not latest or latest < last_modified:
+                    if not latest or last_modified > latest:
                         latest = last_modified
                         kwargs['description'] = value
 
@@ -99,7 +113,7 @@ class StixIndicator(StixModel):
             except Exception:
                 pass
 
-            yield stix2.Indicator(**kwargs)
+            yield kwargs
 
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object.

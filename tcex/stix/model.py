@@ -31,7 +31,10 @@ class StixModel:
           'dateAdded': '@.created',
           'lastModified': '@.modified',
           'tag': '@.labels',
-          'securityLabel': '@.object_marking_refs'
+          'securityLabel': '@.object_marking_refs',
+          'attributes': [
+              {'type': 'Object ID', 'value': '@.id'},
+          ],
         }
 
         self._visitors = []
@@ -278,6 +281,17 @@ class StixModel:
                 data.pop(field, '')
             yield _type, data
 
+    def reset_default_mapping(self):
+        self.default_map = {
+            'dateAdded': '@.created',
+            'lastModified': '@.modified',
+            'tag': '@.labels',
+            'securityLabel': '@.object_marking_refs',
+            'attributes': [
+                {'type': 'Object ID', 'value': '@.id'},
+            ],
+        }
+
     # pylint: disable=unused-argument
     def consume(self, stix_data: Union[list, dict], custom_type_mapping: Dict = None, **kwargs):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
@@ -307,24 +321,21 @@ class StixModel:
             stix_data = [stix_data]
 
         tc_data = []
-        for data in stix_data:
+        for data in stix_data.get('objects', []):
+            self.reset_default_mapping()
+            self.default_map.update(kwargs.get('default_map', {}))
             # Handle a bundle OR just one or more stix objects.
-            stix_objects = data.get('objects') if data.get('type') == 'bundle' else data
-
-            for stix_object in stix_objects:
-                _type = stix_object.get('type').lower()
-                if _type in visitor_mapping:
-                    for visitor in visitor_mapping.get(_type).consume(stix_object):
-                        self.register_visitor(visitor)
+            _type = data.get('type').lower()
+            if _type in visitor_mapping:
+                for visitor in visitor_mapping.get(_type).consume(data):
+                    self.register_visitor(visitor)
+            else:
+                if _type in type_mapping:
+                    # sub-parsers return generators, so chain them all together to flatten.
+                    tc_data = itertools.chain(tc_data, type_mapping.get(_type).consume(data))
                 else:
-                    if _type in type_mapping:
-                        # sub-parsers return generators, so chain them all together to flatten.
-                        tc_data = itertools.chain(
-                            tc_data, type_mapping.get(_type).consume(stix_object)
-                        )
-                    else:
-                        # TODO handle unknown stix type
-                        pass
+                    # TODO handle unknown stix type
+                    pass
 
         for visitor in self._visitors:
             tc_data = visitor.visit(tc_data)
