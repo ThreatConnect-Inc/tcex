@@ -320,6 +320,13 @@ class StixModel:
 
         visitor_mapping = {'relationship': self.relationship}
 
+        dd = {}
+        dict_items = map(methodcaller('items'), (self.default_map, kwargs.get('default_map', {})))
+        for k, v in chain.from_iterable(dict_items):
+            if isinstance(v, list) and isinstance(dd.get(k), list):
+                dd[k].extend(v)
+            else:
+                dd[k] = v
         tc_data = []
         for data in stix_data.get('objects', []):
             _type = data.get('type').lower()
@@ -328,14 +335,8 @@ class StixModel:
                 instance = type_mapping.get(_type)
             if not instance:
                 continue
-            dd = {}
-            dict_items = map(methodcaller('items'), (self.default_map, kwargs.get('default_map', {})))
-            for k, v in chain.from_iterable(dict_items):
-                if isinstance(v, list) and isinstance(dd.get(k), list):
-                    dd[k].extend(v)
-                else:
-                    dd[k] = v
             instance.default_map = dd
+
             print('passed in default mapping', kwargs.get('default_map'))
             print('updated default map', instance.default_map)
             # Handle a bundle OR just one or more stix objects.
