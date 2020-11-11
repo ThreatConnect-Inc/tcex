@@ -6,6 +6,7 @@ see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_T
 # standard library
 import uuid
 from typing import Dict, List, Union
+import itertools
 
 # third-party
 import stix2
@@ -115,58 +116,58 @@ class StixIndicator(StixModel):
 
             yield kwargs
 
-    def consume(self, stix_data: Union[list, dict]):
-        """Produce a ThreatConnect object from a STIX 2.0 JSON object.
+    def consume_mappings(self, stix_data):
+        pattern = Pattern(stix_data.get('pattern'))
+        s = STIXListener()
+        pattern.walk(s)
+        mappings = []
+        mappings.append(self._default_consume_handler(s.indicators))
+        mappings.append(self._ip_consume_handler(s.indicators))
+        mappings.append(self._file_consume_handler(s.indicators))
+    # TODO remove Nones
+        mappings = list(itertools.chain(*mappings))
+        return mappings
 
-        Args:
-            stix_data: STIX Indicator objects to parse.
+    def _file_consume_handler(self, indicators):
+        file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), indicators))
 
-        Yields:
-            A ThreatConnect Signature and optionally ThreatConnect indicators.
-        """
-        if not isinstance(stix_data, list):
-            stix_data = [stix_data]
+        sha256_indicators = list(
+            filter(lambda i: 'SHA-156' in i.get('path').upper(), file_indicators)
+        )
+        sha2_indicators = list(filter(lambda i: 'SHA-1' in i.get('path').upper(), file_indicators))
+        md5_indicators = list(filter(lambda i: 'MD5' in i.get('path').upper(), file_indicators))
 
-        for data in stix_data:
-            if data.get('pattern_type', 'stix') != 'stix':
-                continue
-
-            if data.get('pattern_type', 'stix') == 'stix':
-                # We only parse indicators out of stix patterns...
-                pattern = Pattern(data.get('pattern'))
-                s = STIXListener()
-                pattern.walk(s)
-
-                yield from self._default_consume_handler(s.indicators, data)
-                yield from self._ip_consume_handler(s.indicators, data)
-                yield from self._file_consume_handler(s.indicators, data)
-
-    def _default_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
-        type_map = {
-            'url:value': 'URL',
-            'email-addr:value': 'EmailAddress',
-            'domain-name:value': 'Host',
-            'autonomous-system:name': 'ASN',
-        }
-
-        for i in filter(lambda i: i.get('path') in type_map.keys(), stix_indicators):
-            path = i.get('path')
-            value = i.get('value')
-            indicator_type = type_map.get(path)
-
-            parse_map = {
-                'type': indicator_type,
-                'summary': value,
-                'confidence': '@.confidence',
-                'xid': Batch.generate_xid([stix_data.get('id'), value])
-            }
-            parse_map.update(self.default_map)
-            yield from self._map(stix_data, parse_map)
-
-    def _ip_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
-        for i in filter(
-                lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], stix_indicators
+        if len(file_indicators) <= 0:
+            return []
+        mappings = []
+        if (
+                len(file_indicators) <= 3
+                and len(sha256_indicators) <= 1
+                and len(sha2_indicators) <= 1
+                and len(md5_indicators) <= 1
         ):
+            value = ' : '.join([v.get('value') for v in file_indicators])
+            mappings.append(
+                {
+                    'type': 'File',
+                    'summary': value,
+                    'confidence': '@.confidence',
+                }
+            )
+        else:
+            for i in file_indicators:
+                mappings.append(
+                    {
+                        'type': 'File',
+                        'summary': i.get('value'),
+                        'confidence': '@.confidence',
+                    }
+                )
+        return mappings
+
+    def _ip_consume_handler(self, indicators):
+        mappings = []
+        for i in filter(lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], indicators):
             path = i.get('path')
             value = i.get('value')
             parse_map = None
@@ -175,66 +176,49 @@ class StixIndicator(StixModel):
                     parse_map = {
                         'type': 'CIDR',
                         'summary': value,
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 else:  # this is an address
                     parse_map = {
                         'type': 'Address',
                         'summary': value.split('/')[0],
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
             elif path == 'ipv6-addr:value':
                 if '/' in value and value.split('/')[1] != '128':  # this is a CIDR
                     parse_map = {
                         'type': 'CIDR',
                         'summary': value,
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 else:  # this is an address
                     parse_map = {
                         'type': 'Address',
                         'summary': value.split('/')[0],
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 parse_map['confidence'] = '@.confidence'
-                parse_map.update(self.default_map)
-                yield from self._map(stix_data, parse_map)
+                mappings.append(parse_map)
+        return mappings
 
-    def _file_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
-        file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), stix_indicators))
+    def _default_consume_handler(self, indicators):
+        type_map = {
+            'url:value': 'URL',
+            'email-addr:value': 'EmailAddress',
+            'domain-name:value': 'Host',
+            'autonomous-system:name': 'ASN',
+        }
 
-        sha256_indicators = list(
-            filter(lambda i: 'SHA-156' in i.get('path').upper(), file_indicators)
-        )
-        sha2_indicators = list(filter(lambda i: 'SHA-1' in i.get('path').upper(), file_indicators))
-        md5_indicators = list(filter(lambda i: 'MD5' in i.get('path').upper(), file_indicators))
+        mappings = []
+        for i in filter(lambda i: i.get('path') in type_map.keys(), indicators):
+            path = i.get('path')
+            value = i.get('value')
+            indicator_type = type_map.get(path)
 
-        if len(file_indicators) > 0:
-            if (
-                    len(file_indicators) <= 3
-                    and len(sha256_indicators) <= 1
-                    and len(sha2_indicators) <= 1
-                    and len(md5_indicators) <= 1
-            ):
-                value = ' : '.join([v.get('value') for v in file_indicators])
-                parse_map = {
-                    'type': 'File',
+            mappings.append(
+                {
+                    'type': indicator_type,
                     'summary': value,
                     'confidence': '@.confidence',
-                    'xid': Batch.generate_xid([stix_data.get('id'), value])
                 }
-                parse_map.update(self.default_map)
-                yield from self._map(stix_data, parse_map)
-            else:
-                for i in file_indicators:
-                    parse_map = {
-                        'type': 'File',
-                        'summary': i.get('value'),
-                        'confidence': '@.confidence',
-                        'xid': Batch.generate_xid([stix_data.get('id'), i.get('value')])
-                    }
-                parse_map.update(self.default_map)
-                yield from self._map(stix_data, parse_map)
+            )
+        return mappings
 
 
 class STIXListener(STIXPatternListener):
@@ -279,3 +263,5 @@ class STIXListener(STIXPatternListener):
     def indicators(self):
         """Return the indicators parsed out of this pattern."""
         return self._indicators
+
+

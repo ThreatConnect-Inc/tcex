@@ -1,9 +1,12 @@
 """Top-level Stix Model Class."""
 # standard library
 import itertools
-from typing import Dict, Iterable, Union
 from operator import methodcaller
-from itertools import chain
+from typing import Dict, Iterable, Union
+
+from dendrol import Pattern
+from dendrol.lang.STIXPatternListener import STIXPatternListener
+from dendrol.lang.STIXPatternParser import STIXPatternParser
 
 
 # third-party
@@ -12,6 +15,8 @@ from stix2.base import _STIXBase
 
 # first-party
 from tcex.logger import Logger
+from tcex.batch import Batch
+
 
 
 class StixModel:
@@ -284,19 +289,94 @@ class StixModel:
                 data.pop(field, '')
             yield _type, data
 
-    def reset_default_mapping(self):
-        self.default_map = {
-            'dateAdded': '@.created',
-            'lastModified': '@.modified',
-            'tag': '@.labels',
-            'securityLabel': '@.object_marking_refs',
-            'attributes': [
-                {'type': 'Object ID', 'value': '@.id'},
-            ],
+    # pylint: disable=unused-argument
+    @property
+    def as_object_mapping(self):
+        return {
+            'type': 'ASN',
+            'summary': '@.number',
+            'confidence': '@.confidence',
+            'xid': '@.id',
+            # 'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
-    # pylint: disable=unused-argument
-    def consume(self, stix_data: Union[list, dict], custom_type_mapping: Dict = None, **kwargs):
+
+    @property
+    def domain_name_mapping(self):
+        return {
+            'type': 'Host',
+            'hostName': '@.value',
+            'xid': '@.id',
+            'confidence': '@.confidence',
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
+        }
+
+    @property
+    def email_address_mapping(self):
+        return {
+            'type': 'EmailAddress',
+            'address': '@.value',
+            'confidence': '@.confidence',
+            'xid': '@.id',
+        }
+
+    def _ip_addr_mapping(self, stix_data, full_block_size):
+        cidr_parts = stix_data.get('value', '').split('/')
+        cidr_suffix = cidr_parts[1] if len(cidr_parts) > 1 else str(full_block_size)
+        if cidr_suffix == str(full_block_size):
+            return {
+                'type': 'Address',
+                'ip': '@.value',
+                'xid': '@.id',
+                'confidence': '@.confidence',
+            }
+        return {
+            'confidence': '@.confidence',
+            'type': 'CIDR',
+            'block': '@.value',
+            'xid': '@.id',
+            'attributes': [{'type': 'External ID', 'value': '@.id'}],
+        }
+
+    def ipv6_mapping(self, stix_data):
+        return self._ip_addr_mapping(stix_data, 128)
+
+    def ipv4_mapping(self, stix_data):
+        return self._ip_addr_mapping(stix_data, 32)
+
+    def url_mapping(self):
+        return {
+            'type': 'URL',
+            'text': '@.value',
+            'xid': '@.id',
+            'confidence': '@.confidence'
+        }
+
+    def registry_key_mapping(self, stix_data):
+        mapper = {
+            'type': 'Registry Key',
+            'Key Name': '@.key',
+            'xid': '@.id',
+            'confidence': '@.confidence',
+        }
+        if not stix_data.get('values'):
+            return mapper
+        else:
+            for i in range(len(stix_data.get('values'))):
+                mapper['Value Name'] = f'@.values[{i}].name'
+                mapper['Value Type'] = f'@.values[{i}].data_type'
+                mapper['attributes'].append(
+                    {'type': 'Value Data', 'value': f'@.values[{i}].data'}
+                )
+        return mapper
+
+    def consume(
+            self, stix_data: Union[list, dict],
+            collection_id,
+            collection_name,
+            collection_path,
+            custom_type_mapping: Dict = None
+    ):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
 
         Args:
@@ -305,53 +385,75 @@ class StixModel:
 
         Yields:
             ThreatConnect objects
+            :param collection_path:
+            :param collection_name:
+            :param collection_id:
         """
         type_mapping = {
-            'autonomous-system': self.as_object,
-            'domain-name': self.domain_name,
-            'email-addr': self.email_address,
-            'ipv4-addr': self.ipv4,
-            'ipv6-addr': self.ipv6,
-            'windows-registry-key': self.registry_key,
-            'url': self.url,
-            'indicator': self.indicator
+            'email-addr': self.email_address_mapping,
+            'autonomous-system': self.as_object_mapping,
+            'domain-name': self.domain_name_mapping,
+            'ipv4-addr': self.ipv4_mapping,
+            'ipv6-addr': self.ipv6_mapping,
+            'windows-registry-key': self.registry_key_mapping,
+            'url': self.url_mapping
         }
         type_mapping.update(custom_type_mapping or {})
+        if collection_id:
+            self.default_map['attribute'].append({'name': 'Collection ID', 'value': collection_id})
+        if collection_name:
+            self.default_map['attribute'].append({'name': 'Collection Name', 'value': collection_name})
+        if collection_path:
+            self.default_map['attribute'].append({'name': 'Collection Path', 'value': collection_path})
 
         visitor_mapping = {'relationship': self.relationship}
 
-        dd = {}
-        dict_items = map(methodcaller('items'), (self.default_map, kwargs.get('default_map', {})))
-        for k, v in chain.from_iterable(dict_items):
-            if isinstance(v, list) and isinstance(dd.get(k), list):
-                dd[k].extend(v)
-            else:
-                dd[k] = v
         tc_data = []
         for data in stix_data.get('objects', []):
-            if not dd.get('xid'):
-                dd['xid'] = self.tcex.batch.generate_xid(stix_data.get('id'))
+            object_id = data.get('id')
+            xid = Batch.generate_xid(object_id)
+            if collection_path:
+                self.default_map['attribute'].append(
+                    {'name': 'Object Path', 'value': f'{collection_path}/objects/{object_id}/'}
+                )
+            if collection_id:
+                xid = Batch.generate_xid([object_id, collection_id])
+            self.default_map['xid'] = xid
+            self.default_map['attribute'].append({'name': 'Object ID', 'value': object_id})
             _type = data.get('type').lower()
-            instance = visitor_mapping.get(_type)
-            if not instance:
-                instance = type_mapping.get(_type)
-            if not instance:
-                tc_data = itertools.chain(tc_data, self._map(data, dd))
-                continue
-            instance.default_map = dd
-
-            # Handle a bundle OR just one or more stix objects.
-            if _type in visitor_mapping:
-                for visitor in instance.consume(data):
+            mapping_method = visitor_mapping.get(_type)
+            if mapping_method:
+                for visitor in mapping_method.consume(data):
                     self.register_visitor(visitor)
+                continue
+            mapping_method = type_mapping.get(_type)
+            if _type == 'indicator':
+                if stix_data.get('pattern_type', 'stix') != 'stix':
+                    continue
+                for map in self.indicator.consume_mappings(data):
+                    map.update(self.default_map)
+                    tc_data = itertools.chain(tc_data, self._map(data, map))
+            elif mapping_method:
+                map = self.smart_update(self.default_map, mapping_method(stix_data))
+                tc_data = itertools.chain(tc_data, self._map(data, map))
             else:
-                # sub-parsers return generators, so chain them all together to flatten.
-                tc_data = itertools.chain(tc_data, instance.consume(data))
+                tc_data = itertools.chain(tc_data, self._map(data, self.default_map))
+                continue
 
         for visitor in self._visitors:
             tc_data = visitor.visit(tc_data)
 
         yield from tc_data
+
+    def smart_update(self, list_one, list_two):
+        updated_dict = {}
+        dict_items = map(methodcaller('items'), (list_one, list_two))
+        for k, v in itertools.chain.from_iterable(dict_items):
+            if isinstance(v, list) and isinstance(updated_dict.get(k), list):
+                updated_dict[k].extend(v)
+            else:
+                updated_dict[k] = v
+        return updated_dict
 
     def register_visitor(self, visitor):
         """Register a visitor that will be passed all parsed data after consume is through."""
