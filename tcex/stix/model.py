@@ -2,6 +2,9 @@
 # standard library
 import itertools
 from typing import Dict, Iterable, Union
+from operator import methodcaller
+from itertools import chain
+
 
 # third-party
 import jmespath
@@ -317,25 +320,31 @@ class StixModel:
 
         visitor_mapping = {'relationship': self.relationship}
 
-        if not isinstance(stix_data, list):
-            stix_data = [stix_data]
-
         tc_data = []
         for data in stix_data.get('objects', []):
-            self.reset_default_mapping()
-            self.default_map.update(kwargs.get('default_map', {}))
-            # Handle a bundle OR just one or more stix objects.
             _type = data.get('type').lower()
+            instance = visitor_mapping.get(_type)
+            if not instance:
+                instance = type_mapping.get(_type)
+            if not instance:
+                continue
+            dd = {}
+            dict_items = map(methodcaller('items'), (self.default_map, kwargs.get('default_map', {})))
+            for k, v in chain.from_iterable(dict_items):
+                if isinstance(v, list) and isinstance(dd.get(k), list):
+                    dd[k].extend(v)
+                else:
+                    dd[k] = v
+            instance.default_map = dd
+            print('passed in default mapping', kwargs.get('default_map'))
+            print('updated default map', instance.default_map)
+            # Handle a bundle OR just one or more stix objects.
             if _type in visitor_mapping:
-                for visitor in visitor_mapping.get(_type).consume(data):
+                for visitor in instance.consume(data):
                     self.register_visitor(visitor)
             else:
-                if _type in type_mapping:
-                    # sub-parsers return generators, so chain them all together to flatten.
-                    tc_data = itertools.chain(tc_data, type_mapping.get(_type).consume(data))
-                else:
-                    # TODO handle unknown stix type
-                    pass
+                # sub-parsers return generators, so chain them all together to flatten.
+                tc_data = itertools.chain(tc_data, instance.consume(data))
 
         for visitor in self._visitors:
             tc_data = visitor.visit(tc_data)
