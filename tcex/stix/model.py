@@ -337,8 +337,6 @@ class StixModel:
                 continue
             instance.default_map = dd
 
-            print('passed in default mapping', kwargs.get('default_map'))
-            print('updated default map', instance.default_map)
             # Handle a bundle OR just one or more stix objects.
             if _type in visitor_mapping:
                 for visitor in instance.consume(data):
