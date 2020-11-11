@@ -3,6 +3,12 @@
 Release Notes
 #############
 
+2.0.15
+======
++ APP-1641 - [Batch] Fixed issue that batch delete that prevented single submission or last submission from working.
++ APP-1642 - [Service] Increased tc_svc_broker_conn_timeout arg to 60 to address disconnect issue in API service.
++ APP-1643 - [App Init] Add "no-commit-to-branch" feature to the pre-commit configuration.
+
 2.0.14
 ======
 + APP-1394 - [Batch] Updated batch data processing to handle max sizes appropriately.
