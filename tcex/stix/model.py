@@ -476,7 +476,7 @@ class StixModel:
                     collection_path += '/'
                 source_value.append(f'Object Path: {collection_path}objects/{object_id}/')
             self.default_map['xid'] = xid
-            self.default_map['attribute'] = {'type': 'Source', 'value': '\n'.join(source_value)}
+            self.default_map['attribute'] = [{'type': 'Source', 'value': '\n'.join(source_value)}]
             _type = data.get('type').lower()
             mapping_method = visitor_mapping.get(_type)
             if mapping_method:
