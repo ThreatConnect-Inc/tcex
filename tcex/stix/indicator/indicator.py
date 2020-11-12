@@ -180,7 +180,7 @@ class StixIndicator(StixModel):
                 )
         return mappings
 
-    def _ip_consume_handler(self, indicators: list[dict]):
+    def _ip_consume_handler(self, indicators: Iterable[dict]):
         """Produce ThreatConnect Address/CIDR mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -220,7 +220,7 @@ class StixIndicator(StixModel):
             mappings.append(parse_map)
         return mappings
 
-    def _default_consume_handler(self, indicators: list[dict]):
+    def _default_consume_handler(self, indicators: Iterable[dict]):
         """Produce ThreatConnect URL/EmailAddress/Host/ASN mappings from a list of STIX 2.1 indicators
 
         Args:
