@@ -116,7 +116,15 @@ class StixIndicator(StixModel):
 
             yield kwargs
 
-    def consume_mappings(self, stix_data):
+    def consume_mappings(self, stix_data: dict):
+        """Produce ThreatConnect mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A array of indicator mappings.
+        """
         pattern = Pattern(stix_data.get('pattern'))
         s = STIXListener()
         pattern.walk(s)
@@ -124,11 +132,18 @@ class StixIndicator(StixModel):
         mappings.append(self._default_consume_handler(s.indicators))
         mappings.append(self._ip_consume_handler(s.indicators))
         mappings.append(self._file_consume_handler(s.indicators))
-    # TODO remove Nones
         mappings = list(itertools.chain(*mappings))
         return mappings
 
-    def _file_consume_handler(self, indicators):
+    def _file_consume_handler(self, indicators: list[dict]):
+        """Produce ThreatConnect file mappings from a list of STIX 2.1 indicators
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A array of indicator mappings.
+        """
         file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), indicators))
 
         sha256_indicators = list(
@@ -165,7 +180,15 @@ class StixIndicator(StixModel):
                 )
         return mappings
 
-    def _ip_consume_handler(self, indicators):
+    def _ip_consume_handler(self, indicators: list[dict]):
+        """Produce ThreatConnect Address/CIDR mappings from a list of STIX 2.1 indicators
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A array of indicator mappings.
+        """
         mappings = []
         for i in filter(lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], indicators):
             path = i.get('path')
@@ -194,10 +217,19 @@ class StixIndicator(StixModel):
                         'summary': value.split('/')[0],
                     }
                 parse_map['confidence'] = '@.confidence'
-                mappings.append(parse_map)
+            mappings.append(parse_map)
         return mappings
 
-    def _default_consume_handler(self, indicators):
+    def _default_consume_handler(self, indicators: list[dict]):
+        """Produce ThreatConnect URL/EmailAddress/Host/ASN mappings from a list of STIX 2.1 indicators
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A array of indicator mappings.
+        """
+
         type_map = {
             'url:value': 'URL',
             'email-addr:value': 'EmailAddress',

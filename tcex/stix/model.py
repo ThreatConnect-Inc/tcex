@@ -292,59 +292,115 @@ class StixModel:
     # pylint: disable=unused-argument
     @property
     def as_object_mapping(self):
+        """Produce ThreatConnect ASN mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         return {
             'type': 'ASN',
             'summary': '@.number',
             'confidence': '@.confidence',
-            'xid': '@.id',
-            # 'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
 
     @property
     def domain_name_mapping(self):
+        """Produce ThreatConnect Host mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         return {
             'type': 'Host',
             'hostName': '@.value',
             'xid': '@.id',
             'confidence': '@.confidence',
-            'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
     @property
     def email_address_mapping(self):
+        """Produce ThreatConnect EmailAddress mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         return {
             'type': 'EmailAddress',
             'address': '@.value',
             'confidence': '@.confidence',
-            'xid': '@.id',
         }
 
     def _ip_addr_mapping(self, stix_data, full_block_size):
+        """Produce ThreatConnect Address/CIDR mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         cidr_parts = stix_data.get('value', '').split('/')
         cidr_suffix = cidr_parts[1] if len(cidr_parts) > 1 else str(full_block_size)
         if cidr_suffix == str(full_block_size):
             return {
                 'type': 'Address',
                 'ip': '@.value',
-                'xid': '@.id',
                 'confidence': '@.confidence',
             }
         return {
             'confidence': '@.confidence',
             'type': 'CIDR',
             'block': '@.value',
-            'xid': '@.id',
-            'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }
 
     def ipv6_mapping(self, stix_data):
+        """Produce ThreatConnect Address/CIDR mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         return self._ip_addr_mapping(stix_data, 128)
 
     def ipv4_mapping(self, stix_data):
+        """Produce ThreatConnect Address/CIDR mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         return self._ip_addr_mapping(stix_data, 32)
 
-    def url_mapping(self):
+    def url_mapping(self, stix_data):
+        """Produce ThreatConnect URL mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         return {
             'type': 'URL',
             'text': '@.value',
@@ -353,6 +409,15 @@ class StixModel:
         }
 
     def registry_key_mapping(self, stix_data):
+        """Produce ThreatConnect Registry Key mappings from a STIX 2.1 JSON object.
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A indicator mappings.
+        """
+
         mapper = {
             'type': 'Registry Key',
             'Key Name': '@.key',
@@ -371,23 +436,23 @@ class StixModel:
         return mapper
 
     def consume(
-            self, stix_data: Union[list, dict],
+            self, stix_data: dict,
             collection_id,
             collection_name,
             collection_path,
-            custom_type_mapping: Dict = None
+            custom_type_mapping: dict = None
     ):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
 
         Args:
             stix_data: one or more stix_data dictionaries
-            custom_type_mapping: mapping of stix type to a StixModel object that can consume() it.
+            collection_path: the url path to the collection
+            collection_name: the collection name
+            collection_id: the collection id
+            custom_type_mapping: mapping of stix type to a mapping function object that takes stix_data as a parameter.
 
         Yields:
             ThreatConnect objects
-            :param collection_path:
-            :param collection_name:
-            :param collection_id:
         """
         type_mapping = {
             'email-addr': self.email_address_mapping,
@@ -430,9 +495,11 @@ class StixModel:
             if _type == 'indicator':
                 if stix_data.get('pattern_type', 'stix') != 'stix':
                     continue
-                for map in self.indicator.consume_mappings(data):
-                    map.update(self.default_map)
-                    tc_data = itertools.chain(tc_data, self._map(data, map))
+                for map_ in self.indicator.consume_mappings(data):
+                    if not map_:
+                        continue
+                    map_.update(self.default_map)
+                    tc_data = itertools.chain(tc_data, self._map(data, map_))
             elif mapping_method:
                 map = self.smart_update(self.default_map, mapping_method(stix_data))
                 tc_data = itertools.chain(tc_data, self._map(data, map))
@@ -445,7 +512,9 @@ class StixModel:
 
         yield from tc_data
 
-    def smart_update(self, list_one, list_two):
+    @staticmethod
+    def smart_update(list_one, list_two):
+        """Updates one dict with the other but joins arrays."""
         updated_dict = {}
         dict_items = map(methodcaller('items'), (list_one, list_two))
         for k, v in itertools.chain.from_iterable(dict_items):
@@ -460,7 +529,15 @@ class StixModel:
         self._visitors.append(visitor)
 
     def _map(self, data: Union[list, dict], mapping: dict):
+        """Produces a dict with the appropriate values given data and a mapping.
 
+        Args:
+            data: The data to be referenced in the mappings
+            mapping: The default values and jmspaths to the appropiate values in data.
+
+        Returns:
+            A new dict produced by the mappings and data field.
+        """
         if isinstance(data, dict):
             data = [data]
         try:
