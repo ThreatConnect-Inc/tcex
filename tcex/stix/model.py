@@ -476,7 +476,9 @@ class StixModel:
                 source_value.append(f'Collection Name: {collection_name}')
             if collection_path:
                 source_value.append(f'Collection Path: {collection_path}')
-                source_value.append(f'Object Path: {collection_path}/objects/{object_id}/')
+                if not collection_path.endswith('/'):
+                    collection_path += '/'
+                source_value.append(f'Object Path: {collection_path}objects/{object_id}/')
             self.default_map['xid'] = xid
             self.default_map['attribute'].append({'type': 'Source', 'value': '\n'.join(source_value)})
             _type = data.get('type').lower()
