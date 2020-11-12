@@ -5,7 +5,7 @@ see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_T
 """
 # standard library
 import uuid
-from typing import Dict, List, Union, Iterable
+from typing import Union, Iterable
 import itertools
 
 # third-party
@@ -128,10 +128,11 @@ class StixIndicator(StixModel):
         pattern = Pattern(stix_data.get('pattern'))
         s = STIXListener()
         pattern.walk(s)
-        mappings = []
-        mappings.append(self._default_consume_handler(s.indicators))
-        mappings.append(self._ip_consume_handler(s.indicators))
-        mappings.append(self._file_consume_handler(s.indicators))
+        mappings = [
+            self._default_consume_handler(s.indicators),
+            self._ip_consume_handler(s.indicators),
+            self._file_consume_handler(s.indicators)
+        ]
         mappings = list(itertools.chain(*mappings))
         return mappings
 
