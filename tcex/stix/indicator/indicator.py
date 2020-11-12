@@ -135,7 +135,7 @@ class StixIndicator(StixModel):
         mappings = list(itertools.chain(*mappings))
         return mappings
 
-    def _file_consume_handler(self, indicators: list[dict]):
+    def _file_consume_handler(self, indicators: list):
         """Produce ThreatConnect file mappings from a list of STIX 2.1 indicators
 
         Args:
