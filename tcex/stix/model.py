@@ -40,9 +40,7 @@ class StixModel:
           'lastModified': '@.modified',
           'tag': '@.labels',
           'securityLabel': '@.object_marking_refs',
-          'attribute': [
-              {'type': 'Object ID', 'value': '@.id'},
-          ],
+          'attribute': [],
         }
 
         self._visitors = []
@@ -464,27 +462,23 @@ class StixModel:
             'url': self.url_mapping
         }
         type_mapping.update(custom_type_mapping or {})
-        if collection_id:
-            self.default_map['attribute'].append({'name': 'Collection ID', 'value': collection_id})
-        if collection_name:
-            self.default_map['attribute'].append({'name': 'Collection Name', 'value': collection_name})
-        if collection_path:
-            self.default_map['attribute'].append({'name': 'Collection Path', 'value': collection_path})
-
         visitor_mapping = {'relationship': self.relationship}
 
         tc_data = []
         for data in stix_data.get('objects', []):
             object_id = data.get('id')
             xid = Batch.generate_xid(object_id)
-            if collection_path:
-                self.default_map['attribute'].append(
-                    {'name': 'Object Path', 'value': f'{collection_path}/objects/{object_id}/'}
-                )
+            source_value = [f'Object ID: {object_id}']
             if collection_id:
+                source_value.append(f'Collection ID: {collection_id}')
                 xid = Batch.generate_xid([object_id, collection_id])
+            if collection_name:
+                source_value.append(f'Collection Name: {collection_name}')
+            if collection_path:
+                source_value.append(f'Collection Path: {collection_path}')
+                source_value.append(f'Object Path: {collection_path}/objects/{object_id}/')
             self.default_map['xid'] = xid
-            self.default_map['attribute'].append({'name': 'Object ID', 'value': object_id})
+            self.default_map['attribute'].append({'name': 'Source', 'value': '\n'.join(source_value)})
             _type = data.get('type').lower()
             mapping_method = visitor_mapping.get(_type)
             if mapping_method:
@@ -501,8 +495,8 @@ class StixModel:
                     map_.update(self.default_map)
                     tc_data = itertools.chain(tc_data, self._map(data, map_))
             elif mapping_method:
-                map = self.smart_update(self.default_map, mapping_method(stix_data))
-                tc_data = itertools.chain(tc_data, self._map(data, map))
+                map_ = self.smart_update(self.default_map, mapping_method(stix_data))
+                tc_data = itertools.chain(tc_data, self._map(data, map_))
             else:
                 tc_data = itertools.chain(tc_data, self._map(data, self.default_map))
                 continue
