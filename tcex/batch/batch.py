@@ -1661,7 +1661,7 @@ class Batch:
 
                 # while waiting of FR for delete support in createAndUpload submit delete request
                 # the old way (submit job + submit data), still using V2.
-                if len(self) > 0:  # pylint: disable=len-as-condition
+                if len(content) > 0:  # pylint: disable=len-as-condition
                     batch_id = self.submit_job(halt_on_error)
                     if batch_id is not None:
                         batch_data = self.submit_data(

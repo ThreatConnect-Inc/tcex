@@ -306,7 +306,7 @@ class TcArgumentParser(ArgumentParser):
         self.add_argument('--tc_svc_broker_cert_file', help='Broker client ssl certificate')
         self.add_argument(
             '--tc_svc_broker_conn_timeout',
-            default=10,
+            default=60,
             help='Broker service conn timeout (seconds)',
             type=int,
         )

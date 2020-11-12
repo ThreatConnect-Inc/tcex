@@ -130,6 +130,7 @@ class MqttMessageBroker:
         if self._client is None:
             try:
                 self._client = mqtt.Client(client_id='', clean_session=True)
+                self._client.reconnect_delay_set(min_delay=1, max_delay=5)
                 self._client.connect(self.broker_host, self.broker_port, self.broker_timeout)
                 if self.broker_cacert is not None:
                     self._client.tls_set(
