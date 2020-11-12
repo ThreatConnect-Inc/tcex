@@ -5,7 +5,7 @@ see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_T
 """
 # standard library
 import uuid
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Iterable
 import itertools
 
 # third-party
@@ -135,7 +135,7 @@ class StixIndicator(StixModel):
         mappings = list(itertools.chain(*mappings))
         return mappings
 
-    def _file_consume_handler(self, indicators: list):
+    def _file_consume_handler(self, indicators: Iterable[dict]):
         """Produce ThreatConnect file mappings from a list of STIX 2.1 indicators
 
         Args:
