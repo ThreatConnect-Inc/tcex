@@ -550,23 +550,30 @@ class StixModel:
                         else:
                             if key == 'securityLabel':
                                 object_marking_refs = jmespath.search(f'{value}', jmespath.search('@', d)) or []
-                                mapped_obj[key] = []
+                                if not object_marking_refs:
+                                    del mapped_obj[key]
                                 for object_marking_ref in object_marking_refs:
                                     object_marking_ref = object_marking_ref.lower()
                                     if object_marking_ref in self.security_label_map.values():
                                         security_label = list(self.security_label_map.keys())[
                                             list(self.security_label_map.values()).index(object_marking_ref)]
-                                        mapped_obj[key].append({'name': security_label.upper()})
+                                        mapped_obj.setdefault(key, []).append({'name': security_label.upper()})
                             elif key == 'tag':
                                 tags = jmespath.search(f'{value}', jmespath.search('@', d)) or []
-                                mapped_obj[key] = []
+                                if not tags:
+                                    del mapped_obj[key]
                                 for tag in tags:
-                                    mapped_obj[key].append({'name': tag})
+                                    mapped_obj.setdefault(key, []).append({'name': tag})
                             else:
+                                if key == 'attribute':
+                                    attributes = jmespath.search(f'{value}', jmespath.search('@', d)) or []
+                                    if not attributes:
+                                        del mapped_obj[key]
                                 mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
                 yield mapped_obj
         except Exception as e:  # pylint: disable=bare-except
             self.logger.log.error(f'Could not map {data} using {mapping}')
+            print(f'Could not map {data} using {mapping}')
 
 
 class JMESPathStixModel(StixModel):
