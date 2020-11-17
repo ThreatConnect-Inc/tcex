@@ -284,8 +284,7 @@ class StixModel:
             yield _type, data
 
     # pylint: disable=unused-argument
-    @property
-    def as_object_mapping(self):
+    def as_object_mapping(self, stix_data):
         """Produce ThreatConnect ASN mappings from a STIX 2.1 JSON object.
 
         Args:
@@ -302,8 +301,7 @@ class StixModel:
         }
 
 
-    @property
-    def domain_name_mapping(self):
+    def domain_name_mapping(self, stix_data):
         """Produce ThreatConnect Host mappings from a STIX 2.1 JSON object.
 
         Args:
@@ -316,12 +314,10 @@ class StixModel:
         return {
             'type': 'Host',
             'hostName': '@.value',
-            'xid': '@.id',
             'confidence': '@.confidence',
         }
 
-    @property
-    def email_address_mapping(self):
+    def email_address_mapping(self, stix_data):
         """Produce ThreatConnect EmailAddress mappings from a STIX 2.1 JSON object.
 
         Args:
@@ -398,7 +394,6 @@ class StixModel:
         return {
             'type': 'URL',
             'text': '@.value',
-            'xid': '@.id',
             'confidence': '@.confidence'
         }
 
@@ -415,7 +410,6 @@ class StixModel:
         mapper = {
             'type': 'Registry Key',
             'Key Name': '@.key',
-            'xid': '@.id',
             'confidence': '@.confidence',
         }
         if not stix_data.get('values'):
@@ -480,7 +474,7 @@ class StixModel:
             _type = data.get('type').lower()
             mapping_method = visitor_mapping.get(_type)
             if mapping_method:
-                for visitor in mapping_method.consume(data):
+                for visitor in mapping_method.consume(data, collection_id):
                     self.register_visitor(visitor)
                 continue
             mapping_method = type_mapping.get(_type)
