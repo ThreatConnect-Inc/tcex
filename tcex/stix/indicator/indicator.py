@@ -126,14 +126,18 @@ class StixIndicator(StixModel):
             A array of indicator mappings.
         """
         pattern = Pattern(stix_data.get('pattern'))
-        s = STIXListener()
-        pattern.walk(s)
-        mappings = [
-            self._default_consume_handler(s.indicators),
-            self._ip_consume_handler(s.indicators),
-            self._file_consume_handler(s.indicators)
-        ]
-        mappings = list(itertools.chain(*mappings))
+        mappings = []
+        try:
+            s = STIXListener()
+            pattern.walk(s)
+            mappings = [
+                self._default_consume_handler(s.indicators),
+                self._ip_consume_handler(s.indicators),
+                self._file_consume_handler(s.indicators)
+            ]
+            mappings = list(itertools.chain(*mappings))
+        except:
+            self.tcex.log.error(f'''Error occurred parsing pattern: {stix_data.get('pattern')}''')
         return mappings
 
     def _file_consume_handler(self, indicators: Iterable[dict]):
