@@ -474,7 +474,7 @@ class StixModel:
             _type = data.get('type').lower()
             mapping_method = visitor_mapping.get(_type)
             if mapping_method:
-                for visitor in mapping_method.consume(data, collection_id):
+                for visitor in mapping_method.consume(data):
                     self.register_visitor(visitor)
                 continue
             mapping_method = type_mapping.get(_type)
