@@ -5,7 +5,8 @@ see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_T
 """
 # standard library
 import uuid
-from typing import Dict, List, Union
+from typing import Union, Iterable
+import itertools
 
 # third-party
 import stix2
@@ -25,6 +26,13 @@ class StixIndicator(StixModel):
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
     """
 
+    @staticmethod
+    def _add_milliseconds(time):
+        new_time = f'''{time.upper().replace('Z', '')}.000'''
+        if time.lower().endswith('z'):
+            return f'{new_time}Z'
+        return new_time
+
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce a STIX Indicator from a ThreatConnect Indicator.
 
@@ -42,15 +50,22 @@ class StixIndicator(StixModel):
             indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
                 continue
-            kwargs = {'pattern_type': 'stix', 'lang': 'en', 'pattern_version': '2.1',
-                      'created': data.get('dateAdded'),
-                      'modified': data.get('lastModified'), 'name': data.get('summary'),
-                      'pattern': indicator_details.get('lambda')(data), 'description': '',
-                      'indicator_types': ['malicious-activity'], 'confidence': data.get('confidence')}
-            confidence = data.get('confidence')
-            if confidence is not None:
-                kwargs['confidence'] = confidence
-
+            kwargs = {
+                'pattern_type': 'stix',
+                'lang': 'en',
+                'pattern_version': '2.1',
+                'type': 'indicator',
+                'created': self._add_milliseconds(data.get('dateAdded')),
+                'valid_from': self._add_milliseconds(data.get('dateAdded')),
+                'modified': self._add_milliseconds(data.get('lastModified')),
+                'name': data.get('summary'),
+                'pattern': indicator_details.get('lambda')(data),
+                'description': '',
+                'indicator_types': ['malicious-activity'],
+                'confidence': data.get('confidence', 0),
+            }
+            if not data.get('active', True):
+                kwargs['revoked'] = True
             latest = None
             for tag in data.get('tag', []):
                 kwargs.setdefault('labels', []).append(tag.get('name'))
@@ -66,7 +81,7 @@ class StixIndicator(StixModel):
                     if attribute.get('displayed'):
                         kwargs['description'] = value
                         break
-                    if not latest or latest < last_modified:
+                    if not latest or last_modified > latest:
                         latest = last_modified
                         kwargs['description'] = value
 
@@ -99,60 +114,88 @@ class StixIndicator(StixModel):
             except Exception:
                 pass
 
-            yield stix2.Indicator(**kwargs)
+            yield kwargs
 
-    def consume(self, stix_data: Union[list, dict]):
-        """Produce a ThreatConnect object from a STIX 2.0 JSON object.
+    def consume_mappings(self, stix_data: dict):
+        """Produce ThreatConnect mappings from a STIX 2.1 JSON object.
 
         Args:
             stix_data: STIX Indicator objects to parse.
 
-        Yields:
-            A ThreatConnect Signature and optionally ThreatConnect indicators.
+        Returns:
+            A array of indicator mappings.
         """
-        if not isinstance(stix_data, list):
-            stix_data = [stix_data]
+        pattern = Pattern(stix_data.get('pattern'))
+        mappings = []
+        try:
+            s = STIXListener()
+            pattern.walk(s)
+            mappings = [
+                self._default_consume_handler(s.indicators),
+                self._ip_consume_handler(s.indicators),
+                self._file_consume_handler(s.indicators)
+            ]
+            mappings = list(itertools.chain(*mappings))
+        except:
+            self.tcex.log.error(f'''Error occurred parsing pattern: {stix_data.get('pattern')}''')
+        return mappings
 
-        for data in stix_data:
-            if data.get('pattern_type', 'stix') != 'stix':
-                continue
+    def _file_consume_handler(self, indicators: Iterable[dict]):
+        """Produce ThreatConnect file mappings from a list of STIX 2.1 indicators
 
-            if data.get('pattern_type', 'stix') == 'stix':
-                # We only parse indicators out of stix patterns...
-                pattern = Pattern(data.get('pattern'))
-                s = STIXListener()
-                pattern.walk(s)
+        Args:
+            stix_data: STIX Indicator objects to parse.
 
-                yield from self._default_consume_handler(s.indicators, data)
-                yield from self._ip_consume_handler(s.indicators, data)
-                yield from self._file_consume_handler(s.indicators, data)
+        Returns:
+            A array of indicator mappings.
+        """
+        file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), indicators))
 
-    def _default_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
-        type_map = {
-            'url:value': 'URL',
-            'email-addr:value': 'EmailAddress',
-            'domain-name:value': 'Host',
-            'autonomous-system:name': 'ASN',
-        }
+        sha256_indicators = list(
+            filter(lambda i: 'SHA-156' in i.get('path').upper(), file_indicators)
+        )
+        sha2_indicators = list(filter(lambda i: 'SHA-1' in i.get('path').upper(), file_indicators))
+        md5_indicators = list(filter(lambda i: 'MD5' in i.get('path').upper(), file_indicators))
 
-        for i in filter(lambda i: i.get('path') in type_map.keys(), stix_indicators):
-            path = i.get('path')
-            value = i.get('value')
-            indicator_type = type_map.get(path)
-
-            parse_map = {
-                'type': indicator_type,
-                'summary': value,
-                'confidence': '@.confidence',
-                'xid': Batch.generate_xid([stix_data.get('id'), value])
-            }
-            parse_map.update(self.default_map)
-            yield from self._map(stix_data, parse_map)
-
-    def _ip_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
-        for i in filter(
-                lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], stix_indicators
+        if len(file_indicators) <= 0:
+            return []
+        mappings = []
+        if (
+                len(file_indicators) <= 3
+                and len(sha256_indicators) <= 1
+                and len(sha2_indicators) <= 1
+                and len(md5_indicators) <= 1
         ):
+            value = ' : '.join([v.get('value') for v in file_indicators])
+            mappings.append(
+                {
+                    'type': 'File',
+                    'summary': value,
+                    'confidence': '@.confidence',
+                }
+            )
+        else:
+            for i in file_indicators:
+                mappings.append(
+                    {
+                        'type': 'File',
+                        'summary': i.get('value'),
+                        'confidence': '@.confidence',
+                    }
+                )
+        return mappings
+
+    def _ip_consume_handler(self, indicators: Iterable[dict]):
+        """Produce ThreatConnect Address/CIDR mappings from a list of STIX 2.1 indicators
+
+        Args:
+            stix_data: STIX Indicator objects to parse.
+
+        Returns:
+            A array of indicator mappings.
+        """
+        mappings = []
+        for i in filter(lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], indicators):
             path = i.get('path')
             value = i.get('value')
             parse_map = None
@@ -161,66 +204,58 @@ class StixIndicator(StixModel):
                     parse_map = {
                         'type': 'CIDR',
                         'summary': value,
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 else:  # this is an address
                     parse_map = {
                         'type': 'Address',
                         'summary': value.split('/')[0],
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
             elif path == 'ipv6-addr:value':
                 if '/' in value and value.split('/')[1] != '128':  # this is a CIDR
                     parse_map = {
                         'type': 'CIDR',
                         'summary': value,
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 else:  # this is an address
                     parse_map = {
                         'type': 'Address',
                         'summary': value.split('/')[0],
-                        'xid': Batch.generate_xid([stix_data.get('id'), value])
                     }
                 parse_map['confidence'] = '@.confidence'
-                parse_map.update(self.default_map)
-                yield from self._map(stix_data, parse_map)
+            mappings.append(parse_map)
+        return mappings
 
-    def _file_consume_handler(self, stix_indicators: List[Dict[str, str]], stix_data):
-        file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), stix_indicators))
+    def _default_consume_handler(self, indicators: Iterable[dict]):
+        """Produce ThreatConnect URL/EmailAddress/Host/ASN mappings from a list of STIX 2.1 indicators
 
-        sha256_indicators = list(
-            filter(lambda i: 'SHA-156' in i.get('path').upper(), file_indicators)
-        )
-        sha2_indicators = list(filter(lambda i: 'SHA-1' in i.get('path').upper(), file_indicators))
-        md5_indicators = list(filter(lambda i: 'MD5' in i.get('path').upper(), file_indicators))
+        Args:
+            stix_data: STIX Indicator objects to parse.
 
-        if len(file_indicators) > 0:
-            if (
-                    len(file_indicators) <= 3
-                    and len(sha256_indicators) <= 1
-                    and len(sha2_indicators) <= 1
-                    and len(md5_indicators) <= 1
-            ):
-                value = ' : '.join([v.get('value') for v in file_indicators])
-                parse_map = {
-                    'type': 'File',
+        Returns:
+            A array of indicator mappings.
+        """
+
+        type_map = {
+            'url:value': 'URL',
+            'email-addr:value': 'EmailAddress',
+            'domain-name:value': 'Host',
+            'autonomous-system:name': 'ASN',
+        }
+
+        mappings = []
+        for i in filter(lambda i: i.get('path') in type_map.keys(), indicators):
+            path = i.get('path')
+            value = i.get('value')
+            indicator_type = type_map.get(path)
+
+            mappings.append(
+                {
+                    'type': indicator_type,
                     'summary': value,
                     'confidence': '@.confidence',
-                    'xid': Batch.generate_xid([stix_data.get('id'), value])
                 }
-                parse_map.update(self.default_map)
-                yield from self._map(stix_data, parse_map)
-            else:
-                for i in file_indicators:
-                    parse_map = {
-                        'type': 'File',
-                        'summary': i.get('value'),
-                        'confidence': '@.confidence',
-                        'xid': Batch.generate_xid([stix_data.get('id'), i.get('value')])
-                    }
-                parse_map.update(self.default_map)
-                yield from self._map(stix_data, parse_map)
+            )
+        return mappings
 
 
 class STIXListener(STIXPatternListener):
@@ -265,3 +300,5 @@ class STIXListener(STIXPatternListener):
     def indicators(self):
         """Return the indicators parsed out of this pattern."""
         return self._indicators
+
+

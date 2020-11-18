@@ -183,7 +183,7 @@
       "object_marking_refs": [
         "marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9",
         "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da",
-        "bulllllshit"
+        "is_not_a_valid_marking_ref"
       ],
       "modified": "2015-05-15T09:12:16.432Z",
       "name": "Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'",
