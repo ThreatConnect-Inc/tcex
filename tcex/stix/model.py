@@ -36,11 +36,12 @@ class StixModel:
             'tag': '@.labels',
             'securityLabel': '@.object_marking_refs',
             'attribute': [
-                {'type': 'STIX Name',             'value': '@.name'},
-                {'type': 'Description',           'value': '@.description'},
-                {'type': 'STIX Indicator Type',   'value': '@.indicator_types'},
+                {'type': 'STIX Name', 'value': '@.name'},
+                {'type': 'Description', 'value': '@.description'},
+                {'type': 'STIX Indicator Type', 'value': '@.indicator_types'},
                 {'type': 'External Date Created', 'value': '@.valid_from'},
                 {'type': 'External Date Expires', 'value': '@.valid_until'},
+                {'type': 'Source', 'value': 'WILL BE REPLACED IN THE CONSUME METHOD'},
             ],
         }
 
@@ -474,7 +475,10 @@ class StixModel:
                     collection_path += '/'
                 source_value.append(f'Object Path: {collection_path}objects/{object_id}/')
             self.default_map['xid'] = xid
-            # self.default_map['attribute'] = [{'type': 'Source', 'value': '\n'.join(source_value)}]
+            for attribute in self.default_map.get('attribute', []):
+                if attribute.get('type') == 'Source':
+                    attribute['value'] = '\n'.join(source_value)
+                    break
             _type = data.get('type').lower()
             mapping_method = visitor_mapping.get(_type)
             if mapping_method:
