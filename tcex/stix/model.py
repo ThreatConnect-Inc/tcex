@@ -1,9 +1,9 @@
 """Top-level Stix Model Class."""
 # standard library
 import itertools
+import copy
 from operator import methodcaller
 from typing import Dict, Iterable, Union
-
 
 # third-party
 import jmespath
@@ -12,7 +12,6 @@ from stix2.base import _STIXBase
 # first-party
 from tcex.logger import Logger
 from tcex.batch import Batch
-
 
 
 class StixModel:
@@ -32,11 +31,17 @@ class StixModel:
         self._relationship = None
         self._indicator_type_details = None
         self.default_map = {
-          'dateAdded': '@.created',
-          'lastModified': '@.modified',
-          'tag': '@.labels',
-          'securityLabel': '@.object_marking_refs',
-          'attribute': [],
+            'dateAdded': '@.created',
+            'lastModified': '@.modified',
+            'tag': '@.labels',
+            'securityLabel': '@.object_marking_refs',
+            'attribute': [
+                {'type': 'STIX Name',             'value': '@.name'},
+                {'type': 'Description',           'value': '@.description'},
+                {'type': 'STIX Indicator Type',   'value': '@.indicator_types'},
+                {'type': 'External Date Created', 'value': '@.valid_from'},
+                {'type': 'External Date Expires', 'value': '@.valid_until'},
+            ],
         }
 
         self._visitors = []
@@ -62,7 +67,7 @@ class StixModel:
             'tlp:white': 'marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9',
             'tlp:green': 'marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da',
             'tlp:amber': 'marking-definition--f88d31f6-486f-44da-b317-01333bde0b82',
-            'tlp:red':   'marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed'
+            'tlp:red': 'marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed'
         }
 
     @property
@@ -218,7 +223,7 @@ class StixModel:
         return self._relationship
 
     def produce(
-        self, tc_data: Union[list, dict], type_mapping: Dict = None, **kwargs
+            self, tc_data: Union[list, dict], type_mapping: Dict = None, **kwargs
     ):  # pylint: disable=unused-argument
         """Convert ThreatConnect data (in parsed JSON format) into STIX objects.
 
@@ -253,7 +258,7 @@ class StixModel:
         data = tc_data.get('data', tc_data)
         for key, values in self.indicator_type_details.items():
             if values.get('api_branch').upper() in [s.upper() for s in data.keys()] or values.get(
-                'type', ''
+                    'type', ''
             ).upper() in [s.upper() for s in data.keys()]:
                 api_branch = values.get('api_branch')
                 indicator_type = key
@@ -299,7 +304,6 @@ class StixModel:
             'summary': '@.number',
             'confidence': '@.confidence',
         }
-
 
     def domain_name_mapping(self, stix_data):
         """Produce ThreatConnect Host mappings from a STIX 2.1 JSON object.
@@ -470,7 +474,7 @@ class StixModel:
                     collection_path += '/'
                 source_value.append(f'Object Path: {collection_path}objects/{object_id}/')
             self.default_map['xid'] = xid
-            self.default_map['attribute'] = [{'type': 'Source', 'value': '\n'.join(source_value)}]
+            # self.default_map['attribute'] = [{'type': 'Source', 'value': '\n'.join(source_value)}]
             _type = data.get('type').lower()
             mapping_method = visitor_mapping.get(_type)
             if mapping_method:
@@ -526,59 +530,108 @@ class StixModel:
         """
         if isinstance(data, dict):
             data = [data]
-        try:
-            for d in data:
-                mapped_obj = mapping.copy()
-                for key, value in mapping.items():
+        for d in data:
+            mapped_obj = mapping.copy()
+            for key, value in mapping.items():
+                if isinstance(value, str) and not value.startswith('@'):
+                    mapped_obj[key] = value
+                    continue
+                if isinstance(value, (dict, list)):
+                    value = copy.deepcopy(value)
+
+                if key in ['securityLabel', 'tag', 'attribute']:
+                    mapped_value = self._custom_stix_mapping(d, key, value)
+                    if mapped_value:
+                        mapped_obj[key] = mapped_value
+                    else:
+                        del mapped_obj[key]
+                else:
                     if isinstance(value, list):
                         new_list = []
                         for item in value:
                             new_list.append(list(self._map(d, item))[0])
 
                         mapped_obj[key] = new_list
-                    elif isinstance(value, dict):
+                        continue
+                    if isinstance(value, dict):
                         mapped_obj[key] = list(self._map(d, mapped_obj[key]))[0]
+                        continue
+
+                    resolved_value = jmespath.search(f'{value}', jmespath.search('@', d)) or []
+                    if resolved_value:
+                        mapped_obj[key] = resolved_value
                     else:
-                        if not value.startswith('@'):
-                            mapped_obj[key] = value
-                        else:
-                            if key == 'securityLabel':
-                                object_marking_refs = jmespath.search(f'{value}', jmespath.search('@', d)) or []
-                                if not object_marking_refs:
-                                    del mapped_obj[key]
-                                for object_marking_ref in object_marking_refs:
-                                    object_marking_ref = object_marking_ref.lower()
-                                    if object_marking_ref in self.security_label_map.values():
-                                        security_label = list(self.security_label_map.keys())[
-                                            list(self.security_label_map.values()).index(object_marking_ref)]
-                                        mapped_obj.setdefault(key, []).append({'name': security_label.upper()})
-                            elif key == 'tag':
-                                tags = jmespath.search(f'{value}', jmespath.search('@', d)) or []
-                                if not tags:
-                                    del mapped_obj[key]
-                                for tag in tags:
-                                    mapped_obj.setdefault(key, []).append({'name': tag})
-                            else:
-                                if key == 'attribute':
-                                    attributes = jmespath.search(f'{value}', jmespath.search('@', d)) or []
-                                    if not attributes:
-                                        del mapped_obj[key]
-                                mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
-                yield mapped_obj
-        except Exception as e:  # pylint: disable=bare-except
-            self.logger.log.error(f'Could not map {data} using {mapping}')
-            print(f'Could not map {data} using {mapping}')
+                        del mapped_obj[key]
+            yield mapped_obj
+
+    def _custom_stix_mapping(self, data, key, value):
+        if key == 'securityLabel':
+            resolved_values = jmespath.search(f'{value}', jmespath.search('@', data)) or []
+            object_marking_refs = []
+            for resolved_value in resolved_values:
+                resolved_value = resolved_value.lower()
+                if resolved_value in self.security_label_map.values():
+                    security_label = list(self.security_label_map.keys())[
+                        list(self.security_label_map.values()).index(resolved_value)]
+                    object_marking_refs.append({'name': security_label.upper()})
+            return object_marking_refs
+        if key == 'tag':
+            resolved_values = jmespath.search(f'{value}', jmespath.search('@', data)) or []
+            tags = []
+            for resolved_value in resolved_values:
+                tags.append({'name': resolved_value})
+            return tags
+        if key == 'attribute':
+            attributes = []
+            for attribute in value:
+                attribute_value = attribute.get('value')
+                if attribute.get('value', '').startswith('@'):
+                    attribute_value = jmespath.search(f'{attribute_value}', jmespath.search('@', data)) or []
+                    if isinstance(attribute_value, list):
+                        attribute_value = '\n'.join(attribute_value)
+                if not attribute_value:
+                    continue
+                attribute['value'] = attribute_value
+                attributes.append(attribute)
+            return attributes
+        return None
+
+        # return mapped_obj
+        #     if not object_marking_refs:
+        #         del mapped_obj[key]
+        #     else:
+        #         mapped_obj[key] = []
+        #     for object_marking_ref in object_marking_refs:
+        #         object_marking_ref = object_marking_ref.lower()
+        #         if object_marking_ref in self.security_label_map.values():
+        #             security_label = list(self.security_label_map.keys())[
+        #                 list(self.security_label_map.values()).index(object_marking_ref)]
+        #             mapped_obj[key].append({'name': security_label.upper()})
+        # elif key == 'tag':
+        #     tags = jmespath.search(f'{value}', jmespath.search('@', d)) or []
+        #     if not tags:
+        #         del mapped_obj[key]
+        #     else:
+        #         mapped_obj = []
+        #     for tag in tags:
+        #         mapped_obj[key].append({'name': tag})
+        # else:
+        #     if key == 'attribute':
+        #         attributes = jmespath.search(f'{value}', jmespath.search('@', d)) or []
+        #         if not attributes:
+        #             del mapped_obj[key]
+        #     mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
 
 
 class JMESPathStixModel(StixModel):
     """Generic implmenetation of StixModel that converts data based on jmespath statements."""
 
     def __init__(
-        self,
-        produce_map: Dict[str, str],
-        produce_type: _STIXBase,
-        consume_map: Dict[str, str],
-        logger: Logger,
+            self,
+            produce_map: Dict[str, str],
+            produce_type: _STIXBase,
+            consume_map: Dict[str, str],
+            logger: Logger,
     ):
         """Instantiate a JMESPath StixModel.
 
