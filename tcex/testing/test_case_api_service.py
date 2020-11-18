@@ -260,7 +260,7 @@ class TestCaseApiService(TestCaseServiceCommon):
     api_server = None
     api_service_host = os.getenv('API_SERVICE_HOST')
     api_service_path = ''
-    api_service_path_base = '/api/service'
+    api_service_path_base = '/api/services'
     api_service_port = os.getenv('API_SERVICE_PORT')
     api_service_protocol = 'https://'
     api_service_type = None
@@ -312,7 +312,14 @@ class TestCaseApiService(TestCaseServiceCommon):
     def setup_method(self):
         """Run before each test method runs."""
         if not self.utils.to_bool(os.getenv('API_SERVICE_RUN', 'false')):
+            super().setup_method()
             return
+
+        self.api_service_host = 'localhost'
+        self.api_service_path = ''
+        self.api_service_path_base = ''
+        self.api_service_protocol = 'http://'
+        self.api_service_port = 8042
 
         self.api_server = ApiServer(self, (self.api_service_host, self.api_service_port))
         self.api_server.listen()
@@ -330,6 +337,7 @@ class TestCaseApiService(TestCaseServiceCommon):
     def teardown_method(self):
         """Run after each test method runs."""
         if not self.utils.to_bool(os.getenv('API_SERVICE_RUN', 'false')):
+            super().teardown_method()
             return
 
         self.api_server.server_close()
@@ -338,13 +346,6 @@ class TestCaseApiService(TestCaseServiceCommon):
     @property
     def test_client(self):
         """Return test client."""
-        if not self.utils.to_bool(os.getenv('API_SERVICE_RUN', 'false')):
-            self.api_service_host = 'localhost'
-            self.api_service_path = ''
-            self.api_service_path_base = ''
-            self.api_service_protocol = 'http://'
-            self.api_service_port = '8042'
-
         if not self._test_client:
             if not self.api_service_host:
                 self.tcex.exit(1, 'Required env variable: API_SERVICE_HOST not set.')
