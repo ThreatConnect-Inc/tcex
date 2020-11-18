@@ -354,9 +354,10 @@ class TestCaseApiService(TestCaseServiceCommon):
                 base_url += f':{int(self.api_service_port)}'
             base_url += f'{self.api_service_path_base}{self.api_service_path}'
             self._test_client = self.tcex.session
-            self._test_client.base_url = base_url
             if self.api_service_type.lower() == 'external':
                 self._test_client = ExternalSession(base_url)
+            else:
+                self._test_client.base_url = base_url
         return self._test_client
 
     def set_test_client_auth(self, username: str, password: str) -> None:
