@@ -75,7 +75,7 @@ setup(
         'python-dateutil>=2.6.1',
         'pytz',
         'redis>=2.10.6',
-        'requests>=2.18.4',
+        'requests<2.25.0',
         'six>=1.11.0',
         'stdlib-list>=0.6.0',
         'stix2',

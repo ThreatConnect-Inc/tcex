@@ -166,7 +166,7 @@ class ApiService(CommonService):
         body = None
         try:
             # read body from redis
-            body_variable: str = message.pop('bodyVariable')
+            body_variable: str = message.pop('bodyVariable', None)
             if body_variable is not None:
                 body: Any = self.redis_client.hget(request_key, body_variable)
                 if body is not None:
