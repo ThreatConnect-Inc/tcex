@@ -568,6 +568,18 @@ class StixModel:
                         del mapped_obj[key]
             yield mapped_obj
 
+
+    @staticmethod
+    def _remove_milliseconds(time):
+        time = time.split('.')
+        milliseconds = ''
+        if len(time) > 1:
+            milliseconds = time.pop()
+        new_time = ''.join(time)
+        if milliseconds.lower().endswith('z'):
+            return f'{new_time}Z'
+        return new_time
+
     def _custom_stix_mapping(self, data, key, value):
         if key == 'securityLabel':
             resolved_values = jmespath.search(f'{value}', jmespath.search('@', data)) or []
@@ -593,6 +605,8 @@ class StixModel:
                     attribute_value = jmespath.search(f'{attribute_value}', jmespath.search('@', data)) or []
                     if isinstance(attribute_value, list):
                         attribute_value = '\n'.join(attribute_value)
+                    if attribute.get('value') in ['@.valid_from', '@.valid_until']:
+                        attribute_value = self._remove_milliseconds(attribute_value)
                 if not attribute_value:
                     continue
                 attribute['value'] = attribute_value
