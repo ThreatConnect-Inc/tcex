@@ -137,7 +137,7 @@ class StixIndicator(StixModel):
             ]
             mappings = list(itertools.chain(*mappings))
         except:
-            self.logger.log.error(f'''Error occurred parsing pattern: {stix_data.get('pattern')}''')
+            self.logger.log.trace(f'''Error occurred parsing pattern: {stix_data.get('pattern')}''')
         return mappings
 
     def _file_consume_handler(self, indicators: Iterable[dict]):
