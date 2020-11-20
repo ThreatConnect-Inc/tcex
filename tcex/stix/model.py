@@ -36,7 +36,7 @@ class StixModel:
             'tag': '@.labels',
             'securityLabel': '@.object_marking_refs',
             'attribute': [
-                {'type': 'STIX Name', 'value': '@.name'},
+                {'type': 'STIX Title', 'value': '@.name'},
                 {'type': 'Description', 'value': '@.description'},
                 {'type': 'STIX Indicator Type', 'value': '@.indicator_types'},
                 {'type': 'External Date Created', 'value': '@.valid_from'},
