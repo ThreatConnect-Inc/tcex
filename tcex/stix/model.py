@@ -478,6 +478,7 @@ class StixModel:
             for attribute in self.default_map.get('attribute', []):
                 if attribute.get('type') == 'Source':
                     attribute['value'] = '\n'.join(source_value)
+                    attribute['displayed'] = True
                     break
             _type = data.get('type').lower()
             mapping_method = visitor_mapping.get(_type)
