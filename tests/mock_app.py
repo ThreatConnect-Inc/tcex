@@ -232,14 +232,13 @@ class MockApp:
     @property
     def api_token(self):
         """Return a valid API token."""
-        # r = self.session.post(f'{self.tc_api_path}{self.tc_token_url}api', verify=False)
-        # if r.status_code != 200:
-        #     raise RuntimeError(
-        #         f'This feature requires ThreatConnect 6.0 or higher. response={r.text}, '
-        #         f'url={r.request.url}, status_code={r.status_code}'
-        #     )
-        return 'API:5:KUMDix:1604631508609:uBYdroLzjuHYfCEfRZkUXlbeca/ZHYHpZAuvGEbQ7+M='
-        # return r.json().get('data')
+        r = self.session.post(f'{self.tc_api_path}{self.tc_token_url}api', verify=False)
+        if r.status_code != 200:
+            raise RuntimeError(
+                f'This feature requires ThreatConnect 6.0 or higher. response={r.text}, '
+                f'url={r.request.url}, status_code={r.status_code}'
+            )
+        return r.json().get('data')
 
     @property
     def config_data(self):
