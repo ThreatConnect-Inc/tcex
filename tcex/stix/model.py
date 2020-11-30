@@ -467,6 +467,7 @@ class StixModel:
         for data in stix_data.get('objects', []):
             object_id = data.get('id')
             xid = Batch.generate_xid(object_id)
+            safe_default_map = copy.deepcopy(self.default_map)
             source_value = [f'Object ID: {object_id}']
             if collection_id:
                 source_value.append(f'Collection ID: {collection_id}')
@@ -478,7 +479,7 @@ class StixModel:
                 if not collection_path.endswith('/'):
                     collection_path += '/'
                 source_value.append(f'Object Path: {collection_path}objects/{object_id}/')
-            for attribute in self.default_map.get('attribute', []):
+            for attribute in safe_default_map.get('attribute', []):
                 if attribute.get('type') == 'Source':
                     attribute['value'] = '\n'.join(source_value)
                     attribute['displayed'] = True
@@ -496,7 +497,7 @@ class StixModel:
                 for map_ in self.indicator.consume_mappings(data, collection_id):
                     if not map_:
                         continue
-                    map_.update(self.default_map)
+                    map_.update(safe_default_map)
                     tc_data = itertools.chain(tc_data, self._map(data, map_))
             elif mapping_method:
                 self.default_map['xid'] = xid
