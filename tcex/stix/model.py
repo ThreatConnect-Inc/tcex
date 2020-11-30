@@ -474,7 +474,6 @@ class StixModel:
                 if not collection_path.endswith('/'):
                     collection_path += '/'
                 source_value.append(f'Object Path: {collection_path}objects/{object_id}/')
-            self.default_map['xid'] = xid
             for attribute in self.default_map.get('attribute', []):
                 if attribute.get('type') == 'Source':
                     attribute['value'] = '\n'.join(source_value)
@@ -490,17 +489,19 @@ class StixModel:
             if _type == 'indicator':
                 if stix_data.get('pattern_type', 'stix') != 'stix':
                     continue
-                for map_ in self.indicator.consume_mappings(data):
+                for map_ in self.indicator.consume_mappings(data, collection_id):
                     if not map_:
                         continue
                     map_.update(self.default_map)
                     tc_data = itertools.chain(tc_data, self._map(data, map_))
             elif mapping_method:
+                self.default_map['xid'] = xid
                 map_ = self.smart_update(self.default_map, mapping_method(stix_data))
                 tc_data = itertools.chain(tc_data, self._map(data, map_))
-            else:
-                tc_data = itertools.chain(tc_data, self._map(data, self.default_map))
-                continue
+            # else:
+            #     self.default_map['xid'] = xid
+            #     tc_data = itertools.chain(tc_data, self._map(data, self.default_map))
+            #     continue
 
         for visitor in self._visitors:
             tc_data = visitor.visit(tc_data)

@@ -46,6 +46,7 @@ class StixIndicator(StixModel):
             tc_data = [tc_data]
 
         for data in tc_data:
+            print('data: ', data)
             _type = kwargs.get('indicator_type') or data.get('type')
             indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
@@ -116,7 +117,7 @@ class StixIndicator(StixModel):
 
             yield kwargs
 
-    def consume_mappings(self, stix_data: dict):
+    def consume_mappings(self, stix_data: dict, collection_id: str):
         """Produce ThreatConnect mappings from a STIX 2.1 JSON object.
 
         Args:
@@ -127,20 +128,23 @@ class StixIndicator(StixModel):
         """
         pattern = Pattern(stix_data.get('pattern'))
         mappings = []
+        batch_xid_array = [stix_data.get('id')]
+        if collection_id:
+            batch_xid_array += [collection_id]
         try:
             s = STIXListener()
             pattern.walk(s)
             mappings = [
-                self._default_consume_handler(s.indicators),
-                self._ip_consume_handler(s.indicators),
-                self._file_consume_handler(s.indicators)
+                self._default_consume_handler(s.indicators, batch_xid_array),
+                self._ip_consume_handler(s.indicators, batch_xid_array),
+                self._file_consume_handler(s.indicators, batch_xid_array)
             ]
             mappings = list(itertools.chain(*mappings))
         except:
             self.logger.log.trace(f'''Error occurred parsing pattern: {stix_data.get('pattern')}''')
         return mappings
 
-    def _file_consume_handler(self, indicators: Iterable[dict]):
+    def _file_consume_handler(self, indicators: Iterable[dict], batch_xid_array):
         """Produce ThreatConnect file mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -159,6 +163,7 @@ class StixIndicator(StixModel):
 
         if len(file_indicators) <= 0:
             return []
+        batch_xid_array.append('File')
         mappings = []
         if (
                 len(file_indicators) <= 3
@@ -172,6 +177,7 @@ class StixIndicator(StixModel):
                     'type': 'File',
                     'summary': value,
                     'confidence': '@.confidence',
+                    'xid': Batch.generate_xid(batch_xid_array + [value])
                 }
             )
         else:
@@ -181,11 +187,12 @@ class StixIndicator(StixModel):
                         'type': 'File',
                         'summary': i.get('value'),
                         'confidence': '@.confidence',
+                        'xid': Batch.generate_xid(batch_xid_array + [i.get('value')])
                     }
                 )
         return mappings
 
-    def _ip_consume_handler(self, indicators: Iterable[dict]):
+    def _ip_consume_handler(self, indicators: Iterable[dict], batch_xid_array):
         """Produce ThreatConnect Address/CIDR mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -221,11 +228,12 @@ class StixIndicator(StixModel):
                         'type': 'Address',
                         'summary': value.split('/')[0],
                     }
-                parse_map['confidence'] = '@.confidence'
+            parse_map['confidence'] = '@.confidence'
+            parse_map['xid'] = Batch.generate_xid(batch_xid_array + [parse_map.get('type'), parse_map.get('summary')])
             mappings.append(parse_map)
         return mappings
 
-    def _default_consume_handler(self, indicators: Iterable[dict]):
+    def _default_consume_handler(self, indicators: Iterable[dict], batch_xid_array):
         """Produce ThreatConnect URL/EmailAddress/Host/ASN mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -253,7 +261,8 @@ class StixIndicator(StixModel):
                     'type': indicator_type,
                     'summary': value,
                     'confidence': '@.confidence',
-                }
+                    'xid': Batch.generate_xid(batch_xid_array + [indicator_type, value])
+            }
             )
         return mappings
 
